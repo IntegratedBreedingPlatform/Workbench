@@ -46,15 +46,15 @@
 									<div class="col-xs-12 col-md-12">
 										<table class="table table-curved table-condensed">
 											<thead>
-												<tr>
-													<th *ngFor="let header of labelsNeededSummary.headers">{{header}}</th>
-												</tr>
+											<tr>
+												<th *ngFor="let header of labelsNeededSummary.headers">{{header}}</th>
+											</tr>
 											</thead>
 											<tbody>
-												<tr *ngFor="let row of labelsNeededSummary.values; odd as odd; even as even">
-													<td *ngFor="let header of labelsNeededSummary.headers"
-														[ngClass]="{ odd: odd, even: even }">{{row[header]}}</td>
-												</tr>
+											<tr *ngFor="let row of labelsNeededSummary.values; odd as odd; even as even">
+												<td *ngFor="let header of labelsNeededSummary.headers"
+													[ngClass]="{ odd: odd, even: even }">{{row[header]}}</td>
+											</tr>
 											</tbody>
 										</table>
 									</div>
@@ -71,18 +71,32 @@
 
 						<div class="row">
 							<div class="col-xs-6 col-md-6">
-								<!-- TODO
-								<div class="col-xs-12 col-md-12">
-									<label class="control-label">
-										<strong class="sub-content-heading" jhiTranslate="label-printing.choose.label.type">
+								<div class="row">
+									<div class="col-xs-12 col-md-12">
+										<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.type">
 											CHOOSE LABEL TYPE
-										</strong>
-									</label>
+										</h2>
+									</div>
+									<div class="col-xs-12 col-md-12">
+										&nbsp;
+									</div>
+									<div class="col-xs-12 col-md-12 form-group">
+										<div class="row">
+											<label class="control-label add_top_padding col-xs-4 col-md-4">
+												<input type="checkbox" [(ngModel)]="loadSavedSettings" name="loadSavedSettings" checked=""/>   Load saved settings: </label>
+											<div class="col-xs-8 col-md-6" style="padding-left: 0px;">
+												<select *ngIf="loadSavedSettings" class="form-control" [(ngModel)]="presetSettingId" (ngModelChange)="applySelectedSetting()">
+													<option [value]="0">Please Choose</option>
+													<option *ngFor="let presetSetting of presetSettings" [value]="presetSetting.id">{{presetSetting.name}}</option>
+												</select>
+											</div>
+											<div class="add_top_padding saved-settings pull-left fbk-left-padding">
+												<a *ngIf="loadSavedSettings &&  presetSettingId!=0" href="javascript: void(0);" class="fb-delete-settings"><span
+													class="glyphicon glyphicon-trash delete-saved-settings" (click)="deleteSelectedSetting()"></span></a>
+											</div>
+										</div>
+									</div>
 								</div>
-								<div class="col-xs-12 col-md-12">
-
-								</div>
-								-->
 							</div>
 							<div class="col-xs-6 col-md-6">
 								<div class="row">
@@ -97,12 +111,12 @@
 									</div>
 									<div class="col-xs-12 col-md-12 form-group">
 										<div class="row">
-											<label class="control-label col-xs-4 col-md-4">
-												<strong jhiTranslate="label-printing.output.format"></strong></label>
-											<div class="col-xs-8 col-md-8">
-												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="initDragAndDrop()">
+											<label class="control-label add_top_padding col-xs-4 col-md-4">
+												<strong jhiTranslate="label-printing.output.format"></strong>:</label>
+											<div class="col-xs-8 col-md-7">
+												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="resetSelectedFields()">
 													<option [value]="FILE_TYPES.NONE">Please Choose</option>
-													<option [value]="FILE_TYPES.PDF" disabled>Formatted PDF Label Sheets (not available)</option>
+													<option [value]="FILE_TYPES.PDF">Formatted PDF Label Sheets</option>
 													<option [value]="FILE_TYPES.EXCEL" disabled>Excel Data (not available)</option>
 													<option [value]="FILE_TYPES.CSV">CSV Data</option>
 												</select>
@@ -112,13 +126,77 @@
 								</div>
 							</div>
 						</div>
+						<div *ngIf="fileType === FILE_TYPES.PDF">
+							<div class="row">
+								<div class="col-xs-12 col-md-12">
+									<div class="">
+										<div class="col-xs-12 col-md-12">
+											<br/>
+											<label class="control-label"><strong class="sub-content-heading"
+																				 jhiTranslate="label-printing.specify.label.stock"></strong></label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6 col-md-6">
+									<div class="form-group">
+										<div class="col-xs-12 col-md-12">
+											<label class="control-label " jhiTranslate="label-printing.enter.specs.for.label"></label>
+										</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-xs-7 col-md-7">
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											<label class="control-label label-bold">
+												<strong jhiTranslate="label-printing.size.of.label.sheet"></strong>:</label>
+										</div>
+										<div class="col-xs-5 col-md-5">
+											<select [(ngModel)]="labelPrintingData.sizeOfLabelSheet" class="form-control">
+												<option value="1" jhiTranslate="label-printing.label.size.a4">A4</option>
+												<option value="2" jhiTranslate="label-printing.label.size.letter">Letter</option>
+											</select>
+										</div>
+									</div>
 
+									<div class="row form-group">
+										<div class="col-xs-7 col-md-7">
+											&nbsp;&nbsp;&nbsp;&nbsp;
+											<label class="control-label label-bold">
+												<strong jhiTranslate="label-printing.number.of.rows.per.page"></strong>:</label>
+										</div>
+										<div class="col-xs-5 col-md-5">
+											<select [(ngModel)]="labelPrintingData.numberOfRowsPerPage" class="form-control">
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="10">10</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-6 col-md-6">
+									<div class="form-group">
+										<div class="col-xs-12 col-md-12">&nbsp;</div>
+										<div class="col-xs-12 col-md-12">
+											<br/>
+											<em jhiTranslate="label-printing.specify.label.details.message"></em>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="label-printing-details" *ngIf="fileType">
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
 									<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.fields">
 										CHOOSE LABEL FIELDS
 									</h2>
+									<div class="row">
+										<label class="control-label add_top_padding col-xs-12 col-md-12" *ngIf="fileType !== FILE_TYPES.PDF">
+											Drag fields from the <strong>{{labelTypes[0].title}} </strong>and <strong>{{labelTypes[1].title}}</strong> into <strong>Selected Fields</strong> to add them to your export file.</label>
+										<label class="control-label add_top_padding col-xs-12 col-md-12" *ngIf="fileType === FILE_TYPES.PDF">
+											Drag fields from the <strong>{{labelTypes[0].title}} </strong>and <strong>{{labelTypes[1].title}}</strong> into <strong>Left Side Fields</strong> and <strong>Right Side Fields</strong> to add them to your export file.</label>
+									</div>
 								</div>
 							</div>
 							<div class="row">
@@ -140,7 +218,7 @@
 																	</label>
 																</li>
 															</ul>
-															<ul id="label-type-fields" class="list-group droppable"
+															<ul id="label-type-fields" class="list-group droppable availableFields"
 																[attr.data-label-type-key]="labelType.key">
 																<li class="list-group-item text-truncate" *ngFor="let item of labelType.fields"
 																	[attr.id]="item.id"
@@ -165,7 +243,6 @@
 														</ul>
 														<ul id="leftSelectedFields" class="list-group droppable print-fields">
 														</ul>
-
 													</div>
 													<div class="col-xs-6 col-md-6">
 														<div *ngIf="fileType === FILE_TYPES.PDF">
@@ -236,8 +313,8 @@
 												</div>
 												<div class="col-xs-8 col-md-8">
 													<select [(ngModel)]="labelPrintingData.firstBarcodeField" class="form-control">
-														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypes | allLabels" [value]="field.id">
+														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -249,9 +326,9 @@
 														   jhiTranslate="label-printing.second.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
-													<select [(ngModel)]="labelPrintingData.secondBarcodeField" class="form-control">
-														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypes | allLabels" [value]="field.id">
+													<select [(ngModel)]="labelPrintingData.secondBarcodeField" class="form-control" >
+														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -264,8 +341,8 @@
 												</div>
 												<div class="col-xs-8 col-md-8">
 													<select [(ngModel)]="labelPrintingData.thirdBarcodeField" class="form-control">
-														<option value="" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypes | allLabels" [value]="field.id">
+														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -284,25 +361,43 @@
 													Specify the name of the label file
 												</h2>
 												<div class="row">
-													<div class="col-xs-4 col-md-4">
-														<label class="control-label label-bold add_top_padding"
-															   jhiTranslate="label-printing.filename">:</label><span class="required">*</span>
+													<div class="col-xs-12 col-md-12">
+														&nbsp;
 													</div>
-													<div class="col-xs-8 col-md-8">
-														<input type="text" class="form-control" [value]="labelPrintingData.filename"
+												</div>
+												<div class="row">
+													<div class="col-xs-3 col-md-3">
+														<label class="control-label add_top_padding"><strong
+															   jhiTranslate="label-printing.filename"></strong>:</label><span class="required">*</span>
+													</div>
+													<div class="col-xs-8 col-md-5">
+														<input type="text" class="form-control" [(ngModel)]="labelPrintingData.filename"
 															   placeholder="Filename"/>
 													</div>
 												</div>
 											</div>
 											<div class="col-xs-6 col-md-6">
+												<h2 class="sub-content-heading" jhiTranslate="label-printing.save.label.settings">
+													Save label settings
+												</h2>
+												<div>
+													<label class="control-label"
+														   jhiTranslate="label-printing.choose.preset.text"></label>
+												</div>
+												<div class="row">
+														<label class="control-label add_top_padding col-xs-4 col-md-3"><strong
+															   jhiTranslate="label-printing.save.label.settings.name.note"></strong>:</label>
+													<div class="col-xs-8 col-md-5">
+														<input type="text" class="form-control" [(ngModel)]="labelPrintingData.settingsName"
+															   placeholder="Settings Name"/>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-
-
 						</div> <!-- /label-printing-details -->
+						</div>
 
 						<div class="row">
 							<div class="col-xs-12 col-md-12">
@@ -316,7 +411,7 @@
 								<div class="col-xs-12 col-md-12 fbk-center">
 									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
 									<!-- TODO -->
-									<!--<input type="button" id="fbk-lbl-printing-save-preset" value="Save Preset" class="btn btn-info fbk-hide"/>-->
+									<input type="button" *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" value="Save Preset" class="btn btn-info"/>
 									<input type="button" *ngIf="fileType" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
 								</div>
 							</div>
@@ -338,3 +433,5 @@
 		<span class="throbber throbber-2x"></span>
 	</div>
 </ng-template>
+<jhi-alert></jhi-alert>
+<jhi-modal-confirm [modalTitle]="modalTitle" [modalMessage]="modalMessage" (onProceed)="proceed()"></jhi-modal-confirm>

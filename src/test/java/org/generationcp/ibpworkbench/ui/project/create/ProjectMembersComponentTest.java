@@ -9,12 +9,11 @@ import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.data.initializer.PersonTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,14 +53,14 @@ public class ProjectMembersComponentTest {
 	private Component component;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private ContextUtil contextUtil;
-	
+
 	@Mock
 	private AddProgramPresenter presenter;
-	
+
 	@Mock
 	private PlatformTransactionManager transactionManager;
 
@@ -70,13 +69,13 @@ public class ProjectMembersComponentTest {
 
 	@InjectMocks
 	private ProjectMembersComponent projectMembersComponent;
-	
+
 	private Button saveButton = new Button();
 	private Button cancelButton = new Button();
 
 	@Before
 	public void setUp() {
-		this.projectMembersComponent.setWorkbenchDataManager(this.workbenchDataManager);
+		this.projectMembersComponent.setUserService(this.userService);
 		this.projectMembersComponent.setTransactionManager(this.transactionManager);
 		this.projectMembersComponent.setContextUtil(this.contextUtil);
 		this.projectMembersComponent.setCancelButton(this.cancelButton);
@@ -86,11 +85,7 @@ public class ProjectMembersComponentTest {
 		Mockito.when(messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);
 
 		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.workbenchDataManager).getAllActiveUsersSorted();
-		for (final WorkbenchUser user : programMembers) {
-			Mockito.doReturn(PersonTestDataInitializer.createPerson(user.getPersonid())).when(this.workbenchDataManager)
-					.getPersonById(user.getPersonid());
-		}
+		Mockito.doReturn(programMembers).when(this.userService).getAllActiveUsersSorted();
 	}
 
 	@Test
@@ -201,7 +196,7 @@ public class ProjectMembersComponentTest {
 		junit.framework.Assert.assertEquals("</br>" + PROJECT_NAME + " program has been successfully created.", notification.getDescription());
 
 	}
-	
+
 	@Test
 	public void testCancelButtonClick() {
 		this.projectMembersComponent.initializeActions();

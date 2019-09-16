@@ -11,13 +11,13 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
-import org.generationcp.ibpworkbench.Message;
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.search.StudyResultSet;
 import org.generationcp.middleware.domain.search.filter.GidStudyQueryFilter;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.manager.PedigreeDataManagerImpl;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
@@ -57,7 +57,7 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 
 	private GermplasmSearchResultModel germplasmResultByGID;
 	private GermplasmDetailModel germplasmDetail;
-	public static final String MAX_PEDIGREE_LABEL = PedigreeDataManager.MAX_PEDIGREE_LEVEL + "+ generations";
+	public static final String MAX_PEDIGREE_LABEL = PedigreeDataManagerImpl.MAX_PEDIGREE_LEVEL + "+ generations";
 
 	private static final long serialVersionUID = 1L;
 
@@ -387,11 +387,7 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
 					GidStudyQueryFilter gidFilter = new GidStudyQueryFilter(gid);
-					StudyResultSet resultSet = GermplasmQueries.this.studyDataManager.searchStudies(gidFilter, 50);
-					while (resultSet.hasMore()) {
-						StudyReference reference = resultSet.next();
-						results.add(reference);
-					}
+					results.addAll(GermplasmQueries.this.studyDataManager.searchStudies(gidFilter));
 				}
 
 			});

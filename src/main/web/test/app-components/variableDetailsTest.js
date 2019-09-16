@@ -23,7 +23,7 @@ describe('Variable details directive', function() {
 		},
 
 		VARIABLE_TYPES_INC_TREATMENT_FACTOR = [{
-			id: 0,
+			id: 1808,
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
 		}, {
@@ -33,7 +33,7 @@ describe('Variable details directive', function() {
 		}],
 
 		VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR = [{
-			id: 0,
+			id: 1808,
 			name: 'Trait',
 			description: 'Characteristics of a germplasm to be recorded during a study.'
 		}],
@@ -180,6 +180,7 @@ describe('Variable details directive', function() {
 
 		it('should set the model to be the selected variable if the selected variable changes', function() {
 			scope.selectedVariable = PLANT_VIGOR;
+			scope.selectedVariable.metadata.disableFields = [];
 			scope.$apply();
 			expect(scope.model).toEqual(PLANT_VIGOR);
 		});
@@ -209,6 +210,8 @@ describe('Variable details directive', function() {
 		it('should show the Treatment Factor warning message if the variable types include Treatment Factor', function() {
 			scope.model = {};
 			scope.model.variableTypes = VARIABLE_TYPES_INC_TREATMENT_FACTOR;
+			scope.model.metadata = {disableFields: []};
+
 			scope.$apply();
 
 			expect(scope.showTreatmentFactorAlert).toBe(true);
@@ -217,6 +220,7 @@ describe('Variable details directive', function() {
 		it('should hide the Treatment Factor warning message if the variable types do not include Treatment Factor', function() {
 			scope.model = {};
 			scope.model.variableTypes = VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR;
+			scope.model.metadata = {disableFields: []};
 			scope.$apply();
 
 			expect(scope.showTreatmentFactorAlert).toBe(false);
@@ -231,62 +235,36 @@ describe('Variable details directive', function() {
 		});
 	});
 
-	describe('$scope.showAlias', function() {
-
-		it('should return true when the alias is valued', function() {
-			scope.editing = false;
-			scope.model = {
-				alias: 'alias'
-			};
-			expect(scope.showAlias()).toBe(true);
-		});
-
-		it('should return true when in edit mode and the alias is editable', function() {
-			scope.editing = true;
-			scope.model = {
-				metadata: {
-					editableFields: ['alias']
-				}
-			};
-			expect(scope.showAlias()).toBe(true);
-		});
-
-		it('should return a falsy value when not in edit mode and there is no alias', function() {
-			scope.editing = false;
-			scope.model = {
-				alias: ''
-			};
-			expect(scope.showAlias()).toBeFalsy();
-		});
-
-		it('should return a falsy value when the alias is not editable and there is no alias', function() {
-			scope.editing = true;
-			scope.model = {
-				metadata: {
-					editableFields: ['name']
-				}
-			};
-			expect(scope.showAlias()).toBeFalsy();
-		});
-
-		it('should return a falsy value when there is no model', function() {
-			scope.model = null;
-			expect(scope.showAlias()).toBeFalsy();
-		});
-
-	});
-
 	describe('$scope.editVariable', function() {
 
 		it('should set editing to be true', function() {
 			scope.editing = false;
+			scope.model = {
+				metadata: {
+					editableFields: ['alias'],
+					disableFields: [],
+				},
+				variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
+
+			};
 			scope.editVariable(fakeEvent);
 			expect(scope.editing).toBe(true);
+			expect(scope.isAliasDisabled).toBe(true);
+
 		});
 
 		describe('getting variable types', function() {
 
 			beforeEach(function() {
+				scope.model = {
+					metadata: {
+						editableFields: ['alias'],
+						disableFields: []
+
+			},
+					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
+
+				};
 				scope.editVariable(fakeEvent);
 			});
 
@@ -311,6 +289,14 @@ describe('Variable details directive', function() {
 
 		describe('getting properties', function() {
 			beforeEach(function() {
+				scope.model = {
+					metadata: {
+						editableFields: ['alias'],
+						disableFields: []
+					},
+					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
+
+				};
 				scope.editVariable(fakeEvent);
 			});
 
@@ -335,6 +321,14 @@ describe('Variable details directive', function() {
 
 		describe('getting methods', function() {
 			beforeEach(function() {
+				scope.model = {
+					metadata: {
+						editableFields: ['alias'],
+						disableFields: []
+					},
+					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
+
+				};
 				scope.editVariable(fakeEvent);
 			});
 
@@ -359,6 +353,14 @@ describe('Variable details directive', function() {
 
 		describe('getting scales', function() {
 			beforeEach(function() {
+				scope.model = {
+					metadata: {
+						editableFields: ['alias'],
+						disableFields: []
+					},
+					variableTypes: [VARIABLE_TYPES_WITHOUT_TREATMENT_FACTOR]
+
+				};
 				scope.editVariable(fakeEvent);
 			});
 

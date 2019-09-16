@@ -194,7 +194,8 @@
 			"scaleRequired": "Scale is required.",
 			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",
 			"variableTypeEmpty": "Please select at least one variable type.",
-			"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page."
+			"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page.",
+			"alias": "The alias will be available only for Traits, Selection methods and Study conditions."
 		},
 
 		"filter": {
@@ -252,7 +253,9 @@
 		},
 
 		"formulas": {
-			"deleteConfirmation": "Please confirm that you would like to delete this formula."
+			"deleteConfirmation": "Please confirm that you would like to delete this formula.",
+			"deleteFormulaInUsedConfirmation": "The trait containing this formula is already in use for some studies. Do you want to delete it anyway?",
+			"editFormulaInUsedConfirmation": "The trait containing this formula is already in use for some studies. Calculations won't be updated for such studies."
 		}
 	},
 

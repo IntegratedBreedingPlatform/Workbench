@@ -1,72 +1,79 @@
-import { Injectable, Inject } from '@angular/core';
-import { Http, Response, Headers } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Inject, Injectable } from '@angular/core';
+import { Http, Response } from '@angular/http';
+import { Observable, Subject } from 'rxjs/Rx';
 import { User } from './../models/user.model';
-import ServiceHelper from "./service.helper";
+import ServiceHelper from './service.helper';
+import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
-export class UserService{
-  private baseUrl: string = '/bmsapi';
+export class UserService {
+    private baseUrl: string = SERVER_API_URL;
 
-  private http: Http;
+    public onUserAdded = new Subject<User>();
+    public onUserUpdated = new Subject<User>();
 
-  constructor(@Inject(Http) http:Http) {
-      this.http = http;
-  }
+    /** User been edited or created */
+    public user: User;
 
-  getAll(): Observable<User[]>{
-    let users$ = this.http
-      .get(`${this.baseUrl}/users`, {headers: this.getHeaders()})
-      .map(response => this.mapUsers(response));
-      return users$;
-  }
+    private http: Http;
 
-  get(id: number): Observable<User> {
-    let User$ = this.http
-      .get(`${this.baseUrl}/users/${id}`, {headers: this.getHeaders()})
-      .map(response => this.mapUser(response));
-      return User$;
-  }
+    constructor(@Inject(Http) http: Http) {
+        this.http = http;
+    }
 
-  save(user: User) : Observable<Response>{
-    let headers = this.getHeaders()
-    headers.append('Content-Type', 'application/json');
-    return this.http
-      .post(`${this.baseUrl}/users`, JSON.stringify(user), {headers: headers});
-    ;
-  }
+    getAll(): Observable<User[]> {
+        let users$ = this.http
+            .get(`${this.baseUrl}/users`, { headers: this.getHeaders() })
+            .map(response => this.mapUsers(response));
+        return users$;
+    }
 
-  update(user: User) : Observable < Response > {
-      let headers = this.getHeaders()
-      headers.append('Content-Type', 'application/json');
-      return this.http
-          .put(`${this.baseUrl}/users/${user.id}`, JSON.stringify(user), { headers: headers });
-  }
+    get(id: number): Observable<User> {
+        let User$ = this.http
+            .get(`${this.baseUrl}/users/${id}`, { headers: this.getHeaders() })
+            .map(response => this.mapUser(response));
+        return User$;
+    }
 
-  private getHeaders() {
-      return ServiceHelper.getHeaders();
-  }
+    save(user: User): Observable<Response> {
+        let headers = this.getHeaders()
+        headers.append('Content-Type', 'application/json');
+        return this.http
+            .post(`${this.baseUrl}/users`, JSON.stringify(user), { headers: headers });
+        ;
+    }
 
-  private mapUsers(response:Response): User[]{
-     return response.json().map(this.toUser)
-  }
+    update(user: User): Observable<Response> {
+        let headers = this.getHeaders()
+        headers.append('Content-Type', 'application/json');
+        return this.http
+            .put(`${this.baseUrl}/users/${user.id}`, JSON.stringify(user), { headers: headers });
+    }
 
-  private toUser(r:any): User{
-    let User = <User>({
-      id: r.id,
-      firstName: r.firstName,
-      lastName: r.lastName,
-      username: r.username,
-      role: r.role,
-      roleName : r.role.description,
-      email: r.email,
-      status: r.status,
-    });
-    return User;
-  }
+    private getHeaders() {
+        return ServiceHelper.getHeaders();
+    }
 
-  private mapUser(response:Response): User{
-    return this.toUser(response.json());
-  }
+    private mapUsers(response: Response): User[] {
+        return response.json().map(this.toUser)
+    }
+
+    private toUser(r: any): User {
+        let user = <User>({
+            id: r.id,
+            firstName: r.firstName,
+            lastName: r.lastName,
+            username: r.username,
+            crops: r.crops,
+            userRoles: (r.userRoles == null) ? [] : r.userRoles,
+            email: r.email,
+            status: r.status
+        });
+        return user;
+    }
+
+    private mapUser(response: Response): User {
+        return this.toUser(response.json());
+    }
 
 }

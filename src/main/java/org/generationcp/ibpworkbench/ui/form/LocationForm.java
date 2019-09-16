@@ -296,8 +296,16 @@ public class LocationForm extends Form {
 		return this.locationFormFieldFactory.getLocationName().isModified();
 	}
 
+	public boolean isLocationAbbreviationModified() {
+		return this.locationFormFieldFactory.getLocationAbbreviation().isModified();
+	}
+
 	public String getLocationNameValue() {
 		return (String) this.locationFormFieldFactory.getLocationName().getValue();
+	}
+
+	public String getLocationAbbreviationValue() {
+		return (String) this.locationFormFieldFactory.getLocationAbbreviation().getValue();
 	}
 
 	public void setLocationFormFieldFactory(final LocationFormFieldFactory locationFormFieldFactory) {

@@ -68,14 +68,13 @@ export class NgDataGridModel<T> {
     get itemsFiltered(): T[] {
         let key: string = this.sortBy;
         return this.items
-            .filter( item => this.comparator.same(this.searchValue, item))
+            .filter(item => this.comparator.same(this.searchValue, item))
             .sort((obj1: T, obj2: T) => {
-
                 let one: number = this.sortAsc ? 1 : -1;
-
                 if (!key) return 0;
-                if (obj1[key].toUpperCase() < obj2[key].toUpperCase()) return -one;
-                if (obj1[key].toUpperCase() > obj2[key].toUpperCase()) return one;
+                if (!obj1[key] || !obj2[key]) return 0;
+                if (String(obj1[key]).toUpperCase() < String(obj2[key]).toUpperCase()) return -one;
+                if (String(obj1[key]).toUpperCase() > String(obj2[key]).toUpperCase()) return one;
                 return 0;
             });
     }

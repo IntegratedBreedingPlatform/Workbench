@@ -48,7 +48,7 @@
 			<span class="fa login-select-icon">&#xf063;</span>
 			<select class="login-select login-flat-control" name="roleId">
 				<option></option>
-				<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"/>
+				<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"/>
 			</select>
 		</div>
 

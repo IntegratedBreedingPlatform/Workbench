@@ -10,8 +10,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.common.LinkButton;
-import org.generationcp.middleware.domain.dms.StudyReference;
-import org.generationcp.middleware.domain.sample.SampleGermplasmDetailDTO;
+import org.generationcp.middleware.domain.sample.SampleDTO;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.service.api.SampleService;
 import org.slf4j.Logger;
@@ -19,12 +18,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Configurable
@@ -34,12 +37,15 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private final static Logger LOG = LoggerFactory.getLogger(SampleInfoComponent.class);
 
 	// Sample Information Model
-	private static final String SAMPLE_ID = "Sample ID";
-	private static final String SAMPLE_LIST = "Sample List";
-	private static final String STUDY_NAME = "Study Name";
-	private static final String OBS_UNIT_ID = "Observation Unit ID";
-	private static final String PLANT_ID = "Plant ID";
-	private static final String PLATE_ID = "Plate ID";
+	private static final String SAMPLE_ID = "SAMPLE ID";
+	private static final String SAMPLE_LIST = "SAMPLE LIST";
+	private static final String STUDY_NAME = "STUDY NAME";
+	private static final String TAKEN_BY = "TAKEN BY";
+	private static final String SAMPLING_DATE = "SAMPLING DATE";
+	private static final String DATASET_TYPE = "DATASET_TYPE";
+	private static final String OBS_UNIT_ID = "OBS UNIT ID";
+	private static final String ENUMERATOR = "ENUMERATOR";
+	private static final String PLATE_ID = "PLATE ID";
 	private static final String WELL = "WELL";
 	private static final String URL_GENOTYPING_DATASET = "/GDMS/main/?restartApplication&datasetId=";
 
@@ -95,8 +101,11 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.SAMPLE_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.SAMPLE_LIST, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.STUDY_NAME, LinkButton.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.TAKEN_BY, String.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.SAMPLING_DATE, String.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.DATASET_TYPE, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.OBS_UNIT_ID, String.class, null);
-		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLANT_ID, String.class, null);
+		this.getSampleTable().addContainerProperty(SampleInfoComponent.ENUMERATOR, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.PLATE_ID, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.WELL, String.class, null);
 		this.getSampleTable().addContainerProperty(SampleInfoComponent.GENOTYPING_DATA, HorizontalLayout.class, null);
@@ -106,23 +115,15 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().setColumnReorderingAllowed(true);
 		this.getSampleTable().setColumnCollapsingAllowed(true);
 
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_ID);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.SAMPLE_LIST);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.STUDY_NAME, SampleInfoComponent.STUDY_NAME);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.OBS_UNIT_ID,SampleInfoComponent.OBS_UNIT_ID);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLANT_ID);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.PLATE_ID, SampleInfoComponent.PLATE_ID);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.WELL, SampleInfoComponent.WELL);
-		this.getSampleTable().setColumnHeader(SampleInfoComponent.GENOTYPING_DATA, SampleInfoComponent.GENOTYPING_DATA);
 
 		this.getSampleTable().setVisibleColumns(
 			new String[] {SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.STUDY_NAME,
-				SampleInfoComponent.OBS_UNIT_ID, SampleInfoComponent.PLANT_ID, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL,
-				SampleInfoComponent.GENOTYPING_DATA});
+				SampleInfoComponent.TAKEN_BY, SampleInfoComponent.SAMPLING_DATE, SampleInfoComponent.DATASET_TYPE, SampleInfoComponent.OBS_UNIT_ID,
+				SampleInfoComponent.ENUMERATOR, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL, SampleInfoComponent.GENOTYPING_DATA});
 	}
 
 	private void initializeValues() {
-		final List<SampleGermplasmDetailDTO> sampleList = this.retrieveSampleInformation(this.gid);
+		final List<SampleDTO> sampleList = this.retrieveSampleInformation(this.gid);
 		int count = 1;
 
 		if (sampleList.size() > 10) {
@@ -133,20 +134,28 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 
 		final String authParams = "&" + getAuthParams(this.contextUtil);
 
-		for (final SampleGermplasmDetailDTO sample : sampleList) {
-			final StudyReference study = sample.getStudy();
-			final ExternalResource urlToOpenStudy = getURLStudy(study, authParams);
-			final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy, study.getName(), PARENT_WINDOW);
+		final DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+		for (final SampleDTO sample : sampleList) {
+
+			final ExternalResource urlToOpenStudy = getURLStudy(sample.getStudyId(), authParams);
+			final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy, sample.getStudyName(), PARENT_WINDOW);
+
+			try {
+				availableLinkToStudy(linkStudyButton);
+			} catch (final AccessDeniedException e) {
+				linkStudyButton.setEnabled(false);
+			}
 			linkStudyButton.setDebugId("linkStudyButton");
 			linkStudyButton.addStyleName(BaseTheme.BUTTON_LINK);
 
 			final HorizontalLayout horizontalLayoutForDatasetButton = new HorizontalLayout();
 			horizontalLayoutForDatasetButton.setDebugId("HDatasets");
 			int total = sample.getDatasets().size();
-			for (final SampleGermplasmDetailDTO.Dataset dataset : sample.getDatasets()) {
+			for (final SampleDTO.Dataset dataset : sample.getDatasets()) {
 				final ExternalResource urlToOpenGenotypingData =
 					new ExternalResource(URL_GENOTYPING_DATASET + dataset.getDatasetId() + authParams);
-				final LinkButton linkGenotypingDataButton = new LinkButton(urlToOpenGenotypingData, dataset.getDatasetName(), PARENT_WINDOW);
+				final LinkButton linkGenotypingDataButton = new LinkButton(urlToOpenGenotypingData, dataset.getName(), PARENT_WINDOW);
 				linkGenotypingDataButton.setDebugId("linkGenotypingDataButton");
 				linkGenotypingDataButton.addStyleName(BaseTheme.BUTTON_LINK);
 				horizontalLayoutForDatasetButton.addComponent(linkGenotypingDataButton);
@@ -157,10 +166,16 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			}
 
 			this.sampleTable.addItem(
-				new Object[] {sample.getSampleBk(), sample.getSampleListName(), linkStudyButton, sample.getObsUnitId(), sample.getPlantBk(),sample.getPlateId(),sample.getWell(),
+				new Object[] {sample.getSampleBusinessKey(), sample.getSampleList(), linkStudyButton, sample.getTakenBy(), sample.getSamplingDate() != null ? formatter.format(sample.getSamplingDate()) : "-",
+					sample.getDatasetType(), sample.getObservationUnitId(), sample.getEnumerator(), sample.getPlateId(), sample.getWell(),
 					horizontalLayoutForDatasetButton}, count);
 			count++;
 		}
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_BREEDING_ACTIVITIES')")
+	private void availableLinkToStudy(final LinkButton linkStudyButton) {
+		linkStudyButton.setEnabled(true);
 	}
 
 	private void layoutComponents() {
@@ -172,10 +187,10 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 
-	private static ExternalResource getURLStudy(final StudyReference study, final String authParams) {
+	private static ExternalResource getURLStudy(final Integer studyId, final String authParams) {
 		final String aditionalParameters = "?restartApplication&" + authParams;
 
-		return new ExternalResource(String.format(URL_STUDY_TRIAL, study.getId() + aditionalParameters));
+		return new ExternalResource(String.format(URL_STUDY_TRIAL, studyId + aditionalParameters));
 	}
 
 	private static String getAuthParams(final ContextUtil contextUtil) {
@@ -208,13 +223,13 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.sampleService = sampleService;
 	}
 
-	private List<SampleGermplasmDetailDTO> retrieveSampleInformation(final Integer gid) {
+	private List<SampleDTO> retrieveSampleInformation(final Integer gid) {
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 
-		return transactionTemplate.execute(new TransactionCallback<List<SampleGermplasmDetailDTO>>() {
+		return transactionTemplate.execute(new TransactionCallback<List<SampleDTO>>() {
 
 			@Override
-			public List<SampleGermplasmDetailDTO> doInTransaction(final TransactionStatus status) {
+			public List<SampleDTO> doInTransaction(final TransactionStatus status) {
 				try {
 					return SampleInfoComponent.this.sampleService.getByGid(gid);
 				} catch (final MiddlewareException e) {

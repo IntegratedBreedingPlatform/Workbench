@@ -1,14 +1,12 @@
 /// <reference path="./../../../../../../typings/globals/jasmine/index.d.ts" />
 
 import { MailService } from './mail.service';
-import { By } from '@angular/platform-browser';
-import { DebugElement }    from '@angular/core';
-import { inject, async, TestBed, ComponentFixture } from "@angular/core/testing";
-import { Response, XHRBackend, ResponseOptions, Headers, Http, BaseRequestOptions } from "@angular/http";
-import { MockConnection, MockBackend } from "@angular/http/testing";
-import { Observable } from 'rxjs/Rx';
+import { inject, TestBed } from '@angular/core/testing';
+import { BaseRequestOptions, Headers, Http, Response, ResponseOptions, XHRBackend } from '@angular/http';
+import { MockBackend, MockConnection } from '@angular/http/testing';
 import 'rxjs/add/operator/map';
 import { User } from './../models/user.model';
+import { Role } from '../models/role.model';
 
 export function main()
 {
@@ -56,7 +54,7 @@ export function main()
 
                 spyOn( service, 'getHeaders' ).and.returnValue( header );
 
-                let user = new User("0", "first", "last", "username", "role", "email", "status");
+                let user = new User('0', 'first', 'last', 'username', [], new Role('1', 'role', 'instance'), [], 'email', 'status');
                 service.send(user).subscribe(
                   (data) => {
                       expect (data._body.success).toBe(true);

@@ -74,7 +74,7 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 
 		try {
 
-			Integer userId = this.contextUtil.getCurrentUserLocalId();
+			Integer userId = this.contextUtil.getCurrentWorkbenchUserId();
 			GermplasmList parent = null;
 			int statusListName = 1;
 			String gidListString = "";

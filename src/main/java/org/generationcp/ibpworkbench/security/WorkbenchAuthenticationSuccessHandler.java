@@ -3,8 +3,8 @@ package org.generationcp.ibpworkbench.security;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,9 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
 
 	private static final String DEFAULT_TARGET_URL = "/main";
-	
+
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 
 	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -62,9 +62,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 	protected WorkbenchUser retrieveUserFromAuthentication(final Authentication authentication) {
 
 		final String username = authentication.getName();
-		final WorkbenchUser user = this.workbenchDataManager.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
-		final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-		user.setPerson(person);
+		final WorkbenchUser user = this.userService.getUserByName(username, 0, 1, Operation.EQUAL).get(0);
 
 		return user;
 
@@ -81,7 +79,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 	}
 
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
+	public void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 }

@@ -1,8 +1,10 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 import junit.framework.Assert;
+import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -16,8 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import com.vaadin.ui.Button;
 
 public class CreateProjectPanelTest {
 
@@ -40,6 +40,9 @@ public class CreateProjectPanelTest {
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Mock
+	private AuthorizationService authorizationService;
 	
 	private Button saveButton = new Button();
 	private Button cancelButton = new Button();
@@ -59,6 +62,7 @@ public class CreateProjectPanelTest {
 		this.createProjectPanel.setCancelButton(this.cancelButton);
 		this.createProjectPanel.setSaveProjectButton(this.saveButton);
 		this.createProjectPanel.setMessageSource(this.messageSource);
+		this.createProjectPanel.setAuthorizationService(this.authorizationService);
 		this.createProjectPanel.initializeActions();
 
 		Mockito.when(messageSource.getMessage(Message.SUCCESS)).thenReturn(SUCCESS);

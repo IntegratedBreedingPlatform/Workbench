@@ -1,11 +1,10 @@
 
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import org.generationcp.commons.breedingview.xml.DesignType;
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
-
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 
 public class BreedingViewDesignTypeValueChangeListener implements ValueChangeListener {
 
@@ -21,23 +20,23 @@ public class BreedingViewDesignTypeValueChangeListener implements ValueChangeLis
 	public void valueChange(final ValueChangeEvent event) {
 		final String value = (String) event.getProperty().getValue();
 
-		if (value.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
+		if (value.equals(ExperimentDesignType.ROW_COL.getBvDesignName())) {
 
 			this.source.displayRowColumnDesignElements();
 
-		} else if (value.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName())) {
+		} else if (value.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName())) {
 
 			this.source.displayIncompleteBlockDesignElements();
 
-		} else if (value.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())) {
+		} else if (value.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName())) {
 
 			this.source.displayRandomizedBlockDesignElements();
 
-		} else if (value.equals(DesignType.P_REP_DESIGN.getName())) {
+		} else if (value.equals(ExperimentDesignType.P_REP.getBvDesignName())) {
 
 			this.source.displayPRepDesignElements();
 
-		} else if (value.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())) {
+		} else if (value.equals(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName())) {
 
 			this.source.displayAugmentedDesignElements();
 		}

@@ -1,18 +1,25 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.List;
-
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -24,25 +31,18 @@ import org.generationcp.ibpworkbench.ui.form.UserAccountForm;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.List;
 
 /**
  * <b>Description</b>: Panel for displaying UserAccountForm in the AddUser pop-up window.
- * 
+ *
  * <br>
  * <br>
- * 
+ *
  * <b>Author</b>: Mark Agarrado <br>
  * <b>File Created</b>: October 15, 2012
  */
@@ -67,11 +67,11 @@ public class NewProjectAddUserPanel extends Panel {
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
-	public NewProjectAddUserPanel(TwinTableSelect<WorkbenchUser> membersSelect) {
+	public NewProjectAddUserPanel(final TwinTableSelect<WorkbenchUser> membersSelect) {
 		this.membersSelect = membersSelect;
 
 		this.assemble();
@@ -118,7 +118,7 @@ public class NewProjectAddUserPanel extends Panel {
 
 		this.rootLayout.setMargin(new Layout.MarginInfo(false, true, true, true));
 		this.rootLayout.setSpacing(true);
-		Label lblTitle = new Label(this.messageSource.getMessage(Message.REGISTER_USER_ACCOUNT_TITLE));
+		final Label lblTitle = new Label(this.messageSource.getMessage(Message.REGISTER_USER_ACCOUNT_TITLE));
 		lblTitle.setDebugId("lblTitle");
 		lblTitle.setStyleName(Bootstrap.Typography.H4.styleName());
 		this.rootLayout.addComponent(lblTitle);
@@ -133,8 +133,8 @@ public class NewProjectAddUserPanel extends Panel {
 
 	protected void initializeValues() {
 
-		ComboBox roleField = (ComboBox) this.userForm.getField("role");
-		final List<Role> roles = this.workbenchDataManager.getAssignableRoles();
+		final ComboBox roleField = (ComboBox) this.userForm.getField("role");
+		final List<Role> roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		for (final Role role : roles){
 			roleField.addItem(role);
 		}
@@ -172,7 +172,4 @@ public class NewProjectAddUserPanel extends Panel {
 		return this.userForm;
 	}
 
-	public void refreshVisibleItems() {
-		this.userForm.setVisibleItemProperties(NewProjectAddUserPanel.VISIBLE_ITEM_PROPERTIES);
-	}
 }

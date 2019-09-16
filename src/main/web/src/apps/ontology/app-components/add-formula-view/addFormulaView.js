@@ -21,7 +21,7 @@
 
 			$scope.model = storedData.variable;
 			$scope.serverErrors.general = storedData.errors;
-
+			$scope.showWarningEditableMessage = $scope.model && $scope.model.formula && $scope.model.formula.formulaId && $scope.model.metadata && !$scope.model.metadata.deletable || false;
 			$scope.saveFormula = function (e, variable) {
 				e.preventDefault();
 
@@ -55,7 +55,7 @@
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'afForm');
 
-            $scope.insertTrait = function(variableName) {
+            $scope.insertVariable = function(variableName) {
 
                 var contentEditableDivLength = $scope.extractTextFromHtml('contentEditableDiv').length;
                 var variableToken = '{{' + variableName + '}}';

@@ -17,6 +17,12 @@ import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Table.ColumnResizeEvent;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.ConfirmDialog;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.SetUpTraitFilter;
@@ -35,11 +41,6 @@ import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparis
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.SetUpTraitDonorFilter;
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
 import org.generationcp.ibpworkbench.cross.study.util.CrossStudyUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.ConfirmDialog;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.dms.LocationDto;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
@@ -72,7 +73,6 @@ import java.util.StringTokenizer;
  * observations should be drawn from for analysis.
  *
  * @author rebecca
- *
  */
 @Configurable
 public class EnvironmentFilter extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
@@ -166,6 +166,9 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	@Autowired
 	private CrossStudyDataManager crossStudyDataManager;
 
+	@Autowired
+	private ContextUtil contextUtil;
+
 	private final CrossStudyToolType crossStudyToolType;
 
 	private Panel tablePanel;
@@ -174,21 +177,21 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	// This list allows us to limit environments based on selected traits (Trait Donors Query)
 	private List<Integer> traitsList;
 
-	public EnvironmentFilter(HeadToHeadCrossStudyMain mainScreen, ResultsComponent nextScreen) {
+	public EnvironmentFilter(final HeadToHeadCrossStudyMain mainScreen, final ResultsComponent nextScreen) {
 		this.mainScreen1 = mainScreen;
 		this.nextScreen1 = nextScreen;
 
 		this.crossStudyToolType = CrossStudyToolType.HEAD_TO_HEAD_QUERY;
 	}
 
-	public EnvironmentFilter(QueryForAdaptedGermplasmMain mainScreen, SetUpTraitFilter nextScreen) {
+	public EnvironmentFilter(final QueryForAdaptedGermplasmMain mainScreen, final SetUpTraitFilter nextScreen) {
 		this.mainScreen2 = mainScreen;
 		this.nextScreen2 = nextScreen;
 
 		this.crossStudyToolType = CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM;
 	}
 
-	public EnvironmentFilter(TraitDonorsQueryMain mainScreen, SetUpTraitDonorFilter nextScreen) {
+	public EnvironmentFilter(final TraitDonorsQueryMain mainScreen, final SetUpTraitDonorFilter nextScreen) {
 		this.mainScreen3 = mainScreen;
 		this.nextScreen3 = nextScreen;
 
@@ -226,7 +229,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			private static final long serialVersionUID = 6624555365983829849L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				if (event.getButton().getData().equals(EnvironmentFilter.FILTER_LOCATION_BUTTON_ID)) {
 					EnvironmentFilter.this.selectFilterByLocationClickAction();
 				}
@@ -243,7 +246,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			private static final long serialVersionUID = -8782138170364187141L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				if (event.getButton().getData().equals(EnvironmentFilter.FILTER_STUDY_BUTTON_ID)) {
 					EnvironmentFilter.this.selectFilterByStudyClickAction();
 				}
@@ -260,7 +263,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			private static final long serialVersionUID = 4763719750664067113L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				if (event.getButton().getData().equals(EnvironmentFilter.ADD_ENVIRONMENT_BUTTON_ID)) {
 					EnvironmentFilter.this.addEnvironmentalConditionsClickAction();
 				}
@@ -286,11 +289,11 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void columnResize(ColumnResizeEvent event) {
-				int diff = event.getCurrentWidth() - event.getPreviousWidth();
-				float newWidth = diff + EnvironmentFilter.this.environmentsTable.getWidth();
+			public void columnResize(final ColumnResizeEvent event) {
+				final int diff = event.getCurrentWidth() - event.getPreviousWidth();
+				final float newWidth = diff + EnvironmentFilter.this.environmentsTable.getWidth();
 
-				String widthPx = String.valueOf(newWidth) + "px";
+				final String widthPx = newWidth + "px";
 				EnvironmentFilter.this.environmentsTable.setWidth(widthPx);
 				EnvironmentFilter.this.tableLayout.setWidth(widthPx);
 			}
@@ -305,10 +308,10 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.tableLayout.setDebugId("tableLayout");
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
-			Set<TraitInfo> traitInfos = new HashSet<>();
+			final Set<TraitInfo> traitInfos = new HashSet<>();
 			this.createEnvironmentsTable(traitInfos);
 		} else if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM
-				|| this.crossStudyToolType == CrossStudyToolType.TRAIT_DONORS_QUERY) {
+			|| this.crossStudyToolType == CrossStudyToolType.TRAIT_DONORS_QUERY) {
 			this.createEnvironmentsTable();
 		}
 
@@ -329,7 +332,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 				if ((Boolean) EnvironmentFilter.this.tagAllCheckBox.getValue()) {
 					EnvironmentFilter.this.tagAllEnvironments();
 				} else {
@@ -356,7 +359,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				EnvironmentFilter.this.nextButtonClickAction();
 			}
 		});
@@ -374,7 +377,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public void buttonClick(ClickEvent event) {
+				public void buttonClick(final ClickEvent event) {
 					EnvironmentFilter.this.backButtonClickAction();
 				}
 			});
@@ -387,14 +390,14 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		}
 	}
 
-	private void createEnvironmentsTable(Set<TraitInfo> traitInfos) {
-		List<Object> propertyIds = new ArrayList<>();
-		for (Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
+	private void createEnvironmentsTable(final Set<TraitInfo> traitInfos) {
+		final List<Object> propertyIds = new ArrayList<>();
+		for (final Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
 			propertyIds.add(propertyId);
 		}
 
 		this.tableColumnSize = 0;
-		for (Object propertyId : propertyIds) {
+		for (final Object propertyId : propertyIds) {
 			this.environmentsTable.removeContainerProperty(propertyId);
 		}
 
@@ -412,7 +415,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.tableColumnSize = 4;
 
 		int tableWidth = 960;
-		for (TraitInfo traitInfo : traitInfos) {
+		for (final TraitInfo traitInfo : traitInfos) {
 			this.environmentsTable.addContainerProperty(traitInfo.getId(), Integer.class, null);
 			this.environmentsTable.setColumnHeader(traitInfo.getId(), traitInfo.getName());
 			this.environmentsTable.setColumnWidth(traitInfo.getId(), 120);
@@ -430,20 +433,20 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.environmentsTable.setColumnWidth(EnvironmentFilter.STUDY_COLUMN_ID, 108);
 		this.environmentsTable.setColumnWidth(EnvironmentFilter.WEIGHT_COLUMN_ID, 178);
 
-		String width = String.valueOf(tableWidth) + "px";
+		final String width = tableWidth + "px";
 		this.tableLayout.setWidth(width);
 		this.environmentsTable.setWidth(width);
 
 	}
 
 	private void createEnvironmentsTable() {
-		List<Object> propertyIds = new ArrayList<>();
-		for (Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
+		final List<Object> propertyIds = new ArrayList<>();
+		for (final Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
 			propertyIds.add(propertyId);
 		}
 
 		this.tableColumnSize = 0;
-		for (Object propertyId : propertyIds) {
+		for (final Object propertyId : propertyIds) {
 			this.environmentsTable.removeContainerProperty(propertyId);
 		}
 
@@ -474,11 +477,13 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.environmentsTable.setColumnWidth(EnvironmentFilter.WEIGHT_COLUMN_ID, 178);
 	}
 
-	public void populateEnvironmentsTable(List<TraitForComparison> traitForComparisonsListTemp,
-			Map<String, Map<String, TrialEnvironment>> traitEnvMapTemp, Map<String, TrialEnvironment> trialEnvMapTemp,
-			Set<Integer> germplasmIds, List<GermplasmPair> germplasmPairsTemp, Map<String, String> germplasmIdNameMap, Map<String, String> germplasmIdMGIDMap) {
+	public void populateEnvironmentsTable(
+		final List<TraitForComparison> traitForComparisonsListTemp,
+		final Map<String, Map<String, TrialEnvironment>> traitEnvMapTemp, final Map<String, TrialEnvironment> trialEnvMapTemp,
+		final Set<Integer> germplasmIds, final List<GermplasmPair> germplasmPairsTemp, final Map<String, String> germplasmIdNameMap,
+		final Map<String, String> germplasmIdMGIDMap) {
 
-		Map<String, Map<String, TrialEnvironment>> newTraitEnvMap = new HashMap<>();
+		final Map<String, Map<String, TrialEnvironment>> newTraitEnvMap = new HashMap<>();
 		this.tableEntriesMap = new HashMap<>();
 		this.trialEnvironmentIds = new HashSet<>();
 		this.traitInfosNames = new LinkedHashSet<>();
@@ -493,24 +498,24 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.germplasmIdMGIDMap = germplasmIdMGIDMap;
 		this.finalGermplasmPairs = germplasmPairsTemp;
 
-		List<Integer> traitIds = new ArrayList<>();
-		Set<Integer> environmentIds = new HashSet<>();
+		final List<Integer> traitIds = new ArrayList<>();
+		final Set<Integer> environmentIds = new HashSet<>();
 		this.filterLocationCountryMap = new HashMap<>();
 		this.studyEnvironmentMap = new HashMap<>();
 		this.traitEnvMap = traitEnvMapTemp;
 		this.trialEnvMap = trialEnvMapTemp;
 		this.traitForComparisonsList = traitForComparisonsListTemp;
 
-		Iterator<TraitForComparison> iter = this.traitForComparisonsList.iterator();
+		final Iterator<TraitForComparison> iter = this.traitForComparisonsList.iterator();
 
 		while (iter.hasNext()) {
-			TraitForComparison comparison = iter.next();
-			String id = Integer.toString(comparison.getTraitInfo().getId());
+			final TraitForComparison comparison = iter.next();
+			final String id = Integer.toString(comparison.getTraitInfo().getId());
 			if (this.traitEnvMap.containsKey(id)) {
-				Map<String, TrialEnvironment> tempMap = this.traitEnvMap.get(id);
+				final Map<String, TrialEnvironment> tempMap = this.traitEnvMap.get(id);
 				newTraitEnvMap.put(id, tempMap);
 				this.trialEnvironmentIds.addAll(tempMap.keySet());
-				Iterator<String> envIdsIter = tempMap.keySet().iterator();
+				final Iterator<String> envIdsIter = tempMap.keySet().iterator();
 				while (envIdsIter.hasNext()) {
 					environmentIds.add(Integer.valueOf(envIdsIter.next()));
 				}
@@ -519,14 +524,14 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 			this.traitInfosNames.add(comparison.getTraitInfo());
 		}
-		List<Integer> germplasmIdsList = new ArrayList<>(germplasmIds);
-		List<Integer> environmentIdsList = new ArrayList<>(environmentIds);
+		final List<Integer> germplasmIdsList = new ArrayList<>(germplasmIds);
+		final List<Integer> environmentIdsList = new ArrayList<>(environmentIds);
 		try {
 			this.observationMap = new HashMap<>();
-			List<Observation> observationList =
-					this.crossStudyDataManager.getObservationsForTraitOnGermplasms(traitIds, germplasmIdsList, environmentIdsList);
-			for (Observation obs : observationList) {
-				String newKey = obs.getId().getTraitId() + ":" + obs.getId().getEnvironmentId() + ":" + obs.getId().getGermplasmId();
+			final List<Observation> observationList =
+				this.crossStudyDataManager.getObservationsForTraitOnGermplasms(traitIds, germplasmIdsList, environmentIdsList);
+			for (final Observation obs : observationList) {
+				final String newKey = obs.getId().getTraitId() + ":" + obs.getId().getEnvironmentId() + ":" + obs.getId().getGermplasmId();
 
 				ObservationList obsList = this.observationMap.get(newKey);
 				if (obsList == null) {
@@ -535,7 +540,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 				obsList.addObservation(obs);
 				this.observationMap.put(newKey, obsList);
 			}
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			ex.printStackTrace();
 			EnvironmentFilter.LOG.error("Database error!", ex);
 			MessageNotifier.showError(this.getWindow(), "Database Error!", this.messageSource.getMessage(Message.ERROR_REPORT_TO));
@@ -543,7 +548,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		// get trait names for columns
 		this.recreateTable(true, false);
 
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		this.filterLocation = new FilterLocationDialog(this, parentWindow, this.filterLocationCountryMap);
 		this.filterLocation.setDebugId("filterLocation");
 		this.filterStudy = new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap);
@@ -562,7 +567,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	 *
 	 * @param selectedTraits
 	 */
-	public void populateEnvironmentsTable(List<Integer> selectedTraits) {
+	public void populateEnvironmentsTable(final List<Integer> selectedTraits) {
 
 		this.traitsList = selectedTraits;
 		this.populateEnvironmentsTable();
@@ -570,7 +575,6 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	/**
 	 * Sets up the environments table - this process undergoes query specific processing
-	 *
 	 */
 	public void populateEnvironmentsTable() {
 		this.tableEntriesMap = new HashMap<>();
@@ -585,17 +589,17 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 		this.recreateTable(true, false);
 
-		List<Integer> environmentIdsList = new ArrayList<>(this.environmentIds);
+		final List<Integer> environmentIdsList = new ArrayList<>(this.environmentIds);
 
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
 			this.filterStudy = new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap);
 			this.filterStudy.setDebugId("filterStudy");
 		} else if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			this.filterStudy =
-					new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap,
-							EnvironmentFilter.QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME);
+				new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap,
+					EnvironmentFilter.QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME);
 		} else {
 			this.filterStudy = new FilterStudyDialog(this, parentWindow, this.studyEnvironmentMap);
 			this.filterStudy.setDebugId("filterStudy");
@@ -615,7 +619,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	}
 
-	private void recreateTable(boolean recreateFilterLocationMap, boolean isAppliedClick) {
+	private void recreateTable(final boolean recreateFilterLocationMap, final boolean isAppliedClick) {
 		this.environmentsTable.removeAllItems();
 
 		if (recreateFilterLocationMap) {
@@ -624,26 +628,26 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		}
 		this.environmentForComparison = new HashSet<>();
 
-		Map<String, Item> trialEnvIdTableMap = new HashMap<>();
+		final Map<String, Item> trialEnvIdTableMap = new HashMap<>();
 
 		if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			try {
 				this.environments = this.crossStudyDataManager.getAllTrialEnvironments();
 
-				Set<TrialEnvironment> trialEnvSet = this.environments.getTrialEnvironments();
-				Iterator<TrialEnvironment> trialEnvIter = trialEnvSet.iterator();
+				final Set<TrialEnvironment> trialEnvSet = this.environments.getTrialEnvironments();
+				final Iterator<TrialEnvironment> trialEnvIter = trialEnvSet.iterator();
 				while (trialEnvIter.hasNext()) {
 
-					TrialEnvironment trialEnv = trialEnvIter.next();
+					final TrialEnvironment trialEnv = trialEnvIter.next();
 
-					String trialEnvIdString = String.valueOf(trialEnv.getId());
+					final String trialEnvIdString = String.valueOf(trialEnv.getId());
 
 					if (!trialEnvIdTableMap.containsKey(trialEnvIdString)) {
 						final String tableKey =
-								trialEnv.getId() + FilterLocationDialog.DELIMITER + trialEnv.getLocation().getCountryName()
-										+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getProvinceName()
-										+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getLocationName()
-										+ FilterLocationDialog.DELIMITER + trialEnv.getStudy().getName();
+							trialEnv.getId() + FilterLocationDialog.DELIMITER + trialEnv.getLocation().getCountryName()
+								+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getProvinceName()
+								+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getLocationName()
+								+ FilterLocationDialog.DELIMITER + trialEnv.getStudy().getName();
 						this.environmentIds.add(trialEnv.getId());
 						boolean isValidEntryAdd = true;
 						if (isAppliedClick) {
@@ -663,7 +667,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 									this.clickCheckBox(tableKey, (ComboBox) objItem[objItem.length - 1], true);
 								}
 							} else {
-								CheckBox box = new CheckBox();
+								final CheckBox box = new CheckBox();
 								box.setDebugId("box");
 
 								box.setImmediate(true);
@@ -682,20 +686,20 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 								}
 
 								// insert environment condition here
-								EnvironmentForComparison compare =
-										new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
-												.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
+								final EnvironmentForComparison compare =
+									new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
+										.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
 
 								objItem[counterTrait++] = comboBox;
 
 								this.environmentsTable.addItem(objItem, tableKey);
-								Item item = this.environmentsTable.getItem(tableKey);
+								final Item item = this.environmentsTable.getItem(tableKey);
 								box.addListener(new ValueChangeListener() {
 
 									private static final long serialVersionUID = -4759863142479248292L;
 
 									@Override
-									public void valueChange(ValueChangeEvent event) {
+									public void valueChange(final ValueChangeEvent event) {
 										EnvironmentFilter.this.clickCheckBox(tableKey, comboBox, (Boolean) event.getProperty().getValue());
 									}
 								});
@@ -710,7 +714,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 				}
 
-			} catch (MiddlewareQueryException ex) {
+			} catch (final MiddlewareQueryException ex) {
 				ex.printStackTrace();
 				EnvironmentFilter.LOG.error("Database error!", ex);
 				MessageNotifier.showError(this.getWindow(), "Database Error!", this.messageSource.getMessage(Message.ERROR_REPORT_TO));
@@ -719,22 +723,23 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			try {
 
 				// FIXME : hit a view for this query - too heavy
-				this.environments = this.crossStudyDataManager.getEnvironmentsForTraits(this.traitsList);
+				this.environments =
+					this.crossStudyDataManager.getEnvironmentsForTraits(this.traitsList, this.contextUtil.getCurrentProgramUUID());
 
-				Set<TrialEnvironment> trialEnvSet = this.environments.getTrialEnvironments();
-				Iterator<TrialEnvironment> trialEnvIter = trialEnvSet.iterator();
+				final Set<TrialEnvironment> trialEnvSet = this.environments.getTrialEnvironments();
+				final Iterator<TrialEnvironment> trialEnvIter = trialEnvSet.iterator();
 				while (trialEnvIter.hasNext()) {
 
-					TrialEnvironment trialEnv = trialEnvIter.next();
+					final TrialEnvironment trialEnv = trialEnvIter.next();
 
-					String trialEnvIdString = String.valueOf(trialEnv.getId());
+					final String trialEnvIdString = String.valueOf(trialEnv.getId());
 
 					if (!trialEnvIdTableMap.containsKey(trialEnvIdString)) {
 						final String tableKey =
-								trialEnv.getId() + FilterLocationDialog.DELIMITER + trialEnv.getLocation().getCountryName()
-										+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getProvinceName()
-										+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getLocationName()
-										+ FilterLocationDialog.DELIMITER + trialEnv.getStudy().getName();
+							trialEnv.getId() + FilterLocationDialog.DELIMITER + trialEnv.getLocation().getCountryName()
+								+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getProvinceName()
+								+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getLocationName()
+								+ FilterLocationDialog.DELIMITER + trialEnv.getStudy().getName();
 						this.environmentIds.add(trialEnv.getId());
 						boolean isValidEntryAdd = true;
 						if (isAppliedClick) {
@@ -754,7 +759,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 									this.clickCheckBox(tableKey, (ComboBox) objItem[objItem.length - 1], true);
 								}
 							} else {
-								CheckBox box = new CheckBox();
+								final CheckBox box = new CheckBox();
 								box.setDebugId("box");
 
 								box.setImmediate(true);
@@ -773,20 +778,20 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 								}
 
 								// insert environment condition here
-								EnvironmentForComparison compare =
-										new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
-												.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
+								final EnvironmentForComparison compare =
+									new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
+										.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
 
 								objItem[counterTrait++] = comboBox;
 
 								this.environmentsTable.addItem(objItem, tableKey);
-								Item item = this.environmentsTable.getItem(tableKey);
+								final Item item = this.environmentsTable.getItem(tableKey);
 								box.addListener(new ValueChangeListener() {
 
 									private static final long serialVersionUID = -4759863142479248292L;
 
 									@Override
-									public void valueChange(ValueChangeEvent event) {
+									public void valueChange(final ValueChangeEvent event) {
 										EnvironmentFilter.this.clickCheckBox(tableKey, comboBox, (Boolean) event.getProperty().getValue());
 									}
 								});
@@ -801,8 +806,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 				}
 
-			} catch (MiddlewareQueryException ex) {
-				ex.printStackTrace();
+			} catch (final MiddlewareQueryException ex) {
 				EnvironmentFilter.LOG.error("Database error!", ex);
 				MessageNotifier.showError(this.getWindow(), "Database Error!", this.messageSource.getMessage(Message.ERROR_REPORT_TO));
 			}
@@ -810,19 +814,19 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			this.createEnvironmentsTable(this.traitInfosNames);
 			this.tagAllCheckBox.setValue(false);
 			// clean the traitEnvMap
-			Iterator<String> trialEnvIdsIter = this.trialEnvironmentIds.iterator();
+			final Iterator<String> trialEnvIdsIter = this.trialEnvironmentIds.iterator();
 			while (trialEnvIdsIter.hasNext()) {
-				Integer trialEnvId = Integer.parseInt(trialEnvIdsIter.next());
-				String trialEnvIdString = trialEnvId.toString();
+				final Integer trialEnvId = Integer.parseInt(trialEnvIdsIter.next());
+				final String trialEnvIdString = trialEnvId.toString();
 
 				if (!trialEnvIdTableMap.containsKey(trialEnvIdString)) {
-					TrialEnvironment trialEnv = this.trialEnvMap.get(trialEnvIdString);
+					final TrialEnvironment trialEnv = this.trialEnvMap.get(trialEnvIdString);
 					// we build the table
-					String tableKey =
-							trialEnvIdString + FilterLocationDialog.DELIMITER + trialEnv.getLocation().getCountryName()
-									+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getProvinceName()
-									+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getLocationName()
-									+ FilterLocationDialog.DELIMITER + trialEnv.getStudy().getName();
+					final String tableKey =
+						trialEnvIdString + FilterLocationDialog.DELIMITER + trialEnv.getLocation().getCountryName()
+							+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getProvinceName()
+							+ FilterLocationDialog.DELIMITER + trialEnv.getLocation().getLocationName()
+							+ FilterLocationDialog.DELIMITER + trialEnv.getStudy().getName();
 
 					boolean isValidEntryAdd = true;
 					if (isAppliedClick) {
@@ -848,11 +852,11 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 							}
 						} else {
 
-							CheckBox box = new CheckBox();
+							final CheckBox box = new CheckBox();
 							box.setDebugId("box");
 
 							box.setImmediate(true);
-							ComboBox comboBox = this.getWeightComboBox();
+							final ComboBox comboBox = this.getWeightComboBox();
 
 							int counterTrait = 0;
 							objItem[counterTrait++] = box;
@@ -865,19 +869,19 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 								this.tableEntriesMap.put(tableKey, objItem);
 							}
 
-							EnvironmentForComparison compare =
-									new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
-											.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
-							LinkedHashMap<TraitForComparison, List<ObservationList>> traitAndObservationMap =
-									new LinkedHashMap<>();
-							Iterator<TraitForComparison> traitForCompareIter = this.traitForComparisonsList.iterator();
+							final EnvironmentForComparison compare =
+								new EnvironmentForComparison(trialEnv.getId(), trialEnv.getLocation().getLocationName(), trialEnv
+									.getLocation().getCountryName(), trialEnv.getStudy().getName(), comboBox);
+							final LinkedHashMap<TraitForComparison, List<ObservationList>> traitAndObservationMap =
+								new LinkedHashMap<>();
+							final Iterator<TraitForComparison> traitForCompareIter = this.traitForComparisonsList.iterator();
 							while (traitForCompareIter.hasNext()) {
-								TraitForComparison traitForCompare = traitForCompareIter.next();
+								final TraitForComparison traitForCompare = traitForCompareIter.next();
 
-								List<ObservationList> obsList = new ArrayList<>();
-								Integer count =
-										this.getTraitCount(traitForCompare.getTraitInfo(), trialEnv.getId(), this.finalGermplasmPairs,
-												obsList);
+								final List<ObservationList> obsList = new ArrayList<>();
+								final Integer count =
+									this.getTraitCount(traitForCompare.getTraitInfo(), trialEnv.getId(), this.finalGermplasmPairs,
+										obsList);
 								traitAndObservationMap.put(traitForCompare, obsList);
 								traitForCompare.setDisplay(true);
 								objItem[counterTrait++] = count;
@@ -887,7 +891,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 							objItem[counterTrait++] = comboBox;
 
 							this.environmentsTable.addItem(objItem, tableKey);
-							Item item = this.environmentsTable.getItem(tableKey);
+							final Item item = this.environmentsTable.getItem(tableKey);
 							box.addListener(new HeadToHeadCrossStudyMainValueChangeListener(this, comboBox, tableKey));
 							this.environmentCheckBoxMap.put(box, item);
 							this.environmentCheckBoxComparisonMap.put(tableKey, compare);
@@ -904,10 +908,10 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	}
 
-	public void clickCheckBox(String key, Component combo, boolean boolVal) {
+	public void clickCheckBox(final String key, final Component combo, final boolean boolVal) {
 
 		if (combo != null) {
-			ComboBox comboBox = (ComboBox) combo;
+			final ComboBox comboBox = (ComboBox) combo;
 			comboBox.setEnabled(boolVal);
 
 			if (boolVal) {
@@ -933,16 +937,16 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.numberOfEnvironmentSelectedLabel.setValue(Integer.toString(this.environmentForComparison.size()));
 	}
 
-	private boolean isValidEntry(TrialEnvironment trialEnv) {
-		String countryName = trialEnv.getLocation().getCountryName();
-		String locationName = trialEnv.getLocation().getLocationName();
-		String studyName = trialEnv.getStudy().getName();
+	private boolean isValidEntry(final TrialEnvironment trialEnv) {
+		final String countryName = trialEnv.getLocation().getCountryName();
+		final String locationName = trialEnv.getLocation().getLocationName();
+		final String studyName = trialEnv.getStudy().getName();
 
 		boolean isValid = false;
 
-		String level1Key = countryName;
-		String level3Key = countryName + FilterLocationDialog.DELIMITER + locationName;
-		String level4Key = studyName;
+		final String level1Key = countryName;
+		final String level3Key = countryName + FilterLocationDialog.DELIMITER + locationName;
+		final String level4Key = studyName;
 
 		// check against the map
 		if (this.isFilterLocationClicked) {
@@ -982,14 +986,14 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		return CrossStudyUtil.getWeightComboBox();
 	}
 
-	private void setupLocationMappings(TrialEnvironment trialEnv) {
-		LocationDto location = trialEnv.getLocation();
-		StudyReference study = trialEnv.getStudy();
-		String trialEnvId = Integer.toString(trialEnv.getId());
-		String countryName = location.getCountryName();
-		String provinceName = location.getProvinceName();
-		String locationName = location.getLocationName();
-		String studyName = study.getName();
+	private void setupLocationMappings(final TrialEnvironment trialEnv) {
+		final LocationDto location = trialEnv.getLocation();
+		final StudyReference study = trialEnv.getStudy();
+		final String trialEnvId = Integer.toString(trialEnv.getId());
+		final String countryName = location.getCountryName();
+		final String provinceName = location.getProvinceName();
+		final String locationName = location.getLocationName();
+		final String studyName = study.getName();
 
 		FilterByLocation countryFilter = this.filterLocationCountryMap.get(countryName);
 
@@ -1001,7 +1005,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.filterLocationCountryMap.put(countryName, countryFilter);
 
 		// for the mapping in the study level
-		String studyKey = study.getName() + FilterLocationDialog.DELIMITER + study.getDescription();
+		final String studyKey = study.getName() + FilterLocationDialog.DELIMITER + study.getDescription();
 		List<StudyReference> studyReferenceList = this.studyEnvironmentMap.get(studyKey);
 		if (studyReferenceList == null) {
 			studyReferenceList = new ArrayList<>();
@@ -1011,14 +1015,15 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	}
 
-	private Integer getTraitCount(TraitInfo traitInfo, int envId, List<GermplasmPair> germplasmPairs, List<ObservationList> obsList) {
+	private Integer getTraitCount(
+		final TraitInfo traitInfo, final int envId, final List<GermplasmPair> germplasmPairs, final List<ObservationList> obsList) {
 		int counter = 0;
 
-		for (GermplasmPair pair : germplasmPairs) {
-			String keyToChecked1 = traitInfo.getId() + ":" + envId + ":" + pair.getGid1();
-			String keyToChecked2 = traitInfo.getId() + ":" + envId + ":" + pair.getGid2();
-			ObservationList obs1 = this.observationMap.get(keyToChecked1);
-			ObservationList obs2 = this.observationMap.get(keyToChecked2);
+		for (final GermplasmPair pair : germplasmPairs) {
+			final String keyToChecked1 = traitInfo.getId() + ":" + envId + ":" + pair.getGid1();
+			final String keyToChecked2 = traitInfo.getId() + ":" + envId + ":" + pair.getGid2();
+			final ObservationList obs1 = this.observationMap.get(keyToChecked1);
+			final ObservationList obs2 = this.observationMap.get(keyToChecked2);
 
 			if (obs1 != null && obs2 != null) {
 				if (obs1.isValidObservationList() && obs2.isValidObservationList()) {
@@ -1038,34 +1043,34 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 		int total = 0;
 		// get the total of weights
-		for (String sKey : this.environmentForComparison) {
-			EnvironmentForComparison envt = this.environmentCheckBoxComparisonMap.get(sKey);
-			EnvironmentWeight envtWeight = (EnvironmentWeight) envt.getWeightComboBox().getValue();
+		for (final String sKey : this.environmentForComparison) {
+			final EnvironmentForComparison envt = this.environmentCheckBoxComparisonMap.get(sKey);
+			final EnvironmentWeight envtWeight = (EnvironmentWeight) envt.getWeightComboBox().getValue();
 			total += envtWeight.getWeight();
 		}
 		EnvironmentFilter.LOG.debug("TOTAL = " + total);
 
-		for (String sKey : this.environmentForComparison) {
-			EnvironmentForComparison envt = this.environmentCheckBoxComparisonMap.get(sKey);
+		for (final String sKey : this.environmentForComparison) {
+			final EnvironmentForComparison envt = this.environmentCheckBoxComparisonMap.get(sKey);
 			envt.computeWeight(total);
 
 			toBeCompared.add(envt);
 		}
 		if (this.environmentForComparison.size() > 1000) {
 			ConfirmDialog.show(this.getWindow(), "", this.messageSource.getMessage(Message.LOAD_TRAITS_CONFIRM),
-					this.messageSource.getMessage(Message.OK), this.messageSource.getMessage(Message.CANCEL_LABEL),
-					new ConfirmDialog.Listener() {
+				this.messageSource.getMessage(Message.OK), this.messageSource.getMessage(Message.CANCEL_LABEL),
+				new ConfirmDialog.Listener() {
 
-						private static final long serialVersionUID = 1L;
+					private static final long serialVersionUID = 1L;
 
-				@Override
-				public void onClose(ConfirmDialog dialog) {
-					if (dialog.isConfirmed()) {
-						EnvironmentFilter.this.nextTabAction(toBeCompared);
-					}
-
+					@Override
+					public void onClose(final ConfirmDialog dialog) {
+						if (dialog.isConfirmed()) {
+							EnvironmentFilter.this.nextTabAction(toBeCompared);
 						}
-			});
+
+					}
+				});
 		} else {
 			this.nextTabAction(toBeCompared);
 		}
@@ -1077,10 +1082,11 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	 *
 	 * @param toBeCompared : environments to select traits from
 	 */
-	public void nextTabAction(List<EnvironmentForComparison> toBeCompared) {
+	public void nextTabAction(final List<EnvironmentForComparison> toBeCompared) {
 
 		if (this.crossStudyToolType == CrossStudyToolType.HEAD_TO_HEAD_QUERY) {
-			this.nextScreen1.populateResultsTable(toBeCompared, this.germplasmIdNameMap,this.germplasmIdMGIDMap, this.finalGermplasmPairs, this.observationMap);
+			this.nextScreen1.populateResultsTable(toBeCompared, this.germplasmIdNameMap, this.germplasmIdMGIDMap, this.finalGermplasmPairs,
+				this.observationMap);
 			this.mainScreen1.selectFourthTab();
 		} else if (this.crossStudyToolType == CrossStudyToolType.QUERY_FOR_ADAPTED_GERMPLASM) {
 			if (this.nextScreen2 != null) {
@@ -1104,41 +1110,42 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	public void selectFilterByLocationClickAction() {
 
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		this.filterLocation.initializeButtons();
 		parentWindow.addWindow(this.filterLocation);
 	}
 
 	public void selectFilterByStudyClickAction() {
 
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		this.filterStudy.initializeButtons();
 		parentWindow.addWindow(this.filterStudy);
 	}
 
 	public void addEnvironmentalConditionsClickAction() {
 
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		parentWindow.addWindow(this.addConditionsDialog);
 	}
 
-	public void clickFilterByLocationApply(List<FilterLocationDto> filterLocationDtoListLevel1,
-			List<FilterLocationDto> filterLocationDtoListLevel3) {
+	public void clickFilterByLocationApply(
+		final List<FilterLocationDto> filterLocationDtoListLevel1,
+		final List<FilterLocationDto> filterLocationDtoListLevel3) {
 
 		this.isFilterLocationClicked = true;
 		this.filterSetLevel1 = new HashMap<>();
 		this.filterSetLevel3 = new HashMap<>();
 
-		for (FilterLocationDto dto : filterLocationDtoListLevel1) {
-			String countryName = dto.getCountryName();
+		for (final FilterLocationDto dto : filterLocationDtoListLevel1) {
+			final String countryName = dto.getCountryName();
 
 			this.filterSetLevel1.put(countryName, countryName);
 		}
 
-		for (FilterLocationDto dto : filterLocationDtoListLevel3) {
-			String countryName = dto.getCountryName();
-			String locationName = dto.getLocationName();
-			String key = countryName + FilterLocationDialog.DELIMITER + locationName;// + FilterLocationDialog.DELIMITER + studyName;
+		for (final FilterLocationDto dto : filterLocationDtoListLevel3) {
+			final String countryName = dto.getCountryName();
+			final String locationName = dto.getLocationName();
+			final String key = countryName + FilterLocationDialog.DELIMITER + locationName;// + FilterLocationDialog.DELIMITER + studyName;
 
 			this.filterSetLevel3.put(key, key);
 			// we need to remove in the 1st level since this mean we want specific level 2 filter
@@ -1150,11 +1157,11 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		this.headerValLabel.setValue("");
 	}
 
-	public void clickFilterByStudyApply(List<FilterLocationDto> filterLocationDtoListLevel4) {
+	public void clickFilterByStudyApply(final List<FilterLocationDto> filterLocationDtoListLevel4) {
 		this.isFilterStudyClicked = true;
 		this.filterSetLevel4 = new HashMap<>();
-		for (FilterLocationDto dto : filterLocationDtoListLevel4) {
-			String studyName = dto.getStudyName();
+		for (final FilterLocationDto dto : filterLocationDtoListLevel4) {
+			final String studyName = dto.getStudyName();
 
 			this.filterSetLevel4.put(studyName, studyName);
 		}
@@ -1165,7 +1172,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	public void reopenFilterWindow() {
 		// this is to simulate and refresh checkboxes
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		parentWindow.removeWindow(this.filterLocation);
 
 		this.filterLocation.initializeButtons();
@@ -1174,7 +1181,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	public void reopenFilterStudyWindow() {
 		// this is to simulate and refresh checkboxes
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		parentWindow.removeWindow(this.filterStudy);
 
 		this.filterStudy.initializeButtons();
@@ -1183,7 +1190,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	public void reopenAddEnvironmentConditionsWindow() {
 		// this is to simulate and refresh checkboxes
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 		parentWindow.removeWindow(this.addConditionsDialog);
 
 		this.filterStudy.initializeButtons();
@@ -1194,7 +1201,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	 * Callback method for AddEnvironmentalConditionsDialog button
 	 */
 
-	public void addEnviromentalConditionColumns(Set<TrialEnvironmentProperty> conditions) {
+	public void addEnviromentalConditionColumns(final Set<TrialEnvironmentProperty> conditions) {
 		// remove previously added envt conditions columns, if any
 		this.removeAddedEnvironmentConditionsColumns();
 
@@ -1207,12 +1214,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 				private static final long serialVersionUID = 1L;
 
 				@Override
-				public Object generateCell(Table source, Object itemId, Object columnId) {
-					StringTokenizer st = new StringTokenizer((String) itemId, FilterLocationDialog.DELIMITER);
+				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+					final StringTokenizer st = new StringTokenizer((String) itemId, FilterLocationDialog.DELIMITER);
 
-					String envtIdStr = st.nextToken();
+					final String envtIdStr = st.nextToken();
 					if (envtIdStr != null && !envtIdStr.isEmpty()) {
-						Integer envtId = Integer.parseInt(envtIdStr);
+						final Integer envtId = Integer.parseInt(envtIdStr);
 
 						return condition.getEnvironmentValuesMap().get(envtId);
 					}
@@ -1228,26 +1235,26 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	}
 
-	private void resizeEnviromentTable(Set<TrialEnvironmentProperty> columns) {
+	private void resizeEnviromentTable(final Set<TrialEnvironmentProperty> columns) {
 		float tableWidth = this.environmentsTable.getWidth();
 
 		for (int i = 0; i < columns.size(); i++) {
 			tableWidth += 133;
 		}
 
-		List<String> cols = new ArrayList<>();
-		for (TrialEnvironmentProperty col : columns) {
+		final List<String> cols = new ArrayList<>();
+		for (final TrialEnvironmentProperty col : columns) {
 			cols.add(col.getName());
 		}
 
-		Object[] visibleCols = this.environmentsTable.getVisibleColumns();
-		for (Object col : visibleCols) {
+		final Object[] visibleCols = this.environmentsTable.getVisibleColumns();
+		for (final Object col : visibleCols) {
 			if (cols.contains(col)) {
 				this.environmentsTable.setColumnWidth(col, 120);
 			}
 		}
 
-		String width = String.valueOf(tableWidth) + "px";
+		final String width = tableWidth + "px";
 		this.tableLayout.setWidth(width);
 		this.environmentsTable.setWidth(width);
 		this.tablePanel.requestRepaint();
@@ -1255,12 +1262,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	private void removeAddedEnvironmentConditionsColumns() {
 		if (this.environmentsTable != null && this.addedEnvironmentColumns != null) {
-			for (String columnHeader : this.addedEnvironmentColumns) {
-				String existingColumn = this.environmentsTable.getColumnHeader(columnHeader);
+			for (final String columnHeader : this.addedEnvironmentColumns) {
+				final String existingColumn = this.environmentsTable.getColumnHeader(columnHeader);
 				if (existingColumn != null && !existingColumn.isEmpty()) {
 					this.environmentsTable.removeGeneratedColumn(columnHeader);
-					float previousWidth = this.environmentsTable.getWidth() - 133;
-					String width = String.valueOf(previousWidth) + "px";
+					final float previousWidth = this.environmentsTable.getWidth() - 133;
+					final String width = previousWidth + "px";
 					this.environmentsTable.setWidth(width);
 				}
 			}
@@ -1269,14 +1276,17 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	private enum CrossStudyToolType {
-		HEAD_TO_HEAD_QUERY(org.generationcp.ibpworkbench.cross.study.h2h.main.HeadToHeadCrossStudyMain.class, "Head to Head Query"), QUERY_FOR_ADAPTED_GERMPLASM(
-				org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain.class, "Query for Adapted Germplasm"), TRAIT_DONORS_QUERY(
-				org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain.class, "Trait Donors Query");
+		HEAD_TO_HEAD_QUERY(
+			org.generationcp.ibpworkbench.cross.study.h2h.main.HeadToHeadCrossStudyMain.class,
+			"Head to Head Query"), QUERY_FOR_ADAPTED_GERMPLASM(
+			org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain.class,
+			"Query for Adapted Germplasm"), TRAIT_DONORS_QUERY(
+			org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain.class, "Trait Donors Query");
 
-		private Class<?> mainClass;
-		private String className;
+		private final Class<?> mainClass;
+		private final String className;
 
-		private CrossStudyToolType(Class<?> mainClass, String className) {
+		private CrossStudyToolType(final Class<?> mainClass, final String className) {
 			this.mainClass = mainClass;
 			this.className = className;
 		}
@@ -1294,21 +1304,23 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	private void tagAllEnvironments() {
-		Object tableItemIds[] = this.environmentsTable.getItemIds().toArray();
+		final Object[] tableItemIds = this.environmentsTable.getItemIds().toArray();
 		for (int i = 0; i < tableItemIds.length; i++) {
-			if (this.environmentsTable.getItem(tableItemIds[i].toString()).getItemProperty(EnvironmentFilter.TAG_COLUMN_ID).getValue() instanceof CheckBox) {
+			if (this.environmentsTable.getItem(tableItemIds[i].toString()).getItemProperty(EnvironmentFilter.TAG_COLUMN_ID)
+				.getValue() instanceof CheckBox) {
 				((CheckBox) this.environmentsTable.getItem(tableItemIds[i]).getItemProperty(EnvironmentFilter.TAG_COLUMN_ID).getValue())
-						.setValue(true);
+					.setValue(true);
 			}
 		}
 	}
 
 	private void untagAllEnvironments() {
-		Object tableItemIds[] = this.environmentsTable.getItemIds().toArray();
+		final Object[] tableItemIds = this.environmentsTable.getItemIds().toArray();
 		for (int i = 0; i < tableItemIds.length; i++) {
-			if (this.environmentsTable.getItem(tableItemIds[i].toString()).getItemProperty(EnvironmentFilter.TAG_COLUMN_ID).getValue() instanceof CheckBox) {
+			if (this.environmentsTable.getItem(tableItemIds[i].toString()).getItemProperty(EnvironmentFilter.TAG_COLUMN_ID)
+				.getValue() instanceof CheckBox) {
 				((CheckBox) this.environmentsTable.getItem(tableItemIds[i]).getItemProperty(EnvironmentFilter.TAG_COLUMN_ID).getValue())
-						.setValue(false);
+					.setValue(false);
 			}
 		}
 	}

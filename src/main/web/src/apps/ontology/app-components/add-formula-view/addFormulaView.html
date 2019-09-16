@@ -6,7 +6,9 @@
 	</om-error-list>
 
 	<form class="form-horizontal" name="afForm" ng-submit="saveFormula($event, model)" novalidate>
-
+		<div ng-if="showWarningEditableMessage" class="alert alert-warning" role="alert">
+			<span>{{'warnings.formulas.editFormulaInUsedConfirmation' | translate }}</span>
+		</div>
 		<div ng-class="formGroupClass('omName', 'name')">
 			<label for="omName" class="col-sm-2 control-label">
 				{{'addNew.formula.targetVariable' | translate}}
@@ -21,8 +23,8 @@
 				Input Variables
 			</label>
 			<div class="col-sm-6">
-				<!--  om-variable-type-id="1808" means display Trait Variables only -->
-				<om-variable-select om-name="omVariableSelect" om-variable-type-id="1808" on-add-click="insertTrait(variableName)"></om-variable-select>
+				<!--  Display variables of type Trait (1808), Study Conditions (1802) or Environment Detail (1806) -->
+				<om-variable-select om-name="omVariableSelect" om-variable-type-ids="1808,1802,1806" on-add-click="insertVariable(variableName)"></om-variable-select>
 			</div>
 		</div>
 

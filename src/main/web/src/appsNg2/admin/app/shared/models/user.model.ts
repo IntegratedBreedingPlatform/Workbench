@@ -1,19 +1,15 @@
-import { Role } from './../shared/models/role.model';
+import { Crop } from './crop.model';
+import { UserRole } from './user-role.model';
 
 export class User {
-	// transient field for easy sorting and filtering
-	public roleName : String = "";
-
     constructor(public id: string,
                 public firstName: string,
                 public lastName: string,
                 public username: string,
-                public role: Role,
+                public crops: Crop[],
+                public userRoles: UserRole[],
                 public email: string,
-                public status: string ) {
-        if (role.description) {
-	        this.roleName = role.description;
-        }
+                public status: string) {
     }
 
 }

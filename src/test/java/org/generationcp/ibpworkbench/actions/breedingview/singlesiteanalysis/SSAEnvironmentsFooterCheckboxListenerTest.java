@@ -1,8 +1,11 @@
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisEnvironmentsComponent;
 import org.junit.Assert;
@@ -14,12 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SSAEnvironmentsFooterCheckboxListenerTest {
 	
@@ -56,12 +55,12 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.doReturn(this.container).when(this.environmentsTable).getContainerDataSource();
 		
 		this.model1 = new SeaEnvironmentModel();
-		model1.setLocationId(1);
-		model1.setActive(true);
+		this.model1.setLocationId(1);
+		this.model1.setActive(true);
 		this.model2 = new SeaEnvironmentModel();
-		model2.setLocationId(2);
-		model2.setActive(true);
-		Mockito.doReturn(Arrays.asList(model1, model2)).when(this.container).getItemIds();
+		this.model2.setLocationId(2);
+		this.model2.setActive(true);
+		Mockito.doReturn(Arrays.asList(this.model1, this.model2)).when(this.container).getItemIds();
 	}
 	
 	@Test
@@ -69,36 +68,36 @@ public class SSAEnvironmentsFooterCheckboxListenerTest {
 		Mockito.doReturn(false).when(this.property).getValue();
 		this.listener.valueChange(this.event);
 		
-		Mockito.verify(this.environmentsComponent, Mockito.never()).getInvalidEnvironments();
+		Mockito.verify(this.environmentsComponent, Mockito.never()).getInvalidEnvironments(true);
 		Mockito.verifyZeroInteractions(this.window);
 		Mockito.verify(this.environmentsTable).refreshRowCache();
-		Assert.assertFalse(model1.getActive());
-		Assert.assertFalse(model2.getActive());
+		Assert.assertFalse(this.model1.getActive());
+		Assert.assertFalse(this.model2.getActive());
 	}
 	
 	@Test
 	public void testFooterCheckboxSelectedAllValidEnvironments(){
 		Mockito.doReturn(true).when(this.property).getValue();
-		Mockito.doReturn(new ArrayList<String>()).when(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.doReturn(new ArrayList<String>()).when(this.environmentsComponent).getInvalidEnvironments(true);
 		this.listener.valueChange(this.event);
 		
-		Mockito.verify(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.verify(this.environmentsComponent).getInvalidEnvironments(true);
 		Mockito.verifyZeroInteractions(this.window);
 		Mockito.verify(this.environmentsTable, Mockito.never()).refreshRowCache();
-		Assert.assertTrue(model1.getActive());
-		Assert.assertTrue(model2.getActive());
+		Assert.assertTrue(this.model1.getActive());
+		Assert.assertTrue(this.model2.getActive());
 	}
 	@Test
 	public void testFooterCheckboxSelectedWithInvalidEnvironment(){
 		Mockito.doReturn(true).when(this.property).getValue();
-		Mockito.doReturn(Arrays.asList("ENV 1")).when(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.doReturn(Arrays.asList("ENV 1")).when(this.environmentsComponent).getInvalidEnvironments(true);
 		this.listener.valueChange(this.event);
 		
-		Mockito.verify(this.environmentsComponent).getInvalidEnvironments();
+		Mockito.verify(this.environmentsComponent).getInvalidEnvironments(true);
 		Mockito.verify(this.window).showNotification(Matchers.any(Notification.class));
 		Mockito.verify(this.environmentsTable, Mockito.never()).refreshRowCache();
-		Assert.assertTrue(model1.getActive());
-		Assert.assertTrue(model2.getActive());
+		Assert.assertTrue(this.model1.getActive());
+		Assert.assertTrue(this.model2.getActive());
 	}
 
 }

@@ -1,14 +1,13 @@
 <section>
   <div class="om-panel-content">
-        <button class="btn btn-default om-add-new-btn form-group pull-right"
-            (click)="showNewUserForm(userCreateCard)">Add user</button>
-            <app-dialog [(visible)]="showNewDialog" [title]="dialogTitle">
-                <user-card #userCreateCard (onUserAdded)="onUserAdded($event)" [model]="user" [roles]="roles" (onCancel)="showNewDialog = false"></user-card>
-            </app-dialog>
+      <button class="btn btn-default om-add-new-btn form-group pull-right"
+              (click)="showNewUserForm()">Add user
+      </button>
   </div>
   <div class="om-panel-header">
         <h2 class="om-panel-title ">
             Manage users</h2>
+      <div>Click a <strong>User name</strong> to inspect or edit their personal information.</div>
   </div>
   <br/>
     <div class="row">
@@ -27,9 +26,9 @@
                 <div class="form-group">
                   <label class="">Role: </label>
                   &nbsp;
-                  <select  class="form-control" name="role" [(ngModel)]="table.searchValue.roleName">
+                    <select class="form-control" name="role" [(ngModel)]="table.searchValue.roleNames">
                     <option value="undefined">All</option>
-                    <option  *ngFor="let role of roles" [value]="role.description">{{role.description}}</option>
+                    <option  *ngFor="let role of roles" [value]="role.name">{{role.name}}</option>
                   </select>
                 </div>
             </div>
@@ -38,42 +37,57 @@
     <br /><br />
     <div class="row">
         <div class="col-xs-12">
-            <table class="table table-striped">
+            <span class="throbber throbber-lg" *ngIf="loading"></span>
+            <table class="table table-striped" *ngIf="!loading">
                 <thead>
                     <tr>
                         <th [ngClass]="{ sort: isSorted('username'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('username')">User Name</th>
                         <th [ngClass]="{ sort: isSorted('firstName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('firstName')">First Name</th>
                         <th [ngClass]="{ sort: isSorted('lastName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('lastName')">Last Name</th>
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
-                        <th [ngClass]="{ sort: isSorted('roleName'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('roleName')">Role</th>
+                        <th>Crop</th>
+                        <th>Roles</th>
                         <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngIf="!table.totalFilteredRows" class="clickable-row">
-                        <td colspan="6" class="text-center">No records found.</td>
+                        <td colspan="7" class="text-center">No records found.</td>
                     </tr>
                     <tr *ngFor="let user of table.itemsOnCurrentPage">
-						            <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN'"> {{user.username}} </td>
-                        <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">
-                          <a href="javascript:void(0)"  (click)="showEditUserForm(user, userEditCard)"> {{user.username}} </a>
+                        <td *ngIf="hasSuperAdminRole(user.userRoles)"> {{user.username}} </td>
+                        <td *ngIf="!hasSuperAdminRole(user.userRoles)">
+                          <a href="javascript:void(0)" (click)="showEditUserForm(user)"> {{user.username}} </a>
                         </td>
                         <td>{{user.firstName}}</td>
                         <td>{{user.lastName}}</td>
                         <td>{{user.email}}</td>
-                        <td>{{user.roleName}}</td>
-                        <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'true'">Active</td>
-                        <td *ngIf="user.roleName.toUpperCase() == 'SUPERADMIN' && user.status == 'false'">Inactive</td>
-                        <td *ngIf="user.roleName.toUpperCase() != 'SUPERADMIN'">
+                        <td>
+                            <span *ngIf="user.crops.length === crops.length" class="site-admin-badge">All crops</span>
+                            <span *ngIf="user.crops.length !== crops.length && user.crops.length > 0" >
+                                <span *ngIf="user.crops[0]" class="site-admin-badge">{{user.crops[0].cropName}}</span>
+                                <span *ngIf="user.crops.length > 1"
+                                      [title]="getCropsTitleFormat(user.crops)"
+                                      style="padding-left: 5px; color: #428bca;"> and {{user.crops.length - 1}} more</span>
+                            </span>
+                        </td>
+                        <td>
+                            <span *ngIf="(user.userRoles | dedupRoleNames)">
+                                <span *ngIf="(user.userRoles | dedupRoleNames)[0]" class="site-admin-badge">{{(user.userRoles | dedupRoleNames)[0]}}</span>
+                                <span *ngIf="(user.userRoles | dedupRoleNames).length > 1"
+                                      [title]="getRoleNamesTitleFormat((user.userRoles | dedupRoleNames))"
+                                      style="padding-left: 5px; color: #428bca;"> and {{(user.userRoles | dedupRoleNames).length - 1}} more</span>
+                            </span>
+                        </td>
+                        <td *ngIf="hasSuperAdminRole(user.userRoles) && user.status == 'true'">Active</td>
+                        <td *ngIf="hasSuperAdminRole(user.userRoles) && user.status == 'false'">Inactive</td>
+                        <td *ngIf="!hasSuperAdminRole(user.userRoles)">
                           <a href="javascript:void(0)" *ngIf="user.status == 'true'" (click)="showUserStatusConfirmPopUp(user)">Deactivate</a>
                           <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
-					<app-dialog [(visible)]="showEditDialog" [title]="dialogTitle">
- 		                <user-card #userEditCard (onUserEdited)="onUserEdited($event)" (onCancel)="showEditDialog = false" [model]="user" [roles]="roles"></user-card>
- 		            </app-dialog>
                     <div class="popup">
-                      <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle">
+                      <app-dialog [(visible)]="showConfirmStatusDialog" [title]="confirmStatusTitle" (onClose)="closeUserStatusConfirmPopUp()">
                           <div class="modal-body">
                               <form class="form-horizontal">
                                   <div class="popup-center-text">
@@ -88,9 +102,9 @@
                       </app-dialog>
                     </div>
                     <div class="popup">
-                        <error-notification [(visible)]="showErrorNotification" title="Error" [classes]="'error-notify'">
+                        <notification [(visible)]="showErrorNotification" title="Error" [classes]="'error-notify'">
 							<p>{{errorServiceMessage}}</p>
-                        </error-notification>
+                        </notification>
                     </div>
                  </tbody>
             </table>
@@ -100,3 +114,6 @@
                 (pageNumberChanged)="table.currentPageIndex = $event">
     </pagination>
 </section>
+<notification [(visible)]="message" title="Success" (visibleChange)="message = ''" >
+    {{message}}
+</notification>

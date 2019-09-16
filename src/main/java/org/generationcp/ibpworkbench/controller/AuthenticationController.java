@@ -21,6 +21,8 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.RoleSearchDto;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +67,9 @@ public class AuthenticationController {
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
+	private UserService userService;
+
+	@Resource
 	private UserAccountValidator userAccountValidator;
 
 	@Resource
@@ -86,8 +91,10 @@ public class AuthenticationController {
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
 
-	@Value("${workbench.enable.create.account}")
-	private String enableCreateAccount;
+	//TODO: Disable this option until decide which is the best
+	// way to create user with roles in the Login page. ISSUE IBP-2958
+	//@Value("${workbench.enable.create.account}")
+	//private String enableCreateAccount;
 
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
@@ -100,12 +107,12 @@ public class AuthenticationController {
 
 	@Value("${workbench.version}")
 	private String workbenchVersion;
-	
+
 	private List<Role> roles;
 
 	@PostConstruct
 	public void initialize() {
-		this.roles = this.workbenchDataManager.getAssignableRoles();
+		this.roles = this.workbenchDataManager.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 	}
 
@@ -173,8 +180,8 @@ public class AuthenticationController {
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			/**
-			 * This is crucial for Ontology Manager UI which needs the authentication token to make calls to BMSAPI Ontology services.
+			/*
+			 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
 			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
 			 * service in browsers.
 			 */
@@ -324,16 +331,16 @@ public class AuthenticationController {
 
 			// 3. Create user info
 
-			UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(model.getUsername());
+			UserInfo userInfo = this.userService.getUserInfoByUsername(model.getUsername());
 
 			if (userInfo == null) {
-				final WorkbenchUser user = this.workbenchDataManager.getUserByUsername(model.getUsername());
+				final WorkbenchUser user = this.userService.getUserByUsername(model.getUsername());
 				userInfo = new UserInfo();
 				userInfo.setUserId(user.getUserid());
 			}
 
 			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
-			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+			this.userService.insertOrUpdateUserInfo(userInfo);
 
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -356,24 +363,24 @@ public class AuthenticationController {
 	protected boolean isAccountCreationEnabled() {
 
 		// Do not display the Create Account link if BMS is in single user mode.
-		if (Boolean.parseBoolean(isSingleUserOnly)) {
+		/*if (Boolean.parseBoolean(isSingleUserOnly)) {
 			return false;
 		} else {
 			return Boolean.parseBoolean(this.enableCreateAccount);
-		}
-
+		}*/
+			return false;
 	}
 
-	protected void setEnableCreateAccount(final String enableCreateAccount) {
+	/*protected void setEnableCreateAccount(final String enableCreateAccount) {
 		this.enableCreateAccount = enableCreateAccount;
-	}
+	}*/
 
 	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
 	}
 
-	
-	
+
+
 	public List<Role> getRoles() {
 		return roles;
 	}

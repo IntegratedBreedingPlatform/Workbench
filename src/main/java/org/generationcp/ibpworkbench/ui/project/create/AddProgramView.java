@@ -14,7 +14,6 @@ import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
@@ -30,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,13 +140,13 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.cancelButton.setDebugId("cancelBtn");
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	protected void addProgramMembersTab(final TabSheet tabSheet, final VerticalLayout programMembersContainer) {
 
 		// Do not display the Program Members tab if BMS is in single user mode.
 		if (!Boolean.parseBoolean(getIsSingleUserOnly())) {
 			programMembersContainer.setVisible(true);
 			tabSheet.addTab(programMembersContainer);
+			tabSheet.getTab(programMembersContainer).setEnabled(false);
 			tabSheet.getTab(programMembersContainer).setClosable(false);
 			tabSheet.getTab(programMembersContainer).setCaption("Members");
 		}
@@ -276,15 +274,16 @@ public class AddProgramView extends Panel implements InitializingBean {
 		this.getProgramLocationsContainer().removeAllComponents();
 		this.getProgramLocationsContainer().addComponent(this.programLocationsView);
 
+		this.getTabSheet().getTab(this.getProgramMembersContainer()).setEnabled(true);
+		this.getProgramMembersContainer().removeAllComponents();
+		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.contextUtil.getProjectInContext()));
+
 		// re-initialize program members and basic details (in update mode)
 		this.getBasicDetailsContainer().removeAllComponents();
 		final UpdateProjectPanel updateProjectPanel = new UpdateProjectPanel();
 		updateProjectPanel.setDebugId("updateProjectPanel");
 		updateProjectPanel.hideDeleteBtn();
 		this.getBasicDetailsContainer().addComponent(updateProjectPanel);
-
-		this.getProgramMembersContainer().removeAllComponents();
-		this.getProgramMembersContainer().addComponent(new ProgramMembersPanel(this.contextUtil.getProjectInContext()));
 
 		this.finishButton.setEnabled(true);
 		this.cancelButton.setEnabled(false);
@@ -293,6 +292,7 @@ public class AddProgramView extends Panel implements InitializingBean {
 	public void disableOptionalTabsAndFinish() {
 		this.getTabSheet().getTab(this.getProgramMethodsContainer()).setEnabled(false);
 		this.getTabSheet().getTab(this.getProgramLocationsContainer()).setEnabled(false);
+		this.getTabSheet().getTab(this.getProgramMembersContainer()).setEnabled(false);
 
 		this.finishButton.setEnabled(false);
 	}
@@ -366,8 +366,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 		return basicDetailsContainer;
 	}
 
-	
-	
 	public void setBasicDetailsContainer(VerticalLayout basicDetailsContainer) {
 		this.basicDetailsContainer = basicDetailsContainer;
 	}

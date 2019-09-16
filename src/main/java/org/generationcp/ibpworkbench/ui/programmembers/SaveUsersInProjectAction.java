@@ -11,11 +11,8 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
@@ -24,7 +21,7 @@ import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
+import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,9 +32,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+@SuppressWarnings("LocalCanBeFinal")
 @Configurable
 public class SaveUsersInProjectAction implements ClickListener {
 
@@ -76,14 +75,15 @@ public class SaveUsersInProjectAction implements ClickListener {
 		}
 		
 		final Collection<WorkbenchUser> userList = this.select.getValue();
+		final Role role = new Role();
 		try {
-			final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+			final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
 					
-					SaveUsersInProjectAction.this.programService.updateMembersUserInfo(userList, project);
-					
+					SaveUsersInProjectAction.this.programService.updateMembersProjectUserInfo(userList, project);
+
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});

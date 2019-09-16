@@ -14,7 +14,7 @@
 
 .dialog {
   z-index: 1000;
-  position: fixed;
+  position: absolute;
   right: 0;
   left: 0;
   top: 20px;

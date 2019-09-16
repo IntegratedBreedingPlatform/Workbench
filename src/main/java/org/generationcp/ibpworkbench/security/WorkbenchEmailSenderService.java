@@ -19,9 +19,9 @@ import org.generationcp.ibpworkbench.common.WebClientInfo;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +47,7 @@ public class WorkbenchEmailSenderService {
 	private WorkbenchUserService workbenchUserService;
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Resource
 	private Properties workbenchProperties;
@@ -80,7 +80,7 @@ public class WorkbenchEmailSenderService {
 
 		UserInfo userInfo = null;
 		try {
-			userInfo = this.workbenchDataManager.getUserInfoByUsername(user.getName());
+			userInfo = this.userService.getUserInfoByUsername(user.getName());
 
 			final String generatedURL = this.generateResetPasswordUrl(userInfo);
 			this.sendForgotPasswordRequest(user.getPerson().getDisplayName(), user.getPerson().getEmail(), generatedURL);
@@ -100,7 +100,7 @@ public class WorkbenchEmailSenderService {
 
 		userInfo.setResetExpiryDate(this.getTokenExpiryDate());
 
-		this.workbenchDataManager.updateUserInfo(userInfo);
+		this.userService.updateUserInfo(userInfo);
 
 		return url;
 	}
@@ -112,7 +112,7 @@ public class WorkbenchEmailSenderService {
 		return cal.getTime();
 	}
 
-	
+
 	/**
 	 * Pre-req: a validated user email account + username
 	 */
@@ -169,7 +169,7 @@ public class WorkbenchEmailSenderService {
 	public WorkbenchUser validateResetToken(final String token) throws InvalidResetTokenException {
 		UserInfo userInfo = null;
 		try {
-			userInfo = this.workbenchDataManager.getUserInfoByResetToken(token);
+			userInfo = this.userService.getUserInfoByResetToken(token);
 
 			if (!this.isResetTokenValid(userInfo)) {
 				throw new InvalidResetTokenException("Token is not valid");
@@ -187,11 +187,11 @@ public class WorkbenchEmailSenderService {
 	}
 
 	public void deleteToken(final UserAccountModel user) {
-		final UserInfo userInfo = this.workbenchDataManager.getUserInfoByUsername(user.getUsername());
+		final UserInfo userInfo = this.userService.getUserInfoByUsername(user.getUsername());
 		userInfo.setResetToken(null);
 		userInfo.setResetExpiryDate(null);
 
-		this.workbenchDataManager.updateUserInfo(userInfo);
+		this.userService.updateUserInfo(userInfo);
 
 	}
 }

@@ -3,9 +3,11 @@ import { DatePipe } from '@angular/common';
 
 import {
     BmsjHipsterSharedLibsModule,
-    BmsjHipsterSharedCommonModule,
-    AuthServerProvider
+    BmsjHipsterSharedCommonModule, Principal, AccountService
 } from './';
+import { ModalComponent } from './modal/modal.component';
+import { ModalConfirmComponent } from './modal/modal-confirm.component';
+import { ModalService } from './modal/modal.service';
 import { DragDropModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
 import { SharedModule } from 'primeng/shared';
@@ -16,18 +18,27 @@ import { SharedModule } from 'primeng/shared';
         BmsjHipsterSharedCommonModule
     ],
     declarations: [
+        ModalComponent,
+        ModalConfirmComponent
     ],
     providers: [
-        AuthServerProvider,
-        DatePipe
+        DatePipe,
+        ModalService,
+        Principal,
+        AccountService
     ],
-    entryComponents: [],
+    entryComponents: [
+        ModalComponent,
+        ModalConfirmComponent
+    ],
     exports: [
         BmsjHipsterSharedCommonModule,
         SharedModule,
         TreeTableModule,
         DragDropModule,
-        DatePipe
+        DatePipe,
+        ModalComponent,
+        ModalConfirmComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

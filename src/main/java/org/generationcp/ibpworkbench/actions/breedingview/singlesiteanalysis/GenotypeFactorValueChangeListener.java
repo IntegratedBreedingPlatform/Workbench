@@ -1,15 +1,14 @@
 
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.util.List;
-
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisEnvironmentsComponent;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
+import java.util.List;
 
 public class GenotypeFactorValueChangeListener implements ValueChangeListener {
 
@@ -24,7 +23,7 @@ public class GenotypeFactorValueChangeListener implements ValueChangeListener {
 
 	@Override
 	public void valueChange(final ValueChangeEvent event) {
-		final List<String> invalidEnvironments = this.environmentsComponent.getInvalidEnvironments();
+		final List<String> invalidEnvironments = this.environmentsComponent.getInvalidEnvironments(false);
 		if (!invalidEnvironments.isEmpty()) {
 
 			MessageNotifier.showError(this.environmentsComponent.getWindow(), SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,

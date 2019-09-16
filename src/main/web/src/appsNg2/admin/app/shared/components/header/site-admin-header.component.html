@@ -1,14 +1,17 @@
 <section>
-  <header>
-    <h1 class="om-title">
-        Site Administration</h1>
-        <nav>
-              <ol class="nav nav-tabs" >
-                <li class="active ">
-                  <a> Users </a>
-                </li>
-              </ol>
-        </nav>
-    </header>
-    <p></p>
+	<header>
+		<h1 class="om-title">
+			Site Administration</h1>
+		<nav>
+			<ol class="nav nav-tabs">
+				<li [routerLink]="['users-admin']" [routerLinkActive]="['active']">
+					<a> Users </a>
+				</li>
+				<li [routerLink]="['roles-admin']" [routerLinkActive]="['active']">
+					<a> Roles </a>
+				</li>
+			</ol>
+		</nav>
+	</header>
+	<p></p>
 </section>

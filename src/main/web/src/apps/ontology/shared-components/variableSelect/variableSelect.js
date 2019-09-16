@@ -61,7 +61,8 @@
 					variables.forEach(function(variable) {
 
                         var variableType = function(element) {
-                            return element.id === $scope.variableTypeId;
+                        	// $scope.variableTypeIds is a string of variable type ids separated by comma (e.g. 1808,1802,1806)
+                            return $scope.variableTypeIds.indexOf(element.id) >= 0;
                         };
 
 					    if (variable.variableTypes && variable.variableTypes.some(variableType)) {
@@ -128,7 +129,7 @@
 			restrict: 'E',
 			scope: {
 				name: '@omName',
-                variableTypeId: '@omVariableTypeId',
+                variableTypeIds: '@omVariableTypeIds',
 				allowClear: '=omAllowClear',
                 onAddClick: '&onAddClick'
 			},

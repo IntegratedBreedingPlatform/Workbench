@@ -7,6 +7,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -18,6 +19,8 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -56,6 +59,9 @@ public class MultiSiteDataExporterTest {
 
 	@Captor
 	private ArgumentCaptor<List<String[]>> summaryRowsCaptor;
+
+	@Captor
+	private ArgumentCaptor<Notification> notificationCaptor;
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
@@ -112,7 +118,7 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
-						this.meansTraits);
+						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
 				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
@@ -170,7 +176,7 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID, testGxeEnvironment,
-						this.meansTraits);
+						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
 				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
@@ -269,6 +275,34 @@ public class MultiSiteDataExporterTest {
 				Assert.assertEquals(Double.valueOf((Integer.valueOf(env) * 10) + "." + k++).toString(), row[j++]);
 			}
 		}
+	}
+
+	@Test
+	public void exportMeansDatasetToCsv_HasMissingMean_ShowWarning() {
+		final IBPWorkbenchApplication workbenchApplication = Mockito.mock(IBPWorkbenchApplication.class);
+		final Window window = Mockito.mock(Window.class);
+		Mockito.when(workbenchApplication.getMainWindow()).thenReturn(window);
+
+		final List<String> environmentNames = new ArrayList<>();
+		environmentNames.add("1");
+		environmentNames.add("2");
+		environmentNames.add("3");
+
+		final List<Experiment> meansExperiments = this.createMeansExperiments(ENV_FACTOR, environmentNames);
+
+		// Remove a mean
+		meansExperiments.get(0).getFactors().getVariables().get(0).setValue(null);
+
+		this.multiSiteDataExporter
+				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
+						this.meansTraits, workbenchApplication);
+
+		Mockito.verify(window).showNotification(this.notificationCaptor.capture());
+		final Notification notification = this.notificationCaptor.getValue();
+
+		Assert.assertNotNull(notification);
+		Assert.assertEquals("There are missing mean values", "Warning", notification.getCaption());
+
 	}
 
 	@Test

@@ -1,6 +1,21 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.PedigreeDataManagerImpl;
+import org.generationcp.middleware.util.MaxPedigreeLevelReachedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
@@ -8,20 +23,6 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.PedigreeDataManager;
-import org.generationcp.middleware.util.MaxPedigreeLevelReachedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class GermplasmPedigreeTreeContainer extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -87,7 +88,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 					this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
 			GermplasmPedigreeTreeContainer.LOG.error(e.getMessage());
 		} catch (final MaxPedigreeLevelReachedException e) {
-			this.pedigreeLevelCount = PedigreeDataManager.MAX_PEDIGREE_LEVEL;
+			this.pedigreeLevelCount = PedigreeDataManagerImpl.MAX_PEDIGREE_LEVEL;
 			this.displayFullPedigreeButton.setVisible(true);
 			this.maxReached = true;
 		}

@@ -32,6 +32,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.model.formfieldfactory.LocationFormFieldFactory;
 import org.generationcp.ibpworkbench.ui.form.LocationForm;
 import org.generationcp.ibpworkbench.ui.window.ConfirmLocationsWindow;
+import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,9 @@ public class EditLocationsWindow extends BaseSubWindow {
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Resource
+	private LocationDataManager locationDataManager;
+
 	private LocationForm locationForm;
 
 	private Button cancelButton;
@@ -64,9 +68,9 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	private final ProgramLocationsPresenter programLocationsPresenter;
 
-	private LocationViewModel locationToEdit;
+	private final LocationViewModel locationToEdit;
 
-	private Table sourceTable;
+	private final Table sourceTable;
 
 	public EditLocationsWindow(final LocationViewModel locationToEdit, final ProgramLocationsPresenter programLocationsPresenter,
 			final Table sourceTable) {
@@ -77,8 +81,12 @@ public class EditLocationsWindow extends BaseSubWindow {
 	}
 
 	protected void initializeComponents() {
-
-		this.locationForm = new LocationForm(locationToEdit,
+		//Set the value to empty string so that "null" won't be displayed in the edit location window
+		if(this.locationToEdit.getLocationAbbreviation() == null) {
+			this.locationToEdit.setLocationAbbreviation("");
+		}
+		this.locationForm = new LocationForm(
+			this.locationToEdit,
 				new LocationFormFieldFactory(this.programLocationsPresenter));
 		this.locationForm.setDebugId("locationForm");
 		this.buttonArea = this.layoutButtonArea();
@@ -175,7 +183,11 @@ public class EditLocationsWindow extends BaseSubWindow {
 				final List<Location> existingLocationsWithSameName = EditLocationsWindow.this.programLocationsPresenter
 						.getExistingLocations(EditLocationsWindow.this.locationForm.getLocationNameValue());
 
-				if (!existingLocationsWithSameName.isEmpty() && EditLocationsWindow.this.locationForm.isLocationNameModified()) {
+				final String locationAbbreviation = EditLocationsWindow.this.locationForm.getLocationAbbreviationValue();
+
+				if(EditLocationsWindow.this.locationForm.isLocationAbbreviationModified() && EditLocationsWindow.this.locationDataManager.countByLocationAbbreviation(locationAbbreviation) > 0){
+					MessageNotifier.showError(EditLocationsWindow.this, EditLocationsWindow.this.messageSource.getMessage(Message.ERROR), EditLocationsWindow.this.messageSource.getMessage(Message.ADD_LOCATION_EXISTING_LOCABBR_ERROR, locationAbbreviation));
+				} else if (!existingLocationsWithSameName.isEmpty() && EditLocationsWindow.this.locationForm.isLocationNameModified()) {
 					new ConfirmLocationsWindow(EditLocationsWindow.this, existingLocationsWithSameName,
 							EditLocationsWindow.this.programLocationsPresenter, new Button.ClickListener() {
 
@@ -205,7 +217,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 			final LocationViewModel locationViewModel = locationBean.getBean();
 
 			EditLocationsWindow.this.programLocationsPresenter
-					.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(sourceTable.getData()));
+					.updateLocation(locationViewModel, ProgramLocationsView.AVAILABLE.equals(EditLocationsWindow.this.sourceTable.getData()));
 
 			EditLocationsWindow.this.contextUtil
 					.logProgramActivity(EditLocationsWindow.this.messageSource.getMessage(Message.PROJECT_LOCATIONS_LINK),
@@ -222,8 +234,8 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 		@Override
 		public void focus(final FieldEvents.FocusEvent focusEvent) {
-			if (locationForm.isLocationUsedInAnyProgram()) {
-				MessageNotifier.showWarning(focusEvent.getComponent().getWindow(), messageSource.getMessage(Message.WARNING),
+			if (EditLocationsWindow.this.locationForm.isLocationUsedInAnyProgram()) {
+				MessageNotifier.showWarning(focusEvent.getComponent().getWindow(), EditLocationsWindow.this.messageSource.getMessage(Message.WARNING),
 						EditLocationsWindow.this.messageSource.getMessage(Message.LOCATION_IS_USED_IN_OTHER_PROGRAM));
 			}
 
@@ -231,7 +243,7 @@ public class EditLocationsWindow extends BaseSubWindow {
 
 	}
 
-	public void setLocationForm(final LocationForm locationForm) {
+	void setLocationForm(final LocationForm locationForm) {
 		this.locationForm = locationForm;
 	}
 
@@ -243,4 +255,11 @@ public class EditLocationsWindow extends BaseSubWindow {
 		this.contextUtil = contextUtil;
 	}
 
+	public void setLocationDataManager(final LocationDataManager locationDataManager) {
+		this.locationDataManager = locationDataManager;
+	}
+
+	LocationViewModel getLocationToEdit() {
+		return this.locationToEdit;
+	}
 }

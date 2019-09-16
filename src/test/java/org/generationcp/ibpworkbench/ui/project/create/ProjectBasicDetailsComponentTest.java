@@ -7,14 +7,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.fields.BmsDateField;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +43,10 @@ public class ProjectBasicDetailsComponentTest {
 	private static final String NO_PROGRAM_NAME_ERROR = "Program name cannot be empty.";
 	private static final String INVALID_PROGRAM_NAME = "Program name contains invalid characters.";
 	private static final String CROP_TYPE_REQUIRED_ERROR = "No crop type selected";
-	
+
+	private static final String CURRENT_USER_NAME = "John Doe";
+	private final int ADMIN_USER_ID = 1;
+
 	@Mock
 	private CreateProjectPanel panel;
 	
@@ -62,6 +68,9 @@ public class ProjectBasicDetailsComponentTest {
 	@Mock
 	private Component parentComponent;
 
+	@Mock
+	private ContextUtil contextUtil;
+
 	@InjectMocks
 	private ProjectBasicDetailsComponent basicDetailsComponent;
 	
@@ -70,10 +79,17 @@ public class ProjectBasicDetailsComponentTest {
 	
 	@Before
 	public void setUp() {
+		final Person person = new Person("A", "B", "C");
+		person.setEmail("a@leafnode.io");
+		final WorkbenchUser currentUser = new WorkbenchUser(this.ADMIN_USER_ID);
+		currentUser.setName(CURRENT_USER_NAME);
+		currentUser.setPerson(person);
+
 		MockitoAnnotations.initMocks(this);
 		this.testProject = ProjectTestDataInitializer.createProject();
 		this.cropTypes = Arrays.asList(new CropType("maize"), new CropType("rice"), new CropType("wheat"));
-		Mockito.when(this.workbenchDataManager.getInstalledCropDatabses()).thenReturn(this.cropTypes);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(currentUser.getUserid());
+		Mockito.when(this.workbenchDataManager.getCropsWithAddProgramPermission(currentUser.getUserid())).thenReturn(this.cropTypes);
 		Mockito.when(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR)).thenReturn(DUPLICATE_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).thenReturn(NO_PROGRAM_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR")).thenReturn(INVALID_PROGRAM_NAME);
@@ -83,6 +99,7 @@ public class ProjectBasicDetailsComponentTest {
 		this.basicDetailsComponent.setParent(this.parentComponent);
 		this.basicDetailsComponent.setMessageSource(this.messageSource);
 		this.basicDetailsComponent.setWorkbenchDataManager(this.workbenchDataManager);
+		this.basicDetailsComponent.setContextUtil(this.contextUtil);
 		this.basicDetailsComponent.initializeComponents();
 
 		when(parentComponent.getWindow()).thenReturn(this.window);

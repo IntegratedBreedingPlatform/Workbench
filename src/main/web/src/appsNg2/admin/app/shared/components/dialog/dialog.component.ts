@@ -1,5 +1,10 @@
 import { Component, OnInit, Input, Output, OnChanges, EventEmitter, trigger, state, style, animate, transition } from '@angular/core';
 
+/*
+ * TODO Migrate to ng-bootstrap when animations are done
+ *  https://github.com/ng-bootstrap/ng-bootstrap/issues/295
+ *  This custom solution has problems like popup scrolling
+ */
 @Component({
   selector: 'app-dialog',
   templateUrl: 'dialog.component.html',
@@ -29,13 +34,13 @@ export class Dialog implements OnInit {
   @Input() visible: boolean;
   @Input() title: string;
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() onClose = new EventEmitter();
 
   constructor() { }
 
   ngOnInit() { }
 
   close() {
-    this.visible = false;
-    this.visibleChange.emit(this.visible);
+    this.onClose.emit();
   }
 }

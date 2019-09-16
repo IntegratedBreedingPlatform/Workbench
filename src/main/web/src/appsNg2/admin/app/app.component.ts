@@ -4,12 +4,10 @@
  * Angular 2 decorators and services
  */
 import { Component, ViewEncapsulation } from '@angular/core';
-
-import { UsersAdmin } from './users/index';
-import { SiteAdminHeader } from './shared/components/header/site-admin-header.component';
 import { UserService } from './shared/services/user.service';
 import { RoleService } from './shared/services/role.service';
 import { MailService } from './shared/services/mail.service';
+import { CropService } from './shared/services/crop.service';
 
 
 /*
@@ -24,17 +22,15 @@ import { MailService } from './shared/services/mail.service';
   ],
   template: `
     <div class="container-fluid">
-        <site-admin-header></site-admin-header>
-        <users-admin></users-admin>
+        <router-outlet></router-outlet>
     </div>
   `,
   moduleId: module.id,
-  providers: [UserService, RoleService, MailService]
+  providers: [UserService, RoleService, MailService, CropService]
 
 })
 export class AppComponent {
 
   constructor() {
-
   }
 }

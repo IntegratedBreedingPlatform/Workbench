@@ -10,17 +10,14 @@
 
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.google.common.base.Strings;
+import com.mysql.jdbc.StringUtils;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Blocks;
 import org.generationcp.commons.breedingview.xml.ColPos;
 import org.generationcp.commons.breedingview.xml.Columns;
-import org.generationcp.commons.breedingview.xml.DesignType;
 import org.generationcp.commons.breedingview.xml.Environment;
 import org.generationcp.commons.breedingview.xml.Genotypes;
 import org.generationcp.commons.breedingview.xml.Plot;
@@ -28,7 +25,6 @@ import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.RowPos;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
@@ -41,6 +37,7 @@ import org.generationcp.ibpworkbench.util.BreedingViewInput;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriter;
 import org.generationcp.ibpworkbench.util.BreedingViewXMLWriterException;
 import org.generationcp.ibpworkbench.util.DatasetExporter;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -50,11 +47,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jeffrey Morales
@@ -68,14 +64,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private SingleSiteAnalysisDetailsPanel source;
 
-	@Value("${bv.web.url}")
-	private String bvWebUrl;
-
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
-
-	@Resource
-	private TomcatUtil tomcatUtil;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -162,16 +152,16 @@ public class RunSingleSiteAction implements ClickListener {
 
 		// TODO: Move the creation of breeding view xml objects in BreedingViewXMLWriter.
 
+		final ExperimentDesignType designType = ExperimentDesignType.getExperimentDesignTypeByBVDesignName(this.source.getSelDesignTypeValue());
+		breedingViewInput.setDesignType(designType.getBvDesignName());
+
 		breedingViewInput.setBreedingViewAnalysisName(this.source.getTxtAnalysisNameValue());
 
 		breedingViewInput.setEnvironment(this.createEnvironment(this.source.getSelEnvFactorValue()));
 
-		breedingViewInput.setReplicates(this.createReplicates(this.source.getSelDesignTypeValue(), this.source.getSelReplicatesValue()));
+		breedingViewInput.setReplicates(this.createReplicates(designType, this.source.getSelReplicatesValue()));
 
 		breedingViewInput.setReplicatesFactorName(this.source.getSelReplicatesValue());
-
-		final DesignType designType = DesignType.getDesignTypeByName(this.source.getSelDesignTypeValue());
-		breedingViewInput.setDesignType(designType.getName());
 
 		breedingViewInput.setBlocks(this.createBlocks(this.source.getSelBlocksValue()));
 
@@ -185,12 +175,12 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	void populateRowPosAndColPos(final DesignType designType, final BreedingViewInput breedingViewInput) {
+	void populateRowPosAndColPos(final ExperimentDesignType designType, final BreedingViewInput breedingViewInput) {
 		final String columnValue = this.source.getSelColumnFactorValue();
 		final String rowValue = this.source.getSelRowFactorValue();
 		// Do not generate RowPos and ColPos tags for Row-Col Design type
 		if (!StringUtils.isNullOrEmpty(rowValue) && !StringUtils.isNullOrEmpty(columnValue)
-				&& !DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.equals(designType)) {
+				&& !ExperimentDesignType.ROW_COL.equals(designType)) {
 			breedingViewInput.setColPos(this.createColPos(columnValue));
 			breedingViewInput.setRowPos(this.createRowPos(rowValue));
 		} else {
@@ -200,9 +190,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	void populateRowAndColumn(final DesignType designType, final BreedingViewInput breedingViewInput) {
+	void populateRowAndColumn(final ExperimentDesignType designType, final BreedingViewInput breedingViewInput) {
 
-		if (designType == DesignType.RESOLVABLE_ROW_COLUMN_DESIGN) {
+		if (designType.getId() == ExperimentDesignType.ROW_COL.getId()) {
 
 			breedingViewInput.setColumns(this.createColumns(this.source.getSelColumnFactorValue()));
 			breedingViewInput.setRows(this.createRows(this.source.getSelRowFactorValue()));
@@ -223,9 +213,9 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	Replicates createReplicates(final String designType, final String replicatesFactor) {
+	Replicates createReplicates(final ExperimentDesignType designType, final String replicatesFactor) {
 
-		if (designType.equals(DesignType.P_REP_DESIGN.getName()) || designType.equals(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName())) {
+		if (designType.equals(ExperimentDesignType.P_REP) || designType.equals(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK)) {
 
 			// Do not include the replicates factor if the design type is P-rep and Augmented Randomized design.
 			return null;
@@ -379,24 +369,24 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(DesignType.RANDOMIZED_BLOCK_DESIGN.getName())
+		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName())
 				&& this.source.replicateFactorEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName())
-				|| designType.equals(DesignType.P_REP_DESIGN.getName()))) {
+		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName())
+				|| designType.equals(ExperimentDesignType.P_REP.getBvDesignName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvDesignName())) {
 			this.showErrorMessage(window, "Please specify column factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName())) {
+		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvDesignName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}

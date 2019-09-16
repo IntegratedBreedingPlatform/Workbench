@@ -18,8 +18,7 @@ export class LabelPrintingData {
         public numberOfInstances?: number,
         public totalNumberOfLabelToPrint?: number,
         public sizeOfLabelSheet?: string,
-        public numberOfLabelPerRow?: number,
-        public numberOfRowsPerPageOfLabel?: number,
+        public numberOfRowsPerPage?: number,
         public leftSelectedLabelFields?: string,
         public rightSelectedLabelFields?: string,
         public mainSelectedLabelFields?: string,
@@ -35,9 +34,9 @@ export class LabelPrintingData {
         public stockListTypeName?: string,
         public inventoryDetailsList?: string,
         public barcodeGeneratedAutomatically = true,
-        public firstBarcodeField = '',
-        public secondBarcodeField = '',
-        public thirdBarcodeField = '',
+        public firstBarcodeField = 0,
+        public secondBarcodeField = 0,
+        public thirdBarcodeField = 0,
         public filename = '',
         public barcodeNeeded = false
     ) {
@@ -56,6 +55,46 @@ export class LabelType {
     constructor(
         public title?: string,
         public key?: string,
-        public fields?: { id: string, name: string }[]
+        public fields?: { id: number, name: string }[]
     ) { }
+}
+
+export class OriginResourceMetadata {
+    constructor(
+        public defaultFileName?: string,
+        public metadata?: Map<string, string>
+    ) { }
+}
+
+export class PresetSetting {
+    constructor(
+        public id?: number,
+        public programUUID?: string,
+        public toolId?: number,
+        public toolSection?: string,
+        public name?: string,
+        public type?: string,
+        public selectedFields?: number[][],
+        public barcodeSetting?: BarcodeSetting,
+        public fileConfiguration?: FileConfiguration,
+    ) {
+    }
+}
+
+export class BarcodeSetting {
+    constructor(
+        public automaticBarcode?: boolean,
+        public barcodeFields?: number[],
+        public barcodeNeeded?: boolean
+    ) {
+    }
+}
+
+export class FileConfiguration {
+    constructor(
+        public outputType?: string,
+        public numberOfRowsPerPage?: number,
+        public sizeOfLabelSheet?: string
+    ) {
+    }
 }

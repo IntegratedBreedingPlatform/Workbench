@@ -1,7 +1,8 @@
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import org.generationcp.commons.breedingview.xml.DesignType;
+import com.vaadin.data.Property;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDesignDetails;
+import org.generationcp.middleware.domain.dms.ExperimentDesignType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import com.vaadin.data.Property;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BreedingViewDesignTypeValueChangeListenerTest {
@@ -24,23 +23,20 @@ public class BreedingViewDesignTypeValueChangeListenerTest {
 	@Mock
 	private Property property;
 
-
 	@InjectMocks
-	private BreedingViewDesignTypeValueChangeListener listener = new BreedingViewDesignTypeValueChangeListener(source);
-
+	private final BreedingViewDesignTypeValueChangeListener listener = new BreedingViewDesignTypeValueChangeListener(this.source);
 
 	@Before
 	public void init() {
-		Mockito.when(event.getProperty()).thenReturn(this.property);
+		Mockito.when(this.event.getProperty()).thenReturn(this.property);
 	}
-
 
 	@Test
 	public void testValueChangeRandomizedBlockDesign() {
 
-		Mockito.when(property.getValue()).thenReturn(DesignType.RANDOMIZED_BLOCK_DESIGN.getName());
+		Mockito.when(this.property.getValue()).thenReturn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
 
-		listener.valueChange(this.event);
+		this.listener.valueChange(this.event);
 
 		Mockito.verify(this.source).displayRandomizedBlockDesignElements();
 
@@ -49,9 +45,9 @@ public class BreedingViewDesignTypeValueChangeListenerTest {
 	@Test
 	public void testValueChangeResolvableRowColumnDesign() {
 
-		Mockito.when(property.getValue()).thenReturn(DesignType.RESOLVABLE_ROW_COLUMN_DESIGN.getName());
+		Mockito.when(this.property.getValue()).thenReturn(ExperimentDesignType.ROW_COL.getBvDesignName());
 
-		listener.valueChange(this.event);
+		this.listener.valueChange(this.event);
 
 		Mockito.verify(this.source).displayRowColumnDesignElements();
 
@@ -60,9 +56,9 @@ public class BreedingViewDesignTypeValueChangeListenerTest {
 	@Test
 	public void testValueChangeResolvableIncompleteBlockDesign() {
 
-		Mockito.when(property.getValue()).thenReturn(DesignType.RESOLVABLE_INCOMPLETE_BLOCK_DESIGN.getName());
+		Mockito.when(this.property.getValue()).thenReturn(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
 
-		listener.valueChange(this.event);
+		this.listener.valueChange(this.event);
 
 		Mockito.verify(this.source).displayIncompleteBlockDesignElements();
 
@@ -71,9 +67,9 @@ public class BreedingViewDesignTypeValueChangeListenerTest {
 	@Test
 	public void testValueChangePRepDesign() {
 
-		Mockito.when(property.getValue()).thenReturn(DesignType.P_REP_DESIGN.getName());
+		Mockito.when(this.property.getValue()).thenReturn(ExperimentDesignType.P_REP.getBvDesignName());
 
-		listener.valueChange(this.event);
+		this.listener.valueChange(this.event);
 
 		Mockito.verify(this.source).displayPRepDesignElements();
 
@@ -82,9 +78,9 @@ public class BreedingViewDesignTypeValueChangeListenerTest {
 	@Test
 	public void testValueChange() {
 
-		Mockito.when(property.getValue()).thenReturn(DesignType.AUGMENTED_RANDOMIZED_BLOCK.getName());
+		Mockito.when(this.property.getValue()).thenReturn(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
 
-		listener.valueChange(this.event);
+		this.listener.valueChange(this.event);
 
 		Mockito.verify(this.source).displayAugmentedDesignElements();
 
