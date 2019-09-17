@@ -252,24 +252,8 @@ var mainApp = angular.module('mainApp', ['loadingStatus']);
 mainApp.controller('MainController', function MainController($scope, $http, $q) {
 
 	$scope.errorMessage = '';
-
-	// TODO: Fetch predefined R call objects from server
-	$scope.rCallObjects = [
-		{
-			description: 'MEAN: Traits over Trial Instance per Entry Number',
-			endpoint: 'http://public.opencpu.org/ocpu/library/reshape/R/cast/csv',
-			params: {formula: 'entryNumber~variable+instanceNumber'},
-			meltVariables: 'c(\"instanceNumber\",\"blockNumber\",\"entryNumber\",\"entryType\",\"germplasmDbId\",\"germplasmName\",\"observationLevel\",\"observationLevels\",\"observationUnitDbId\",\"observationUnitName\",\"plantNumber\",\"plotNumber\",\"programName\",\"replicate\",\"studyDbId\",\"studyLocation\",\"studyLocationDbId\",\"studyName\",\"x\",\"y\")'
-		},
-		{
-			description: 'PLOT: Average of traits per germplasm and instance',
-			endpoint: 'http://public.opencpu.org/ocpu/library/reshape/R/cast/csv',
-			params: {formula: 'instanceNumber+entryNumber~variable', 'fun.aggregate': 'mean'},
-			meltVariables: 'c(\"instanceNumber\",\"blockNumber\",\"entryNumber\",\"entryType\",\"germplasmDbId\",\"germplasmName\",\"observationLevel\",\"observationLevels\",\"observationUnitDbId\",\"observationUnitName\",\"plantNumber\",\"plotNumber\",\"programName\",\"replicate\",\"studyDbId\",\"studyLocation\",\"studyLocationDbId\",\"studyName\",\"x\",\"y\")'
-		}
-	];
-
-	$scope.selectedRCallObject = $scope.rCallObjects[0];
+	$scope.rCallObjects = [];
+	$scope.selectedRCallObject;
 
 	$scope.onExportClick = function () {
 		$scope.errorMessage = '';
@@ -278,17 +262,31 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 		}
 	};
 
+	$scope.loadRCallsObjects = function () {
+		$http({
+			method: 'GET',
+			url: '/bmsapi/rpackage/rcalls',
+			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
+		}).success(function (data) {
+			$scope.rCallObjects = data;
+			$scope.selectedRCallObject = $scope.rCallObjects[0];
+		});
+	};
+
+	$scope.loadRCallsObjects();
+
 	function transform(rObject, data) {
-		var meltParams = {id: rObject.meltVariables, data: JSON.stringify(currentData)};
+		var meltVariables = 'c(\"instanceNumber\",\"blockNumber\",\"entryNumber\",\"entryType\",\"germplasmDbId\",\"germplasmName\",\"observationLevel\",\"observationLevels\",\"observationUnitDbId\",\"observationUnitName\",\"plantNumber\",\"plotNumber\",\"programName\",\"replicate\",\"studyDbId\",\"studyLocation\",\"studyLocationDbId\",\"studyName\",\"x\",\"y\")';
+		var meltParams = {id: meltVariables, data: JSON.stringify(currentData)};
 		// melt the data first before transforming
 		executeOpenCPU('http://public.opencpu.org/ocpu/library/reshape/R/melt/json', meltParams).then(function (moltenData) {
-			rObject.params.data = JSON.stringify(moltenData);
+			rObject.parameters.data = JSON.stringify(moltenData);
 			// transform the molten data through R cast function
-			return executeOpenCPU(rObject.endpoint, rObject.params);
+			return executeOpenCPU(rObject.endpoint + '/csv', rObject.parameters);
 		}).then(function (result) {
 			// download the transformed data as CSV.
 			download(result);
-		})
+		});
 	}
 
 	function executeOpenCPU(url, parameters) {
@@ -315,7 +313,6 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 		link.click();
 	}
 });
-
 
 angular.module('loadingStatus', []).config(function ($httpProvider) {
 	$httpProvider.interceptors.push('loadingStatusInterceptor');
