@@ -254,6 +254,7 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 	$scope.errorMessage = '';
 	$scope.rCallObjects = [];
 	$scope.selectedRCallObject;
+	$scope.meltRCallObject = {};
 
 	$scope.onExportClick = function () {
 		$scope.errorMessage = '';
@@ -263,9 +264,10 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 	};
 
 	$scope.loadRCallsObjects = function () {
+		var castPackageId = 1;
 		$http({
 			method: 'GET',
-			url: '/bmsapi/rpackage/rcalls',
+			url: '/bmsapi/rpackage/rcalls/' + castPackageId,
 			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
 		}).success(function (data) {
 			$scope.rCallObjects = data;
@@ -273,13 +275,24 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 		});
 	};
 
+	$scope.retrieveMeltRCallObject = function () {
+		var meltPackageId = 2;
+		$http({
+			method: 'GET',
+			url: '/bmsapi/rpackage/rcalls/' + meltPackageId,
+			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
+		}).success(function (data) {
+			$scope.meltRCallObject = data[0];
+		});
+	};
+
 	$scope.loadRCallsObjects();
+	$scope.retrieveMeltRCallObject();
 
 	function transform(rObject, data) {
-		var meltVariables = 'c(\"instanceNumber\",\"blockNumber\",\"entryNumber\",\"entryType\",\"germplasmDbId\",\"germplasmName\",\"observationLevel\",\"observationLevels\",\"observationUnitDbId\",\"observationUnitName\",\"plantNumber\",\"plotNumber\",\"programName\",\"replicate\",\"studyDbId\",\"studyLocation\",\"studyLocationDbId\",\"studyName\",\"x\",\"y\")';
-		var meltParams = {id: meltVariables, data: JSON.stringify(currentData)};
+		$scope.meltRCallObject.parameters.data = JSON.stringify(currentData);
 		// melt the data first before transforming
-		executeOpenCPU('http://public.opencpu.org/ocpu/library/reshape/R/melt/json', meltParams).then(function (moltenData) {
+		executeOpenCPU($scope.meltRCallObject.endpoint + '/json', $scope.meltRCallObject.parameters).then(function (moltenData) {
 			rObject.parameters.data = JSON.stringify(moltenData);
 			// transform the molten data through R cast function
 			return executeOpenCPU(rObject.endpoint + '/csv', rObject.parameters);
