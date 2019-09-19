@@ -7,6 +7,12 @@
 	<link th:href="@{/controller/pages/BrAPI-Graphical-Filtering/style.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/jquery.dataTables-1.10.16.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<style type="text/css">
+		.my-popover-content {
+			display: none;
+		}
+	</style>
 </head>
 <body ng-controller="MainController">
 <div style="margin:1em" class="container-fluid">
@@ -74,8 +80,28 @@
 			<div class="col-md-8 col-xs-8 form-horizontal">
 				<div class="form-group">
 					<label class="control-label col-sm-4">Export transformation</label>
-					<div class="col-sm-8">
+					<div class="col-sm-7">
 						<select class="form-control" ng-options="item as item.description for item in rCallObjects" ng-model="selectedRCallObject"></select>
+					</div>
+					<div class="col-sm-1">
+						<i class="fa fa-question-circle fa-2x" aria-hidden="true" data-toggle="popover"
+						   title="About Formula"></i>
+						<div class="my-popover-content">
+							By default, all trait columns in the table are considered measure variables.
+							Measure variable columns are the ones that will be collapsed (combined) by the Melt R function.
+							Measure variables are represented as <em>variable</em> in the formula.
+							<br/><br/>
+							You can use the following variables in the formula:<br/><br/>
+							<em>instanceNumber</em> - Trial Instance<br/>
+							<em>studyDbId</em> - Database ID of Study<br/>
+							<em>studyName</em> - Name of Study<br/>
+							<em>observationUnitName</em> - Name<br/>
+							<em>observationUnitDbId</em> - Observation Unit Identifier<br/>
+							<em>germplasmName</em> - Accession<br/>
+							<em>entryNumber</em> - Entry Number<br/>
+							<em>germplasmDbId</em> - GID<br/>
+							<em>studyLocation</em> - Location Name of Study<br/>
+						</div>
 					</div>
 				</div>
 				<div class="form-group" ng-repeat="(key, value) in selectedRCallObject.parameters">
@@ -85,14 +111,15 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-sm-offset-4 col-sm-1">
+					<div class="col-sm-4"></div>
+					<div class="col-sm-2">
 						<button action="#" id="export"
 								class="btn btn-primary" value="Export" ng-click="onExportClick()">
 							Export
 						</button>
 					</div>
 					<div class="col-sm-1">
-						<div loading-status-message><img th:src="@{/controller/static/images/loading-blue-on-white-lg.gif}" height="32" width="32"/></div>
+						<div loading-status-message><img th:src="@{/controller/static/images/loading-blue-on-white-lg.gif}" alt="loading" height="32" width="32"/></div>
 					</div>
 				</div>
 			</div>

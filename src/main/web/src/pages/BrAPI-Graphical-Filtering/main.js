@@ -37,6 +37,21 @@ $(document).ready(function () {
 		buildObservationLevelsCombo(response);
 	});
 	loadTrials();
+
+
+	var popoverOptions = {
+		content: function () {
+			// Get the content from the hidden sibling.
+			return $(this).siblings('.my-popover-content').html();
+		},
+		trigger: 'hover',
+		animation: false,
+		placement: 'right',
+		html: true,
+		container: 'body'
+	};
+
+	$('[data-toggle="popover"]').popover(popoverOptions);
 });
 
 function loadLocations() {
@@ -186,6 +201,7 @@ function useBrAPIData(response, groupByAccession) {
 		{title: "Name", data: "observationUnitName"},
 		{title: "observationUnitDbId", data: "observationUnitDbId"},
 		{title: "Accession", data: "germplasmName"},
+		{title: "EntryNumber", data: "entryNumber"},
 		{title: "GID", data: "germplasmDbId"},
 		{title: "Location", data: "studyLocation"},
 	];
