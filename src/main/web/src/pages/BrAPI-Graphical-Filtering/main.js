@@ -275,6 +275,7 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 	$scope.rCallObjects = [];
 	$scope.selectedRCallObject;
 	$scope.meltRCallObject = {};
+	$scope.groupByAccession = false;
 
 	$scope.onExportClick = function () {
 		$scope.errorMessage = '';
