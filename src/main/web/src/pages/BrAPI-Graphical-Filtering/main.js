@@ -1,5 +1,6 @@
-var currentData;
+var rawData;
 
+// FIXME: Refactor these to Angular.
 $(document).ready(function () {
 
 	var run = false;
@@ -25,6 +26,8 @@ $(document).ready(function () {
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
 		}).then(function (response) {
+			// Store the rawData from the server so we can transform and send it to OpenCPU api.
+			rawData = response.result.data;
 			useBrAPIData(response, (!!form.group));
 		});
 
@@ -158,12 +161,14 @@ function loadBrAPIData(parameters) {
 
 function tryParseInt(str, defaultValue) {
 	var retValue = defaultValue;
-	if (str !== null) {
-		if (str.length > 0) {
-			if (!isNaN(str)) {
-				retValue = parseInt(str);
-			}
+	if (str) {
+		if (!isNaN(str)) {
+			retValue = parseInt(str);
+		} else {
+			retValue = 0;
 		}
+	} else {
+		retValue = 'NA';
 	}
 	return retValue;
 }
@@ -181,11 +186,12 @@ function useBrAPIData(response, groupByAccession) {
 				}
 			});
 			observeUnit.observations.forEach(function (obs) {
-				newObj[obs.observationVariableName] = tryParseInt(obs.value, obs.value);
+				newObj[obs.observationVariableName] = obs.value;
 				traits[obs.observationVariableName] = true;
 			});
 			return newObj;
 		});
+
 	var trait_names = d3.keys(traits);
 	data.forEach(function (datum) {
 		trait_names.forEach(function (trait) {
@@ -238,8 +244,6 @@ function useBrAPIData(response, groupByAccession) {
 		return {title: d, data: d.replace(/\./g, "\\.")};
 	}));
 
-	currentData = data;
-
 	// create the root filter object and datatable
 	var gfilter = GraphicalFilter();
 	gfilter.create("#filter_div", "#filtered_results", data, tableCols, trait_names);
@@ -274,8 +278,11 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 
 	$scope.onExportClick = function () {
 		$scope.errorMessage = '';
-		if (currentData) {
-			transform(angular.copy($scope.selectedRCallObject), currentData);
+		if (rawData) {
+			var isAggregate = $scope.selectedRCallObject.parameters.hasOwnProperty('fun.aggregate');
+			transform(angular.copy($scope.selectedRCallObject), normalizeDataForExport(rawData, isAggregate));
+		} else {
+			$scope.errorMessage = 'Load the data first.';
 		}
 	};
 
@@ -305,8 +312,37 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 	$scope.loadRCallsObjects();
 	$scope.retrieveMeltRCallObject();
 
+	function normalizeDataForExport(rawData, convertStringToNumeric) {
+		var traits = {};
+		var data = rawData
+			.map(function (observeUnit) {
+				var newObj = {};
+				d3.entries(observeUnit).forEach(function (entry) {
+					if (entry.key != "observations") {
+						newObj[entry.key] = entry.value;
+					}
+				});
+				observeUnit.observations.forEach(function (obs) {
+					// Convert trait values to numeric if possible.
+					newObj[obs.observationVariableName] = convertStringToNumeric ? tryParseInt(obs.value, obs.value) : obs.value;
+					traits[obs.observationVariableName] = true;
+				});
+				return newObj;
+			});
+		var trait_names = d3.keys(traits);
+		data.forEach(function (datum) {
+			trait_names.forEach(function (trait) {
+				if (datum[trait] === undefined || datum[trait] === null || datum[trait] === NaN) {
+					// If the trait is undefined in an observation row, set the data as NA (Not Available, NA is recognized in R).
+					datum[trait] = 'NA';
+				}
+			})
+		});
+		return data;
+	}
+
 	function transform(rObject, data) {
-		$scope.meltRCallObject.parameters.data = JSON.stringify(currentData);
+		$scope.meltRCallObject.parameters.data = JSON.stringify(data);
 		// melt the data first before transforming
 		executeOpenCPU($scope.meltRCallObject.endpoint + '/json', $scope.meltRCallObject.parameters).then(function (moltenData) {
 			rObject.parameters.data = JSON.stringify(moltenData);
