@@ -26,7 +26,8 @@ $(document).ready(function () {
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
 		}).then(function (response) {
-			// Store the rawData from the server so we can transform and send it to OpenCPU api.
+			// Store the rawData from the server so we can transform and send it to OpenCPU api later.
+			// FIXME: In Export function, directly get the data from server instead of using data from global variable.
 			rawData = response.result.data;
 			useBrAPIData(response, (!!form.group));
 		});
@@ -276,6 +277,13 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 	$scope.selectedRCallObject;
 	$scope.meltRCallObject = {};
 	$scope.groupByAccession = false;
+
+	$scope.$watch('groupByAccession', function(newValue, oldValue) {
+		if (!newValue) {
+			// reload the table if the groupByAccession is unchecked.
+			$("#brapi-form").submit();
+		}
+	});
 
 	$scope.onExportClick = function () {
 		$scope.errorMessage = '';
