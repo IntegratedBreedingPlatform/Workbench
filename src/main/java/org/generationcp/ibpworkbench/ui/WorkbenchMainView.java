@@ -386,8 +386,15 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
+				WorkbenchMainView.this.isSiteAdminShown = true;
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
 				contentFrame.showContent("controller/about/");
+
+				// collapse sidebar
+				WorkbenchMainView.this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
+				// change icon here
+				WorkbenchMainView.this.toggleSidebarIcon();
+				WorkbenchMainView.this.isSiteAdminShown = false;
 			}
 		});
 
