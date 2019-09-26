@@ -8,6 +8,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,8 +97,13 @@ public class AppLauncherService {
 		String authenticationTokenString = org.generationcp.commons.util.ContextUtil
 				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 
+		Project project = workbenchDataManager.getProjectById(this.contextUtil.getContextInfoFromSession().getSelectedProjectId());
+
+		String cropName = org.generationcp.commons.util.ContextUtil
+			.addQueryParameter("cropName", project.getCropType().getCropName());
+
 		return WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(idParam),
-				"?restartApplication" + contextParameterString + authenticationTokenString);
+			"?restartApplication" + contextParameterString + authenticationTokenString + cropName);
 
 	}
 
