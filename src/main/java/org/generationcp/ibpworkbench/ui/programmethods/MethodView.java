@@ -29,7 +29,7 @@ public class MethodView extends Method implements BeanFormState {
 		return this.getGeneq() == 1;
 	}
 
-	public void setBulk(boolean value) {
+	public void setBulk(final boolean value) {
 		this.setGeneq(value ? 1 : 0);
 
 	}
@@ -40,7 +40,7 @@ public class MethodView extends Method implements BeanFormState {
 	}
 
 	@Override
-	public void setActive(Boolean val) {
+	public void setActive(final Boolean val) {
 		this.active = val;
 	}
 
@@ -50,19 +50,25 @@ public class MethodView extends Method implements BeanFormState {
 	}
 
 	@Override
-	public void setEnabled(Boolean val) {
+	public void setEnabled(final Boolean val) {
 		this.isEnabled = val;
 	}
 
 	public Method copy() {
-		return new Method(this.getMid(), this.getMtype(), this.getMgrp(), this.getMcode(), this.getMname(), this.getMdesc(),
+		final Method method = new Method(this.getMid(), this.getMtype(), this.getMgrp(), this.getMcode(), this.getMname(), this.getMdesc(),
 				this.getReference(), this.getMprgn(), this.getMfprg(), this.getMattr(), this.getGeneq(), this.getUser(), this.getLmid(),
 				this.getMdate(), this.getUniqueID());
+		method.setSnametype(this.getSnametype());
+		method.setSeparator(this.getSeparator());
+		method.setPrefix(this.getPrefix());
+		method.setCount(this.getCount());
+		method.setSuffix(this.getSuffix());
+		return method;
 	}
 
 	public MethodView copyMethodView() {
 
-		MethodView methodView = new MethodView();
+		final MethodView methodView = new MethodView();
 		methodView.setMtype(this.getMtype());
 		methodView.setMgrp(this.getMgrp());
 		methodView.setMcode(this.getMcode());
@@ -77,6 +83,11 @@ public class MethodView extends Method implements BeanFormState {
 		methodView.setLmid(this.getLmid());
 		methodView.setMdate(this.getMdate());
 		methodView.setUniqueID(this.getUniqueID());
+		methodView.setSnametype(this.getSnametype());
+		methodView.setSeparator(this.getSeparator());
+		methodView.setPrefix(this.getPrefix());
+		methodView.setCount(this.getCount());
+		methodView.setSuffix(this.getSuffix());
 
 		return methodView;
 
