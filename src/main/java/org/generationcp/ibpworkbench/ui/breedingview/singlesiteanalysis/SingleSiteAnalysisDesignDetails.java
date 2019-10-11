@@ -1,11 +1,11 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
+import com.google.common.base.Optional;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -14,8 +14,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.BreedingViewDesignTypeValueChangeListener;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.ExperimentDesignType;
-import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.study.generation.ExperimentDesignService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -35,7 +34,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private StudyDataManager studyDataManager;
+	private ExperimentDesignService experimentDesignService;
 
 	private Label lblSpecifyDesignDescription;
 	private Label lblDesignType;
@@ -224,11 +223,11 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	}
 
 	protected int retrieveExperimentalDesignTypeID() {
-		final String expDesign = this.studyDataManager.getGeolocationPropValue(
-			TermId.EXPERIMENT_DESIGN_FACTOR.getId(),
-			this.ssaDetailsPanel.getBreedingViewInput().getStudyId());
-		if (expDesign != null && !"".equals(expDesign.trim()) && NumberUtils.isNumber(expDesign)) {
-			return Integer.parseInt(expDesign);
+		final Integer studyId = this.ssaDetailsPanel.getBreedingViewInput().getStudyId();
+		final Optional<Integer> experimentDesignTypeTermId = this.experimentDesignService.getExperimentDesignTypeTermId(studyId);
+		System.out.println("### " + experimentDesignService + ", " + experimentDesignTypeTermId + ", " + studyId);
+		if (experimentDesignTypeTermId.isPresent()) {
+			return experimentDesignTypeTermId.get();
 		}
 
 		return 0;
@@ -548,7 +547,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		this.messageSource = messageSource;
 	}
 
-	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
-		this.studyDataManager = studyDataManager;
+	protected void setExperimentDesignService(final ExperimentDesignService studyDataManager) {
+		this.experimentDesignService = studyDataManager;
 	}
 }
