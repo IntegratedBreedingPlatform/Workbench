@@ -64,8 +64,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	private static final Logger LOG = LoggerFactory.getLogger(ProgramLocationsView.class);
 
-	public static final Map<String, String> TABLE_COLUMNS;
-	public static final Map<String, Integer> TABLE_COLUMN_SIZES;
+	private static final Map<String, String> TABLE_COLUMNS;
+	private static final Map<String, Integer> TABLE_COLUMN_SIZES;
 
 	protected static final String AVAILABLE = "available";
 	protected static final String FAVORITES = "favorites";
@@ -158,7 +158,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.favoriteSelectAll.setDebugId("favoriteSelectAll");
 		this.favoriteSelectAll.setImmediate(true);
 		try {
-			addRestrictredComponents();
+			addRestrictedComponents();
 		} catch (final AccessDeniedException e) {
 			// Do no do anything as the screen needs to be displayed just the buttons don't
 		}
@@ -192,8 +192,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.initializeFilterForm();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENENT')")
-	private void addRestrictredComponents() {
+	@PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')")
+	private void addRestrictedComponents() {
 
 		this.addNewLocationsBtn.setVisible(true);
 	}
@@ -334,7 +334,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	/**
 	 * Use this to retrieve the favorite locations from the view, you might have to convert LocationViewModel to Middleware's Location bean
 	 *
-	 * @return
+	 * @return Collection of Location
 	 */
 	public Collection<Location> getFavoriteLocations() {
 		return this.presenter.convertTo(this.favoritesTableContainer.getItemIds());
@@ -342,7 +342,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 	@SuppressWarnings("unchecked")
 	protected void moveSelectedItems(final Table source, final Table target) {
-		final List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
+		final List<Object> sourceItems = new LinkedList<>((Collection<Object>) source.getValue());
 		final ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
 		final BeanItemContainer<LocationViewModel> targetDataContainer =
@@ -520,7 +520,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		this.countryFilter.setNullSelectionItemId(nullItem);
 		this.countryFilter.setNullSelectionAllowed(true);
 
-		final List<UserDefinedField> locationTypes = new ArrayList<UserDefinedField>();
+		final List<UserDefinedField> locationTypes = new ArrayList<>();
 		final UserDefinedField nullUdf = new UserDefinedField();
 		nullUdf.setFname("All Location Types");
 		nullUdf.setFldno(0);
@@ -528,7 +528,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		locationTypes.addAll(this.presenter.getLocationTypeList());
 
 		final BeanItemContainer<UserDefinedField> udfContainer =
-				new BeanItemContainer<UserDefinedField>(UserDefinedField.class, locationTypes);
+				new BeanItemContainer<>(UserDefinedField.class, locationTypes);
 		udfContainer.addAll(locationTypes);
 
 		this.locationTypeFilter.setContainerDataSource(udfContainer);
@@ -691,7 +691,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 							source.select(itemId);
 						} else {
 							source.unselect(itemId);
-							assocSelectAll.setValue(val);
+							assocSelectAll.setValue(false);
 						}
 					}
 				});
@@ -828,7 +828,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			return false;
 		}
 
-		if (locationTypeId != null && 0 != locationTypeId.intValue() && !locationTypeId.equals(item.getLtype())) {
+		if (locationTypeId != null && 0 != locationTypeId && !locationTypeId.equals(item.getLtype())) {
 			return false;
 		}
 
@@ -1002,7 +1002,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		private static final long serialVersionUID = 346170573915290251L;
 
-		private Table table;
+		private final Table table;
 
 		LocationNameColumnGenerator(final Table table) {
 			this.table = table;
@@ -1029,8 +1029,8 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		private static final long serialVersionUID = 4839268740583678422L;
 
-		private LocationViewModel locationViewModel;
-		private Table table;
+		private final LocationViewModel locationViewModel;
+		private final Table table;
 
 		LocationNameEditClickListener(final LocationViewModel locationViewModel, final Table table) {
 			this.locationViewModel = locationViewModel;
