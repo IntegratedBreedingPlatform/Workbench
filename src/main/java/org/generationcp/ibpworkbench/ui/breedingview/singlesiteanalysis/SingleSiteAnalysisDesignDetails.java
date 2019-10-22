@@ -224,7 +224,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 
 	protected int retrieveExperimentalDesignTypeID() {
 		final Integer studyId = this.ssaDetailsPanel.getBreedingViewInput().getStudyId();
-		final Optional<Integer> experimentDesignTypeTermId = this.experimentDesignService.getExperimentDesignTypeTermId(studyId);
+		final Optional<Integer> experimentDesignTypeTermId = this.experimentDesignService.getStudyExperimentDesignTypeTermId(studyId);
 		if (experimentDesignTypeTermId.isPresent()) {
 			return experimentDesignTypeTermId.get();
 		}

@@ -62,7 +62,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		Mockito.doReturn(COLUMN_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_COLUMN_FACTOR);
 		Mockito.doReturn(ROW_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_ROW_FACTOR);
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(STUDY_ID))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(STUDY_ID))
 			.thenReturn(Optional.<Integer>absent());
 		this.ssaDesignDetails = new SingleSiteAnalysisDesignDetails(this.ssaDetailsPanel);
 		this.ssaDesignDetails.setMessageSource(this.messageSource);
@@ -89,7 +89,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
 
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
@@ -120,7 +120,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableLatin() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
@@ -151,7 +151,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignLatin() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
@@ -181,7 +181,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignNonLatin() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
@@ -211,7 +211,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeRandomizedBlockDesign() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
@@ -242,7 +242,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeAugmentedDesign() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
@@ -265,7 +265,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypePRepDesign() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.P_REP.getId()));
 
 		this.ssaDesignDetails.displayPRepDesignElements();
@@ -338,7 +338,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testReset() {
-		Mockito.when(this.experimentDesignService.getExperimentDesignTypeTermId(this.input.getStudyId()))
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 		this.ssaDesignDetails.getSelDesignType().setValue(ExperimentDesignType.ROW_COL.getBvDesignName());
 		this.ssaDesignDetails.getSelReplicates().select(null);
