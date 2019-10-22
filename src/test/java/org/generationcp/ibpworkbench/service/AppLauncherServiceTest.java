@@ -5,6 +5,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.exception.AppLaunchException;
 import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -35,7 +36,7 @@ public class AppLauncherServiceTest {
 	public static final int PORT = 18080;
 	public static final String SAMPLE_BASE_URL = "somewhere/out/there";
 
-	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedInUserId=5&selectedProjectId=1&authToken=VXNlck5hbWU";
+	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedInUserId=5&selectedProjectId=1&authToken=VXNlck5hbWU&cropName=Maize";
 	public static final String RESTART_URL_STR = "?restartApplication";
 
 	public static final int LOGGED_IN_USER_ID = 5;
@@ -81,6 +82,10 @@ public class AppLauncherServiceTest {
 
 	@Test
 	public void testLaunchTool() throws Exception, AppLaunchException {
+
+		final Project project = new Project();
+		project.setCropType(new CropType("Maize"));
+		Mockito.when(workbenchDataManager.getProjectById(Mockito.any(Long.class))).thenReturn(project);
 		// case 1: web tool
 		final Tool aWebTool = new Tool();
 		aWebTool.setToolName(ToolName.BM_LIST_MANAGER_MAIN.getName());
@@ -142,7 +147,9 @@ public class AppLauncherServiceTest {
 	@Test
 	public void testLaunchWebapp() throws Exception {
 		Tool aWebTool = new Tool();
-
+		final Project project = new Project();
+		project.setCropType(new CropType("Maize"));
+		Mockito.when(workbenchDataManager.getProjectById(Mockito.any(Long.class))).thenReturn(project);
 		// for vaadin type params with a dash
 		aWebTool.setToolName(ToolName.BM_LIST_MANAGER_MAIN.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
