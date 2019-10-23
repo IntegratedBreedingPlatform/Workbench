@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
+import com.google.common.base.Optional;
 import com.vaadin.data.Property;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -13,7 +14,7 @@ import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.study.generation.ExperimentDesignService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Mock
-	private StudyDataManager studyDataManager;
+	private ExperimentDesignService experimentDesignService;
 
 	@Mock
 	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
@@ -61,9 +62,11 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 		Mockito.doReturn(COLUMN_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_COLUMN_FACTOR);
 		Mockito.doReturn(ROW_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_ROW_FACTOR);
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(STUDY_ID))
+			.thenReturn(Optional.<Integer>absent());
 		this.ssaDesignDetails = new SingleSiteAnalysisDesignDetails(this.ssaDetailsPanel);
 		this.ssaDesignDetails.setMessageSource(this.messageSource);
-		this.ssaDesignDetails.setStudyDataManager(this.studyDataManager);
+		this.ssaDesignDetails.setExperimentDesignService(this.experimentDesignService);
 		this.ssaDesignDetails.instantiateComponents();
 		this.ssaDesignDetails.initializeValues();
 	}
@@ -86,8 +89,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableNonLatin() {
 
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -117,8 +120,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeIncompleteBlockDesignResolvableLatin() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_BLOCK_LATIN.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -148,8 +151,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignLatin() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_ROW_COL_LATIN.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -178,8 +181,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeRowColumnDesignNonLatin() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.RESOLVABLE_INCOMPLETE_ROW_COL.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -208,8 +211,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeRandomizedBlockDesign() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -239,8 +242,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeAugmentedDesign() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
 
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -262,8 +265,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypePRepDesign() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.AUGMENTED_RANDOMIZED_BLOCK.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.P_REP.getId()));
 
 		this.ssaDesignDetails.displayPRepDesignElements();
 		final List<Component> components = this.getComponentsListFromGridLayout();
@@ -282,12 +285,9 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testDesignTypeInvalid() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(null);
-
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		Assert.assertNull(this.ssaDesignDetails.getSelDesignType().getValue());
-		Assert.assertTrue(this.ssaDesignDetails.getDesignDetailsContainer().getComponentCount() == 0);
+		Assert.assertEquals(0, this.ssaDesignDetails.getDesignDetailsContainer().getComponentCount());
 	}
 
 	@Test
@@ -338,8 +338,8 @@ public class SingleSiteAnalysisDesignDetailsTest {
 
 	@Test
 	public void testReset() {
-		Mockito.when(this.studyDataManager.getGeolocationPropValue(TermId.EXPERIMENT_DESIGN_FACTOR.getId(), this.input.getStudyId()))
-			.thenReturn(Integer.toString(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
 		this.ssaDesignDetails.getSelDesignType().setValue(ExperimentDesignType.ROW_COL.getBvDesignName());
 		this.ssaDesignDetails.getSelReplicates().select(null);
 		this.ssaDesignDetails.getSelColumnFactor().select(null);
@@ -384,7 +384,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	}
 
 	private List<DMSVariableType> createTestFactors() {
-		final List<DMSVariableType> factors = new ArrayList<DMSVariableType>();
+		final List<DMSVariableType> factors = new ArrayList<>();
 
 		int rank = 1;
 		final StandardVariable entryNoVariable = new StandardVariable();

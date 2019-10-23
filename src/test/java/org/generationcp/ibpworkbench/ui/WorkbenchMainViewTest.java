@@ -116,6 +116,7 @@ public class WorkbenchMainViewTest {
 	public void testHeaderLayoutWhenSiteAdminIsShown() {
 		this.workbenchMainView.setIsWorkbenchDashboardShown(false);
 		this.workbenchMainView.setDoHideSidebarToggleButton(false);
+		this.workbenchMainView.setIsAboutShown(false);
 		this.workbenchMainView.setIsSiteAdminShown(true);
 		this.workbenchMainView.showContent(new VerticalLayout());
 
