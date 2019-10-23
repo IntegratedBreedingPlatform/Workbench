@@ -134,6 +134,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private boolean doHideSidebarToggleButton = true;
 	private boolean isWorkbenchDashboardShown = true;
 	private boolean isSiteAdminShown = false;
+	private boolean isAboutShown = false;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -386,8 +387,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
+				WorkbenchMainView.this.isAboutShown = true;
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
 				contentFrame.showContent("controller/about/");
+				//restore to default
+                WorkbenchMainView.this.isAboutShown = false;
+
 			}
 		});
 
@@ -602,7 +607,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
 		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
-		this.doHideSidebarToggleButton = this.isWorkbenchDashboardShown || this.isSiteAdminShown
+		this.doHideSidebarToggleButton = this.isWorkbenchDashboardShown || this.isSiteAdminShown || this.isAboutShown
 			|| content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
 		if (this.doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
@@ -762,5 +767,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	void setIsWorkbenchDashboardShown(final boolean isWorkbenchDashboardShown) {
 		this.isWorkbenchDashboardShown = isWorkbenchDashboardShown;
+	}
+
+	void setIsAboutShown(final boolean isAboutShown) {
+		this.isAboutShown = isAboutShown;
 	}
 }
