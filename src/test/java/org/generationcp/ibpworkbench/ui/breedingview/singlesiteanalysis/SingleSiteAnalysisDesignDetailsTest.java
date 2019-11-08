@@ -76,11 +76,11 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		final ComboBox selDesignType = this.ssaDesignDetails.getSelDesignType();
 		Assert.assertEquals(5, selDesignType.getItemIds().size());
 		final Iterator<?> designTypeIterator = selDesignType.getItemIds().iterator();
-		Assert.assertEquals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName(), designTypeIterator.next());
-		Assert.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), designTypeIterator.next());
-		Assert.assertEquals(ExperimentDesignType.ROW_COL.getBvDesignName(), designTypeIterator.next());
-		Assert.assertEquals(ExperimentDesignType.P_REP.getBvDesignName(), designTypeIterator.next());
-		Assert.assertEquals(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.ROW_COL.getBvName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.P_REP.getBvName(), designTypeIterator.next());
+		Assert.assertEquals(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName(), designTypeIterator.next());
 
 		this.ssaDesignDetails.addListeners();
 		Assert.assertNotNull(selDesignType.getListeners(Property.ValueChangeEvent.class));
@@ -104,7 +104,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
 
 		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
-			ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
+			ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName());
 
 		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
 			&& !this.ssaDesignDetails
@@ -135,7 +135,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
 
 		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
-			ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
+			ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName());
 
 		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
 			&& !this.ssaDesignDetails
@@ -165,7 +165,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		final boolean spatialVariablesRequired = true;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
 
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), ExperimentDesignType.ROW_COL.getBvDesignName());
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), ExperimentDesignType.ROW_COL.getBvName());
 
 		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
 			&& !this.ssaDesignDetails
@@ -195,7 +195,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		final boolean spatialVariablesRequired = true;
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
 
-		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), ExperimentDesignType.ROW_COL.getBvDesignName());
+		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(), ExperimentDesignType.ROW_COL.getBvName());
 
 		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
 			&& !this.ssaDesignDetails
@@ -226,7 +226,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
 
 		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
-			ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
+			ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName());
 
 		if ((!this.ssaDesignDetails.getSelReplicates().isEnabled() || this.ssaDesignDetails.getSelReplicates().getItemIds().isEmpty())
 			&& !this.ssaDesignDetails
@@ -257,7 +257,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
 
 		Assert.assertEquals(this.ssaDesignDetails.getSelDesignType().getValue(),
-			ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
+			ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName());
 		Assert.assertNull(
 			"Replicates factor is not needed in Augmented design, so replicates should be unselected (null)",
 			this.ssaDesignDetails.getSelReplicates().getValue());
@@ -340,14 +340,14 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	public void testReset() {
 		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
 			.thenReturn(Optional.of(TermId.RANDOMIZED_COMPLETE_BLOCK.getId()));
-		this.ssaDesignDetails.getSelDesignType().setValue(ExperimentDesignType.ROW_COL.getBvDesignName());
+		this.ssaDesignDetails.getSelDesignType().setValue(ExperimentDesignType.ROW_COL.getBvName());
 		this.ssaDesignDetails.getSelReplicates().select(null);
 		this.ssaDesignDetails.getSelColumnFactor().select(null);
 		this.ssaDesignDetails.getSelRowFactor().select(null);
 
 		this.ssaDesignDetails.reset();
 		Assert
-			.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), this.ssaDesignDetails.getSelDesignTypeValue());
+			.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName(), this.ssaDesignDetails.getSelDesignTypeValue());
 		Assert.assertEquals("REP_NO", this.ssaDesignDetails.getSelReplicatesValue());
 		Assert.assertEquals("BLOCK_NO", this.ssaDesignDetails.getSelBlocksValue());
 		Assert.assertEquals("ROW_NO", this.ssaDesignDetails.getSelRowFactorValue());
