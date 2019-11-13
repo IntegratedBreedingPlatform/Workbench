@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.cross.study.adapted.dialogs;
 
+import com.google.common.collect.Iterables;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -39,6 +40,8 @@ import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.service.api.PedigreeService;
+import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -46,11 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configurable
 public class SaveToListDialog extends BaseSubWindow
@@ -82,6 +81,12 @@ public class SaveToListDialog extends BaseSubWindow
 
 	@Resource
 	private ContextUtil contextUtil;
+
+	@Autowired
+	private PedigreeService pedigreeService;
+
+	@Resource
+	private CrossExpansionProperties crossExpansionProperties;
 
 	private Button btnSave;
 	private Button btnCancel;
@@ -349,16 +354,24 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(listid);
 
-				final String groupName = "-";
+				//final String groupName = "-";
 				String designation = "-";
 				final int status = 0;
 				final int localRecordId = 0;
 				int entryid = 1;
 
+				final Map<Integer, String> crossExpansions = this.bulkGeneratePedigreeString(germplasmsMap.keySet(), 1);
+
+
 				for (final Map.Entry<Integer, String> entry : germplasmsMap.entrySet()) {
 
 					final Integer gid = entry.getKey();
 					designation = entry.getValue() == null ? "-" : entry.getValue();
+
+					String groupName = "-";
+					if(crossExpansions.containsKey(gid)){
+						groupName = crossExpansions.get(gid);
+					}
 
 					final String entryCode = String.valueOf(entryid);
 					final String seedSource = "Browse for " + designation;
@@ -479,5 +492,20 @@ public class SaveToListDialog extends BaseSubWindow
 
 	public void setComboboxListName(final ComboBox combobox) {
 		this.comboBoxListName = combobox;
+	}
+
+	private Map<Integer, String> bulkGeneratePedigreeString(Set<Integer> gids, Integer crossExpansionLevel) {
+
+		;
+		final Iterable<List<Integer>> partition = Iterables.partition(gids, 5000);
+
+		final Map<Integer, String> crossExpansions = new HashMap<>();
+
+		for (final List<Integer> partitionedGidList : partition) {
+			final Set<Integer> partitionedGidSet = new HashSet<>(partitionedGidList);
+			crossExpansions.putAll(this.pedigreeService.getCrossExpansions(partitionedGidSet, crossExpansionLevel.intValue(),
+					this.crossExpansionProperties));
+		}
+		return crossExpansions;
 	}
 }
