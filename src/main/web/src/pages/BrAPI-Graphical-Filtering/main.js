@@ -42,20 +42,6 @@ $(document).ready(function () {
 	});
 	loadTrials();
 
-
-	var popoverOptions = {
-		content: function () {
-			// Get the content from the hidden sibling.
-			return $(this).siblings('.my-popover-content').html();
-		},
-		trigger: 'hover',
-		animation: false,
-		placement: 'right',
-		html: true,
-		container: 'body'
-	};
-
-	$('[data-toggle="popover"]').popover(popoverOptions);
 });
 
 function loadLocations() {
@@ -296,6 +282,7 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 	$scope.rCallObjects = [];
 	$scope.selectedRCallObject;
 	$scope.meltRCallObject = {};
+	$scope.isExporting = false;
 
 	$scope.proceed = function () {
 
@@ -336,10 +323,17 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 		});
 	};
 
-	$scope.loadRCallsObjects();
-	$scope.retrieveMeltRCallObject();
+	$scope.init = function() {
+
+		$scope.loadRCallsObjects();
+		$scope.retrieveMeltRCallObject();
+
+	};
+
+	$scope.init();
 
 	function transform(rObject, data) {
+		$scope.isExporting = true;
 		$scope.meltRCallObject.parameters.data = JSON.stringify(data);
 		// melt the data first before transforming
 		executeOpenCPU($scope.meltRCallObject.endpoint + '/json', $scope.meltRCallObject.parameters).then(function (moltenData) {
@@ -350,6 +344,7 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 			// download the transformed data as CSV.
 			download(result);
 			$uibModalInstance.close(null);
+			$scope.isExporting = false;
 		});
 	}
 

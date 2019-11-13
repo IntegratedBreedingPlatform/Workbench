@@ -14,20 +14,18 @@
 					<select class="form-control" ng-options="item as item.description for item in rCallObjects" ng-model="selectedRCallObject" ng-disabled="groupByAccession"></select>
 				</div>
 				<div class="col-md-2">
-					<i class="fa fa-question-circle fa-2x" aria-hidden="true" data-toggle="popover"
-					   title="About Formula"></i>
-					<div class="my-popover-content">
-						By default, all trait columns in the table are considered measure variables.
-					</div>
+					<i class="fa fa-question-circle fa-2x" tooltip-placement="bottom" tooltip-class="large" uib-tooltip="Transforms the data to the specified format."></i>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div loading-status-message><img th:src="@{/controller/static/images/loading-blue-on-white-lg.gif}" alt="loading" height="32" width="32"/></div>
+		<div class="col-md-12">
+			<div loading-status-message><img class="center-block" src="static/images/loading-blue-on-white-lg.gif" alt="loading" height="32" width="32"/></div>
+		</div>
 	</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-default" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" ng-disabled="isEmptySelection" ng-click="proceed()">OK</button>
+	<button class="btn btn-default" ng-disabled="isExporting" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" ng-disabled="isExporting" ng-click="proceed()">OK</button>
 </div>
