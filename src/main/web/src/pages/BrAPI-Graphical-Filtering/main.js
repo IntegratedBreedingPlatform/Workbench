@@ -268,31 +268,49 @@ function error(data) {
 
 // Angular ****************************
 
-var mainApp = angular.module('mainApp', ['loadingStatus']);
+var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
 
-mainApp.controller('MainController', function MainController($scope, $http, $q) {
+mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
-	$scope.errorMessage = '';
-	$scope.rCallObjects = [];
-	$scope.selectedRCallObject;
-	$scope.meltRCallObject = {};
 	$scope.groupByAccession = false;
 
-	$scope.$watch('groupByAccession', function(newValue, oldValue) {
+	$scope.$watch('groupByAccession', function (newValue, oldValue) {
 		if (!newValue) {
 			// reload the table if the groupByAccession is unchecked.
 			$("#brapi-form").submit();
 		}
 	});
 
-	$scope.onExportClick = function () {
+	$scope.openExportModal = function () {
+		$uibModal.open({
+			templateUrl: 'pages/BrAPI-Graphical-Filtering/exportModal.html',
+			controller: 'ExportModalController'
+		});
+	};
+
+}]);
+
+mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModalInstance', function ($scope, $http, $q, $uibModalInstance) {
+
+	$scope.errorMessage = '';
+	$scope.rCallObjects = [];
+	$scope.selectedRCallObject;
+	$scope.meltRCallObject = {};
+
+	$scope.proceed = function () {
+
 		$scope.errorMessage = '';
+
 		if (rawData) {
 			var isAggregate = $scope.selectedRCallObject.parameters.hasOwnProperty('fun.aggregate');
 			transform(angular.copy($scope.selectedRCallObject), normalizeDataForExport(rawData, isAggregate));
 		} else {
 			$scope.errorMessage = 'Load the data first.';
 		}
+	};
+
+	$scope.cancel = function () {
+		$uibModalInstance.close(null);
 	};
 
 	$scope.loadRCallsObjects = function () {
@@ -320,6 +338,44 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 
 	$scope.loadRCallsObjects();
 	$scope.retrieveMeltRCallObject();
+
+	function transform(rObject, data) {
+		$scope.meltRCallObject.parameters.data = JSON.stringify(data);
+		// melt the data first before transforming
+		executeOpenCPU($scope.meltRCallObject.endpoint + '/json', $scope.meltRCallObject.parameters).then(function (moltenData) {
+			rObject.parameters.data = JSON.stringify(moltenData);
+			// transform the molten data through R cast function
+			return executeOpenCPU(rObject.endpoint + '/csv', rObject.parameters);
+		}).then(function (result) {
+			// download the transformed data as CSV.
+			download(result);
+			$uibModalInstance.close(null);
+		});
+	}
+
+	function executeOpenCPU(url, parameters) {
+		var deferred = $q.defer();
+		// perform the request
+		$http({
+			method: 'POST',
+			url: url,
+			data: $.param(parameters),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		}).success(function (data) {
+			deferred.resolve(data);
+		}).error(function (message) {
+			$scope.errorMessage = message;
+		});
+		return deferred.promise;
+	}
+
+	function download(data) {
+		var link = window.document.createElement('a');
+		var blob = new Blob([data]);
+		link.href = window.URL.createObjectURL(blob);
+		link.download = 'datafile.csv';
+		link.click();
+	}
 
 	function normalizeDataForExport(rawData, convertStringToNumeric) {
 		var traits = {};
@@ -350,43 +406,7 @@ mainApp.controller('MainController', function MainController($scope, $http, $q) 
 		return data;
 	}
 
-	function transform(rObject, data) {
-		$scope.meltRCallObject.parameters.data = JSON.stringify(data);
-		// melt the data first before transforming
-		executeOpenCPU($scope.meltRCallObject.endpoint + '/json', $scope.meltRCallObject.parameters).then(function (moltenData) {
-			rObject.parameters.data = JSON.stringify(moltenData);
-			// transform the molten data through R cast function
-			return executeOpenCPU(rObject.endpoint + '/csv', rObject.parameters);
-		}).then(function (result) {
-			// download the transformed data as CSV.
-			download(result);
-		});
-	}
-
-	function executeOpenCPU(url, parameters) {
-		var deferred = $q.defer();
-		// perform the request
-		$http({
-			method: 'POST',
-			url: url,
-			data: $.param(parameters),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).success(function (data) {
-			deferred.resolve(data);
-		}).error(function (message) {
-			$scope.errorMessage = message;
-		});
-		return deferred.promise;
-	}
-
-	function download(data) {
-		var link = window.document.createElement('a');
-		var blob = new Blob([data]);
-		link.href = window.URL.createObjectURL(blob);
-		link.download = 'datafile.csv';
-		link.click();
-	}
-});
+}]);
 
 angular.module('loadingStatus', []).config(function ($httpProvider) {
 	$httpProvider.interceptors.push('loadingStatusInterceptor');
