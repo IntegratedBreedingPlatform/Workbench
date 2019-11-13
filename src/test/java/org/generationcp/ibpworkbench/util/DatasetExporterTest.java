@@ -158,16 +158,16 @@ public class DatasetExporterTest {
 			"Expecting to return true since dummy replicates factor was used and design type is " + this.bvInput.getDesignType(),
 			isDummyRepUsed);
 
-		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.P_REP.getBvDesignName());
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.P_REP.getBvName());
 		isDummyRepUsed = this.exporter.isDummyRepVariableUsed(this.bvInput);
 		Assert.assertFalse(
 			"Expecting to return false because even though dummy replicates factor was used, design type is " + ExperimentDesignType.P_REP
-				.getBvDesignName(), isDummyRepUsed);
+				.getBvName(), isDummyRepUsed);
 
-		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName());
 		isDummyRepUsed = this.exporter.isDummyRepVariableUsed(this.bvInput);
 		Assert.assertFalse("Expecting to return false because even though dummy replicates factor was used, design type is "
-			+ ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName(), isDummyRepUsed);
+			+ ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName(), isDummyRepUsed);
 	}
 
 	@Test
@@ -583,7 +583,7 @@ public class DatasetExporterTest {
 
 		// Setup BreedingViewInput mocks
 		Mockito.when(this.bvInput.getTrialInstanceName()).thenReturn(DatasetExporterTest.DEFAULT_TRIAL_INSTANCE_NAME);
-		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
+		Mockito.when(this.bvInput.getDesignType()).thenReturn(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName());
 
 		final HashMap<String, Boolean> traitsSelectionMap = new HashMap<String, Boolean>();
 		traitsSelectionMap.put(EPP_VARIATE, true);
