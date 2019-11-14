@@ -8,6 +8,10 @@
 	<br/>
 	<div class="row">
 		<div class="col-md-12 form-horizontal">
+			<div class="alert alert-danger alert-dismissible" ng-if="errorMessage">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Export Error!</strong> {{errorMessage}}
+			</div>
 			<div class="form-group">
 				<label class="control-label col-md-3">Transformation</label>
 				<div class="col-md-7">

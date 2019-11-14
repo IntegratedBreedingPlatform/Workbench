@@ -325,6 +325,8 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			download(response.data);
 			$uibModalInstance.close();
 			$scope.isExporting = false;
+		}).catch(function (errorResponse) {
+			$scope.errorMessage = 'An error occurred while connecting to OpenCPU API. ' + errorResponse.data;
 		});
 	}
 
