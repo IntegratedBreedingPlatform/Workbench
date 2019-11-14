@@ -321,13 +321,13 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 		$scope.isExporting = true;
 		$scope.meltRCallObject.parameters.data = JSON.stringify(data);
 		// melt the data first before transforming
-		rCallService.executeRCallAsJSON($scope.meltRCallObject.endpoint, $scope.meltRCallObject.parameters).success(function (moltenData) {
-			rObject.parameters.data = JSON.stringify(moltenData);
+		rCallService.executeRCallAsJSON($scope.meltRCallObject.endpoint, $scope.meltRCallObject.parameters).then(function (response) {
+			rObject.parameters.data = JSON.stringify(response.data);
 			// transform the molten data through R cast function
 			return rCallService.executeRCallAsCSV(rObject.endpoint, rObject.parameters);
-		}).success(function (result) {
+		}).then(function (response) {
 			// download the transformed data as CSV.
-			download(result);
+			download(response.data);
 			$uibModalInstance.close(null);
 			$scope.isExporting = false;
 		});
