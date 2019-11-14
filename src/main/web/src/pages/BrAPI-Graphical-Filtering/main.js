@@ -276,7 +276,8 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 
 }]);
 
-mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModalInstance', function ($scope, $http, $q, $uibModalInstance) {
+mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService',
+	function ($scope, $q, $uibModalInstance, rCallService) {
 
 	$scope.errorMessage = '';
 	$scope.rCallObjects = [];
@@ -285,15 +286,9 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 	$scope.isExporting = false;
 
 	$scope.proceed = function () {
-
 		$scope.errorMessage = '';
-
-		if (rawData) {
-			var isAggregate = $scope.selectedRCallObject.parameters.hasOwnProperty('fun.aggregate');
-			transform(angular.copy($scope.selectedRCallObject), normalizeDataForExport(rawData, isAggregate));
-		} else {
-			$scope.errorMessage = 'Load the data first.';
-		}
+		var isAggregate = $scope.selectedRCallObject.parameters.hasOwnProperty('fun.aggregate');
+		transform(angular.copy($scope.selectedRCallObject), normalizeDataForExport(rawData, isAggregate));
 	};
 
 	$scope.cancel = function () {
@@ -302,11 +297,7 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 
 	$scope.loadRCallsObjects = function () {
 		var castPackageId = 1;
-		$http({
-			method: 'GET',
-			url: '/bmsapi/rpackage/rcalls/' + castPackageId,
-			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
-		}).success(function (data) {
+		rCallService.getRCallsObjects(castPackageId).success(function (data) {
 			$scope.rCallObjects = data;
 			$scope.selectedRCallObject = $scope.rCallObjects[0];
 		});
@@ -314,20 +305,14 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 
 	$scope.retrieveMeltRCallObject = function () {
 		var meltPackageId = 2;
-		$http({
-			method: 'GET',
-			url: '/bmsapi/rpackage/rcalls/' + meltPackageId,
-			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
-		}).success(function (data) {
+		rCallService.getRCallsObjects(meltPackageId).success(function (data) {
 			$scope.meltRCallObject = data[0];
 		});
 	};
 
 	$scope.init = function() {
-
 		$scope.loadRCallsObjects();
 		$scope.retrieveMeltRCallObject();
-
 	};
 
 	$scope.init();
@@ -336,32 +321,16 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 		$scope.isExporting = true;
 		$scope.meltRCallObject.parameters.data = JSON.stringify(data);
 		// melt the data first before transforming
-		executeOpenCPU($scope.meltRCallObject.endpoint + '/json', $scope.meltRCallObject.parameters).then(function (moltenData) {
+		rCallService.executeRCallAsJSON($scope.meltRCallObject.endpoint, $scope.meltRCallObject.parameters).success(function (moltenData) {
 			rObject.parameters.data = JSON.stringify(moltenData);
 			// transform the molten data through R cast function
-			return executeOpenCPU(rObject.endpoint + '/csv', rObject.parameters);
-		}).then(function (result) {
+			return rCallService.executeRCallAsCSV(rObject.endpoint, rObject.parameters);
+		}).success(function (result) {
 			// download the transformed data as CSV.
 			download(result);
 			$uibModalInstance.close(null);
 			$scope.isExporting = false;
 		});
-	}
-
-	function executeOpenCPU(url, parameters) {
-		var deferred = $q.defer();
-		// perform the request
-		$http({
-			method: 'POST',
-			url: url,
-			data: $.param(parameters),
-			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-		}).success(function (data) {
-			deferred.resolve(data);
-		}).error(function (message) {
-			$scope.errorMessage = message;
-		});
-		return deferred.promise;
 	}
 
 	function download(data) {
@@ -400,6 +369,41 @@ mainApp.controller('ExportModalController', ['$scope', '$http', '$q', '$uibModal
 		});
 		return data;
 	}
+
+}]);
+
+mainApp.factory('rCallService', ['$http', function($http) {
+
+	var rCallService = {};
+
+	rCallService.getRCallsObjects = function (packageId) {
+		return $http({
+			method: 'GET',
+			url: '/bmsapi/rpackage/rcalls/' + packageId,
+			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
+		});
+	};
+
+	rCallService.executeRCallAsCSV = function (url, parameters) {
+		return $http({
+			method: 'POST',
+			url: url + '/csv',
+			data: $.param(parameters),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		});
+	}
+
+	rCallService.executeRCallAsJSON = function (url, parameters) {
+		return $http({
+			method: 'POST',
+			url: url + '/json',
+			data: $.param(parameters),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		});
+	}
+
+	return rCallService;
+
 
 }]);
 
