@@ -97,6 +97,7 @@ public class SaveToListDialog extends BaseSubWindow
 	private Map<String, Integer> mapExistingList;
 
 	private QueryForAdaptedGermplasmMain mainScreen;
+	private TraitDonorsQueryMain mainScreen2;
 	private GermplasmList lastSelectedFolder;
 
 	public SaveToListDialog(final QueryForAdaptedGermplasmMain mainScreen, final Component source, final Window parentWindow,
@@ -108,6 +109,7 @@ public class SaveToListDialog extends BaseSubWindow
 
 	public SaveToListDialog(final TraitDonorsQueryMain mainScreen2, final Component source, final Window parentWindow,
 			final Map<Integer, String> germplasmsMap) {
+		this.mainScreen2  = mainScreen2;
 		this.parentWindow = parentWindow;
 		this.germplasmsMap = germplasmsMap;
 	}
@@ -288,7 +290,7 @@ public class SaveToListDialog extends BaseSubWindow
 		this.comboBoxListName.select("");
 	}
 
-	private void populateSelectType(final Select selectType) throws MiddlewareQueryException {
+	protected void populateSelectType(final Select selectType) throws MiddlewareQueryException {
 		final List<UserDefinedField> listTypes = this.germplasmListManager.getGermplasmListTypes();
 		VaadinComponentsUtil.populateSelectType(selectType, listTypes);
 	}
@@ -309,11 +311,16 @@ public class SaveToListDialog extends BaseSubWindow
 
 		// proceed with the saving of germplasm list
 		final String listNameId = String.valueOf(this.mapExistingList.get(this.comboBoxListName.getValue()));
-		this.addGermplasListNameAndData(listName, listNameId, this.germplasmsMap, this.txtDescription.getValue().toString(),
-				this.selectType.getValue().toString());
+		this.addGermplasListNameAndData(listName, listNameId, this.germplasmsMap, this.txtDescription.getValue().toString(),this.selectType.getValue().toString());
 		this.closeSavingGermplasmListDialog();
 
-		this.mainScreen.selectWelcomeTab();
+		//Identifies w/c mainscreen will be selected
+		if(this.mainScreen!=null){
+			this.mainScreen.selectWelcomeTab();
+		}else if(mainScreen2!=null) {
+			this.mainScreen2.selectWelcomeTab();
+		}
+
 
 		// display notification message
 		MessageNotifier.showMessage(this.parentWindow, this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_LABEL),
@@ -354,13 +361,12 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(listid);
 
-				//final String groupName = "-";
 				String designation = "-";
 				final int status = 0;
 				final int localRecordId = 0;
 				int entryid = 1;
 
-				final Map<Integer, String> crossExpansions = this.bulkGeneratePedigreeString(germplasmsMap.keySet(), 1);
+				final Map<Integer, String> crossExpansions = this.bulkGeneratePedigreeString(germplasmsMap.keySet());
 
 
 				for (final Map.Entry<Integer, String> entry : germplasmsMap.entrySet()) {
@@ -380,6 +386,7 @@ public class SaveToListDialog extends BaseSubWindow
 							designation, groupName, status, localRecordId);
 
 					this.germplasmListManager.addGermplasmListData(germplasmListData);
+
 
 					entryid++;
 
@@ -494,18 +501,45 @@ public class SaveToListDialog extends BaseSubWindow
 		this.comboBoxListName = combobox;
 	}
 
-	private Map<Integer, String> bulkGeneratePedigreeString(Set<Integer> gids, Integer crossExpansionLevel) {
-
-		;
+	protected Map<Integer, String> bulkGeneratePedigreeString(Set<Integer> gids) {
 		final Iterable<List<Integer>> partition = Iterables.partition(gids, 5000);
 
 		final Map<Integer, String> crossExpansions = new HashMap<>();
 
 		for (final List<Integer> partitionedGidList : partition) {
 			final Set<Integer> partitionedGidSet = new HashSet<>(partitionedGidList);
-			crossExpansions.putAll(this.pedigreeService.getCrossExpansions(partitionedGidSet, crossExpansionLevel.intValue(),
+			crossExpansions.putAll(this.pedigreeService.getCrossExpansions(partitionedGidSet, null,
 					this.crossExpansionProperties));
 		}
 		return crossExpansions;
 	}
+
+	protected void setPedigreeService(PedigreeService pedigreeService){
+		this.pedigreeService = pedigreeService;
+	}
+
+	protected void setCrossExpansionProperties(CrossExpansionProperties crossExpansionProperties){
+		this.crossExpansionProperties = crossExpansionProperties;
+	}
+
+	protected void setComboBoxListNameValue(String value){
+		if(!this.comboBoxListName.containsId(value)) {
+			this.comboBoxListName.addItem(value);
+		}
+		this.comboBoxListName.setValue(value);
+	}
+
+	protected void setSelectTypeValue(String value){
+		this.selectType.setValue(value);
+	}
+
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	protected  void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+
+
 }
