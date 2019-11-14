@@ -57,8 +57,8 @@ public class SaveToListDialog extends BaseSubWindow
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaveToListDialog.class);
 	private static final long serialVersionUID = 1L;
-	public static final Object SAVE_BUTTON_ID = "Save Germplasm List";
-	public static final String CANCEL_BUTTON_ID = "Cancel Saving";
+	private static final Object SAVE_BUTTON_ID = "Save Germplasm List";
+    private static final String CANCEL_BUTTON_ID = "Cancel Saving";
 	public static final String DATE_AS_NUMBER_FORMAT = "yyyyMMdd";
 	private static final String ONE_HUNDRED_PX = "100px";
 
@@ -278,19 +278,19 @@ public class SaveToListDialog extends BaseSubWindow
 
 	protected void populateComboBoxListName() throws MiddlewareQueryException {
 		this.germplasmList = this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists());
-		this.mapExistingList = new HashMap<String, Integer>();
+		this.mapExistingList = new HashMap<>();
 		this.comboBoxListName.addItem("");
 		for (final GermplasmList gList : this.germplasmList) {
 			if (!"FOLDER".equals(gList.getType())
 					&& (gList.getProgramUUID() == null || gList.getProgramUUID().equals(this.contextUtil.getCurrentProgramUUID()))) {
 				this.comboBoxListName.addItem(gList.getName());
-				this.mapExistingList.put(gList.getName(), new Integer(gList.getId()));
+				this.mapExistingList.put(gList.getName(), gList.getId());
 			}
 		}
 		this.comboBoxListName.select("");
 	}
 
-	protected void populateSelectType(final Select selectType) throws MiddlewareQueryException {
+	private void populateSelectType(final Select selectType) throws MiddlewareQueryException {
 		final List<UserDefinedField> listTypes = this.germplasmListManager.getGermplasmListTypes();
 		VaadinComponentsUtil.populateSelectType(selectType, listTypes);
 	}
@@ -350,7 +350,7 @@ public class SaveToListDialog extends BaseSubWindow
 			final Integer userId = this.contextUtil.getCurrentWorkbenchUserId();
 			final GermplasmList parent = (GermplasmList) this.folderToSaveListTo.getData();
 			final int statusListName = 1;
-			String gidListString = "";
+			StringBuilder gidListString = new StringBuilder();
 
 			if ("null".equals(listId)) {
 				final GermplasmList listNameData = new GermplasmList(null, listName, DateUtil.getCurrentDateAsLongValue(), type, userId,
@@ -361,7 +361,6 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(listid);
 
-				String designation = "-";
 				final int status = 0;
 				final int localRecordId = 0;
 				int entryid = 1;
@@ -372,12 +371,8 @@ public class SaveToListDialog extends BaseSubWindow
 				for (final Map.Entry<Integer, String> entry : germplasmsMap.entrySet()) {
 
 					final Integer gid = entry.getKey();
-					designation = entry.getValue() == null ? "-" : entry.getValue();
-
-					String groupName = "-";
-					if(crossExpansions.containsKey(gid)){
-						groupName = crossExpansions.get(gid);
-					}
+					String designation = entry.getValue() == null ? "-" : entry.getValue();
+					String groupName = crossExpansions.get(gid) == null ? "-" : crossExpansions.get(gid);
 
 					final String entryCode = String.valueOf(entryid);
 					final String seedSource = "Browse for " + designation;
@@ -390,7 +385,9 @@ public class SaveToListDialog extends BaseSubWindow
 
 					entryid++;
 
-					gidListString = gidListString + ", " + Integer.toString(gid);
+                    gidListString.append(", ").append(gid);
+
+
 
 				}
 
@@ -398,7 +395,6 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(Integer.valueOf(listId));
 				final String groupName = "-";
-				String designation = "-";
 				final int status = 0;
 				final int localRecordId = 0;
 				int entryid = (int) this.germplasmListManager.countGermplasmListDataByListId(Integer.valueOf(listId));
@@ -418,15 +414,14 @@ public class SaveToListDialog extends BaseSubWindow
 						++entryid;
 
 						// save germplasm's preferred name as designation
-						designation = entryCode;
 
-						final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode,
-								seedSource, designation, groupName, status, localRecordId);
+                        final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode,
+								seedSource, entryCode, groupName, status, localRecordId);
 
 						this.germplasmListManager.addGermplasmListData(germplasmListData);
 
 					}
-					gidListString = gidListString + ", " + Integer.toString(gid);
+					gidListString.append(", ").append(gid);
 				}
 
 			}
@@ -439,7 +434,7 @@ public class SaveToListDialog extends BaseSubWindow
 		}
 	}
 
-	public void closeSavingGermplasmListDialog() {
+	private void closeSavingGermplasmListDialog() {
 		final Window window = this.getWindow();
 		window.getParent().removeWindow(window);
 	}
@@ -447,7 +442,7 @@ public class SaveToListDialog extends BaseSubWindow
 	@Override
 	public void setSelectedFolder(final GermplasmList folder) {
 		try {
-			final Deque<GermplasmList> parentFolders = new ArrayDeque<GermplasmList>();
+			final Deque<GermplasmList> parentFolders = new ArrayDeque<>();
 			GermplasmListTreeUtil.traverseParentsOfList(this.germplasmListManager, folder, parentFolders);
 
 			final StringBuilder locationFolderString = new StringBuilder();
@@ -466,8 +461,8 @@ public class SaveToListDialog extends BaseSubWindow
 
 			if (folder != null && folder.getName().length() >= 36) {
 				this.folderToSaveListTo.setValue(folder.getName().substring(0, 47));
-			} else if (locationFolderString.length() > 43) {
-				final int lengthOfFolderName = folder.getName().length();
+			} else if (locationFolderString.length() > 43 && folder!=null) {
+                final int lengthOfFolderName = folder.getName().length();
 				this.folderToSaveListTo
 						.setValue(locationFolderString.substring(0, 43 - lengthOfFolderName - 6) + "... > " + folder.getName());
 			} else {
@@ -478,13 +473,14 @@ public class SaveToListDialog extends BaseSubWindow
 			this.folderToSaveListTo.setData(folder);
 			this.lastSelectedFolder = folder;
 		} catch (final MiddlewareQueryException ex) {
-			SaveToListDialog.LOG.error("Error with traversing parents of list: " + folder.getId(), ex);
+		    int id = folder!=null ? folder.getId() : 0;
+            SaveToListDialog.LOG.error("Error with traversing parents of list: " + id, ex);
 		}
 	}
 
 	private void displaySelectFolderDialog() {
 		final GermplasmList selectedFolder = (GermplasmList) this.folderToSaveListTo.getData();
-		SelectLocationFolderDialog selectFolderDialog = null;
+		SelectLocationFolderDialog selectFolderDialog;
 		if (selectedFolder != null) {
 			selectFolderDialog = new SelectLocationFolderDialog(this, selectedFolder.getId());
 		} else {
