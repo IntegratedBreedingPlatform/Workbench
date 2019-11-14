@@ -1,39 +1,5 @@
-var rawData;
-
 // FIXME: Refactor these to Angular.
 $(document).ready(function () {
-
-	var run = false;
-	$("#brapi-form").submit(function () {
-		if (run) {
-			$("#filtered_results").DataTable().destroy();
-			$("#filtered_results").html("");
-		}
-		run = true;
-		var form = $(this).serializeArray().reduce(function (vals, entry) {
-			vals[entry.name] = entry.value;
-			return vals
-		}, {});
-		var studyDbId = getUrlParameter("studyDbId");
-
-		loadBrAPIData({
-			studyDbIds: studyDbId ? [studyDbId] : [],
-			locationDbIds: $('#locations select').val() || null,
-			observationLevel: form.observationLevel || null,
-			programDbIds: [getUrlParameter('programUuid')],
-			trialDbIds: $('#trials select').val() || null,
-			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
-			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
-			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
-		}).then(function (response) {
-			// Store the rawData from the server so we can transform and send it to OpenCPU api later.
-			// FIXME: In Export function, directly get the data from server instead of using data from global variable.
-			rawData = response.result.data;
-			useBrAPIData(response, (!!form.group));
-		});
-
-		return false;
-	});
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
 	});
@@ -41,7 +7,6 @@ $(document).ready(function () {
 		buildObservationLevelsCombo(response);
 	});
 	loadTrials();
-
 });
 
 function loadLocations() {
@@ -146,20 +111,6 @@ function loadBrAPIData(parameters) {
 	});
 }
 
-function tryParseInt(str, defaultValue) {
-	var retValue = defaultValue;
-	if (str) {
-		if (!isNaN(str)) {
-			retValue = parseInt(str);
-		} else {
-			retValue = 0;
-		}
-	} else {
-		retValue = 'NA';
-	}
-	return retValue;
-}
-
 // filters and modifies the response and then creates the root filter object
 // and datatable
 function useBrAPIData(response, groupByAccession) {
@@ -258,26 +209,70 @@ var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
 
 mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $uibModal) {
 
-	$scope.groupByAccession = false;
+	$scope.flags = {
+		groupByAccession : false,
+		isDataLoaded : false
+	};
 
-	$scope.$watch('groupByAccession', function (newValue, oldValue) {
-		if (!newValue) {
+	$scope.rawData = [];
+
+	$scope.loadData = function() {
+
+			if ($.fn.DataTable.isDataTable("#filtered_results")) {
+				$("#filtered_results").DataTable().destroy();
+				$("#filtered_results").html("");
+			}
+
+			var form = $("#brapi-form").serializeArray().reduce(function (vals, entry) {
+				vals[entry.name] = entry.value;
+				return vals
+			}, {});
+			var studyDbId = getUrlParameter("studyDbId");
+
+		// FIXME: Refactor these to Angular.
+			loadBrAPIData({
+				studyDbIds: studyDbId ? [studyDbId] : [],
+				locationDbIds: $('#locations select').val() || null,
+				observationLevel: form.observationLevel || null,
+				programDbIds: [getUrlParameter('programUuid')],
+				trialDbIds: $('#trials select').val() || null,
+				observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
+				observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
+				germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
+			}).then(function (response) {
+				// Store the rawData from the server so we can transform and send it to OpenCPU api later.
+				$scope.rawData = response.result.data;
+				$scope.$apply(function(){
+					$scope.flags.isDataLoaded = $scope.rawData.length > 0;
+				});
+				useBrAPIData(response, (!!form.group));
+			});
+
+	};
+
+	$scope.$watch('flags.groupByAccession', function (newValue, oldValue) {
+		if (newValue !== oldValue && !newValue) {
 			// reload the table if the groupByAccession is unchecked.
-			$("#brapi-form").submit();
+			$scope.loadData();
 		}
 	});
 
 	$scope.openExportModal = function () {
 		$uibModal.open({
 			templateUrl: 'pages/BrAPI-Graphical-Filtering/exportModal.html',
-			controller: 'ExportModalController'
+			controller: 'ExportModalController',
+			resolve: {
+				rawData: function () {
+					return $scope.rawData;
+				}
+			}
 		});
 	};
 
 }]);
 
-mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService',
-	function ($scope, $q, $uibModalInstance, rCallService) {
+mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'rawData',
+	function ($scope, $q, $uibModalInstance, rCallService, rawData) {
 
 	$scope.errorMessage = '';
 	$scope.rCallObjects = [];
@@ -292,7 +287,7 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 	};
 
 	$scope.cancel = function () {
-		$uibModalInstance.close(null);
+		$uibModalInstance.close();
 	};
 
 	$scope.loadRCallsObjects = function () {
@@ -328,7 +323,7 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 		}).then(function (response) {
 			// download the transformed data as CSV.
 			download(response.data);
-			$uibModalInstance.close(null);
+			$uibModalInstance.close();
 			$scope.isExporting = false;
 		});
 	}
@@ -369,6 +364,20 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 		});
 		return data;
 	}
+
+		function tryParseInt(str, defaultValue) {
+			var retValue = defaultValue;
+			if (str) {
+				if (!isNaN(str)) {
+					retValue = parseInt(str);
+				} else {
+					retValue = 0;
+				}
+			} else {
+				retValue = 'NA';
+			}
+			return retValue;
+		}
 
 }]);
 

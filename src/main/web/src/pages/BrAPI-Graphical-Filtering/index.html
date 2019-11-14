@@ -65,16 +65,16 @@
 				<div class="form-group">
 					<label class="control-label col-sm-4">Group By Accession</label>
 					<div class="col-sm-8">
-						<input type="checkbox" name="group" ng-model="groupByAccession"/>
+						<input type="checkbox" name="group" ng-model="flags.groupByAccession"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"></div>
 					<div class="col-sm-3">
-						<input type="submit" action="#" id="load-brapi"
-							   class="btn btn-primary" value="Load"/>
+						<button id="load-brapi"
+							   class="btn btn-primary" ng-click="loadData()">Load</button>
 						<button id="export"
-								class="btn btn-primary" value="Export" ng-click="openExportModal()" ng-disabled="groupByAccession">
+								class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
 							Export
 						</button>
 					</div>
