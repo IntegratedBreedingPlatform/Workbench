@@ -424,7 +424,7 @@ angular.module('loadingStatus', []).config(function ($httpProvider) {
 	return {
 		link: function ($scope, $element, attrs) {
 			var show = function () {
-				$element.css('display', 'block');
+				$element.css('display', 'inline-block');
 			};
 			var hide = function () {
 				$element.css('display', 'none');

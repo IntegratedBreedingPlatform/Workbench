@@ -1,7 +1,7 @@
 <div class="modal-body">
 	<div class="row form-group">
 		<div class="col-md-12">
-			<label class="modal-title" id="heading-modal">Export</label>
+			<label class="modal-title" id="heading-modal">Export</label>&nbsp;&nbsp;<span class="label label-default">BETA</span>
 		</div>
 	</div>
 	<div class="separator"></div>
@@ -24,12 +24,23 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12">
-			<div loading-status-message><img class="center-block" src="static/images/loading-blue-on-white-lg.gif" alt="loading" height="32" width="32"/></div>
+	</div>
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-4">
+			<button class="btn btn-default" ng-disabled="isExporting" ng-click="cancel()">Cancel</button>
+			<button class="btn btn-primary" ng-disabled="isExporting" ng-click="proceed()">OK</button>
+			<div loading-status-message><img src="static/images/loading-blue-on-white-lg.gif" alt="loading" height="32" width="32"/></div>
 		</div>
 	</div>
+	<div class="col-md-4"></div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-default" ng-disabled="isExporting" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" ng-disabled="isExporting" ng-click="proceed()">OK</button>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="pull-right">
+				Powered by <span style="background-color: #333; padding: 5px; border-radius: 5px"><img src="static/images/opencpulogo.png"/></span>
+			</div>
+		</div>
+	</div>
 </div>
