@@ -1,20 +1,19 @@
 
 package org.generationcp.ibpworkbench.validator;
 
-import java.util.regex.Pattern;
-
-import javax.annotation.Resource;
-
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
+
+import javax.annotation.Resource;
+import java.util.regex.Pattern;
 
 /**
  * Created by cyrus on 11/26/14.
@@ -29,11 +28,9 @@ public class UserAccountValidator implements Validator {
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
 	public static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
-	public static final String SIGNUP_FIELD_INVALID_ROLE = "signup.field.invalid.role";
 	public static final String SIGNUP_FIELD_PASSWORD_NOT_MATCH = "signup.field.password.not.match";
 	public static final String SIGNUP_FIELD_USERNAME_EXISTS = "signup.field.username.exists";
 	public static final String DATABASE_ERROR = "database.error";
-	public static final String SIGNUP_FIELD_PERSON_EXISTS = "signup.field.person.exists";
 	public static final String SIGNUP_FIELD_LENGTH_EXCEED = "signup.field.length.exceed";
 	public static final String SIGNUP_FIELD_EMAIL_EXISTS = "signup.field.email.exists";
 	public static final String SIGNUP_FIELD_INVALID_EMAIL_FORMAT = "signup.field.email.invalid";
@@ -48,19 +45,19 @@ public class UserAccountValidator implements Validator {
 	public static final String CONFIRMATION_PASSWORD_STR = "Confirmation Password";
 
 	@Resource
-	protected WorkbenchDataManager workbenchDataManager;
+	protected UserService userService;
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
 
 	@Override
-	public boolean supports(Class<?> aClass) {
+	public boolean supports(final Class<?> aClass) {
 		return UserAccountModel.class.isAssignableFrom(aClass);
 	}
 
 	@Override
-	public void validate(Object o, Errors errors) {
-		UserAccountModel userAccount = (UserAccountModel) o;
+	public void validate(final Object o, final Errors errors) {
+		final UserAccountModel userAccount = (UserAccountModel) o;
 
 		this.validateFieldsEmptyOrWhitespace(errors);
 
@@ -78,24 +75,24 @@ public class UserAccountValidator implements Validator {
 
 	}
 
-	public void validateUserActive(UserAccountModel userAccount, Errors errors) {
+	public void validateUserActive(final UserAccountModel userAccount, final Errors errors) {
 		try {
 			if (!this.workbenchUserService.isUserActive(userAccount)) {
 				errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.LOGIN_ATTEMPT_USER_INACTIVE);
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.DATABASE_ERROR);
 			UserAccountValidator.LOG.error(e.getMessage(), e);
 		}
 	}
 
-	protected void validateEmailFormat(Errors errors, UserAccountModel userAccount) {
+	protected void validateEmailFormat(final Errors errors, final UserAccountModel userAccount) {
 		if (!Pattern.compile(UserAccountValidator.EMAIL_PATTERN).matcher(userAccount.getEmail()).matches()) {
 			errors.rejectValue(UserAccountFields.EMAIL, UserAccountValidator.SIGNUP_FIELD_INVALID_EMAIL_FORMAT);
 		}
 	}
 
-	protected void validateFieldsEmptyOrWhitespace(Errors errors) {
+	protected void validateFieldsEmptyOrWhitespace(final Errors errors) {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.FIRST_NAME, UserAccountValidator.SIGNUP_FIELD_REQUIRED,
 				new String[] {UserAccountValidator.FIRST_NAME_STR});
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, UserAccountFields.LAST_NAME, UserAccountValidator.SIGNUP_FIELD_REQUIRED,
@@ -112,7 +109,7 @@ public class UserAccountValidator implements Validator {
 				new String[] {UserAccountValidator.CONFIRMATION_PASSWORD_STR});
 	}
 
-	protected void validateFieldLength(Errors errors, String fieldValue, String fieldProperty, String fieldName, Integer maxLength) {
+	protected void validateFieldLength(final Errors errors, final String fieldValue, final String fieldProperty, final String fieldName, final Integer maxLength) {
 
 		if (maxLength < fieldValue.length()) {
 			errors.rejectValue(fieldProperty, UserAccountValidator.SIGNUP_FIELD_LENGTH_EXCEED, new String[] {Integer.toString(maxLength),
@@ -120,7 +117,7 @@ public class UserAccountValidator implements Validator {
 		}
 	}
 
-	protected void validatePasswordConfirmationIfEquals(Errors errors, UserAccountModel userAccount) {
+	protected void validatePasswordConfirmationIfEquals(final Errors errors, final UserAccountModel userAccount) {
 		if (userAccount.getPassword() != null && userAccount.getPasswordConfirmation() != null
 				&& !userAccount.getPassword().equals(userAccount.getPasswordConfirmation())) {
 
@@ -128,24 +125,24 @@ public class UserAccountValidator implements Validator {
 		}
 	}
 
-	protected void validateUsernameIfExists(Errors errors, UserAccountModel userAccount) {
+	protected void validateUsernameIfExists(final Errors errors, final UserAccountModel userAccount) {
 		try {
-			if (this.workbenchDataManager.isUsernameExists(userAccount.getUsername())) {
+			if (this.userService.isUsernameExists(userAccount.getUsername())) {
 				errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS,
 						new String[] {userAccount.getUsername()}, null);
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.DATABASE_ERROR);
 			UserAccountValidator.LOG.error(e.getMessage(), e);
 		}
 	}
 
-	protected void validatePersonEmailIfExists(Errors errors, UserAccountModel userAccount) {
+	protected void validatePersonEmailIfExists(final Errors errors, final UserAccountModel userAccount) {
 		try {
-			if (this.workbenchDataManager.isPersonWithEmailExists(userAccount.getEmail())) {
+			if (this.userService.isPersonWithEmailExists(userAccount.getEmail())) {
 				errors.rejectValue(UserAccountFields.EMAIL, UserAccountValidator.SIGNUP_FIELD_EMAIL_EXISTS);
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.EMAIL, UserAccountValidator.DATABASE_ERROR);
 			UserAccountValidator.LOG.error(e.getMessage(), e);
 		}

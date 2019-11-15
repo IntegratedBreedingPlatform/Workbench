@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -17,8 +18,12 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.RoleType;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
+import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,10 +54,13 @@ public class WorkbenchMainViewTest {
 	private Properties workbenchProperties;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Mock
 	private ContextUtil contextUtil;
+
+	@Mock
+	private WorkbenchDataManager workbenchDataManager;
 
 	@InjectMocks
 	private WorkbenchMainView workbenchMainView;
@@ -73,6 +81,14 @@ public class WorkbenchMainViewTest {
 		final WorkbenchUser currentUser = new WorkbenchUser(this.ADMIN_USER_ID);
 		currentUser.setName(CURRENT_USER_NAME);
 		currentUser.setPerson(person);
+
+		final UserRole userRole = new UserRole();
+		userRole.setUser(currentUser);
+		final Role role = new Role();
+		role.setName("Not a super admin");
+		userRole.setRole(role);
+		currentUser.setRoles(Lists.newArrayList(userRole));
+
 
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUser()).thenReturn(currentUser);
 
@@ -100,6 +116,7 @@ public class WorkbenchMainViewTest {
 	public void testHeaderLayoutWhenSiteAdminIsShown() {
 		this.workbenchMainView.setIsWorkbenchDashboardShown(false);
 		this.workbenchMainView.setDoHideSidebarToggleButton(false);
+		this.workbenchMainView.setIsAboutShown(false);
 		this.workbenchMainView.setIsSiteAdminShown(true);
 		this.workbenchMainView.showContent(new VerticalLayout());
 
@@ -158,7 +175,7 @@ public class WorkbenchMainViewTest {
 
 	private void verifyHeaderLayoutWHenShowingDashboard() {
 		final HorizontalLayout workbenchHeaderLayout = this.workbenchMainView.getWorkbenchHeaderLayout();
-		Assert.assertEquals(9, workbenchHeaderLayout.getComponentCount());
+		Assert.assertEquals(8, workbenchHeaderLayout.getComponentCount());
 
 		final Iterator<Component> componentIterator = workbenchHeaderLayout.getComponentIterator();
 		boolean addProgramButtonShown = false;
@@ -189,7 +206,7 @@ public class WorkbenchMainViewTest {
 		}
 
 		// Verify "Add Program" button is showing
-		Assert.assertTrue(addProgramButtonShown);
+		Assert.assertFalse(addProgramButtonShown);
 		Assert.assertTrue(helpButtonShown);
 		Assert.assertTrue(askSupportButtonShown);
 		Assert.assertTrue(userInfoButtonShown);
@@ -241,11 +258,11 @@ public class WorkbenchMainViewTest {
 		final WorkbenchUser user = new WorkbenchUser();
 		user.setUserid(101);
 
-		Mockito.when(this.workbenchDataManager.getUserInfo(Matchers.anyInt())).thenReturn(null);
+		Mockito.when(this.userService.getUserInfo(Matchers.anyInt())).thenReturn(null);
 
 		final UserInfo newUserInfo = this.workbenchMainView.createUserInfoIfNecessary(user);
 
-		Mockito.verify(this.workbenchDataManager, Mockito.times(1)).insertOrUpdateUserInfo(newUserInfo);
+		Mockito.verify(this.userService, Mockito.times(1)).insertOrUpdateUserInfo(newUserInfo);
 		Assert.assertEquals(user.getUserid(), newUserInfo.getUserId());
 		Assert.assertEquals(Integer.valueOf(0), newUserInfo.getLoginCount());
 
@@ -256,7 +273,12 @@ public class WorkbenchMainViewTest {
 
 		final Window window = Mockito.mock(Window.class);
 		final WorkbenchUser user = new WorkbenchUser(this.ADMIN_USER_ID);
-		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(this.ADMIN_USER_ID);
+		final UserRole userRole = new UserRole();
+		userRole.setUser(user);
+		final Role role = new Role();
+		role.setName(Role.SUPERADMIN);
+		userRole.setRole(role);
+		user.setRoles(Lists.newArrayList(userRole));
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(this.ADMIN_USER_ID);
@@ -274,7 +296,7 @@ public class WorkbenchMainViewTest {
 
 		final Window window = Mockito.mock(Window.class);
 		final WorkbenchUser user = new WorkbenchUser(this.ADMIN_USER_ID);
-		Mockito.doReturn(true).when(this.workbenchDataManager).isSuperAdminUser(this.ADMIN_USER_ID);
+		Mockito.doReturn(true).when(this.userService).isSuperAdminUser(this.ADMIN_USER_ID);
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(this.ADMIN_USER_ID);
@@ -293,7 +315,12 @@ public class WorkbenchMainViewTest {
 		final Window window = Mockito.mock(Window.class);
 		final int userId = 1000;
 		final WorkbenchUser user = new WorkbenchUser(userId);
-		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
+		final UserRole userRole = new UserRole();
+		userRole.setUser(user);
+		final Role role = new Role();
+		role.setName("Not a super admin");
+		userRole.setRole(role);
+		user.setRoles(Lists.newArrayList(userRole));
 
 		final UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(userId);
@@ -312,7 +339,7 @@ public class WorkbenchMainViewTest {
 		final Window window = Mockito.mock(Window.class);
 		final int userId = 1000;
 		final WorkbenchUser user = new WorkbenchUser(userId);
-		Mockito.doReturn(false).when(this.workbenchDataManager).isSuperAdminUser(userId);
+		Mockito.doReturn(false).when(this.userService).isSuperAdminUser(userId);
 
 
 		final UserInfo userInfo = new UserInfo();
@@ -379,7 +406,7 @@ public class WorkbenchMainViewTest {
 
 		this.workbenchMainView.onLoadOperations();
 
-		Mockito.verify(this.workbenchDataManager).incrementUserLogInCount(this.ADMIN_USER_ID);
+		Mockito.verify(this.userService).incrementUserLogInCount(this.ADMIN_USER_ID);
 
 	}
 

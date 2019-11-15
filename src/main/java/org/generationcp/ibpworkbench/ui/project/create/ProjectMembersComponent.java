@@ -11,7 +11,6 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +26,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -69,7 +69,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	private Component buttonArea;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -269,7 +269,7 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	}
 
 	Label generateRoleCell(final Object itemId) {
-		final String role = ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole();
+		final String role = (!((WorkbenchUser) itemId).getRoles().isEmpty()) ? ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole() : "";
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
@@ -298,23 +298,12 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 	 *  The crops are filtered by user in the basic details window
 	 */
 	Container createUsersContainer() {
-		final List<WorkbenchUser> validUserList = new ArrayList<>();
-
-		// TODO: This can be improved once we implement proper User-Person
-		// mapping
-		final List<WorkbenchUser> userList = this.workbenchDataManager.getAllActiveUsersSorted();
-		for (final WorkbenchUser user : userList) {
-			final Person person = this.workbenchDataManager.getPersonById(user.getPersonid());
-			user.setPerson(person);
-
-			if (person != null) {
-				validUserList.add(user);
-			}
-		}
+		final List<WorkbenchUser> userList = this.userService.getAllActiveUsersSorted();
 
 		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
-		for (final WorkbenchUser user : validUserList) {
-			if (user.getUserid().equals(this.contextUtil.getCurrentWorkbenchUserId())) {
+		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
+		for (final WorkbenchUser user : userList) {
+			if (user.getUserid().equals(currentUserId)) {
 				user.setEnabled(false);
 			}
 
@@ -328,8 +317,8 @@ public class ProjectMembersComponent extends VerticalLayout implements Initializ
 		return this.select.getValue();
 	}
 
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
+	public void setUserService(final UserService userService) {
+		this.userService = userService;
 	}
 
 	public void setContextUtil(final ContextUtil contextUtil) {

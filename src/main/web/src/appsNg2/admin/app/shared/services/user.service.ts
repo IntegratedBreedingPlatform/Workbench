@@ -1,12 +1,19 @@
 import { Inject, Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs/Rx';
 import { User } from './../models/user.model';
 import ServiceHelper from './service.helper';
+import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
 export class UserService {
-    private baseUrl: string = '/bmsapi';
+    private baseUrl: string = SERVER_API_URL;
+
+    public onUserAdded = new Subject<User>();
+    public onUserUpdated = new Subject<User>();
+
+    /** User been edited or created */
+    public user: User;
 
     private http: Http;
 
@@ -52,18 +59,17 @@ export class UserService {
     }
 
     private toUser(r: any): User {
-        let User = <User>({
+        let user = <User>({
             id: r.id,
             firstName: r.firstName,
             lastName: r.lastName,
             username: r.username,
             crops: r.crops,
-            role: r.role,
-            roleName: r.role.description,
+            userRoles: (r.userRoles == null) ? [] : r.userRoles,
             email: r.email,
-            status: r.status,
+            status: r.status
         });
-        return User;
+        return user;
     }
 
     private mapUser(response: Response): User {

@@ -89,7 +89,7 @@ public class ProjectBasicDetailsComponentTest {
 		this.testProject = ProjectTestDataInitializer.createProject();
 		this.cropTypes = Arrays.asList(new CropType("maize"), new CropType("rice"), new CropType("wheat"));
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(currentUser.getUserid());
-		Mockito.when(this.workbenchDataManager.getAvailableCropsForUser(currentUser.getUserid())).thenReturn(this.cropTypes);
+		Mockito.when(this.workbenchDataManager.getCropsWithAddProgramPermission(currentUser.getUserid())).thenReturn(this.cropTypes);
 		Mockito.when(this.messageSource.getMessage(Message.DUPLICATE_PROGRAM_NAME_ERROR)).thenReturn(DUPLICATE_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("NO_PROGRAM_NAME_ERROR")).thenReturn(NO_PROGRAM_NAME_ERROR);
 		Mockito.when(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR")).thenReturn(INVALID_PROGRAM_NAME);

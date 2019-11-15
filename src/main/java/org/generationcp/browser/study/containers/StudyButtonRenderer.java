@@ -18,6 +18,8 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @Configurable
 public class StudyButtonRenderer {
@@ -44,7 +46,13 @@ public class StudyButtonRenderer {
 	public Button renderStudyButton() {
 		final ExternalResource urlToOpenStudy = getURLStudy();
 		Button studyButton = new LinkButton(urlToOpenStudy, study.getName(), PARENT_WINDOW);
-		
+
+		try {
+			availableLinkToStudy(studyButton);
+		} catch (final AccessDeniedException e) {
+			studyButton.setEnabled(false);
+		}
+
 		// If user doesn't have proper permissions for a locked study, show error message
 		if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
 			studyButton = new Button(study.getName(), new LockedStudyButtonClickListener());
@@ -53,9 +61,15 @@ public class StudyButtonRenderer {
 			studyButton.setCaption(studyButton.getCaption());
 			studyButton.setEnabled(false);
 		}
+
 		studyButton.setDebugId("linkStudyButton");
 		studyButton.addStyleName(BaseTheme.BUTTON_LINK);
 		return studyButton;
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_BREEDING_ACTIVITIES')")
+	private void availableLinkToStudy(final Button studyButton) {
+		studyButton.setEnabled(true);
 	}
 
 	private ExternalResource getURLStudy() {

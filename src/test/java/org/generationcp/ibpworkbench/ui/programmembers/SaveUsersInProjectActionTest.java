@@ -1,9 +1,9 @@
 
 package org.generationcp.ibpworkbench.ui.programmembers;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
@@ -22,9 +22,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Window;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SaveUsersInProjectActionTest {
 
@@ -91,6 +90,6 @@ public class SaveUsersInProjectActionTest {
 	@Test
 	public void testButtonClick() {
 		this.saveUsersInProjectAction.buttonClick(this.clickEvent);
-		Mockito.verify(this.programService).updateMembersUserInfo(userList, project);
+		Mockito.verify(this.programService).updateMembersProjectUserInfo(userList, project);
 	}
 }

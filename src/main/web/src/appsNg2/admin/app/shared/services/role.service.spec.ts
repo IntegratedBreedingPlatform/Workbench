@@ -47,11 +47,11 @@ export function main()
                             body: [
                                 {
                                     "id": 1,
-                                    "description": "description"
+                                    "name": "name"
                                 },
                                 {
                                     "id": 2,
-                                    "description": "description2"
+                                    "name": "name1"
                                 }
                             ]
                         });
@@ -62,7 +62,7 @@ export function main()
 
                 spyOn( service, 'getHeaders' ).and.returnValue( header );
 
-                service.getAll().subscribe(
+                service.getFilteredRoles(null).subscribe(
                     ( roles ) =>
                     {
                         expect( roles[0].description ).toBe( 'description' );

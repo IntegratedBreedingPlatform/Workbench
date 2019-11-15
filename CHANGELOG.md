@@ -1,3 +1,15 @@
+# [13.0](https://github.com/IntegratedBreedingPlatform/Workbench/compare/12.0...13.0) 
+
+## [12.5](https://github.com/IntegratedBreedingPlatform/Workbench/compare/12.4...12.5)
+
+### Added
+- Angular 2 frontend: Add router and authorization [82cbb9b](https://github.com/IntegratedBreedingPlatform/Workbench/commit/82cbb9bfcf2a5e151b705cd393a6ccbc3d8dca21)
+- Angular 5 frontend: Add authorization [7d5856e](https://github.com/IntegratedBreedingPlatform/Workbench/commit/7d5856e6107a565074ce2fef0bb79d2db185f5ae)
+- Create, Edit and list roles with permission tree selector
+### Changed
+- Load authorities per program [158ff0d](https://github.com/IntegratedBreedingPlatform/Workbench/commit/158ff0d1d8199f34f5ca11c75994baa9137a1180)
+### Removed
+
 # [12.0](https://github.com/IntegratedBreedingPlatform/Workbench/compare/11.0...12.0) 
 
 ## [11.1](https://github.com/IntegratedBreedingPlatform/Workbench/compare/11.0...11.1)

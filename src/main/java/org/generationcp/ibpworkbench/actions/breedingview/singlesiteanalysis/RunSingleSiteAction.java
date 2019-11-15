@@ -152,8 +152,8 @@ public class RunSingleSiteAction implements ClickListener {
 
 		// TODO: Move the creation of breeding view xml objects in BreedingViewXMLWriter.
 
-		final ExperimentDesignType designType = ExperimentDesignType.getExperimentDesignTypeByBVDesignName(this.source.getSelDesignTypeValue());
-		breedingViewInput.setDesignType(designType.getBvDesignName());
+		final ExperimentDesignType designType = ExperimentDesignType.getExperimentDesignTypeByBVName(this.source.getSelDesignTypeValue());
+		breedingViewInput.setDesignType(designType.getBvName());
 
 		breedingViewInput.setBreedingViewAnalysisName(this.source.getTxtAnalysisNameValue());
 
@@ -369,24 +369,24 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName())
+		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName())
 				&& this.source.replicateFactorEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName())
-				|| designType.equals(ExperimentDesignType.P_REP.getBvDesignName()))) {
+		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName())
+				|| designType.equals(ExperimentDesignType.P_REP.getBvName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvDesignName())) {
+		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvName())) {
 			this.showErrorMessage(window, "Please specify column factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvDesignName())) {
+		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}

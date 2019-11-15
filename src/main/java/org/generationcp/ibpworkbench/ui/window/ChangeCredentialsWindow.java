@@ -30,9 +30,9 @@ import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,7 +51,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 	public static final String V_LABEL = "v-label";
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -281,7 +281,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 		person.setLastName(lastName);
 		person.setEmail(emailAddress);
 
-		this.workbenchDataManager.updateUser(user);
+		this.userService.updateUser(user);
 
 	}
 
@@ -299,7 +299,7 @@ public class ChangeCredentialsWindow extends BaseSubWindow implements Initializi
 			throw new ValidationException(messageSource.getMessage(Message.ERROR_EMAIL_IS_BLANK));
 		}
 
-		if (this.workbenchDataManager.isPersonWithEmailExists(emailAddress)) {
+		if (this.userService.isPersonWithEmailExists(emailAddress)) {
 			throw new ValidationException(messageSource.getMessage(Message.ERROR_EMAIL_ALREADY_EXISTS));
 		}
 

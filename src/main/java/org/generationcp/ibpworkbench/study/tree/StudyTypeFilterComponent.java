@@ -1,21 +1,20 @@
 
 package org.generationcp.ibpworkbench.study.tree;
 
-import java.util.List;
-
-import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
-import org.generationcp.middleware.domain.study.StudyTypeDto;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.dms.StudyType;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
+import org.generationcp.middleware.domain.study.StudyTypeDto;
+import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.pojos.dms.StudyType;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @Configurable
 public class StudyTypeFilterComponent extends HorizontalLayout implements InitializingBean, GermplasmStudyBrowserLayout {
@@ -25,7 +24,7 @@ public class StudyTypeFilterComponent extends HorizontalLayout implements Initia
 	public static final StudyTypeDto ALL_OPTION = new StudyTypeDto(1, "Studies", StudyTypeFilterComponent.ALL);
 	private static final long serialVersionUID = 1L;
 
-	@Autowired
+	@Resource
 	private StudyDataManager studyDataManager;
 
 	private ComboBox studyTypeComboBox;

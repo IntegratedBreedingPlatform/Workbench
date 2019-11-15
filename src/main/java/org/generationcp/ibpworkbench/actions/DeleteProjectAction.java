@@ -20,6 +20,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -66,6 +67,9 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@Autowired
 	private GermplasmListManager germplasmListManager;
 
+	@Autowired
+	private ProgramService programService;
+
 	public DeleteProjectAction() {
 		// does nothing here
 	}
@@ -94,7 +98,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	}
 
 	@Override
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
 		final Application app = window.getApplication();
 		final Project currentProject = this.contextUtil.getProjectInContext();

@@ -1,9 +1,9 @@
 
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import java.util.Iterator;
-import java.util.List;
-
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.ui.Table;
 import org.generationcp.commons.util.StringUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
@@ -12,9 +12,8 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.ui.Table;
+import java.util.Iterator;
+import java.util.List;
 
 public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListener {
 
@@ -39,7 +38,7 @@ public class SSAEnvironmentsFooterCheckboxListener implements ValueChangeListene
 
 		try {
 
-			final List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments();
+			final List<String> invalidEnvironments = this.ssaEnvironmentsComponent.getInvalidEnvironments(true);
 			if (!invalidEnvironments.isEmpty()) {
 				MessageNotifier
 						.showError(this.ssaEnvironmentsComponent.getWindow(), SingleSiteAnalysisDetailsPanel.INVALID_SELECTION_STRING,

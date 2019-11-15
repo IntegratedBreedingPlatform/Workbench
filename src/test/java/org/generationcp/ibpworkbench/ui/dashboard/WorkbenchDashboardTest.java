@@ -8,8 +8,8 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.apache.commons.lang3.StringUtils;
-import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -21,11 +21,11 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +34,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.generationcp.commons.context.ContextConstants.*;
+import static org.generationcp.commons.context.ContextConstants.SESSION_ATTR_CONTEXT_INFO;
 
+@RunWith(MockitoJUnitRunner.class)
 public class WorkbenchDashboardTest {
 
 	private static final int NUMBER_OF_PROGRAMS = 10;
@@ -58,7 +59,9 @@ public class WorkbenchDashboardTest {
 	@Mock
 	private HttpSession httpSession;
 
-	@InjectMocks
+	@Mock
+	private Window window;
+
 	private WorkbenchDashboard workbenchDashboard;
 
 	private List<Project> programs;
@@ -67,7 +70,7 @@ public class WorkbenchDashboardTest {
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
+		this.workbenchDashboard = new WorkbenchDashboard(this.window);
 
 		// Setup test data and mocks
 		final WorkbenchUser currentUser = new WorkbenchUser(1);
@@ -75,9 +78,16 @@ public class WorkbenchDashboardTest {
 
 		this.programs = this.createProjects(WorkbenchDashboardTest.NUMBER_OF_PROGRAMS, new CropType(CropType.CropEnum.MAIZE.toString()));
 		this.lastOpenedProgram = this.programs.get(7);
-		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser);
+		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser, null);
 		Mockito.doReturn(this.lastOpenedProgram).when(this.workbenchDataManager).getLastOpenedProject(currentUser.getUserid());
 		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
+
+		this.workbenchDashboard.setWindow(this.window);
+		this.workbenchDashboard.setWorkbenchDataManager(this.workbenchDataManager);
+		this.workbenchDashboard.setMessageSource(this.messageSource);
+		this.workbenchDashboard.setContextUtil(this.contextUtil);
+		this.workbenchDashboard.setServletContext(this.servletContext);
+		this.workbenchDashboard.setHttpServletRequest(this.httpServletRequest);
 
 		// Initialize UI components
 		this.workbenchDashboard.initializeComponents();

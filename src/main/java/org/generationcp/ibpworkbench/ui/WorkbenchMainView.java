@@ -10,13 +10,28 @@
 
 package org.generationcp.ibpworkbench.ui;
 
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.UriFragmentUtility;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
+import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.tomcat.util.TomcatUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -39,6 +54,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,26 +64,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.Sizeable;
-import com.vaadin.terminal.ThemeResource;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.UriFragmentUtility;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
-import com.vaadin.ui.themes.Reindeer;
+import javax.annotation.Resource;
+import java.util.Objects;
 
 @Configurable
 public class WorkbenchMainView extends Window implements IContentWindow, InitializingBean, InternationalizableComponent {
@@ -86,13 +84,13 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private Button aboutButton;
 
 	@Resource
-	private TomcatUtil tomcatUtil;
-
-	@Resource
-	private WorkbenchDataManager workbenchDataManager;
+	private UserService userService;
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Resource
+	private WorkbenchDataManager workbenchDataManager;
 
 	@Resource
 	private ContextUtil contextUtil;
@@ -111,7 +109,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	@Value("${about.bms.url}")
 	private String aboutBmsURL;
-
 
 	private Label actionsTitle;
 
@@ -137,6 +134,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	private boolean doHideSidebarToggleButton = true;
 	private boolean isWorkbenchDashboardShown = true;
 	private boolean isSiteAdminShown = false;
+	private boolean isAboutShown = false;
 
 	public WorkbenchMainView() {
 		super("Breeding Management System | Workbench");
@@ -154,7 +152,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	protected void initializeComponents() {
 		// initialize dashboard
-		this.workbenchDashboard = new WorkbenchDashboard();
+		this.workbenchDashboard = new WorkbenchDashboard(getWindow());
 		this.workbenchDashboard.setDebugId("workbenchDashboard");
 
 		// workbench header components
@@ -389,8 +387,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
+				WorkbenchMainView.this.isAboutShown = true;
 				final IContentWindow contentFrame = (IContentWindow) event.getComponent().getWindow();
 				contentFrame.showContent("controller/about/");
+				//restore to default
+                WorkbenchMainView.this.isAboutShown = false;
+
 			}
 		});
 
@@ -434,19 +436,19 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		this.showChangeCredentialsWindowOnFirstLogin(this.getWindow(), user, userInfo);
 
-		this.workbenchDataManager.incrementUserLogInCount(userInfo.getUserId());
+		this.userService.incrementUserLogInCount(userInfo.getUserId());
 
 	}
 
 	UserInfo createUserInfoIfNecessary(final WorkbenchUser user) {
 
-		UserInfo userInfo = this.workbenchDataManager.getUserInfo(user.getUserid());
+		UserInfo userInfo = this.userService.getUserInfo(user.getUserid());
 
 		if (userInfo == null) {
 			userInfo = new UserInfo();
 			userInfo.setUserId(user.getUserid());
 			userInfo.setLoginCount(0);
-			this.workbenchDataManager.insertOrUpdateUserInfo(userInfo);
+			this.userService.insertOrUpdateUserInfo(userInfo);
 		}
 
 		return userInfo;
@@ -456,7 +458,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Only display the Change Credentials/Password on first login of user
 		if (userInfo.getLoginCount() < 1) {
-			if (this.workbenchDataManager.isSuperAdminUser(user.getUserid())) {
+			if (user.isSuperAdmin()) {
 				// If the user has SUPERADMIN role, on first login, force the user to change
 				// the account firstname, lastname, email address and password (optional)
 				window.addWindow(new ChangeCredentialsWindow(new ChangeCredentialsWindow.CredentialsChangedEvent() {
@@ -508,12 +510,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		}
 
 		if (this.isWorkbenchDashboardShown) {
-			try {
+			final WorkbenchUser user = this.contextUtil.getCurrentWorkbenchUser();
+
+			if (!workbenchDataManager.getCropsWithAddProgramPermission(user.getUserid()).isEmpty()) {
 				this.layoutAddProgramButton(this.workbenchHeaderLayout);
-			} catch (final AccessDeniedException e) {
-				// do nothing if the user is not authorized to access Admin button
-				LOG.debug(e.getMessage(), e);
 			}
+
 		} else {
 			this.workbenchHeaderLayout.addComponent(this.homeButton);
 			this.workbenchHeaderLayout.setComponentAlignment(this.homeButton, Alignment.MIDDLE_RIGHT);
@@ -537,7 +539,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		this.workbenchHeaderLayout.requestRepaint();
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_ADMINISTRATION') or hasRole('ROLE_SITE_ADMIN')")
 	private void layoutAdminButton() {
 		this.addAdminButton(this.workbenchHeaderLayout);
 	}
@@ -551,7 +553,6 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_SUPERADMIN')")
 	void layoutAddProgramButton(final HorizontalLayout layout) {
 
 		if (Boolean.parseBoolean(this.isAddProgramEnabled)) {
@@ -606,7 +607,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 		// Hide sidebar button if in Workbench Dashboard or in Create Program screens
 		this.isWorkbenchDashboardShown = content instanceof WorkbenchDashboard;
-		this.doHideSidebarToggleButton = this.isWorkbenchDashboardShown || this.isSiteAdminShown
+		this.doHideSidebarToggleButton = this.isWorkbenchDashboardShown || this.isSiteAdminShown || this.isAboutShown
 			|| content instanceof AddProgramView || this.workbenchTitle.getDescription() != "";
 		if (this.doHideSidebarToggleButton) {
 			this.root.setSplitPosition(0, Sizeable.UNITS_PIXELS);
@@ -676,6 +677,10 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 		return this.sidebar;
 	}
 
+	public void setSidebar(final WorkbenchSidebar sidebar) {
+		this.sidebar = sidebar;
+	}
+
 	// For test purposes
 	HorizontalLayout getWorkbenchHeaderLayout() {
 		return this.workbenchHeaderLayout;
@@ -743,12 +748,12 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	}
 
 
-	void setAskForSupportURL(String askForSupportURL) {
+	void setAskForSupportURL(final String askForSupportURL) {
 		this.askForSupportURL = askForSupportURL;
 	}
 
 
-	void setAboutBmsURL(String aboutBmsURL) {
+	void setAboutBmsURL(final String aboutBmsURL) {
 		this.aboutBmsURL = aboutBmsURL;
 	}
 
@@ -762,5 +767,9 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 
 	void setIsWorkbenchDashboardShown(final boolean isWorkbenchDashboardShown) {
 		this.isWorkbenchDashboardShown = isWorkbenchDashboardShown;
+	}
+
+	void setIsAboutShown(final boolean isAboutShown) {
+		this.isAboutShown = isAboutShown;
 	}
 }

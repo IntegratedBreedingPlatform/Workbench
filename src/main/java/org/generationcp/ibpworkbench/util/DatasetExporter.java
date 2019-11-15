@@ -199,8 +199,8 @@ public class DatasetExporter {
     }
 
     boolean isDummyRepVariableUsed(final BreedingViewInput breedingViewInput) {
-        return !ExperimentDesignType.P_REP.getBvDesignName().equals(breedingViewInput.getDesignType())
-                && !ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName().equals(breedingViewInput.getDesignType())
+        return !ExperimentDesignType.P_REP.getBvName().equals(breedingViewInput.getDesignType())
+                && !ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName().equals(breedingViewInput.getDesignType())
                 && DatasetExporter.DUMMY_REPLICATES.equals(breedingViewInput.getReplicatesFactorName());
     }
 
