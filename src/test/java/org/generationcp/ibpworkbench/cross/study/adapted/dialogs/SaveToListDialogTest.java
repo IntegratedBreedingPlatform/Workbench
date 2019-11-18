@@ -115,8 +115,6 @@ public class SaveToListDialogTest {
 				"TEST NOTES", null));
 		lists.add(new GermplasmList(-3, "FOLDER", new Long("20141217"), "FOLDER", -1, "test", null, 1, null, null, null, null, null,
 				"TEST NOTES", null));
-//		lists.add(new GermplasmList(3, "LIST 3", new Long("20141216"), "LST", -1, "test", null, 1, null, null, null, null, null,
-//				"TEST NOTES", null));
 
 		return lists;
 	}
