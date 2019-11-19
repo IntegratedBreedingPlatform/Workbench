@@ -390,7 +390,7 @@ mainApp.factory('rCallService', ['$http', function ($http) {
 	rCallService.getRCallsObjects = function (packageId) {
 		return $http({
 			method: 'GET',
-			url: '/bmsapi/rpackage/rcalls/' + packageId,
+			url: '/bmsapi/r-packages/' + + packageId + '/r-calls' ,
 			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
 		});
 	};
