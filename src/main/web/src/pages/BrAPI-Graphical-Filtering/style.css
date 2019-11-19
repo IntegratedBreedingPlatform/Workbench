@@ -246,3 +246,13 @@
   display: inline-block;
   width:10em;
 }
+
+.modal-footer {
+    text-align: center;
+    padding: 10px;
+}
+
+.modal-title {
+    font-weight: 700;
+    font-size: 17px;
+}

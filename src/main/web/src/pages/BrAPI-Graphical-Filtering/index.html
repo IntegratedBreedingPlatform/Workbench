@@ -1,94 +1,108 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="utf-8">
-        <title>BrAPI Graphical Filtering</title>
-        <link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet" />
-        <link th:href="@{/controller/pages/BrAPI-Graphical-Filtering/style.css}" rel="stylesheet" />
-        <link th:href="@{/controller/static/lib/jquery.dataTables-1.10.16.min.css}" rel="stylesheet" />
-		<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet" />
-    </head>
-    <body>
-        <div style="margin:1em" class="container-fluid">
-			<div class="row">
-				<div class="col-md-8 col-xs-8">
-					<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI Graphical Filtering</h2>
+<html xmlns:th="http://www.thymeleaf.org" ng-app="mainApp">
+<head>
+	<meta charset="utf-8">
+	<title>BrAPI Graphical Filtering</title>
+	<link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/pages/BrAPI-Graphical-Filtering/style.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/jquery.dataTables-1.10.16.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<style type="text/css">
+		.my-popover-content {
+			display: none;
+		}
+	</style>
+</head>
+<body ng-controller="MainController">
+<div style="margin:1em" class="container-fluid">
+	<div class="row">
+		<div class="col-md-8 col-xs-8">
+			<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI Graphical Filtering</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8 col-xs-8">
+			<form id="brapi-form" action="javascript:void(0);" class="form-horizontal">
+				<div class="form-group">
+					<label class="control-label col-sm-4">Study name</label>
+					<div class="col-sm-8" id="trials">
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-8 col-xs-8">
-					<form id="brapi-form" action="javascript:void(0);" class="form-horizontal">
-						<div class="form-group">
-							<label class="control-label col-sm-4">Study name</label>
-							<div class="col-sm-8" id="trials">
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-4">Locations</label>
-							<div class="col-sm-8" id="locations">
+				<div class="form-group">
+					<label class="control-label col-sm-4">Locations</label>
+					<div class="col-sm-8" id="locations">
 
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-4">GIDs</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" name="germplasmDbIds"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-4">Observation level</label>
-							<div class="col-sm-8" id="observationLevels"></div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-4">Observation timestamp range start</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" name="observationTimeStampRangeStart"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-4">Observation timestamp range end</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control" name="observationTimeStampRangeEnd"/>
-							</div>
-						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">GIDs</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" name="germplasmDbIds"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Observation level</label>
+					<div class="col-sm-8" id="observationLevels"></div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Observation timestamp range start</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" name="observationTimeStampRangeStart"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Observation timestamp range end</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" name="observationTimeStampRangeEnd"/>
+					</div>
+				</div>
 
-						<div class="form-group">
-							<label class="control-label col-sm-4">Group By Accession</label>
-							<div class="col-sm-8">
-								<input type="checkbox" name="group"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-4 col-sm-8">
-								<input type="submit" action="#" id="load-brapi"
-									   class="btn btn-primary" value="Load"/>
-							</div>
-						</div>
-					</form>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Group By Accession</label>
+					<div class="col-sm-8">
+						<input type="checkbox" name="group" ng-model="flags.groupByAccession"/>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12 col-xs-12">
-					<div id="filter_div" style="margin:1em"></div>
-					<table id="filtered_results" width="100%"></table>
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="col-sm-3">
+						<button id="load-brapi"
+							   class="btn btn-primary" ng-click="loadData()">Load</button>
+						<button id="export"
+								class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
+							Export
+						</button>
+					</div>
 				</div>
-			</div>
-			<hr/>
-			<div class="row">
-				<div class="col-md-12 col-xs-12">
-					<a href="https://github.com/solgenomics/BrAPI-Graphical-Filtering" target="_blank">
-						<img style="width: 40px;"
-							 th:src="@{/controller/static/images/nextgen_cassava_icon.png}"/></a>
-				</div>
-			</div>
-        </div>
-    </body>
-    <script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}"></script>
-	<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}"></script>
-	<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}"></script>
-    <script th:src="@{/controller/static/js/lib/jquery.dataTables-1.10.16.min.js}" charset="utf-8"></script>
-	<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
-	<script th:src="@{/controller/static/js/lib/select2.min.js}" charset="utf-8"></script>
-    <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/GraphicalFilter.js}"></script>
-    <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/main.js}"></script>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			<div id="filter_div" style="margin:1em"></div>
+			<table id="filtered_results" width="100%"></table>
+		</div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			<a href="https://github.com/solgenomics/BrAPI-Graphical-Filtering" target="_blank">
+				<img style="width: 40px;"
+					 th:src="@{/controller/static/images/nextgen_cassava_icon.png}"/></a>
+		</div>
+	</div>
+</div>
+</body>
+<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}"></script>
+<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}"></script>
+<script th:src="@{/controller/static/js/lib/jquery.dataTables-1.10.16.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/select2.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-animate.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/angular-1.4.7/ui-bootstrap-tpls-2.5.0.js}" charset="utf-8"></script>
+<script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/GraphicalFilter.js}"></script>
+<script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/main.js}"></script>
 </html>

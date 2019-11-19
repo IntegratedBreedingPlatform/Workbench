@@ -1,32 +1,5 @@
+// FIXME: Refactor these to Angular.
 $(document).ready(function () {
-	var run = false;
-	$("#brapi-form").submit(function () {
-		if (run) {
-			$("#filtered_results").DataTable().destroy();
-			$("#filtered_results").html("");
-		}
-		run = true;
-		var form = $(this).serializeArray().reduce(function (vals, entry) {
-			vals[entry.name] = entry.value;
-			return vals
-		}, {});
-		var studyDbId = getUrlParameter("studyDbId");
-
-		loadBrAPIData({
-			studyDbIds: studyDbId ? [studyDbId] : [],
-			locationDbIds: $('#locations select').val() || null,
-			observationLevel: form.observationLevel || null,
-			programDbIds: [getUrlParameter('programUuid')],
-			trialDbIds: $('#trials select').val() || null,
-			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
-			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
-			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
-		}).then(function (response) {
-			useBrAPIData(response, (!!form.group));
-		});
-
-		return false;
-	});
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
 	});
@@ -156,6 +129,7 @@ function useBrAPIData(response, groupByAccession) {
 			});
 			return newObj;
 		});
+
 	var trait_names = d3.keys(traits);
 	data.forEach(function (datum) {
 		trait_names.forEach(function (trait) {
@@ -165,11 +139,13 @@ function useBrAPIData(response, groupByAccession) {
 		})
 	});
 	var tableCols = [
+		{title: "TrialInstance", data: "instanceNumber"},
 		{title: "StudyDbId", data: "studyDbId"},
 		{title: "Study", data: "studyName"},
 		{title: "Name", data: "observationUnitName"},
 		{title: "observationUnitDbId", data: "observationUnitDbId"},
 		{title: "Accession", data: "germplasmName"},
+		{title: "EntryNumber", data: "entryNumber"},
 		{title: "GID", data: "germplasmDbId"},
 		{title: "Location", data: "studyLocation"},
 	];
@@ -209,6 +185,8 @@ function useBrAPIData(response, groupByAccession) {
 	// create the root filter object and datatable
 	var gfilter = GraphicalFilter();
 	gfilter.create("#filter_div", "#filtered_results", data, tableCols, trait_names);
+
+
 }
 
 function beforeSend(xhr) {
@@ -223,3 +201,265 @@ function error(data) {
 		window.top.location.href = '/ibpworkbench/logout';
 	}
 }
+
+
+// Angular ****************************
+
+var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
+
+mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $uibModal) {
+
+	$scope.flags = {
+		groupByAccession: false,
+		isDataLoaded: false
+	};
+
+	$scope.rawData = [];
+
+	$scope.loadData = function () {
+
+		if ($.fn.DataTable.isDataTable("#filtered_results")) {
+			$("#filtered_results").DataTable().destroy();
+			$("#filtered_results").html("");
+		}
+
+		var form = $("#brapi-form").serializeArray().reduce(function (vals, entry) {
+			vals[entry.name] = entry.value;
+			return vals
+		}, {});
+		var studyDbId = getUrlParameter("studyDbId");
+
+		// FIXME: Refactor these to Angular.
+		loadBrAPIData({
+			studyDbIds: studyDbId ? [studyDbId] : [],
+			locationDbIds: $('#locations select').val() || null,
+			observationLevel: form.observationLevel || null,
+			programDbIds: [getUrlParameter('programUuid')],
+			trialDbIds: $('#trials select').val() || null,
+			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
+			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
+			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
+		}).then(function (response) {
+			// Store the rawData from the server so we can transform and send it to OpenCPU api later.
+			$scope.rawData = response.result.data;
+			$scope.$apply(function () {
+				$scope.flags.isDataLoaded = $scope.rawData.length > 0;
+			});
+			useBrAPIData(response, (!!form.group));
+		});
+
+	};
+
+	$scope.$watch('flags.groupByAccession', function (newValue, oldValue) {
+		if (newValue !== oldValue && !newValue) {
+			// reload the table if the groupByAccession is unchecked.
+			$scope.loadData();
+		}
+	});
+
+	$scope.openExportModal = function () {
+		$uibModal.open({
+			templateUrl: 'pages/BrAPI-Graphical-Filtering/exportModal.html',
+			controller: 'ExportModalController',
+			resolve: {
+				rawData: function () {
+					return $scope.rawData;
+				}
+			}
+		});
+	};
+
+}]);
+
+mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'rawData',
+	function ($scope, $q, $uibModalInstance, rCallService, rawData) {
+
+		$scope.errorMessage = '';
+		$scope.rCallObjects = [];
+		$scope.selectedRCallObject;
+		$scope.meltRCallObject = {};
+		$scope.isExporting = false;
+
+		$scope.proceed = function () {
+			$scope.errorMessage = '';
+			var isAggregate = $scope.selectedRCallObject.parameters.hasOwnProperty('fun.aggregate');
+			transform(angular.copy($scope.selectedRCallObject), normalizeDataForExport(rawData, isAggregate));
+		};
+
+		$scope.cancel = function () {
+			$uibModalInstance.close();
+		};
+
+		$scope.loadRCallsObjects = function () {
+			var castPackageId = 1;
+			rCallService.getRCallsObjects(castPackageId).success(function (data) {
+				$scope.rCallObjects = data;
+				$scope.selectedRCallObject = $scope.rCallObjects[0];
+			});
+		};
+
+		$scope.retrieveMeltRCallObject = function () {
+			var meltPackageId = 2;
+			rCallService.getRCallsObjects(meltPackageId).success(function (data) {
+				$scope.meltRCallObject = data[0];
+			});
+		};
+
+		$scope.init = function () {
+			$scope.loadRCallsObjects();
+			$scope.retrieveMeltRCallObject();
+		};
+
+		$scope.init();
+
+		function transform(rObject, data) {
+			$scope.isExporting = true;
+			$scope.meltRCallObject.parameters.data = JSON.stringify(data);
+			// melt the data first before transforming
+			rCallService.executeRCallAsJSON($scope.meltRCallObject.endpoint, $scope.meltRCallObject.parameters).then(function (response) {
+				rObject.parameters.data = JSON.stringify(response.data);
+				// transform the molten data through R cast function
+				return rCallService.executeRCallAsCSV(rObject.endpoint, rObject.parameters);
+			}).then(function (response) {
+				// download the transformed data as CSV.
+				download(response.data);
+				$uibModalInstance.close();
+				$scope.isExporting = false;
+			}).catch(function (errorResponse) {
+				$scope.errorMessage = 'An error occurred while connecting to OpenCPU API. ' + errorResponse.data;
+			});
+		}
+
+		function download(data) {
+			var link = window.document.createElement('a');
+			var blob = new Blob([data]);
+			link.href = window.URL.createObjectURL(blob);
+			link.download = 'datafile.csv';
+			link.click();
+		}
+
+		function normalizeDataForExport(rawData, convertStringToNumeric) {
+			var traits = {};
+			var data = rawData
+				.map(function (observeUnit) {
+					var newObj = {};
+					d3.entries(observeUnit).forEach(function (entry) {
+						if (entry.key != "observations") {
+							newObj[entry.key] = entry.value;
+						}
+					});
+					observeUnit.observations.forEach(function (obs) {
+						// Convert trait values to numeric if possible.
+						newObj[obs.observationVariableName] = convertStringToNumeric ? tryParseInt(obs.value, obs.value) : obs.value;
+						traits[obs.observationVariableName] = true;
+					});
+					return newObj;
+				});
+			var trait_names = d3.keys(traits);
+			data.forEach(function (datum) {
+				trait_names.forEach(function (trait) {
+					if (datum[trait] === undefined || datum[trait] === null || datum[trait] === NaN) {
+						// If the trait is undefined in an observation row, set the data as NA (Not Available, NA is recognized in R).
+						datum[trait] = 'NA';
+					}
+				})
+			});
+			return data;
+		}
+
+		function tryParseInt(str, defaultValue) {
+			var retValue = defaultValue;
+			if (str) {
+				if (!isNaN(str)) {
+					retValue = parseInt(str);
+				} else {
+					retValue = 0;
+				}
+			} else {
+				retValue = 'NA';
+			}
+			return retValue;
+		}
+
+	}]);
+
+mainApp.factory('rCallService', ['$http', function ($http) {
+
+	var rCallService = {};
+
+	rCallService.getRCallsObjects = function (packageId) {
+		return $http({
+			method: 'GET',
+			url: '/bmsapi/r-packages/' + + packageId + '/r-calls' ,
+			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
+		});
+	};
+
+	rCallService.executeRCallAsCSV = function (url, parameters) {
+		return $http({
+			method: 'POST',
+			url: url + '/csv',
+			data: $.param(parameters),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		});
+	}
+
+	rCallService.executeRCallAsJSON = function (url, parameters) {
+		return $http({
+			method: 'POST',
+			url: url + '/json',
+			data: $.param(parameters),
+			headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+		});
+	}
+
+	return rCallService;
+
+
+}]);
+
+angular.module('loadingStatus', []).config(function ($httpProvider) {
+	$httpProvider.interceptors.push('loadingStatusInterceptor');
+}).directive('loadingStatusMessage', function () {
+	return {
+		link: function ($scope, $element, attrs) {
+			var show = function () {
+				$element.css('display', 'inline-block');
+			};
+			var hide = function () {
+				$element.css('display', 'none');
+			};
+			$scope.$on('loadingStatusActive', show);
+			$scope.$on('loadingStatusInactive', hide);
+			hide();
+		}
+	};
+}).factory('loadingStatusInterceptor', function ($q, $rootScope) {
+	var activeRequests = 0;
+	var started = function () {
+		if (activeRequests == 0) {
+			$rootScope.$broadcast('loadingStatusActive');
+		}
+		activeRequests++;
+	};
+	var ended = function () {
+		activeRequests--;
+		if (activeRequests == 0) {
+			$rootScope.$broadcast('loadingStatusInactive');
+		}
+	};
+	return {
+		request: function (config) {
+			started();
+			return config || $q.when(config);
+		},
+		response: function (response) {
+			ended();
+			return response || $q.when(response);
+		},
+		responseError: function (rejection) {
+			ended();
+			return $q.reject(rejection);
+		}
+	};
+});
