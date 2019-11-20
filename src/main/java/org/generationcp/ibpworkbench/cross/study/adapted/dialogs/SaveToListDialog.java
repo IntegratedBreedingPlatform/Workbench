@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.cross.study.adapted.dialogs;
 
+import com.google.common.collect.Iterables;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -39,6 +40,8 @@ import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.service.api.PedigreeService;
+import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -46,11 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Configurable
 public class SaveToListDialog extends BaseSubWindow
@@ -58,8 +57,8 @@ public class SaveToListDialog extends BaseSubWindow
 
 	private static final Logger LOG = LoggerFactory.getLogger(SaveToListDialog.class);
 	private static final long serialVersionUID = 1L;
-	public static final Object SAVE_BUTTON_ID = "Save Germplasm List";
-	public static final String CANCEL_BUTTON_ID = "Cancel Saving";
+	private static final Object SAVE_BUTTON_ID = "Save Germplasm List";
+    private static final String CANCEL_BUTTON_ID = "Cancel Saving";
 	public static final String DATE_AS_NUMBER_FORMAT = "yyyyMMdd";
 	private static final String ONE_HUNDRED_PX = "100px";
 
@@ -83,6 +82,12 @@ public class SaveToListDialog extends BaseSubWindow
 	@Resource
 	private ContextUtil contextUtil;
 
+	@Autowired
+	private PedigreeService pedigreeService;
+
+	@Resource
+	private CrossExpansionProperties crossExpansionProperties;
+
 	private Button btnSave;
 	private Button btnCancel;
 	private Button changeLocationFolderButton;
@@ -92,6 +97,7 @@ public class SaveToListDialog extends BaseSubWindow
 	private Map<String, Integer> mapExistingList;
 
 	private QueryForAdaptedGermplasmMain mainScreen;
+	private TraitDonorsQueryMain mainScreen2;
 	private GermplasmList lastSelectedFolder;
 
 	public SaveToListDialog(final QueryForAdaptedGermplasmMain mainScreen, final Component source, final Window parentWindow,
@@ -103,6 +109,7 @@ public class SaveToListDialog extends BaseSubWindow
 
 	public SaveToListDialog(final TraitDonorsQueryMain mainScreen2, final Component source, final Window parentWindow,
 			final Map<Integer, String> germplasmsMap) {
+		this.mainScreen2  = mainScreen2;
 		this.parentWindow = parentWindow;
 		this.germplasmsMap = germplasmsMap;
 	}
@@ -271,13 +278,13 @@ public class SaveToListDialog extends BaseSubWindow
 
 	protected void populateComboBoxListName() throws MiddlewareQueryException {
 		this.germplasmList = this.germplasmListManager.getAllGermplasmLists(0, (int) this.germplasmListManager.countAllGermplasmLists());
-		this.mapExistingList = new HashMap<String, Integer>();
+		this.mapExistingList = new HashMap<>();
 		this.comboBoxListName.addItem("");
 		for (final GermplasmList gList : this.germplasmList) {
 			if (!"FOLDER".equals(gList.getType())
 					&& (gList.getProgramUUID() == null || gList.getProgramUUID().equals(this.contextUtil.getCurrentProgramUUID()))) {
 				this.comboBoxListName.addItem(gList.getName());
-				this.mapExistingList.put(gList.getName(), new Integer(gList.getId()));
+				this.mapExistingList.put(gList.getName(), gList.getId());
 			}
 		}
 		this.comboBoxListName.select("");
@@ -304,11 +311,16 @@ public class SaveToListDialog extends BaseSubWindow
 
 		// proceed with the saving of germplasm list
 		final String listNameId = String.valueOf(this.mapExistingList.get(this.comboBoxListName.getValue()));
-		this.addGermplasListNameAndData(listName, listNameId, this.germplasmsMap, this.txtDescription.getValue().toString(),
-				this.selectType.getValue().toString());
+		this.addGermplasListNameAndData(listName, listNameId, this.germplasmsMap, this.txtDescription.getValue().toString(),this.selectType.getValue().toString());
 		this.closeSavingGermplasmListDialog();
 
-		this.mainScreen.selectWelcomeTab();
+		//Identifies w/c mainscreen will be selected
+		if(this.mainScreen!=null){
+			this.mainScreen.selectWelcomeTab();
+		}else if(mainScreen2!=null) {
+			this.mainScreen2.selectWelcomeTab();
+		}
+
 
 		// display notification message
 		MessageNotifier.showMessage(this.parentWindow, this.messageSource.getMessage(Message.SAVE_GERMPLASMS_TO_NEW_LIST_LABEL),
@@ -338,7 +350,7 @@ public class SaveToListDialog extends BaseSubWindow
 			final Integer userId = this.contextUtil.getCurrentWorkbenchUserId();
 			final GermplasmList parent = (GermplasmList) this.folderToSaveListTo.getData();
 			final int statusListName = 1;
-			String gidListString = "";
+			StringBuilder gidListString = new StringBuilder();
 
 			if ("null".equals(listId)) {
 				final GermplasmList listNameData = new GermplasmList(null, listName, DateUtil.getCurrentDateAsLongValue(), type, userId,
@@ -349,16 +361,18 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(listid);
 
-				final String groupName = "-";
-				String designation = "-";
 				final int status = 0;
 				final int localRecordId = 0;
 				int entryid = 1;
 
+				final Map<Integer, String> crossExpansions = this.bulkGeneratePedigreeString(germplasmsMap.keySet());
+
+
 				for (final Map.Entry<Integer, String> entry : germplasmsMap.entrySet()) {
 
 					final Integer gid = entry.getKey();
-					designation = entry.getValue() == null ? "-" : entry.getValue();
+					String designation = entry.getValue() == null ? "-" : entry.getValue();
+					String groupName = crossExpansions.get(gid) == null ? "-" : crossExpansions.get(gid);
 
 					final String entryCode = String.valueOf(entryid);
 					final String seedSource = "Browse for " + designation;
@@ -368,9 +382,12 @@ public class SaveToListDialog extends BaseSubWindow
 
 					this.germplasmListManager.addGermplasmListData(germplasmListData);
 
+
 					entryid++;
 
-					gidListString = gidListString + ", " + Integer.toString(gid);
+                    gidListString.append(", ").append(gid);
+
+
 
 				}
 
@@ -378,7 +395,6 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(Integer.valueOf(listId));
 				final String groupName = "-";
-				String designation = "-";
 				final int status = 0;
 				final int localRecordId = 0;
 				int entryid = (int) this.germplasmListManager.countGermplasmListDataByListId(Integer.valueOf(listId));
@@ -398,15 +414,14 @@ public class SaveToListDialog extends BaseSubWindow
 						++entryid;
 
 						// save germplasm's preferred name as designation
-						designation = entryCode;
 
-						final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode,
-								seedSource, designation, groupName, status, localRecordId);
+                        final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode,
+								seedSource, entryCode, groupName, status, localRecordId);
 
 						this.germplasmListManager.addGermplasmListData(germplasmListData);
 
 					}
-					gidListString = gidListString + ", " + Integer.toString(gid);
+					gidListString.append(", ").append(gid);
 				}
 
 			}
@@ -419,7 +434,7 @@ public class SaveToListDialog extends BaseSubWindow
 		}
 	}
 
-	public void closeSavingGermplasmListDialog() {
+	private void closeSavingGermplasmListDialog() {
 		final Window window = this.getWindow();
 		window.getParent().removeWindow(window);
 	}
@@ -427,7 +442,7 @@ public class SaveToListDialog extends BaseSubWindow
 	@Override
 	public void setSelectedFolder(final GermplasmList folder) {
 		try {
-			final Deque<GermplasmList> parentFolders = new ArrayDeque<GermplasmList>();
+			final Deque<GermplasmList> parentFolders = new ArrayDeque<>();
 			GermplasmListTreeUtil.traverseParentsOfList(this.germplasmListManager, folder, parentFolders);
 
 			final StringBuilder locationFolderString = new StringBuilder();
@@ -446,8 +461,8 @@ public class SaveToListDialog extends BaseSubWindow
 
 			if (folder != null && folder.getName().length() >= 36) {
 				this.folderToSaveListTo.setValue(folder.getName().substring(0, 47));
-			} else if (locationFolderString.length() > 43) {
-				final int lengthOfFolderName = folder.getName().length();
+			} else if (locationFolderString.length() > 43 && folder!=null) {
+                final int lengthOfFolderName = folder.getName().length();
 				this.folderToSaveListTo
 						.setValue(locationFolderString.substring(0, 43 - lengthOfFolderName - 6) + "... > " + folder.getName());
 			} else {
@@ -458,13 +473,14 @@ public class SaveToListDialog extends BaseSubWindow
 			this.folderToSaveListTo.setData(folder);
 			this.lastSelectedFolder = folder;
 		} catch (final MiddlewareQueryException ex) {
-			SaveToListDialog.LOG.error("Error with traversing parents of list: " + folder.getId(), ex);
+		    int id = folder!=null ? folder.getId() : 0;
+            SaveToListDialog.LOG.error("Error with traversing parents of list: " + id, ex);
 		}
 	}
 
 	private void displaySelectFolderDialog() {
 		final GermplasmList selectedFolder = (GermplasmList) this.folderToSaveListTo.getData();
-		SelectLocationFolderDialog selectFolderDialog = null;
+		SelectLocationFolderDialog selectFolderDialog;
 		if (selectedFolder != null) {
 			selectFolderDialog = new SelectLocationFolderDialog(this, selectedFolder.getId());
 		} else {
@@ -480,4 +496,46 @@ public class SaveToListDialog extends BaseSubWindow
 	public void setComboboxListName(final ComboBox combobox) {
 		this.comboBoxListName = combobox;
 	}
+
+	protected Map<Integer, String> bulkGeneratePedigreeString(Set<Integer> gids) {
+		final Iterable<List<Integer>> partition = Iterables.partition(gids, 5000);
+
+		final Map<Integer, String> crossExpansions = new HashMap<>();
+
+		for (final List<Integer> partitionedGidList : partition) {
+			final Set<Integer> partitionedGidSet = new HashSet<>(partitionedGidList);
+			crossExpansions.putAll(this.pedigreeService.getCrossExpansions(partitionedGidSet, null,
+					this.crossExpansionProperties));
+		}
+		return crossExpansions;
+	}
+
+	protected void setPedigreeService(PedigreeService pedigreeService){
+		this.pedigreeService = pedigreeService;
+	}
+
+	protected void setCrossExpansionProperties(CrossExpansionProperties crossExpansionProperties){
+		this.crossExpansionProperties = crossExpansionProperties;
+	}
+
+	protected void setComboBoxListNameValue(String value){
+		if(!this.comboBoxListName.containsId(value)) {
+			this.comboBoxListName.addItem(value);
+		}
+		this.comboBoxListName.setValue(value);
+	}
+
+	protected void setSelectTypeValue(String value){
+		this.selectType.setValue(value);
+	}
+
+	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
+	protected  void setContextUtil(ContextUtil contextUtil) {
+		this.contextUtil = contextUtil;
+	}
+
+
+
 }
