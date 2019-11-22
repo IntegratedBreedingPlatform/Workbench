@@ -116,7 +116,7 @@ public class BreedingViewXMLWriterTest {
 		Assert.assertEquals(BreedingViewXMLWriterTest.ROW_POS_FACTOR, result.getRowPos().getName());
 		Assert.assertEquals(BreedingViewXMLWriterTest.REPLICATES_FACTOR, result.getReplicates().getName());
 		Assert.assertEquals(BreedingViewXMLWriterTest.PLOT_FACTOR, result.getPlot().getName());
-		Assert.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), result.getType());
+		Assert.assertEquals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName(), result.getType());
 
 	}
 
@@ -305,7 +305,7 @@ public class BreedingViewXMLWriterTest {
 		plot.setName(BreedingViewXMLWriterTest.PLOT_FACTOR);
 		breedingViewInput.setPlot(plot);
 
-		breedingViewInput.setDesignType(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
+		breedingViewInput.setDesignType(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName());
 
 		return breedingViewInput;
 	}

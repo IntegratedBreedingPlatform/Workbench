@@ -13,7 +13,7 @@
 
 	<!-- Declare property file locations -->
 	<context:property-placeholder
-		location="classpath:workbench.properties, classpath:database.properties" />
+		location="classpath:workbench.properties, classpath:database.properties, classpath:crossing.properties" />
 		
 	<util:properties id="databaseProperties" location="classpath:database.properties" />	
 	<util:properties id="workbenchProperties" location="classpath:workbench.properties" />
@@ -231,6 +231,16 @@
 		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
 
+	<bean id="studyService" factory-bean="managerFactory"
+		  factory-method="getStudyService" scope="request">
+        <aop:scoped-proxy proxy-target-class="false" />
+    </bean>
+
+	<bean id="experimentDesignService" factory-bean="managerFactory"
+		  factory-method="getExperimentDesignService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
 	<bean id="breedingViewImportService"  class="org.generationcp.commons.service.impl.BreedingViewImportServiceImpl" scope="request">
 		<aop:scoped-proxy />
 	</bean>
@@ -331,6 +341,18 @@
           factory-method="getListDataProjectSaver" scope="request">
         <aop:scoped-proxy />
     </bean>
+
+	<bean id="pedigreeService" factory-bean="managerFactory"
+		  factory-method="getPedigreeService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="crossExpansionProperties"
+		  class="org.generationcp.middleware.util.CrossExpansionProperties">
+		<property name="defaultLevel" value="${default.generation.level}" />
+		<property name="profile" value="${pedigree.profile}" />
+		<property name="hybridBreedingMethods" value="#{'${hybrid.breeding.methods}'.split(',')}" />
+	</bean>
 
 	<!-- Nested <beans> elements can only be at the end. -->
 	
