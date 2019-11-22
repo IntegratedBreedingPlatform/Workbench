@@ -99,11 +99,14 @@ public class AppLauncherService {
 
 		Project project = workbenchDataManager.getProjectById(this.contextUtil.getContextInfoFromSession().getSelectedProjectId());
 
+		String CurrentProgramUUID = org.generationcp.commons.util.ContextUtil
+			.addQueryParameter("programUUID", this.contextUtil.getCurrentProgramUUID());
+
 		String cropName = org.generationcp.commons.util.ContextUtil
 			.addQueryParameter("cropName", project.getCropType().getCropName());
 
 		return WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(idParam),
-			"?restartApplication" + contextParameterString + authenticationTokenString + cropName);
+			"?restartApplication" + contextParameterString + authenticationTokenString + cropName + CurrentProgramUUID);
 
 	}
 
