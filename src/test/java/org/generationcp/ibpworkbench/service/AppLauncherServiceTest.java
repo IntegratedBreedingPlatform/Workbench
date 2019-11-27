@@ -36,7 +36,7 @@ public class AppLauncherServiceTest {
 	public static final int PORT = 18080;
 	public static final String SAMPLE_BASE_URL = "somewhere/out/there";
 
-	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedInUserId=5&selectedProjectId=1&authToken=VXNlck5hbWU&cropName=Maize";
+	public static final String WORKBENCH_CONTEXT_PARAMS = "&loggedInUserId=5&selectedProjectId=1&authToken=VXNlck5hbWU&cropName=Maize&programUUID=862c4a31-a5fa-4a74-8165-80944301b9b9";
 	public static final String RESTART_URL_STR = "?restartApplication";
 
 	public static final int LOGGED_IN_USER_ID = 5;
@@ -149,11 +149,13 @@ public class AppLauncherServiceTest {
 		Tool aWebTool = new Tool();
 		final Project project = new Project();
 		project.setCropType(new CropType("Maize"));
+		project.setUniqueID("862c4a31-a5fa-4a74-8165-80944301b9b9");
 		Mockito.when(workbenchDataManager.getProjectById(Mockito.any(Long.class))).thenReturn(project);
 		// for vaadin type params with a dash
 		aWebTool.setToolName(ToolName.BM_LIST_MANAGER_MAIN.getName());
 		aWebTool.setPath(AppLauncherServiceTest.SAMPLE_BASE_URL);
 		aWebTool.setToolType(ToolType.WEB);
+
 		String urlResult = this.appLauncherService.launchWebapp(aWebTool, AppLauncherServiceTest.LOGGED_IN_USER_ID);
 
 		Assert.assertEquals("should return correct url for List manager app",
