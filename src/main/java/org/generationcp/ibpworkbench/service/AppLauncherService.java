@@ -100,7 +100,7 @@ public class AppLauncherService {
 		Project project = workbenchDataManager.getProjectById(this.contextUtil.getContextInfoFromSession().getSelectedProjectId());
 
 		String CurrentProgramUUID = org.generationcp.commons.util.ContextUtil
-			.addQueryParameter("programUUID", this.contextUtil.getCurrentProgramUUID());
+			.addQueryParameter("programUUID", project.getUniqueID());
 
 		String cropName = org.generationcp.commons.util.ContextUtil
 			.addQueryParameter("cropName", project.getCropType().getCropName());
