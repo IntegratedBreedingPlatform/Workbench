@@ -1,0 +1,46 @@
+<div class="modal-body">
+	<div class="row form-group">
+		<div class="col-md-12">
+			<label class="modal-title" id="heading-modal">Export</label>&nbsp;&nbsp;<span class="label label-default">BETA</span>
+		</div>
+	</div>
+	<div class="separator"></div>
+	<br/>
+	<div class="row">
+		<div class="col-md-12 form-horizontal">
+			<div class="alert alert-danger alert-dismissible" ng-if="errorMessage">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<strong>Export Error!</strong> {{errorMessage}}
+			</div>
+			<div class="form-group">
+				<label class="control-label col-md-3">Transformation</label>
+				<div class="col-md-7">
+					<select class="form-control" ng-options="item as item.description for item in rCallObjects" ng-model="selectedRCallObject" ng-disabled="groupByAccession"></select>
+				</div>
+				<div class="col-md-2">
+					<i class="fa fa-question-circle fa-2x" tooltip-placement="bottom" tooltip-class="large" uib-tooltip="Transforms the data to the specified format."></i>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+	</div>
+	<div class="row">
+		<div class="col-md-4"></div>
+		<div class="col-md-4">
+			<button class="btn btn-default" ng-disabled="isExporting" ng-click="cancel()">Cancel</button>
+			<button class="btn btn-primary" ng-disabled="isExporting" ng-click="proceed()">OK</button>
+			<div loading-status-message><img src="static/images/loading-blue-on-white-lg.gif" alt="loading" height="32" width="32"/></div>
+		</div>
+	</div>
+	<div class="col-md-4"></div>
+</div>
+<div class="modal-footer">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="pull-right">
+				Powered by <span style="background-color: #333; padding: 5px; border-radius: 5px"><img src="static/images/opencpulogo.png"/></span>
+			</div>
+		</div>
+	</div>
+</div>
