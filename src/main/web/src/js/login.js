@@ -321,7 +321,8 @@
 					// no login problems! submit
 					if (display_name == !null || display_name !== '') {
 						$('.login-form-control').hide();
-						$loginSubmit.text('Authorize ' + display_name);
+						$loginSubmit.text('Authorize');
+						$('#displayName').text(display_name + ' wants to access your BMS Account');
 						externalAuthorize = true;
 						token = data.token;
 					} else {
