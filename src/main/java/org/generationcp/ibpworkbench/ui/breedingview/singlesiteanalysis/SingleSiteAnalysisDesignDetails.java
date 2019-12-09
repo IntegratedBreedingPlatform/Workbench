@@ -159,16 +159,16 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 	}
 
 	private void populateDesignTypeOptions() {
-		this.selDesignType.addItem(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName());
-		this.selDesignType.setItemCaption(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvDesignName(), "Incomplete block design");
-		this.selDesignType.addItem(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName());
-		this.selDesignType.setItemCaption(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvDesignName(), "Randomized block design");
-		this.selDesignType.addItem(ExperimentDesignType.ROW_COL.getBvDesignName());
-		this.selDesignType.setItemCaption(ExperimentDesignType.ROW_COL.getBvDesignName(), "Row-column design");
-		this.selDesignType.addItem(ExperimentDesignType.P_REP.getBvDesignName());
-		this.selDesignType.setItemCaption(ExperimentDesignType.P_REP.getBvDesignName(), "P-rep design");
-		this.selDesignType.addItem(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName());
-		this.selDesignType.setItemCaption(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvDesignName(), "Augmented design");
+		this.selDesignType.addItem(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName(), "Incomplete block design");
+		this.selDesignType.addItem(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName(), "Randomized block design");
+		this.selDesignType.addItem(ExperimentDesignType.ROW_COL.getBvName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.ROW_COL.getBvName(), "Row-column design");
+		this.selDesignType.addItem(ExperimentDesignType.P_REP.getBvName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.P_REP.getBvName(), "P-rep design");
+		this.selDesignType.addItem(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName());
+		this.selDesignType.setItemCaption(ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getBvName(), "Augmented design");
 	}
 
 	@Override
@@ -237,7 +237,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		if (designType != 0) {
 
 			final ExperimentDesignType experimentDesignType = ExperimentDesignType.getDesignTypeItemByTermId(designType);
-			this.selDesignType.setValue(experimentDesignType.getBvDesignName());
+			this.selDesignType.setValue(experimentDesignType.getBvName());
 
 			if (experimentDesignType.getId() == ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getId()) {
 				this.displayRandomizedBlockDesignElements();

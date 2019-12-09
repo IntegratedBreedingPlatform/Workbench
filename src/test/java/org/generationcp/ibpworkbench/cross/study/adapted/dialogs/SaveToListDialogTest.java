@@ -4,12 +4,24 @@ package org.generationcp.ibpworkbench.cross.study.adapted.dialogs;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
 
+import com.vaadin.ui.*;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
+import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
+import org.generationcp.middleware.data.initializer.UserDefinedFieldTestDataInitializer;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
+import org.generationcp.middleware.pojos.GermplasmListData;
+import org.generationcp.middleware.service.api.PedigreeService;
+import org.generationcp.middleware.util.CrossExpansionProperties;
+import org.generationcp.middleware.utils.test.IntegrationTestDataInitializer;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +30,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Window;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 public class SaveToListDialogTest {
 
@@ -29,8 +43,30 @@ public class SaveToListDialogTest {
 	@Mock
 	private QueryForAdaptedGermplasmMain queryFoAdaptedGermplasmMain;
 
+	@Mock
+	private TraitDonorsQueryMain multiTraitQueryMainScreen;
+
 	private SaveToListDialog saveToListDialog;
 	private ComboBox combobox;
+	private TextField txtDescription;
+	private static final String PROGRAM_UUID = "1234567";
+	private static final Integer WORKBENCHUSER = 1;
+	private static ArrayList<GermplasmListData> germplasmListData = new ArrayList<>();
+	@Mock
+	private SimpleResourceBundleMessageSource messageSource;
+
+	@Mock
+	private PedigreeService pedigreeService;
+
+	@Resource
+	private CrossExpansionProperties crossExpansionProperties;
+
+	private final UserDefinedFieldTestDataInitializer userDefinedFieldTestDataInitializer = new UserDefinedFieldTestDataInitializer();
+
+
+
+	@Mock
+	private ContextUtil contextUtil;
 
 	@Before
 	public void setUp() {
@@ -38,9 +74,15 @@ public class SaveToListDialogTest {
 		this.saveToListDialog =
 				Mockito.spy(new SaveToListDialog(this.queryFoAdaptedGermplasmMain, new AbsoluteLayout(), new Window(),
 						new HashMap<Integer, String>()));
+		Mockito.when(this.germplasmListManager.getGermplasmListTypes())
+				.thenReturn(this.userDefinedFieldTestDataInitializer.getValidListType());
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(SaveToListDialogTest.WORKBENCHUSER);
+		Mockito.when(this.contextUtil.getCurrentProgramUUID()).thenReturn(SaveToListDialogTest.PROGRAM_UUID);
 		this.saveToListDialog.setGermplasmListManager(this.germplasmListManager);
 
+
 		this.combobox = new ComboBox();
+		this.txtDescription = new TextField();
 		this.saveToListDialog.setComboboxListName(this.combobox);
 	}
 
@@ -115,4 +157,128 @@ public class SaveToListDialogTest {
 		}
 	}
 
+	@Test
+	public void testSaveToListGermplasmWithGroupName() {
+		SaveToListDialogTest.germplasmListData.clear();
+		final Integer numberOfLists = 3;
+		Mockito.when(this.germplasmListManager.countAllGermplasmLists()).thenReturn(Long.valueOf(numberOfLists));
+		Mockito.when(this.germplasmListManager.getAllGermplasmLists(0, numberOfLists)).thenReturn(this.createDummyListsAndFolder());
+
+		final GermplasmList listNameData = new GermplasmList(null, "LIST 3", DateUtil.getCurrentDateAsLongValue(), "STUDY", 1,
+				"", null, 1);
+
+		final GermplasmList savedListNameData = new GermplasmList(3, "LIST 3", DateUtil.getCurrentDateAsLongValue(), "STUDY", 1,
+				"", null, 1);
+		listNameData.setProgramUUID(PROGRAM_UUID);
+		Mockito.when(this.germplasmListManager.addGermplasmList(listNameData)).thenReturn(3);
+		Mockito.when(this.germplasmListManager.getGermplasmListById(3)).thenReturn(savedListNameData);
+		Mockito.when(this.germplasmListManager.addGermplasmListData(Mockito.isA(GermplasmListData.class))).then(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+
+				for(Object obj: invocationOnMock.getArguments()) {
+					if(obj instanceof  GermplasmListData){
+						SaveToListDialogTest.germplasmListData.add((GermplasmListData) obj);
+					}
+				}
+				return Integer.valueOf(1);
+			}
+		});
+		this.saveToListDialog =
+				Mockito.spy(new SaveToListDialog(this.multiTraitQueryMainScreen, new AbsoluteLayout(), new Window(),
+						getGermPlasmMap()));
+		this.saveToListDialog.setPedigreeService(this.pedigreeService);
+		this.saveToListDialog.setCrossExpansionProperties(this.crossExpansionProperties);
+		this.saveToListDialog.setGermplasmListManager(this.germplasmListManager);
+		this.saveToListDialog.setMessageSource(this.messageSource);
+		try {
+			this.saveToListDialog.afterPropertiesSet();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.saveToListDialog.setComboBoxListNameValue("LIST 3");
+		this.saveToListDialog.setSelectTypeValue("LST");
+		this.saveToListDialog.setContextUtil(this.contextUtil);
+		this.saveToListDialog.setParent(new Window());
+		Mockito.when(this.saveToListDialog.bulkGeneratePedigreeString(getGermPlasmMap().keySet())).thenReturn(getReturnCross());
+		this.saveToListDialog.saveButtonClickAction();
+		Assert.assertEquals(2,SaveToListDialogTest.germplasmListData.size());
+		for(GermplasmListData listData : germplasmListData){
+			Assert.assertEquals(listData.getGroupName(), getReturnCross().get(listData.getGermplasmId()));
+		}
+
+	}
+
+	@Test
+	public void testSaveToListGermplasmWithoutGroupName() {
+		SaveToListDialogTest.germplasmListData.clear();
+		final Integer numberOfLists = 3;
+		Mockito.when(this.germplasmListManager.countAllGermplasmLists()).thenReturn(Long.valueOf(numberOfLists));
+		Mockito.when(this.germplasmListManager.getAllGermplasmLists(0, numberOfLists)).thenReturn(this.createDummyListsAndFolder());
+
+		final GermplasmList listNameData = new GermplasmList(null, "LIST 3", DateUtil.getCurrentDateAsLongValue(), "STUDY", 1,
+				"", null, 1);
+
+		final GermplasmList savedListNameData = new GermplasmList(3, "LIST 3", DateUtil.getCurrentDateAsLongValue(), "STUDY", 1,
+				"", null, 1);
+		listNameData.setProgramUUID(PROGRAM_UUID);
+		Mockito.when(this.germplasmListManager.addGermplasmList(listNameData)).thenReturn(3);
+		Mockito.when(this.germplasmListManager.getGermplasmListById(3)).thenReturn(savedListNameData);
+		Mockito.when(this.germplasmListManager.addGermplasmListData(Mockito.isA(GermplasmListData.class))).then(new Answer<Object>() {
+			@Override
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+
+				for(Object obj: invocationOnMock.getArguments()) {
+					if(obj instanceof  GermplasmListData){
+						SaveToListDialogTest.germplasmListData.add((GermplasmListData) obj);
+					}
+				}
+				return Integer.valueOf(1);
+			}
+		});
+		this.saveToListDialog =
+				Mockito.spy(new SaveToListDialog(this.multiTraitQueryMainScreen, new AbsoluteLayout(), new Window(),
+						getGermPlasmMap()));
+		this.saveToListDialog.setPedigreeService(this.pedigreeService);
+		this.saveToListDialog.setCrossExpansionProperties(this.crossExpansionProperties);
+		this.saveToListDialog.setGermplasmListManager(this.germplasmListManager);
+		this.saveToListDialog.setMessageSource(this.messageSource);
+		try {
+			this.saveToListDialog.afterPropertiesSet();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.saveToListDialog.setComboBoxListNameValue("LIST 3");
+		this.saveToListDialog.setSelectTypeValue("LST");
+		this.saveToListDialog.setContextUtil(this.contextUtil);
+		this.saveToListDialog.setParent(new Window());
+		Mockito.when(this.saveToListDialog.bulkGeneratePedigreeString(getGermPlasmMapNew().keySet())).thenReturn(getReturnCross());
+		this.saveToListDialog.saveButtonClickAction();
+		Assert.assertEquals(2,SaveToListDialogTest.germplasmListData.size());
+		for(GermplasmListData listData : germplasmListData){
+			Assert.assertEquals(listData.getGroupName(), "-");
+		}
+
+	}
+
+	private HashMap getGermPlasmMap() {
+		HashMap germplasmMap = new HashMap<Integer, String>();
+		germplasmMap.put(1, "[IB]2661");
+		germplasmMap.put(2, "[IB]2662");
+		return germplasmMap;
+	}
+
+	private HashMap getGermPlasmMapNew() {
+		HashMap germplasmMap = new HashMap<Integer, String>();
+		germplasmMap.put(3, "[IB]2661");
+		germplasmMap.put(4, "[IB]2662");
+		return germplasmMap;
+	}
+
+	private HashMap getReturnCross(){
+		HashMap returnCross = new HashMap<Integer, String>();
+		returnCross.put(1, "SampleCross1/SampleCross5");
+		returnCross.put(2, "SampleCross2/SampleCross4");
+		return returnCross;
+	}
 }
