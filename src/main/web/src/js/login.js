@@ -31,6 +31,11 @@
 		altAction = $loginForm.data('alt-action'),
 		forgotPasswordAction = $loginForm.data('forgot-password-action');
 
+	var display_name = getUrlVars()["display_name"];
+	var return_url = getUrlVars()["return_url"];
+	var token ='';
+	var externalAuthorize = false;
+
 	var failedLoginAttemptCount = 0;
 
 	function toggleCheckbox() {
@@ -298,7 +303,10 @@
 		$loginSubmit.addClass('loading').delay(200);
 
 		// Continue with form submit - login is currently handled server side
-		if (login) {
+		if (externalAuthorize) {
+			window.location.href = return_url + '?token=' + token;
+
+		} else if (login) {
 			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
 				.done(function(data) {
 					clearErrors();
@@ -311,7 +319,14 @@
 					 */
 					localStorage['bms.xAuthToken'] = JSON.stringify(data);
 					// no login problems! submit
-					loginFormRef.submit();
+					if (display_name == !null || display_name !== '') {
+						$('.login-form-control').hide();
+						$loginSubmit.text('Authorize ' + display_name);
+						externalAuthorize = true;
+						token = data.token;
+					} else {
+						loginFormRef.submit();
+					}
 				})
 				.fail(function(jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
