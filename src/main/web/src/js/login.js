@@ -319,7 +319,7 @@
 					 */
 					localStorage['bms.xAuthToken'] = JSON.stringify(data);
 					// no login problems! submit
-					if (display_name == !null || display_name !== '') {
+					if (display_name &&  return_url) {
 						$('.login-form-control').hide();
 						$loginSubmit.text('Authorize');
 						$('#displayName').text(display_name + ' wants to access your BMS Account');
