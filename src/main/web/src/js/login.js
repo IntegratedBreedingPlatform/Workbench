@@ -31,9 +31,9 @@
 		altAction = $loginForm.data('alt-action'),
 		forgotPasswordAction = $loginForm.data('forgot-password-action');
 
-	var display_name = getUrlVars()["display_name"];
+	var display_name = decodeURI(getUrlVars()["display_name"].replace(new RegExp('\\+', 'g'), '%20'));
 	var return_url = getUrlVars()["return_url"];
-	var token ='';
+	var token = '';
 	var externalAuthorize = false;
 
 	var failedLoginAttemptCount = 0;
