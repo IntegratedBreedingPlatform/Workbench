@@ -31,8 +31,8 @@
 		altAction = $loginForm.data('alt-action'),
 		forgotPasswordAction = $loginForm.data('forgot-password-action');
 
-	var display_name = decodeURI(getUrlVars()["display_name"].replace(new RegExp('\\+', 'g'), '%20'));
-	var return_url = getUrlVars()["return_url"];
+	var display_name = getUrlParameter("display_name");
+	var return_url = getUrlParameter("return_url");
 	var token = '';
 	var externalAuthorize = false;
 
@@ -372,12 +372,11 @@
 		}
 	});
 
-	function getUrlVars() {
-		var vars = {};
-		var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-			vars[key] = value;
-		});
-		return vars;
-	}
+	function getUrlParameter(name) {
+		name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+		var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+		var results = regex.exec(location);// FIXME Improvement to search the parameter in the whole URL. problem-related to recover the parameter after the Hash.
+		return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	};
 
 }());
