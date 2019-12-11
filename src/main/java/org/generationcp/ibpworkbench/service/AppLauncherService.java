@@ -91,18 +91,18 @@ public class AppLauncherService {
 
 	protected String launchWebapp(Tool tool, Integer idParam) {
 
-		String contextParameterString =
+		final String contextParameterString =
 				org.generationcp.commons.util.ContextUtil.getContextParameterString(this.contextUtil.getContextInfoFromSession());
 
-		String authenticationTokenString = org.generationcp.commons.util.ContextUtil
+		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
 				.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 
-		Project project = workbenchDataManager.getProjectById(this.contextUtil.getContextInfoFromSession().getSelectedProjectId());
+		final Project project = workbenchDataManager.getProjectById(this.contextUtil.getContextInfoFromSession().getSelectedProjectId());
 
-		String CurrentProgramUUID = org.generationcp.commons.util.ContextUtil
+		final String CurrentProgramUUID = org.generationcp.commons.util.ContextUtil
 			.addQueryParameter("programUUID", project.getUniqueID());
 
-		String cropName = org.generationcp.commons.util.ContextUtil
+		final String cropName = org.generationcp.commons.util.ContextUtil
 			.addQueryParameter("cropName", project.getCropType().getCropName());
 
 		return WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(idParam),
