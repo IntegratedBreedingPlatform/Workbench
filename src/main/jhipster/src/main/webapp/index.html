@@ -153,7 +153,7 @@
 				ondblclick: chooseList,
 				create: function (parentFolderId, folderName) {
 					return $.ajax({
-						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder?folderName=' + folderName + '&parentId=' + parentFolderId + '&programUUID=' + currentProgramId,
+						url: '/bmsapi/crops/' + cropName + '/programs/' + currentProgramId + '/sample-list-folders?folderName=' + folderName + '&parentId=' + parentFolderId,
 						type: 'POST',
 						dataType: "json",
 						beforeSend: function (xhr) {
@@ -167,7 +167,7 @@
 				},
 				rename: function (id, folderName) {
 					return $.ajax({
-						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + id + '?newFolderName=' + folderName,
+						url: '/bmsapi/crops/' + cropName + '/programs/' + currentProgramId + '/sample-list-folders/' + id + '?newFolderName=' + folderName,
 						type: 'PUT',
 						beforeSend: function (xhr) {
 							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
@@ -177,7 +177,7 @@
 				},
 				delete: function (folderId) {
 					return $.ajax({
-						url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder/' + folderId,
+						url: '/bmsapi/crops/' + cropName + '/programs/' + currentProgramId + '/sample-list-folders/' + folderId,
 						type: 'DELETE',
 						beforeSend: function (xhr) {
 							xhr.setRequestHeader('X-Auth-Token', xAuthToken);

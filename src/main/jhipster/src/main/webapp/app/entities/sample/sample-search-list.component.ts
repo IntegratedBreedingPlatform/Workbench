@@ -7,6 +7,7 @@ import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 @Component({
     selector: 'jhi-sample-search-list',
@@ -54,6 +55,7 @@ export class SampleSearchListComponent {
         const params = {
             searchString: this.searchString,
             exactMatch: this.exactMatch,
+            programUUID : currentProgramId,
             sort: this.sort()
         }
         this.sampleListService.search(params).subscribe(

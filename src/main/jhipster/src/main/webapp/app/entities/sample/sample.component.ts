@@ -15,6 +15,7 @@ import { FileDownloadHelper } from './file-download.helper';
 import {ModalService} from '../../shared/modal/modal.service';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 @Component({
     selector: 'jhi-sample',
@@ -64,7 +65,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
-            this.sampleService.setCrop(this.crop);
+            this.sampleService.setCropAndProgram(this.crop, currentProgramId);
             this.loadAll();
         });
 

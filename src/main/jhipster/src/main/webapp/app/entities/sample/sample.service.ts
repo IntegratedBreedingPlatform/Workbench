@@ -21,8 +21,8 @@ export class SampleService {
         // ,private dateUtils: JhiDateUtils
     ) { }
 
-    setCrop(crop: string) {
-        this.resourceUrl =  SERVER_API_URL + `sample/${crop}/samples`;
+    setCropAndProgram(crop: string, programUUID: string) {
+        this.resourceUrl =  SERVER_API_URL + `sample/${crop}/programs/${programUUID}/samples`;
         this.resourceSearchUrl = this.resourceUrl;
     }
 

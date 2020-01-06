@@ -15,7 +15,7 @@ export class SampleListService {
     ) { }
 
     setCrop(crop: string) {
-        this.resourceUrl = SERVER_API_URL + `sampleLists/${crop}`;
+        this.resourceUrl = SERVER_API_URL + `crops/${crop}/sample-lists`;
     }
 
     search(params: any): Observable<HttpResponse<SampleList[]>> {
@@ -27,11 +27,9 @@ export class SampleListService {
 
     download(listId: number, listName: string): Observable<HttpResponse<Blob>> {
         const options: HttpParams = new HttpParams()
-            .append('listId', listId.toString())
             .append('listName', listName);
-
         return this.http
-            .get(`${this.resourceUrl}/download`, {
+            .get(`${this.resourceUrl}/sample-lists/${listId}/download`, {
                 params: options,
                 responseType: 'blob',
                 observe: 'response'
@@ -39,7 +37,7 @@ export class SampleListService {
     }
 
     importPlateInfo(listId: number, sampleList: any) {
-        return this.http.patch(`${this.resourceUrl}/sampleList/${listId}/samples`, sampleList);
+        return this.http.patch(`${this.resourceUrl}/sample-lists/${listId}/samples`, sampleList);
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {
