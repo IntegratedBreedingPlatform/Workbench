@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var app = angular.module('dataTypes', ['utilities']);
+	var app = angular.module('dataTypes', ['utilities', 'config']);
 
-	app.service('dataTypesService', ['$http', '$q', 'serviceUtilities', function($http, $q, serviceUtilities) {
+	app.service('dataTypesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -21,7 +21,7 @@
 
 			*/
 			getDataTypes: function() {
-				var request = $http.get('/bmsapi/ontology/datatypes', {timeout: 60000});
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/data-types?programUUID='+ configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
 
