@@ -1,13 +1,12 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {BmsjHipsterTestModule} from '../../../test.module';
-import {ModalService} from '../../../../../../main/webapp/app/shared/modal/modal.service';
-import {JhiAlertService, JhiEventManager} from 'ng-jhipster';
-import {SampleContext} from '../../../../../../main/webapp/app/entities/sample/sample.context';
-import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
-import {SampleImportPlateMappingComponent} from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
-import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
-import {Observable, of} from 'rxjs';
-import {HttpErrorResponse} from '@angular/common/http';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BmsjHipsterTestModule } from '../../../test.module';
+import { ModalService } from '../../../../../../main/webapp/app/shared/modal/modal.service';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { SampleContext } from '../../../../../../main/webapp/app/entities/sample/sample.context';
+import { SampleListService } from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
+import { SampleImportPlateMappingComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
+import { of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('Component Tests', () => {
 
@@ -113,7 +112,7 @@ describe('Component Tests', () => {
 
             spyOn(comp, 'close').and.callThrough();
             spyOn(eventManager, 'broadcast').and.callThrough();
-            spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.throw(errorResponse));
+            spyOn(sampleListService, 'importPlateInfo').and.returnValue(throwError(errorResponse));
 
             comp.proceed();
 
@@ -145,7 +144,7 @@ describe('Component Tests', () => {
 
             spyOn(comp, 'close').and.callThrough();
             spyOn(eventManager, 'broadcast').and.callThrough();
-            spyOn(sampleListService, 'importPlateInfo').and.returnValue(Observable.throw(errorResponse));
+            spyOn(sampleListService, 'importPlateInfo').and.returnValue(throwError(errorResponse));
 
             comp.proceed();
 

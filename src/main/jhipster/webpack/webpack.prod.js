@@ -1,8 +1,7 @@
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const Visualizer = require('webpack-visualizer-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
 const path = require('path');
@@ -45,15 +44,22 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
             })
         }]
     },
-    plugins: [
-        extractCSS,
-        new Visualizer({
-            // Webpack statistics in target folder
-            filename: '../stats.html'
-        }),
-        new UglifyJSPlugin({
+    optimization: {
+        runtimeChunk: false,
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                }
+            }
+        },
+        minimizer: [
+            new TerserPlugin({
             parallel: true,
-            uglifyOptions: {
+                cache: true,
+                terserOptions: {
                 ie8: false,
                 // sourceMap: true, // Enable source maps. Please note that this will slow down the build
                 compress: {
@@ -73,11 +79,14 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
                 output: {
                     comments: false,
                     beautify: false,
-                    indent_level: 2,
-                    ascii_only: true
+                    indent_level: 2
                 }
             }
-        }),
+            })
+        ]
+    },
+    plugins: [
+        extractCSS,
         new AngularCompilerPlugin({
             mainPath: utils.root('src/main/webapp/app/app.main.ts'),
             tsConfigPath: utils.root('tsconfig-aot.json'),
@@ -91,5 +100,6 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
           clientsClaim: true,
           skipWaiting: true,
         })
-    ]
+    ],
+    mode: 'production'
 });

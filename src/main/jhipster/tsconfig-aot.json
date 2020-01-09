@@ -10,7 +10,7 @@
         "noImplicitAny": false,
         "suppressImplicitAnyIndexErrors": true,
         "skipLibCheck": true,
-        "outDir": "target/www/app",
+        "outDir": "./../../../src/main/webapp/WEB-INF/pages/jhipster/app",
         "lib": ["es7", "es2017", "dom"],
         "typeRoots": [
             "node_modules/@types"

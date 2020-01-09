@@ -1,7 +1,7 @@
 {
-  "name": "bms-frontend",
-  "version": "0.0.1",
-  "description": "BMS frontend",
+  "name": "bms-old-frontend",
+  "version": "1.0.0",
+  "description": "BMS old frontend",
   "main": "gulpfile.js",
   "scripts": {
     "default": "gulp",
@@ -85,7 +85,7 @@
     "gulp-util": "^3.0.8",
     "jasmine-core": "^2.99.1",
     "jshint-stylish": "^1.0.0",
-    "karma": "^0.12.31",
+    "karma": "^3.1.4",
     "karma-chrome-launcher": "0.2.2",
     "karma-coverage": "^0.2.7",
     "karma-jasmine": "^0.3.5",
