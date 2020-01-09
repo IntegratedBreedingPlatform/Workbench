@@ -43,6 +43,22 @@ export class SampleTreeService {
             .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
     }
 
+    delete(folderId: string): Observable<HttpResponse<any>> {
+        const url = `${this.bmsapiUrl}/${folderId}`;
+        return this.http.delete<TreeNode[]>(url, { observe: 'response' });
+    }
+
+    create(folderName: string, parentId: string) {
+        const id = parentId === 'LISTS' ? 0 : parentId;
+        const url = `${this.bmsapiUrl}?folderName=${folderName}&parentId=${id}&&programUUID=${this.programUID}`;
+        return this.http.post<TreeNode[]>(url, { observe: 'response' });
+    }
+
+    rename(newFolderName: string, folderId: string) {
+        const url = `${this.bmsapiUrl}/${folderId}/?newFolderName=${newFolderName}`;
+        return this.http.put<TreeNode[]>(url, { observe: 'response' });
+    }
+
     expand(parentKey: string, req?: any): Observable<HttpResponse<TreeNode[]>> {
         const options = createRequestOption(req);
         return this.http.get<TreeNode[]>(this.getUrl(parentKey), { params: options, observe: 'response' })
