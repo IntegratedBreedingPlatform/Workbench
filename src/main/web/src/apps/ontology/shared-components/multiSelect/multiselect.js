@@ -9,7 +9,18 @@
 
 		return {
 			controller: ['$scope', function($scope) {
-				$scope.editable = editable($scope);
+				var e = editable($scope);
+				$scope.editable = function() {
+					// edition is also possible through appending
+					return e() || ($scope.editing && $scope.appendable);
+				};
+				$scope.appending = function () {
+					// when it's not possible to edit but appendable flag is on
+					return !e() && ($scope.editing && $scope.appendable);
+				};
+				$scope.deletable = function (item) {
+					return !$scope.appending() || item.deletable;
+				}
 			}],
 
 			link: function(scope, elm, attrs, ctrl) {
@@ -46,6 +57,7 @@
 
 					// Add the item if it hasn't already been added
 					if (itemToAdd && scope.model[scope.property].indexOf(itemToAdd) === -1) {
+						itemToAdd.deletable = true;
 						scope.model[scope.property].push(itemToAdd);
 						return true;
 					}
@@ -171,6 +183,7 @@
 			scope: {
 				adding: '=omAdding',
 				editing: '=omEditing',
+				appendable: '=omAppendable',
 				model: '=ngModel',
 				options: '=omOptions',
 				property: '@omProperty'

@@ -31,6 +31,9 @@
 	*/-->
 	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup},data-forgot-password-action=@{/controller/auth/forgotPassword}, data-validate-login-action=@{/controller/auth/validateLogin}, data-reset-password-action=@{/controller/auth/sendResetEmail}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
 
+		<div>
+			<h1 align="center" id="displayName"></h1>
+		</div>
 		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
 		<input class="js-fake-username" type="text" value="" style="display: none"/>
 		<input class="js-fake-password" type="password" value="" style="display: none"/>
@@ -115,6 +118,7 @@
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/jquery.placeholder.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/select2.min.js}"></script>
+	<script type="text/javascript" th:src="@{/controller/static/js/lib/get-url-parameter.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/login.js}"></script>
 </body>
 </html>

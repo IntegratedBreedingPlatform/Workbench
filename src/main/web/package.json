@@ -14,8 +14,7 @@
     "ng2:dist": "gulp angular2Dist",
     "ng2:build": "gulp angular2",
     "hotswap": "gulp hotswap",
-    "postinstall": "typings install && npm rebuild node-sass",
-    "typings": "typings"
+    "postinstall": "npm rebuild node-sass"
   },
   "repository": {
     "type": "git",
@@ -98,8 +97,13 @@
     "path": "^0.4.9",
     "pretty-hrtime": "^0.2.2",
     "properties-parser": "^0.2.3",
-    "typescript": "^1.8.10",
-    "typings": "^1.0.4",
-    "yargs": "^1.3.2"
+    "typescript": "^2.0.10",
+    "yargs": "^1.3.2",
+    "@types/core-js" : "^0.9.36",
+    "@types/es6-collections" : "^0.5.29",
+    "@types/es6-promise" : "^0.0.33",
+    "@types/es6-shim" : "^0.31.32",
+    "@types/jasmine" : "^2.5.41",
+    "@types/node" : "^6.0.118"
   }
 }

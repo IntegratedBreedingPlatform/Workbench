@@ -328,8 +328,7 @@ describe('multiselect module', function() {
 
 		it('should add the item if it hasn\'t already been added to the list of selected items', function() {
 			isolateScope.addToSelectedItems(0);
-			// Need to use angular.equals here because of the $$hashKey property that angular adds upon copy
-			expect(angular.equals(scope.model[scope.property][0], ONE)).toBe(true);
+			expect(scope.model[scope.property][0].name).toBe(ONE.name);
 		});
 
 		it('should not add an item if the index is not within the bounds of the suggestions array', function() {
@@ -352,8 +351,7 @@ describe('multiselect module', function() {
 			isolateScope.searchText = 'on';
 			isolateScope.search();
 
-			// Need to use angular.equals here because of the $$hashKey property that angular adds upon copy
-			expect(angular.equals(isolateScope.suggestions[0], ONE)).toBe(true);
+			expect(isolateScope.suggestions[0].name).toBe(ONE.name);
 			expect(isolateScope.suggestions.length).toBe(1);
 		});
 
@@ -369,6 +367,24 @@ describe('multiselect module', function() {
 		it('should set the selected index to -1', function() {
 			isolateScope.search();
 			expect(isolateScope.selectedIndex).toEqual(-1);
+		});
+	});
+
+	describe('appending', function () {
+
+		it('should happen when appendable and editing', function () {
+			isolateScope.editing = true;
+			isolateScope.appendable = true;
+			expect(isolateScope.appending()).toBe(true);
+		});
+
+		it('should not happen when not appendable or not editing', function () {
+			isolateScope.editing = false;
+			isolateScope.appendable = true;
+			expect(isolateScope.appending()).toBe(false);
+			isolateScope.editing = true;
+			isolateScope.appendable = false;
+			expect(isolateScope.appending()).toBe(false);
 		});
 	});
 });
