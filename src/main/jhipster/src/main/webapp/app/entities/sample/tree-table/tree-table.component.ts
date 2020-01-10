@@ -66,6 +66,10 @@ export class TreeTableComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadTree();
+    }
+
+    private loadTree() {
         this.service.getInitTree(AUTH_PARAMS).subscribe((res: HttpResponse<TreeNode[]>) => {
             res.body.forEach((node) => this.addNode(node));
             this.redrawNodes();
