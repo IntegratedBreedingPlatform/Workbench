@@ -36,7 +36,9 @@ export class SampleTreeService {
 
     move(source: string, target: string): Observable<any> {
         const isCropList = target === 'CROPLISTS';
-        const url = `${this.bmsapiUrl}/${source}/move?newParentId=${target}&isCropList=${isCropList}&&programUUID=${this.programUID}`;
+        const sourceId = source === 'LISTS' || source === 'CROPLISTS' ? 0 : source;
+        const targetId = target === 'LISTS' || target === 'CROPLISTS' ? 0 : target;
+        const url = `${this.bmsapiUrl}/${sourceId}/move?newParentId=${targetId}&isCropList=${isCropList}&&programUUID=${this.programUID}`;
         return this.http.put<any>(url, { observe: 'response' }).pipe(map((res) => res));
     }
 
@@ -46,7 +48,7 @@ export class SampleTreeService {
     }
 
     create(folderName: string, parentId: string) {
-        const id = parentId === 'LISTS' ? 0 : parentId;
+        const id = parentId === 'LISTS' || parentId === 'CROPLISTS' ? 0 : parentId;
         const url = `${this.bmsapiUrl}?folderName=${folderName}&parentId=${id}&&programUUID=${this.programUID}`;
         return this.http.post<TreeNode[]>(url, { observe: 'response' });
     }
