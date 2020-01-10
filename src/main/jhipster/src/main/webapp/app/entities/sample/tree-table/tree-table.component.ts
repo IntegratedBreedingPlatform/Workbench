@@ -14,6 +14,8 @@ declare var authToken: string
 
 declare var deleteConfirmation: string;
 declare var $: any;
+declare const cropName: string;
+declare const currentProgramId: string;
 
 const AUTH_PARAMS = {
     authToken,
@@ -57,8 +59,9 @@ export class TreeTableComponent implements OnInit {
                 private service: SampleTreeService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
-        this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = params['crop'];
+        this.paramSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+            service.setCrop(cropName);
+            service.setProgram(currentProgramId);
         });
     }
 
