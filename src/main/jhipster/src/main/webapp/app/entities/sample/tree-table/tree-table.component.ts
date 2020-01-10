@@ -96,13 +96,26 @@ export class TreeTableComponent implements OnInit {
 
     onDrop(event, node: PrimeNgTreeNode) {
         if (this.draggedNode) {
-            if (!node.children) {
+            /* if (!node.children) {
                 node.children = [];
             }
             node.children.push(this.draggedNode);
             TreeTableComponent.removeParent(this.draggedNode);
             this.draggedNode.parent = node;
-            this.redrawNodes();
+            this.redrawNodes(); */
+
+            this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
+                    if (!node.children) {
+                        node.children = [];
+                    }
+                    node.children.push(this.draggedNode);
+                    TreeTableComponent.removeParent(this.draggedNode);
+                    this.draggedNode.parent = node;
+                    this.redrawNodes();
+                },
+                (res: HttpErrorResponse) =>
+                    this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+            console.log('Move from ' + this.draggedNode.data.id + 'to ' + node.data.id);
         }
     }
 
