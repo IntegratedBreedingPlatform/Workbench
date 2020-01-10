@@ -224,6 +224,35 @@ export class TreeTableComponent implements OnInit {
             this.closeModal();
         });
     }
+
+    submitDeleteFolderInTreeTable() {
+        this.service.delete(this.selected.data.id).subscribe(() => {
+            this.mode = this.Modes.None;
+            this.alertService.success('bmsjHipsterApp.sample.folder.delete');
+        },
+            (res: HttpErrorResponse) =>
+                this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+    }
+
+    submitAddOrRenameFolderInTreeTable() {
+        if (this.mode === Mode.Add) {
+            this.service.create(this.name, this.selected.data.id).subscribe(() => {
+                this.mode = this.Modes.None;
+                this.expand(this.selected.parent.data.id);
+                this.alertService.success('bmsjHipsterApp.sample.folder.create');
+            },
+                (res: HttpErrorResponse) =>
+                    this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+        } else if (this.mode === Mode.Rename) {
+            this.service.rename(this.name, this.selected.data.id).subscribe(() => {
+                this.mode = this.Modes.None;
+                this.expand(this.selected.parent.data.id);
+                this.alertService.success('bmsjHipsterApp.sample.folder.rename');
+            },
+                (res: HttpErrorResponse) =>
+                    this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+        }
+    }
 }
 
 export enum Mode {

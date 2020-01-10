@@ -36,7 +36,7 @@
 										<div class="input-group">
 											<input type="text" class="form-control select2" placeholder="Folder Name" [(ngModel)]="name" style="height: 34px"/>
 											<div class="input-group-btn">
-												<button class="btn btn-success" [title]="Modes[mode]" (click)="submit()">
+												<button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolderInTreeTable()">
 													<span class="glyphicon glyphicon-ok"></span>
 												</button>
 												<button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
