@@ -34,13 +34,10 @@ export class SampleTreeService {
             .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
     }
 
-    // TODO
-    move(source: string, target: string, req?: any): Observable<HttpResponse<TreeNode[]>> {
-        const options = createRequestOption(req);
+    move(source: string, target: string): Observable<any> {
         const isCropList = target === 'CROPLISTS';
         const url = `${this.bmsapiUrl}/${source}/move?newParentId=${target}&isCropList=${isCropList}&&programUUID=${this.programUID}`;
-        return this.http.get<TreeNode[]>(url, { params: options, observe: 'response' })
-            .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
+        return this.http.put<any>(url, { observe: 'response' }).pipe(map((res) => res));
     }
 
     delete(folderId: string): Observable<HttpResponse<any>> {
