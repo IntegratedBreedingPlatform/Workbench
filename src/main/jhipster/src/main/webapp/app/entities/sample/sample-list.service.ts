@@ -29,7 +29,7 @@ export class SampleListService {
         const options: HttpParams = new HttpParams()
             .append('listName', listName);
         return this.http
-            .get(`${this.resourceUrl}/sample-lists/${listId}/download`, {
+            .get(`${this.resourceUrl}/${listId}/download`, {
                 params: options,
                 responseType: 'blob',
                 observe: 'response'
@@ -37,7 +37,7 @@ export class SampleListService {
     }
 
     importPlateInfo(listId: number, sampleList: any) {
-        return this.http.patch(`${this.resourceUrl}/sample-lists/${listId}/samples`, sampleList);
+        return this.http.patch(`${this.resourceUrl}/${listId}/samples`, sampleList);
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {

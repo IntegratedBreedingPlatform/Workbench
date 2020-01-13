@@ -22,7 +22,7 @@ export class SampleService {
     ) { }
 
     setCropAndProgram(crop: string, programUUID: string) {
-        this.resourceUrl =  SERVER_API_URL + `sample/${crop}/programs/${programUUID}/samples`;
+        this.resourceUrl =  SERVER_API_URL + `crops/${crop}/programs/${programUUID}/samples`;
         this.resourceSearchUrl = this.resourceUrl;
     }
 
