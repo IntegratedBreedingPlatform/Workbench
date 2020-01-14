@@ -266,6 +266,7 @@ table > thead > tr > th[jhisortby] {
 }
 .ui-treetable table {
     border-collapse: separate;
+    white-space: nowrap;
 }
 .ui-treetable tr:nth-child(even) {
     background-color: #f0eeee;
