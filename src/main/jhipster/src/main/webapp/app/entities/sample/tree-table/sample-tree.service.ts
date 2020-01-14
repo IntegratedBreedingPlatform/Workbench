@@ -50,7 +50,7 @@ export class SampleTreeService {
     create(folderName: string, parentId: string) {
         const id = parentId === 'LISTS' || parentId === 'CROPLISTS' ? 0 : parentId;
         const url = `${this.bmsapiUrl}?folderName=${folderName}&parentId=${id}&&programUUID=${this.programUID}`;
-        return this.http.post<TreeNode[]>(url, { observe: 'response' });
+        return this.http.post<any>(url, { observe: 'response' });
     }
 
     rename(newFolderName: string, folderId: string) {
