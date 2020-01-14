@@ -12,7 +12,6 @@ declare var authToken: string
     , selectedProjectId: string
     , loggedInUserId: string;
 
-declare var deleteConfirmation: string;
 declare var $: any;
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -29,7 +28,7 @@ const AUTH_PARAMS = {
     templateUrl: './tree-table.component.html'
 })
 export class TreeTableComponent implements OnInit {
-    crop: string;
+
     private paramSubscription: Subscription;
 
     public mode: Mode = Mode.None;
@@ -40,9 +39,6 @@ export class TreeTableComponent implements OnInit {
     public name: string; // rename or add item
 
     private draggedNode: PrimeNgTreeNode;
-
-    // TODO improve globals
-    public deleteConfirmation = deleteConfirmation;
 
     private static removeParent(node: PrimeNgTreeNode) {
         if (!node || !node.parent || !node.parent.children) {
@@ -239,6 +235,7 @@ export class TreeTableComponent implements OnInit {
     }
 
     submitDeleteFolderInTreeTable() {
+        this.mode = this.Modes.None;
         this.service.delete(this.selected.data.id).subscribe(() => {
             this.mode = this.Modes.None;
             this.alertService.success('bmsjHipsterApp.sample.folder.delete');
