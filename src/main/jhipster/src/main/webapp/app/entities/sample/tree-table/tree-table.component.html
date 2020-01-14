@@ -1,6 +1,6 @@
 <div id="listTreeContext">
 	<div class="modal fade" id="listTreeModal" tabindex="-1" role="dialog" aria-labelledby="listTreeModal" aria-hidden="true">
-		<div class="modal-dialog modal-autofit">
+		<div class="modal-dialog modal-extra-medium">
 			<div class="modal-content">
 				<div class="modal-body">
 					<div class="row form-group">
@@ -67,7 +67,7 @@
 											<th jhiTranslate="bmsjHipsterApp.tree-table.entries"># of entries</th>
 										</tr>
 									</ng-template>
-									<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex" >
+									<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
 										<tr [ttSelectableRow]="rowNode">
 											<td>
 												<p-treeTableToggler
@@ -105,7 +105,7 @@
 		</div>
 	</div>
 
-	<div *ngIf="mode == Modes.Delete" style="display: block" [@ModalAnimation] class="modal fade in" id="deleteFolder" role="dialog" aria-labelledby="deleteFolder" aria-hidden="true"  >
+	<div *ngIf="mode == Modes.Delete" style="display: block" [@ModalAnimation] class="modal fade in" id="deleteFolder" role="dialog" aria-labelledby="deleteFolder" aria-hidden="true">
 		<div class="modal-dialog modal-extra-small">
 			<div class="modal-content">
 				<div class="modal-body" id="manageCheckTypesModalBody">
@@ -135,5 +135,4 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>
