@@ -89,7 +89,7 @@ public class BreedingViewXMLWriterTest {
 		this.breedingViewInput = this.createBreedingViewInput();
 		this.breedingViewXMLWriter = new BreedingViewXMLWriter();
 		this.breedingViewXMLWriter.setBreedingViewInput(this.breedingViewInput);
-		this.breedingViewXMLWriter.setWebApiUrl(WEB_API_URL);
+		this.breedingViewXMLWriter.setSingleSiteAnalysisResultUploadURL(WEB_API_URL);
 		this.breedingViewXMLWriter.setContextUtil(this.contextUtil);
 		this.breedingViewXMLWriter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.createBreedingViewDirectories();
@@ -187,7 +187,7 @@ public class BreedingViewXMLWriterTest {
 	public void testGetWebApiUrl() {
 		final Project project = ProjectTestDataInitializer.createProjectWithCropType();
 		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(project);
-		final String url = this.breedingViewXMLWriter.getWebApiUrl();
+		final String url = this.breedingViewXMLWriter.generateSingleSiteResultUploadURL();
 		Mockito.verify(this.contextUtil).getProjectInContext();
 		Assert.assertTrue(url.contains(project.getCropType().getCropName()));
 	}
