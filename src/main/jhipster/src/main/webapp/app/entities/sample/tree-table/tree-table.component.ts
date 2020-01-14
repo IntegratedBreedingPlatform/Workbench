@@ -102,8 +102,7 @@ export class TreeTableComponent implements OnInit {
                     this.draggedNode = null;
                 },
                 (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
-            console.log('Move from ' + this.draggedNode.data.id + 'to ' + node.data.id);
+                    this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message }));
         }
     }
 
@@ -166,13 +165,18 @@ export class TreeTableComponent implements OnInit {
         return iconClickEvent.target.classList.contains('disable-image');
     }
 
-    private expand(parent) {
+    private expand(parent, selectedId?: any) {
         this.service
             .expand(parent.data.id, AUTH_PARAMS)
             .subscribe((res2: HttpResponse<TreeNode[]>) => {
                 parent.children = [];
                 res2.body.forEach((node) => {
-                    parent.children.push(this.toPrimeNgNode(node, parent))
+                    const primeNgTreeNode = this.toPrimeNgNode(node, parent);
+                    parent.children.push(primeNgTreeNode);
+                    if (selectedId === primeNgTreeNode.data.id) {
+                        this.selected = primeNgTreeNode;
+                        this.selected.expanded = true;
+                    }
                 });
                 this.redrawNodes();
             }, (res2: HttpErrorResponse) => this.onError(res2.message));
@@ -207,6 +211,7 @@ export class TreeTableComponent implements OnInit {
     }
 
     closeModal() {
+        this.mode = this.Modes.None;
         $('#listTreeModal').modal('hide');
     }
 
@@ -229,30 +234,33 @@ export class TreeTableComponent implements OnInit {
     submitDeleteFolderInTreeTable() {
         this.mode = this.Modes.None;
         this.service.delete(this.selected.data.id).subscribe(() => {
-            this.mode = this.Modes.None;
-            this.alertService.success('bmsjHipsterApp.sample.folder.delete');
-        },
+                this.expand(this.selected.parent);
+                this.alertService.success('bmsjHipsterApp.tree-table.folder.delete.successfully');
+            },
             (res: HttpErrorResponse) =>
-                this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+                this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message })
+        );
     }
 
     submitAddOrRenameFolderInTreeTable() {
         if (this.mode === Mode.Add) {
-            this.service.create(this.name, this.selected.data.id).subscribe(() => {
-                this.mode = this.Modes.None;
-                this.expand(this.selected.parent.data.id);
-                this.alertService.success('bmsjHipsterApp.sample.folder.create');
-            },
+            this.service.create(this.name, this.selected.data.id).subscribe((res) => {
+                console.log(res);
+                    this.mode = this.Modes.None;
+                    this.expand(this.selected, res.id);
+                    this.alertService.success('bmsjHipsterApp.tree-table.folder.create.successfully');
+                },
                 (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message }));
         } else if (this.mode === Mode.Rename) {
             this.service.rename(this.name, this.selected.data.id).subscribe(() => {
-                this.mode = this.Modes.None;
-                this.expand(this.selected.parent.data.id);
-                this.alertService.success('bmsjHipsterApp.sample.folder.rename');
-            },
+                    this.mode = this.Modes.None;
+                    this.selected.data.name = this.name;
+                    this.redrawNodes();
+                    this.alertService.success('bmsjHipsterApp.tree-table.folder.rename.successfully');
+                },
                 (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.sample.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message }));
         }
     }
 }
