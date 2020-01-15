@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TreeNode } from './tree-node.model';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/api';
@@ -39,6 +39,15 @@ export class TreeTableComponent implements OnInit {
     public name: string; // rename or add item
 
     private draggedNode: PrimeNgTreeNode;
+    @HostListener('document:keyup', ['$event'])
+    /**
+     * keyup - Checks keys entered for the 'esc' key, attached to hostlistener
+     */
+    keyup(event: KeyboardEvent): void {
+        if (event.keyCode === 27) {
+            this.closeModal();
+        }
+    }
 
     private static removeParent(node: PrimeNgTreeNode) {
         if (!node || !node.parent || !node.parent.children) {
