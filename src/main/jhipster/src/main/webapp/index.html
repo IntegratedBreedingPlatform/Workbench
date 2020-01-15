@@ -90,64 +90,11 @@
 
 	<script type="text/javascript" th:inline="javascript">
 		//<![CDATA[
-
-		// global for TODO copy to angular component
-		var treeTable;
-
-		function chooseList() {
-			var node = treeTable.getSelectedList();
-
-			if (node === null || treeTable.isSelectedListAFolder()) {
-				showErrorMessage('', chooseAList);
-				return false;
-			}
-			var id = treeTable.getSelectedListId();
-
-			if (!id) {
-				return false;
-			}
-
-			if (window.location.hash.indexOf('listId') < 0) {
-				// TODO merge with page params?
-				window.location.hash = "sample-manager?listId=" + id;
-			} else {
-				window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
-			}
-
-			return true;
-		}
-		function browseList() {
-			$('#listTreeModal').one('shown.bs.modal', function (e) {
-				// FIXME tableStyleClass not working on primeng treetable 6?
-				$('.ui-treetable-table').addClass('table table-curved table-condensed treetable');
-			}).modal({backdrop: 'static', keyboard: true});
-		}
-        function searchList() {
-            $('#sampleSearchListModal').modal({ backdrop: 'static', keyboard: true });
-            $('#sampleSearchListModal').one('shown.bs.modal', function (e) {
-               $('#searchString').focus();
-            });
-        }
-		function failHandler(data) {
-			if (data.status == 401) {
-				bmsAuth.handleReAuthentication();
-			} else {
-				showErrorMessage('', data.responseJSON.errors[0].message);
-			}
-		}
-		// TODO import globals.html
-		function openList() {
-			if (chooseList()) {
-				closeModal('listTreeModal');
-			}
-		}
 		var loggedInUserId = getUrlParameter("loggedInUserId"),
 			authToken = getUrlParameter("authToken"),
 			selectedProjectId = getUrlParameter("selectedProjectId"),
 			cropName = /*[[${cropName}]]*/ '',
-			currentProgramId = /*[[${currentProgramId}]]*/ '',
-
-			chooseAList = /*[[#{choose.a.list}]]*/ '';
+			currentProgramId = /*[[${currentProgramId}]]*/ '';
 	//]]>
 	</script>
 	<div id="notification-container" style="display:none">
