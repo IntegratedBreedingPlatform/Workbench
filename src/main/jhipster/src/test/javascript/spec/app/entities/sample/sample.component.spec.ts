@@ -76,7 +76,7 @@ describe('Component Tests', () => {
                 comp.sampleList = new SampleList(listId, listName, '', true, null);
 
                 const httpResponse = new HttpResponse({
-                    body: [new Blob()],
+                    body: new Blob(),
                     headers: new HttpHeaders()
                 });
                 spyOn(sampleListService, 'download').and.callFake(function(arg) {

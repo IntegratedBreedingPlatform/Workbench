@@ -1,6 +1,9 @@
 // Karma configuration
 // Generated on Fri Jan 30 2015 13:34:45 GMT+1300 (New Zealand Daylight Time)
 
+// Get the Chromium executable bundled in Puppeteer.
+process.env.CHROME_BIN = require('puppeteer').executablePath();
+
 module.exports = function(config) {
 	'use strict';
 	config.set({
@@ -72,7 +75,14 @@ module.exports = function(config) {
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['PhantomJS'],
+		browsers: ['ChromeHeadlessNoSandbox'],
+
+		customLaunchers: {
+			ChromeHeadlessNoSandbox: {
+				base: 'ChromeHeadless',
+				flags: ['--no-sandbox']
+			}
+		},
 
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
