@@ -245,7 +245,6 @@ export class TreeTableComponent implements OnInit {
     submitAddOrRenameFolderInTreeTable() {
         if (this.mode === Mode.Add) {
             this.service.create(this.name, this.selected.data.id).subscribe((res) => {
-                console.log(res);
                     this.mode = this.Modes.None;
                     this.expand(this.selected, res.id);
                     this.alertService.success('bmsjHipsterApp.tree-table.folder.create.successfully');
