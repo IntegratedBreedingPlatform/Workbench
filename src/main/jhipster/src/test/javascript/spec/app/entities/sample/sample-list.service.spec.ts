@@ -6,6 +6,7 @@ import {SampleListService} from '../../../../../../main/webapp/app/entities/samp
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 describe('Service Tests', () => {
 
@@ -27,7 +28,7 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(SampleListService);
             httpMock = injector.get(HttpTestingController);
-            service.setCrop(cropName)
+            service.setCropAndProgram(cropName, currentProgramId)
         });
 
         describe('Service methods', () => {

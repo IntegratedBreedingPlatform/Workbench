@@ -36,7 +36,7 @@ export class SampleSearchListComponent {
 
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
-            this.sampleListService.setCrop(this.crop);
+            this.sampleListService.setCropAndProgram(this.crop, currentProgramId);
         });
         this.activatedRoute.data.subscribe((data) => {
             this.reverse = data.pagingParams.ascending;
