@@ -14,7 +14,7 @@ export class AccountService  {
         return this.http.get<Account>(SERVER_API_URL + '/account', {
             params: {
                 cropName,
-                programUuid: currentProgramId
+                programUUID: currentProgramId
             }
         });
     }
