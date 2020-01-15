@@ -211,7 +211,9 @@ export class TreeTableComponent implements OnInit {
     }
 
     closeModal() {
+        this.nodes = [];
         this.mode = this.Modes.None;
+        this.loadTree();
         $('#listTreeModal').modal('hide');
     }
 
