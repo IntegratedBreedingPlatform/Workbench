@@ -71,6 +71,7 @@ export class TreeTableComponent implements OnInit {
             this.redrawNodes();
             this.nodes.forEach((parent) => {
                 this.expand(parent);
+                parent.expanded = true;
             });
         });
     }
