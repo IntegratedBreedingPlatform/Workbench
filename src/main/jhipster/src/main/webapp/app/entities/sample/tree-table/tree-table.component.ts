@@ -49,7 +49,7 @@ export class TreeTableComponent implements OnInit {
         }
     }
 
-    private static removeParent(node: PrimeNgTreeNode) {
+    private removeParent(node: PrimeNgTreeNode) {
         if (!node || !node.parent || !node.parent.children) {
             return;
         }
@@ -106,7 +106,7 @@ export class TreeTableComponent implements OnInit {
                         node.children = [];
                     }
                     node.children.push(this.draggedNode);
-                    TreeTableComponent.removeParent(this.draggedNode);
+                    this.removeParent(this.draggedNode);
                     this.draggedNode.parent = node;
                     this.redrawNodes();
                     this.draggedNode = null;
