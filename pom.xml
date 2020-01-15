@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>13.4.1</version>
+        <version>14.0</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.7.0</version>
+			<version>1.8.0</version>
 		</dependency>
 
 		<dependency>
@@ -594,8 +594,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
