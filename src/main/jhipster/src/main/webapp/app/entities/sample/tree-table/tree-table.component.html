@@ -17,11 +17,11 @@
 						<div class="col-xs-5 col-md-5">
 							<div class="pull-right">
 								<img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
-									 [ngClass]="{ 'disable-image': !selected ||  selected && selected.leaf }"/>
+									 [ngClass]="{ 'disable-image': !selected || selected.data.id === 'CROPLISTS' || selected && selected.leaf }"/>
 								<img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
-									 [ngClass]="{ 'disable-image': !selected || isRootFolder() || selected && selected.leaf }"/>
+									 [ngClass]="{ 'disable-image': !selected ||  isRootFolder() || selected && selected.leaf }"/>
 								<img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
-									 [ngClass]="{ 'disable-image': !selected || isRootFolder() || selected && selected.leaf }"/>
+									 [ngClass]="{ 'disable-image': !selected ||  isRootFolder() || selected && selected.leaf }"/>
 							</div>
 						</div>
 					</div>
