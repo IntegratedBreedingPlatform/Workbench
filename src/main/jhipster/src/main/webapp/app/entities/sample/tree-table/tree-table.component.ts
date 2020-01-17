@@ -101,6 +101,16 @@ export class TreeTableComponent implements OnInit {
 
     onDrop(event, node: PrimeNgTreeNode) {
         if (this.draggedNode) {
+            if (this.draggedNode.children && this.draggedNode.children.length !== 0) {
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
+                this.draggedNode = null;
+                return
+            }
+            if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
+                this.draggedNode = null;
+                return
+            }
             this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
                     if (!node.children) {
                         node.children = [];
