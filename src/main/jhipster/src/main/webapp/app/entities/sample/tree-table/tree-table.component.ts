@@ -210,7 +210,7 @@ export class TreeTableComponent implements OnInit {
                 owner: node.owner || '',
                 description: node.description || '',
                 type: node.type || '',
-                numOfEntries: node.numOfEntries || ''
+                noOfEntries: node.noOfEntries || ''
             },
             draggable: node.isFolder,
             droppable: node.isFolder,

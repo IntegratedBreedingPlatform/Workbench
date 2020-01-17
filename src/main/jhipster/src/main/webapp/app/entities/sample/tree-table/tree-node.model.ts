@@ -13,7 +13,7 @@ export class TreeNode implements BaseEntity {
         public isFolder?: boolean,
         public children?: Array<TreeNode>,
         public numOfChildren?: number,
-        public numOfEntries?: number
+        public noOfEntries?: number
     ) {
     }
 }
