@@ -122,7 +122,7 @@ export class TreeTableComponent implements OnInit {
                     this.draggedNode = null;
                 },
                 (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
     }
 
@@ -257,10 +257,10 @@ export class TreeTableComponent implements OnInit {
         this.mode = this.Modes.None;
         this.service.delete(this.selected.data.id).subscribe(() => {
                 this.expand(this.selected.parent);
-                this.alertService.success('bmsjHipsterApp.tree-table.folder.delete.successfully');
+                this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
             },
             (res: HttpErrorResponse) =>
-                this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message })
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
         );
     }
 
@@ -269,19 +269,19 @@ export class TreeTableComponent implements OnInit {
             this.service.create(this.name, this.selected.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(this.selected, res.id);
-                    this.alertService.success('bmsjHipsterApp.tree-table.folder.create.successfully');
+                    this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
                 },
                 (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         } else if (this.mode === Mode.Rename) {
             this.service.rename(this.name, this.selected.data.id).subscribe(() => {
                     this.mode = this.Modes.None;
                     this.selected.data.name = this.name;
                     this.redrawNodes();
-                    this.alertService.success('bmsjHipsterApp.tree-table.folder.rename.successfully');
+                    this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.rename.successfully');
                 },
                 (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.tree-table.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
     }
 }

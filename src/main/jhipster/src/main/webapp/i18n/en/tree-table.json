@@ -5,18 +5,19 @@
       "action": {
         "folder.delete": "Delete Folder"
       },
-      "folder": {
-        "create.successfully": "Add Folder Successfully",
-        "rename.successfully": "Rename Folder Successfully",
-        "delete.successfully": "Folder Deleted Successfully",
-        "delete.question": "Are you sure you want to delete {{ id }} folder?"
+      "messages": {
+        "folder.create.successfully": "Add Folder Successfully",
+        "folder.rename.successfully": "Rename Folder Successfully",
+        "folder.delete.successfully": "Folder Deleted Successfully",
+        "folder.cannot.move.has.children": "Can not move, {{ folder }} has children",
+        "folder.move.not.allowed": "Moving of a Sample list folder to Crop lists is not allowed",
+        "error": "{{ param }}"
       },
       "name": "Name",
       "owner": "Owner",
       "description": "Description",
       "type": "Type",
-      "entries": "# of entries",
-      "error": "{{ param }}"
+      "entries": "# of entries"
     }
   }
 }
