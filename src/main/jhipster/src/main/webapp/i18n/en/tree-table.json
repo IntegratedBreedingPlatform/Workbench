@@ -9,7 +9,7 @@
         "create.successfully": "Add Folder Successfully",
         "rename.successfully": "Rename Folder Successfully",
         "delete.successfully": "Folder Deleted Successfully",
-        "delete.question": "Are you sure you want to delete Sample {{ id }}?"
+        "delete.question": "Are you sure you want to delete {{ id }} folder?"
       },
       "name": "Name",
       "owner": "Owner",
