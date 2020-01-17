@@ -11,17 +11,15 @@ export type EntityResponseType = HttpResponse<TreeNode>;
 export class SampleTreeService {
 
     private isFolderOnly = 0;
-    private url = '/Fieldbook/SampleListTreeManager';
-    private bmsapiUrl;
-    private initTreeUrl = `${this.url}/loadInitTree/${this.isFolderOnly}`;
+    private fieldbookUrl = '/Fieldbook/SampleListTreeManager';
+    private resourceUrl;
     private programUID: string;
 
     constructor(private http: HttpClient) {
     }
 
     setCrop(crop: string) {
-        // url: '/bmsapi/sampleLists/' + cropName + '/sampleListFolder?folderName=' + folderName + '&parentId=' + parentFolderId + '&programUUID=' + currentProgramId,
-        this.bmsapiUrl = `/bmsapi/sampleLists/${crop}/sampleListFolder`;
+        this.resourceUrl = `/bmsapi/sampleLists/${crop}/sampleListFolder`;
     }
 
     setProgram(programUID: string) {
@@ -30,7 +28,8 @@ export class SampleTreeService {
 
     getInitTree(req?: any): Observable<HttpResponse<TreeNode[]>> {
         const options = createRequestOption(req);
-        return this.http.get<TreeNode[]>(this.initTreeUrl, { params: options, observe: 'response' })
+        const url = `${this.fieldbookUrl}/loadInitTree/${this.isFolderOnly}`;
+        return this.http.get<TreeNode[]>(url, { params: options, observe: 'response' })
             .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
     }
 
@@ -38,23 +37,23 @@ export class SampleTreeService {
         const isCropList = target === 'CROPLISTS';
         const sourceId = source === 'LISTS' || source === 'CROPLISTS' ? 0 : source;
         const targetId = target === 'LISTS' || target === 'CROPLISTS' ? 0 : target;
-        const url = `${this.bmsapiUrl}/${sourceId}/move?newParentId=${targetId}&isCropList=${isCropList}&&programUUID=${this.programUID}`;
+        const url = `${this.resourceUrl}/${sourceId}/move?newParentId=${targetId}&isCropList=${isCropList}&programUUID=${this.programUID}`;
         return this.http.put<any>(url, { observe: 'response' });
     }
 
     delete(folderId: string): Observable<HttpResponse<any>> {
-        const url = `${this.bmsapiUrl}/${folderId}`;
+        const url = `${this.resourceUrl}/${folderId}`;
         return this.http.delete<TreeNode[]>(url, { observe: 'response' });
     }
 
     create(folderName: string, parentId: string) {
         const id = parentId === 'LISTS' || parentId === 'CROPLISTS' ? 0 : parentId;
-        const url = `${this.bmsapiUrl}?folderName=${folderName}&parentId=${id}&&programUUID=${this.programUID}`;
+        const url = `${this.resourceUrl}?folderName=${folderName}&parentId=${id}&&programUUID=${this.programUID}`;
         return this.http.post<any>(url, { observe: 'response' });
     }
 
     rename(newFolderName: string, folderId: string) {
-        const url = `${this.bmsapiUrl}/${folderId}/?newFolderName=${newFolderName}`;
+        const url = `${this.resourceUrl}/${folderId}/?newFolderName=${newFolderName}`;
         return this.http.put<TreeNode[]>(url, { observe: 'response' });
     }
 
@@ -65,7 +64,7 @@ export class SampleTreeService {
     }
 
     private getUrl(parentKey: string) {
-        return `${this.url}/expandTree/${parentKey}/${this.isFolderOnly}`;
+        return `${this.fieldbookUrl}/expandTree/${parentKey}/${this.isFolderOnly}`;
     }
 
     private convertArrayResponse(res: HttpResponse<TreeNode[]>, parentKey?: string): HttpResponse<TreeNode[]> {
