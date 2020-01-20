@@ -11,7 +11,7 @@
           "rename.successfully": "Rename Folder Successfully",
           "delete.successfully": "Folder Deleted Successfully",
           "cannot.move.has.children": "Can not move, {{ folder }} has children",
-          "move.not.allowed": "This moving is not allowed",
+          "move.not.allowed": "Movement not allowed",
           "move.to.crop.list.not.allowed": "Moving of a Sample list folder to Crop lists is not allowed",
           "delete.question": "Are you sure you want to delete {{ id }} folder?"
         },
