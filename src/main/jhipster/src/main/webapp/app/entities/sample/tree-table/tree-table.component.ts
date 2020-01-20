@@ -39,6 +39,7 @@ export class TreeTableComponent implements OnInit {
     public name: string; // rename or add item
 
     private draggedNode: PrimeNgTreeNode;
+
     @HostListener('document:keyup', ['$event'])
     /**
      * keyup - Checks keys entered for the 'esc' key, attached to hostlistener
@@ -105,12 +106,11 @@ export class TreeTableComponent implements OnInit {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
                 this.draggedNode = null;
                 return
-            }else
-            if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
+            } else if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
                 this.draggedNode = null;
                 return
-            } else if(node.leaf){
+            } else if (node.leaf) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
                 this.draggedNode = null;
                 return
