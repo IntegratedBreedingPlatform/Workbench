@@ -2,8 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {SERVER_API_URL} from '../../app.constants';
 import {SampleList} from './sample-list.model';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {createRequestOption} from '../../shared';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class SampleListService {
@@ -22,7 +23,7 @@ export class SampleListService {
         const options = createRequestOption(params);
 
         return this.http.get<SampleList[]>(`${this.resourceUrl}/search`, {params: options, observe: 'response'})
-            .map((res: HttpResponse<SampleList[]>) => this.convertArrayResponse(res));
+            .pipe(map((res: HttpResponse<SampleList[]>) => this.convertArrayResponse(res)));
     }
 
     download(listId: number, listName: string): Observable<HttpResponse<Blob>> {

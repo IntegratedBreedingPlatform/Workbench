@@ -17,10 +17,12 @@ import {
     PageRibbonComponent
 } from './layouts';
 import { LabelPrintingModule } from './label-printing/label-printing.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         BmsjHipsterAppRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         BmsjHipsterSharedModule,

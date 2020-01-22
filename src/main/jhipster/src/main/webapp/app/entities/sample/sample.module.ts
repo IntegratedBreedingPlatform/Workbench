@@ -9,6 +9,8 @@ import {
     SampleResolvePagingParams,
     SampleManagerComponent
 } from './';
+import { TreeTableComponent } from './tree-table/tree-table.component';
+import { SampleTreeService } from './tree-table/sample-tree.service';
 
 import {SampleSearchListComponent} from './sample-search-list.component';
 import {SampleListService} from './sample-list.service';
@@ -30,6 +32,7 @@ const ENTITY_STATES = [
     declarations: [
         SampleComponent,
         SampleManagerComponent,
+        TreeTableComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent
@@ -37,6 +40,7 @@ const ENTITY_STATES = [
     entryComponents: [
         SampleComponent,
         SampleManagerComponent,
+        TreeTableComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent
     ],
@@ -44,6 +48,7 @@ const ENTITY_STATES = [
         SampleService,
         SampleListService,
         SampleResolvePagingParams,
+        SampleTreeService,
         FileDownloadHelper,
         ExcelService,
         SampleContext

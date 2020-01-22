@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {SampleList} from './sample-list.model';
 import {SampleListService} from './sample-list.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';

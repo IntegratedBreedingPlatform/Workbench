@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SampleList } from './sample-list.model';
-import { Subscription } from 'rxjs/Subscription';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from '@angular/router';
-import {ModalService} from '../../shared/modal/modal.service';
-import {SampleContext} from './sample.context';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ModalService } from '../../shared/modal/modal.service';
+import { SampleContext } from './sample.context';
 
 declare const cropName: string;
+declare var $: any;
 
 @Component({
     selector: 'jhi-sample-manager',
@@ -95,4 +95,10 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         this.queryParamSubscription.unsubscribe();
     }
 
+    browseList() {
+        $('#listTreeModal').one('shown.bs.modal', () => {
+            // FIXME tableStyleClass not working on primeng treetable 6?
+            $('.ui-treetable-table').addClass('table table-curved table-condensed treetable');
+        }).modal({ backdrop: 'static', keyboard: true });
+    }
 }
