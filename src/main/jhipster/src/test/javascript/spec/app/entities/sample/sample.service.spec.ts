@@ -38,7 +38,7 @@ describe('Service Tests', () => {
 
                 const req  = httpMock.expectOne({ method: 'GET' });
 
-                const resourceUrl = SERVER_API_URL + `sample/${cropName}/samples`;
+                const resourceUrl = SERVER_API_URL + `crops/${cropName}/programs/${currentProgramId}/samples`;
                 expect(req.request.url).toEqual(resourceUrl + '/' + 123);
             });
             it('should return Sample', () => {
