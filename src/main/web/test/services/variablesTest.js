@@ -82,7 +82,7 @@ describe('Variables Service', function() {
 
 		it('should GET /variables', function() {
 
-			httpBackend.expectGET(/\/variables\?programId=$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\?programUUID=').respond();
 
 			variablesService.getVariables();
 
@@ -93,7 +93,7 @@ describe('Variables Service', function() {
 
 			var response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\?programId=$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\?programUUID=').respond(response);
 
 			variablesService.getVariables();
 			httpBackend.flush();
@@ -107,7 +107,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\?programId=$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\?programUUID=').respond(500, error);
 
 			variablesService.getVariables();
 			httpBackend.flush();
@@ -122,7 +122,7 @@ describe('Variables Service', function() {
 
 		it('should GET /variables, setting favourite=true', function() {
 
-			httpBackend.expectGET(/\/variables\?favourite=true\&programId=$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\?favourite=true\&programUUID=').respond();
 
 			variablesService.getFavouriteVariables();
 
@@ -133,7 +133,7 @@ describe('Variables Service', function() {
 
 			var response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\?favourite=true\&programId=$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\?favourite=true\&programUUID=').respond(response);
 
 			variablesService.getFavouriteVariables();
 			httpBackend.flush();
@@ -147,7 +147,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\?favourite=true\&programId=$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\?favourite=true\&programUUID=').respond(500, error);
 
 			variablesService.getFavouriteVariables();
 			httpBackend.flush();
@@ -162,7 +162,7 @@ describe('Variables Service', function() {
 
 		it('should POST to /variables', function() {
 
-			httpBackend.expectPOST(/\/variables\?programId=$/, CONVERTED_PLANT_VIGOR).respond(201);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/variables\?programUUID=', CONVERTED_PLANT_VIGOR).respond(201);
 
 			variablesService.addVariable(PLANT_VIGOR);
 
@@ -174,7 +174,7 @@ describe('Variables Service', function() {
 			var variable = angular.copy(PLANT_VIGOR),
 				expectedVariable = CONVERTED_PLANT_VIGOR;
 
-			httpBackend.expectPOST(/\/variables\?programId=$/, expectedVariable).respond(201);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/variables\?programUUID=', expectedVariable).respond(201);
 
 			variablesService.addVariable(variable);
 
@@ -185,7 +185,7 @@ describe('Variables Service', function() {
 
 			var response = 123;
 
-			httpBackend.expectPOST(/\/variables\?programId=$/, CONVERTED_PLANT_VIGOR).respond(201, response);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/variables\?programUUID=', CONVERTED_PLANT_VIGOR).respond(201, response);
 
 			variablesService.addVariable(PLANT_VIGOR);
 			httpBackend.flush();
@@ -199,7 +199,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPOST(/\/variables\?programId=$/).respond(500, error);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/variables\?programUUID=').respond(500, error);
 
 			variablesService.addVariable(PLANT_VIGOR);
 			httpBackend.flush();
@@ -215,7 +215,7 @@ describe('Variables Service', function() {
 		it('should GET /variable, specifying the given id', function() {
 			var id = 123;
 
-			httpBackend.expectGET(/\/variables\/123\?programId=$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\/123\?programUUID=').respond();
 
 			variablesService.getVariable(id);
 
@@ -227,7 +227,7 @@ describe('Variables Service', function() {
 			var id = 123,
 				response = ['variables go here'];
 
-			httpBackend.expectGET(/\/variables\/123\?programId=$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\/123\?programUUID=').respond(response);
 
 			variablesService.getVariable(id);
 			httpBackend.flush();
@@ -242,7 +242,7 @@ describe('Variables Service', function() {
 			var id = 123,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/variables\/123\?programId=$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variables\/123\?programUUID=').respond(500, error);
 
 			variablesService.getVariable(id);
 			httpBackend.flush();
@@ -261,7 +261,7 @@ describe('Variables Service', function() {
 			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectPUT(/\/variables\/1\?programId=$/, CONVERTED_PLANT_VIGOR).respond(204);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/variables\/1\?programUUID=', CONVERTED_PLANT_VIGOR).respond(204);
 
 			variablesService.updateVariable(id, PLANT_VIGOR);
 
@@ -279,7 +279,7 @@ describe('Variables Service', function() {
 				editableFields: ['blah']
 			};
 
-			httpBackend.expectPUT(/\/variables\/1\?programId=$/, expectedVariable).respond(204);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/variables\/1\?programUUID=', expectedVariable).respond(204);
 
 			variablesService.updateVariable(id, variable);
 
@@ -292,7 +292,7 @@ describe('Variables Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/variables\/1\?programId=$/, CONVERTED_PLANT_VIGOR).respond(expectedResponse);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/variables\/1\?programUUID=', CONVERTED_PLANT_VIGOR).respond(expectedResponse);
 
 			variablesService.updateVariable(id, PLANT_VIGOR).then(function(res) {
 				actualResponse = res;
@@ -308,7 +308,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/variables\/1\?programId=$/, CONVERTED_PLANT_VIGOR).respond(500, error);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/variables\/1\?programUUID=', CONVERTED_PLANT_VIGOR).respond(500, error);
 
 			variablesService.updateVariable(1, PLANT_VIGOR);
 			httpBackend.flush();
@@ -324,7 +324,7 @@ describe('Variables Service', function() {
 		it('should DELETE /variables/:id', function() {
 			var id = 1;
 
-			httpBackend.expectDELETE(/\/variables\/1\?programId=$/).respond(204);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/variables\/1\?programUUID=').respond(204);
 
 			variablesService.deleteVariable(id);
 
@@ -338,7 +338,7 @@ describe('Variables Service', function() {
 			expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/variables\/1\?programId=$/).respond(expectedResponse);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/variables\/1\?programUUID=').respond(expectedResponse);
 
 			variablesService.deleteVariable(id).then(function(res) {
 				actualResponse = res;
@@ -354,7 +354,7 @@ describe('Variables Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/variables\/1\?programId=$/).respond(500, error);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/variables\/1\?programUUID=').respond(500, error);
 
 			variablesService.deleteVariable(1);
 			httpBackend.flush();
