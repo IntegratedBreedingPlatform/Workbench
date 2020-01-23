@@ -64,4 +64,3 @@ import {MockAlertService} from './helpers/mock-alert.service';
 export class BmsjHipsterTestModule {}
 
 export const cropName = 'maize';
-export const currentProgramId = '1234567';
