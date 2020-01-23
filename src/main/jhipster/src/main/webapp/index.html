@@ -27,8 +27,7 @@
 	<!-- TODO implement in angular -->
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.css" rel="stylesheet"/>
 	<link href="/Fieldbook/static/css/lib/jquery/jquery.treetable.theme.custom.css" rel="stylesheet"/>
-	<link href="/Fieldbook/static/css/lib/jquery-ui/jquery-ui.css" rel="stylesheet"/>
-	
+
 	<link th:href="@{/controller/static/css/access-denied.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
 
@@ -85,149 +84,17 @@
 	<!-- get crop name, used in listTreeOperation.js -->
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/bmsAuth.js"></script>
-	
+
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/modernizr-custom.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/access-denied.js}"></script>
 
 	<script type="text/javascript" th:inline="javascript">
 		//<![CDATA[
-
-		// global for TODO copy to angular component
-		var treeTable;
-
-		function chooseList() {
-			var node = treeTable.getSelectedList();
-
-			if (node === null || treeTable.isSelectedListAFolder()) {
-				showErrorMessage('', chooseAList);
-				return false;
-			}
-			var id = treeTable.getSelectedListId();
-
-			if (!id) {
-				return false;
-			}
-
-			if (window.location.hash.indexOf('listId') < 0) {
-				// TODO merge with page params?
-				window.location.hash = "sample-manager?listId=" + id;
-			} else {
-				window.location.hash = window.location.hash.replace(/listId=[0-9]*/, "listId=" + id);
-			}
-
-			return true;
-		}
-		function browseList() {
-			$('#listTreeModal').modal({ backdrop: 'static', keyboard: true });
-			$('#listTreeModal').off().on('shown.bs.modal', function () {
-				setTimeout(displayTreeTable);
-			});
-		}
-        function searchList() {
-            $('#sampleSearchListModal').modal({ backdrop: 'static', keyboard: true });
-            $('#sampleSearchListModal').one('shown.bs.modal', function (e) {
-               $('#searchString').focus();
-            });
-        }
-
-		function displayTreeTable() {
-			'use strict';
-
-			var baseurl = '/Fieldbook/SampleListTreeManager';
-
-			var authParams = {
-				authToken: authToken,
-				selectedProjectId: selectedProjectId,
-				loggedInUserId: loggedInUserId
-			};
-
-			var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
-
-			treeTable = new TreeTable({
-				baseurl: baseurl,
-				treeTableSelector: '#treeTable',
-				tableContainer: $('#treeTableContainer'),
-				authparams: authParams,
-				context: $('#listTreeContext'),
-				crop: cropName,
-				ondblclick: chooseList,
-				create: function (parentFolderId, folderName) {
-					return $.ajax({
-						url: '/bmsapi/crops/' + cropName + '/programs/' + currentProgramId + '/sample-list-folders?folderName=' + folderName + '&parentId=' + parentFolderId,
-						type: 'POST',
-						dataType: "json",
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
-						},
-						error: null
-					}).fail(failHandler);
-				},
-				move: function (sourceNode, targetNode) {
-					return moveSamplesListFolder({data: {key: sourceNode.id}}, {data: {key: targetNode.id}});
-				},
-				rename: function (id, folderName) {
-					return $.ajax({
-						url: '/bmsapi/crops/' + cropName + '/programs/' + currentProgramId + '/sample-list-folders/' + id + '?newFolderName=' + folderName,
-						type: 'PUT',
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
-						},
-						error: null
-					}).fail(failHandler);
-				},
-				delete: function (folderId) {
-					return $.ajax({
-						url: '/bmsapi/crops/' + cropName + '/programs/' + currentProgramId + '/sample-list-folders/' + folderId,
-						type: 'DELETE',
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('X-Auth-Token', xAuthToken);
-						},
-						error: null
-					}).fail(failHandler);
-				}
-			});
-			treeTable.init().done(function () {
-				setTimeout(function () {
-					treeTable.expandListInTreeTable('LISTS');
-					treeTable.expandListInTreeTable('CROPLISTS');
-				});
-			});
-		}
-		function failHandler(data) {
-			if (data.status == 401) {
-				bmsAuth.handleReAuthentication();
-			} else {
-				showErrorMessage('', data.responseJSON.errors[0].message);
-			}
-		}
-		// TODO import globals.html
-		function openList() {
-			if (chooseList()) {
-				closeModal('listTreeModal');
-			}
-		}
 		var loggedInUserId = getUrlParameter("loggedInUserId"),
 			authToken = getUrlParameter("authToken"),
 			selectedProjectId = getUrlParameter("selectedProjectId"),
 			cropName = /*[[${cropName}]]*/ '',
-			currentProgramId = /*[[${currentProgramId}]]*/ '',
-
-			addFolderSuccessful = /*[[#{add.folder.successful}]]*/ '',
-			successMsgHeader = /*[[#{common.form.success.text}]]*/ '',
-			renameGermplasmInvalidFolderMessage = /*[[#{nursery.germplasm.list.tree.invalid.public}]]*/ '',
-			invalidNodeGermplasmTreeMessage = /*[[#{nursery.germplasm.list.tree.invalid.node}]]*/ '',
-			folderNameRequiredMessage = /*[[#{browse.nursery.add.folder.name.blank}]]*/ '',
-			addGermplasmInvalidFolderMessage = /*[[#{nursery.germplasm.list.tree.invalid.public}]]*/ '',
-			invalidFolderNameCharacterMessage = /*[[#{nursery.addfolder.error.invalidcharacters}]]*/'',
-			deleteItemSuccessful = /*[[#{delete.item.successful}]]*/ '',
-			errorMsgHeader = /*[[#{common.error.header}]]*/ '',
-			deleteConfirmation = /*[[#{browse.nursery.delete.folder.name.confirmation}]]*/ '',
-			cannotMove = /*[[#{browse.nursery.move.can.not}]]*/'',
-			hasChildrenString = /*[[#{browse.nursery.move.has.children}]]*/'',
-			renameItemSuccessful = /*[[#{rename.item.successful}]]*/ '',
-			chooseAList = /*[[#{choose.a.list}]]*/ '',
-			ajaxGenericErrorMsg = /*[[#{ajax.generic.exception.error.message}]]*/ ''
-		;
+			currentProgramId = /*[[${currentProgramId}]]*/ '';
 	//]]>
 	</script>
 	<div id="notification-container" style="display:none">

@@ -10,20 +10,19 @@
         "noImplicitAny": false,
         "skipLibCheck": true,
         "suppressImplicitAnyIndexErrors": true,
-        "outDir": "target/www/app",
+        "outDir": "./../../../src/main/webapp/WEB-INF/pages/jhipster/app",
         "lib": ["es7", "es2017", "dom"],
         "typeRoots": [
             "node_modules/@types"
         ],
         "baseUrl": "./",
-        "paths": {
-            "@angular/*": [
-                "../node_modules/@angular/*"
-            ]
-        }
+        "allowJs": true
     },
     "include": [
         "src/main/webapp/app",
         "src/test/javascript/"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }
