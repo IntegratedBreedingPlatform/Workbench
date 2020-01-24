@@ -66,8 +66,7 @@ export class TreeTableComponent implements OnInit {
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
         this.paramSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            service.setCrop(cropName);
-            service.setProgram(currentProgramId);
+            service.setCropAndProgram(cropName, currentProgramId);
         });
     }
 

@@ -13,17 +13,12 @@ export class SampleTreeService {
     private isFolderOnly = 0;
     private fieldbookUrl = '/Fieldbook/SampleListTreeManager';
     private resourceUrl;
-    private programUID: string;
 
     constructor(private http: HttpClient) {
     }
 
-    setCrop(crop: string) {
-        this.resourceUrl = `/bmsapi/sampleLists/${crop}/sampleListFolder`;
-    }
-
-    setProgram(programUID: string) {
-        this.programUID = programUID;
+    setCropAndProgram(crop: string, programUUID: string) {
+        this.resourceUrl = `/bmsapi/crops/${crop}/programs/${programUUID}/sample-list-folders/`;
     }
 
     getInitTree(req?: any): Observable<HttpResponse<TreeNode[]>> {
@@ -37,7 +32,8 @@ export class SampleTreeService {
         const isCropList = target === 'CROPLISTS';
         const sourceId = source === 'LISTS' || source === 'CROPLISTS' ? 0 : source;
         const targetId = target === 'LISTS' || target === 'CROPLISTS' ? 0 : target;
-        const url = `${this.resourceUrl}/${sourceId}/move?newParentId=${targetId}&isCropList=${isCropList}&programUUID=${this.programUID}`;
+
+        const url = `${this.resourceUrl}/${sourceId}/move?newParentId=${targetId}&isCropList=${isCropList}`;
         return this.http.put<any>(url, { observe: 'response' });
     }
 
@@ -48,12 +44,12 @@ export class SampleTreeService {
 
     create(folderName: string, parentId: string) {
         const id = parentId === 'LISTS' || parentId === 'CROPLISTS' ? 0 : parentId;
-        const url = `${this.resourceUrl}?folderName=${folderName}&parentId=${id}&&programUUID=${this.programUID}`;
+        const url = `${this.resourceUrl}?folderName=${folderName}&parentId=${id}`;
         return this.http.post<any>(url, { observe: 'response' });
     }
 
     rename(newFolderName: string, folderId: string) {
-        const url = `${this.resourceUrl}/${folderId}/?newFolderName=${newFolderName}`;
+        const url = `${this.resourceUrl}/${folderId}?newFolderName=${newFolderName}`;
         return this.http.put<TreeNode[]>(url, { observe: 'response' });
     }
 
