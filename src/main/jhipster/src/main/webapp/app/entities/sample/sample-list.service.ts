@@ -10,13 +10,15 @@ import { map } from 'rxjs/operators';
 export class SampleListService {
 
     private resourceUrl;
+    private programUUID: string;
 
     constructor(
         private http: HttpClient
     ) { }
 
-    setCrop(crop: string) {
-        this.resourceUrl = SERVER_API_URL + `sampleLists/${crop}`;
+    setCropAndProgram(crop: string, programUUID: string) {
+        this.resourceUrl = SERVER_API_URL + `crops/${crop}/sample-lists`;
+        this.programUUID = programUUID;
     }
 
     search(params: any): Observable<HttpResponse<SampleList[]>> {
@@ -28,11 +30,10 @@ export class SampleListService {
 
     download(listId: number, listName: string): Observable<HttpResponse<Blob>> {
         const options: HttpParams = new HttpParams()
-            .append('listId', listId.toString())
+            .append('programUUID', this.programUUID)
             .append('listName', listName);
-
         return this.http
-            .get(`${this.resourceUrl}/download`, {
+            .get(`${this.resourceUrl}/${listId}/download`, {
                 params: options,
                 responseType: 'blob',
                 observe: 'response'
@@ -40,7 +41,10 @@ export class SampleListService {
     }
 
     importPlateInfo(listId: number, sampleList: any) {
-        return this.http.patch(`${this.resourceUrl}/sampleList/${listId}/samples`, sampleList);
+        const options: HttpParams = new HttpParams()
+            .append('programUUID', this.programUUID);
+        return this.http.patch(`${this.resourceUrl}/${listId}/samples`, sampleList, {
+            params: options});
     }
 
     private convertArrayResponse(res: HttpResponse<SampleList[]>): HttpResponse<SampleList[]> {

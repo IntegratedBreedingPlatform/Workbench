@@ -41,7 +41,7 @@ describe('Methods Service', function() {
 
 		it('should GET /methods', function() {
 
-			httpBackend.expectGET(/\/methods$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/methods\?programUUID=').respond();
 
 			methodsService.getMethods();
 
@@ -52,7 +52,7 @@ describe('Methods Service', function() {
 
 			var response = ['methods go here'];
 
-			httpBackend.expectGET(/\/methods$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/methods\?programUUID=').respond(response);
 
 			methodsService.getMethods();
 			httpBackend.flush();
@@ -66,7 +66,7 @@ describe('Methods Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/methods$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/methods\?programUUID=').respond(500, error);
 
 			methodsService.getMethods();
 			httpBackend.flush();
@@ -85,7 +85,7 @@ describe('Methods Service', function() {
 				name: 'mymethod'
 			};
 
-			httpBackend.expectPOST(/\/methods$/, method).respond(201);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/methods\?programUUID=', method).respond(201);
 
 			methodsService.addMethod(method);
 
@@ -99,7 +99,7 @@ describe('Methods Service', function() {
 			},
 			response = 123;
 
-			httpBackend.expectPOST(/\/methods$/, method).respond(201, response);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/methods\?programUUID=', method).respond(201, response);
 
 			methodsService.addMethod(method);
 			httpBackend.flush();
@@ -113,7 +113,7 @@ describe('Methods Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPOST(/\/methods$/).respond(500, error);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/methods\?programUUID=').respond(500, error);
 
 			methodsService.addMethod({});
 			httpBackend.flush();
@@ -127,7 +127,7 @@ describe('Methods Service', function() {
 	describe('updateMethod', function() {
 
 		it('should PUT to /updateMethod', function() {
-			httpBackend.expectPUT(/\/methods\/1$/).respond(204);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/methods\/1\?programUUID=').respond(204);
 			methodsService.updateMethod(1, {});
 			httpBackend.flush();
 		});
@@ -137,7 +137,7 @@ describe('Methods Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/methods\/1$/).respond(expectedResponse);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/methods\/1\?programUUID=').respond(expectedResponse);
 
 			methodsService.updateMethod(id, {}).then(function(res) {
 				actualResponse = res;
@@ -152,7 +152,7 @@ describe('Methods Service', function() {
 		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/methods\/1$/, {}).respond(500, error);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/methods\/1\?programUUID=', {}).respond(500, error);
 
 			methodsService.updateMethod(1, {});
 			httpBackend.flush();
@@ -169,7 +169,7 @@ describe('Methods Service', function() {
 
 			var id = 1;
 
-			httpBackend.expectDELETE(/\/methods\/1$/).respond(204);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/methods\/1\?programUUID=').respond(204);
 
 			methodsService.deleteMethod(id);
 
@@ -183,7 +183,7 @@ describe('Methods Service', function() {
 			expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/methods\/1$/).respond(expectedResponse);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/methods\/1\?programUUID=').respond(expectedResponse);
 
 			methodsService.deleteMethod(id).then(function(res) {
 				actualResponse = res;
@@ -199,7 +199,7 @@ describe('Methods Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/methods\/1$/).respond(500, error);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/methods\/1\?programUUID=').respond(500, error);
 
 			methodsService.deleteMethod(1);
 			httpBackend.flush();
@@ -216,7 +216,7 @@ describe('Methods Service', function() {
 
 			var id = 123;
 
-			httpBackend.expectGET(/\/methods\/123$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/methods\/123\?programUUID=').respond();
 
 			methodsService.getMethod(id);
 
@@ -228,7 +228,7 @@ describe('Methods Service', function() {
 			var id = 123,
 				response = ['methods go here'];
 
-			httpBackend.expectGET(/\/methods\/123$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/methods\/123\?programUUID=').respond(response);
 
 			methodsService.getMethod(id);
 			httpBackend.flush();
@@ -243,7 +243,7 @@ describe('Methods Service', function() {
 			var id = 123,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/methods\/123$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/methods\/123\?programUUID=').respond(500, error);
 
 			methodsService.getMethod(id);
 			httpBackend.flush();

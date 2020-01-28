@@ -41,7 +41,7 @@ describe('Scales Service', function() {
 
 		it('should GET /scales', function() {
 
-			httpBackend.expectGET(/\/scales$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/scales\?programUUID=').respond();
 
 			scalesService.getScales();
 
@@ -52,7 +52,7 @@ describe('Scales Service', function() {
 
 			var response = ['scales go here'];
 
-			httpBackend.expectGET(/\/scales$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/scales\?programUUID=').respond(response);
 
 			scalesService.getScales();
 			httpBackend.flush();
@@ -66,7 +66,7 @@ describe('Scales Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/scales$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/scales\?programUUID=').respond(500, error);
 
 			scalesService.getScales();
 			httpBackend.flush();
@@ -152,7 +152,7 @@ describe('Scales Service', function() {
 					name: 'myscale'
 				};
 
-			httpBackend.expectPOST(/\/scales$/, scale).respond(201);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/scales\?programUUID=', scale).respond(201);
 
 			scalesService.addScale(scale);
 
@@ -166,7 +166,7 @@ describe('Scales Service', function() {
 				},
 				response = 123;
 
-			httpBackend.expectPOST(/\/scales$/, scale).respond(201, response);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/scales\?programUUID=', scale).respond(201, response);
 
 			scalesService.addScale(scale);
 			httpBackend.flush();
@@ -180,7 +180,7 @@ describe('Scales Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPOST(/\/scales$/).respond(500, error);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/scales\?programUUID=').respond(500, error);
 
 			scalesService.addScale({});
 			httpBackend.flush();
@@ -194,7 +194,7 @@ describe('Scales Service', function() {
 	describe('updateScale', function() {
 
 		it('should PUT to /updateScale', function() {
-			httpBackend.expectPUT(/\/scales\/null$/).respond(204);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/scales\/null\?programUUID=').respond(204);
 			scalesService.updateScale(null, {});
 			httpBackend.flush();
 		});
@@ -203,7 +203,7 @@ describe('Scales Service', function() {
 			var expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/scales\/1$/).respond(expectedResponse);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/scales\/1\?programUUID=').respond(expectedResponse);
 
 			scalesService.updateScale(1, {}).then(function(res) {
 				actualResponse = res;
@@ -218,7 +218,7 @@ describe('Scales Service', function() {
 		it('should pass the result to the serviceUtilities.restFailureHandler if a successful PUT is not made', function() {
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/scales\/1$/, {}).respond(500, error);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/scales\/1\?programUUID=', {}).respond(500, error);
 
 			scalesService.updateScale(1, {});
 			httpBackend.flush();
@@ -233,7 +233,7 @@ describe('Scales Service', function() {
 
 		it('should DELETE /scales/:id', function() {
 
-			httpBackend.expectDELETE(/\/scales\/1$/).respond(204);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/scales\/1\?programUUID=').respond(204);
 
 			scalesService.deleteScale(1);
 
@@ -245,7 +245,7 @@ describe('Scales Service', function() {
 			var expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/scales\/1$/).respond(expectedResponse);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/scales\/1\?programUUID=').respond(expectedResponse);
 
 			scalesService.deleteScale(1).then(function(res) {
 				actualResponse = res;
@@ -261,7 +261,7 @@ describe('Scales Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/scales\/1$/).respond(500, error);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/scales\/1\?programUUID=').respond(500, error);
 
 			scalesService.deleteScale(1);
 			httpBackend.flush();
@@ -276,7 +276,7 @@ describe('Scales Service', function() {
 
 		it('should GET /scales, specifying the given id', function() {
 
-			httpBackend.expectGET(/\/scales\/123$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/scales\/123\?programUUID=').respond();
 
 			scalesService.getScale(123);
 
@@ -287,7 +287,7 @@ describe('Scales Service', function() {
 
 			var response = ['scales go here'];
 
-			httpBackend.expectGET(/\/scales\/123$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/scales\/123\?programUUID=').respond(response);
 
 			scalesService.getScale(123);
 			httpBackend.flush();
@@ -301,7 +301,7 @@ describe('Scales Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/scales\/123$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/scales\/123\?programUUID=').respond(500, error);
 
 			scalesService.getScale(123);
 			httpBackend.flush();
