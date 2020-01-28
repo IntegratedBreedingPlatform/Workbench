@@ -63,7 +63,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			final String locationName) {
 
 		final List<LocationDetails> locationDetails =
-				this.locationDataManager.getFilteredLocations(countryId, locationType, locationName, this.project.getUniqueID());
+				this.locationDataManager.getFilteredLocationsDetails(countryId, locationType, locationName, this.project.getUniqueID());
 
 		return createLocationViewModelList(locationDetails);
 	}
