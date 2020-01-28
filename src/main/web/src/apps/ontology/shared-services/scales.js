@@ -32,7 +32,7 @@
 			}]
 			*/
 			getScales: function() {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales', {timeout: 60000});
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/scales?programUUID=' + configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -78,7 +78,7 @@
 			}
 			*/
 			addScale: function(scale) {
-				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/scales', scale);
+				var request = $http.post('/bmsapi/crops/' + configService.getCropName() + '/scales?programUUID=' + configService.getProgramId(), scale);
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -110,7 +110,7 @@
 			}
 			*/
 			updateScale: function(id, scale) {
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id,
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/scales/' + id + '?programUUID=' + configService.getProgramId(),
 					convertedScale = {
 						name: scale.name,
 						description: scale.description,
@@ -130,7 +130,7 @@
 			deleteScale: function(id) {
 				var request;
 
-				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id);
+				request = $http.delete('/bmsapi/crops/' + configService.getCropName() + '/scales/' + id + '?programUUID=' + configService.getProgramId());
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -165,7 +165,7 @@
 			}
 			*/
 			getScale: function(id) {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/scales/' + id);
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/scales/' + id + '?programUUID=' + configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			}
 		};

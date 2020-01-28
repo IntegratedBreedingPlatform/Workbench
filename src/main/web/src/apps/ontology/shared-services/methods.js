@@ -25,7 +25,7 @@
 			*/
 			getMethods: function() {
 
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods',
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/methods?programUUID=' + configService.getProgramId(),
 					request = $http.get(url, {timeout: 60000});
 
 				return request.then(successHandler, failureHandler);
@@ -52,7 +52,7 @@
 			*/
 			addMethod: function(method) {
 
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods',
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/methods?programUUID=' + configService.getProgramId(),
 					request = $http.post(url, method);
 
 				return request.then(successHandler, failureHandler);
@@ -78,7 +78,7 @@
 			}
 			*/
 			updateMethod: function(id, method) {
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods/' + id,
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/methods/' + id + '?programUUID=' + configService.getProgramId(),
 					convertedMethod = {
 						name: method.name,
 						description: method.description
@@ -95,7 +95,7 @@
 			*/
 			deleteMethod: function(id) {
 
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods/' + id,
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/methods/' + id + '?programUUID=' + configService.getProgramId(),
 					request = $http.delete(url);
 
 				return request.then(function(response) {
@@ -124,7 +124,7 @@
 			}
 			*/
 			getMethod: function(id) {
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/methods/' + id,
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/methods/' + id + '?programUUID=' + configService.getProgramId(),
 					request = $http.get(url);
 
 				return request.then(successHandler, failureHandler);

@@ -6,6 +6,7 @@ import {SampleListService} from '../../../../../../main/webapp/app/entities/samp
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 describe('Service Tests', () => {
 
@@ -27,7 +28,7 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(SampleListService);
             httpMock = injector.get(HttpTestingController);
-            service.setCrop(cropName)
+            service.setCropAndProgram(cropName, currentProgramId)
         });
 
         describe('Service methods', () => {
@@ -43,7 +44,7 @@ describe('Service Tests', () => {
                 service.search(dummyParams).subscribe(() => {});
 
                 const req = httpMock.expectOne({ method: 'GET' });
-                const resourceUrl = SERVER_API_URL + `sampleLists/${cropName}/search`;
+                const resourceUrl = SERVER_API_URL + `crops/${cropName}/sample-lists/search`;
 
                 expect(req.request.url).toEqual(resourceUrl);
 
@@ -87,11 +88,11 @@ describe('Service Tests', () => {
                 service.download(listId, listName).subscribe(() => {});
 
                 const req = httpMock.expectOne({ method: 'GET' });
-                const resourceUrl = SERVER_API_URL + `sampleLists/${cropName}/download`;
+                const resourceUrl = SERVER_API_URL + `crops/${cropName}/sample-lists/${listId}/download`;
 
                 expect(req.request.url).toEqual(resourceUrl);
 
-                const expectedParams = 'listId=1&listName=listName';
+                const expectedParams = `programUUID=${currentProgramId}&listName=${listName}`;
                 expect(req.request.params.toString()).toBe(expectedParams);
             });
         });
