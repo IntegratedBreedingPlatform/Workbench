@@ -16,7 +16,7 @@ module.exports = (WATCH) => ({
             },
             {
                 test: /\.ts$/,
-                loaders: ['awesome-typescript-loader', 'angular2-template-loader?keepUrl=true'],
+                loaders: ['awesome-typescript-loader?jQuery=jquery', 'angular2-template-loader'],
                 exclude: /node_modules/
             },
             {
@@ -60,6 +60,11 @@ module.exports = (WATCH) => ({
                     failOnHint: false
                 }
             }
+        }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
         })
-    ]
+    ],
+    mode: 'development'
 });

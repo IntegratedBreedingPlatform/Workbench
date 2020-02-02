@@ -41,7 +41,7 @@ describe('Data Types Service', function() {
 
 		it('should GET /dataTypes', function() {
 
-			httpBackend.expectGET(/\/datatypes$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/data-types\?programUUID=').respond();
 
 			dataTypesService.getDataTypes();
 
@@ -52,7 +52,7 @@ describe('Data Types Service', function() {
 
 			var response = ['dataTypes go here'];
 
-			httpBackend.expectGET(/\/datatypes$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/data-types\?programUUID=').respond(response);
 
 			dataTypesService.getDataTypes();
 			httpBackend.flush();
@@ -66,7 +66,7 @@ describe('Data Types Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/datatypes$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/data-types\?programUUID=').respond(500, error);
 
 			dataTypesService.getDataTypes();
 			httpBackend.flush();
@@ -83,30 +83,31 @@ describe('Data Types Service', function() {
 			rootScope;
 
 		beforeEach(inject(function($q, $rootScope) {
-			q = $q;
-			rootScope = $rootScope;
-
 			dataTypesService.getDataTypes = function() {
 				deferredGetDataTypes = q.defer();
 				return deferredGetDataTypes.promise;
 			};
 
+			dataTypesService.getNonSystemDataTypes = function() {
+				deferredGetDataTypes = q.defer();
+				return deferredGetDataTypes.promise;
+			};
+
 			spyOn(dataTypesService, 'getDataTypes').and.callThrough();
+			spyOn(dataTypesService, 'getNonSystemDataTypes').and.callThrough();
+
+			q = $q;
+			rootScope = $rootScope;
 		}));
 
 		it('should filter out system data types and return the non system data types', function() {
 
-			var systemType = {
-					id: 1,
-					name: 'system',
-					systemDataType: true
-				},
-				nonSystemType = {
+			var	nonSystemType = {
 					id: 2,
 					name: 'nonsystem',
 					systemDataType: false
 				},
-				dataTypes = [systemType, nonSystemType],
+				dataTypes = [nonSystemType],
 				filteredTypesPromise,
 				filteredDataTypes;
 

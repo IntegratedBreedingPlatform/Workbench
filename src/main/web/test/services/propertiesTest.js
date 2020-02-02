@@ -59,7 +59,7 @@ describe('Properties Service', function() {
 
 		it('should GET /properties', function() {
 
-			httpBackend.expectGET(/\/properties$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/properties\?programUUID=').respond();
 
 			propertiesService.getProperties();
 
@@ -70,7 +70,7 @@ describe('Properties Service', function() {
 
 			var response = ['properties go here'];
 
-			httpBackend.expectGET(/\/properties$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/properties\?programUUID=').respond(response);
 
 			propertiesService.getProperties();
 			httpBackend.flush();
@@ -84,7 +84,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/properties$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/properties\?programUUID=').respond(500, error);
 
 			propertiesService.getProperties();
 			httpBackend.flush();
@@ -99,7 +99,7 @@ describe('Properties Service', function() {
 
 		it('should POST to /properties', function() {
 
-			httpBackend.expectPOST(/\/properties$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(201);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/properties\?programUUID=', PROPERTY_FOR_ADD_OR_UPDATE).respond(201);
 
 			propertiesService.addProperty(PROPERTY_FOR_ADD_OR_UPDATE);
 
@@ -110,7 +110,7 @@ describe('Properties Service', function() {
 
 			var response = 123;
 
-			httpBackend.expectPOST(/\/properties$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(201, response);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/properties\?programUUID=', PROPERTY_FOR_ADD_OR_UPDATE).respond(201, response);
 
 			propertiesService.addProperty(PROPERTY_FOR_ADD_OR_UPDATE);
 			httpBackend.flush();
@@ -124,7 +124,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPOST(/\/properties$/).respond(500, error);
+			httpBackend.expectPOST('/bmsapi\/crops\/\/properties\?programUUID=').respond(500, error);
 
 			propertiesService.addProperty({});
 			httpBackend.flush();
@@ -139,7 +139,7 @@ describe('Properties Service', function() {
 
 		it('should PUT to /updateProperty', function() {
 
-			httpBackend.expectPUT(/\/properties\/1$/).respond(204);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(204);
 
 			propertiesService.updateProperty(1, {});
 
@@ -149,7 +149,7 @@ describe('Properties Service', function() {
 		it('should remove unnecessary properties before PUTing', function() {
 			var id = 1;
 
-			httpBackend.expectPUT(/\/properties\/1$/, PROPERTY_FOR_ADD_OR_UPDATE).respond(204);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/properties\/1\?programUUID=', PROPERTY_FOR_ADD_OR_UPDATE).respond(204);
 
 			propertiesService.updateProperty(id, DETAILED_PROPERTY);
 
@@ -161,7 +161,7 @@ describe('Properties Service', function() {
 				expectedResponse = 204,
 				actualResponse;
 
-			httpBackend.expectPUT(/\/properties\/1$/).respond(expectedResponse);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(expectedResponse);
 
 			propertiesService.updateProperty(id, {}).then(function(res) {
 				actualResponse = res;
@@ -177,7 +177,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectPUT(/\/properties\/1$/, {}).respond(500, error);
+			httpBackend.expectPUT('/bmsapi\/crops\/\/properties\/1\?programUUID=', {}).respond(500, error);
 
 			propertiesService.updateProperty(1, {});
 			httpBackend.flush();
@@ -195,7 +195,7 @@ describe('Properties Service', function() {
 			// FIXME not in use yet because services haven't been hooked up
 			var id = 1;
 
-			httpBackend.expectDELETE(/\/properties\/1$/).respond(204);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(204);
 
 			propertiesService.deleteProperty(id);
 
@@ -209,7 +209,7 @@ describe('Properties Service', function() {
 			expectedResponse = 204,
 			actualResponse;
 
-			httpBackend.expectDELETE(/\/properties\/1$/).respond(expectedResponse);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(expectedResponse);
 
 			propertiesService.deleteProperty(id).then(function(res) {
 				actualResponse = res;
@@ -225,7 +225,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectDELETE(/\/properties\/1$/).respond(500, error);
+			httpBackend.expectDELETE('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(500, error);
 
 			propertiesService.deleteProperty(1);
 			httpBackend.flush();
@@ -243,7 +243,7 @@ describe('Properties Service', function() {
 			var id = 1;
 
 			// FIXME check that the property with the specified ID is actually requested once we've hooked up the real service
-			httpBackend.expectGET(/\/properties\/1$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond();
 
 			propertiesService.getProperty(id);
 
@@ -255,7 +255,7 @@ describe('Properties Service', function() {
 			var id = 1,
 				response = ['properties go here'];
 
-			httpBackend.expectGET(/\/properties\/1$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(response);
 
 			propertiesService.getProperty(id);
 			httpBackend.flush();
@@ -270,7 +270,7 @@ describe('Properties Service', function() {
 			var id = 1,
 				error = 'Error!';
 
-			httpBackend.expectGET(/\/properties\/1$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/properties\/1\?programUUID=').respond(500, error);
 
 			propertiesService.getProperty(id);
 			httpBackend.flush();
@@ -286,7 +286,7 @@ describe('Properties Service', function() {
 
 		it('should GET /classes', function() {
 
-			httpBackend.expectGET(/\/classes$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/classes\?programUUID=').respond();
 
 			propertiesService.getClasses();
 
@@ -297,7 +297,7 @@ describe('Properties Service', function() {
 
 			var response = ['classes go here'];
 
-			httpBackend.expectGET(/\/classes$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/classes\?programUUID=').respond(response);
 
 			propertiesService.getClasses();
 			httpBackend.flush();
@@ -311,7 +311,7 @@ describe('Properties Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/classes$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/classes\?programUUID=').respond(500, error);
 
 			propertiesService.getClasses();
 			httpBackend.flush();

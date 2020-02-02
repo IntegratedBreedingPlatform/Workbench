@@ -78,7 +78,7 @@
 			expectedRange is optional, and has optional min and max properties.
 			*/
 			getVariables: function() {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables?programId=' +
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/variables?programUUID=' +
 					configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
@@ -87,7 +87,7 @@
 			Returns an array of variables in the same format as getVariables above.
 			*/
 			getFavouriteVariables: function() {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables?favourite=true&programId=' +
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/variables?favourite=true&programUUID=' +
 					configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
@@ -163,7 +163,7 @@
 			*/
 			addVariable: function(variable) {
 				var convertedVariable = convertVariableForUpdating(variable),
-					request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/variables?programId=' +
+					request = $http.post('/bmsapi/crops/' + configService.getCropName() + '/variables?programUUID=' +
 						configService.getProgramId(), convertedVariable);
 
 				return request.then(successHandler, failureHandler);
@@ -247,7 +247,7 @@
 				var convertedVariable = convertVariableForUpdating(variable),
 					request;
 
-				request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
+				request = $http.put('/bmsapi/crops/' + configService.getCropName() + '/variables/' + id + '?programUUID=' +
 						configService.getProgramId(), convertedVariable);
 				return request.then(function(response) {
 					return response.status;
@@ -287,7 +287,7 @@
 			deleteVariable: function(id) {
 				var request;
 
-				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
+				request = $http.delete('/bmsapi/crops/' + configService.getCropName() + '/variables/' + id + '?programUUID=' +
 					configService.getProgramId());
 				return request.then(function(response) {
 					return response.status;
@@ -351,24 +351,27 @@
 			expectedRange is optional, and has optional min and max properties.
 			*/
 			getVariable: function(id) {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/variables/' + id + '?programId=' +
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/variables/' + id + '?programUUID=' +
 					configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			},
 
 			addFormula: function (formula) {
-				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/formula', formula);
+				var request = $http.post('/bmsapi/crops/' + configService.getCropName() + '/formula?programUUID=' +
+					configService.getProgramId(), formula);
 				return request.then(successHandler, failureHandler);
 			},
 
 			updateFormula: function (formula) {
-				var request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/formula/' + formula.formulaId,formula);
+				var request = $http.put('/bmsapi/crops/' + configService.getCropName() + '/formula/' + formula.formulaId + '?programUUID=' +
+					configService.getProgramId(), formula);
 				return request.then(successHandler, failureHandler);
 			},
 
 			deleteFormula: function(formulaId) {
 				var request;
-				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/formula/' + formulaId);
+				request = $http.delete('/bmsapi/crops/' + configService.getCropName() + '/formula/' + formulaId + '?programUUID=' +
+					configService.getProgramId());
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);

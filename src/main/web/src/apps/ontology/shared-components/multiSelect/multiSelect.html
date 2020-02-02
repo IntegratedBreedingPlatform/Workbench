@@ -2,7 +2,7 @@
 	<div class="label-wrapper" ng-repeat="selectedItem in model[property]">
 		<span class="label label-primary">
 			{{formatForDisplay(selectedItem)}}
-			<a href="#" ng-click="removeItem($event, $index)"><span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span></a>
+			<a href="#" ng-show="deletable(selectedItem)" ng-click="removeItem($event, $index)"><span class="glyphicon glyphicon-remove glyphicon-white" aria-hidden="true"></span></a>
 		</span>
 	</div>
 	<div class="suggestions-wrapper" ng-class="suggestionsShown ? 'show-suggestions' : ''" om-click-anywhere-but-here om-callback="hideSuggestions()" om-enabled="suggestionsShown">
@@ -11,6 +11,9 @@
 			<li class="suggestion" ng-repeat="suggestion in suggestions" ng-click="onClick($index)" ng-class="{active: selectedIndex === $index}">{{formatForDisplay(suggestion)}}</li>
 			<li class="no-suggestions" ng-show="suggestions.length === 0">{{'multiSelect.noMatchesFound' | translate}}</li>
 		</ul>
+	</div>
+	<div>
+		<small class="small" ng-show="appending()">{{'validation.variable.variableTypeAppending' | translate}}</small>
 	</div>
 </div>
 <p ng-hide="editable()" class="form-control-static">

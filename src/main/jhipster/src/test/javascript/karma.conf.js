@@ -1,3 +1,7 @@
+
+// Get the Chromium executable bundled in Puppeteer.
+process.env.CHROME_BIN = require('puppeteer').executablePath();
+
 const webpackConfig = require('../../../webpack/webpack.test.js');
 
 const WATCH = process.argv.includes('--watch');
@@ -68,7 +72,14 @@ module.exports = (config) => {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['PhantomJS'],
+        browsers: ['ChromeHeadlessNoSandbox'],
+
+        customLaunchers: {
+            ChromeHeadlessNoSandbox: {
+                base: 'ChromeHeadless',
+                flags: ['--no-sandbox']
+            }
+        },
 
         // Ensure all browsers can run tests written in .ts files
         mime: {

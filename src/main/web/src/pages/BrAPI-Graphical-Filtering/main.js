@@ -338,8 +338,7 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			link.click();
 		}
 
-		function normalizeDataForExport(rawData, convertStringToNumeric) {
-			var traits = {};
+		function normalizeDataForExport(rawData, isAggregate) {
 			var data = rawData
 				.map(function (observeUnit) {
 					var newObj = {};
@@ -350,33 +349,17 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 					});
 					observeUnit.observations.forEach(function (obs) {
 						// Convert trait values to numeric if possible.
-						newObj[obs.observationVariableName] = convertStringToNumeric ? tryParseInt(obs.value, obs.value) : obs.value;
-						traits[obs.observationVariableName] = true;
+						newObj[obs.observationVariableName] = isAggregate ? tryParseNumber(obs.value, obs.value) : obs.value;
 					});
 					return newObj;
 				});
-			var trait_names = d3.keys(traits);
-			data.forEach(function (datum) {
-				trait_names.forEach(function (trait) {
-					if (datum[trait] === undefined || datum[trait] === null || datum[trait] === NaN) {
-						// If the trait is undefined in an observation row, set the data as NA (Not Available, NA is recognized in R).
-						datum[trait] = 'NA';
-					}
-				})
-			});
 			return data;
 		}
 
-		function tryParseInt(str, defaultValue) {
-			var retValue = defaultValue;
-			if (str) {
-				if (!isNaN(str)) {
-					retValue = parseInt(str);
-				} else {
-					retValue = 0;
-				}
-			} else {
-				retValue = 'NA';
+		function tryParseNumber(str) {
+			var retValue = null;
+			if (str && !isNaN(str)) {
+				return Number(str);
 			}
 			return retValue;
 		}
@@ -390,7 +373,7 @@ mainApp.factory('rCallService', ['$http', function ($http) {
 	rCallService.getRCallsObjects = function (packageId) {
 		return $http({
 			method: 'GET',
-			url: '/bmsapi/r-packages/' + + packageId + '/r-calls' ,
+			url: '/bmsapi/r-packages/' + +packageId + '/r-calls',
 			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token}
 		});
 	};

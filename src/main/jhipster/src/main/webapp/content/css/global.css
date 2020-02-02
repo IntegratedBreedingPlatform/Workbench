@@ -257,4 +257,35 @@ table > thead > tr > th[jhisortby] {
     max-height: 350px;
     overflow: auto;
 }
+
+/* PrimeNg
+ TODO use theming https://www.primefaces.org/primeng/#/theming */
+
+.ui-treetable .ui-state-highlight {
+    background: none repeat scroll 0% 0% #BED6B2 !important;
+}
+.ui-treetable table {
+    border-collapse: separate;
+    white-space: nowrap;
+}
+.ui-treetable tr:nth-child(even) {
+    background-color: #f0eeee;
+}
+.ui-treetable tr:nth-child(odd) {
+    background-color: #e3e3e3;
+}
+.tree-table .folder,
+.tree-table .file
+{
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding: 0.2em 0px 0.2em 1.5em;
+}
+.tree-table .folder {
+    background-image: url("../images/folder.png");
+}
+.tree-table .file {
+    background-image: url("../images/document-icon.png");
+}
+
 /* jhipster-needle-css-add-main JHipster will add new css style */

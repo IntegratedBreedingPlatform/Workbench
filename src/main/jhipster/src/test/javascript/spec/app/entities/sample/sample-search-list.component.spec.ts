@@ -1,6 +1,6 @@
 /* tslint:disable max-line-length */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { BmsjHipsterTestModule } from '../../../test.module';
@@ -47,7 +47,7 @@ describe('Component Tests', () => {
 
                 const expectedSampleList = new SampleList(1, 'listName', '', false, null, []);
                 const headers = new HttpHeaders().append('link', 'link;link');
-                spyOn(service, 'search').and.returnValue(Observable.of(new HttpResponse({
+                spyOn(service, 'search').and.returnValue(of(new HttpResponse({
                     body: [expectedSampleList],
                     headers
                 })));
