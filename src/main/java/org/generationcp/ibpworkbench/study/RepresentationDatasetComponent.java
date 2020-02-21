@@ -11,15 +11,15 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.generationcp.commons.spring.util.ContextUtil;
+import com.vaadin.addon.tableexport.CsvExport;
+import com.vaadin.addon.tableexport.TableExport;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -47,15 +47,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import com.vaadin.addon.tableexport.CsvExport;
-import com.vaadin.addon.tableexport.TableExport;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class creates the Vaadin Table where a dataset can be displayed.
@@ -88,8 +82,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	private final boolean fromUrl;
 	private final boolean h2hCall;
 	private Table datasetTable;
-	// TODO - remove code for exporting to CSV as this has long been not displayed on screen
-	private Button exportCsvButton;
 	private Button exportExcelButton;
 	private Button openTableViewerButton;
 	private StringBuilder reportTitle;
@@ -97,10 +89,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Resource
-	private ContextUtil contextUtil;
-
-	private Map<String, Integer> studiesMappedByInstance = new HashMap<>();
 	private DatasetExporter datasetExporter;
 
 	// FIXME - Autowire StudyDataManager instead of passing it as parameter from other class
@@ -214,10 +202,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.datasetTable.setSelectable(true);
 
 		if (!this.h2hCall) {
-			// "Export to CSV"
-			this.exportCsvButton = new Button();
-			this.exportCsvButton.setData(RepresentationDatasetComponent.EXPORT_CSV_BUTTON_ID);
-			this.exportCsvButton.addListener(new StudyButtonClickListener(this));
 
 			// "Export to Fieldbook Excel File"
 			this.exportExcelButton = new Button();
@@ -247,7 +231,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		final List<String> columnIds = new ArrayList<String>();
 		try {
 			final DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
-			this.studiesMappedByInstance = this.studyDataManager.getInstanceGeolocationIdsMap(dataset.getStudyId());
 
 			variables = dataset.getVariableTypes().getVariableTypes();
 		} catch (final MiddlewareException e) {
@@ -318,7 +301,6 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 	@Override
 	public void updateLabels() {
-		this.messageSource.setCaption(this.exportCsvButton, Message.EXPORT_TO_CSV_LABEL);
 		this.messageSource.setCaption(this.exportExcelButton, Message.EXPORT_TO_EXCEL_LABEL);
 		this.messageSource.setCaption(this.openTableViewerButton, Message.OPEN_TABLE_VIEWER_LABEL);
 	}
