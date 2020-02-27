@@ -34,7 +34,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -85,14 +84,13 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 		if (this.isUploadedZipFileValid(studyId, project)) {
 
-			final List<Integer> locationIds = new ArrayList<>();
-			locationIds.addAll(this.getLocationIdsBasedOnInformationFromMeansDataFile(studyId, this.bmsOutputParser.getMeansFile()));
-
+			final List<Integer> environmentIds = new ArrayList<>(this.getEnvironmentIdsBasedOnInformationFromMeansDataFile(studyId));
 			boolean environmentExists = false;
 
-			if (!locationIds.isEmpty()) {
+			if (!environmentIds.isEmpty()) {
 				environmentExists =
-					this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(studyId, DatasetTypeEnum.MEANS_DATA.getId(), locationIds);
+					this.studyDataManager
+						.countExperimentsByDatasetTypeAndEnvironments(studyId, DatasetTypeEnum.MEANS_DATA.getId(), environmentIds) > 0;
 			}
 
 			try {
@@ -104,12 +102,12 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 							@Override
 							public void run() {
-								UploadBreedingViewOutputAction.this.processTheUploadedFile(studyId, project);
+								UploadBreedingViewOutputAction.this.processTheUploadedFile(studyId);
 							}
 
 						});
 				} else {
-					this.processTheUploadedFile(studyId, project);
+					this.processTheUploadedFile(studyId);
 				}
 
 			} catch (final RuntimeException e) {
@@ -167,9 +165,9 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return true;
 	}
 
-	protected List<Integer> getLocationIdsBasedOnInformationFromMeansDataFile(final int studyId, final File meansDataFile) {
+	List<Integer> getEnvironmentIdsBasedOnInformationFromMeansDataFile(final int studyId) {
 
-		final List<Integer> locationIds = new ArrayList<>();
+		final List<Integer> environmentIds = new ArrayList<>();
 
 		final BMSOutputInformation bmsOutputInformation = this.bmsOutputParser.getBmsOutputInformation();
 
@@ -181,17 +179,17 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			for (final TrialEnvironment trialEnvironment : trialEnvironmentList) {
 				for (final String environmentName : bmsOutputInformation.getEnvironmentNames()) {
 					if (this.containsValueByLocalName(bmsOutputInformation.getEnvironmentFactorName(), environmentName, trialEnvironment)) {
-						locationIds.add(trialEnvironment.getId());
+						environmentIds.add(trialEnvironment.getId());
 					}
 				}
 			}
 		}
 
-		return locationIds;
+		return environmentIds;
 
 	}
 
-	protected boolean containsValueByLocalName(
+	boolean containsValueByLocalName(
 		final String environmentFactor, final String environmentName,
 		final TrialEnvironment trialEnvironment) {
 
@@ -213,7 +211,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		return false;
 	}
 
-	protected boolean isUploadedZipFileCompatibleWithCurrentStudy(
+	private boolean isUploadedZipFileCompatibleWithCurrentStudy(
 		final BMSOutputInformation bmsInformation, final int studyId,
 		final Project project) {
 
@@ -221,7 +219,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	public void processTheUploadedFile(final int studyId, final Project project) {
+	void processTheUploadedFile(final int studyId) {
 
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {

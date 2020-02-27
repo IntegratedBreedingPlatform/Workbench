@@ -229,8 +229,8 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.studyDataManager.getTrialEnvironmentsInDataset(UploadBreedingViewOutputActionTest.TEST_MEANS_DATASET_ID))
 			.thenReturn(this.createEnvironments());
 		Mockito.when(
-			this.studyDataManager.checkIfAnyLocationIDsExistInExperiments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(),
-				ArgumentMatchers.<List<Integer>>any())).thenReturn(true);
+			this.studyDataManager.countExperimentsByDatasetTypeAndEnvironments(ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt(),
+				ArgumentMatchers.<List<Integer>>any())).thenReturn(1L);
 
 		Mockito.when(this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING)).thenReturn("");
 		Mockito.when(this.messageSource.getMessage(Message.OK)).thenReturn("");
@@ -251,8 +251,7 @@ public class UploadBreedingViewOutputActionTest {
 
 		Assert.assertEquals(this.fileUploadBreedingViewOutputWindow, this.uploadBreedingViewOutputAction.getWindow());
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(
-			UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
-			this.fileUploadBreedingViewOutputWindow.getProject());
+			UploadBreedingViewOutputActionTest.TEST_STUDY_ID);
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
 			.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
@@ -278,8 +277,7 @@ public class UploadBreedingViewOutputActionTest {
 			.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
 
 		this.uploadBreedingViewOutputAction.processTheUploadedFile(
-			UploadBreedingViewOutputActionTest.TEST_STUDY_ID,
-			this.fileUploadBreedingViewOutputWindow.getProject());
+			UploadBreedingViewOutputActionTest.TEST_STUDY_ID);
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
 			.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
@@ -332,8 +330,8 @@ public class UploadBreedingViewOutputActionTest {
 			.thenReturn(this.createEnvironments());
 
 		final List<Integer> locationIds =
-			this.uploadBreedingViewOutputAction.getLocationIdsBasedOnInformationFromMeansDataFile(
-				UploadBreedingViewOutputActionTest.TEST_STUDY_ID, Mockito.mock(File.class));
+			this.uploadBreedingViewOutputAction.getEnvironmentIdsBasedOnInformationFromMeansDataFile(
+				UploadBreedingViewOutputActionTest.TEST_STUDY_ID);
 
 		Assert.assertEquals("The test means data has only one trial instance", 1, locationIds.size());
 		Assert.assertEquals(UploadBreedingViewOutputActionTest.LOCATION_ID1, locationIds.get(0).intValue());
