@@ -13,6 +13,9 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.listeners.AdaptedGermplasmButtonClickListener;
@@ -22,9 +25,6 @@ import org.generationcp.ibpworkbench.cross.study.adapted.main.validators.Numeric
 import org.generationcp.ibpworkbench.cross.study.constants.NumericTraitCriteria;
 import org.generationcp.ibpworkbench.cross.study.constants.TraitWeight;
 import org.generationcp.ibpworkbench.cross.study.util.CrossStudyUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.h2h.NumericTraitInfo;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
@@ -103,10 +103,8 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 		List<NumericTraitInfo> numericTraits = null;
 
 		try {
-			numericTraits = this.crossStudyDataManager.getTraitsForNumericVariates(this.environmentIds);
-			if (this.selectedTraits != null) {
-				numericTraits = this.filterUnwantedTraitsFromResults(numericTraits, this.selectedTraits);
-			}
+			numericTraits = this.crossStudyDataManager.getTraitsForNumericVariates(this.environmentIds, selectedTraits);
+
 		} catch (MiddlewareQueryException e) {
 			NumericTraitsSection.LOG.error("Database error!", e);
 			MessageNotifier.showError(this.parentWindow, "Database Error!", "Error with getting numeric trait info given environment ids. "
@@ -181,20 +179,6 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 		this.addComponent(this.lblSectionTitle);
 		this.addComponent(this.traitsTable);
 
-	}
-
-	// TODO : Rebecca is not happy with public/private method ordering
-	// TODO : warning - On2 may need to revisit for performance
-	private List<NumericTraitInfo> filterUnwantedTraitsFromResults(List<NumericTraitInfo> numericTraitInfos, List<Integer> desiredTraits) {
-		List<NumericTraitInfo> filteredTraits = new ArrayList<NumericTraitInfo>();
-		for (NumericTraitInfo cto : numericTraitInfos) {
-			for (Integer traitId : desiredTraits) {
-				if (cto.getId() == traitId.intValue()) {
-					filteredTraits.add(cto);
-				}
-			}
-		}
-		return filteredTraits;
 	}
 
 	public void showEmptyTraitsMessage() {

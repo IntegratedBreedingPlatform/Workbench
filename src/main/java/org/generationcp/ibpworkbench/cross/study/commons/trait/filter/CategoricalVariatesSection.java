@@ -13,6 +13,9 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.listeners.AdaptedGermplasmButtonClickListener;
@@ -22,9 +25,6 @@ import org.generationcp.ibpworkbench.cross.study.adapted.main.validators.Categor
 import org.generationcp.ibpworkbench.cross.study.constants.CategoricalVariatesCondition;
 import org.generationcp.ibpworkbench.cross.study.constants.TraitWeight;
 import org.generationcp.ibpworkbench.cross.study.util.CrossStudyUtil;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.h2h.CategoricalTraitInfo;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
@@ -93,10 +93,8 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 
 		if (this.environmentIds != null && !this.environmentIds.isEmpty()) {
 			try {
-				this.categoricalValueObjects = this.crossStudyDataManager.getTraitsForCategoricalVariates(this.environmentIds);
-				if (this.selectedTraits != null) {
-					this.categoricalValueObjects = this.filterUnwantedTraitsFromResults(this.categoricalValueObjects, this.selectedTraits);
-				}
+				this.categoricalValueObjects = this.crossStudyDataManager.getTraitsForCategoricalVariates(this.environmentIds, this.selectedTraits);
+
 			} catch (MiddlewareQueryException ex) {
 				CategoricalVariatesSection.LOG.error("Error with getting categorical variate info given environment ids: "
 						+ this.environmentIds.toString(), ex);
@@ -254,21 +252,6 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 				}
 			}
 		}
-	}
-
-	// TODO : Rebecca is not happy with public/private method ordering
-	// TODO : warning - On2 may need to revisit for performance
-	private List<CategoricalTraitInfo> filterUnwantedTraitsFromResults(List<CategoricalTraitInfo> categoricalTraitInfos,
-			List<Integer> desiredTraits) {
-		List<CategoricalTraitInfo> filteredTraits = new ArrayList<CategoricalTraitInfo>();
-		for (CategoricalTraitInfo cto : categoricalTraitInfos) {
-			for (Integer traitId : desiredTraits) {
-				if (cto.getId() == traitId.intValue()) {
-					filteredTraits.add(cto);
-				}
-			}
-		}
-		return filteredTraits;
 	}
 
 	@Override

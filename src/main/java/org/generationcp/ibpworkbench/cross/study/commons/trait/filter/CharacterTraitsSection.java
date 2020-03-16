@@ -162,10 +162,7 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 		if (this.environmentIds != null && !this.environmentIds.isEmpty()) {
 			List<CharacterTraitInfo> traitInfoObjects = null;
 			try {
-				traitInfoObjects = this.crossStudyDataManager.getTraitsForCharacterVariates(this.environmentIds);
-				if (this.selectedTraits != null) {
-					traitInfoObjects = this.filterUnwantedTraitsFromResults(traitInfoObjects, this.selectedTraits);
-				}
+				traitInfoObjects = this.crossStudyDataManager.getTraitsForCharacterVariates(this.environmentIds, this.selectedTraits);
 
 			} catch (MiddlewareQueryException ex) {
 				CharacterTraitsSection.LOG.error(
@@ -218,21 +215,6 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 				}
 			}
 		}
-	}
-
-	// TODO : Rebecca is not happy with public/private method ordering
-	// TODO : warning - On2 may need to revisit for performance
-	private List<CharacterTraitInfo> filterUnwantedTraitsFromResults(List<CharacterTraitInfo> characterTraitInfos,
-			List<Integer> desiredTraits) {
-		List<CharacterTraitInfo> filteredTraits = new ArrayList<CharacterTraitInfo>();
-		for (CharacterTraitInfo cto : characterTraitInfos) {
-			for (Integer traitId : desiredTraits) {
-				if (cto.getId() == traitId.intValue()) {
-					filteredTraits.add(cto);
-				}
-			}
-		}
-		return filteredTraits;
 	}
 
 	@Override

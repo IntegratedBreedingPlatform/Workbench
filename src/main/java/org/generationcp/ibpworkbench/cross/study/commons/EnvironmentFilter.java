@@ -722,7 +722,6 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 		} else if (this.crossStudyToolType == CrossStudyToolType.TRAIT_DONORS_QUERY) {
 			try {
 
-				// FIXME : hit a view for this query - too heavy
 				this.environments =
 					this.crossStudyDataManager.getEnvironmentsForTraits(this.traitsList, this.contextUtil.getCurrentProgramUUID());
 
