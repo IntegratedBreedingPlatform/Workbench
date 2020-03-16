@@ -89,12 +89,12 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	private static final String WEIGHT_COLUMN_ID = "EnvironmentFilter Weight Column Id";
 
 	public static final String NEXT_BUTTON_ID = "EnvironmentFilter Next Button ID";
-	public static final String BACK_BUTTON_ID = "EnvironmentFilter Back Button ID";
+	private static final String BACK_BUTTON_ID = "EnvironmentFilter Back Button ID";
 
-	public static final String FILTER_LOCATION_BUTTON_ID = "EnvironmentFilter Filter Location Button ID";
-	public static final String FILTER_STUDY_BUTTON_ID = "EnvironmentFilter Filter Study Button ID";
-	public static final String ADD_ENVIRONMENT_BUTTON_ID = "EnvironmentFilter Add Env Button ID";
-	public static final String QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME = "Query_For_Adapted_Germplasm";
+	private static final String FILTER_LOCATION_BUTTON_ID = "EnvironmentFilter Filter Location Button ID";
+	private static final String FILTER_STUDY_BUTTON_ID = "EnvironmentFilter Filter Study Button ID";
+	private static final String ADD_ENVIRONMENT_BUTTON_ID = "EnvironmentFilter Add Env Button ID";
+	private static final String QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME = "Query_For_Adapted_Germplasm";
 
 	private Map<String, ObservationList> observationMap;
 	private Map<String, String> germplasmIdNameMap;
@@ -158,7 +158,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 
 	private CheckBox tagAllCheckBox;
 
-	Set<Integer> environmentIds;
+	private Set<Integer> environmentIds;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -391,10 +391,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	private void createEnvironmentsTable(final Set<TraitInfo> traitInfos) {
-		final List<Object> propertyIds = new ArrayList<>();
-		for (final Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
-			propertyIds.add(propertyId);
-		}
+		final List<Object> propertyIds = new ArrayList<>(this.environmentsTable.getContainerPropertyIds());
 
 		this.tableColumnSize = 0;
 		for (final Object propertyId : propertyIds) {
@@ -440,10 +437,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 	}
 
 	private void createEnvironmentsTable() {
-		final List<Object> propertyIds = new ArrayList<>();
-		for (final Object propertyId : this.environmentsTable.getContainerPropertyIds()) {
-			propertyIds.add(propertyId);
-		}
+		final List<Object> propertyIds = new ArrayList<>(this.environmentsTable.getContainerPropertyIds());
 
 		this.tableColumnSize = 0;
 		for (final Object propertyId : propertyIds) {
@@ -1034,7 +1028,7 @@ public class EnvironmentFilter extends AbsoluteLayout implements InitializingBea
 			}
 
 		}
-		return Integer.valueOf(counter);
+		return counter;
 	}
 
 	public void nextButtonClickAction() {

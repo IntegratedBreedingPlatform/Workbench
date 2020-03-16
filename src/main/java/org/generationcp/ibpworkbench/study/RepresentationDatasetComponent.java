@@ -60,8 +60,8 @@ import java.util.List;
 @Configurable
 public class RepresentationDatasetComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
-	protected static final String XLS_DOWNLOAD_FILENAME = "export.xls";
-	protected static final String TEMP_FILENAME = "dataset-temp";
+	static final String XLS_DOWNLOAD_FILENAME = "export.xls";
+	static final String TEMP_FILENAME = "dataset-temp";
 	public static final String EXPORT_CSV_BUTTON_ID = "RepresentationDatasetComponent Export CSV Button";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "RepresentationDatasetComponent Export to FieldBook Excel File Button";
 	public static final String OPEN_TABLE_VIEWER_BUTTON_ID = "RepresentationDatasetComponent Open Table Viewer Button";
@@ -106,7 +106,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 	// Called by StudyButtonClickListener
 	public void exportToCSVAction() {
-		CsvExport csvExport;
+		final CsvExport csvExport;
 
 		this.reportTitle = new StringBuilder().append(this.messageSource.getMessage(Message.REPORT_TITLE1_TEXT)).append("[")
 				.append(this.studyIdHolder).append("]-").append(this.messageSource.getMessage(Message.REPORT_TITLE2_TEXT)).append("[")
@@ -174,7 +174,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		final Window mainWindow = this.getWindow();
 		final TableViewerDatasetTable tableViewerDataset =
 				new TableViewerDatasetTable(this.studyDataManager, this.studyIdHolder, this.datasetId);
-		String studyName;
+		final String studyName;
 		try {
 			studyName = this.studyDataManager.getStudy(this.studyIdHolder).getName();
 			final Window tableViewer = new TableViewerComponent(tableViewerDataset, studyName);
@@ -225,10 +225,10 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		}
 	}
 
-	protected Table generateLazyDatasetTable(final boolean fromUrl) {
+	Table generateLazyDatasetTable(final boolean fromUrl) {
 		// set the column header ids
 		List<DMSVariableType> variables;
-		final List<String> columnIds = new ArrayList<String>();
+		final List<String> columnIds = new ArrayList<>();
 		try {
 			final DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
 
@@ -236,7 +236,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		} catch (final MiddlewareException e) {
 			RepresentationDatasetComponent.LOG
 					.error("Error in getting variables of dataset: " + this.datasetId + "\n" + e.toString() + "\n" + e.getStackTrace(), e);
-			variables = new ArrayList<DMSVariableType>();
+			variables = new ArrayList<>();
 			if (this.getWindow() != null) {
 				MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 						this.messageSource.getMessage(Message.ERROR_IN_GETTING_VARIABLES_OF_DATASET) + " " + this.datasetId);
@@ -254,7 +254,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 		// create item container for dataset table
 		final RepresentationDatasetQueryFactory factory =
-				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, studyIdHolder);
+				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, this.studyIdHolder);
 		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
 		this.populateDatasetContainerProperties(fromUrl, columnIds, datasetContainer);
 
@@ -282,7 +282,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		return newTable;
 	}
 
-	protected void populateDatasetContainerProperties(final boolean fromUrl, final List<String> columnIds, final LazyQueryContainer datasetContainer) {
+	void populateDatasetContainerProperties(final boolean fromUrl, final List<String> columnIds, final LazyQueryContainer datasetContainer) {
 		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
 		for (final String columnId : columnIds) {
 			if (columnId.contains(String.valueOf(TermId.GID.getId())) && !fromUrl) {
@@ -305,7 +305,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.messageSource.setCaption(this.openTableViewerButton, Message.OPEN_TABLE_VIEWER_LABEL);
 	}
 
-	public void setDatasetExporter(final DatasetExporter datasetExporter) {
+	void setDatasetExporter(final DatasetExporter datasetExporter) {
 		this.datasetExporter = datasetExporter;
 	}
 

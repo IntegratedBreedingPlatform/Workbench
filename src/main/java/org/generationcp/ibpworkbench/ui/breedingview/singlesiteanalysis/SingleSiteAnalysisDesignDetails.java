@@ -223,7 +223,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		this.setDefaultValueForRowAndColumnFactors();
 	}
 
-	protected int retrieveExperimentalDesignTypeID() {
+	private int retrieveExperimentalDesignTypeID() {
 		final Integer studyId = this.ssaDetailsPanel.getBreedingViewInput().getStudyId();
 		final Optional<Integer> experimentDesignTypeTermId = this.experimentDesignService.getStudyExperimentDesignTypeTermId(studyId);
 		if (experimentDesignTypeTermId.isPresent()) {
@@ -233,20 +233,20 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		return 0;
 	}
 
-	protected void displayDesignElementsBasedOnDesignTypeOfTheStudy() {
+	void displayDesignElementsBasedOnDesignTypeOfTheStudy() {
 		final int designType = this.retrieveExperimentalDesignTypeID();
 		if (designType != 0) {
 
 			final ExperimentDesignType experimentDesignType = ExperimentDesignType.getDesignTypeItemByTermId(designType);
 			this.selDesignType.setValue(experimentDesignType.getBvName());
 
-			if (experimentDesignType.getId() == ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getId()) {
+			if (ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getId().equals(experimentDesignType.getId())) {
 				this.displayRandomizedBlockDesignElements();
-			} else if (experimentDesignType.getId() == ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getId()) {
+			} else if (ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getId().equals(experimentDesignType.getId())) {
 				this.displayIncompleteBlockDesignElements();
-			} else if (experimentDesignType.getId() == ExperimentDesignType.ROW_COL.getId()) {
+			} else if (ExperimentDesignType.ROW_COL.getId().equals(experimentDesignType.getId())) {
 				this.displayRowColumnDesignElements();
-			} else if (experimentDesignType.getId() == ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
+			} else if (ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getId().equals(experimentDesignType.getId())) {
 				this.displayAugmentedDesignElements();
 			}
 
@@ -351,7 +351,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 
 	}
 
-	void markRowAndColumnFactorsAsMandatory(final Boolean isMandatory) {
+	private void markRowAndColumnFactorsAsMandatory(final Boolean isMandatory) {
 		if (isMandatory) {
 			this.lblSpecifyRowFactor.setValue(
 				this.messageSource.getMessage(Message.BV_SPECIFY_ROW_FACTOR) + SingleSiteAnalysisDetailsPanel.REQUIRED_FIELD_INDICATOR);
@@ -396,7 +396,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 
 	}
 
-	protected void populateChoicesForReplicates() {
+	void populateChoicesForReplicates() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
 				.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.REPLICATION_FACTOR)) {
@@ -412,7 +412,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		}
 	}
 
-	protected void populateChoicesForBlocks() {
+	void populateChoicesForBlocks() {
 
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
@@ -425,7 +425,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 
 	}
 
-	protected void populateChoicesForRowFactor() {
+	void populateChoicesForRowFactor() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim().equalsIgnoreCase(SingleSiteAnalysisDesignDetails.ROW_FACTOR)) {
 				this.selRowFactor.addItem(factor.getLocalName());
@@ -433,7 +433,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		}
 	}
 
-	protected void populateChoicesForColumnFactor() {
+	void populateChoicesForColumnFactor() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
 			if (factor.getStandardVariable().getProperty().getName().trim()
 				.equalsIgnoreCase(SingleSiteAnalysisDesignDetails.COLUMN_FACTOR)) {
@@ -453,7 +453,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		}
 	}
 
-	public void refineChoicesForBlocksReplicationRowAndColumnFactors() {
+	private void refineChoicesForBlocksReplicationRowAndColumnFactors() {
 		if (this.selReplicates.getValue() != null) {
 			this.selBlocks.removeItem(this.selReplicates.getValue());
 			this.selRowFactor.removeItem(this.selReplicates.getValue());
@@ -483,63 +483,63 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		return (String) this.selDesignType.getValue();
 	}
 
-	public String getSelReplicatesValue() {
+	String getSelReplicatesValue() {
 		return (String) this.selReplicates.getValue();
 	}
 
-	public String getSelBlocksValue() {
+	String getSelBlocksValue() {
 		return (String) this.selBlocks.getValue();
 	}
 
-	public String getSelRowFactorValue() {
+	String getSelRowFactorValue() {
 		return (String) this.selRowFactor.getValue();
 	}
 
-	public String getSelColumnFactorValue() {
+	String getSelColumnFactorValue() {
 		return (String) this.selColumnFactor.getValue();
 	}
 
-	public Boolean replicateFactorEnabled() {
+	Boolean replicateFactorEnabled() {
 		return this.selReplicates.isEnabled();
 	}
 
-	protected VerticalLayout getDesignDetailsContainer() {
+	VerticalLayout getDesignDetailsContainer() {
 		return this.designDetailsContainer;
 	}
 
-	protected Label getLblReplicates() {
+	Label getLblReplicates() {
 		return this.lblReplicates;
 	}
 
-	protected Label getLblBlocks() {
+	Label getLblBlocks() {
 		return this.lblBlocks;
 	}
 
-	protected Label getLblSpecifyRowFactor() {
+	Label getLblSpecifyRowFactor() {
 		return this.lblSpecifyRowFactor;
 	}
 
-	protected Label getLblSpecifyColumnFactor() {
+	Label getLblSpecifyColumnFactor() {
 		return this.lblSpecifyColumnFactor;
 	}
 
-	protected ComboBox getSelReplicates() {
+	ComboBox getSelReplicates() {
 		return this.selReplicates;
 	}
 
-	protected ComboBox getSelBlocks() {
+	ComboBox getSelBlocks() {
 		return this.selBlocks;
 	}
 
-	protected ComboBox getSelRowFactor() {
+	ComboBox getSelRowFactor() {
 		return this.selRowFactor;
 	}
 
-	protected ComboBox getSelColumnFactor() {
+	ComboBox getSelColumnFactor() {
 		return this.selColumnFactor;
 	}
 
-	protected ComboBox getSelDesignType() {
+	ComboBox getSelDesignType() {
 		return this.selDesignType;
 	}
 
@@ -547,7 +547,7 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 		this.messageSource = messageSource;
 	}
 
-	protected void setExperimentDesignService(final ExperimentDesignService studyDataManager) {
+	void setExperimentDesignService(final ExperimentDesignService studyDataManager) {
 		this.experimentDesignService = studyDataManager;
 	}
 }

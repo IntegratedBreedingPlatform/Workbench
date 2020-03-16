@@ -59,22 +59,22 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 	@Autowired
 	private CrossStudyDataManager crossStudyDataManager;
 
-	private List<Integer> environmentIds = null;
+	private final List<Integer> environmentIds;
 	private List<Integer> selectedTraits = null;
 
-	private final List<Field> fieldsToValidate = new ArrayList<Field>();
+	private final List<Field> fieldsToValidate = new ArrayList<>();
 	private List<NumericTraitFilter> filters;
 
 	private int numericTraitCount;
 	private boolean emptyMessageShown = false;
 
-	public NumericTraitsSection(List<Integer> environmentIds, Window parentWindow) {
+	public NumericTraitsSection(final List<Integer> environmentIds, final Window parentWindow) {
 		super();
 		this.parentWindow = parentWindow;
 		this.environmentIds = environmentIds;
 	}
 
-	public NumericTraitsSection(List<Integer> environmentIds, List<Integer> selectedTraits, Window parentWindow) {
+	public NumericTraitsSection(final List<Integer> environmentIds, final List<Integer> selectedTraits, final Window parentWindow) {
 		super();
 		this.parentWindow = parentWindow;
 		this.environmentIds = environmentIds;
@@ -96,16 +96,16 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 	}
 
 	private void populateTable() {
-		String limitsRequiredMessage =
+		final String limitsRequiredMessage =
 				MessageFormat.format(this.messageSource.getMessage(Message.FIELD_IS_REQUIRED),
 						this.messageSource.getMessage(Message.LIMITS));
 
 		List<NumericTraitInfo> numericTraits = null;
 
 		try {
-			numericTraits = this.crossStudyDataManager.getTraitsForNumericVariates(this.environmentIds, selectedTraits);
+			numericTraits = this.crossStudyDataManager.getTraitsForNumericVariates(this.environmentIds, this.selectedTraits);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			NumericTraitsSection.LOG.error("Database error!", e);
 			MessageNotifier.showError(this.parentWindow, "Database Error!", "Error with getting numeric trait info given environment ids. "
 					+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
@@ -116,11 +116,11 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 			if (numericTraits.isEmpty()) {
 				return;
 			}
-			for (NumericTraitInfo trait : numericTraits) {
-				double minValue = trait.getMinValue();
-				double maxValue = trait.getMaxValue();
+			for (final NumericTraitInfo trait : numericTraits) {
+				final double minValue = trait.getMinValue();
+				final double maxValue = trait.getMaxValue();
 
-				Button traitNameLink = new Button(trait.getName());
+				final Button traitNameLink = new Button(trait.getName());
 				traitNameLink.setDebugId("traitNameLink");
 				traitNameLink.setImmediate(true);
 				traitNameLink.setStyleName(BaseTheme.BUTTON_LINK);
@@ -129,7 +129,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 				traitNameLink.addListener(new AdaptedGermplasmButtonClickListener(this, trait.getId(), trait.getName(), "Numeric Variate",
 						this.environmentIds));
 
-				TextField limitsField = new TextField();
+				final TextField limitsField = new TextField();
 				limitsField.setDebugId("limitsField");
 				limitsField.setWidth("80px");
 				limitsField.setEnabled(false);
@@ -137,16 +137,16 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 				limitsField.setRequired(true);
 				limitsField.setRequiredError(limitsRequiredMessage);
 
-				ComboBox conditionBox = CrossStudyUtil.getNumericTraitCombobox();
+				final ComboBox conditionBox = CrossStudyUtil.getNumericTraitCombobox();
 				conditionBox.setWidth("100px");
-				ComboBox weightBox = CrossStudyUtil.getTraitWeightsComboBox();
+				final ComboBox weightBox = CrossStudyUtil.getTraitWeightsComboBox();
 				weightBox.setWidth("100px");
 
 				conditionBox.addListener(new AdaptedGermplasmValueChangeListener(this, limitsField, weightBox));
 				limitsField.addValidator(new NumericTraitLimitsValidator(conditionBox, minValue, maxValue));
 				this.fieldsToValidate.add(limitsField);
 
-				Object[] itemObj =
+				final Object[] itemObj =
 						new Object[] {traitNameLink, trait.getLocationCount(), trait.getGermplasmCount(), trait.getObservationCount(),
 								minValue, trait.getMedianValue(), maxValue, conditionBox, limitsField, weightBox};
 
@@ -166,7 +166,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 		this.traitsTable.setColumnReorderingAllowed(true);
 		this.traitsTable.setPageLength(10);
 
-		for (TableColumn column : TableColumn.values()) {
+		for (final TableColumn column : TableColumn.values()) {
 			this.traitsTable.addContainerProperty(column, column.getColumnClass(), null);
 			this.traitsTable.setColumnHeader(column, this.messageSource.getMessage(column.getMessage()));
 			this.traitsTable.setColumnAlignment(column, Table.ALIGN_CENTER);
@@ -189,9 +189,9 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 		}
 	}
 
-	public void showNumericVariateClickAction(Integer traitId, String traitName, List<Integer> envIds) {
-		Window subParentWindow = this.getWindow();
-		ViewTraitObservationsDialog viewTraitDialog =
+	public void showNumericVariateClickAction(final Integer traitId, final String traitName, final List<Integer> envIds) {
+		final Window subParentWindow = this.getWindow();
+		final ViewTraitObservationsDialog viewTraitDialog =
 				new ViewTraitObservationsDialog(this, subParentWindow, "Numeric Variate", traitId, traitName, envIds);
 		viewTraitDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		subParentWindow.addWindow(viewTraitDialog);
@@ -200,7 +200,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 	// perform validation on limits textfields
 	public boolean allFieldsValid() {
 		try {
-			for (Field field : this.fieldsToValidate) {
+			for (final Field field : this.fieldsToValidate) {
 				if (field.isEnabled()) {
 					field.validate();
 				}
@@ -208,7 +208,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 
 			return true;
 
-		} catch (InvalidValueException e) {
+		} catch (final InvalidValueException e) {
 			LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.INCORRECT_LIMITS_VALUE), e.getMessage());
 			return false;
@@ -218,37 +218,37 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 
 	@SuppressWarnings("unchecked")
 	public List<NumericTraitFilter> getFilters() {
-		this.filters = new ArrayList<NumericTraitFilter>();
+		this.filters = new ArrayList<>();
 
-		Collection<NumericTraitInfo> traitInfoObjects =
+		final Collection<NumericTraitInfo> traitInfoObjects =
 				(Collection<NumericTraitInfo>) this.traitsTable.getContainerDataSource().getItemIds();
-		for (NumericTraitInfo traitInfo : traitInfoObjects) {
-			Item tableRow = this.traitsTable.getItem(traitInfo);
+		for (final NumericTraitInfo traitInfo : traitInfoObjects) {
+			final Item tableRow = this.traitsTable.getItem(traitInfo);
 
-			ComboBox conditionComboBox = (ComboBox) tableRow.getItemProperty(TableColumn.NUM_CONDITION_COL_ID).getValue();
-			NumericTraitCriteria condition = (NumericTraitCriteria) conditionComboBox.getValue();
+			final ComboBox conditionComboBox = (ComboBox) tableRow.getItemProperty(TableColumn.NUM_CONDITION_COL_ID).getValue();
+			final NumericTraitCriteria condition = (NumericTraitCriteria) conditionComboBox.getValue();
 
-			ComboBox priorityComboBox = (ComboBox) tableRow.getItemProperty(TableColumn.NUM_PRIORITY_COL_ID).getValue();
-			TraitWeight priority = (TraitWeight) priorityComboBox.getValue();
+			final ComboBox priorityComboBox = (ComboBox) tableRow.getItemProperty(TableColumn.NUM_PRIORITY_COL_ID).getValue();
+			final TraitWeight priority = (TraitWeight) priorityComboBox.getValue();
 
-			TextField limitsField = (TextField) tableRow.getItemProperty(TableColumn.NUM_LIMITS_COL_ID).getValue();
-			String limitsString = limitsField.getValue().toString();
+			final TextField limitsField = (TextField) tableRow.getItemProperty(TableColumn.NUM_LIMITS_COL_ID).getValue();
+			final String limitsString = limitsField.getValue().toString();
 
 			if (condition != NumericTraitCriteria.DROP_TRAIT && priority != TraitWeight.IGNORED) {
 				if (condition == NumericTraitCriteria.KEEP_ALL) {
-					NumericTraitFilter filter = new NumericTraitFilter(traitInfo, condition, new ArrayList<String>(), priority);
+					final NumericTraitFilter filter = new NumericTraitFilter(traitInfo, condition, new ArrayList<>(), priority);
 					this.filters.add(filter);
 				} else {
 					if (limitsString != null && limitsString.length() > 0) {
-						StringTokenizer tokenizer = new StringTokenizer(limitsString, ",");
-						List<String> givenLimits = new ArrayList<String>();
+						final StringTokenizer tokenizer = new StringTokenizer(limitsString, ",");
+						final List<String> givenLimits = new ArrayList<>();
 
 						while (tokenizer.hasMoreTokens()) {
-							String limit = tokenizer.nextToken().trim();
+							final String limit = tokenizer.nextToken().trim();
 							givenLimits.add(limit);
 						}
 
-						NumericTraitFilter filter = new NumericTraitFilter(traitInfo, condition, givenLimits, priority);
+						final NumericTraitFilter filter = new NumericTraitFilter(traitInfo, condition, givenLimits, priority);
 						this.filters.add(filter);
 					}
 				}
@@ -266,11 +266,11 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 				Message.CONDITION_HEADER, ComboBox.class, 100), NUM_LIMITS_COL_ID(Message.LIMITS, TextField.class, 85), NUM_PRIORITY_COL_ID(
 				Message.PRIORITY, ComboBox.class, 105);
 
-		private Message message;
-		private Class<?> columnClass;
-		private int width;
+		private final Message message;
+		private final Class<?> columnClass;
+		private final int width;
 
-		private TableColumn(Message message, Class<?> columnClass, int width) {
+		TableColumn(final Message message, final Class<?> columnClass, final int width) {
 			this.message = message;
 			this.columnClass = columnClass;
 			this.width = width;
@@ -298,7 +298,7 @@ public class NumericTraitsSection extends VerticalLayout implements Initializing
 			this.filters = this.getFilters();
 		}
 		if (!this.filters.isEmpty()) {
-			for (NumericTraitFilter filter : this.filters) {
+			for (final NumericTraitFilter filter : this.filters) {
 				if (!NumericTraitCriteria.DROP_TRAIT.equals(filter.getCondition())) {
 					return false;
 				}

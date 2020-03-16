@@ -124,7 +124,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	protected boolean isUploadedZipFileValid(final int studyId, final Project project) {
+	private boolean isUploadedZipFileValid(final int studyId, final Project project) {
 
 		final BMSOutputInformation bmsOutputInformation;
 

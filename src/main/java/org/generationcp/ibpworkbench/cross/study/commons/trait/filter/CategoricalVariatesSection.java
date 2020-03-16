@@ -57,9 +57,9 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 	private static final String PRIORITY_COLUMN_ID = "Priority";
 	public static final String TRAIT_BUTTON_ID = "CharacterTraitsSection Trait Button ID";
 
-	private List<Integer> environmentIds = null;
+	private final List<Integer> environmentIds;
 	private List<Integer> selectedTraits = null;
-	private final List<Field> fieldsToValidate = new ArrayList<Field>();
+	private final List<Field> fieldsToValidate = new ArrayList<>();
 
 	private final Window parentWindow;
 	private Label lblSectionTitle;
@@ -76,13 +76,13 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 	@Autowired
 	private CrossStudyDataManager crossStudyDataManager;
 
-	public CategoricalVariatesSection(List<Integer> environmentIds, Window parentWindow) {
+	public CategoricalVariatesSection(final List<Integer> environmentIds, final Window parentWindow) {
 		super();
 		this.environmentIds = environmentIds;
 		this.parentWindow = parentWindow;
 	}
 
-	public CategoricalVariatesSection(List<Integer> environmentIds, List<Integer> selectedTraits, Window parentWindow) {
+	public CategoricalVariatesSection(final List<Integer> environmentIds, final List<Integer> selectedTraits, final Window parentWindow) {
 		super();
 		this.environmentIds = environmentIds;
 		this.selectedTraits = selectedTraits;
@@ -95,7 +95,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 			try {
 				this.categoricalValueObjects = this.crossStudyDataManager.getTraitsForCategoricalVariates(this.environmentIds, this.selectedTraits);
 
-			} catch (MiddlewareQueryException ex) {
+			} catch (final MiddlewareQueryException ex) {
 				CategoricalVariatesSection.LOG.error("Error with getting categorical variate info given environment ids: "
 						+ this.environmentIds.toString(), ex);
 				MessageNotifier.showError(
@@ -173,11 +173,11 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 		this.traitsTable.setWidth("960px");
 	}
 
-	private int getMaxCategoryValueCount(List<CategoricalTraitInfo> categoricalValueObjects) {
+	private int getMaxCategoryValueCount(final List<CategoricalTraitInfo> categoricalValueObjects) {
 		int max = 0;
 		if (categoricalValueObjects != null) {
 			for (int i = 0; i < categoricalValueObjects.size(); i++) {
-				int count = categoricalValueObjects.get(i).getValues().size();
+				final int count = categoricalValueObjects.get(i).getValues().size();
 				if (count > max) {
 					max = count;
 				}
@@ -187,7 +187,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 	}
 
 	private void populateTraitsTable() {
-		String limitsRequiredMessage =
+		final String limitsRequiredMessage =
 				MessageFormat.format(this.messageSource.getMessage(Message.FIELD_IS_REQUIRED),
 						this.messageSource.getMessage(Message.LIMITS));
 
@@ -199,9 +199,9 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 					return;
 				}
 
-				for (CategoricalTraitInfo traitInfo : this.categoricalValueObjects) {
+				for (final CategoricalTraitInfo traitInfo : this.categoricalValueObjects) {
 
-					Button traitNameLink = new Button(traitInfo.getName());
+					final Button traitNameLink = new Button(traitInfo.getName());
 					traitNameLink.setDebugId("traitNameLink");
 					traitNameLink.setImmediate(true);
 					traitNameLink.setStyleName(BaseTheme.BUTTON_LINK);
@@ -209,11 +209,11 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 					traitNameLink.addListener(new AdaptedGermplasmButtonClickListener(this, traitInfo.getId(), traitInfo.getName(),
 							"Categorical Variate", this.environmentIds));
 
-					ComboBox conditionComboBox = CrossStudyUtil.getCategoricalVariatesComboBox();
+					final ComboBox conditionComboBox = CrossStudyUtil.getCategoricalVariatesComboBox();
 					conditionComboBox.setEnabled(true);
 
-					ComboBox priorityComboBox = CrossStudyUtil.getTraitWeightsComboBox();
-					TextField txtLimits = new TextField();
+					final ComboBox priorityComboBox = CrossStudyUtil.getTraitWeightsComboBox();
+					final TextField txtLimits = new TextField();
 					txtLimits.setDebugId("txtLimits");
 					txtLimits.setEnabled(false);
 					txtLimits.setImmediate(true);
@@ -223,7 +223,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 					this.fieldsToValidate.add(txtLimits);
 					txtLimits.setEnabled(false);
 
-					Object[] itemObj = new Object[this.traitsTable.getColumnHeaders().length];
+					final Object[] itemObj = new Object[this.traitsTable.getColumnHeaders().length];
 
 					itemObj[0] = traitNameLink;
 					itemObj[1] = traitInfo.getLocationCount();
@@ -277,9 +277,9 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 		}
 	}
 
-	public void showTraitObservationClickAction(Integer traitId, String variateType, String traitName, List<Integer> envIds) {
-		Window parentWindow = this.getWindow();
-		ViewTraitObservationsDialog viewTraitDialog =
+	public void showTraitObservationClickAction(final Integer traitId, final String variateType, final String traitName, final List<Integer> envIds) {
+		final Window parentWindow = this.getWindow();
+		final ViewTraitObservationsDialog viewTraitDialog =
 				new ViewTraitObservationsDialog(this, parentWindow, variateType, traitId, traitName, envIds);
 		viewTraitDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		parentWindow.addWindow(viewTraitDialog);
@@ -288,7 +288,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 	// perform validation on limits textfields
 	public boolean allFieldsValid() {
 		try {
-			for (Field field : this.fieldsToValidate) {
+			for (final Field field : this.fieldsToValidate) {
 				if (field.isEnabled()) {
 					field.validate();
 				}
@@ -296,7 +296,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 
 			return true;
 
-		} catch (InvalidValueException e) {
+		} catch (final InvalidValueException e) {
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.INCORRECT_LIMITS_VALUE), e.getMessage());
 			return false;
 		}
@@ -305,36 +305,36 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 
 	@SuppressWarnings("unchecked")
 	public List<CategoricalTraitFilter> getFilters() {
-		this.filters = new ArrayList<CategoricalTraitFilter>();
+		this.filters = new ArrayList<>();
 
-		Collection<CategoricalTraitInfo> traitInfoObjects = (Collection<CategoricalTraitInfo>) this.traitsTable.getItemIds();
-		for (CategoricalTraitInfo traitInfo : traitInfoObjects) {
-			Item tableRow = this.traitsTable.getItem(traitInfo);
+		final Collection<CategoricalTraitInfo> traitInfoObjects = (Collection<CategoricalTraitInfo>) this.traitsTable.getItemIds();
+		for (final CategoricalTraitInfo traitInfo : traitInfoObjects) {
+			final Item tableRow = this.traitsTable.getItem(traitInfo);
 
-			ComboBox conditionComboBox = (ComboBox) tableRow.getItemProperty(CategoricalVariatesSection.CONDITION_COLUMN_ID).getValue();
-			CategoricalVariatesCondition condition = (CategoricalVariatesCondition) conditionComboBox.getValue();
+			final ComboBox conditionComboBox = (ComboBox) tableRow.getItemProperty(CategoricalVariatesSection.CONDITION_COLUMN_ID).getValue();
+			final CategoricalVariatesCondition condition = (CategoricalVariatesCondition) conditionComboBox.getValue();
 
-			ComboBox priorityComboBox = (ComboBox) tableRow.getItemProperty(CategoricalVariatesSection.PRIORITY_COLUMN_ID).getValue();
-			TraitWeight priority = (TraitWeight) priorityComboBox.getValue();
+			final ComboBox priorityComboBox = (ComboBox) tableRow.getItemProperty(CategoricalVariatesSection.PRIORITY_COLUMN_ID).getValue();
+			final TraitWeight priority = (TraitWeight) priorityComboBox.getValue();
 
-			TextField limitsField = (TextField) tableRow.getItemProperty(CategoricalVariatesSection.LIMITS_COLUMN_ID).getValue();
-			String limitsString = limitsField.getValue().toString();
+			final TextField limitsField = (TextField) tableRow.getItemProperty(CategoricalVariatesSection.LIMITS_COLUMN_ID).getValue();
+			final String limitsString = limitsField.getValue().toString();
 
 			if (condition != CategoricalVariatesCondition.DROP_TRAIT && priority != TraitWeight.IGNORED) {
 				if (condition == CategoricalVariatesCondition.KEEP_ALL) {
-					CategoricalTraitFilter filter = new CategoricalTraitFilter(traitInfo, condition, new ArrayList<String>(), priority);
+					final CategoricalTraitFilter filter = new CategoricalTraitFilter(traitInfo, condition, new ArrayList<>(), priority);
 					this.filters.add(filter);
 				} else {
 					if (limitsString != null && limitsString.length() > 0) {
-						StringTokenizer tokenizer = new StringTokenizer(limitsString, ",");
-						List<String> givenLimits = new ArrayList<String>();
+						final StringTokenizer tokenizer = new StringTokenizer(limitsString, ",");
+						final List<String> givenLimits = new ArrayList<>();
 
 						while (tokenizer.hasMoreTokens()) {
-							String limit = tokenizer.nextToken().trim();
+							final String limit = tokenizer.nextToken().trim();
 							givenLimits.add(limit);
 						}
 
-						CategoricalTraitFilter filter = new CategoricalTraitFilter(traitInfo, condition, givenLimits, priority);
+						final CategoricalTraitFilter filter = new CategoricalTraitFilter(traitInfo, condition, givenLimits, priority);
 						this.filters.add(filter);
 					}
 				}
@@ -352,7 +352,7 @@ public class CategoricalVariatesSection extends VerticalLayout implements Initia
 			this.filters = this.getFilters();
 		}
 		if (!this.filters.isEmpty()) {
-			for (CategoricalTraitFilter filter : this.filters) {
+			for (final CategoricalTraitFilter filter : this.filters) {
 				if (!CategoricalVariatesCondition.DROP_TRAIT.equals(filter.getCondition())) {
 					return false;
 				}

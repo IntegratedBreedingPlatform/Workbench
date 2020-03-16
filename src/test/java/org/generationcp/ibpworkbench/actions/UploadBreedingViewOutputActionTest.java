@@ -145,7 +145,7 @@ public class UploadBreedingViewOutputActionTest {
 	}
 
 	@Test
-	public void testButtonClickUploadZipHasNoContent() throws URISyntaxException, ZipFileInvalidContentException {
+	public void testButtonClickUploadZipHasNoContent() throws ZipFileInvalidContentException {
 
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
@@ -158,8 +158,7 @@ public class UploadBreedingViewOutputActionTest {
 	}
 
 	@Test
-	public void testButtonClickUploadZipOutputZipFileDoesNotMatchTheTargetProjectAndStudy() throws URISyntaxException,
-		BreedingViewImportException, ZipFileInvalidContentException {
+	public void testButtonClickUploadZipOutputZipFileDoesNotMatchTheTargetProjectAndStudy() throws ZipFileInvalidContentException {
 
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getStudyId()).thenReturn(55);
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
@@ -178,8 +177,7 @@ public class UploadBreedingViewOutputActionTest {
 	}
 
 	@Test
-	public void testButtonClickUploadSuccessful() throws URISyntaxException, BreedingViewImportException, ZipFileInvalidContentException,
-		IOException {
+	public void testButtonClickUploadSuccessful() throws BreedingViewImportException, ZipFileInvalidContentException {
 
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
@@ -214,7 +212,7 @@ public class UploadBreedingViewOutputActionTest {
 	}
 
 	@Test
-	public void testButtonClickMeansDataAlreadyExists() throws ZipFileInvalidContentException, IOException {
+	public void testButtonClickMeansDataAlreadyExists() throws ZipFileInvalidContentException {
 
 		Mockito.when(this.uploadZip.getFileFactory()).thenReturn(this.customFileFactory);
 		Mockito.when(this.customFileFactory.getFile()).thenReturn(this.zipFile);
@@ -321,7 +319,7 @@ public class UploadBreedingViewOutputActionTest {
 	}
 
 	@Test
-	public void testGetLocationIdsBasedOnInformationFromMeansDataFile() throws IOException {
+	public void testGetLocationIdsBasedOnInformationFromMeansDataFile() {
 
 		Mockito.when(this.bmsOutputParser.getBmsOutputInformation()).thenReturn(this.createBmsOutputInformation());
 		Mockito.when(this.studyDataManager.getDataSetsByType(UploadBreedingViewOutputActionTest.TEST_STUDY_ID, DatasetTypeEnum.MEANS_DATA.getId()))
@@ -392,14 +390,6 @@ public class UploadBreedingViewOutputActionTest {
 		standardVariable.setId(termId);
 		standardVariable.setName(name);
 		return standardVariable;
-	}
-
-	private VariableTypeList createVariateVariableList() {
-		final VariableTypeList variableTypeList = new VariableTypeList();
-		variableTypeList.add(this.createDMSVariableType(UploadBreedingViewOutputActionTest.ASI_TERMID, "ASI"));
-		variableTypeList.add(this.createDMSVariableType(UploadBreedingViewOutputActionTest.PLT_HEIGHT_TERMID, "PLANT HEIGHT"));
-		variableTypeList.add(this.createDMSVariableType(UploadBreedingViewOutputActionTest.TWG_TERMID, "TWG?"));
-		return variableTypeList;
 	}
 
 	private BMSOutputInformation createBmsOutputInformation() {

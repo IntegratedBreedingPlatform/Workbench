@@ -41,7 +41,7 @@ import java.util.StringTokenizer;
 
 /**
  * The component class for the Character Traits Section of the Trait Filter
- * 
+ *
  * @author Kevin Manansala (kevin@efficio.us.com)
  *
  */
@@ -62,7 +62,7 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 	private static final String PRIORITY_COLUMN_ID = "Priority";
 	public static final String TRAIT_BUTTON_ID = "CharacterTraitsSection Trait Button ID";
 
-	private List<Integer> environmentIds = null;
+	private final List<Integer> environmentIds;
 	private List<Integer> selectedTraits = null;
 
 	private final Window parentWindow;
@@ -79,13 +79,13 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 	@Autowired
 	private CrossStudyDataManager crossStudyDataManager;
 
-	public CharacterTraitsSection(List<Integer> environmentIds, Window parentWindow) {
+	public CharacterTraitsSection(final List<Integer> environmentIds, final Window parentWindow) {
 		super();
 		this.environmentIds = environmentIds;
 		this.parentWindow = parentWindow;
 	}
 
-	public CharacterTraitsSection(List<Integer> environmentIds, List<Integer> selectedTraits, Window parentWindow) {
+	public CharacterTraitsSection(final List<Integer> environmentIds, final List<Integer> selectedTraits, final Window parentWindow) {
 		super();
 		this.environmentIds = environmentIds;
 		this.selectedTraits = selectedTraits;
@@ -134,11 +134,11 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 			private static final long serialVersionUID = -3207714818504151649L;
 
 			@Override
-			public String generateDescription(Component source, Object itemId, Object propertyId) {
+			public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 				if (propertyId != null && propertyId == CharacterTraitsSection.DISTINCT_OBSERVED_VALUES_COLUMN_ID) {
-					Table theTraitsTable = (Table) source;
-					Item item = theTraitsTable.getItem(itemId);
-					String distinctValues =
+					final Table theTraitsTable = (Table) source;
+					final Item item = theTraitsTable.getItem(itemId);
+					final String distinctValues =
 							(String) item.getItemProperty(CharacterTraitsSection.DISTINCT_OBSERVED_VALUES_COLUMN_ID).getValue();
 					return "<b>Distinct values:</b>  " + distinctValues;
 				}
@@ -160,11 +160,11 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 
 	private void populateTraitsTable() {
 		if (this.environmentIds != null && !this.environmentIds.isEmpty()) {
-			List<CharacterTraitInfo> traitInfoObjects = null;
+			final List<CharacterTraitInfo> traitInfoObjects;
 			try {
 				traitInfoObjects = this.crossStudyDataManager.getTraitsForCharacterVariates(this.environmentIds, this.selectedTraits);
 
-			} catch (MiddlewareQueryException ex) {
+			} catch (final MiddlewareQueryException ex) {
 				CharacterTraitsSection.LOG.error(
 						"Error with getting character trait info given environment ids: " + this.environmentIds.toString(), ex);
 				MessageNotifier.showError(
@@ -181,14 +181,14 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 					return;
 				}
 
-				for (CharacterTraitInfo traitInfo : traitInfoObjects) {
-					StringBuffer distinctValuesObserved = new StringBuffer();
-					for (String value : traitInfo.getValues()) {
+				for (final CharacterTraitInfo traitInfo : traitInfoObjects) {
+					final StringBuffer distinctValuesObserved = new StringBuffer();
+					for (final String value : traitInfo.getValues()) {
 						distinctValuesObserved.append(value);
 						distinctValuesObserved.append(", ");
 					}
 
-					Button traitNameLink = new Button(traitInfo.getName());
+					final Button traitNameLink = new Button(traitInfo.getName());
 					traitNameLink.setDebugId("traitNameLink");
 					traitNameLink.setImmediate(true);
 					traitNameLink.setStyleName(BaseTheme.BUTTON_LINK);
@@ -196,9 +196,9 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 					traitNameLink.addListener(new AdaptedGermplasmButtonClickListener(this, traitInfo.getId(), traitInfo.getName(),
 							"Character Variate", this.environmentIds));
 
-					ComboBox conditionComboBox = CrossStudyUtil.getCharacterTraitConditionsComboBox();
-					ComboBox priorityComboBox = CrossStudyUtil.getTraitWeightsComboBox();
-					TextField txtLimits = new TextField();
+					final ComboBox conditionComboBox = CrossStudyUtil.getCharacterTraitConditionsComboBox();
+					final ComboBox priorityComboBox = CrossStudyUtil.getTraitWeightsComboBox();
+					final TextField txtLimits = new TextField();
 					txtLimits.setDebugId("txtLimits");
 					txtLimits.setImmediate(true);
 					txtLimits.setEnabled(false);
@@ -207,7 +207,7 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 					priorityComboBox.addListener(new AdaptedGermplasmValueChangeListener(this, conditionComboBox, null, txtLimits));
 					txtLimits.addListener(new CharacterTraitLimitsValueChangeListener(this.parentWindow, traitInfo.getValues()));
 
-					Object[] itemObj =
+					final Object[] itemObj =
 							new Object[] {traitNameLink, traitInfo.getLocationCount(), traitInfo.getGermplasmCount(),
 									traitInfo.getObservationCount(), distinctValuesObserved.toString(), conditionComboBox, txtLimits,
 									priorityComboBox};
@@ -237,9 +237,9 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 		}
 	}
 
-	public void showTraitObservationClickAction(Integer traitId, String variateType, String traitName, List<Integer> envIds) {
-		Window parentWindow = this.getWindow();
-		ViewTraitObservationsDialog viewTraitDialog =
+	public void showTraitObservationClickAction(final Integer traitId, final String variateType, final String traitName, final List<Integer> envIds) {
+		final Window parentWindow = this.getWindow();
+		final ViewTraitObservationsDialog viewTraitDialog =
 				new ViewTraitObservationsDialog(this, parentWindow, variateType, traitId, traitName, envIds);
 		viewTraitDialog.addStyleName(Reindeer.WINDOW_LIGHT);
 		parentWindow.addWindow(viewTraitDialog);
@@ -247,36 +247,36 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 
 	@SuppressWarnings("unchecked")
 	public List<CharacterTraitFilter> getFilters() {
-		this.filters = new ArrayList<CharacterTraitFilter>();
+		this.filters = new ArrayList<>();
 
-		Collection<CharacterTraitInfo> traitInfoObjects = (Collection<CharacterTraitInfo>) this.traitsTable.getItemIds();
-		for (CharacterTraitInfo traitInfo : traitInfoObjects) {
-			Item tableRow = this.traitsTable.getItem(traitInfo);
+		final Collection<CharacterTraitInfo> traitInfoObjects = (Collection<CharacterTraitInfo>) this.traitsTable.getItemIds();
+		for (final CharacterTraitInfo traitInfo : traitInfoObjects) {
+			final Item tableRow = this.traitsTable.getItem(traitInfo);
 
-			ComboBox conditionComboBox = (ComboBox) tableRow.getItemProperty(CharacterTraitsSection.CONDITION_COLUMN_ID).getValue();
-			CharacterTraitCondition condition = (CharacterTraitCondition) conditionComboBox.getValue();
+			final ComboBox conditionComboBox = (ComboBox) tableRow.getItemProperty(CharacterTraitsSection.CONDITION_COLUMN_ID).getValue();
+			final CharacterTraitCondition condition = (CharacterTraitCondition) conditionComboBox.getValue();
 
-			ComboBox priorityComboBox = (ComboBox) tableRow.getItemProperty(CharacterTraitsSection.PRIORITY_COLUMN_ID).getValue();
-			TraitWeight priority = (TraitWeight) priorityComboBox.getValue();
+			final ComboBox priorityComboBox = (ComboBox) tableRow.getItemProperty(CharacterTraitsSection.PRIORITY_COLUMN_ID).getValue();
+			final TraitWeight priority = (TraitWeight) priorityComboBox.getValue();
 
-			TextField limitsField = (TextField) tableRow.getItemProperty(CharacterTraitsSection.LIMITS_COLUMN_ID).getValue();
-			String limitsString = limitsField.getValue().toString();
+			final TextField limitsField = (TextField) tableRow.getItemProperty(CharacterTraitsSection.LIMITS_COLUMN_ID).getValue();
+			final String limitsString = limitsField.getValue().toString();
 
 			if (condition != CharacterTraitCondition.DROP_TRAIT && priority != TraitWeight.IGNORED) {
 				if (condition == CharacterTraitCondition.KEEP_ALL) {
-					CharacterTraitFilter filter = new CharacterTraitFilter(traitInfo, condition, new ArrayList<String>(), priority);
+					final CharacterTraitFilter filter = new CharacterTraitFilter(traitInfo, condition, new ArrayList<>(), priority);
 					this.filters.add(filter);
 				} else {
 					if (limitsString != null && limitsString.length() > 0) {
-						StringTokenizer tokenizer = new StringTokenizer(limitsString, ",");
-						List<String> givenLimits = new ArrayList<String>();
+						final StringTokenizer tokenizer = new StringTokenizer(limitsString, ",");
+						final List<String> givenLimits = new ArrayList<>();
 
 						while (tokenizer.hasMoreTokens()) {
-							String limit = tokenizer.nextToken().trim();
+							final String limit = tokenizer.nextToken().trim();
 							givenLimits.add(limit);
 						}
 
-						CharacterTraitFilter filter = new CharacterTraitFilter(traitInfo, condition, givenLimits, priority);
+						final CharacterTraitFilter filter = new CharacterTraitFilter(traitInfo, condition, givenLimits, priority);
 						this.filters.add(filter);
 					}
 				}
@@ -294,7 +294,7 @@ public class CharacterTraitsSection extends VerticalLayout implements Initializi
 			this.filters = this.getFilters();
 		}
 		if (!this.filters.isEmpty()) {
-			for (CharacterTraitFilter filter : this.filters) {
+			for (final CharacterTraitFilter filter : this.filters) {
 				if (!CharacterTraitCondition.DROP_TRAIT.equals(filter.getCondition())) {
 					return false;
 				}
