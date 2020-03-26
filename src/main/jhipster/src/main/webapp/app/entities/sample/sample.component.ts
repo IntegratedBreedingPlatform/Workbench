@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { JhiLanguageService } from 'ng-jhipster';
 
@@ -15,6 +15,7 @@ import { FileDownloadHelper } from './file-download.helper';
 import {ModalService} from '../../shared/modal/modal.service';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 @Component({
     selector: 'jhi-sample',
@@ -56,7 +57,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
-        this.routeData = this.activatedRoute.data.subscribe((data) => {
+        this.routeData = this.activatedRoute.data.subscribe((data: any) => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
             this.reverse = data.pagingParams.ascending;
@@ -64,7 +65,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
-            this.sampleService.setCrop(this.crop);
+            this.sampleService.setCropAndProgram(this.crop, currentProgramId);
             this.loadAll();
         });
 

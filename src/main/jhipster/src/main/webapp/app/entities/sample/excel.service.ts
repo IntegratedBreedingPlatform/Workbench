@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as XLSX from 'xlsx';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class ExcelService {

@@ -1,12 +1,13 @@
 import {Component} from '@angular/core';
 import {SampleList} from './sample-list.model';
 import {SampleListService} from './sample-list.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 @Component({
     selector: 'jhi-sample-search-list',
@@ -35,7 +36,7 @@ export class SampleSearchListComponent {
 
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
-            this.sampleListService.setCrop(this.crop);
+            this.sampleListService.setCropAndProgram(this.crop, currentProgramId);
         });
         this.activatedRoute.data.subscribe((data) => {
             this.reverse = data.pagingParams.ascending;
@@ -54,6 +55,7 @@ export class SampleSearchListComponent {
         const params = {
             searchString: this.searchString,
             exactMatch: this.exactMatch,
+            programUUID : currentProgramId,
             sort: this.sort()
         }
         this.sampleListService.search(params).subscribe(

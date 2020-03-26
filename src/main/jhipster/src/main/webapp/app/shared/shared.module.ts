@@ -8,6 +8,9 @@ import {
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { ModalService } from './modal/modal.service';
+import { DragDropModule } from 'primeng/primeng';
+import { TreeTableModule } from 'primeng/treetable';
+import { SharedModule } from 'primeng/shared';
 
 @NgModule({
     imports: [
@@ -30,6 +33,9 @@ import { ModalService } from './modal/modal.service';
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
+        SharedModule,
+        TreeTableModule,
+        DragDropModule,
         DatePipe,
         ModalComponent,
         ModalConfirmComponent

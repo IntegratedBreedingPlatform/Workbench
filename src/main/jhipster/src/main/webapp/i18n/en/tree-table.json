@@ -1,0 +1,27 @@
+{
+  "bmsjHipsterApp": {
+    "tree-table": {
+      "title": "Open sample list",
+      "action": {
+        "folder.delete": "Delete Folder"
+      },
+      "messages": {
+        "folder" : {
+          "create.successfully": "Add Folder Successfully",
+          "rename.successfully": "Rename Folder Successfully",
+          "delete.successfully": "Folder Deleted Successfully",
+          "cannot.move.has.children": "Can not move, {{ folder }} has children",
+          "move.not.allowed": "Movement not allowed",
+          "move.to.crop.list.not.allowed": "Moving of a Sample list folder to Crop lists is not allowed",
+          "delete.question": "Are you sure you want to delete {{ id }} folder?"
+        },
+        "error": "{{ param }}"
+      },
+      "name": "Name",
+      "owner": "Owner",
+      "description": "Description",
+      "type": "Type",
+      "entries": "# of entries"
+    }
+  }
+}

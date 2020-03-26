@@ -41,7 +41,7 @@ describe('Variable Types Service', function() {
 
 		it('should GET /variableTypes', function() {
 
-			httpBackend.expectGET(/\/variableTypes$/).respond();
+			httpBackend.expectGET('/bmsapi\/crops\/\/variable-types\?programUUID=').respond();
 
 			variableTypesService.getTypes();
 
@@ -52,7 +52,7 @@ describe('Variable Types Service', function() {
 
 			var response = ['variableTypes go here'];
 
-			httpBackend.expectGET(/\/variableTypes$/).respond(response);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variable-types\?programUUID=').respond(response);
 
 			variableTypesService.getTypes();
 			httpBackend.flush();
@@ -66,7 +66,7 @@ describe('Variable Types Service', function() {
 
 			var error = 'Error!';
 
-			httpBackend.expectGET(/\/variableTypes$/).respond(500, error);
+			httpBackend.expectGET('/bmsapi\/crops\/\/variable-types\?programUUID=').respond(500, error);
 
 			variableTypesService.getTypes();
 			httpBackend.flush();

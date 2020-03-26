@@ -48,7 +48,7 @@
 
 			*/
 			getProperties: function() {
-				var url = '/bmsapi/ontology/' + configService.getCropName() + '/properties',
+				var url = '/bmsapi/crops/' + configService.getCropName() + '/properties?programUUID=' + configService.getProgramId(),
 					request = $http.get(url, {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			},
@@ -75,7 +75,7 @@
 			}
 			*/
 			addProperty: function(property) {
-				var request = $http.post('/bmsapi/ontology/' + configService.getCropName() + '/properties',
+				var request = $http.post('/bmsapi/crops/' + configService.getCropName() + '/properties?programUUID=' + configService.getProgramId(),
 					property);
 				return request.then(successHandler, failureHandler);
 			},
@@ -105,7 +105,7 @@
 				var convertedProperty = convertPropertyForUpdating(property),
 					request;
 
-				request = $http.put('/bmsapi/ontology/' + configService.getCropName() + '/properties/' + id,
+				request = $http.put('/bmsapi/crops/' + configService.getCropName() + '/properties/' + id + '?programUUID=' + configService.getProgramId(),
 					convertedProperty);
 				return request.then(function(response) {
 					return response.status;
@@ -118,7 +118,7 @@
 			deleteProperty: function(id) {
 				var request;
 
-				request = $http.delete('/bmsapi/ontology/' + configService.getCropName() + '/properties/' + id);
+				request = $http.delete('/bmsapi/crops/' + configService.getCropName() + '/properties/' + id + '?programUUID=' + configService.getProgramId());
 				return request.then(function(response) {
 					return response.status;
 				}, failureHandler);
@@ -147,7 +147,7 @@
 			}
 			*/
 			getProperty: function(id) {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/properties/' + id);
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/properties/' + id + '?programUUID=' + configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			},
 
@@ -157,7 +157,7 @@
 			['Abiotic Stress', 'Agronomic', 'Biotic Stress', 'Germplasm']
 			*/
 			getClasses: function() {
-				var request = $http.get('/bmsapi/ontology/' + configService.getCropName() + '/classes');
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/classes?programUUID=' + configService.getProgramId());
 				return request.then(successHandler, failureHandler);
 			}
 		};

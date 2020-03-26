@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { SERVER_API_URL } from '../../app.constants';
 
 // import { JhiDateUtils } from 'ng-jhipster';
 
 import { Sample } from './sample.model';
 import { createRequestOption } from '../../shared';
+import { map } from 'rxjs/operators';
 
 export type EntityResponseType = HttpResponse<Sample>;
 
@@ -21,32 +22,32 @@ export class SampleService {
         // ,private dateUtils: JhiDateUtils
     ) { }
 
-    setCrop(crop: string) {
-        this.resourceUrl =  SERVER_API_URL + `sample/${crop}/samples`;
+    setCropAndProgram(crop: string, programUUID: string) {
+        this.resourceUrl =  SERVER_API_URL + `crops/${crop}/programs/${programUUID}/samples`;
         this.resourceSearchUrl = this.resourceUrl;
     }
 
     create(sample: Sample): Observable<EntityResponseType> {
         const copy = this.convert(sample);
         return this.http.post<Sample>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
     update(sample: Sample): Observable<EntityResponseType> {
         const copy = this.convert(sample);
         return this.http.put<Sample>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
         return this.http.get<Sample>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+            .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
     query(req?: any): Observable<HttpResponse<Sample[]>> {
         const options = createRequestOption(req);
         return this.http.get<Sample[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res));
+            .pipe(map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
@@ -56,7 +57,7 @@ export class SampleService {
     search(req?: any): Observable<HttpResponse<Sample[]>> {
         const options = createRequestOption(req);
         return this.http.get<Sample[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res));
+            .pipe(map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res)));
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {

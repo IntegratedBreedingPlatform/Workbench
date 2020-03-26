@@ -2,9 +2,9 @@
 'use strict';
 
 (function() {
-	var app = angular.module('variableTypes', ['utilities']);
+	var app = angular.module('variableTypes', ['utilities', 'config']);
 
-	app.service('variableTypesService', ['$http', 'serviceUtilities', function($http, serviceUtilities) {
+	app.service('variableTypesService', ['$http', 'serviceUtilities', 'configService', function($http, serviceUtilities, configService) {
 
 		var successHandler = serviceUtilities.restSuccessHandler,
 			failureHandler = serviceUtilities.restFailureHandler;
@@ -20,7 +20,7 @@
 			}]
 			*/
 			getTypes: function() {
-				var request = $http.get('/bmsapi/ontology/variableTypes', {timeout: 60000});
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/variable-types?programUUID=' + configService.getProgramId(), {timeout: 60000});
 				return request.then(successHandler, failureHandler);
 			}
 		};
