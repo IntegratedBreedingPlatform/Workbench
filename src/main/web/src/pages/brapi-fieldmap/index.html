@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>BrAPI GeoJSON Editor</title>
+	<link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/leaflet/dist/leaflet.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/leaflet-search/dist/leaflet-search.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+</head>
+<body>
+<div style="margin:1em" class="container-fluid">
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI GeoJSON Editor</h2>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			Select an area over the field to load the plots. Plot size will be determined based on this area and the plot layout
+		</div>
+		<div class="col-md-12 col-xs-12">
+			(Optional) override plot size (meters):
+		</div>
+	</div>
+	<form class="form-inline" style="padding:10px;">
+		<div class="form-group">
+			<label for="width">width</label>
+			<input type="text" class="form-control" id="width" value="">
+		</div>
+		<div class="form-group">
+			<label for="length">length</label>
+			<input type="text" class="form-control" id="length" value="">
+		</div>
+	</form>
+	<form class="form-inline" style="padding:10px;">
+		<a class="btn btn-default" onclick="load()">Load plots</a>
+		<a class="btn btn-default" onclick="update()">Update plots GeoJson</a>
+	</form>
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			<div id="map" style="width: 980px; height: 600px"></div>
+			<div style="clear:both"></div>
+		</div>
+	</div>
+</div>
+<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
+
+<script th:src="@{/controller/static/js/lib/leaflet/dist/leaflet.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/leaflet-path-transform/dist/L.Path.Transform.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/leaflet-search/dist/leaflet-search.src.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/%40turf/turf/turf.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/%40solgenomics/brapijs/build/BrAPI.js}" charset="utf-8"></script>
+
+<script th:src="@{/controller/static/js/lib/%40solgenomics/brapi-fieldmap/dist/BrAPIFieldmap.js}" charset="utf-8"></script>
+<script th:src="@{/controller/pages/brapi-fieldmap/main.js}" charset="utf-8"></script>
+</body>

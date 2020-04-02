@@ -25,6 +25,7 @@
 	<mvc:resources mapping="/pages/angular2/**" location="/WEB-INF/pages/angular2/"/>
 	<mvc:resources mapping="/pages/jhipster/**" location="/WEB-INF/pages/jhipster/"/>
 	<mvc:resources mapping="/pages/BrAPI-Graphical-Filtering/**" location="/WEB-INF/pages/BrAPI-Graphical-Filtering/"/>
+	<mvc:resources mapping="/pages/brapi-fieldmap/**" location="/WEB-INF/pages/brapi-fieldmap/"/>
 
 	<!-- **************************************************************** -->
 	<!--  SPRING ANNOTATION PROCESSING                                    -->
