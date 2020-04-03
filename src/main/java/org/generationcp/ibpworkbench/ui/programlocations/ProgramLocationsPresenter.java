@@ -288,6 +288,8 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			location.setUniqueID(this.project.getUniqueID());
 		}
 
+		location.setLdefault(Boolean.FALSE);
+
 		return location;
 	}
 
