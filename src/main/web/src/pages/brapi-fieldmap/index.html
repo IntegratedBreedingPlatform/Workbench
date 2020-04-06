@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>BrAPI GeoJSON Editor</title>
 	<link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/leaflet/dist/leaflet.css}" rel="stylesheet"/>
@@ -19,7 +20,7 @@
 
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
-			Select an area over the field to load the plots. Plot size will be determined based on this area and the plot layout
+			Select an area over the field to load the layout. Plot size will be determined based on this area and the plot layout (x,y coordinates)
 		</div>
 		<div class="col-md-12 col-xs-12">
 			(Optional) override plot size (meters):
@@ -36,12 +37,12 @@
 		</div>
 	</form>
 	<form class="form-inline" style="padding:10px;">
-		<a class="btn btn-default" onclick="load()">Load plots</a>
-		<a class="btn btn-default" onclick="update()">Update plots GeoJson</a>
+		<a id="load" style="display: none" class="btn btn-default" onclick="load()">Load</a>
+		<a class="btn btn-default" onclick="update()">Save</a>
 	</form>
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
-			<div id="map" style="width: 980px; height: 600px"></div>
+			<div id="map" style="height: 600px; width: 90vw"></div>
 			<div style="clear:both"></div>
 		</div>
 	</div>
