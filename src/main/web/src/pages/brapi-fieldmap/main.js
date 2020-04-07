@@ -29,7 +29,14 @@ function load() {
 }
 
 function update() {
+	// TODO bootstrap modal
+	if (hasLayout) {
+		const proceed = confirm("You are going to override the existing layout");
+		if (!proceed) return;
+	}
+
 	fieldMap.update().then(
+		// TODO toast
 		(resp) => alert(resp),
 		(resp) => alert(resp));
 }
