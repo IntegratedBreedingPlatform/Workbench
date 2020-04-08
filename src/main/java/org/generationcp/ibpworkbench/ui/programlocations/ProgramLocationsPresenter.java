@@ -154,6 +154,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setProgramUUID(locationDetails.getProgramUUID());
 		viewModel.setProvinceId(locationDetails.getProvinceId());
 		viewModel.setProvinceName(locationDetails.getProvinceName());
+		viewModel.setlDefault(locationDetails.getlDefault());
 		return viewModel;
 	}
 
@@ -169,6 +170,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
 		viewModel.setProgramUUID(location.getUniqueID());
+		viewModel.setlDefault(location.getLdefault());
 
 		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
 		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
@@ -288,7 +290,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			location.setUniqueID(this.project.getUniqueID());
 		}
 
-		location.setLdefault(Boolean.FALSE);
+		location.setLdefault(locationViewModel.getlDefault());
+		if (location.getLdefault() == null) {
+			location.setLdefault(Boolean.FALSE);
+		}
 
 		return location;
 	}
