@@ -44,15 +44,18 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.route.queryParams.subscribe((params) => {
-            this.context.datasetId = params['datasetId'];
-            this.context.studyId = params['studyId'];
-            this.context.programId = params['programId'];
-            this.context.printingLabelType = params['printingLabelType'];
-        });
-        this.service.getLabelsNeededSummary().subscribe((summary: any) => {
-            this.labelsNeededSummary = summary;
-        });
+        const params = this.route.snapshot.queryParams;
+        this.context.datasetId = params['datasetId'];
+        this.context.studyId = params['studyId'];
+        this.context.programId = params['programId'];
+        this.context.printingLabelType = params['printingLabelType'];
+        this.context.searchRequestId = params['searchRequestId'];
+
+        if (this.hasHeader()) {
+            this.service.getLabelsNeededSummary().subscribe((summary: any) => {
+                this.labelsNeededSummary = summary;
+            });
+        }
         this.service.getOriginResourceMetadada().subscribe((originResourceMetadata) => {
             this.metadata = new Map(Object.entries(originResourceMetadata.metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
@@ -73,6 +76,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         this.initDragAndDrop();
+    }
+
+    hasHeader() {
+        return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
     }
 
     applySelectedSetting() {
@@ -366,3 +373,13 @@ export enum FileType {
     PDF = 'pdf',
     EXCEL = 'xls'
 }
+
+/** aka printingLabelType in params */
+export enum LabelPrintingType {
+    SUBOBSERVATION_DATASET = 'SubObservationDataset',
+    LOT = 'Lot'
+}
+
+const typesWithHeaderDetails: LabelPrintingType[] = [
+    LabelPrintingType.SUBOBSERVATION_DATASET
+]

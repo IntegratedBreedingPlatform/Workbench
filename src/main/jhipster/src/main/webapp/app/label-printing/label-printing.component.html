@@ -23,7 +23,7 @@
 								<h3 jhiTranslate="label-printing.header.create.labels">Create labels</h3>
 							</div>
 						</div>
-						<div class="row lblprnt-study-details">
+						<div class="row lblprnt-study-details" *ngIf="hasHeader()">
 							<div class="col-xs-6 col-md-6">
 								<h2 class="sub-content-heading" jhiTranslate="label-printing.selected.study">Selected study</h2>
 								<div *ngIf="metadata else loading">
@@ -196,7 +196,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row add_top_padding">
 								<div class="col-xs-12 col-md-12">
 									<div class="form-group">
 										<div class="row">
@@ -407,7 +407,6 @@
 							<div class="form-group">
 								<div class="col-xs-12 col-md-12 fbk-center">
 									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
-									<!-- TODO -->
 									<input type="button" *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" value="Save Preset" class="btn btn-info"/>
 									<input type="button" *ngIf="fileType" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
 								</div>
