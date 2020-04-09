@@ -333,6 +333,19 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
                 return FileType.NONE;
         }
     }
+
+    getChooseLabelDescription() {
+        if (!this.labelTypes || !this.labelTypes.length) {
+            return;
+        }
+
+        const from = this.labelTypes.map((l) => `<strong>${l.title}</strong>`).join(' and ');
+        let to = '<strong>Selected Fields</strong>';
+        if (this.fileType === FileType.PDF) {
+            to = '<strong>Left Side Fields</strong> and <strong>Right Side Fields</strong>';
+        }
+        return `Drag fields from the ${from} into the ${to} to add them to your export file.`;
+    }
 }
 
 @Pipe({name: 'allLabels'})
