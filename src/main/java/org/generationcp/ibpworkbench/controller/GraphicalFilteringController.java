@@ -17,11 +17,11 @@ public class GraphicalFilteringController {
 		return "BrAPI-Graphical-Filtering/index";
 	}
 
-	@Value("${pagedresult.default.page.size}")
-	public String defaultPageSize;
+	@Value("${pagedresult.max.page.size}")
+	public String maxPageSize;
 
-	@ModelAttribute("defaultPageSize")
+	@ModelAttribute("maxPageSize")
 	public String getDefaultPageSize() {
-		return this.defaultPageSize;
+		return this.maxPageSize;
 	}
 }

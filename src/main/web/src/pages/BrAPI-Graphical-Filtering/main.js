@@ -238,7 +238,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
-			pageSize: form.defaultPageSize
+			pageSize: form.pageSize
 		}).then(function (response) {
 			// Store the rawData from the server so we can transform and send it to OpenCPU api later.
 			$scope.rawData = response.result.data;
