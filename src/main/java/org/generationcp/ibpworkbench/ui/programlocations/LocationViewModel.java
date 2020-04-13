@@ -34,6 +34,8 @@ public class LocationViewModel implements BeanFormState {
 
 	private Boolean cropAccessible = true;
 
+	private Boolean lDefault;
+
 	public LocationViewModel() {
 		// for unit testing only
 	}
@@ -235,5 +237,17 @@ public class LocationViewModel implements BeanFormState {
 
 	public void setProvinceName(final String provinceName) {
 		this.provinceName = provinceName;
+	}
+
+	public Boolean getEnabled() {
+		return isEnabled;
+	}
+
+	public Boolean getlDefault() {
+		return lDefault;
+	}
+
+	public void setlDefault(final Boolean lDefault) {
+		this.lDefault = lDefault;
 	}
 }
