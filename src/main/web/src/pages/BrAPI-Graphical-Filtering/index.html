@@ -64,6 +64,9 @@
 						<input type="checkbox" name="group" ng-model="flags.groupByAccession"/>
 					</div>
 				</div>
+				<div class="form-group" style="display:none;">
+					<input type="text" name="defaultPageSize" ng-model="flags.defaultPageSize" th:value="${defaultPageSize}"/>
+				</div>
 				<div class="row">
 					<div class="col-sm-4"></div>
 					<div class="col-sm-3">
