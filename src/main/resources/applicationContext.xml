@@ -354,6 +354,11 @@
 		<property name="hybridBreedingMethods" value="#{'${hybrid.breeding.methods}'.split(',')}" />
 	</bean>
 
+	<bean id="keySequenceRegisterService" factory-bean="managerFactory"
+		  factory-method="getKeySequenceRegisterService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
-	
+
 </beans>
