@@ -214,7 +214,9 @@
 	}
 
 	function doAuthorizeSubmit() {
-		window.location.href = return_url + '?token=' + localStorage['bms.xAuthToken'];
+
+		// Append status=200 to the query string to notify KSU Fieldbook that the authentication is successful.
+		window.location.href = return_url + '?token=' + JSON.parse(localStorage['bms.xAuthToken']).token + '&status=200';
 		return false;
 	}
 
