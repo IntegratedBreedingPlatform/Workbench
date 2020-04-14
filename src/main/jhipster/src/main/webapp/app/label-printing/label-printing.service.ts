@@ -66,10 +66,10 @@ export class LabelPrintingService {
         );
     }
 
-    getAllPresets(): Observable<PresetSetting[]> {
+    getAllPresets(toolSection): Observable<PresetSetting[]> {
         const options: HttpParams = new HttpParams()
             .append('toolId', '23')
-            .append('toolSection', 'DATASET_LABEL_PRINTING_PRESET');
+            .append('toolSection', toolSection);
 
         const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets`;
         return this.http.get<PresetSetting[]>(this.baseUrl + resourceUrl, {

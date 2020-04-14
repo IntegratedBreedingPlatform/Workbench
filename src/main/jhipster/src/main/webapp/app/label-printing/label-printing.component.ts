@@ -66,7 +66,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
 
-        this.service.getAllPresets().subscribe((PresetSettings) => {
+        this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
             this.presetSettings = PresetSettings;
         });
         this.presetSettingId = 0;
@@ -307,7 +307,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
 
         preset.programUUID = this.context.programId;
-        preset.toolSection = 'DATASET_LABEL_PRINTING_PRESET';
+        preset.toolSection = this.getToolSection();
         preset.toolId = 23;
         preset.name = this.labelPrintingData.settingsName;
         preset.type = 'LabelPrintingPreset';
@@ -326,6 +326,17 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
                 this.alertService.error('error.general');
             }
         });
+    }
+
+    private getToolSection() {
+        switch (this.context.printingLabelType) {
+            case LabelPrintingType.SUBOBSERVATION_DATASET:
+                return 'DATASET_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.LOT:
+                return 'LOT_LABEL_PRINTING_PRESET';
+            default:
+                return;
+        }
     }
 
     getFileType(extension: string): FileType {
