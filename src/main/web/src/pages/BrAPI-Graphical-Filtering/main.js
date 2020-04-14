@@ -93,7 +93,6 @@ function loadTrials() {
 function loadBrAPIData(parameters) {
 	var load_url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/phenotypes-search";
 	var data = {
-		"pageSize": 1000,
 		"page": 0
 	};
 	d3.entries(parameters).forEach(function (entry) {
@@ -238,7 +237,8 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 			trialDbIds: $('#trials select').val() || null,
 			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
-			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : []
+			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
+			pageSize: form.pageSize
 		}).then(function (response) {
 			// Store the rawData from the server so we can transform and send it to OpenCPU api later.
 			$scope.rawData = response.result.data;
