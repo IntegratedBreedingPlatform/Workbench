@@ -75,8 +75,11 @@
 									</div>
 									<div class="col-xs-12 col-md-12 form-group">
 										<div class="row">
-											<label class="control-label add_top_padding col-xs-4 col-md-4">
-												<input type="checkbox" [(ngModel)]="loadSavedSettings" name="loadSavedSettings" checked=""/>Load saved settings:</label>
+											<div class="checkbox col-xs-4 col-md-4">
+												<label>
+													<input type="checkbox" [(ngModel)]="loadSavedSettings" name="loadSavedSettings" checked=""/>Load saved settings:
+												</label>
+											</div>
 											<div class="col-xs-8 col-md-6" style="padding-left: 0px;">
 												<select *ngIf="loadSavedSettings" class="form-control" [(ngModel)]="presetSettingId" (ngModelChange)="applySelectedSetting()">
 													<option [value]="0">Please Choose</option>
