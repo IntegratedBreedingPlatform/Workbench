@@ -82,6 +82,10 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
     }
 
+    isExcelEnabled() {
+        return this.context.printingLabelType === LabelPrintingType.LOT;
+    }
+
     applySelectedSetting() {
         const presetId = Number(this.presetSettingId);
         if (presetId !== 0) {
