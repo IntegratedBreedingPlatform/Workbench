@@ -70,7 +70,7 @@
 								<div class="row">
 									<div class="col-xs-12 col-md-12">
 										<h2 class="sub-content-heading" jhiTranslate="label-printing.preset.heading">
-											PRESETS
+											Preset options
 										</h2>
 									</div>
 									<div class="col-xs-12 col-md-12 form-group">
@@ -123,25 +123,19 @@
 						<div *ngIf="fileType === FILE_TYPES.PDF">
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
-									<div class="">
-										<div class="col-xs-12 col-md-12">
-											<br/>
-											<label class="control-label"><strong class="sub-content-heading"
-																				 jhiTranslate="label-printing.specify.label.stock"></strong></label>
-										</div>
-									</div>
+									<h2 class="sub-content-heading" jhiTranslate="label-printing.specify.label.stock">
+									</h2>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-6 col-md-6">
-									<div class="form-group">
+									<div class="row form-group">
 										<div class="col-xs-12 col-md-12">
 											<label class="control-label " jhiTranslate="label-printing.enter.specs.for.label"></label>
 										</div>
 									</div>
 									<div class="row form-group">
 										<div class="col-xs-7 col-md-7">
-											&nbsp;&nbsp;&nbsp;&nbsp;
 											<label class="control-label label-bold">
 												<strong jhiTranslate="label-printing.size.of.label.sheet"></strong>:</label>
 										</div>
@@ -155,7 +149,6 @@
 
 									<div class="row form-group">
 										<div class="col-xs-7 col-md-7">
-											&nbsp;&nbsp;&nbsp;&nbsp;
 											<label class="control-label label-bold">
 												<strong jhiTranslate="label-printing.number.of.rows.per.page"></strong>:</label>
 										</div>
