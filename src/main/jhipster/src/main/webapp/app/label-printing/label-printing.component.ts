@@ -86,6 +86,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         return this.context.printingLabelType === LabelPrintingType.LOT;
     }
 
+    /**
+     * Indicates if the export is for label printing
+     */
+    isLabelPrinting() {
+        return this.fileType === FileType.PDF;
+    }
+
     applySelectedSetting() {
         const presetId = Number(this.presetSettingId);
         if (presetId !== 0) {
@@ -160,12 +167,12 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
     deleteSelectedSetting() {
         const presetSetting = this.presetSettings.filter((preset) => preset.id === Number(this.presetSettingId))[0];
-        this.modalTitle = 'Delete Label Printing Setting?';
+        this.modalTitle = 'Delete preset?';
         this.modalMessage = 'Are you sure you want to delete ' + presetSetting.name + ' ?';
         this.modalService.open('modal-confirm');
         this.proceed = function deletePreset(): void {
             this.service.deletePreset(this.presetSettingId).subscribe(() => {
-                this.alertService.success('label-printing.delete.label.settings.success');
+                this.alertService.success('label-printing.delete.preset.success');
                 this.service.getAllPresets().subscribe((PresetSettings) => {
                     this.presetSettings = PresetSettings;
                     this.presetSettingId = 0;
@@ -180,8 +187,9 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
     }
 
-    resetSelectedFields() {
+    reset() {
         this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+        this.labelPrintingData.barcodeNeeded = false;
         $('#leftSelectedFields').empty();
         $('#rightSelectedFields').empty();
         this.initDragAndDrop();
@@ -211,7 +219,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         });
     }
 
-    printLabels() {
+    export() {
         const fieldsSelected = [];
         const barcodeFieldsSelected = [];
 
@@ -322,7 +330,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         this.service.addPreset(preset).subscribe((presetSetting) => {
             this.presetSettings.push(presetSetting);
                 this.presetSettingId = presetSetting.id;
-            this.alertService.success('label-printing.save.label.settings.success');
+            this.alertService.success('label-printing.save.preset.success');
         }, (response) => {
             if (response.error.errors[0].message) {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
