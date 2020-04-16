@@ -65,11 +65,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.labelTypes = labelTypes;
             this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
-
-        this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
-            this.presetSettings = PresetSettings;
-        });
-        this.presetSettingId = 0;
+        this.loadPresets();
         this.labelPrintingData.sizeOfLabelSheet = '1';
         this.labelPrintingData.numberOfRowsPerPage = 7;
     }
@@ -174,10 +170,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         this.proceed = function deletePreset(): void {
             this.service.deletePreset(this.presetSettingId).subscribe(() => {
                 this.alertService.success('label-printing.delete.preset.success');
-                this.service.getAllPresets().subscribe((PresetSettings) => {
-                    this.presetSettings = PresetSettings;
-                    this.presetSettingId = 0;
-                });
+                this.loadPresets();
             }, (response) => {
                 if (response.error.errors[0].message) {
                     this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -186,6 +179,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
                 }
             });
         }
+    }
+
+    private loadPresets() {
+        this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
+            this.presetSettings = PresetSettings;
+            this.presetSettingId = 0;
+        });
     }
 
     reset() {
@@ -333,7 +333,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
         this.service.addPreset(preset).subscribe((presetSetting) => {
             this.presetSettings.push(presetSetting);
-                this.presetSettingId = presetSetting.id;
+            this.presetSettingId = presetSetting.id;
             this.alertService.success('label-printing.save.preset.success');
         }, (response) => {
             if (response.error.errors[0].message) {
