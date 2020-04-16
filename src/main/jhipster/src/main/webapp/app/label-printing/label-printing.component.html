@@ -200,6 +200,9 @@
 											</label>
 										</div>
 									</div>
+									<div class="row">
+										<div class="add_top_padding col-xs-12 col-md-12" [innerHTML]="getChooseLabelDescription()"></div>
+									</div>
 								</div>
 							</div>
 							<div class="row add_top_padding">
@@ -277,9 +280,9 @@
 												Barcode Options
 											</h2>
 											<div class="form-group">
-												<label class="control-label label-bold" jhiTranslate="label-printing.do.you.need.bar.codes">Do you need
-													barcodes on your labels?</label>
-												<label class="radio-inline" style="padding-left: 30px">
+												<label class="radio-inline radio-inline-label label-bold" jhiTranslate="label-printing.do.you.need.bar.codes">
+													Do you need barcodes on your labels?</label>
+												<label class="radio-inline">
 													<input type="radio" name="barcodeNeededRadio" [value]="true"
 														   [(ngModel)]="labelPrintingData.barcodeNeeded"/>
 													<span jhiTranslate="label-printing.do.you.need.bar.codes.yes">Yes</span>
@@ -291,10 +294,10 @@
 												</label>
 											</div>
 											<div class="form-group" *ngIf="labelPrintingData.barcodeNeeded">
-												<label class="control-label label-bold"
-													   jhiTranslate="label-printing.do.you.want.automatically.unique.bar.codes">
+												<label class="radio-inline radio-inline-label label-bold"
+													   jhiTranslate="label-printing.do.you.want.automatically.unique.bar.codes" >
 													Do you want to use automatically generated unique barcodes?</label>
-												<label class="radio-inline" style="padding-left: 30px">
+												<label class="radio-inline">
 													<input checked="checked" type="radio" name="barcodeGeneratedAutomaticallyRadio"
 														   [value]="true" [(ngModel)]="labelPrintingData.barcodeGeneratedAutomatically"/>
 													<span jhiTranslate="common.form.yes.text">Yes</span>
@@ -365,11 +368,6 @@
 												<h2 class="sub-content-heading" jhiTranslate="label-printing.filename.description">
 													Specify the name of the file
 												</h2>
-												<div class="row">
-													<div class="col-xs-12 col-md-12">
-														&nbsp;
-													</div>
-												</div>
 												<div class="row">
 													<div class="col-xs-3 col-md-3">
 														<label class="control-label add_top_padding"><strong
