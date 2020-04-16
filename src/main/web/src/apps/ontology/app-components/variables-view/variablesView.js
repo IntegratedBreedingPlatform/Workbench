@@ -93,7 +93,7 @@
 					variableTypeMatch = $scope.filterOptions.variableTypes.every(function(filterVariableType) {
 						// Check if any of the variable types for the variable match the given variable types to filter on
 						return variable.variableTypes === undefined ? false : variable.variableTypes.some(function(itemVariableType) {
-							return angular.equals(filterVariableType, itemVariableType);
+							return angular.equals(filterVariableType.id, itemVariableType.id);
 						});
 					});
 				}
