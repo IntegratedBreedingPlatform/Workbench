@@ -1,4 +1,3 @@
-;
 
 function GraphicalFilter(){
   "use strict";
@@ -40,6 +39,7 @@ function GraphicalFilter(){
     });
     
     gfilter.data = data;
+    gfilter.filteredData = [];
     
     
     /**    
@@ -49,9 +49,18 @@ function GraphicalFilter(){
       gfilter.root.updateData(gfilter.data);
       gfilter.root.draw();
 
+      // Filtered subset of data
+      gfilter.filteredData.length = 0;
+
       var currentFilter = gfilter.root.getFilter();
       $.fn.dataTableExt.afnFiltering.push(function( _1, _2, dataIndex ){
-        return currentFilter(gfilter.data[dataIndex]);
+        var currentData = gfilter.data[dataIndex];
+        var applyFilter = currentFilter(currentData);
+        if (applyFilter) {
+          // applyFilter is true when the data fits the filter rule.
+          gfilter.filteredData.push(currentData);
+        }
+        return applyFilter;
       });
       gfilter.results_table.draw();
       $.fn.dataTableExt.afnFiltering.pop();

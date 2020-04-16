@@ -110,84 +110,6 @@ function loadBrAPIData(parameters) {
 	});
 }
 
-// filters and modifies the response and then creates the root filter object
-// and datatable
-function useBrAPIData(response, groupByAccession) {
-	var traits = {};
-	var data = response.result.data
-		.map(function (observeUnit) {
-			var newObj = {};
-			d3.entries(observeUnit).forEach(function (entry) {
-				if (entry.key != "observations") {
-					newObj[entry.key] = entry.value;
-				}
-			});
-			observeUnit.observations.forEach(function (obs) {
-				newObj[obs.observationVariableName] = obs.value;
-				traits[obs.observationVariableName] = true;
-			});
-			return newObj;
-		});
-
-	var trait_names = d3.keys(traits);
-	data.forEach(function (datum) {
-		trait_names.forEach(function (trait) {
-			if (datum[trait] == undefined || datum[trait] == null || datum[trait] == NaN) {
-				datum[trait] = null
-			}
-		})
-	});
-	var tableCols = [
-		{title: "TrialInstance", data: "instanceNumber"},
-		{title: "StudyDbId", data: "studyDbId"},
-		{title: "Study", data: "studyName"},
-		{title: "Name", data: "observationUnitName"},
-		{title: "observationUnitDbId", data: "observationUnitDbId"},
-		{title: "Accession", data: "germplasmName"},
-		{title: "EntryNumber", data: "entryNumber"},
-		{title: "GID", data: "germplasmDbId"},
-		{title: "Location", data: "studyLocation"},
-	];
-	if (groupByAccession) {
-		var grouped = d3.nest().key(function (d) {
-			return d.germplasmDbId
-		}).entries(data);
-		var newdata = grouped.map(function (group) {
-			var newDatum = {};
-			newDatum.germplasmName = group.values[0].germplasmName;
-			newDatum.germplasmDbId = group.key;
-			newDatum.count = group.values.length;
-			newDatum.group = group.values;
-			trait_names.forEach(function (trait_key) {
-				var avg = d3.mean(group.values, function (d) {
-					if (d[trait_key] !== null) {
-						return d[trait_key];
-					}
-				});
-				newDatum[trait_key] = avg == undefined ? null : avg;
-			});
-			return newDatum;
-		});
-		var tableCols = [
-			{title: "Accession", data: "germplasmName"},
-			{title: "Unit Count", data: "count"}
-		];
-		data = newdata;
-	}
-
-
-	// use the list of shared traits to create dataTables columns
-	tableCols = tableCols.concat(trait_names.map(function (d) {
-		return {title: d, data: d.replace(/\./g, "\\.")};
-	}));
-
-	// create the root filter object and datatable
-	var gfilter = GraphicalFilter();
-	gfilter.create("#filter_div", "#filtered_results", data, tableCols, trait_names);
-
-
-}
-
 function beforeSend(xhr) {
 	var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
 	xhr.setRequestHeader('Authorization', "Bearer " + xAuthToken);
@@ -213,7 +135,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 		isDataLoaded: false
 	};
 
-	$scope.rawData = [];
+	$scope.filteredDataResult = [];
 
 	$scope.loadData = function () {
 
@@ -240,12 +162,11 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
 			pageSize: form.pageSize
 		}).then(function (response) {
-			// Store the rawData from the server so we can transform and send it to OpenCPU api later.
-			$scope.rawData = response.result.data;
 			$scope.$apply(function () {
-				$scope.flags.isDataLoaded = $scope.rawData.length > 0;
+				$scope.flags.isDataLoaded = response.result.data.length > 0;
+				$scope.processData(response.result.data, (!!form.group));
 			});
-			useBrAPIData(response, (!!form.group));
+
 		});
 
 	};
@@ -262,28 +183,113 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 			templateUrl: 'pages/BrAPI-Graphical-Filtering/exportModal.html',
 			controller: 'ExportModalController',
 			resolve: {
-				rawData: function () {
-					return $scope.rawData;
+				filteredDataResult: function () {
+					return $scope.filteredDataResult;
 				}
 			}
 		});
 	};
 
+	// filters and modifies the response and then creates the root filter object
+	// and datatable
+	$scope.processData = function (responseData, groupByAccession) {
+		var traits = {};
+		var data = responseData.map(function (observeUnit) {
+			var newObj = {};
+			d3.entries(observeUnit).forEach(function (entry) {
+				if (entry.key != "observations") {
+					newObj[entry.key] = entry.value;
+				}
+			});
+			observeUnit.observations.forEach(function (obs) {
+				newObj[obs.observationVariableName] = tryParseNumber(obs.value);
+				traits[obs.observationVariableName] = true;
+			});
+			return newObj;
+		});
+
+		var trait_names = d3.keys(traits);
+		data.forEach(function (datum) {
+			trait_names.forEach(function (trait) {
+				if (datum[trait] == undefined || datum[trait] == null || datum[trait] == NaN) {
+					datum[trait] = null
+				}
+			})
+		});
+		var tableCols = [
+			{title: "TrialInstance", data: "instanceNumber"},
+			{title: "StudyDbId", data: "studyDbId"},
+			{title: "Study", data: "studyName"},
+			{title: "Name", data: "observationUnitName"},
+			{title: "observationUnitDbId", data: "observationUnitDbId"},
+			{title: "Accession", data: "germplasmName"},
+			{title: "EntryNumber", data: "entryNumber"},
+			{title: "GID", data: "germplasmDbId"},
+			{title: "Location", data: "studyLocation"},
+		];
+		if (groupByAccession) {
+			var grouped = d3.nest().key(function (d) {
+				return d.germplasmDbId
+			}).entries(data);
+			var newdata = grouped.map(function (group) {
+				var newDatum = {};
+				newDatum.germplasmName = group.values[0].germplasmName;
+				newDatum.germplasmDbId = group.key;
+				newDatum.count = group.values.length;
+				newDatum.group = group.values;
+				trait_names.forEach(function (trait_key) {
+					var avg = d3.mean(group.values, function (d) {
+						if (d[trait_key] !== null) {
+							return d[trait_key];
+						}
+					});
+					newDatum[trait_key] = avg == undefined ? null : avg;
+				});
+				return newDatum;
+			});
+			var tableCols = [
+				{title: "Accession", data: "germplasmName"},
+				{title: "Unit Count", data: "count"}
+			];
+			data = newdata;
+		}
+
+
+		// use the list of shared traits to create dataTables columns
+		tableCols = tableCols.concat(trait_names.map(function (d) {
+			return {title: d, data: d.replace(/\./g, "\\.")};
+		}));
+
+		// create the root filter object and datatable
+		var gfilter = GraphicalFilter();
+		gfilter.create("#filter_div", "#filtered_results", data, tableCols, trait_names);
+
+		// Store the filtered data so we can transform and send it to OpenCPU api later.
+		$scope.filteredDataResult = gfilter.filteredData;
+	};
+
+	function tryParseNumber(str) {
+		var retValue = null;
+		if (str && !isNaN(str)) {
+			return Number(str);
+		}
+		return retValue;
+	}
+
 }]);
 
-mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'rawData',
-	function ($scope, $q, $uibModalInstance, rCallService, rawData) {
+mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'filteredDataResult',
+	function ($scope, $q, $uibModalInstance, rCallService, filteredDataResult) {
 
 		$scope.errorMessage = '';
 		$scope.rCallObjects = [];
-		$scope.selectedRCallObject;
+		$scope.selectedRCallObject = {};
 		$scope.meltRCallObject = {};
 		$scope.isExporting = false;
 
 		$scope.proceed = function () {
 			$scope.errorMessage = '';
-			var isAggregate = $scope.selectedRCallObject.parameters.hasOwnProperty('fun.aggregate');
-			transform(angular.copy($scope.selectedRCallObject), normalizeDataForExport(rawData, isAggregate));
+			transform(angular.copy($scope.selectedRCallObject), filteredDataResult);
 		};
 
 		$scope.cancel = function () {
@@ -336,32 +342,6 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			link.href = window.URL.createObjectURL(blob);
 			link.download = 'datafile.csv';
 			link.click();
-		}
-
-		function normalizeDataForExport(rawData, isAggregate) {
-			var data = rawData
-				.map(function (observeUnit) {
-					var newObj = {};
-					d3.entries(observeUnit).forEach(function (entry) {
-						if (entry.key != "observations") {
-							newObj[entry.key] = entry.value;
-						}
-					});
-					observeUnit.observations.forEach(function (obs) {
-						// Convert trait values to numeric if possible.
-						newObj[obs.observationVariableName] = isAggregate ? tryParseNumber(obs.value, obs.value) : obs.value;
-					});
-					return newObj;
-				});
-			return data;
-		}
-
-		function tryParseNumber(str) {
-			var retValue = null;
-			if (str && !isNaN(str)) {
-				return Number(str);
-			}
-			return retValue;
 		}
 
 	}]);
