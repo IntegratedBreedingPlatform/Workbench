@@ -5,3 +5,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.radio-inline-label {
+    padding-left: 0;
+}

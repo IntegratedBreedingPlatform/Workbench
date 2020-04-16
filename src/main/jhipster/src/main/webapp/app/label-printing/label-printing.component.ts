@@ -145,6 +145,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.labelPrintingData.settingsName = presetSetting.name;
             this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
             this.labelPrintingData.barcodeGeneratedAutomatically = presetSetting.barcodeSetting.automaticBarcode;
+            this.labelPrintingData.includeHeadings = presetSetting.includeHeadings;
 
             if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
                 this.labelPrintingData.firstBarcodeField = 0;
@@ -190,6 +191,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     reset() {
         this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
         this.labelPrintingData.barcodeNeeded = false;
+        this.labelPrintingData.includeHeadings = true;
         $('#leftSelectedFields').empty();
         $('#rightSelectedFields').empty();
         this.initDragAndDrop();
@@ -248,6 +250,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             barcodeFields: barcodeFieldsSelected,
             sizeOfLabelSheet: this.labelPrintingData.sizeOfLabelSheet,
             numberOfRowsPerPageOfLabel: this.labelPrintingData.numberOfRowsPerPage,
+            includeHeadings: this.labelPrintingData.includeHeadings,
             fileName: this.labelPrintingData.filename,
             datasetId: undefined,
             studyId: undefined
@@ -326,6 +329,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         preset.selectedFields = selectedFields;
         preset.barcodeSetting = barcodeSetting;
         preset.fileConfiguration = fileConfiguration;
+        preset.includeHeadings = this.labelPrintingData.includeHeadings;
 
         this.service.addPreset(preset).subscribe((presetSetting) => {
             this.presetSettings.push(presetSetting);

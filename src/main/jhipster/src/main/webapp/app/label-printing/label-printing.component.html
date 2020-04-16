@@ -185,8 +185,20 @@
 									<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.fields">
 										CHOOSE FIELDS
 									</h2>
-									<div class="row">
-										<label class="control-label add_top_padding col-xs-12 col-md-12" [innerHTML]="getChooseLabelDescription()"></label>
+									<div class="row" *ngIf="fileType !== FILE_TYPES.PDF">
+										<div class="col-xs-12 col-md-12">
+											<label class="radio-inline radio-inline-label label-bold" jhiTranslate="label-printing.include.headings">
+												Include column headings in XLS export?
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="include-heading-options" [value]="true" [(ngModel)]="labelPrintingData.includeHeadings">
+												<span jhiTranslate="label-printing.include.headings.yes">Yes</span>
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="include-heading-options" [value]="false" [(ngModel)]="labelPrintingData.includeHeadings">
+												<span jhiTranslate="label-printing.include.headings.no">No</span>
+											</label>
+										</div>
 									</div>
 								</div>
 							</div>
