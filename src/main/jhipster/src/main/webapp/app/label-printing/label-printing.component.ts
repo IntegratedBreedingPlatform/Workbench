@@ -15,7 +15,9 @@ declare const $: any;
     templateUrl: './label-printing.component.html',
     styleUrls: ['./label-printing.component.css']
 })
-export class LabelPrintingComponent implements OnInit, AfterViewInit {
+export class LabelPrintingComponent implements OnInit {
+    initComplete: boolean;
+
     labelPrintingData: LabelPrintingData = new LabelPrintingData();
     labelsNeededSummary: LabelsNeededSummary;
     metadata: Map<string, string>;
@@ -51,27 +53,41 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         this.context.printingLabelType = params['printingLabelType'];
         this.context.searchRequestId = params['searchRequestId'];
 
+        let labelsNeededPromise = Promise.resolve({});
         if (this.hasHeader()) {
-            this.service.getLabelsNeededSummary().subscribe((summary: any) => {
+            labelsNeededPromise = this.service.getLabelsNeededSummary().toPromise()
+            labelsNeededPromise.then((summary: any) => {
                 this.labelsNeededSummary = summary;
             });
         }
-        this.service.getOriginResourceMetadada().subscribe((originResourceMetadata) => {
+
+        const metadataPromise = this.service.getOriginResourceMetadada().toPromise();
+        metadataPromise.then((originResourceMetadata) => {
             this.metadata = new Map(Object.entries(originResourceMetadata.metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
             this.labelPrintingData.filename = originResourceMetadata.defaultFileName;
         });
-        this.service.getAvailableLabelFields().subscribe((labelTypes) => {
+
+        const fieldsPromise = this.service.getAvailableLabelFields().toPromise();
+        fieldsPromise.then((labelTypes) => {
             this.labelTypes = labelTypes;
             this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
-        this.loadPresets();
+
+        const presetPromise = this.loadPresets();
+
+        Promise.all([
+            labelsNeededPromise,
+            metadataPromise,
+            fieldsPromise,
+            presetPromise
+        ]).then(() => {
+            this.initDragAndDrop()
+            this.initComplete = true;
+        });
+
         this.labelPrintingData.sizeOfLabelSheet = '1';
         this.labelPrintingData.numberOfRowsPerPage = 7;
-    }
-
-    ngAfterViewInit() {
-        this.initDragAndDrop();
     }
 
     hasHeader() {
@@ -182,7 +198,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     }
 
     private loadPresets() {
-        this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
+        return this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
             this.presetSettings = PresetSettings;
             this.presetSettingId = 0;
         });
