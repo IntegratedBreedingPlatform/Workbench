@@ -384,6 +384,7 @@ export class LabelPrintingComponent implements OnInit {
         }
     }
 
+    // TODO translateService
     getChooseLabelDescription() {
         if (!this.labelTypes || !this.labelTypes.length) {
             return;
@@ -394,7 +395,14 @@ export class LabelPrintingComponent implements OnInit {
         if (this.fileType === FileType.PDF) {
             to = '<strong>Left Side Fields</strong> and <strong>Right Side Fields</strong>';
         }
-        return `Drag fields from the ${from} into the ${to} to add them to your export file.`;
+
+        let description = `Drag fields from the ${from} into the ${to} to add them to your export file.`;
+
+        if (this.fileType === FileType.PDF) {
+            description += ' For PDF you can only add 5 fields per side'
+        }
+
+        return description;
     }
 }
 
