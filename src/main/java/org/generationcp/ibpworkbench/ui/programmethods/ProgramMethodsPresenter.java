@@ -106,6 +106,7 @@ public class ProgramMethodsPresenter {
 	public MethodView editBreedingMethod(final MethodView method) {
 		MethodView result = null;
 		try {
+			method.setMprgn(this.getMprgn(method.getMtype()));
 			result = this.convertMethod(this.gerplasmDataManager.editMethod(method.copy()));
 		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
@@ -298,11 +299,31 @@ public class ProgramMethodsPresenter {
 		return methodClasses;
 	}
 
+	private int getMprgn(final String mtype) {
+		int mprgn = 0;
+		switch(mtype) {
+			case "GEN":
+				mprgn = 2;
+				break;
+			case "DER":
+				mprgn = -1;
+				break;
+			default:
+				mprgn = 0;
+				break;
+		}
+		return mprgn;
+	}
+
 	public void setGermplasmDataManager(final GermplasmDataManager gerplasmDataManager) {
 		this.gerplasmDataManager = gerplasmDataManager;
 	}
 	
-	public void setContextUtil(ContextUtil contextUtil) {
+	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	public void setBreedingMethodTracker(final BreedingMethodTracker breedingMethodTracker) {
+		this.breedingMethodTracker = breedingMethodTracker;
 	}
 }
