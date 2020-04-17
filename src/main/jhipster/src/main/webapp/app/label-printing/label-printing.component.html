@@ -90,7 +90,7 @@
 													<option *ngFor="let presetSetting of presetSettings" [value]="presetSetting.id">{{presetSetting.name}}</option>
 												</select>
 											</div>
-											<div class="add_top_padding saved-settings pull-left fbk-left-padding">
+											<div class="saved-settings pull-left fbk-left-padding">
 												<a *ngIf="loadSavedSettings &&  presetSettingId!=0" href="javascript: void(0);" class="fb-delete-settings"><span
 													class="glyphicon glyphicon-trash" (click)="deleteSelectedSetting()"></span></a>
 											</div>
@@ -111,7 +111,7 @@
 									</div>
 									<div class="col-xs-12 col-md-12 form-group">
 										<div class="row">
-											<label class="control-label add_top_padding col-xs-4 col-md-4">
+											<label class="control-label col-xs-4 col-md-4">
 												<strong jhiTranslate="label-printing.output.format"></strong>:</label>
 											<div class="col-xs-8 col-md-7">
 												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="reset()">
@@ -201,12 +201,15 @@
 										</div>
 									</div>
 									<div class="row">
-										<div class="add_top_padding col-xs-12 col-md-12" [innerHTML]="getChooseLabelDescription()"></div>
+										<div class="col-xs-12 col-md-12" [innerHTML]="getChooseLabelDescription()"></div>
 									</div>
 								</div>
 							</div>
-							<div class="row add_top_padding">
+							<div class="row">
 								<div class="col-xs-12 col-md-12">
+									<h2 class="sub-content-heading">
+										&nbsp;
+									</h2>
 									<div class="form-group">
 										<div class="row">
 											<div class="col-xs-6 col-md-6">
@@ -315,7 +318,7 @@
 											</div>
 											<div class="form-group row">
 												<div class="col-xs-4 col-md-4">
-													<label class="control-label label-bold add_top_padding"
+													<label class="control-label label-bold"
 														   jhiTranslate="label-printing.first.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
@@ -329,7 +332,7 @@
 											</div>
 											<div class="form-group row">
 												<div class="col-xs-4 col-md-4">
-													<label class="control-label label-bold add_top_padding"
+													<label class="control-label label-bold"
 														   jhiTranslate="label-printing.second.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
@@ -343,7 +346,7 @@
 											</div>
 											<div class="form-group row">
 												<div class="col-xs-4 col-md-4">
-													<label class="control-label label-bold add_top_padding"
+													<label class="control-label label-bold"
 														   jhiTranslate="label-printing.third.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
@@ -370,7 +373,7 @@
 												</h2>
 												<div class="row">
 													<div class="col-xs-3 col-md-3">
-														<label class="control-label add_top_padding"><strong
+														<label class="control-label"><strong
 															   jhiTranslate="label-printing.filename"></strong>:</label><span class="required">*</span>
 													</div>
 													<div class="col-xs-8 col-md-5">
@@ -388,7 +391,7 @@
 														   jhiTranslate="label-printing.choose.preset.text"></label>
 												</div>
 												<div class="row">
-														<label class="control-label add_top_padding col-xs-4 col-md-3"><strong
+														<label class="control-label col-xs-4 col-md-3"><strong
 															   jhiTranslate="label-printing.save.preset.name.note"></strong>:</label>
 													<div class="col-xs-8 col-md-5">
 														<input type="text" class="form-control" [(ngModel)]="labelPrintingData.settingsName"
