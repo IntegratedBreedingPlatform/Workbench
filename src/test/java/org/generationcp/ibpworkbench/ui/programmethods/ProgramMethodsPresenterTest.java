@@ -128,9 +128,9 @@ public class ProgramMethodsPresenterTest {
 	
 	@Test
 	public void testSaveNewBreedingMethod() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView();
+		final MethodView method = MethodViewTestDataInitializer.createMethodView();
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
-		MethodView result = this.controller.saveNewBreedingMethod(method);
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
@@ -189,9 +189,9 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveNewBreedingMethodGenerative() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.GENERATIVE_TYPE);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.GENERATIVE_TYPE);
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
-		MethodView result = this.controller.saveNewBreedingMethod(method);
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals("Expected value of mprgn is 2", 2, result.getMprgn().intValue());
@@ -200,9 +200,9 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveNewBreedingMethodDerivative() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.DERIVATIVE_TYPE);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.DERIVATIVE_TYPE);
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
-		MethodView result = this.controller.saveNewBreedingMethod(method);
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
@@ -211,9 +211,9 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveNewBreedingMethodMaintenance() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.MAINTENANCE_TYPE);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.MAINTENANCE_TYPE);
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
-		MethodView result = this.controller.saveNewBreedingMethod(method);
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals("Expected value of mprgn is 0", 0, result.getMprgn().intValue());
@@ -222,10 +222,10 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveEditBreedingMethodGenerative() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.GENERATIVE_TYPE);
-		Method existing = this.getExistingMethod(method, 2);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.GENERATIVE_TYPE);
+		final Method existing = this.getExistingMethod(method, 2);
 		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
-		MethodView result = this.controller.editBreedingMethod(method);
+		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals("Expected value of mprgn is 2", 2, result.getMprgn().intValue());
@@ -234,10 +234,10 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveEditBreedingMethodDerivative() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.DERIVATIVE_TYPE);
-		Method existing = this.getExistingMethod(method, -1);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.DERIVATIVE_TYPE);
+		final Method existing = this.getExistingMethod(method, -1);
 		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
-		MethodView result = this.controller.editBreedingMethod(method);
+		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
@@ -247,10 +247,10 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveEditBreedingMethodMaintenance() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.MAINTENANCE_TYPE);
-		Method existing = this.getExistingMethod(method, 0);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.MAINTENANCE_TYPE);
+		final Method existing = this.getExistingMethod(method, 0);
 		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
-		MethodView result = this.controller.editBreedingMethod(method);
+		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals("Expected value of mprgn is 0", 0, result.getMprgn().intValue());
