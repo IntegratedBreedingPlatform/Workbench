@@ -149,7 +149,7 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setMgrp(method.getMgrp());
 			newBreedingMethod.setMtype(method.getMtype());
 			newBreedingMethod.setGeneq(method.getGeneq());
-			newBreedingMethod.setUser(contextUtil.getCurrentWorkbenchUserId());
+			newBreedingMethod.setUser(this.contextUtil.getCurrentWorkbenchUserId());
 			newBreedingMethod.setLmid(0);
 			newBreedingMethod.setMattr(0);
 			newBreedingMethod.setMprgn(0);
