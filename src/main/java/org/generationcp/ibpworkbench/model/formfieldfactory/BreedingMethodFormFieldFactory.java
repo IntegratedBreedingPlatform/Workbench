@@ -26,6 +26,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.workbench.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,12 +107,12 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 		this.methodSelectType.setDebugId("methodSelectType");
 		this.methodSelectType.setImmediate(true);
 		this.methodSelectType.setWidth(BreedingMethodFormFieldFactory.FIELD_WIDTH);
-		this.methodSelectType.addItem("GEN");
-		this.methodSelectType.setItemCaption("GEN", "Generative");
-		this.methodSelectType.addItem("DER");
-		this.methodSelectType.setItemCaption("DER", "Derivative");
-		this.methodSelectType.addItem("MAN");
-		this.methodSelectType.setItemCaption("MAN", "Maintenance");
+		this.methodSelectType.addItem(MethodType.GENERATIVE.getCode());
+		this.methodSelectType.setItemCaption(MethodType.GENERATIVE.getCode(), MethodType.GENERATIVE.getName());
+		this.methodSelectType.addItem(MethodType.DERIVATIVE.getCode());
+		this.methodSelectType.setItemCaption(MethodType.DERIVATIVE.getCode(), MethodType.DERIVATIVE.getName());
+		this.methodSelectType.addItem(MethodType.MAINTENANCE.getCode());
+		this.methodSelectType.setItemCaption(MethodType.MAINTENANCE.getCode(), MethodType.MAINTENANCE.getName());
 		this.methodSelectType.setNullSelectionAllowed(false);
 		this.methodSelectType.setRequired(true);
 		this.methodSelectType.setRequiredError("Please select a Generation Advancement Type");
@@ -126,7 +127,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public void valueChange(final ValueChangeEvent event) {
 				BreedingMethodFormFieldFactory.this.methodSelectClass.removeAllItems();
-				if ("GEN".equals(event.getProperty().getValue().toString())) {
+				if (MethodType.GENERATIVE.getCode().equals(event.getProperty().getValue().toString())) {
 					for (final Integer key : classMap.keySet()) {
 						final String value = classMap.get(key);
 
@@ -136,7 +137,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
-				} else if ("DER".equals(event.getProperty().getValue().toString())) {
+				} else if (MethodType.DERIVATIVE.getCode().equals(event.getProperty().getValue().toString())) {
 					for (final Integer key : classMap.keySet()) {
 						final String value = classMap.get(key);
 						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId()) || key
@@ -145,7 +146,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 						}
 					}
-				} else if ("MAN".equals(event.getProperty().getValue().toString())) {
+				} else if (MethodType.MAINTENANCE.getCode().equals(event.getProperty().getValue().toString())) {
 					for (final Integer key : classMap.keySet()) {
 						final String value = classMap.get(key);
 						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId()) || key

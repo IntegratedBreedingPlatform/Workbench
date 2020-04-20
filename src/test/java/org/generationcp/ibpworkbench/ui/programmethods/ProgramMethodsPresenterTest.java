@@ -11,6 +11,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
+import org.generationcp.middleware.pojos.workbench.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
@@ -71,7 +72,7 @@ public class ProgramMethodsPresenterTest {
 	@Test
 	public void testGetFilteredResults() {
 		final String mgroup = "C";
-		final String mtype = "GEN";
+		final String mtype = MethodType.GENERATIVE.getCode();
 		final String mname = "Method Name";
 
 		Collection<MethodView> result = null;
@@ -93,7 +94,7 @@ public class ProgramMethodsPresenterTest {
 		final String entityType = "C";
 		List<MethodView> results = new ArrayList<MethodView>();
 		final String mgroup = "C";
-		final String mtype = "GEN";
+		final String mtype = MethodType.GENERATIVE.getCode();
 		final String mname = "Method Name";
 
 		try {
@@ -189,7 +190,7 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveNewBreedingMethodGenerative() {
-		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.GENERATIVE_TYPE);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.GENERATIVE.getCode());
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
@@ -200,7 +201,7 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveNewBreedingMethodDerivative() {
-		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.DERIVATIVE_TYPE);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.DERIVATIVE.getCode());
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
@@ -211,7 +212,7 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveNewBreedingMethodMaintenance() {
-		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.MAINTENANCE_TYPE);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.MAINTENANCE.getCode());
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
@@ -222,8 +223,8 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveEditBreedingMethodGenerative() {
-		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.GENERATIVE_TYPE);
-		final Method existing = this.getExistingMethod(method, 2);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.GENERATIVE.getCode());
+		final Method existing = this.getExistingMethod(method, this.controller.getMprgn(MethodType.GENERATIVE.getCode()));
 		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
 		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
@@ -234,8 +235,8 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveEditBreedingMethodDerivative() {
-		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.DERIVATIVE_TYPE);
-		final Method existing = this.getExistingMethod(method, -1);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.DERIVATIVE.getCode());
+		final Method existing = this.getExistingMethod(method, this.controller.getMprgn(MethodType.DERIVATIVE.getCode()));
 		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
 		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
@@ -247,8 +248,8 @@ public class ProgramMethodsPresenterTest {
 
 	@Test
 	public void testSaveEditBreedingMethodMaintenance() {
-		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodViewTestDataInitializer.MAINTENANCE_TYPE);
-		final Method existing = this.getExistingMethod(method, 0);
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.MAINTENANCE.getCode());
+		final Method existing = this.getExistingMethod(method, this.controller.getMprgn(MethodType.MAINTENANCE.getCode()));
 		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
 		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());

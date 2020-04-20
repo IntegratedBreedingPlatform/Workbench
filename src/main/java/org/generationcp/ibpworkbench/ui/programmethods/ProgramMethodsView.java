@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +73,6 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	@Autowired
 	private AuthorizationService authorizationService;
 
-	public static final String[][] METHOD_TYPES = { {"GEN", "Generative"}, {"DER", "Derivative"}, {"MAN", "Maintenance"}};
 	public static final String[][] METHOD_GROUPS = { {"S", "Self Fertilizing"}, {"O", "Cross Pollinating"}, {"C", "Clonally Propagating"},
 			{"G", "All System"}};
 	private static Action copyBreedingMethodAction = new Action("Copy Breeding Method");
@@ -521,9 +522,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.typeFilter.addItem("");
 		this.typeFilter.setItemCaption("", "All Generation Advancement Types");
 
-		for (String[] methodType : ProgramMethodsView.METHOD_TYPES) {
-			this.typeFilter.addItem(methodType[0]);
-			this.typeFilter.setItemCaption(methodType[0], methodType[1]);
+		for(MethodType methodType : EnumSet.allOf(MethodType.class)){
+			this.typeFilter.addItem(methodType.getCode());
+			this.typeFilter.setItemCaption(methodType.getCode(), methodType.getName());
 		}
 
 		this.typeFilter.select("");
