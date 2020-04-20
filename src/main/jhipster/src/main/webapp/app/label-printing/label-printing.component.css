@@ -5,3 +5,15 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.radio-inline-label {
+    padding-left: 0;
+}
+
+.sub-content-heading {
+    margin-bottom: 15px;
+}
+
+.row {
+    margin-bottom: 5px;
+}

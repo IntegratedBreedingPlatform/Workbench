@@ -28,7 +28,6 @@ export class LabelPrintingData {
         public filenameDLLocation?: string,
         public isFieldMapsExisting?: string,
         public settingsName?: string,
-        public includeColumnHeadinginNonPdf?: string,
         public isStockList?: string,
         public stockListId?: string,
         public stockListTypeName?: string,
@@ -38,8 +37,9 @@ export class LabelPrintingData {
         public secondBarcodeField = 0,
         public thirdBarcodeField = 0,
         public filename = '',
-        public barcodeNeeded = false
-    ) {
+        public barcodeNeeded = false,
+        public includeHeadings = true
+) {
     }
 }
 
@@ -76,6 +76,7 @@ export class PresetSetting {
         public type?: string,
         public selectedFields?: number[][],
         public barcodeSetting?: BarcodeSetting,
+        public includeHeadings?: boolean,
         public fileConfiguration?: FileConfiguration,
     ) {
     }

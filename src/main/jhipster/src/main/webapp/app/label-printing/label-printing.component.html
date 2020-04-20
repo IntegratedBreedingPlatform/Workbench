@@ -1,8 +1,8 @@
 <div>
 	<div class="row page-header">
 		<div class="col-xs-12 col-md-12">
-			<h1>
-				LABEL PRINTING <a class="bms-fa-question-circle fbk-help" data-help-link="MAKE_LABELS"></a>
+			<h1 jhiTranslate="label-printing.title">
+				EXPORT DATA / LABEL PRINTING <a class="bms-fa-question-circle fbk-help" data-help-link="MAKE_LABELS"></a>
 			</h1>
 		</div>
 	</div>
@@ -10,23 +10,19 @@
 		<div class="col-xs-12 col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<div class="col-xs-12 col-md-12">
+					<div class="col-xs-12 col-md-12" *ngIf="initComplete else loading">
 
 						<div class="row">
 							<div class="col-xs-12 col-md-12">
-								<h2 jhiTranslate="label-printing.header.print.labels">Print labels</h2>
+								<h2 *ngIf="isLabelPrinting()" jhiTranslate="label-printing.header.print.labels">Print labels</h2>
+								<h2 *ngIf="!isLabelPrinting()" jhiTranslate="label-printing.header.export.data">Export data</h2>
 							</div>
 						</div>
 
-						<div class="row">
-							<div class="col-xs-12 col-md-12">
-								<h3 jhiTranslate="label-printing.header.create.labels">Create labels</h3>
-							</div>
-						</div>
-						<div class="row lblprnt-study-details">
+						<div class="row lblprnt-study-details" *ngIf="hasHeader()">
 							<div class="col-xs-6 col-md-6">
 								<h2 class="sub-content-heading" jhiTranslate="label-printing.selected.study">Selected study</h2>
-								<div *ngIf="metadata else loading">
+								<div>
 									<div class="form-group" *ngFor="let key of metadataKeys">
 										<label class="control-label">
 											<strong>{{key}}</strong>:
@@ -35,35 +31,39 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-xs-6 col-md-6" *ngIf="labelsNeededSummary else loading">
+							<div class="col-xs-6 col-md-6" *ngIf="isLabelPrinting()">
 								<div class="row">
 									<div class="col-xs-12 col-md-12">
-										<h2 class="sub-content-heading" jhiTranslate="label-printing.summary.of.labels.needed">
-											SUMMARY OF LABELS NEEDED</h2>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12 col-md-12">
-										<table class="table table-curved table-condensed">
-											<thead>
-											<tr>
-												<th *ngFor="let header of labelsNeededSummary.headers">{{header}}</th>
-											</tr>
-											</thead>
-											<tbody>
-											<tr *ngFor="let row of labelsNeededSummary.values; odd as odd; even as even">
-												<td *ngFor="let header of labelsNeededSummary.headers"
-													[ngClass]="{ odd: odd, even: even }">{{row[header]}}</td>
-											</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12 col-md-12 text-right">
-										<label class="control-label label-bold" jhiTranslate="label-printing.total.number.of.labels">
-											Total # of Labels to Print</label>: &nbsp;
-										<span>{{labelsNeededSummary.totalNumberOfLabelsNeeded}}</span>
+										<div class="row">
+											<div class="col-xs-12 col-md-12">
+												<h2 class="sub-content-heading" jhiTranslate="label-printing.summary.of.labels.needed">
+													SUMMARY OF LABELS NEEDED</h2>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12 col-md-12">
+												<table class="table table-curved table-condensed">
+													<thead>
+													<tr>
+														<th *ngFor="let header of labelsNeededSummary.headers">{{header}}</th>
+													</tr>
+													</thead>
+													<tbody>
+													<tr *ngFor="let row of labelsNeededSummary.values; odd as odd; even as even">
+														<td *ngFor="let header of labelsNeededSummary.headers"
+															[ngClass]="{ odd: odd, even: even }">{{row[header]}}</td>
+													</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12 col-md-12 text-right">
+												<label class="control-label label-bold" jhiTranslate="label-printing.total.number.of.labels">
+													Total # of Labels to Print</label>: &nbsp;
+												<span>{{labelsNeededSummary.totalNumberOfLabelsNeeded}}</span>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -73,26 +73,26 @@
 							<div class="col-xs-6 col-md-6">
 								<div class="row">
 									<div class="col-xs-12 col-md-12">
-										<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.type">
-											CHOOSE LABEL TYPE
+										<h2 class="sub-content-heading" jhiTranslate="label-printing.preset.heading">
+											Preset options
 										</h2>
-									</div>
-									<div class="col-xs-12 col-md-12">
-										&nbsp;
 									</div>
 									<div class="col-xs-12 col-md-12 form-group">
 										<div class="row">
-											<label class="control-label add_top_padding col-xs-4 col-md-4">
-												<input type="checkbox" [(ngModel)]="loadSavedSettings" name="loadSavedSettings" checked=""/>   Load saved settings: </label>
+											<div class="checkbox col-xs-4 col-md-4">
+												<label>
+													<input type="checkbox" [(ngModel)]="loadSavedSettings" name="loadSavedSettings" checked=""/>Load saved settings:
+												</label>
+											</div>
 											<div class="col-xs-8 col-md-6" style="padding-left: 0px;">
 												<select *ngIf="loadSavedSettings" class="form-control" [(ngModel)]="presetSettingId" (ngModelChange)="applySelectedSetting()">
 													<option [value]="0">Please Choose</option>
 													<option *ngFor="let presetSetting of presetSettings" [value]="presetSetting.id">{{presetSetting.name}}</option>
 												</select>
 											</div>
-											<div class="add_top_padding saved-settings pull-left fbk-left-padding">
+											<div class="saved-settings pull-left fbk-left-padding">
 												<a *ngIf="loadSavedSettings &&  presetSettingId!=0" href="javascript: void(0);" class="fb-delete-settings"><span
-													class="glyphicon glyphicon-trash delete-saved-settings" (click)="deleteSelectedSetting()"></span></a>
+													class="glyphicon glyphicon-trash" (click)="deleteSelectedSetting()"></span></a>
 											</div>
 										</div>
 									</div>
@@ -101,23 +101,24 @@
 							<div class="col-xs-6 col-md-6">
 								<div class="row">
 									<div class="col-xs-12 col-md-12">
-										<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.output">
-											CHOOSE LABEL OUTPUT
+										<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.output">
+											CHOOSE OUTPUT
 										</h2>
 									</div>
 									<div class="col-xs-12 col-md-12">
-										<label class="control-label " jhiTranslate="label-printing.choose.label.use.formats">
-											Choose the format you would like to use for your labels:</label>
+										<label class="control-label " jhiTranslate="label-printing.choose.format">
+											Choose the format you would like to use:</label>
 									</div>
 									<div class="col-xs-12 col-md-12 form-group">
 										<div class="row">
-											<label class="control-label add_top_padding col-xs-4 col-md-4">
+											<label class="control-label col-xs-4 col-md-4">
 												<strong jhiTranslate="label-printing.output.format"></strong>:</label>
 											<div class="col-xs-8 col-md-7">
-												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="resetSelectedFields()">
+												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="reset()">
 													<option [value]="FILE_TYPES.NONE">Please Choose</option>
 													<option [value]="FILE_TYPES.PDF">Formatted PDF Label Sheets</option>
-													<option [value]="FILE_TYPES.EXCEL" disabled>Excel Data (not available)</option>
+													<option *ngIf="isExcelEnabled()" [value]="FILE_TYPES.EXCEL">Excel Data</option>
+													<option *ngIf="!isExcelEnabled()" [value]="FILE_TYPES.EXCEL" disabled>Excel Data (not available)</option>
 													<option [value]="FILE_TYPES.CSV">CSV Data</option>
 												</select>
 											</div>
@@ -129,25 +130,19 @@
 						<div *ngIf="fileType === FILE_TYPES.PDF">
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
-									<div class="">
-										<div class="col-xs-12 col-md-12">
-											<br/>
-											<label class="control-label"><strong class="sub-content-heading"
-																				 jhiTranslate="label-printing.specify.label.stock"></strong></label>
-										</div>
-									</div>
+									<h2 class="sub-content-heading" jhiTranslate="label-printing.specify.label.stock">
+									</h2>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-6 col-md-6">
-									<div class="form-group">
+									<div class="row form-group">
 										<div class="col-xs-12 col-md-12">
 											<label class="control-label " jhiTranslate="label-printing.enter.specs.for.label"></label>
 										</div>
 									</div>
 									<div class="row form-group">
 										<div class="col-xs-7 col-md-7">
-											&nbsp;&nbsp;&nbsp;&nbsp;
 											<label class="control-label label-bold">
 												<strong jhiTranslate="label-printing.size.of.label.sheet"></strong>:</label>
 										</div>
@@ -161,7 +156,6 @@
 
 									<div class="row form-group">
 										<div class="col-xs-7 col-md-7">
-											&nbsp;&nbsp;&nbsp;&nbsp;
 											<label class="control-label label-bold">
 												<strong jhiTranslate="label-printing.number.of.rows.per.page"></strong>:</label>
 										</div>
@@ -188,19 +182,34 @@
 						<div class="label-printing-details" *ngIf="fileType">
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
-									<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.label.fields">
-										CHOOSE LABEL FIELDS
+									<h2 class="sub-content-heading" jhiTranslate="label-printing.choose.fields">
+										CHOOSE FIELDS
 									</h2>
+									<div class="row" *ngIf="fileType !== FILE_TYPES.PDF">
+										<div class="col-xs-12 col-md-12">
+											<label class="radio-inline radio-inline-label label-bold" jhiTranslate="label-printing.include.headings">
+												Include column headings in XLS export?
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="include-heading-options" [value]="true" [(ngModel)]="labelPrintingData.includeHeadings">
+												<span jhiTranslate="label-printing.include.headings.yes">Yes</span>
+											</label>
+											<label class="radio-inline">
+												<input type="radio" name="include-heading-options" [value]="false" [(ngModel)]="labelPrintingData.includeHeadings">
+												<span jhiTranslate="label-printing.include.headings.no">No</span>
+											</label>
+										</div>
+									</div>
 									<div class="row">
-										<label class="control-label add_top_padding col-xs-12 col-md-12" *ngIf="fileType !== FILE_TYPES.PDF">
-											Drag fields from the <strong>{{labelTypes[0].title}} </strong>and <strong>{{labelTypes[1].title}}</strong> into <strong>Selected Fields</strong> to add them to your export file.</label>
-										<label class="control-label add_top_padding col-xs-12 col-md-12" *ngIf="fileType === FILE_TYPES.PDF">
-											Drag fields from the <strong>{{labelTypes[0].title}} </strong>and <strong>{{labelTypes[1].title}}</strong> into <strong>Left Side Fields</strong> and <strong>Right Side Fields</strong> to add them to your export file.</label>
+										<div class="col-xs-12 col-md-12" [innerHTML]="getChooseLabelDescription()"></div>
 									</div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
+									<h2 class="sub-content-heading">
+										&nbsp;
+									</h2>
 									<div class="form-group">
 										<div class="row">
 											<div class="col-xs-6 col-md-6">
@@ -265,7 +274,8 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<!-- Barcodes section -->
+							<div class="row" *ngIf="isLabelPrinting()">
 								<div class="col-xs-12 col-md-12">
 									<div class="row">
 										<div class="col-xs-6 col-md-6">
@@ -273,9 +283,9 @@
 												Barcode Options
 											</h2>
 											<div class="form-group">
-												<label class="control-label label-bold" jhiTranslate="label-printing.do.you.need.bar.codes">Do you need
-													barcodes on your labels?</label>
-												<label class="radio-inline" style="padding-left: 30px">
+												<label class="radio-inline radio-inline-label label-bold" jhiTranslate="label-printing.do.you.need.bar.codes">
+													Do you need barcodes on your labels?</label>
+												<label class="radio-inline">
 													<input type="radio" name="barcodeNeededRadio" [value]="true"
 														   [(ngModel)]="labelPrintingData.barcodeNeeded"/>
 													<span jhiTranslate="label-printing.do.you.need.bar.codes.yes">Yes</span>
@@ -287,10 +297,10 @@
 												</label>
 											</div>
 											<div class="form-group" *ngIf="labelPrintingData.barcodeNeeded">
-												<label class="control-label label-bold"
-													   jhiTranslate="label-printing.do.you.want.automatically.unique.bar.codes">
+												<label class="radio-inline radio-inline-label label-bold"
+													   jhiTranslate="label-printing.do.you.want.automatically.unique.bar.codes" >
 													Do you want to use automatically generated unique barcodes?</label>
-												<label class="radio-inline" style="padding-left: 30px">
+												<label class="radio-inline">
 													<input checked="checked" type="radio" name="barcodeGeneratedAutomaticallyRadio"
 														   [value]="true" [(ngModel)]="labelPrintingData.barcodeGeneratedAutomatically"/>
 													<span jhiTranslate="common.form.yes.text">Yes</span>
@@ -308,7 +318,7 @@
 											</div>
 											<div class="form-group row">
 												<div class="col-xs-4 col-md-4">
-													<label class="control-label label-bold add_top_padding"
+													<label class="control-label label-bold"
 														   jhiTranslate="label-printing.first.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
@@ -322,7 +332,7 @@
 											</div>
 											<div class="form-group row">
 												<div class="col-xs-4 col-md-4">
-													<label class="control-label label-bold add_top_padding"
+													<label class="control-label label-bold"
 														   jhiTranslate="label-printing.second.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
@@ -336,7 +346,7 @@
 											</div>
 											<div class="form-group row">
 												<div class="col-xs-4 col-md-4">
-													<label class="control-label label-bold add_top_padding"
+													<label class="control-label label-bold"
 														   jhiTranslate="label-printing.third.bar.code.field"></label>:
 												</div>
 												<div class="col-xs-8 col-md-8">
@@ -351,23 +361,19 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> <!-- /Barcodes section -->
+
 							<div class="row">
 								<div class="col-xs-12 col-md-12">
 									<div class="form-group">
 										<div class="row">
 											<div class="col-xs-6 col-md-6">
-												<h2 class="sub-content-heading" jhiTranslate="label-printing.set.the.filename">
-													Specify the name of the label file
+												<h2 class="sub-content-heading" jhiTranslate="label-printing.filename.description">
+													Specify the name of the file
 												</h2>
 												<div class="row">
-													<div class="col-xs-12 col-md-12">
-														&nbsp;
-													</div>
-												</div>
-												<div class="row">
 													<div class="col-xs-3 col-md-3">
-														<label class="control-label add_top_padding"><strong
+														<label class="control-label"><strong
 															   jhiTranslate="label-printing.filename"></strong>:</label><span class="required">*</span>
 													</div>
 													<div class="col-xs-8 col-md-5">
@@ -377,16 +383,16 @@
 												</div>
 											</div>
 											<div class="col-xs-6 col-md-6">
-												<h2 class="sub-content-heading" jhiTranslate="label-printing.save.label.settings">
-													Save label settings
+												<h2 class="sub-content-heading" jhiTranslate="label-printing.save.preset.heading">
+													Save settings
 												</h2>
 												<div>
 													<label class="control-label"
 														   jhiTranslate="label-printing.choose.preset.text"></label>
 												</div>
 												<div class="row">
-														<label class="control-label add_top_padding col-xs-4 col-md-3"><strong
-															   jhiTranslate="label-printing.save.label.settings.name.note"></strong>:</label>
+														<label class="control-label col-xs-4 col-md-3"><strong
+															   jhiTranslate="label-printing.save.preset.name.note"></strong>:</label>
 													<div class="col-xs-8 col-md-5">
 														<input type="text" class="form-control" [(ngModel)]="labelPrintingData.settingsName"
 															   placeholder="Settings Name"/>
@@ -410,9 +416,8 @@
 							<div class="form-group">
 								<div class="col-xs-12 col-md-12 fbk-center">
 									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
-									<!-- TODO -->
 									<input type="button" *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" value="Save Preset" class="btn btn-info"/>
-									<input type="button" *ngIf="fileType" (click)="printLabels()" value="Export Label" class="btn btn-primary" />
+									<input type="button" *ngIf="fileType" (click)="export()" value="Export" class="btn btn-primary" />
 								</div>
 							</div>
 						</div>

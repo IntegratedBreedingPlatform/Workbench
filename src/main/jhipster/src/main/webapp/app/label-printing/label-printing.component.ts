@@ -15,7 +15,9 @@ declare const $: any;
     templateUrl: './label-printing.component.html',
     styleUrls: ['./label-printing.component.css']
 })
-export class LabelPrintingComponent implements OnInit, AfterViewInit {
+export class LabelPrintingComponent implements OnInit {
+    initComplete: boolean;
+
     labelPrintingData: LabelPrintingData = new LabelPrintingData();
     labelsNeededSummary: LabelsNeededSummary;
     metadata: Map<string, string>;
@@ -44,35 +46,63 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.route.queryParams.subscribe((params) => {
-            this.context.datasetId = params['datasetId'];
-            this.context.studyId = params['studyId'];
-            this.context.programId = params['programId'];
-            this.context.printingLabelType = params['printingLabelType'];
-        });
-        this.service.getLabelsNeededSummary().subscribe((summary: any) => {
-            this.labelsNeededSummary = summary;
-        });
-        this.service.getOriginResourceMetadada().subscribe((originResourceMetadata) => {
+        const params = this.route.snapshot.queryParams;
+        this.context.datasetId = params['datasetId'];
+        this.context.studyId = params['studyId'];
+        this.context.programId = params['programId'];
+        this.context.printingLabelType = params['printingLabelType'];
+        this.context.searchRequestId = params['searchRequestId'];
+
+        let labelsNeededPromise = Promise.resolve({});
+        if (this.hasHeader()) {
+            labelsNeededPromise = this.service.getLabelsNeededSummary().toPromise()
+            labelsNeededPromise.then((summary: any) => {
+                this.labelsNeededSummary = summary;
+            });
+        }
+
+        const metadataPromise = this.service.getOriginResourceMetadada().toPromise();
+        metadataPromise.then((originResourceMetadata) => {
             this.metadata = new Map(Object.entries(originResourceMetadata.metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
             this.labelPrintingData.filename = originResourceMetadata.defaultFileName;
         });
-        this.service.getAvailableLabelFields().subscribe((labelTypes) => {
+
+        const fieldsPromise = this.service.getAvailableLabelFields().toPromise();
+        fieldsPromise.then((labelTypes) => {
             this.labelTypes = labelTypes;
             this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
 
-        this.service.getAllPresets().subscribe((PresetSettings) => {
-            this.presetSettings = PresetSettings;
+        const presetPromise = this.loadPresets();
+
+        Promise.all([
+            labelsNeededPromise,
+            metadataPromise,
+            fieldsPromise,
+            presetPromise
+        ]).then(() => {
+            this.initDragAndDrop()
+            this.initComplete = true;
         });
-        this.presetSettingId = 0;
+
         this.labelPrintingData.sizeOfLabelSheet = '1';
         this.labelPrintingData.numberOfRowsPerPage = 7;
     }
 
-    ngAfterViewInit() {
-        this.initDragAndDrop();
+    hasHeader() {
+        return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
+    }
+
+    isExcelEnabled() {
+        return this.context.printingLabelType === LabelPrintingType.LOT;
+    }
+
+    /**
+     * Indicates if the export is for label printing
+     */
+    isLabelPrinting() {
+        return this.fileType === FileType.PDF;
     }
 
     applySelectedSetting() {
@@ -127,6 +157,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             this.labelPrintingData.settingsName = presetSetting.name;
             this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
             this.labelPrintingData.barcodeGeneratedAutomatically = presetSetting.barcodeSetting.automaticBarcode;
+            this.labelPrintingData.includeHeadings = presetSetting.includeHeadings;
 
             if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
                 this.labelPrintingData.firstBarcodeField = 0;
@@ -149,16 +180,13 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
 
     deleteSelectedSetting() {
         const presetSetting = this.presetSettings.filter((preset) => preset.id === Number(this.presetSettingId))[0];
-        this.modalTitle = 'Delete Label Printing Setting?';
+        this.modalTitle = 'Delete preset?';
         this.modalMessage = 'Are you sure you want to delete ' + presetSetting.name + ' ?';
         this.modalService.open('modal-confirm');
         this.proceed = function deletePreset(): void {
             this.service.deletePreset(this.presetSettingId).subscribe(() => {
-                this.alertService.success('label-printing.delete.label.settings.success');
-                this.service.getAllPresets().subscribe((PresetSettings) => {
-                    this.presetSettings = PresetSettings;
-                    this.presetSettingId = 0;
-                });
+                this.alertService.success('label-printing.delete.preset.success');
+                this.loadPresets();
             }, (response) => {
                 if (response.error.errors[0].message) {
                     this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -169,8 +197,17 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
     }
 
-    resetSelectedFields() {
+    private loadPresets() {
+        return this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
+            this.presetSettings = PresetSettings;
+            this.presetSettingId = 0;
+        });
+    }
+
+    reset() {
         this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+        this.labelPrintingData.barcodeNeeded = false;
+        this.labelPrintingData.includeHeadings = true;
         $('#leftSelectedFields').empty();
         $('#rightSelectedFields').empty();
         this.initDragAndDrop();
@@ -200,7 +237,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         });
     }
 
-    printLabels() {
+    export() {
         const fieldsSelected = [];
         const barcodeFieldsSelected = [];
 
@@ -229,6 +266,7 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             barcodeFields: barcodeFieldsSelected,
             sizeOfLabelSheet: this.labelPrintingData.sizeOfLabelSheet,
             numberOfRowsPerPageOfLabel: this.labelPrintingData.numberOfRowsPerPage,
+            includeHeadings: this.labelPrintingData.includeHeadings,
             fileName: this.labelPrintingData.filename,
             datasetId: undefined,
             studyId: undefined
@@ -300,18 +338,19 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
         }
 
         preset.programUUID = this.context.programId;
-        preset.toolSection = 'DATASET_LABEL_PRINTING_PRESET';
+        preset.toolSection = this.getToolSection();
         preset.toolId = 23;
         preset.name = this.labelPrintingData.settingsName;
         preset.type = 'LabelPrintingPreset';
         preset.selectedFields = selectedFields;
         preset.barcodeSetting = barcodeSetting;
         preset.fileConfiguration = fileConfiguration;
+        preset.includeHeadings = this.labelPrintingData.includeHeadings;
 
         this.service.addPreset(preset).subscribe((presetSetting) => {
             this.presetSettings.push(presetSetting);
-                this.presetSettingId = presetSetting.id;
-            this.alertService.success('label-printing.save.label.settings.success');
+            this.presetSettingId = presetSetting.id;
+            this.alertService.success('label-printing.save.preset.success');
         }, (response) => {
             if (response.error.errors[0].message) {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -319,6 +358,17 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
                 this.alertService.error('error.general');
             }
         });
+    }
+
+    private getToolSection() {
+        switch (this.context.printingLabelType) {
+            case LabelPrintingType.SUBOBSERVATION_DATASET:
+                return 'DATASET_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.LOT:
+                return 'LOT_LABEL_PRINTING_PRESET';
+            default:
+                return;
+        }
     }
 
     getFileType(extension: string): FileType {
@@ -332,6 +382,27 @@ export class LabelPrintingComponent implements OnInit, AfterViewInit {
             default:
                 return FileType.NONE;
         }
+    }
+
+    // TODO translateService
+    getChooseLabelDescription() {
+        if (!this.labelTypes || !this.labelTypes.length) {
+            return;
+        }
+
+        const from = this.labelTypes.map((l) => `<strong>${l.title}</strong>`).join(' and ');
+        let to = '<strong>Selected Fields</strong>';
+        if (this.fileType === FileType.PDF) {
+            to = '<strong>Left Side Fields</strong> and <strong>Right Side Fields</strong>';
+        }
+
+        let description = `Drag fields from the ${from} into the ${to} to add them to your export file.`;
+
+        if (this.fileType === FileType.PDF) {
+            description += ' For PDF you can only add 5 fields per side'
+        }
+
+        return description;
     }
 }
 
@@ -353,3 +424,13 @@ export enum FileType {
     PDF = 'pdf',
     EXCEL = 'xls'
 }
+
+/** aka printingLabelType in params */
+export enum LabelPrintingType {
+    SUBOBSERVATION_DATASET = 'SubObservationDataset',
+    LOT = 'Lot'
+}
+
+const typesWithHeaderDetails: LabelPrintingType[] = [
+    LabelPrintingType.SUBOBSERVATION_DATASET
+]
