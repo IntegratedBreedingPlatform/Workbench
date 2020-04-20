@@ -152,7 +152,7 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setUser(this.contextUtil.getCurrentWorkbenchUserId());
 			newBreedingMethod.setLmid(0);
 			newBreedingMethod.setMattr(0);
-			newBreedingMethod.setMprgn(0);
+			newBreedingMethod.setMprgn(this.getMprgn(newBreedingMethod.getMtype()));
 			newBreedingMethod.setReference(0);
 
 			newBreedingMethod.setMdate(DateUtil.getCurrentDateAsIntegerValue());
