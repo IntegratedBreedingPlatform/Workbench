@@ -65,6 +65,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -118,8 +119,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Label generateRoleCell(final Object itemId) {
-		final String role = (((WorkbenchUser) itemId).getRoles() != null && !((WorkbenchUser) itemId).getRoles().isEmpty()
-			&& ((WorkbenchUser) itemId).getRoles().get(0) != null) ? ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole() : "";
+		final String role = this.getUserRole(itemId);
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
@@ -717,6 +717,18 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	public void setRoleSelectionWindow(final RoleSelectionWindow roleSelectionWindow) {
 		this.roleSelectionWindow = roleSelectionWindow;
+	}
+
+	private String getUserRole(final Object itemId) {
+		final WorkbenchUser workbenchUser = (WorkbenchUser) itemId;
+		if(workbenchUser!=null && workbenchUser.getRoles()!=null && !workbenchUser.getRoles().isEmpty()){
+			final List<UserRole> userRoles = workbenchUser.getRoles().stream().filter(userRole -> userRole.getWorkbenchProject()!=null && userRole.getWorkbenchProject().equals(this.project)).collect(
+				Collectors.toList());
+			if(userRoles!=null && !userRoles.isEmpty() && userRoles.get(0)!=null) {
+				return userRoles.get(0).getCapitalizedRole();
+			}
+		}
+		return "";
 	}
 
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
