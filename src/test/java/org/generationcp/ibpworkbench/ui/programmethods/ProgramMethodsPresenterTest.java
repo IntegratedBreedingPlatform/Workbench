@@ -217,7 +217,7 @@ public class ProgramMethodsPresenterTest {
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
-		Assert.assertEquals("Expected value of mprgn is 0", 0, result.getMprgn().intValue());
+		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
 		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
 	}
 
@@ -254,7 +254,7 @@ public class ProgramMethodsPresenterTest {
 		final MethodView result = this.controller.editBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
-		Assert.assertEquals("Expected value of mprgn is 0", 0, result.getMprgn().intValue());
+		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
 		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
 	}
 

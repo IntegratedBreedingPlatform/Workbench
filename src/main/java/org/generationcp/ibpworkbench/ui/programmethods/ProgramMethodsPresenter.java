@@ -308,6 +308,7 @@ public class ProgramMethodsPresenter {
 				mprgn = 2;
 				break;
 			case DERIVATIVE:
+			case MAINTENANCE:
 				mprgn = -1;
 				break;
 			default:
