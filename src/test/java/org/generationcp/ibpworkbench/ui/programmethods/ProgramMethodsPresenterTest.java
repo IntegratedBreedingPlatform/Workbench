@@ -11,6 +11,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
+import org.generationcp.middleware.pojos.workbench.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,13 +65,14 @@ public class ProgramMethodsPresenterTest {
 		this.controller = Mockito.spy(new ProgramMethodsPresenter(this.programMethodsView, this.project));
 		this.controller.setGermplasmDataManager(this.gerplasmDataManager);
 		this.controller.setContextUtil(this.contextUtil);
-		Mockito.when(contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
+		this.controller.setBreedingMethodTracker(this.breedingMethodTracker);
+		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
 	}
 
 	@Test
 	public void testGetFilteredResults() {
 		final String mgroup = "C";
-		final String mtype = "GEN";
+		final String mtype = MethodType.GENERATIVE.getCode();
 		final String mname = "Method Name";
 
 		Collection<MethodView> result = null;
@@ -92,7 +94,7 @@ public class ProgramMethodsPresenterTest {
 		final String entityType = "C";
 		List<MethodView> results = new ArrayList<MethodView>();
 		final String mgroup = "C";
-		final String mtype = "GEN";
+		final String mtype = MethodType.GENERATIVE.getCode();
 		final String mname = "Method Name";
 
 		try {
@@ -127,9 +129,9 @@ public class ProgramMethodsPresenterTest {
 	
 	@Test
 	public void testSaveNewBreedingMethod() {
-		MethodView method = MethodViewTestDataInitializer.createMethodView();
+		final MethodView method = MethodViewTestDataInitializer.createMethodView();
 		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
-		MethodView result = this.controller.saveNewBreedingMethod(method);
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
 		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
@@ -185,4 +187,82 @@ public class ProgramMethodsPresenterTest {
 
 		Mockito.when(this.gerplasmDataManager.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname)).thenReturn(methods);
 	}
+
+	@Test
+	public void testSaveNewBreedingMethodGenerative() {
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.GENERATIVE.getCode());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals("Expected value of mprgn is 2", 2, result.getMprgn().intValue());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+	}
+
+	@Test
+	public void testSaveNewBreedingMethodDerivative() {
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.DERIVATIVE.getCode());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+	}
+
+	@Test
+	public void testSaveNewBreedingMethodMaintenance() {
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.MAINTENANCE.getCode());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		final MethodView result = this.controller.saveNewBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+	}
+
+	@Test
+	public void testSaveEditBreedingMethodGenerative() {
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.GENERATIVE.getCode());
+		final Method existing = this.getExistingMethod(method, this.controller.getMprgn(MethodType.GENERATIVE.getCode()));
+		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
+		final MethodView result = this.controller.editBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals("Expected value of mprgn is 2", 2, result.getMprgn().intValue());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+	}
+
+	@Test
+	public void testSaveEditBreedingMethodDerivative() {
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.DERIVATIVE.getCode());
+		final Method existing = this.getExistingMethod(method, this.controller.getMprgn(MethodType.DERIVATIVE.getCode()));
+		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
+		final MethodView result = this.controller.editBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+	}
+
+
+	@Test
+	public void testSaveEditBreedingMethodMaintenance() {
+		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.MAINTENANCE.getCode());
+		final Method existing = this.getExistingMethod(method, this.controller.getMprgn(MethodType.MAINTENANCE.getCode()));
+		Mockito.when(this.gerplasmDataManager.editMethod(method.copy())).thenReturn(existing);
+		final MethodView result = this.controller.editBreedingMethod(method);
+		Assert.assertEquals(method.getMname(), result.getMname());
+		Assert.assertEquals(method.getMcode(), result.getMcode());
+		Assert.assertEquals("Expected value of mprgn is -1", -1, result.getMprgn().intValue());
+		Assert.assertEquals(ProgramMethodsPresenterTest.USER_ID, result.getUser());
+	}
+
+	private Method getExistingMethod(final MethodView method, final int mprgn){
+		final Method existingMethod = method.copy();
+		existingMethod.setMprgn(mprgn);
+		existingMethod.setUser(this.contextUtil.getCurrentWorkbenchUserId());
+		return existingMethod;
+	}
+
 }
