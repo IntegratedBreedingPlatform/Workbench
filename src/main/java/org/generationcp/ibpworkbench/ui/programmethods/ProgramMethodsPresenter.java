@@ -11,6 +11,7 @@ import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +107,7 @@ public class ProgramMethodsPresenter {
 	public MethodView editBreedingMethod(final MethodView method) {
 		MethodView result = null;
 		try {
+			method.setMprgn(this.getMprgn(method.getMtype()));
 			result = this.convertMethod(this.gerplasmDataManager.editMethod(method.copy()));
 		} catch (final MiddlewareQueryException e) {
 			ProgramMethodsPresenter.LOG.error(e.getMessage(), e);
@@ -148,10 +150,10 @@ public class ProgramMethodsPresenter {
 			newBreedingMethod.setMgrp(method.getMgrp());
 			newBreedingMethod.setMtype(method.getMtype());
 			newBreedingMethod.setGeneq(method.getGeneq());
-			newBreedingMethod.setUser(contextUtil.getCurrentWorkbenchUserId());
+			newBreedingMethod.setUser(this.contextUtil.getCurrentWorkbenchUserId());
 			newBreedingMethod.setLmid(0);
 			newBreedingMethod.setMattr(0);
-			newBreedingMethod.setMprgn(0);
+			newBreedingMethod.setMprgn(this.getMprgn(newBreedingMethod.getMtype()));
 			newBreedingMethod.setReference(0);
 
 			newBreedingMethod.setMdate(DateUtil.getCurrentDateAsIntegerValue());
@@ -298,11 +300,33 @@ public class ProgramMethodsPresenter {
 		return methodClasses;
 	}
 
+	public int getMprgn(final String mtype) {
+		int mprgn = 0;
+		final MethodType methodType = MethodType.getMethodType(mtype);
+		switch(methodType) {
+			case GENERATIVE:
+				mprgn = 2;
+				break;
+			case DERIVATIVE:
+			case MAINTENANCE:
+				mprgn = -1;
+				break;
+			default:
+				mprgn = 0;
+				break;
+		}
+		return mprgn;
+	}
+
 	public void setGermplasmDataManager(final GermplasmDataManager gerplasmDataManager) {
 		this.gerplasmDataManager = gerplasmDataManager;
 	}
 	
-	public void setContextUtil(ContextUtil contextUtil) {
+	public void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	public void setBreedingMethodTracker(final BreedingMethodTracker breedingMethodTracker) {
+		this.breedingMethodTracker = breedingMethodTracker;
 	}
 }
