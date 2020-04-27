@@ -42,6 +42,11 @@ public class ProgramMembersPanelTest {
 	private static final int ADMIN_PERSON_ID = 3;
 	private static final String ADMIN_NAME = "USER3";
 
+	public static final int ROLE_ADMIN_ID = 1;
+	public static final String ROLE_ADMIN_NAME = "Program Admin";
+	public static final int ROLE_BREEDER_ID = 2;
+	public static final String ROLE_BREEDER_NAME = "Breeder";
+
 	@Mock
 	private UserService userService;
 
@@ -84,7 +89,7 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testGenerateRoleCellForOwner() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.OWNER_USER_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithProjectRole(ProgramMembersPanelTest.OWNER_USER_ID, this.project);
 		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
 		Assert.assertEquals( itemId.getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
@@ -94,9 +99,22 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testGenerateRoleCellForMember() {
 		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
-		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithRole(ProgramMembersPanelTest.MEMBER_PERSON_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createUserWithProjectRole(ProgramMembersPanelTest.MEMBER_PERSON_ID, this.project);
 		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
 		Assert.assertEquals( itemId.getRoles().get(0).getCapitalizedRole(), roleLabel.getValue());
+		Assert.assertEquals("label", roleLabel.getDebugId());
+		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
+	}
+
+	@Test
+	public void testGenerateRoleCellForMemberWithMultipleProjectRole() {
+		this.mockCurrentUser(ProgramMembersPanelTest.OWNER_USER_ID);
+		final WorkbenchUser itemId = UserTestDataInitializer.createWorkbenchUser();
+		UserTestDataInitializer.addUserRole(itemId, ProgramMembersPanelTest.ROLE_ADMIN_ID, ProgramMembersPanelTest.ROLE_ADMIN_NAME, new Project());
+		UserTestDataInitializer.addUserRole(itemId, ProgramMembersPanelTest.ROLE_BREEDER_ID, ProgramMembersPanelTest.ROLE_BREEDER_NAME, this.project);
+
+		final Label roleLabel = this.programMembersPanel.generateRoleCell(itemId);
+		Assert.assertEquals("Only user's role for the program will be shown.", itemId.getRoles().get(1).getCapitalizedRole(), roleLabel.getValue());
 		Assert.assertEquals("label", roleLabel.getDebugId());
 		Assert.assertNotSame("label-bold", roleLabel.getStyleName());
 	}
