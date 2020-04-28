@@ -50,10 +50,10 @@
     through2 "^2.0.3"
 
 "@solgenomics/brapi-fieldmap@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:^1.0.0":
-  version "1.0.0"
-  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#9c49dac41402f8f5f32c094488e0f6b2d7159207"
+  version "1.0.1"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#9d6a98c3e2378aaabfe9f0a5f4b86166391ca936"
   dependencies:
-    "@solgenomics/brapijs" "^1.0.1"
+    "@solgenomics/brapijs" "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1"
     "@turf/turf" "^5.1.6"
     d3 "^5.7.0"
     leaflet "^1.5.1"
@@ -64,6 +64,13 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@solgenomics/brapijs/-/brapijs-1.0.1.tgz#ccb44242bcd13995edc513aa065d72e46e9dcbb6"
   integrity sha512-NhgL7SSchIzSGVyYIpPc7ACgl1Se9i+4RrucuCq8FGazlijFfUGvIVlBBb6JV2jgawmX5Go6K3BgQCYGRScOqA==
+  dependencies:
+    node-fetch "2.0.0"
+    rollup "0.40"
+
+"@solgenomics/brapijs@git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1":
+  version "1.0.2"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#bb18301bd4dc9f894b8c2bc8a6eb734d8b224991"
   dependencies:
     node-fetch "2.0.0"
     rollup "0.40"
