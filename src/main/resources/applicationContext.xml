@@ -395,6 +395,8 @@
 		</property>
 	</bean>
 
+	<context:component-scan base-package="org.generationcp.breeding.manager.validator"/>
+
 	<bean id="germplasmNamingService" class="org.generationcp.commons.service.impl.GermplasmNamingServiceImpl" />
 
 	<bean id="ruleService"
