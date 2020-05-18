@@ -1,23 +1,9 @@
 
 package org.generationcp.breeding.manager.listimport.actions;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Resource;
-
+import com.vaadin.ui.Window;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmName;
-import org.generationcp.breeding.manager.listimport.GermplasmFieldsComponent;
-import org.generationcp.breeding.manager.listimport.GermplasmImportMain;
-import org.generationcp.breeding.manager.listimport.NewDesignationForGermplasmConfirmDialog;
-import org.generationcp.breeding.manager.listimport.SelectGermplasmWindow;
-import org.generationcp.breeding.manager.listimport.SpecifyGermplasmDetailsComponent;
+import org.generationcp.breeding.manager.listimport.*;
 import org.generationcp.breeding.manager.listimport.listeners.ImportGermplasmEntryActionListener;
 import org.generationcp.breeding.manager.pojos.ImportedGermplasm;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -32,7 +18,9 @@ import org.generationcp.middleware.pojos.Name;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.*;
 
 @Configurable
 public class ProcessImportedGermplasmAction implements Serializable {
@@ -558,11 +546,7 @@ public class ProcessImportedGermplasmAction implements Serializable {
 	}
 
 	public Window getWindow() {
-		if (this.germplasmDetailsComponent.getSource().getGermplasmImportPopupSource() == null) {
-			return this.germplasmDetailsComponent.getWindow();
-		} else {
-			return this.germplasmDetailsComponent.getSource().getGermplasmImportPopupSource().getParentWindow();
-		}
+		return this.germplasmDetailsComponent.getWindow();
 	}
 
 	public void ignoreRemainingMatches() {

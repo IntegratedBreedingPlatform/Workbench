@@ -1,7 +1,7 @@
 package org.generationcp.breeding.manager.listimport;
 
-import java.util.List;
-
+import com.vaadin.ui.*;
+import com.vaadin.ui.TabSheet.Tab;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -19,13 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.VerticalLayout;
+import java.util.List;
 
 @Configurable
 public class GermplasmImportMain extends VerticalLayout implements InitializingBean, InternationalizableComponent, BreedingManagerLayout {
@@ -42,7 +36,6 @@ public class GermplasmImportMain extends VerticalLayout implements InitializingB
 	private GermplasmListImportWizardDisplay wizardDisplay;
 
 	private final ComponentContainer parent;
-	private GermplasmImportPopupSource popupSource;
 
 	private TabSheet tabSheet;
 
@@ -52,25 +45,9 @@ public class GermplasmImportMain extends VerticalLayout implements InitializingB
 	private HorizontalLayout titleLayout;
 	private Label toolTitle;
 
-	private final Boolean viaToolURL;
-	private boolean viaPopup;
 
-	public GermplasmImportMain(final ComponentContainer parent, final boolean viaToolURL) {
+	public GermplasmImportMain(final ComponentContainer parent) {
 		this.parent = parent;
-		this.viaToolURL = viaToolURL;
-	}
-
-	public GermplasmImportMain(final ComponentContainer parent, final boolean viaToolURL, final boolean viaPopup) {
-		this.parent = parent;
-		this.viaToolURL = viaToolURL;
-		this.viaPopup = viaPopup;
-	}
-
-	public GermplasmImportMain(final ComponentContainer parent, final boolean viaToolURL, final GermplasmImportPopupSource popupSource) {
-		this.parent = parent;
-		this.viaToolURL = viaToolURL;
-		this.viaPopup = false;
-		this.popupSource = popupSource;
 	}
 
 	@Override
@@ -137,7 +114,7 @@ public class GermplasmImportMain extends VerticalLayout implements InitializingB
 
 		this.importFileComponent = new GermplasmImportFileComponent(this);
 		this.importFileComponent.setDebugId("importFileComponent");
-		this.germplasmDetailsComponent = new SpecifyGermplasmDetailsComponent(this, this.viaToolURL);
+		this.germplasmDetailsComponent = new SpecifyGermplasmDetailsComponent(this);
 		this.germplasmDetailsComponent.setDebugId("germplasmDetailsComponent");
 
 		this.tabSheet.addTab(this.importFileComponent, this.wizardStepNames[0]);
@@ -206,7 +183,7 @@ public class GermplasmImportMain extends VerticalLayout implements InitializingB
 
 	public void reset() {
 		this.parent.removeAllComponents();
-		this.parent.addComponent(new GermplasmImportMain(this.parent, this.viaToolURL, this.viaPopup));
+		this.parent.addComponent(new GermplasmImportMain(this.parent));
 	}
 
 	private void initializeSpecifyGermplasmDetailsPage() {
@@ -222,14 +199,6 @@ public class GermplasmImportMain extends VerticalLayout implements InitializingB
 
 			this.germplasmDetailsComponent.initializeFromImportFile(importedGermplasmList);
 		}
-	}
-
-	public boolean isViaPopup() {
-		return this.viaPopup;
-	}
-
-	public GermplasmImportPopupSource getGermplasmImportPopupSource() {
-		return this.popupSource;
 	}
 
 	public ComponentContainer getComponentContainer() {

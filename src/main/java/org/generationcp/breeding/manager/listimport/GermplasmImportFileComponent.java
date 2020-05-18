@@ -1,11 +1,10 @@
 
 package org.generationcp.breeding.manager.listimport;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.io.FilenameUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
@@ -28,16 +27,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Upload;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Configurable
 public class GermplasmImportFileComponent extends AbsoluteLayout
@@ -45,7 +38,6 @@ public class GermplasmImportFileComponent extends AbsoluteLayout
 
 	private static final String ERROR_IMPORTING = "Error importing ";
 	private static final String ERROR = "Error";
-	public static final String FB_CLOSE_WINDOW_JS_CALL = "window.parent.cancelImportGermplasm()";
 	private static final long serialVersionUID = 9097810121003895303L;
 	private static final Logger LOG = LoggerFactory.getLogger(GermplasmImportFileComponent.class);
 
@@ -146,12 +138,7 @@ public class GermplasmImportFileComponent extends AbsoluteLayout
 		if (validationErrorMessages.isEmpty()) {
 			final NameHandlingDialog nameHandlingDialog = new NameHandlingDialog(this, this.germplasmListUploader.getNameFactors());
 			nameHandlingDialog.setDebugId("nameHandlingDialog");
-			// If from main BMS window, called from sidebar
-			if (this.getWindow() != null && this.source.getGermplasmImportPopupSource() == null) {
-				this.getWindow().addWindow(nameHandlingDialog);
-			} else {
-				this.source.getGermplasmImportPopupSource().getParentWindow().addWindow(nameHandlingDialog);
-			}
+			this.getWindow().addWindow(nameHandlingDialog);
 		} else {
 			// no need to show the name handling window.
 			this.source.nextStep();
@@ -307,16 +294,7 @@ public class GermplasmImportFileComponent extends AbsoluteLayout
 	}
 
 	protected void cancelButtonAction() {
-		final Window window = this.source.getWindow();
-		if (this.source.getGermplasmImportPopupSource() == null) {
-			this.source.reset();
-			// if called by Fieldbook
-			if (this.source.isViaPopup() && window != null) {
-				window.executeJavaScript(GermplasmImportFileComponent.FB_CLOSE_WINDOW_JS_CALL);
-			}
-		} else {
-			this.source.getGermplasmImportPopupSource().getParentWindow().removeWindow((Window) this.source.getComponentContainer());
-		}
+		this.source.reset();
 	}
 
 	@Override

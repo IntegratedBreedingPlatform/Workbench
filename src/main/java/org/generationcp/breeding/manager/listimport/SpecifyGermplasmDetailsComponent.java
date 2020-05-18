@@ -1,13 +1,10 @@
 
 package org.generationcp.breeding.manager.listimport;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.ui.*;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -23,13 +20,13 @@ import org.generationcp.breeding.manager.listmanager.dialog.GenerateStockIDsDial
 import org.generationcp.breeding.manager.pojos.ImportedGermplasm;
 import org.generationcp.breeding.manager.pojos.ImportedGermplasmList;
 import org.generationcp.breeding.manager.util.BreedingManagerUtil;
-import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -43,19 +40,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
+import javax.annotation.Resource;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Configurable
 public class SpecifyGermplasmDetailsComponent extends VerticalLayout
@@ -110,11 +99,9 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 	@Resource
 	private ContextUtil contextUtil;
 
-	private final Boolean viaToolURL;
 
-	public SpecifyGermplasmDetailsComponent(final GermplasmImportMain source, final Boolean viaToolURL) {
+	public SpecifyGermplasmDetailsComponent(final GermplasmImportMain source) {
 		this.source = source;
-		this.viaToolURL = viaToolURL;
 	}
 
 	public Table getGermplasmDetailsTable() {
@@ -135,10 +122,6 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 
 	public void setGermplasmListUploader(final GermplasmListUploader germplasmListUploader) {
 		this.germplasmListUploader = germplasmListUploader;
-	}
-
-	public Boolean getViaToolURL() {
-		return this.viaToolURL;
 	}
 
 	@Override
@@ -227,12 +210,8 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 
 		this.saveListAsDialog = new SaveListAsDialog(this, this.germplasmList);
 		this.saveListAsDialog.setDebugId("saveListAsDialog");
-		// If not from popup
-		if (this.source.getGermplasmImportPopupSource() == null) {
-			this.getWindow().addWindow(this.saveListAsDialog);
-		} else {
-			this.source.getGermplasmImportPopupSource().getParentWindow().addWindow(this.saveListAsDialog);
-		}
+		this.getWindow().addWindow(this.saveListAsDialog);
+
 
 	}
 
@@ -240,13 +219,7 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 
 		this.generateStockIdsDialog = new GenerateStockIDsDialog(this, this.germplasmList);
 		this.generateStockIdsDialog.setDebugId("generateStockIdsDialog");
-		// If not from popup
-		if (this.source.getGermplasmImportPopupSource() == null) {
-			this.getWindow().addWindow(this.generateStockIdsDialog);
-		} else {
-			this.source.getGermplasmImportPopupSource().getParentWindow().addWindow(this.generateStockIdsDialog);
-		}
-
+		this.getWindow().addWindow(this.generateStockIdsDialog);
 	}
 
 	private boolean validatePedigreeOption() {
@@ -336,13 +309,8 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 	@Override
 	public void instantiateComponents() {
 
-		if (this.source.getGermplasmImportPopupSource() == null) {
-			this.germplasmFieldsComponent = new GermplasmFieldsComponent(this.getWindow(), 200);
-			this.germplasmFieldsComponent.setDebugId("germplasmFieldsComponent");
-		} else {
-			this.germplasmFieldsComponent =
-					new GermplasmFieldsComponent(this.source.getGermplasmImportPopupSource().getParentWindow(), 200);
-		}
+		this.germplasmFieldsComponent = new GermplasmFieldsComponent(this.getWindow(), 200);
+		this.germplasmFieldsComponent.setDebugId("germplasmFieldsComponent");
 
 		this.reviewImportDetailsLabel = new Label(this.messageSource.getMessage(Message.GERMPLASM_DETAILS_LABEL).toUpperCase());
 		this.reviewImportDetailsLabel.setDebugId("reviewImportDetailsLabel");
@@ -591,20 +559,8 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 						this.messageSource.getMessage(Message.GERMPLASM_LIST_SAVED_SUCCESSFULLY), 3000);
 
 				this.source.reset();
+				this.source.backStep();
 
-				// If not via popup
-				if (this.source.getGermplasmImportPopupSource() == null) {
-					this.source.backStep();
-				} else {
-					this.source.getGermplasmImportPopupSource().openSavedGermplasmList(list);
-					this.source.getGermplasmImportPopupSource().refreshListTreeAfterListImport();
-					this.source.getGermplasmImportPopupSource().getParentWindow()
-							.removeWindow((Window) this.source.getComponentContainer());
-				}
-
-				if (this.source.isViaPopup()) {
-					this.notifyExternalApplication(window, listId);
-				}
 			}
 
 		} catch (final MiddlewareException e) {
@@ -630,11 +586,6 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 		return storageLocationId;
 	}
 
-	private void notifyExternalApplication(final Window window, final Integer listId) {
-		if (window != null) {
-			window.executeJavaScript("window.parent.closeImportFrame(" + listId + ");");
-		}
-	}
 
 	@Override
 	public void setCurrentlySavedGermplasmList(final GermplasmList list) {

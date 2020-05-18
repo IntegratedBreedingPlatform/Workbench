@@ -44,7 +44,7 @@ public class BreedingManagerWindowGenerator {
 		germplasmImportWindow.setDebugId("germplasmImportWindow");
 		germplasmImportWindow.setName(GERMPLASM_IMPORT_WINDOW_NAME);
 		germplasmImportWindow.setSizeUndefined();
-		germplasmImportWindow.setContent(new GermplasmImportMain(germplasmImportWindow, false));
+		germplasmImportWindow.setContent(new GermplasmImportMain(germplasmImportWindow));
 
 		// Resize the popup windows (SubWindow) when the parent window is resized
 		germplasmImportWindow.addListener(new Window.ResizeListener() {

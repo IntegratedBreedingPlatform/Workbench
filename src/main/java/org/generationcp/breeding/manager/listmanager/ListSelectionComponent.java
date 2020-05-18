@@ -1,11 +1,14 @@
 
 package org.generationcp.breeding.manager.listmanager;
 
+import com.vaadin.ui.*;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.customfields.ListSelectorComponent;
 import org.generationcp.breeding.manager.listeners.ListTreeActionsListener;
-import org.generationcp.breeding.manager.listimport.GermplasmImportPopupSource;
 import org.generationcp.breeding.manager.listmanager.util.ListCommonActionsUtil;
 import org.generationcp.commons.constant.ListTreeState;
 import org.generationcp.commons.exceptions.InternationalizableException;
@@ -21,18 +24,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.CloseListener;
-import com.vaadin.ui.themes.Reindeer;
-
 @Configurable
 public class ListSelectionComponent extends VerticalLayout implements InternationalizableComponent, InitializingBean,
-		BreedingManagerLayout, ListTreeActionsListener, GermplasmImportPopupSource {
+		BreedingManagerLayout, ListTreeActionsListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ListSelectionComponent.class);
 
@@ -187,21 +181,6 @@ public class ListSelectionComponent extends VerticalLayout implements Internatio
 
 	public ListSearchComponent getListSearchComponent() {
 		return this.listSearchComponent;
-	}
-
-	@Override
-	public void openSavedGermplasmList(final GermplasmList germplasmList) {
-		this.studyClicked(germplasmList);
-	}
-
-	@Override
-	public void refreshListTreeAfterListImport() {
-		this.listTreeComponent.refreshComponent();
-	}
-
-	@Override
-	public Window getParentWindow() {
-		return this.getWindow();
 	}
 
 }
