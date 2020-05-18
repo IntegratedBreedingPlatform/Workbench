@@ -176,7 +176,7 @@
 
 	<servlet-mapping>
 		<servlet-name>MainApplicationBM</servlet-name>
-		<url-pattern>/breedingmanager/*</url-pattern>
+		<url-pattern>/bm/*</url-pattern>
 	</servlet-mapping>
 
 </web-app>
