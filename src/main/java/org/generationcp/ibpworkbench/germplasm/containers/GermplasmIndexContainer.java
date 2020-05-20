@@ -11,8 +11,10 @@
 
 package org.generationcp.ibpworkbench.germplasm.containers;
 
-import java.util.List;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.ui.Button;
 import org.generationcp.browser.study.containers.StudyButtonRenderer;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQuery;
@@ -24,15 +26,11 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
 import org.generationcp.middleware.domain.dms.StudyReference;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.pojos.report.LotReportRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.ui.Button;
+import java.util.List;
 
 public final class GermplasmIndexContainer {
 
@@ -212,26 +210,6 @@ public final class GermplasmIndexContainer {
 		item.getItemProperty(GermplasmIndexContainer.GERMPLASM_PREFNAME).setValue(prefname);
 	}
 
-	public IndexedContainer getReportOnLots(final GermplasmDetailModel g) {
-		final IndexedContainer container = new IndexedContainer();
-
-		// Create the container properties
-		container.addContainerProperty(GermplasmIndexContainer.GERMPLASM_INVENTORY_ACTUAL_LOT_BALANCE, String.class, "");
-		container.addContainerProperty(GermplasmIndexContainer.GERMPLASM_INVENTORY_LOCATION_NAME, String.class, "");
-		container.addContainerProperty(GermplasmIndexContainer.GERMPLASM_INVENTORY_SCALE_NAME, String.class, "");
-		container.addContainerProperty(GermplasmIndexContainer.GERMPLASM_INVENTORY_LOT_COMMENT, String.class, "");
-
-		final List<LotReportRow> lotReportRowData =
-				this.qQuery.getReportOnLotsByEntityTypeAndEntityId("GERMPLSM", Integer.valueOf(g.getGid()));
-
-		for (final LotReportRow lotReportRow : lotReportRowData) {
-			GermplasmIndexContainer.addLotReportRowContainer(container, String.valueOf(lotReportRow.getActualLotBalance()),
-					lotReportRow.getLocationOfLot() == null ? null : lotReportRow.getLocationOfLot().getLname(),
-					lotReportRow.getScaleOfLot() == null ? null : lotReportRow.getScaleOfLot().getName(), lotReportRow.getCommentOfLot());
-		}
-
-		return container;
-	}
 
 	private static void addLotReportRowContainer(final Container container, final String lotBalance, final String locationName, final String scaleName,
 			final String lotComment) {
