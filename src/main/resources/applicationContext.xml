@@ -414,7 +414,21 @@
 	<bean id="germplasmExportedWorkbook" class="org.generationcp.commons.parsing.GermplasmExportedWorkbook" scope="request">
 		<aop:scoped-proxy />
 	</bean>
-	
+	<bean id="fileService" class="org.generationcp.commons.service.impl.FileServiceImpl"
+		  init-method="init">
+	</bean>
+
+	<!-- Singleton bean as there is nothing request specific in here. -->
+	<bean id="germplasmNamingProperties" class="org.generationcp.commons.service.GermplasmNamingProperties">
+		<property name="germplasmOriginStudiesDefault" value="${germplasm.origin.studies.default}"/>
+		<property name="germplasmOriginStudiesWheat" value="${germplasm.origin.studies.wheat}"/>
+		<property name="germplasmOriginStudiesMaize" value="${germplasm.origin.studies.maize}"/>
+	</bean>
+
+	<bean id="seedSourceGenerator" class="org.generationcp.commons.ruleengine.generator.SeedSourceGenerator">
+	</bean>
+
+
 
 	<context:component-scan base-package="org.generationcp.breeding.manager.validator"/>
 	<!-- Including all beans used for generating Code Sheet when exporting Germplasm List excel file -->
@@ -444,6 +458,24 @@
 	<bean class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionPostProcessor">
 		<property name="codingExpressionFactory" ref="codingExpressionFactory" />
 	</bean>
+
+	<bean id="datasetService" factory-bean="managerFactory"
+		  factory-method="getDatasetMiddlewareService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+	<bean id="studyGermplasmListService" factory-bean="managerFactory"
+		  factory-method="getStudyGermplasmListService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="derivedVariableService" factory-bean="managerFactory"
+		  factory-method="getDerivedVariableService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+
+
 
 
 
