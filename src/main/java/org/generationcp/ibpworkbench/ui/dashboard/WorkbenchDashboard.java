@@ -117,8 +117,6 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		final String contextParameterString = getContextParameterString(this.contextUtil.getContextInfoFromSession());
 		final String authenticationTokenString = addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 		final String queryParams = "?restartApplication" + contextParameterString + authenticationTokenString;
-
-		this.window.executeJavaScript("fetch('/BreedingManager/logout" + queryParams + "');");
 		this.window.executeJavaScript("fetch('/Fieldbook/logout" + queryParams + "');");
 	}
 
