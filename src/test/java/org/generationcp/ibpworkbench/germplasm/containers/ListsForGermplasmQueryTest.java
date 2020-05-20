@@ -45,7 +45,7 @@ public class ListsForGermplasmQueryTest {
 	public void testLoadItems() {
 		final List<Item> items = this.listForGermplasmQuery.loadItems(1, 1);
 		final Item item = items.get(0);
-		final String url = "/BreedingManager/main/list-manager?restartApplication&lists=" + germplasmList.getId();
+		final String url = "/ibpworkbench/bm/list-manager?restartApplication&lists=" + germplasmList.getId();
 
 		assertThat(germplasmList.getId().toString(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID).toString()));
 		assertThat(germplasmList.getDescription(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION).toString()));
