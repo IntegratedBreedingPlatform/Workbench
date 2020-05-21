@@ -474,6 +474,12 @@
 		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
 
+	<bean id="stockIDValidator" class="org.generationcp.breeding.manager.listimport.validator.StockIDValidator"
+		scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+
 
 
 
