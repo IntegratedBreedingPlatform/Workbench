@@ -30,7 +30,6 @@ import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.UserDefinedField;
-import org.generationcp.middleware.pojos.report.LotReportRow;
 import org.generationcp.middleware.util.MaxPedigreeLevelReachedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -362,18 +361,6 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_IN_GETTING_DERIVATIVE_NEIGHBORHOOD);
 		}
-	}
-
-	public List<LotReportRow> getReportOnLotsByEntityTypeAndEntityId(final String type, final Integer gid) {
-		List<LotReportRow> result = new ArrayList<LotReportRow>();
-		try {
-			final long count = this.inventoryDataManager.countLotsByEntityTypeAndEntityId(type, gid);
-			result = this.inventoryDataManager.generateReportOnLotsByEntityTypeAndEntityId(type, gid, 0, (int) count);
-		} catch (final MiddlewareQueryException e) {
-			throw new InternationalizableException(e, Message.ERROR_DATABASE,
-					Message.ERROR_IN_GETTING_REPORT_ON_LOTS_BY_ENTITY_TYPE_AND_ENTITY_ID);
-		}
-		return result;
 	}
 
 	public List<StudyReference> getGermplasmStudyInfo(final int gid) {

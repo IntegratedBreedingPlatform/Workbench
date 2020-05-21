@@ -60,14 +60,6 @@
     leaflet-path-transform "^1.1.2"
     leaflet-search "^2.9.8"
 
-"@solgenomics/brapijs@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@solgenomics/brapijs/-/brapijs-1.0.1.tgz#ccb44242bcd13995edc513aa065d72e46e9dcbb6"
-  integrity sha512-NhgL7SSchIzSGVyYIpPc7ACgl1Se9i+4RrucuCq8FGazlijFfUGvIVlBBb6JV2jgawmX5Go6K3BgQCYGRScOqA==
-  dependencies:
-    node-fetch "2.0.0"
-    rollup "0.40"
-
 "@solgenomics/brapijs@git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1":
   version "1.0.2"
   resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#bb18301bd4dc9f894b8c2bc8a6eb734d8b224991"
