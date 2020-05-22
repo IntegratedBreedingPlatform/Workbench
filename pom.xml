@@ -356,6 +356,13 @@
 			<version>${ibpcommons.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.generationcp</groupId>
+			<artifactId>ibpcommons</artifactId>
+			<version>${ibpcommons.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
 			<version>2.3</version>
