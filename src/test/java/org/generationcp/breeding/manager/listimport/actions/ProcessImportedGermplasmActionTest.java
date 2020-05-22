@@ -80,7 +80,6 @@ public class ProcessImportedGermplasmActionTest {
 
 	private void setUpGermplasmImportMain() {
 		final GermplasmImportMain germplasmImportMain = new GermplasmImportMain(this.parentWindow);
-		Mockito.when(this.germplasmDetailsComponent.getSource()).thenReturn(germplasmImportMain);
 		Mockito.when(this.germplasmDetailsComponent.getWindow()).thenReturn(this.parentWindow);
 	}
 

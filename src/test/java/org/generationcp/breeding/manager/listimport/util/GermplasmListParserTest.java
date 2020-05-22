@@ -12,6 +12,7 @@ import org.generationcp.commons.parsing.FileParsingException;
 import org.generationcp.commons.parsing.pojo.ImportedFactor;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.workbook.generator.RowColumnType;
+import org.generationcp.commons.data.initializer.ImportedFactorTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserDefinedFieldTestDataInitializer;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;

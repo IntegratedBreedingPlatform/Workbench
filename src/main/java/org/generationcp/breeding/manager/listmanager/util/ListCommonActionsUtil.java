@@ -368,42 +368,6 @@ public class ListCommonActionsUtil {
 		dataManager.deleteGermplasmListDataByListId(listId);
 	}
 
-	public static boolean hasReservationForAnyListEntries(final List<GermplasmListData> germplasmListDatas) {
-		boolean hasAnyReservation = false;
-
-		if (!CollectionUtils.isEmpty(germplasmListDatas)) {
-			for (final GermplasmListData germplasmListData : germplasmListDatas) {
-				if (germplasmListData.getInventoryInfo() != null && germplasmListData.getInventoryInfo().getLotRows() != null) {
-					for (final LotDetails lotDetails : germplasmListData.getInventoryInfo().getLotRows()) {
-						if (ListDataInventory.RESERVED.equalsIgnoreCase(lotDetails.getWithdrawalStatus())) {
-							hasAnyReservation = true;
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		return hasAnyReservation;
-	}
-
-	public static Map<Integer, LotDetails> createLotDetailsMap(final List<GermplasmListData> inventoryDetails) {
-		final Map<Integer, LotDetails> lotDetailsMap = new HashMap<>();
-
-		for (final GermplasmListData inventoryDetail : inventoryDetails) {
-			final ListDataInventory listDataInventory = inventoryDetail.getInventoryInfo();
-			final List<LotDetails> lotDetails = (List<LotDetails>) listDataInventory.getLotRows();
-
-			if (lotDetails != null) {
-				for (final LotDetails lotDetail : lotDetails) {
-					lotDetailsMap.put(lotDetail.getLotId(), lotDetail);
-				}
-			}
-		}
-
-		return lotDetailsMap;
-	}
-
 	public static Button getLotCountButton(final Integer lotCount, final Integer gid, final String germplasmName, final Component source,
 			final Integer lotId) {
 		String lots = "-";

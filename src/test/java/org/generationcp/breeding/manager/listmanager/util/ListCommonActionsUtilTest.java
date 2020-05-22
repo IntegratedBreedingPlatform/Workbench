@@ -203,38 +203,6 @@ public class ListCommonActionsUtilTest {
 	}
 
 	@Test
-	public void testHasReservationForAnyListEntriesReturnsTrue() {
-		final List<GermplasmListData> germplasmListData = InventoryDetailsTestDataInitializer
-				.createGermplasmListDataForReservedEntries();
-		germplasmListData.get(0).getInventoryInfo().getLotRows().get(0).setWithdrawalStatus("Reserved");
-
-		final boolean hasAnyReservation = ListCommonActionsUtil.hasReservationForAnyListEntries(germplasmListData);
-		Assert.assertTrue(hasAnyReservation);
-	}
-
-	@Test
-	public void testHasReservationForAnyListEntriesReturnsFalse() {
-		final List<GermplasmListData> germplasmListData = InventoryDetailsTestDataInitializer
-				.createGermplasmListDataForReservedEntries();
-		germplasmListData.get(0).getInventoryInfo().getLotRows().get(0).setWithdrawalStatus("Committed");
-
-		final boolean hasAnyReservation = ListCommonActionsUtil.hasReservationForAnyListEntries(germplasmListData);
-		Assert.assertFalse(hasAnyReservation);
-	}
-
-	@Test
-	public void testCreateLotDetailsMap() {
-		final List<GermplasmListData> germplasmListData = InventoryDetailsTestDataInitializer
-				.createGermplasmListDataForReservedEntries();
-
-		final Map<Integer, LotDetails> lotDetailsMap = ListCommonActionsUtil.createLotDetailsMap(germplasmListData);
-
-		Assert.assertNotNull(lotDetailsMap);
-		Assert.assertEquals(1, lotDetailsMap.size());
-
-	}
-
-	@Test
 	public void testUpdateGermplasmListStatusUI() {
 		Mockito.when(this.listManagerMain.getListSelectionComponent()).thenReturn(this.listSelectionComponent);
 		final ListSelectionLayout listSelectionLayout = Mockito.mock(ListSelectionLayout.class);
