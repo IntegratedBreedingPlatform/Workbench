@@ -284,6 +284,26 @@ public class SingleSiteAnalysisDesignDetailsTest {
 	}
 
 	@Test
+	public void testDesignTypePRepDesignInit() {
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.P_REP.getId()));
+
+		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
+		final List<Component> components = this.getComponentsListFromGridLayout();
+
+		Assert.assertTrue(components.contains(this.ssaDesignDetails.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.ssaDesignDetails.getSelBlocks()));
+		Assert.assertFalse(components.contains(this.ssaDesignDetails.getLblReplicates()));
+		Assert.assertFalse(components.contains(this.ssaDesignDetails.getSelReplicates()));
+
+		final boolean spatialVariablesRequired = false;
+		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
+		Assert.assertNull(
+			"Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",
+			this.ssaDesignDetails.getSelReplicates().getValue());
+	}
+
+	@Test
 	public void testDesignTypeInvalid() {
 		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		Assert.assertNull(this.ssaDesignDetails.getSelDesignType().getValue());
