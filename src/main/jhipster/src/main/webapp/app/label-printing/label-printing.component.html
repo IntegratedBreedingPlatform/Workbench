@@ -411,15 +411,10 @@
 							</div>
 						</div>
 
-						<div class="row">
-							<!-- Navigation Buttons -->
-							<div class="form-group">
-								<div class="col-xs-12 col-md-12 fbk-center">
-									<input type="button" onclick="window.history.back();" value="Cancel" class="btn btn-default"/>
-									<input type="button" *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" value="Save Preset" class="btn btn-info"/>
-									<input type="button" *ngIf="fileType" (click)="export()" value="Export" class="btn btn-primary" />
-								</div>
-							</div>
+						<div class="modal-footer">
+							<button onclick="window.history.back();" class="btn btn-default">Cancel</button>
+							<button *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" class="btn btn-info">Save Preset</button>
+							<button *ngIf="fileType" (click)="export()" class="btn btn-primary">Export</button>
 						</div>
 
 						<div class="row">
