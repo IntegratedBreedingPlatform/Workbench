@@ -272,7 +272,6 @@
 
 				request = [
 					$http.delete('/Fieldbook/variableCache/' + params),
-					$http.delete('/BreedingManager/main/variableCache/' + params),
 					$http.delete('/ibpworkbench/controller/variableCache/' + params)
 				];
 

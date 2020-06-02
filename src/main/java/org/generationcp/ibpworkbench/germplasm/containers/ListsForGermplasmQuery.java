@@ -47,7 +47,7 @@ public class ListsForGermplasmQuery implements Query {
 	public static final Object GERMPLASMLIST_DATE = "date";
 	public static final Object GERMPLASMLIST_DESCRIPTION = "description";
 
-	private static final String MANAGER_GERMPLASM = "/BreedingManager/main/list-manager?restartApplication&lists=";
+	private static final String MANAGER_GERMPLASM = "/ibpworkbench/bm/list-manager?restartApplication&lists=";
 	private static final String PARENT_WINDOW = "_parent";
 
 	private final GermplasmListManager dataManager;

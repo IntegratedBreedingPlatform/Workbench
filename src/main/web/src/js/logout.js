@@ -12,7 +12,6 @@
         var baseUrl = protocol + '//' + host;
 
         var fieldBookLogoutUrl = baseUrl + '/Fieldbook/logout';
-        var breedingManagerLogoutUrl = baseUrl + '/BreedingManager/logout';
         var workbenchLogoutUrl = baseUrl + '/ibpworkbench/logout';
         var gdmsLogoutUrl = baseUrl + '/GDMS/logout';
 
@@ -25,16 +24,6 @@
                 success: function(data) {
                 }
             });
-
-        $.ajax({
-            url: breedingManagerLogoutUrl,
-            type: 'GET',
-            data: '',
-            cache: false,
-            async: false,
-            success: function(data) {
-            }
-        });
 
         $.ajax({
             url: gdmsLogoutUrl,
