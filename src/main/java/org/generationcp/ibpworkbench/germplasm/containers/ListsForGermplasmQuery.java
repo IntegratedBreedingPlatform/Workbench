@@ -101,11 +101,11 @@ public class ListsForGermplasmQuery implements Query {
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID, new ObjectProperty<String>(list.getId().toString()));
 
 				final ExternalResource urlToOpenGermplasmList = new ExternalResource(MANAGER_GERMPLASM + list.getId());
-				LinkButton linkListButton = new LinkButton(urlToOpenGermplasmList, list.getName(), PARENT_WINDOW);
+				final LinkButton linkListButton = new LinkButton(urlToOpenGermplasmList, list.getName(), PARENT_WINDOW);
 				linkListButton.setDebugId("linkManageListButton");
 				linkListButton.addStyleName(BaseTheme.BUTTON_LINK);
 				try {
-					availableLinkToManageGermplasm(linkListButton);
+					this.availableLinkToManageGermplasm(linkListButton);
 				} catch (final AccessDeniedException e) {
 					linkListButton.setEnabled(false);
 				}
