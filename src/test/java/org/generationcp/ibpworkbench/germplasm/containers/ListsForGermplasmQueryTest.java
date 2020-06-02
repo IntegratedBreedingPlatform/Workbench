@@ -41,7 +41,7 @@ public class ListsForGermplasmQueryTest {
 		Mockito.when(this.germplasmListManager
 			.getGermplasmListByGID(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 			.thenReturn(Arrays.asList(this.germplasmList));
-		this.listForGermplasmQuery = new ListsForGermplasmQuery(germplasmListManager, 1, "1");
+		this.listForGermplasmQuery = new ListsForGermplasmQuery(this.germplasmListManager, 1, "1");
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class ListsForGermplasmQueryTest {
 	public void testLoadItems() {
 		final List<Item> items = this.listForGermplasmQuery.loadItems(1, 1);
 		final Item item = items.get(0);
-		final String url = "/ibpworkbench/bm/list-manager?restartApplication&lists=" + germplasmList.getId();
+		final String url = "/ibpworkbench/bm/list-manager?restartApplication&lists=" + this.germplasmList.getId();
 
 		assertThat(this.germplasmList.getId().toString(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID).toString()));
 		assertThat(this.germplasmList.getDescription(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION).toString()));
