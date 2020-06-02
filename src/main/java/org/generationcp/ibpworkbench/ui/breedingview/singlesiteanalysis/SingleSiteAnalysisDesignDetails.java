@@ -245,6 +245,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 				this.displayIncompleteBlockDesignElements();
 			} else if (experimentDesignType.getId() == ExperimentDesignType.ROW_COL.getId()) {
 				this.displayRowColumnDesignElements();
+			} else if(experimentDesignType.getId() == ExperimentDesignType.P_REP.getId()){
+				this.displayPRepDesignElements();
 			} else if (experimentDesignType.getId() == ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
 				this.displayAugmentedDesignElements();
 			}

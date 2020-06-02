@@ -21,6 +21,12 @@
 		<!--TODO jhipster frontend apps-->
 		<!--<intercept-url pattern="/controller/pages/jhipster/#/sample-manager" access="hasAnyAuthority()"/>-->
 
+		<!--BREEDING ACTIVITIES-->
+		<!--MANAGE_GERMPLASM-->
+		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM')"/>
+		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM')"/>
+
+
 		<!--INFORMATION_MANAGEMENT-->
 		<!--ROLE_BROWSE_STUDIES-->
 		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
@@ -33,7 +39,11 @@
 		<!--MULTI_TRAIT_QUERY-->
 		<intercept-url pattern="/maingpsb/Trait_Donors_Query" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_MULTI_TRAIT_QUERY')"/>
 
+
 		<!--CROP_MANAGEMENT-->
+		<!--IMPORT_GERMPLASM-->
+		<intercept-url pattern="/main/germplasm-import/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_IMPORT_GERMPLASM')"/>
+
 		<!--MANAGE_ONTOLOGIES-->
 		<intercept-url pattern="/controller/ontology/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_MANAGE_ONTOLOGIES')"/>
 		<!--MANAGE_GENOTYPING_DATA-->

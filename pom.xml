@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>15.0</version>
+        <version>15.1</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -83,6 +83,17 @@
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>customcheckbox</artifactId>
 			<version>0.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>contextmenu</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addon</groupId>
+			<artifactId>confirmdialog</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 
 
@@ -343,6 +354,13 @@
 			<groupId>org.generationcp</groupId>
 			<artifactId>ibpcommons</artifactId>
 			<version>${ibpcommons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.generationcp</groupId>
+			<artifactId>ibpcommons</artifactId>
+			<version>${ibpcommons.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
