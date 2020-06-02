@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 import com.vaadin.data.Item;
 import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.junit.Before;
@@ -33,13 +34,13 @@ public class ListsForGermplasmQueryTest {
 	public void setUp() {
 		this.germplasmListTestDataInitializer = new GermplasmListTestDataInitializer();
 		this.germplasmListManager = Mockito.mock(GermplasmListManager.class);
-		Mockito.when(germplasmListManager.countGermplasmListByGID(Matchers.anyInt()))
+		Mockito.when(this.germplasmListManager.countGermplasmListByGID(Matchers.anyInt()))
 				.thenReturn((long) 1);
-		germplasmList = this.germplasmListTestDataInitializer.createGermplasmList(1);
-		Mockito.when(germplasmListManager
+		this.germplasmList = this.germplasmListTestDataInitializer.createGermplasmList(1);
+		Mockito.when(this.germplasmListManager
 			.getGermplasmListByGID(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
-			.thenReturn(Arrays.asList(germplasmList));
-		this.listForGermplasmQuery = new ListsForGermplasmQuery(germplasmListManager, 1, "1");
+			.thenReturn(Arrays.asList(this.germplasmList));
+		this.listForGermplasmQuery = new ListsForGermplasmQuery(this.germplasmListManager, 1, "1");
 	}
 
 	@Test
@@ -51,27 +52,27 @@ public class ListsForGermplasmQueryTest {
 	public void testLoadItems() {
 		final List<Item> items = this.listForGermplasmQuery.loadItems(1, 1);
 		final Item item = items.get(0);
-		final String url = "/BreedingManager/main/list-manager?restartApplication&lists=" + germplasmList.getId();
+		final String url = "/BreedingManager/main/list-manager?restartApplication&lists=" + this.germplasmList.getId();
 
-		assertThat(germplasmList.getId().toString(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID).toString()));
-		assertThat(germplasmList.getDescription(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION).toString()));
-		assertThat(germplasmList.getName(),equalTo(((LinkButton) item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue()).getCaption()));
-		assertThat(germplasmList.getDate().toString(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE).toString()));
+		assertThat(this.germplasmList.getId().toString(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID).toString()));
+		assertThat(this.germplasmList.getDescription(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DESCRIPTION).toString()));
+		assertThat(this.germplasmList.getName(),equalTo(((LinkButton) item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue()).getCaption()));
+		assertThat(this.germplasmList.getDate().toString(),equalTo(item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_DATE).toString()));
 		assertThat(url, equalTo(((LinkButton) item.getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue()).getResource().getURL().toString()));
 	}
 
 	@Test
 	public void testLoadItemsDifferentProgram() {
-		final GermplasmList germplasmList1 = this.germplasmListTestDataInitializer.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, this.programUUID1, 1, 1);
-		final GermplasmList germplasmList2 = this.germplasmListTestDataInitializer.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, this.programUUID2, 2, 2);
+		final GermplasmList germplasmList1 = this.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, this.programUUID1, 1, 1);
+		final GermplasmList germplasmList2 = this.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, this.programUUID2, 2, 2);
 		Mockito.when(this.germplasmListManager
 			.getGermplasmListByGID(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 			.thenReturn(Arrays.asList(germplasmList1, germplasmList2));
 
-		this.listForGermplasmQuery = new ListsForGermplasmQuery(germplasmListManager, 1, this.programUUID1);
+		this.listForGermplasmQuery = new ListsForGermplasmQuery(this.germplasmListManager, 1, this.programUUID1);
 		final List<Item> items = this.listForGermplasmQuery.loadItems(1, 2);
-		LinkButton linkButton1 = (LinkButton) items.get(0).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
-		LinkButton linkButton2 = (LinkButton) items.get(1).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
+		final LinkButton linkButton1 = (LinkButton) items.get(0).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
+		final LinkButton linkButton2 = (LinkButton) items.get(1).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
 
 		assertThat(items.size(),equalTo(2));
 
@@ -85,16 +86,16 @@ public class ListsForGermplasmQueryTest {
 
 	@Test
 	public void testLoadItemsNullProgram() {
-		final GermplasmList germplasmList1 = this.germplasmListTestDataInitializer.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, this.programUUID1, 1, 1);
-		final GermplasmList germplasmList2 = this.germplasmListTestDataInitializer.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, null, 2, 2);
+		final GermplasmList germplasmList1 = this.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, this.programUUID1, 1, 1);
+		final GermplasmList germplasmList2 = this.createGermplasmListTestData( "List1", "", new Date().getTime(), "1", 1,1, null, 2, 2);
 		Mockito.when(this.germplasmListManager
 			.getGermplasmListByGID(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyInt()))
 			.thenReturn(Arrays.asList(germplasmList1, germplasmList2));
 
-		this.listForGermplasmQuery = new ListsForGermplasmQuery(germplasmListManager, 1, this.programUUID1);
+		this.listForGermplasmQuery = new ListsForGermplasmQuery(this.germplasmListManager, 1, this.programUUID1);
 		final List<Item> items = this.listForGermplasmQuery.loadItems(1, 2);
-		LinkButton linkButton1 = (LinkButton) items.get(0).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
-		LinkButton linkButton2 = (LinkButton) items.get(1).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
+		final LinkButton linkButton1 = (LinkButton) items.get(0).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
+		final LinkButton linkButton2 = (LinkButton) items.get(1).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_NAME).getValue();
 
 		assertThat(items.size(),equalTo(2));
 
@@ -104,5 +105,21 @@ public class ListsForGermplasmQueryTest {
 		assertThat(items.get(1).getItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID).getValue(), equalTo("2"));
 		assertTrue(linkButton2.isEnabled());
 
+	}
+
+	public GermplasmList createGermplasmListTestData(final String name, final String description, final long date,
+		final String type, final int userId, final int status, final String programUUID, final Integer projectId, final Integer id) throws
+		MiddlewareQueryException {
+		final GermplasmList list = new GermplasmList();
+		list.setId(id);
+		list.setName(name);
+		list.setDescription(description);
+		list.setDate(date);
+		list.setType(type);
+		list.setUserId(userId);
+		list.setStatus(status);
+		list.setProgramUUID(programUUID);
+		list.setProjectId(projectId);
+		return list;
 	}
 }
