@@ -94,7 +94,7 @@ public class ListsForGermplasmQuery implements Query {
 
 		final List<GermplasmList> germplasmLists = new ArrayList<GermplasmList>();
 		try {
-			germplasmLists.addAll(this.dataManager.getGermplasmListByGIDandProgramUUID(this.gid, start, numOfRows, this.programUUID));
+			germplasmLists.addAll(this.dataManager.getGermplasmListByGID(this.gid, start, numOfRows));
 
 			for (final GermplasmList list : germplasmLists) {
 				final PropertysetItem item = new PropertysetItem();
@@ -107,6 +107,10 @@ public class ListsForGermplasmQuery implements Query {
 				try {
 					availableLinkToManageGermplasm(linkListButton);
 				} catch (final AccessDeniedException e) {
+					linkListButton.setEnabled(false);
+				}
+
+				if (list.getProgramUUID() != null && !this.programUUID.equals(list.getProgramUUID())) {
 					linkListButton.setEnabled(false);
 				}
 
@@ -140,7 +144,7 @@ public class ListsForGermplasmQuery implements Query {
 	public int size() {
 		try {
 			if (this.size == -1) {
-				this.size = ((Long) this.dataManager.countGermplasmListByGIDandProgramUUID(this.gid, this.programUUID)).intValue();
+				this.size = ((Long) this.dataManager.countGermplasmListByGID(this.gid)).intValue();
 			}
 			return this.size;
 		} catch (final MiddlewareQueryException e) {
