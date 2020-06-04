@@ -40,7 +40,7 @@ import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
-import org.generationcp.middleware.service.api.study.StudyGermplasmListService;
+import org.generationcp.middleware.service.api.study.StudyGermplasmService;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private UserService userService;
 
 	@Autowired
-	private StudyGermplasmListService studyGermplasmListService;
+	private StudyGermplasmService studyGermplasmListService;
 
 
 	private final class ListDataTableActionHandler implements Action.Handler {
@@ -370,7 +370,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		try {
 
 			if (this.studyId != null) {
-				this.count = this.studyGermplasmListService.countStudyGermplasmList(this.studyId);
+				this.count = this.studyGermplasmListService.countStudyGermplasm(this.studyId);
 			} else {
 				this.germplasmList = this.germplasmListManager.getGermplasmListById(this.germplasmListId);
 				this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
@@ -387,7 +387,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			// If Study is not empty, that means the germplasm list must be retrieved from Stock table.
 			if (this.studyId != null) {
-				final List<StudyGermplasmDto> studyGermplasmDtoList = this.studyGermplasmListService.getGermplasmList(studyId);
+				final List<StudyGermplasmDto> studyGermplasmDtoList = this.studyGermplasmListService.getGermplasm(studyId);
 				for (StudyGermplasmDto entry : studyGermplasmDtoList) {
 
 					// FIXME: IBP-3697 Get the germplasm inventory info of each study germplasm entry
