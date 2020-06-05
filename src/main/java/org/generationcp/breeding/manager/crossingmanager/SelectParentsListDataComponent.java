@@ -23,7 +23,6 @@ import org.generationcp.breeding.manager.crossingmanager.util.CrossingManagerUti
 import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
-import org.generationcp.breeding.manager.customcomponent.ViewListHeaderWindow;
 import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListener;
 import org.generationcp.breeding.manager.listimport.listeners.GidLinkClickListener;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -41,7 +40,6 @@ import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
 import org.generationcp.middleware.service.api.study.StudyGermplasmService;
-import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -68,9 +66,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private StudyGermplasmService studyGermplasmListService;
@@ -189,15 +184,12 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private Label totalSelectedListEntriesLabel;
 
 	private Table listDataTable;
-	private Button viewListHeaderButton;
 	private final String listName;
 
 	private Button actionButton;
 	private ContextMenu actionMenu;
 
 	public static final String ACTIONS_BUTTON_ID = "Actions";
-
-	private ViewListHeaderWindow viewListHeaderWindow;
 
 	private TableWithSelectAllLayout tableWithSelectAllLayout;
 
@@ -262,14 +254,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.totalSelectedListEntriesLabel.setWidth("95px");
 		this.updateNoOfSelectedEntries(0);
 
-		this.viewListHeaderWindow = new ViewListHeaderWindow(this.germplasmList,
-			this.userService.getAllUserIDFullNameMap(), germplasmListManager.getGermplasmListTypes());
-
-		this.viewListHeaderButton = new Button(this.messageSource.getMessage(Message.VIEW_HEADER));
-		this.viewListHeaderButton.setDebugId("viewListHeaderButton");
-		this.viewListHeaderButton.addStyleName(BaseTheme.BUTTON_LINK);
-		this.viewListHeaderButton.setDescription(this.retrieveViewListHeaderButtonDescription());
-
 		this.actionButton = new ActionButton();
 		this.actionButton.setDebugId("actionButton");
 		this.actionButton.setData(SelectParentsListDataComponent.ACTIONS_BUTTON_ID);
@@ -284,19 +268,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.actionMenu.addItem(this.messageSource.getMessage(Message.SELECT_ODD_ENTRIES));
 
 		this.initializeListDataTable();
-
-		this.viewListHeaderButton = new Button(this.messageSource.getMessage(Message.VIEW_LIST_HEADERS));
-		this.viewListHeaderButton.setDebugId("viewListHeaderButton");
-		this.viewListHeaderButton.setStyleName(BaseTheme.BUTTON_LINK);
-
-	}
-
-	private String retrieveViewListHeaderButtonDescription() {
-		if (this.viewListHeaderWindow.getListHeaderComponent() != null) {
-			return this.viewListHeaderWindow.getListHeaderComponent().toString();
-		}
-
-		return "";
 	}
 
 	void initializeListDataTable() {
@@ -535,16 +506,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 		this.actionMenu.addListener(new ActionMenuClickListener());
 
-		this.viewListHeaderButton.addListener(new ClickListener() {
-
-			private static final long serialVersionUID = 329434322390122057L;
-
-			@Override
-			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-				SelectParentsListDataComponent.this.openViewListHeaderWindow();
-			}
-		});
-
 		this.getListDataTable().addActionHandler(new ListDataTableActionHandler());
 
 		this.getListDataTable().addListener(new Property.ValueChangeListener() {
@@ -572,9 +533,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		HeaderLabelLayout headingLayout = new HeaderLabelLayout(AppConstants.Icons.ICON_LIST_TYPES, this.listEntriesLabel);
 		headingLayout.setDebugId("headingLayout");
 		this.headerLayout.addComponent(headingLayout);
-		this.headerLayout.addComponent(this.viewListHeaderButton);
 		this.headerLayout.setComponentAlignment(headingLayout, Alignment.MIDDLE_LEFT);
-		this.headerLayout.setComponentAlignment(this.viewListHeaderButton, Alignment.MIDDLE_RIGHT);
 
 		HorizontalLayout leftSubHeaderLayout = new HorizontalLayout();
 		leftSubHeaderLayout.setDebugId("leftSubHeaderLayout");
@@ -639,10 +598,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.requestRepaint();
 	}
 
-	private void openViewListHeaderWindow() {
-		this.getWindow().addWindow(this.viewListHeaderWindow);
-	}
-
 	public Table getListDataTable() {
 		return this.tableWithSelectAllLayout.getTable();
 	}
@@ -665,10 +620,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	protected void setListDataTableWithSelectAll(TableWithSelectAllLayout tableWithSelectAllLayout) {
 		this.tableWithSelectAllLayout = tableWithSelectAllLayout;
-	}
-
-	protected TableWithSelectAllLayout getListDataTableWithSelectAll() {
-		return this.tableWithSelectAllLayout;
 	}
 
 	public void setCount(Long count) {
