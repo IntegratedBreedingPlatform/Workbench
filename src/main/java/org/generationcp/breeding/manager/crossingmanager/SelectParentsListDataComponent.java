@@ -286,7 +286,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.addContainerProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, CheckBox.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_ID.getName(), Integer.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.STOCKID.getName(), Label.class, new Label(""));
 			listDataTable.addContainerProperty(ColumnLabels.PARENTAGE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_CODE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
@@ -297,7 +296,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 				.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_ID.getName(), this.messageSource.getMessage(Message.HASHTAG));
 			listDataTable.setColumnHeader(ColumnLabels.DESIGNATION.getName(), this.getTermNameFromOntology(ColumnLabels.DESIGNATION));
-			listDataTable.setColumnHeader(ColumnLabels.STOCKID.getName(), this.getTermNameFromOntology(ColumnLabels.STOCKID));
 			listDataTable.setColumnHeader(ColumnLabels.PARENTAGE.getName(), this.getTermNameFromOntology(ColumnLabels.PARENTAGE));
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_CODE.getName(), this.getTermNameFromOntology(ColumnLabels.ENTRY_CODE));
 			listDataTable.setColumnHeader(ColumnLabels.GID.getName(), this.getTermNameFromOntology(ColumnLabels.GID));
@@ -316,7 +314,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.setVisibleColumns(new String[] {
 				SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, ColumnLabels.ENTRY_ID.getName(), ColumnLabels.DESIGNATION.getName(),
 				ColumnLabels.PARENTAGE.getName(), ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.GID.getName(),
-				ColumnLabels.GROUP_ID.getName(), ColumnLabels.STOCKID.getName(), ColumnLabels.SEED_SOURCE.getName()});
+				ColumnLabels.GROUP_ID.getName(), ColumnLabels.SEED_SOURCE.getName()});
 		}
 	}
 
@@ -353,14 +351,14 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 
 					this.addGermplasmItem(entry.getGermplasmId(), entry.getDesignation(), entry.getEntryNumber(), entry.getCross(),
-						entry.getEntryCode(), entry.getSeedSource(), entry.getGroupId(), germplasmInventory);
+						entry.getEntryCode(), entry.getSeedSource(), entry.getGroupId());
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 				for (GermplasmListData entry : listEntries) {
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(), entry.getGroupName(), entry.getEntryCode(),
-						entry.getSeedSource(), entry.getGroupId(), entry.getInventoryInfo());
+						entry.getSeedSource(), entry.getGroupId());
 				}
 			}
 
@@ -372,7 +370,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	}
 
 	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
-		final String entryCode, final String seedSource, final Integer groupId, final GermplasmInventory germplasmInventory) {
+		final String entryCode, final String seedSource, final Integer groupId) {
 
 		final String gidString = String.format("%s", gid);
 		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
@@ -412,14 +410,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode);
 		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
 		newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(seedSource);
-
-		if (germplasmInventory.getStockIDs() != null) {
-			final Label stockIdsLabel = new Label(germplasmInventory.getStockIDs());
-			stockIdsLabel.setDebugId("stockIdsLabel");
-			stockIdsLabel.setDescription(germplasmInventory.getStockIDs());
-			newItem.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(stockIdsLabel);
-		}
-
 		final String groupIdDisplayValue = groupId == null || groupId.intValue() == 0 ? "-" : groupId.toString();
 		newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
 
