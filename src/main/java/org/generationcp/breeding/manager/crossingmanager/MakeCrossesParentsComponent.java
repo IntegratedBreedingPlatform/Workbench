@@ -216,13 +216,6 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 					tag.setValue(true);
 					item.getItemProperty(MakeCrossesParentsComponent.TAG_COLUMN_ID).setValue(tag);
 
-					final Object columnValue = sourceTable.getItem(itemId).getItemProperty(ColumnLabels.STOCKID.getName()).getValue();
-					final Label stockIdLabel = (Label) columnValue;
-					final Label newStockIdLabel = new Label(stockIdLabel.getValue().toString());
-					newStockIdLabel.setDebugId("newStockIdLabel");
-					newStockIdLabel.setDescription(stockIdLabel.getValue().toString());
-					item.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(newStockIdLabel);
-
 					item.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(parentage);
 
 					Collection<GermplasmListEntry> selectedEntries = (Collection<GermplasmListEntry>) targetTable.getValue();
@@ -260,7 +253,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 			// updates the crosses made save button if both parents are save at least once
 			this.makeCrossesMain.getCrossesTableComponent().updateCrossesMadeSaveButton();
 
-		} 
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -290,7 +283,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 		this.maleParentTab.setListNameForCrosses(maleListNameForCrosses);
 	}
 
-	
+
 
 	public String getSeedSource(final Table table, final Integer entryId) {
 		String seedSource = "";
@@ -373,11 +366,6 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 						item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
 						item.getItemProperty(MakeCrossesParentsComponent.TAG_COLUMN_ID).setValue(tag);
 
-						final Label stockIdLabel = new Label(listData.getInventoryInfo().getStockIDs());
-						stockIdLabel.setDebugId("stockIdLabel");
-						stockIdLabel.setDescription(listData.getInventoryInfo().getStockIDs());
-						item.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(stockIdLabel);
-
 						addedCount++;
 					}
 				}
@@ -390,7 +378,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 				if (addedCount == itemsLeftAfterAdding.size()) {
 					// updates the crosses made save button if both parents are save at least once
 					this.makeCrossesMain.getCrossesTableComponent().updateCrossesMadeSaveButton();
-				} 
+				}
 			}
 
 			// set up the Germplasm List in Parent Tab
@@ -446,11 +434,6 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 						item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
 						item.getItemProperty(MakeCrossesParentsComponent.TAG_COLUMN_ID).setValue(tag);
 
-						final Label stockIdLabel = new Label(listData.getInventoryInfo().getStockIDs());
-						stockIdLabel.setDebugId("stockIdLabel");
-						stockIdLabel.setDescription(listData.getInventoryInfo().getStockIDs());
-						item.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(stockIdLabel);
-
 						addedCount++;
 					}
 				}
@@ -463,7 +446,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 				if (addedCount == itemsLeftAfterAdding.size()) {
 					// updates the crosses made save button if both parents are save at least once
 					this.makeCrossesMain.getCrossesTableComponent().updateCrossesMadeSaveButton();
-				} 
+				}
 			}
 
 			// set up the Germplasm List in Parent Tab

@@ -71,7 +71,7 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable
 public class ParentTabComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent, BreedingManagerLayout,
 	SaveGermplasmListActionSource {
-	
+
 	@Autowired
     private OntologyDataManager ontologyDataManager;
 
@@ -108,7 +108,6 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 						final Object oldDesignation = oldItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue();
 						final Object oldAvailInv = oldItem.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).getValue();
 						final Object oldparentage = oldItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
-						final Object oldStockId = oldItem.getItemProperty(ColumnLabels.STOCKID.getName()).getValue();
 
 						sourceTable.removeItem(transferable.getItemId());
 
@@ -118,7 +117,6 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 						newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(oldDesignation);
 						newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(oldparentage);
 						newItem.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).setValue(oldAvailInv);
-						newItem.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(oldStockId);
 
 					}
 				} else if (sourceTable.getData().equals(SelectParentsListDataComponent.LIST_DATA_TABLE_ID)) {
@@ -184,7 +182,7 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 							// updates the crossesMade save button if both parents are save at least once
 							ParentTabComponent.this.makeCrossesMain.getCrossesTableComponent().updateCrossesMadeSaveButton();
 
-						} 
+						}
 					}
 				} catch (final MiddlewareQueryException e) {
 					ParentTabComponent.LOG.error("Error in getting list by GID", e);
@@ -199,7 +197,7 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 			return AcceptAll.get();
 		}
 	}
-	
+
 	private final class ActionMenuClickListener implements ContextMenu.ClickListener {
 
 		private static final long serialVersionUID = -2343109406180457070L;
@@ -363,13 +361,11 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 		this.listDataTable.addContainerProperty(ColumnLabels.ENTRY_ID.getName(), Integer.class, Integer.valueOf(0));
 		this.listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
 		this.listDataTable.addContainerProperty(ColumnLabels.PARENTAGE.getName(), String.class, null);
-		this.listDataTable.addContainerProperty(ColumnLabels.STOCKID.getName(), Label.class, null);
 
 		this.listDataTable.setColumnHeader(ParentTabComponent.TAG_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
 		this.listDataTable.setColumnHeader(ColumnLabels.ENTRY_ID.getName(), this.messageSource.getMessage(Message.HASHTAG));
 		this.listDataTable.setColumnHeader(ColumnLabels.DESIGNATION.getName(), this.getTermNameFromOntology(ColumnLabels.DESIGNATION));
 		this.listDataTable.setColumnHeader(ColumnLabels.PARENTAGE.getName(), this.getTermNameFromOntology(ColumnLabels.PARENTAGE));
-		this.listDataTable.setColumnHeader(ColumnLabels.STOCKID.getName(), this.getTermNameFromOntology(ColumnLabels.STOCKID));
 
 		this.listDataTable.setColumnWidth(ParentTabComponent.TAG_COLUMN_ID, 25);
 		this.listDataTable.setDragMode(TableDragMode.ROW);
@@ -595,7 +591,6 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 			newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entry.getEntryId());
 			newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(designationButton);
 			newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(entry.getGroupName());
-			newItem.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(entry.getInventoryInfo().getStockIDs());
 
 		}
 

@@ -28,7 +28,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.middleware.domain.inventory.GermplasmInventory;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
@@ -304,12 +303,12 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			listDataTable.setColumnWidth(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, 25);
 			listDataTable.setColumnWidth(ColumnLabels.ENTRY_ID.getName(), 25);
-			listDataTable.setColumnWidth(ColumnLabels.DESIGNATION.getName(), 130);
-			listDataTable.setColumnWidth(ColumnLabels.PARENTAGE.getName(), 130);
-			listDataTable.setColumnWidth(ColumnLabels.ENTRY_CODE.getName(), 100);
-			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 60);
-			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 60);
-			listDataTable.setColumnWidth(ColumnLabels.SEED_SOURCE.getName(), 110);
+			listDataTable.setColumnWidth(ColumnLabels.DESIGNATION.getName(), 150);
+			listDataTable.setColumnWidth(ColumnLabels.PARENTAGE.getName(), 150);
+			listDataTable.setColumnWidth(ColumnLabels.ENTRY_CODE.getName(), 110);
+			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 70);
+			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 70);
+			listDataTable.setColumnWidth(ColumnLabels.SEED_SOURCE.getName(), 130);
 
 			listDataTable.setVisibleColumns(new String[] {
 				SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, ColumnLabels.ENTRY_ID.getName(), ColumnLabels.DESIGNATION.getName(),
@@ -341,15 +340,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			if (this.studyId != null) {
 				final List<StudyGermplasmDto> studyGermplasmDtoList = this.studyGermplasmListService.getGermplasm(studyId);
 				for (StudyGermplasmDto entry : studyGermplasmDtoList) {
-
-					// FIXME: IBP-3697 Get the germplasm inventory info of each study germplasm entry
-					final GermplasmInventory germplasmInventory = new GermplasmInventory(entry.getGermplasmId());
-					germplasmInventory.setLotCount(0);
-					germplasmInventory.setActualInventoryLotCount(0);
-					germplasmInventory.setDistinctScaleCountForGermplsm(0);
-					germplasmInventory.setReservedLotCount(0);
-
-
 					this.addGermplasmItem(entry.getGermplasmId(), entry.getDesignation(), entry.getEntryNumber(), entry.getCross(),
 						entry.getEntryCode(), entry.getSeedSource(), entry.getGroupId());
 				}
