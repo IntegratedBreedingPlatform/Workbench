@@ -141,7 +141,6 @@ public class ParentTabComponentTest {
 		Mockito.when(this.ontologyDataManager.getTermById(TermId.CROSS.getId())).thenReturn(fromOntologySeedReservation);
 		final Term fromOntologyStockId = new Term();
 		fromOntologyStockId.setName("STOCKID");
-		Mockito.when(this.ontologyDataManager.getTermById(TermId.STOCKID.getId())).thenReturn(fromOntologyStockId);
 
 		final TableWithSelectAllLayout tableWithSelectAll = new TableWithSelectAllLayout(ColumnLabels.TAG.getName());
 		tableWithSelectAll.instantiateComponents();
@@ -170,7 +169,6 @@ public class ParentTabComponentTest {
 		Mockito.when(this.ontologyDataManager.getTermById(TermId.CROSS.getId())).thenReturn(fromOntologySeedReservation);
 		final Term fromOntologyStockId = new Term();
 		fromOntologyStockId.setName("STOCKID");
-		Mockito.when(this.ontologyDataManager.getTermById(TermId.STOCKID.getId())).thenReturn(fromOntologyStockId);
 
 		Mockito.when(this.messageSource.getMessage(Message.CHECK_ICON)).thenReturn("TAG");
 		Mockito.when(this.messageSource.getMessage(Message.HASHTAG)).thenReturn("HASHTAG");
