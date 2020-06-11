@@ -240,10 +240,6 @@ public class MakeCrossesParentsComponentTest {
 
 		String parentage = (String) targetLastItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
 		Assert.assertEquals("-", parentage.toString());
-
-		Label stockID = (Label) targetLastItem.getItemProperty(ColumnLabels.STOCKID.getName()).getValue();
-		Assert.assertEquals("STOCKID:2", stockID.getValue().toString());
-
 	}
 
 	@Test

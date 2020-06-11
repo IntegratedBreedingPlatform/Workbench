@@ -464,8 +464,8 @@
 		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
 
-	<bean id="studyGermplasmListService" factory-bean="managerFactory"
-		  factory-method="getStudyGermplasmListService" scope="request">
+	<bean id="studyGermplasmService" factory-bean="managerFactory"
+		  factory-method="getStudyGermplasmService" scope="request">
 		<aop:scoped-proxy />
 	</bean>
 
