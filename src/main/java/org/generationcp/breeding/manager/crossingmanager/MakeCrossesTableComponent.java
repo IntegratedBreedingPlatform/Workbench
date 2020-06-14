@@ -17,17 +17,8 @@ import com.google.common.collect.ImmutableSet;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -77,7 +68,7 @@ import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitRow;
 import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
-import org.generationcp.middleware.service.api.study.StudyGermplasmListService;
+import org.generationcp.middleware.service.api.study.StudyGermplasmService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.generationcp.middleware.util.Util;
 import org.slf4j.Logger;
@@ -92,15 +83,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.vaadin.peter.contextmenu.ContextMenu;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.generationcp.middleware.service.api.dataset.ObservationUnitUtils.fromMeasurementRow;
 
@@ -154,7 +137,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 
 	@Autowired
-	private StudyGermplasmListService studyGermplasmListService;
+	private StudyGermplasmService studyGermplasmService;
 
 	@Autowired
 	private StudyDataManager studyDataManager;
@@ -764,7 +747,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			this.datasetService.getObservationSetVariables(this.makeCrossesMain.getWorkbook().getTrialDatasetId(),
 				Collections.singletonList(VariableType.ENVIRONMENT_DETAIL.getId()));
 		// Store all germplasm with plot info in memory
-		this.studyGermplasmList = this.studyGermplasmListService.getGermplasmListFromPlots(studyId, Collections.emptySet());
+		this.studyGermplasmList = this.studyGermplasmService.getGermplasmFromPlots(studyId, Collections.emptySet());
 	}
 
 	@Override

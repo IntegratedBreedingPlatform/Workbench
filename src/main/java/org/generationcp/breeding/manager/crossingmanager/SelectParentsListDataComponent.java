@@ -15,7 +15,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
-import org.apache.commons.lang3.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -23,22 +22,20 @@ import org.generationcp.breeding.manager.crossingmanager.util.CrossingManagerUti
 import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
-import org.generationcp.breeding.manager.customcomponent.ViewListHeaderWindow;
-import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListener;
 import org.generationcp.breeding.manager.listimport.listeners.GidLinkClickListener;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.middleware.domain.inventory.ListDataInventory;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
-import org.generationcp.middleware.service.api.user.UserService;
+import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
+import org.generationcp.middleware.service.api.study.StudyGermplasmService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -57,17 +54,14 @@ import java.util.List;
 
 @Configurable
 public class SelectParentsListDataComponent extends VerticalLayout
-		implements InitializingBean, InternationalizableComponent, BreedingManagerLayout {
-
-	private static final String NO_LOT_FOR_THIS_GERMPLASM = "No Lot for this Germplasm";
-	private static final String CLICK_TO_VIEW_INVENTORY_DETAILS = "Click to view Inventory Details";
-	private static final String STRING_DASH = "-";
+	implements InitializingBean, InternationalizableComponent, BreedingManagerLayout {
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
 	@Autowired
-	private UserService userService;
+	private StudyGermplasmService studyGermplasmListService;
+
 
 	private final class ListDataTableActionHandler implements Action.Handler {
 
@@ -77,17 +71,17 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		public void handleAction(Action action, Object sender, Object target) {
 			if (action.equals(SelectParentsListDataComponent.ACTION_ADD_TO_FEMALE_LIST)) {
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
-						SelectParentsListDataComponent.this.listDataTable,
-						SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable(), null);
+					SelectParentsListDataComponent.this.listDataTable,
+					SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable(), null);
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent
-						.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable());
+					.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable());
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleParentTabSheet().setSelectedTab(0);
 			} else if (action.equals(SelectParentsListDataComponent.ACTION_ADD_TO_MALE_LIST)) {
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
-						SelectParentsListDataComponent.this.listDataTable,
-						SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable(), null);
+					SelectParentsListDataComponent.this.listDataTable,
+					SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable(), null);
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent
-						.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable());
+					.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable());
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleParentTabSheet().setSelectedTab(1);
 			}
 		}
@@ -97,6 +91,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			return SelectParentsListDataComponent.LIST_DATA_TABLE_ACTIONS;
 		}
 	}
+
 
 	private final class ActionMenuClickListener implements ContextMenu.ClickListener {
 
@@ -113,52 +108,53 @@ public class SelectParentsListDataComponent extends VerticalLayout
 					ContextMenuItem clickedItem = event.getClickedItem();
 					if (clickedItem.getName().equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.SELECT_ALL))) {
 						SelectParentsListDataComponent.this.listDataTable
-								.setValue(SelectParentsListDataComponent.this.listDataTable.getItemIds());
+							.setValue(SelectParentsListDataComponent.this.listDataTable.getItemIds());
 					} else if (clickedItem.getName()
-							.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.ADD_TO_FEMALE_LIST))) {
+						.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.ADD_TO_FEMALE_LIST))) {
 						Collection<?> selectedIdsToAdd = (Collection<?>) SelectParentsListDataComponent.this.listDataTable.getValue();
 						if (!selectedIdsToAdd.isEmpty()) {
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
-									SelectParentsListDataComponent.this.listDataTable,
-									SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable(), null);
+								SelectParentsListDataComponent.this.listDataTable,
+								SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable(), null);
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent
-									.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable());
+								.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleTable());
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent.getFemaleParentTabSheet().setSelectedTab(0);
 						} else {
 							MessageNotifier.showWarning(SelectParentsListDataComponent.this.getWindow(),
-									SelectParentsListDataComponent.this.messageSource.getMessage(Message.WARNING),
-									SelectParentsListDataComponent.this.messageSource
-											.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
+								SelectParentsListDataComponent.this.messageSource.getMessage(Message.WARNING),
+								SelectParentsListDataComponent.this.messageSource
+									.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
 						}
 					} else if (clickedItem.getName()
-							.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.ADD_TO_MALE_LIST))) {
+						.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.ADD_TO_MALE_LIST))) {
 						Collection<?> selectedIdsToAdd = (Collection<?>) SelectParentsListDataComponent.this.listDataTable.getValue();
 						if (!selectedIdsToAdd.isEmpty()) {
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
-									SelectParentsListDataComponent.this.listDataTable,
-									SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable(), null);
+								SelectParentsListDataComponent.this.listDataTable,
+								SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable(), null);
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent
-									.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable());
+								.assignEntryNumber(SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleTable());
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent.getMaleParentTabSheet().setSelectedTab(1);
 						} else {
 							MessageNotifier.showWarning(SelectParentsListDataComponent.this.getWindow(),
-									SelectParentsListDataComponent.this.messageSource.getMessage(Message.WARNING),
-									SelectParentsListDataComponent.this.messageSource
-											.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
+								SelectParentsListDataComponent.this.messageSource.getMessage(Message.WARNING),
+								SelectParentsListDataComponent.this.messageSource
+									.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
 						}
 					} else if (clickedItem.getName()
-							.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.SELECT_EVEN_ENTRIES))) {
+						.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.SELECT_EVEN_ENTRIES))) {
 						SelectParentsListDataComponent.this.listDataTable
-								.setValue(CrossingManagerUtil.getEvenEntries(SelectParentsListDataComponent.this.listDataTable));
+							.setValue(CrossingManagerUtil.getEvenEntries(SelectParentsListDataComponent.this.listDataTable));
 					} else if (clickedItem.getName()
-							.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.SELECT_ODD_ENTRIES))) {
+						.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.SELECT_ODD_ENTRIES))) {
 						SelectParentsListDataComponent.this.listDataTable
-								.setValue(CrossingManagerUtil.getOddEntries(SelectParentsListDataComponent.this.listDataTable));
+							.setValue(CrossingManagerUtil.getOddEntries(SelectParentsListDataComponent.this.listDataTable));
 					}
 				}
 			});
 		}
 	}
+
 
 	private static final Logger LOG = LoggerFactory.getLogger(SelectParentsListDataComponent.class);
 	private static final long serialVersionUID = 7907737258051595316L;
@@ -169,8 +165,9 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private static final Action ACTION_ADD_TO_FEMALE_LIST = new Action("Add to Female List");
 	private static final Action ACTION_ADD_TO_MALE_LIST = new Action("Add to Male List");
 	private static final Action[] LIST_DATA_TABLE_ACTIONS =
-			new Action[] {SelectParentsListDataComponent.ACTION_ADD_TO_FEMALE_LIST, SelectParentsListDataComponent.ACTION_ADD_TO_MALE_LIST};
+		new Action[] {SelectParentsListDataComponent.ACTION_ADD_TO_FEMALE_LIST, SelectParentsListDataComponent.ACTION_ADD_TO_MALE_LIST};
 
+	private Integer studyId;
 	private final Integer germplasmListId;
 	private GermplasmList germplasmList;
 	private Long count;
@@ -179,15 +176,12 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private Label totalSelectedListEntriesLabel;
 
 	private Table listDataTable;
-	private Button viewListHeaderButton;
 	private final String listName;
 
 	private Button actionButton;
 	private ContextMenu actionMenu;
 
 	public static final String ACTIONS_BUTTON_ID = "Actions";
-
-	private ViewListHeaderWindow viewListHeaderWindow;
 
 	private TableWithSelectAllLayout tableWithSelectAllLayout;
 
@@ -209,9 +203,10 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
 
-	public SelectParentsListDataComponent(Integer germplasmListId, String listName,
-			MakeCrossesParentsComponent makeCrossesParentsComponent) {
+	public SelectParentsListDataComponent(Integer studyId, Integer germplasmListId, String listName,
+		MakeCrossesParentsComponent makeCrossesParentsComponent) {
 		super();
+		this.studyId = studyId;
 		this.germplasmListId = germplasmListId;
 		this.listName = listName;
 		this.makeCrossesParentsComponent = makeCrossesParentsComponent;
@@ -251,14 +246,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.totalSelectedListEntriesLabel.setWidth("95px");
 		this.updateNoOfSelectedEntries(0);
 
-		this.viewListHeaderWindow = new ViewListHeaderWindow(this.germplasmList,
-			this.userService.getAllUserIDFullNameMap(), germplasmListManager.getGermplasmListTypes());
-
-		this.viewListHeaderButton = new Button(this.messageSource.getMessage(Message.VIEW_HEADER));
-		this.viewListHeaderButton.setDebugId("viewListHeaderButton");
-		this.viewListHeaderButton.addStyleName(BaseTheme.BUTTON_LINK);
-		this.viewListHeaderButton.setDescription(this.retrieveViewListHeaderButtonDescription());
-
 		this.actionButton = new ActionButton();
 		this.actionButton.setDebugId("actionButton");
 		this.actionButton.setData(SelectParentsListDataComponent.ACTIONS_BUTTON_ID);
@@ -273,24 +260,11 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.actionMenu.addItem(this.messageSource.getMessage(Message.SELECT_ODD_ENTRIES));
 
 		this.initializeListDataTable();
-
-		this.viewListHeaderButton = new Button(this.messageSource.getMessage(Message.VIEW_LIST_HEADERS));
-		this.viewListHeaderButton.setDebugId("viewListHeaderButton");
-		this.viewListHeaderButton.setStyleName(BaseTheme.BUTTON_LINK);
-
-	}
-
-	private String retrieveViewListHeaderButtonDescription() {
-		if (this.viewListHeaderWindow.getListHeaderComponent() != null) {
-			return this.viewListHeaderWindow.getListHeaderComponent().toString();
-		}
-
-		return "";
 	}
 
 	void initializeListDataTable() {
 		this.tableWithSelectAllLayout =
-				new TableWithSelectAllLayout(this.count.intValue(), 5, SelectParentsListDataComponent.CHECKBOX_COLUMN_ID);
+			new TableWithSelectAllLayout(this.count.intValue(), 5, SelectParentsListDataComponent.CHECKBOX_COLUMN_ID);
 		this.tableWithSelectAllLayout.setWidth("100%");
 
 		this.listDataTable = this.tableWithSelectAllLayout.getTable();
@@ -311,21 +285,16 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.addContainerProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, CheckBox.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_ID.getName(), Integer.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.AVAILABLE_INVENTORY.getName(), Button.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.TOTAL.getName(), String.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.STOCKID.getName(), Label.class, new Label(""));
 			listDataTable.addContainerProperty(ColumnLabels.PARENTAGE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_CODE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GROUP_ID.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.SEED_SOURCE.getName(), String.class, null);
 
-			listDataTable.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
+			listDataTable
+				.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_ID.getName(), this.messageSource.getMessage(Message.HASHTAG));
 			listDataTable.setColumnHeader(ColumnLabels.DESIGNATION.getName(), this.getTermNameFromOntology(ColumnLabels.DESIGNATION));
-			listDataTable.setColumnHeader(ColumnLabels.AVAILABLE_INVENTORY.getName(), this.getTermNameFromOntology(ColumnLabels.AVAILABLE_INVENTORY));
-			listDataTable.setColumnHeader(ColumnLabels.TOTAL.getName(), this.getTermNameFromOntology(ColumnLabels.TOTAL));
-			listDataTable.setColumnHeader(ColumnLabels.STOCKID.getName(), this.getTermNameFromOntology(ColumnLabels.STOCKID));
 			listDataTable.setColumnHeader(ColumnLabels.PARENTAGE.getName(), this.getTermNameFromOntology(ColumnLabels.PARENTAGE));
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_CODE.getName(), this.getTermNameFromOntology(ColumnLabels.ENTRY_CODE));
 			listDataTable.setColumnHeader(ColumnLabels.GID.getName(), this.getTermNameFromOntology(ColumnLabels.GID));
@@ -334,27 +303,30 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			listDataTable.setColumnWidth(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, 25);
 			listDataTable.setColumnWidth(ColumnLabels.ENTRY_ID.getName(), 25);
-			listDataTable.setColumnWidth(ColumnLabels.DESIGNATION.getName(), 130);
-			listDataTable.setColumnWidth(ColumnLabels.AVAILABLE_INVENTORY.getName(), 70);
-			listDataTable.setColumnWidth(ColumnLabels.TOTAL.getName(), 70);
-			listDataTable.setColumnWidth(ColumnLabels.TOTAL.getName(), 130);
-			listDataTable.setColumnWidth(ColumnLabels.PARENTAGE.getName(), 130);
-			listDataTable.setColumnWidth(ColumnLabels.ENTRY_CODE.getName(), 100);
-			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 60);
-			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 60);
-			listDataTable.setColumnWidth(ColumnLabels.SEED_SOURCE.getName(), 110);
+			listDataTable.setColumnWidth(ColumnLabels.DESIGNATION.getName(), 150);
+			listDataTable.setColumnWidth(ColumnLabels.PARENTAGE.getName(), 150);
+			listDataTable.setColumnWidth(ColumnLabels.ENTRY_CODE.getName(), 110);
+			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 70);
+			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 70);
+			listDataTable.setColumnWidth(ColumnLabels.SEED_SOURCE.getName(), 130);
 
 			listDataTable.setVisibleColumns(new String[] {
 				SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, ColumnLabels.ENTRY_ID.getName(), ColumnLabels.DESIGNATION.getName(),
-				ColumnLabels.PARENTAGE.getName(), ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.GID.getName(), ColumnLabels.GROUP_ID.getName(),
-				ColumnLabels.AVAILABLE_INVENTORY.getName(), ColumnLabels.TOTAL.getName(), ColumnLabels.STOCKID.getName(), ColumnLabels.SEED_SOURCE.getName()});
+				ColumnLabels.PARENTAGE.getName(), ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.GID.getName(),
+				ColumnLabels.GROUP_ID.getName(), ColumnLabels.SEED_SOURCE.getName()});
 		}
 	}
-	
+
 	private void retrieveListDetails() {
 		try {
-			this.germplasmList = this.germplasmListManager.getGermplasmListById(this.germplasmListId);
-			this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
+
+			if (this.studyId != null) {
+				this.count = this.studyGermplasmListService.countStudyGermplasm(this.studyId);
+			} else {
+				this.germplasmList = this.germplasmListManager.getGermplasmListById(this.germplasmListId);
+				this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
+			}
+
 		} catch (MiddlewareQueryException e) {
 			SelectParentsListDataComponent.LOG.error("Error getting list details" + e.getMessage(), e);
 		}
@@ -363,115 +335,74 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	@Override
 	public void initializeValues() {
 		try {
-			List<GermplasmListData> listEntries = this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 
-			for (GermplasmListData entry : listEntries) {
-				String gid = String.format("%s", entry.getGid().toString());
-				Button gidButton = new Button(gid, new GidLinkClickListener(gid, true));
-				gidButton.setDebugId("gidButton");
-				gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-				gidButton.setDescription("Click to view Germplasm information");
-
-				Button desigButton = new Button(entry.getDesignation(), new GidLinkClickListener(gid, true));
-				desigButton.setDebugId("desigButton");
-				desigButton.setStyleName(BaseTheme.BUTTON_LINK);
-				desigButton.setDescription("Click to view Germplasm information");
-
-				CheckBox itemCheckBox = new CheckBox();
-				itemCheckBox.setDebugId("itemCheckBox");
-				itemCheckBox.setData(entry.getId());
-				itemCheckBox.setImmediate(true);
-				itemCheckBox.addListener(new ClickListener() {
-
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-						CheckBox itemCheckBox = (CheckBox) event.getButton();
-						if (((Boolean) itemCheckBox.getValue()).equals(true)) {
-							SelectParentsListDataComponent.this.getListDataTable().select(itemCheckBox.getData());
-						} else {
-							SelectParentsListDataComponent.this.getListDataTable().unselect(itemCheckBox.getData());
-						}
-					}
-				});
-
-				// #1 Available Inventory
-				// default value
-				String availInv = SelectParentsListDataComponent.STRING_DASH;
-				if (entry.getInventoryInfo().getLotCount().intValue() != 0) {
-					availInv = entry.getInventoryInfo().getActualInventoryLotCount().toString().trim();
+			// If Study is not empty, that means the germplasm list must be retrieved from Stock table.
+			if (this.studyId != null) {
+				final List<StudyGermplasmDto> studyGermplasmDtoList = this.studyGermplasmListService.getGermplasm(studyId);
+				for (StudyGermplasmDto entry : studyGermplasmDtoList) {
+					this.addGermplasmItem(entry.getGermplasmId(), entry.getDesignation(), entry.getEntryNumber(), entry.getCross(),
+						entry.getEntryCode(), entry.getSeedSource(), entry.getGroupId());
 				}
-
-				InventoryLinkButtonClickListener inventoryLinkButtonClickListener =
-						new InventoryLinkButtonClickListener(this, this.germplasmList.getId(), entry.getId(), entry.getGid());
-				Button inventoryButton = new Button(availInv, inventoryLinkButtonClickListener);
-				inventoryButton.setDebugId("inventoryButton");
-				inventoryButton.setData(inventoryLinkButtonClickListener);
-				inventoryButton.setStyleName(BaseTheme.BUTTON_LINK);
-				inventoryButton.setDescription(SelectParentsListDataComponent.CLICK_TO_VIEW_INVENTORY_DETAILS);
-
-				if (availInv.equals(SelectParentsListDataComponent.STRING_DASH)) {
-					inventoryButton.setEnabled(false);
-					inventoryButton.setDescription(SelectParentsListDataComponent.NO_LOT_FOR_THIS_GERMPLASM);
-				} else {
-					inventoryButton.setDescription(SelectParentsListDataComponent.CLICK_TO_VIEW_INVENTORY_DETAILS);
+			} else {
+				final List<GermplasmListData> listEntries =
+					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
+				for (GermplasmListData entry : listEntries) {
+					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(), entry.getGroupName(), entry.getEntryCode(),
+						entry.getSeedSource(), entry.getGroupId());
 				}
-
-				// Seed Reserved
-				// default value
-				String seedRes = SelectParentsListDataComponent.STRING_DASH;
-				if (entry.getInventoryInfo().getReservedLotCount().intValue() != 0) {
-					//FIXME delete because the value is always overwritten
-					seedRes = entry.getInventoryInfo().getReservedLotCount().toString().trim();
-				}
-
-				Item newItem = this.getListDataTable().getContainerDataSource().addItem(entry.getId());
-				newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
-				newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entry.getEntryId());
-				newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
-				newItem.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).setValue(inventoryButton);
-				newItem.getItemProperty(ColumnLabels.TOTAL.getName()).setValue(seedRes);
-				newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(entry.getGroupName());
-				newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entry.getEntryCode());
-				newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
-				newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(entry.getSeedSource());
-
-				if (entry.getInventoryInfo().getStockIDs() != null) {
-					Label stockIdsLabel = new Label(entry.getInventoryInfo().getStockIDs());
-					stockIdsLabel.setDebugId("stockIdsLabel");
-					stockIdsLabel.setDescription(entry.getInventoryInfo().getStockIDs());
-					newItem.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(stockIdsLabel);
-				}
-
-				final String groupIdDisplayValue = entry.getGroupId() == 0 ? "-" : entry.getGroupId().toString();
-				newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
-
-				// Available Balance
-				StringBuilder available = new StringBuilder();
-
-				if (entry.getInventoryInfo().getDistinctScaleCountForGermplsm() == 0) {
-					available.append("-");
-				} else if (entry.getInventoryInfo().getDistinctScaleCountForGermplsm() == 1) {
-					available.append(entry.getInventoryInfo().getTotalAvailableBalance());
-					available.append(" ");
-
-					if (!StringUtils.isEmpty(entry.getInventoryInfo().getScaleForGermplsm())) {
-						available.append(entry.getInventoryInfo().getScaleForGermplsm());
-					}
-
-				} else {
-					available.append(ListDataInventory.MIXED);
-				}
-
-				newItem.getItemProperty(ColumnLabels.TOTAL.getName()).setValue(available);
-
 			}
+
 		} catch (MiddlewareQueryException ex) {
 			SelectParentsListDataComponent.LOG.error("Error with getting list entries for list: " + this.germplasmListId, ex);
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					"Error in getting list entries.");
+				"Error in getting list entries.");
 		}
+	}
+
+	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
+		final String entryCode, final String seedSource, final Integer groupId) {
+
+		final String gidString = String.format("%s", gid);
+		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
+		gidButton.setDebugId("gidButton");
+		gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+		gidButton.setDescription("Click to view Germplasm information");
+
+		final Button desigButton = new Button(designation, new GidLinkClickListener(gidString, true));
+		desigButton.setDebugId("desigButton");
+		desigButton.setStyleName(BaseTheme.BUTTON_LINK);
+		desigButton.setDescription("Click to view Germplasm information");
+
+		final CheckBox itemCheckBox = new CheckBox();
+		itemCheckBox.setDebugId("itemCheckBox");
+		itemCheckBox.setData(entryNumber);
+		itemCheckBox.setImmediate(true);
+		itemCheckBox.addListener(new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
+				final CheckBox itemCheckBox = (CheckBox) event.getButton();
+				if (((Boolean) itemCheckBox.getValue()).equals(true)) {
+					SelectParentsListDataComponent.this.getListDataTable().select(itemCheckBox.getData());
+				} else {
+					SelectParentsListDataComponent.this.getListDataTable().unselect(itemCheckBox.getData());
+				}
+			}
+		});
+
+		Item newItem = this.getListDataTable().getContainerDataSource().addItem(entryNumber);
+		newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
+		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
+		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
+		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName);
+		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode);
+		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
+		newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(seedSource);
+		final String groupIdDisplayValue = groupId == null || groupId.intValue() == 0 ? "-" : groupId.toString();
+		newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
+
 	}
 
 	@Override
@@ -488,16 +419,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		});
 
 		this.actionMenu.addListener(new ActionMenuClickListener());
-
-		this.viewListHeaderButton.addListener(new ClickListener() {
-
-			private static final long serialVersionUID = 329434322390122057L;
-
-			@Override
-			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-				SelectParentsListDataComponent.this.openViewListHeaderWindow();
-			}
-		});
 
 		this.getListDataTable().addActionHandler(new ListDataTableActionHandler());
 
@@ -526,9 +447,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		HeaderLabelLayout headingLayout = new HeaderLabelLayout(AppConstants.Icons.ICON_LIST_TYPES, this.listEntriesLabel);
 		headingLayout.setDebugId("headingLayout");
 		this.headerLayout.addComponent(headingLayout);
-		this.headerLayout.addComponent(this.viewListHeaderButton);
 		this.headerLayout.setComponentAlignment(headingLayout, Alignment.MIDDLE_LEFT);
-		this.headerLayout.setComponentAlignment(this.viewListHeaderButton, Alignment.MIDDLE_RIGHT);
 
 		HorizontalLayout leftSubHeaderLayout = new HorizontalLayout();
 		leftSubHeaderLayout.setDebugId("leftSubHeaderLayout");
@@ -557,7 +476,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			this.totalListEntriesLabel.setValue(this.messageSource.getMessage(Message.NO_LISTDATA_RETRIEVED_LABEL));
 		} else {
 			this.totalListEntriesLabel
-					.setValue(this.messageSource.getMessage(Message.TOTAL_LIST_ENTRIES) + ": " + "  <b>" + count + "</b>");
+				.setValue(this.messageSource.getMessage(Message.TOTAL_LIST_ENTRIES) + ": " + "  <b>" + count + "</b>");
 		}
 	}
 
@@ -567,7 +486,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	private void updateNoOfSelectedEntries(int count) {
 		this.totalSelectedListEntriesLabel
-				.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
+			.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
 	}
 
 	void updateNoOfSelectedEntries() {
@@ -580,21 +499,17 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	private void initializeListView() {
 		this.tableWithSelectAllLayout.setVisible(true);
-	
+
 		this.subHeaderLayout.addComponent(this.actionButton);
 		this.subHeaderLayout.setComponentAlignment(this.actionButton, Alignment.MIDDLE_RIGHT);
-	
+
 		this.listEntriesLabel.setValue(this.messageSource.getMessage(Message.LIST_ENTRIES_LABEL));
 		this.updateNoOfEntries();
 		this.updateNoOfSelectedEntries();
-	
-		this.addComponent(this.tableWithSelectAllLayout);
-	
-		this.requestRepaint();
-	}
 
-	private void openViewListHeaderWindow() {
-		this.getWindow().addWindow(this.viewListHeaderWindow);
+		this.addComponent(this.tableWithSelectAllLayout);
+
+		this.requestRepaint();
 	}
 
 	public Table getListDataTable() {
@@ -619,10 +534,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	protected void setListDataTableWithSelectAll(TableWithSelectAllLayout tableWithSelectAllLayout) {
 		this.tableWithSelectAllLayout = tableWithSelectAllLayout;
-	}
-
-	protected TableWithSelectAllLayout getListDataTableWithSelectAll() {
-		return this.tableWithSelectAllLayout;
 	}
 
 	public void setCount(Long count) {
