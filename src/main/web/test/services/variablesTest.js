@@ -377,7 +377,7 @@ describe('Variables Service', function() {
 		it('should return a 204 status if a successful variableCache DELETE is made', function() {
 
 			var ids = [1, 2, 5],
-				expectedResponse = [204, 204, 204],
+				expectedResponse = [204, 204],
 				actualResponse;
 
 			httpBackend.when('DELETE', /\/variableCache(.*)\/1,2,5/).respond(204);

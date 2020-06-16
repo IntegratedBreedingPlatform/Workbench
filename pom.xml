@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>14.3.1</version>
+        <version>15.1</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -16,7 +16,7 @@
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<modelmapper.version>0.7.3</modelmapper.version>
 		<node.version>v8.11.3</node.version>
-		<yarn.version>v1.3.2</yarn.version>
+		<yarn.version>v1.21.1</yarn.version>
 		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
 		<envConfig>${user.name}</envConfig>
 	</properties>
@@ -83,6 +83,17 @@
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>customcheckbox</artifactId>
 			<version>0.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>contextmenu</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addon</groupId>
+			<artifactId>confirmdialog</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 
 
@@ -343,6 +354,13 @@
 			<groupId>org.generationcp</groupId>
 			<artifactId>ibpcommons</artifactId>
 			<version>${ibpcommons.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.generationcp</groupId>
+			<artifactId>ibpcommons</artifactId>
+			<version>${ibpcommons.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>

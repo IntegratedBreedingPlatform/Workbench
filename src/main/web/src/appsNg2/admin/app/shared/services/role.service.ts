@@ -78,7 +78,7 @@ export class RoleService{
   }
 
   getPrograms(cropName: string){
-    return this.http.get(`${this.baseUrl}/program?cropName=${cropName}`,{ headers: this.getHeaders() }).map(response => this.mapProgram(response));
+    return this.http.get(`${this.baseUrl}/crops/${cropName}/programs`,{ headers: this.getHeaders() }).map(response => this.mapProgram(response));
 
   }
 

@@ -636,7 +636,8 @@ describe('Variables Controller', function() {
 				variableTypes: [{
 					id: 1,
 					name: 'Analysis',
-					description: ''
+					description: '',
+					deletable: 'true'
 				}]
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
@@ -647,7 +648,8 @@ describe('Variables Controller', function() {
 				variableTypes: [{
 					id: 8,
 					name: 'Trait',
-					description: 'Characteristics of a germplasm to be recorded during a study.'
+					description: 'Characteristics of a germplasm to be recorded during a study.',
+					deletable: 'true'
 				}]
 			};
 			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(false);
