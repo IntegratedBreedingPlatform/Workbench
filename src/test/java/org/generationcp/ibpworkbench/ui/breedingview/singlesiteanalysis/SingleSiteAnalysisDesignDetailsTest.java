@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.google.common.base.Optional;
 import com.vaadin.data.Property;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -26,6 +25,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 public class SingleSiteAnalysisDesignDetailsTest {
 
@@ -63,7 +63,7 @@ public class SingleSiteAnalysisDesignDetailsTest {
 		Mockito.doReturn(COLUMN_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_COLUMN_FACTOR);
 		Mockito.doReturn(ROW_FACTOR_LABEL).when(this.messageSource).getMessage(Message.BV_SPECIFY_ROW_FACTOR);
 		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(STUDY_ID))
-			.thenReturn(Optional.<Integer>absent());
+			.thenReturn(Optional.empty());
 		this.ssaDesignDetails = new SingleSiteAnalysisDesignDetails(this.ssaDetailsPanel);
 		this.ssaDesignDetails.setMessageSource(this.messageSource);
 		this.ssaDesignDetails.setExperimentDesignService(this.experimentDesignService);
@@ -269,6 +269,26 @@ public class SingleSiteAnalysisDesignDetailsTest {
 			.thenReturn(Optional.of(TermId.P_REP.getId()));
 
 		this.ssaDesignDetails.displayPRepDesignElements();
+		final List<Component> components = this.getComponentsListFromGridLayout();
+
+		Assert.assertTrue(components.contains(this.ssaDesignDetails.getLblBlocks()));
+		Assert.assertTrue(components.contains(this.ssaDesignDetails.getSelBlocks()));
+		Assert.assertFalse(components.contains(this.ssaDesignDetails.getLblReplicates()));
+		Assert.assertFalse(components.contains(this.ssaDesignDetails.getSelReplicates()));
+
+		final boolean spatialVariablesRequired = false;
+		this.verifyRowAndColumnFactorsArePresent(components, spatialVariablesRequired);
+		Assert.assertNull(
+			"Replicates factor is not needed in P-rep design, so replicates should be unselected (null)",
+			this.ssaDesignDetails.getSelReplicates().getValue());
+	}
+
+	@Test
+	public void testDesignTypePRepDesignInit() {
+		Mockito.when(this.experimentDesignService.getStudyExperimentDesignTypeTermId(this.input.getStudyId()))
+			.thenReturn(Optional.of(TermId.P_REP.getId()));
+
+		this.ssaDesignDetails.displayDesignElementsBasedOnDesignTypeOfTheStudy();
 		final List<Component> components = this.getComponentsListFromGridLayout();
 
 		Assert.assertTrue(components.contains(this.ssaDesignDetails.getLblBlocks()));

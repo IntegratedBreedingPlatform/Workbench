@@ -5,11 +5,11 @@
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
-						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
-						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
-						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
 	<!-- Declare property file locations -->
 	<context:property-placeholder
@@ -37,6 +37,10 @@
 	<!-- GPSB -->
 	<bean id="application_gpsb"
 		  class="org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication"
+		  scope="prototype" />
+	<!-- BM -->
+	<bean id="application_bm"
+		  class="org.generationcp.breeding.manager.application.BreedingManagerApplication"
 		  scope="prototype" />
 
 	<!-- Reuseable UI components can be declared here, but don't do it just 
@@ -352,6 +356,137 @@
 		<property name="defaultLevel" value="${default.generation.level}" />
 		<property name="profile" value="${pedigree.profile}" />
 		<property name="hybridBreedingMethods" value="#{'${hybrid.breeding.methods}'.split(',')}" />
+	</bean>
+
+	<bean id="userTreeStateService" class="org.generationcp.commons.service.impl.UserTreeStateServiceImpl"/>
+
+	<bean id="keySequenceRegisterService" factory-bean="managerFactory"
+		  factory-method="getKeySequenceRegisterService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="breedingManagerService" class="org.generationcp.breeding.manager.service.BreedingManagerServiceImpl" />
+
+	<bean id="breedingManagerWindowGenerator" class="org.generationcp.breeding.manager.application.BreedingManagerWindowGenerator" />
+
+	<!-- Required bean declarations for Germplasm Coding Service -->
+
+	<bean class="org.generationcp.commons.ruleengine.RulesPostProcessor">
+		<property name="ruleFactory" ref="ruleFactory" />
+	</bean>
+
+	<bean id="ruleFactory" class="org.generationcp.commons.ruleengine.RuleFactory"
+		  init-method="init" />
+
+	<bean class="org.generationcp.commons.ruleengine.RulesPostProcessor">
+		<property name="ruleFactory" ref="processCodeRuleFactory" />
+	</bean>
+
+	<bean id="processCodeRuleFactory" class="org.generationcp.commons.ruleengine.ProcessCodeRuleFactory"
+		  init-method="init" />
+
+	<bean id="ruleConfigProvider"
+		  class="org.generationcp.commons.ruleengine.provider.PropertyFileRuleConfigurationProvider">
+		<property name="ruleSequenceConfiguration">
+			<map>
+				<entry key="stockid" value="${stockid.rules}" />
+				<entry key="coding" value="Prefix,Count,Suffix" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="jasperReportService" class="org.generationcp.commons.reports.service.impl.JasperReportServiceImpl"
+		  scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="reportService" factory-bean="managerFactory"
+		  factory-method="getReportService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="germplasmListExporter" class="org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter"/>
+	<bean id="fileDownloadUtility" class="org.generationcp.breeding.manager.util.FileDownloaderUtility"/>
+	<bean id="germplasmExportService" class="org.generationcp.commons.service.impl.GermplasmExportServiceImpl" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="germplasmExportedWorkbook" class="org.generationcp.commons.parsing.GermplasmExportedWorkbook" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	<bean id="fileService" class="org.generationcp.commons.service.impl.FileServiceImpl"
+		  init-method="init">
+	</bean>
+
+	<!-- Singleton bean as there is nothing request specific in here. -->
+	<bean id="germplasmNamingProperties" class="org.generationcp.commons.service.GermplasmNamingProperties">
+		<property name="germplasmOriginStudiesDefault" value="${germplasm.origin.studies.default}"/>
+		<property name="germplasmOriginStudiesWheat" value="${germplasm.origin.studies.wheat}"/>
+		<property name="germplasmOriginStudiesMaize" value="${germplasm.origin.studies.maize}"/>
+	</bean>
+
+	<bean id="seedSourceGenerator" class="org.generationcp.commons.ruleengine.generator.SeedSourceGenerator">
+	</bean>
+
+
+
+	<context:component-scan base-package="org.generationcp.breeding.manager.validator"/>
+	<!-- Including all beans used for generating Code Sheet when exporting Germplasm List excel file -->
+	<context:component-scan base-package="org.generationcp.commons.workbook.generator" />
+
+	<bean id="germplasmNamingService" class="org.generationcp.commons.service.impl.GermplasmNamingServiceImpl" />
+
+	<bean id="ruleService"
+		  class="org.generationcp.commons.ruleengine.impl.RulesServiceImpl" />
+
+	<!-- This component scan automatically registers all implementations of
+		the Rule interface into the Spring context. In conjunction with the RulesPostProcessor
+		above, this automatically populates the map in the RuleFactory -->
+	<context:component-scan base-package="org.generationcp.commons.ruleengine.stockid" />
+	<context:component-scan base-package="org.generationcp.commons.ruleengine.cross" />
+	<context:component-scan base-package="org.generationcp.commons.ruleengine.coding" />
+	<context:component-scan base-package="org.generationcp.commons.ruleengine.coding.expression" />
+
+	<bean id="germplasmCodeGenerationService" class="org.generationcp.commons.service.impl.GermplasmCodeGenerationServiceImpl" />
+
+	<bean id="codingExpressionResolver" class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionResolver" />
+
+	<bean id="codingExpressionFactory"
+		  class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionFactory"
+		  init-method="init" />
+
+	<bean class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionPostProcessor">
+		<property name="codingExpressionFactory" ref="codingExpressionFactory" />
+	</bean>
+
+	<bean id="datasetService" factory-bean="managerFactory"
+		  factory-method="getDatasetMiddlewareService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+	<bean id="studyGermplasmService" factory-bean="managerFactory"
+		  factory-method="getStudyGermplasmService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="derivedVariableService" factory-bean="managerFactory"
+		  factory-method="getDerivedVariableService" scope="request">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+	<bean id="stockIDValidator" class="org.generationcp.breeding.manager.listimport.validator.StockIDValidator"
+		scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="stockService" class="org.generationcp.commons.service.impl.StockServiceImpl"
+		  scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="inventoryService" factory-bean="managerFactory" factory-method="getInventoryService"
+		  scope="request">
+		<aop:scoped-proxy />
 	</bean>
 
 	<!-- Nested <beans> elements can only be at the end. -->

@@ -63,7 +63,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			final String locationName) {
 
 		final List<LocationDetails> locationDetails =
-				this.locationDataManager.getFilteredLocations(countryId, locationType, locationName, this.project.getUniqueID());
+				this.locationDataManager.getFilteredLocationsDetails(countryId, locationType, locationName, this.project.getUniqueID());
 
 		return createLocationViewModelList(locationDetails);
 	}
@@ -154,6 +154,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setProgramUUID(locationDetails.getProgramUUID());
 		viewModel.setProvinceId(locationDetails.getProvinceId());
 		viewModel.setProvinceName(locationDetails.getProvinceName());
+		viewModel.setlDefault(locationDetails.getlDefault());
 		return viewModel;
 	}
 
@@ -169,6 +170,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
 		viewModel.setProgramUUID(location.getUniqueID());
+		viewModel.setlDefault(location.getLdefault());
 
 		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
 		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
@@ -286,6 +288,11 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 		if (!locationViewModel.getCropAccessible()) {
 			location.setUniqueID(this.project.getUniqueID());
+		}
+
+		location.setLdefault(locationViewModel.getlDefault());
+		if (location.getLdefault() == null) {
+			location.setLdefault(Boolean.FALSE);
 		}
 
 		return location;

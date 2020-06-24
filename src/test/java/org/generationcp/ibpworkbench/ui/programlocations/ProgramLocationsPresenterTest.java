@@ -178,9 +178,9 @@ public class ProgramLocationsPresenterTest {
 			location.setUniqueID("9876543210");
 			final LocationDetails LocationDetails = locationDetailsList.get(ProgramLocationsPresenterTest.NO_OF_LOCATION_WITH_PROGRAM_UUID);
 			locationDetailsList.remove(LocationDetails);
-			Mockito.when(this.locationDataManager.getFilteredLocations(countryId, locationType, null, programUUID))
+			Mockito.when(this.locationDataManager.getFilteredLocationsDetails(countryId, locationType, null, programUUID))
 					.thenReturn(locationDetailsList);
-			Mockito.when(this.locationDataManager.getFilteredLocations(null, null, locationName, programUUID))
+			Mockito.when(this.locationDataManager.getFilteredLocationsDetails(null, null, locationName, programUUID))
 					.thenReturn(locationDetailsList);
 
 		} catch (final MiddlewareQueryException e) {

@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.common.IContainerFittable;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.CropType;
+import org.generationcp.middleware.pojos.workbench.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +73,9 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	@Autowired
 	private AuthorizationService authorizationService;
 
-	public static final String[][] METHOD_TYPES = { {"GEN", "Generative"}, {"DER", "Derivative"}, {"MAN", "Maintenance"}};
 	public static final String[][] METHOD_GROUPS = { {"S", "Self Fertilizing"}, {"O", "Cross Pollinating"}, {"C", "Clonally Propagating"},
 			{"G", "All System"}};
-	private static Action copyBreedingMethodAction = new Action("Copy Breeding Method");
+	private static final Action copyBreedingMethodAction = new Action("Copy Breeding Method");
 
 	public static final Map<String, String> TABLE_COLUMNS;
 	public static final Map<String, Integer> TABLE_COLUMN_SIZES;
@@ -137,17 +138,17 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 	private Map<Integer, String> classMap;
 	private Button searchGoBtn;
 
-	public ProgramMethodsView(Project project) {
+	public ProgramMethodsView(final Project project) {
 		this.presenter = new ProgramMethodsPresenter(this, project);
 	}
 
-	public ProgramMethodsView(CropType cropType) {
+	public ProgramMethodsView(final CropType cropType) {
 		this.cropOnly = true;
 		this.presenter = new ProgramMethodsPresenter(this, cropType);
 	}
 
 	@Override
-	public void fitToContainer(Window parentWindow) {
+	public void fitToContainer(final Window parentWindow) {
 		this.availableTable.setHeight("100%");
 		this.favoritesTable.setHeight("100%");
 
@@ -179,8 +180,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.saveBtn.setDebugId("saveBtn");
 		this.saveBtn.setStyleName(Bootstrap.Buttons.INFO.styleName());
 		try {
-			initializeRestrictedComponents();
-		}catch (AccessDeniedException e){
+			this.initializeRestrictedComponents();
+		}catch (final AccessDeniedException e){
 			/**
 			 * Do nothing: the screen needs to be displayed, only some of the components needs to be hidden.
 			 * If a user with unauthorize access is trying to access this method an ${@link AccessDeniedException} will be thrown.
@@ -259,7 +260,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -2712621177075270647L;
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId, Object colId) {
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
 				final CheckBox select = new CheckBox();
 				select.setDebugId("select");
 				select.setImmediate(true);
@@ -268,8 +269,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 					private static final long serialVersionUID = -5401459415390953417L;
 
 					@Override
-					public void buttonClick(Button.ClickEvent clickEvent) {
-						Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent()).getValue();
+					public void buttonClick(final Button.ClickEvent clickEvent) {
+						final Boolean val = (Boolean) ((CheckBox) clickEvent.getComponent()).getValue();
 
 						((MethodView) itemId).setActive(val);
 						if (val) {
@@ -296,7 +297,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -9087436773196724575L;
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId, Object colId) {
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
 				try {
 					return ProgramMethodsView.this.addEditableMethodName(itemId);
 				} catch (final AccessDeniedException e) {
@@ -315,8 +316,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -9208828919595982878L;
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId, Object colId) {
-				Label classLbl = new Label("");
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
+				final Label classLbl = new Label("");
 				classLbl.setDebugId("classLbl");
 				classLbl.setContentMode(Label.CONTENT_XHTML);
 				String methodClass = ProgramMethodsView.this.classMap.get(((MethodView) itemId).getGeneq());
@@ -332,14 +333,14 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -8704716382416470975L;
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId, Object colId) {
-				DateFormat df = DateUtil.getSimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT);
-				DateFormat newDf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT_2);
+			public Object generateCell(final Table source, final Object itemId, final Object colId) {
+				final DateFormat df = DateUtil.getSimpleDateFormat(DateUtil.DATE_AS_NUMBER_FORMAT);
+				final DateFormat newDf = DateUtil.getSimpleDateFormat(DateUtil.FRONTEND_DATE_FORMAT_2);
 
 				if (((MethodView) itemId).getMdate().toString().length() > 1) {
 					try {
 						return newDf.format(df.parse(((MethodView) itemId).getMdate().toString()));
-					} catch (ParseException e) {
+					} catch (final ParseException e) {
 						return "N/A";
 					}
 				} else {
@@ -353,8 +354,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 6278117387128053730L;
 
 			@Override
-			public Object generateCell(final Table source, final Object itemId, Object colI) {
-				Label l = new Label();
+			public Object generateCell(final Table source, final Object itemId, final Object colI) {
+				final Label l = new Label();
 				l.setDebugId("l");
 				l.setDescription(((MethodView) itemId).getMdesc());
 				l.setValue(((MethodView) itemId).getMdesc());
@@ -374,17 +375,17 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void valueChange(Property.ValueChangeEvent valueChangeEvent) {
-				Table source = (Table) valueChangeEvent.getProperty();
-				BeanItemContainer<MethodView> container = (BeanItemContainer<MethodView>) source.getContainerDataSource();
+			public void valueChange(final Property.ValueChangeEvent valueChangeEvent) {
+				final Table source = (Table) valueChangeEvent.getProperty();
+				final BeanItemContainer<MethodView> container = (BeanItemContainer<MethodView>) source.getContainerDataSource();
 
 				// disable previously selected items
-				for (MethodView beanItem : container.getItemIds()) {
+				for (final MethodView beanItem : container.getItemIds()) {
 					beanItem.setActive(false);
 				}
 
 				// set current selection to true
-				for (MethodView selectedItem : (Collection<MethodView>) source.getValue()) {
+				for (final MethodView selectedItem : (Collection<MethodView>) source.getValue()) {
 					selectedItem.setActive(true);
 				}
 
@@ -406,8 +407,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void drop(DragAndDropEvent dragAndDropEvent) {
-				DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
+			public void drop(final DragAndDropEvent dragAndDropEvent) {
+				final DataBoundTransferable t = (DataBoundTransferable) dragAndDropEvent.getTransferable();
 
 				if (t.getSourceComponent() == dragAndDropEvent.getTargetDetails().getTarget()) {
 					return;
@@ -415,8 +416,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 				((Table) dragAndDropEvent.getTargetDetails().getTarget()).removeListener(vcl);
 
-				Object itemIdOver = t.getItemId();
-				Set<Object> sourceItemIds = (Set<Object>) ((Table) t.getSourceComponent()).getValue();
+				final Object itemIdOver = t.getItemId();
+				final Set<Object> sourceItemIds = (Set<Object>) ((Table) t.getSourceComponent()).getValue();
 
 				if (itemIdOver != null && sourceItemIds.isEmpty()) {
 					if (((MethodView) itemIdOver).isEnabled()) {
@@ -454,21 +455,21 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		final Button mNameBtn = new Button(((MethodView) itemId).getMname());
 		mNameBtn.setStyleName(Bootstrap.Buttons.LINK.styleName());
 		mNameBtn.setData(itemId);
-		mNameBtn.addListener(ProgramMethodsView.this.editMethodListener);
+		mNameBtn.addListener(this.editMethodListener);
 		return mNameBtn;
 	}
 
 	@SuppressWarnings("unchecked")
-	private void moveSelectedItems(Table source, Table target) {
-		List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
-		ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
+	private void moveSelectedItems(final Table source, final Table target) {
+		final List<Object> sourceItems = new LinkedList<Object>((Collection<Object>) source.getValue());
+		final ListIterator<Object> sourceItemsIterator = sourceItems.listIterator(sourceItems.size());
 
-		BeanItemContainer<MethodView> targetDataContainer = (BeanItemContainer<MethodView>) target.getContainerDataSource();
-		Container sourceDataContainer = source.getContainerDataSource();
+		final BeanItemContainer<MethodView> targetDataContainer = (BeanItemContainer<MethodView>) target.getContainerDataSource();
+		final Container sourceDataContainer = source.getContainerDataSource();
 
 		int counter = 0;
 		while (sourceItemsIterator.hasPrevious()) {
-			MethodView itemId = (MethodView) sourceItemsIterator.previous();
+			final MethodView itemId = (MethodView) sourceItemsIterator.previous();
 			itemId.setActive(false);
 			if (source.getData().toString().equals(ProgramMethodsView.AVAILABLE)) {
 				targetDataContainer.addItemAt(0, itemId);
@@ -521,16 +522,16 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.typeFilter.addItem("");
 		this.typeFilter.setItemCaption("", "All Generation Advancement Types");
 
-		for (String[] methodType : ProgramMethodsView.METHOD_TYPES) {
-			this.typeFilter.addItem(methodType[0]);
-			this.typeFilter.setItemCaption(methodType[0], methodType[1]);
+		for(final MethodType methodType : EnumSet.allOf(MethodType.class)){
+			this.typeFilter.addItem(methodType.getCode());
+			this.typeFilter.setItemCaption(methodType.getCode(), methodType.getName());
 		}
 
 		this.typeFilter.select("");
 
 		this.groupFilter.addItem("");
 		this.groupFilter.setItemCaption("", "All Crop Reproductive Systems");
-		for (String[] methodGroup : ProgramMethodsView.METHOD_GROUPS) {
+		for (final String[] methodGroup : ProgramMethodsView.METHOD_GROUPS) {
 			this.groupFilter.addItem(methodGroup[0]);
 			this.groupFilter.setItemCaption(methodGroup[0], methodGroup[1]);
 		}
@@ -564,11 +565,11 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.classMap;
 	}
 
-	private void setupTableFields(Table table) {
+	private void setupTableFields(final Table table) {
 		table.setVisibleColumns(ProgramMethodsView.TABLE_COLUMNS.keySet().toArray());
 		table.setColumnHeaders(ProgramMethodsView.TABLE_COLUMNS.values().toArray(new String[] {}));
 
-		for (String col : ProgramMethodsView.TABLE_COLUMN_SIZES.keySet()) {
+		for (final String col : ProgramMethodsView.TABLE_COLUMN_SIZES.keySet()) {
 			table.setColumnWidth(col, ProgramMethodsView.TABLE_COLUMN_SIZES.get(col));
 
 			if (ProgramMethodsView.TABLE_COLUMN_SIZES.get(col) < 75) {
@@ -630,8 +631,8 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		this.setCompositionRoot(this.root);
 	}
 
-	private HorizontalLayout buildLocationTableLabels(Label totalEntries, Label selectedEntries) {
-		HorizontalLayout layout = new HorizontalLayout();
+	private HorizontalLayout buildLocationTableLabels(final Label totalEntries, final Label selectedEntries) {
+		final HorizontalLayout layout = new HorizontalLayout();
 		layout.setDebugId("layout");
 		layout.setSpacing(true);
 		layout.setWidth("300px");
@@ -697,7 +698,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 4839268740583678422L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				ProgramMethodsView.this.doMethodSearch();
 			}
 		});
@@ -719,7 +720,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		field3.setSizeUndefined();
 		field3.addComponent(this.groupFilter);
 
-		HorizontalLayout filterContainer = new HorizontalLayout();
+		final HorizontalLayout filterContainer = new HorizontalLayout();
 		filterContainer.setDebugId("filterContainer");
 		filterContainer.setSpacing(true);
 		filterContainer.setStyleName("pull-right");
@@ -777,7 +778,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return layout;
 	}
 
-	public void addRow(MethodView item, boolean atAvailableTable, Integer index) {
+	public void addRow(final MethodView item, final boolean atAvailableTable, final Integer index) {
 		if (index != null) {
 			if (atAvailableTable) {
 				this.getAvailableTableContainer().addItemAt(index, item);
@@ -822,7 +823,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				event.getComponent()
 						.getWindow()
 						.addWindow(
@@ -836,17 +837,17 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 
 			@Override
 			@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				event.getComponent().getWindow().addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this));
 			}
 		});
 
-		Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
+		final Property.ValueChangeListener filterAction = new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = 8914267618640094463L;
 
 			@Override
-			public void valueChange(Property.ValueChangeEvent event) {
+			public void valueChange(final Property.ValueChangeEvent event) {
 				ProgramMethodsView.this.doMethodSearch();
 			}
 		};
@@ -860,7 +861,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -2842000142630845841L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 
 				if ((Boolean) ((CheckBox) clickEvent.getComponent()).getValue()) {
 					ProgramMethodsView.this.availableTable.setValue(ProgramMethodsView.this.availableTable.getItemIds());
@@ -876,7 +877,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 2545400532783269974L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				if ((Boolean) ((CheckBox) clickEvent.getComponent()).getValue()) {
 					ProgramMethodsView.this.favoritesTable.setValue(ProgramMethodsView.this.favoritesTable.getItemIds());
 				} else {
@@ -891,7 +892,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 8741702112016745513L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				ProgramMethodsView.this.moveSelectedItems(ProgramMethodsView.this.availableTable, ProgramMethodsView.this.favoritesTable);
 				ProgramMethodsView.this.availableSelectAll.setValue(false);
 			}
@@ -902,7 +903,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = -7252226977128582313L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent clickEvent) {
+			public void buttonClick(final Button.ClickEvent clickEvent) {
 				ProgramMethodsView.this.moveSelectedItems(ProgramMethodsView.this.favoritesTable, ProgramMethodsView.this.availableTable);
 				ProgramMethodsView.this.favoriteSelectAll.setValue(false);
 			}
@@ -913,7 +914,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 1484296798437173855L;
 
 			@Override
-			public void buttonClick(Button.ClickEvent event) {
+			public void buttonClick(final Button.ClickEvent event) {
 				if (ProgramMethodsView.this.presenter.saveFavoriteBreedingMethod(ProgramMethodsView.this.favoritesTableContainer
 						.getItemIds())) {
 					MessageNotifier.showMessage(event.getComponent().getWindow(),
@@ -928,12 +929,12 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 4185416256388693137L;
 
 			@Override
-			public Action[] getActions(Object target, Object sender) {
+			public Action[] getActions(final Object target, final Object sender) {
 				return new Action[] {ProgramMethodsView.copyBreedingMethodAction};
 			}
 
 			@Override
-			public void handleAction(Action action, Object sender, Object target) {
+			public void handleAction(final Action action, final Object sender, final Object target) {
 				if (action == ProgramMethodsView.copyBreedingMethodAction) {
 					ProgramMethodsView.this.availableTable.getParent().getWindow()
 							.addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this, ((MethodView) target).copyMethodView()));
@@ -948,12 +949,12 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 			private static final long serialVersionUID = 6635300830598766541L;
 
 			@Override
-			public Action[] getActions(Object target, Object sender) {
+			public Action[] getActions(final Object target, final Object sender) {
 				return new Action[] {ProgramMethodsView.copyBreedingMethodAction};
 			}
 
 			@Override
-			public void handleAction(Action action, Object sender, Object target) {
+			public void handleAction(final Action action, final Object sender, final Object target) {
 				if (action == ProgramMethodsView.copyBreedingMethodAction) {
 					ProgramMethodsView.this.favoritesTable.getParent().getWindow()
 							.addWindow(new AddBreedingMethodsWindow(ProgramMethodsView.this, ((MethodView) target).copyMethodView()));
@@ -964,15 +965,15 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		});
 	}
 
-	protected void updateNoOfEntries(Label totalEntries, Table table) {
-		int count = table.getItemIds().size();
+	protected void updateNoOfEntries(final Label totalEntries, final Table table) {
+		final int count = table.getItemIds().size();
 
 		totalEntries.setValue(this.messageSource.getMessage(Message.TOTAL_ENTRIES) + ": " + "  <b>" + count + "</b>");
 	}
 
-	private void updateSelectedNoOfEntries(Label selectedEntries, Table table) {
-		Collection<?> selectedItems = (Collection<?>) table.getValue();
-		int count = selectedItems.size();
+	private void updateSelectedNoOfEntries(final Label selectedEntries, final Table table) {
+		final Collection<?> selectedItems = (Collection<?>) table.getValue();
+		final int count = selectedItems.size();
 
 		selectedEntries.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
 	}
@@ -991,7 +992,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.availableTableContainer;
 	}
 
-	public void setAvailableTableContainer(BeanItemContainer<MethodView> availableTableContainer) {
+	public void setAvailableTableContainer(final BeanItemContainer<MethodView> availableTableContainer) {
 		this.availableTableContainer = availableTableContainer;
 	}
 
@@ -999,7 +1000,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.messageSource;
 	}
 
-	public void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
@@ -1007,7 +1008,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.availableTable;
 	}
 
-	public void setAvailableTable(Table availableTable) {
+	public void setAvailableTable(final Table availableTable) {
 		this.availableTable = availableTable;
 	}
 
@@ -1015,7 +1016,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.favoritesTable;
 	}
 
-	public void setFavoritesTable(Table favoritesTable) {
+	public void setFavoritesTable(final Table favoritesTable) {
 		this.favoritesTable = favoritesTable;
 	}
 
@@ -1023,7 +1024,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.favoritesTableContainer;
 	}
 
-	public void setFavoritesTableContainer(BeanItemContainer<MethodView> favoritesTableContainer) {
+	public void setFavoritesTableContainer(final BeanItemContainer<MethodView> favoritesTableContainer) {
 		this.favoritesTableContainer = favoritesTableContainer;
 	}
 
@@ -1031,7 +1032,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.availTotalEntriesLabel;
 	}
 
-	public void setAvailTotalEntriesLabel(Label availTotalEntriesLabel) {
+	public void setAvailTotalEntriesLabel(final Label availTotalEntriesLabel) {
 		this.availTotalEntriesLabel = availTotalEntriesLabel;
 	}
 
@@ -1039,7 +1040,7 @@ public class ProgramMethodsView extends CustomComponent implements InitializingB
 		return this.favTotalEntriesLabel;
 	}
 
-	public void setFavTotalEntriesLabel(Label favTotalEntriesLabel) {
+	public void setFavTotalEntriesLabel(final Label favTotalEntriesLabel) {
 		this.favTotalEntriesLabel = favTotalEntriesLabel;
 	}
 

@@ -65,6 +65,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -118,8 +119,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected Label generateRoleCell(final Object itemId) {
-		final String role = (((WorkbenchUser) itemId).getRoles() != null && !((WorkbenchUser) itemId).getRoles().isEmpty()
-			&& ((WorkbenchUser) itemId).getRoles().get(0) != null) ? ((WorkbenchUser) itemId).getRoles().get(0).getCapitalizedRole() : "";
+		final String role = this.getUserRole(itemId);
 		final Label label = new Label();
 		label.setDebugId("label");
 		label.setValue(role);
@@ -207,10 +207,10 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		this.getSelect()
 				.setColumnHeaders(new String[] { "<span class='glyphicon glyphicon-ok'></span>", "User Name", "Role" });
 
-		this.getSelect().setLeftColumnCaption(messageSource.getMessage(Message.MEMBERS_TAB_AVAILABLE_USERS));
+		this.getSelect().setLeftColumnCaption(this.messageSource.getMessage(Message.MEMBERS_TAB_AVAILABLE_USERS));
 		this.getSelect().setRightColumnCaption(this.messageSource.getMessage(Message.MEMBERS_TAB_SELECTED_PROGRAM_MEMBERS));
 
-		this.getSelect().setRightLinkCaption(messageSource.getMessage(Message.MEMBERS_TAB_REMOVE_SELECTED_MEMBERS));
+		this.getSelect().setRightLinkCaption(this.messageSource.getMessage(Message.MEMBERS_TAB_REMOVE_SELECTED_MEMBERS));
 		this.getSelect().setLeftLinkCaption("");
 		this.getSelect().addRightLinkListener(new Button.ClickListener() {
 
@@ -314,8 +314,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 					}));
 
-				getRoleSelectionWindow().setVisible(true);
-				ProgramMembersPanel.this.getWindow().addWindow(getRoleSelectionWindow());
+				ProgramMembersPanel.this.getRoleSelectionWindow().setVisible(true);
+				ProgramMembersPanel.this.getWindow().addWindow(ProgramMembersPanel.this.getRoleSelectionWindow());
 			}
 
 			@Override
@@ -379,8 +379,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	private Role getRoleSelected() {
-		final Integer roleId = (Integer) ProgramMembersPanel.this.getRoleSelectionWindow().getRolesComboBox().getValue();
-		for (final Role role : ProgramMembersPanel.this.getRoles()) {
+		final Integer roleId = (Integer) this.getRoleSelectionWindow().getRolesComboBox().getValue();
+		for (final Role role : this.getRoles()) {
 			if (role.getId().equals(roleId)) {
 				return role;
 			}
@@ -392,8 +392,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		final UserRole userRole = new UserRole();
 		userRole.setRole(roleSelected);
 		userRole.setUser(workbenchUser);
-		userRole.setWorkbenchProject(ProgramMembersPanel.this.project);
-		userRole.setCropType(ProgramMembersPanel.this.project.getCropType());
+		userRole.setWorkbenchProject(this.project);
+		userRole.setCropType(this.project.getCropType());
 		return userRole;
 	}
 
@@ -409,16 +409,20 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			public Action[] getActions(final Object target, final Object sender) {
 
 				if (table.getData().toString().equals("left")) {
-					return new Action[] {actionAddToProgramMembers, actionSelectAll, actionDeSelectAll};
+					return new Action[] {
+						ProgramMembersPanel.this.actionAddToProgramMembers, ProgramMembersPanel.this.actionSelectAll,
+						ProgramMembersPanel.this.actionDeSelectAll};
 				} else {
-					return new Action[] {actionRemoveFromProgramMembers, actionSelectAll, actionDeSelectAll};
+					return new Action[] {
+						ProgramMembersPanel.this.actionRemoveFromProgramMembers, ProgramMembersPanel.this.actionSelectAll,
+						ProgramMembersPanel.this.actionDeSelectAll};
 				}
 
 			}
 
 			@Override
 			public void handleAction(final Action action, final Object sender, final Object target) {
-				if (actionSelectAll == action) {
+				if (ProgramMembersPanel.this.actionSelectAll == action) {
 					if (table.getData().toString().equals("left")) {
 						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(true);
 						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().click();
@@ -427,7 +431,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().click();
 					}
 
-				} else if (actionDeSelectAll == action) {
+				} else if (ProgramMembersPanel.this.actionDeSelectAll == action) {
 					if (table.getData().toString().equals("left")) {
 						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(false);
 						ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().click();
@@ -435,9 +439,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
 						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().click();
 					}
-				} else if (actionAddToProgramMembers == action) {
+				} else if (ProgramMembersPanel.this.actionAddToProgramMembers == action) {
 					ProgramMembersPanel.this.addCheckedSelectedItems();
-				} else if (actionRemoveFromProgramMembers == action) {
+				} else if (ProgramMembersPanel.this.actionRemoveFromProgramMembers == action) {
 					ProgramMembersPanel.this.removeCheckedSelectedItems();
 				}
 
@@ -450,17 +454,17 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private void removeCheckedSelectedItems() {
 
-		if (((Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()).size() != 0) {
-			MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
-				ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
+		if (((Set<Object>) this.getSelect().getTableRight().getValue()).size() != 0) {
+			MessageNotifier.showWarning(this.getWindow(), "Information",
+				this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
 		}
 
-		for (final Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableRight().getValue()) {
+		for (final Object itemId : (Set<Object>) this.getSelect().getTableRight().getValue()) {
 			if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
 				((WorkbenchUser) itemId).setActive(false);
-				ProgramMembersPanel.this.getSelect().getTableLeft().addItem(itemId);
-				ProgramMembersPanel.this.getSelect().getTableRight().removeItem(itemId);
-				ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
+				this.getSelect().getTableLeft().addItem(itemId);
+				this.getSelect().getTableRight().removeItem(itemId);
+				this.getSelect().getChkSelectAllRight().setValue(false);
 			}
 		}
 
@@ -468,9 +472,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	private void addCheckedSelectedItems() {
 
-		if (((Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()).size() != 0) {
+		if (((Set<Object>) this.getSelect().getTableLeft().getValue()).size() != 0) {
 
-			ProgramMembersPanel.this.setRoleSelectionWindow(new RoleSelectionWindow(ProgramMembersPanel.this,
+			this.setRoleSelectionWindow(new RoleSelectionWindow(this,
 				new Button.ClickListener() {
 
 					private static final long serialVersionUID = 1L;
@@ -504,8 +508,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 				}));
 
-			getRoleSelectionWindow().setVisible(true);
-			ProgramMembersPanel.this.getWindow().addWindow(getRoleSelectionWindow());
+			this.getRoleSelectionWindow().setVisible(true);
+			this.getWindow().addWindow(this.getRoleSelectionWindow());
 
 		}
 
@@ -573,7 +577,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 			"<span class='bms-members' style='color: #D1B02A; font-size: 23px'></span>&nbsp;Program Members",
 			Label.CONTENT_XHTML);
 		final Label headingDesc = new Label(
-			ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_CHOOSE_TEAM_MEMBERS));
+			this.messageSource.getMessage(Message.MEMBERS_TAB_CHOOSE_TEAM_MEMBERS));
 
 		heading.setStyleName(Bootstrap.Typography.H4.styleName());
 
@@ -704,7 +708,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	public TwinTableSelect<WorkbenchUser> getSelect() {
-		return select;
+		return this.select;
 	}
 
 	public void setSelect(final TwinTableSelect<WorkbenchUser> select) {
@@ -712,11 +716,23 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	public RoleSelectionWindow getRoleSelectionWindow() {
-		return roleSelectionWindow;
+		return this.roleSelectionWindow;
 	}
 
 	public void setRoleSelectionWindow(final RoleSelectionWindow roleSelectionWindow) {
 		this.roleSelectionWindow = roleSelectionWindow;
+	}
+
+	private String getUserRole(final Object itemId) {
+		final WorkbenchUser workbenchUser = (WorkbenchUser) itemId;
+		if(workbenchUser!=null && workbenchUser.getRoles()!=null && !workbenchUser.getRoles().isEmpty()){
+			final List<UserRole> userRoles = workbenchUser.getRoles().stream().filter(userRole -> userRole.getWorkbenchProject()!=null && userRole.getWorkbenchProject().equals(this.project)).collect(
+				Collectors.toList());
+			if(userRoles!=null && !userRoles.isEmpty() && userRoles.get(0)!=null) {
+				return userRoles.get(0).getCapitalizedRole();
+			}
+		}
+		return "";
 	}
 
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {

@@ -1,7 +1,6 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
 
-import com.google.common.base.Optional;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
@@ -18,6 +17,8 @@ import org.generationcp.middleware.service.api.study.generation.ExperimentDesign
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.Optional;
 
 @Configurable
 public class SingleSiteAnalysisDesignDetails extends VerticalLayout
@@ -245,6 +246,8 @@ public class SingleSiteAnalysisDesignDetails extends VerticalLayout
 				this.displayIncompleteBlockDesignElements();
 			} else if (experimentDesignType.getId() == ExperimentDesignType.ROW_COL.getId()) {
 				this.displayRowColumnDesignElements();
+			} else if(experimentDesignType.getId() == ExperimentDesignType.P_REP.getId()){
+				this.displayPRepDesignElements();
 			} else if (experimentDesignType.getId() == ExperimentDesignType.AUGMENTED_RANDOMIZED_BLOCK.getId()) {
 				this.displayAugmentedDesignElements();
 			}

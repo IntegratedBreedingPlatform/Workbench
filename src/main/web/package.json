@@ -42,6 +42,7 @@
     "@angular/router": "3.0.2",
     "@angular/router-deprecated": "2.0.0-rc.2",
     "@angular/upgrade": "2.0.2",
+    "@solgenomics/brapi-fieldmap": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:^1.0.0",
     "angular2-in-memory-web-api": "0.0.21",
     "babel-polyfill": "^6.26.0",
     "core-js": "^2.5.3",
@@ -54,6 +55,12 @@
     "zone.js": "^0.6.12"
   },
   "devDependencies": {
+    "@types/core-js": "^0.9.36",
+    "@types/es6-collections": "^0.5.29",
+    "@types/es6-promise": "^0.0.33",
+    "@types/es6-shim": "^0.31.32",
+    "@types/jasmine": "^2.5.41",
+    "@types/node": "^6.0.118",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^1.10.0",
     "chai-as-promised": "^4.1.1",
@@ -96,14 +103,8 @@
     "path": "^0.4.9",
     "pretty-hrtime": "^0.2.2",
     "properties-parser": "^0.2.3",
+    "puppeteer": "^1.20.0",
     "typescript": "^2.0.10",
-    "yargs": "^1.3.2",
-    "@types/core-js" : "^0.9.36",
-    "@types/es6-collections" : "^0.5.29",
-    "@types/es6-promise" : "^0.0.33",
-    "@types/es6-shim" : "^0.31.32",
-    "@types/jasmine" : "^2.5.41",
-    "@types/node" : "^6.0.118",
-    "puppeteer": "^1.20.0"
+    "yargs": "^1.3.2"
   }
 }

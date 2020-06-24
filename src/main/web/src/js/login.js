@@ -6,8 +6,10 @@
 	var $checkButton = $('.js-login-check'),
 		$checkInput = $('.js-login-checkbox-input'),
 		$loginForm = $('.js-login-form'),
+		$authorizeForm = $('#authorize-form'),
 		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
+		$authorizeSubmit = $('.js-authorize-submit'),
 		$error = $('.js-login-error'),
 		$errorText = $('.js-login-error-text'),
 		$fakeUsername = $('.js-fake-username'),
@@ -33,8 +35,6 @@
 
 	var display_name = getUrlParameter("display_name");
 	var return_url = getUrlParameter("return_url");
-	var token = '';
-	var externalAuthorize = false;
 
 	var failedLoginAttemptCount = 0;
 
@@ -115,6 +115,12 @@
 		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
 		$forgotPasswordInputs.prop('disabled', !switchToCreate);
 		$checkInput.prop('disabled', switchToCreate);
+	}
+
+	function toggleAuthorizeScreen() {
+		$('#displayName').text(display_name);
+		$loginForm.hide();
+		$authorizeForm.show();
 	}
 
 	function displayClientError(errorMessage) {
@@ -207,6 +213,13 @@
 		return false;
 	}
 
+	function doAuthorizeSubmit() {
+
+		// Append status=200 to the query string to notify KSU Fieldbook that the authentication is successful.
+		window.location.href = return_url + '?token=' + JSON.parse(localStorage['bms.xAuthToken']).token + '&status=200';
+		return false;
+	}
+
 	// Record whether media queries are supported in this browser as a class
 	if (!Modernizr.mq('only all')) {
 		$('html').addClass('no-mq');
@@ -236,6 +249,10 @@
 
 	$loginSubmit.on('click', function() {
 		return doFormSubmit();
+	});
+
+	$authorizeSubmit.on('click', function() {
+		return doAuthorizeSubmit();
 	});
 
 	// Hook up our fake (better looking) checkbox with it's real, submit-able counterpart
@@ -303,10 +320,7 @@
 		$loginSubmit.addClass('loading').delay(200);
 
 		// Continue with form submit - login is currently handled server side
-		if (externalAuthorize) {
-			window.location.href = return_url + '?token=' + token;
-
-		} else if (login) {
+		if (login) {
 			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
 				.done(function(data) {
 					clearErrors();
@@ -318,14 +332,10 @@
 					 *     localStorageServiceProvider.setPrefix('bms');
 					 */
 					localStorage['bms.xAuthToken'] = JSON.stringify(data);
-					// no login problems! submit
-					if (display_name &&  return_url) {
-						$('.login-form-control').hide();
-						$loginSubmit.text('Authorize');
-						$('#displayName').text(display_name + ' wants to access your BMS Account');
-						externalAuthorize = true;
-						token = data.token;
+					if (display_name && return_url) {
+						toggleAuthorizeScreen()
 					} else {
+						// no login problems! submit
 						loginFormRef.submit();
 					}
 				})
