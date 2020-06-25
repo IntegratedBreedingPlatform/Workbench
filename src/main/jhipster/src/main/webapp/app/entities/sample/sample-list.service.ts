@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
-import {SERVER_API_URL} from '../../app.constants';
-import {SampleList} from './sample-list.model';
-import {Observable} from 'rxjs';
-import {createRequestOption} from '../../shared';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { SERVER_API_URL } from '../../app.constants';
+import { SampleList } from './sample-list.model';
+import { Observable } from 'rxjs';
+import { createRequestOption } from '../../shared';
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -22,8 +22,8 @@ export class SampleListService {
     }
 
     getById(sampleListId: number): Observable<HttpResponse<SampleList>> {
-        return this.http.get(`${this.resourceUrl}/${sampleListId}`, { observe: 'response' })
-            .map((res) => this.convertResponse(res));
+        return this.http.get<SampleList>(`${this.resourceUrl}/${sampleListId}`, { observe: 'response' })
+            .pipe(map((res) => this.convertResponse(res)));
     }
 
     search(params: any): Observable<HttpResponse<SampleList[]>> {
