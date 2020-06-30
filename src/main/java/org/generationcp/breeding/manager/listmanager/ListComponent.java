@@ -13,12 +13,15 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -60,8 +63,10 @@ import org.generationcp.breeding.manager.listmanager.listeners.GidLinkButtonClic
 import org.generationcp.breeding.manager.listmanager.util.FillWith;
 import org.generationcp.breeding.manager.listmanager.util.ListCommonActionsUtil;
 import org.generationcp.breeding.manager.listmanager.util.ListDataPropertiesRenderer;
+import org.generationcp.breeding.manager.util.Util;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -77,10 +82,12 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.Name;
+import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.GermplasmGroupingService;
@@ -110,6 +117,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.generationcp.commons.util.ContextUtil.addQueryParameter;
 
 @Configurable
 public class ListComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent, BreedingManagerLayout,
@@ -229,6 +238,9 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 
 	@Resource
 	private ContextUtil contextUtil;
+
+	@Autowired
+	private WorkbenchDataManager workbenchDataManager;
 
 	private Integer localUserId = null;
 
@@ -887,6 +899,8 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 					} else if (clickedItem.getName()
 							.equals(ListComponent.this.messageSource.getMessage(Message.REMOVE_SELECTED_GERMPLASM))) {
 						ListComponent.this.removeSelectedGermplasmButtonClickAction();
+					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM))) {
+						ListComponent.this.createInventoryLots();
 					}
 				}
 			});
@@ -1277,6 +1291,50 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ASSIGN_CODES),
 					this.messageSource.getMessage(Message.ERROR_ASSIGN_CODES_NOTHING_SELECTED));
 		}
+	}
+
+	public void createInventoryLots() {
+		final Set<Integer> gidsToProcess = this.extractGidListFromListDataTable(this.listDataTable);
+
+		if (!gidsToProcess.isEmpty()) {
+			// TODO save search request
+
+			final String params = Util.getAdditionalParams(this.workbenchDataManager);
+			final Project projectInContext = this.contextUtil.getProjectInContext();
+			final ExternalResource createInventoryLotsUrl = new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(
+				"/ibpworkbench/controller/jhipster#/lot-creation-dialog") + "?restartApplication" + params
+				+ addQueryParameter("cropName", projectInContext.getCropType().getCropName()
+				+ addQueryParameter("programUUID", projectInContext.getUniqueID())));
+
+			final Embedded createInventoryLotsDialog = new Embedded(null, createInventoryLotsUrl);
+			createInventoryLotsDialog.setDebugId("createInventoryLotsDialog");
+
+			createInventoryLotsDialog.setType(Embedded.TYPE_BROWSER);
+			createInventoryLotsDialog.setSizeFull();
+
+			final AbsoluteLayout layout = new AbsoluteLayout();
+			layout.setMargin(false);
+			layout.setWidth("100%");
+			layout.setHeight("100%");
+			layout.addStyleName("no-caption");
+			layout.addComponent(createInventoryLotsDialog);
+
+			final Window modal = new BaseSubWindow(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MODAL_TITLE));
+			modal.setContent(layout);
+			modal.setWidth("900px");
+			modal.setHeight("670px");
+			modal.center();
+			modal.setResizable(false);
+			modal.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
+			modal.setModal(true);
+
+			this.getWindow().addWindow(modal);
+
+		} else {
+			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR),
+				this.messageSource.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
+		}
+
 	}
 
 	/**

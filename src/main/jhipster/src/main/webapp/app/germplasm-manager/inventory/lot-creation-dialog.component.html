@@ -1,0 +1,101 @@
+<div class="modal-body">
+	<form name="form" #f="ngForm" class="form-horizontal">
+		<div class="form-group" [class.has-error]="!gid.valid">
+			<label for="gid" class="col-sm-4 control-label control-label-left">GID</label>
+			<div class="col-sm-4">
+				<input type="text" class="form-control" pattern="^[\d]+([\d]+)*$" name="gid" id="gid" [(ngModel)]="lot.gid" #gid="ngModel" required />
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="stockIdPrefix" class="col-sm-4 control-label control-label-left">Stock ID Prefix
+				<i class="fa fa-info-circle col-1" data-toggle="tooltip" data-placement="top" title="If no prefix is specified, the default SID prefix will be used"></i></label>
+			<div class="col-sm-4">
+				<input type="text" class="form-control col-sm-4" [pattern]="STOCK_ID_PREFIX_REGEX" name="stockIdPrefix" id="stockIdPrefix" [maxLength]="15" [(ngModel)]="model.stockIdPrefix" #stockIdPrefix="ngModel"/>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-4 control-label control-label-left">
+				Storage Location
+			</label>
+			<div class="col-sm-4">
+				<div class="form-group">
+					<div class="col-sm-12">
+						<select *ngIf="!favoriteLocation" class="form-control" name="dropdownStorageLocation" id="dropdownStorageLocation" [(ngModel)]="storageLocIdSelected" required>
+							<option *ngFor="let location of storageLocations | async" [value]="location.id">
+								<label>{{location.name}}</label>
+							</option>
+						</select>
+						<select *ngIf="favoriteLocation" class="form-control" name="dropdownFavoriteLocation" id="dropdownFavoriteLocation" [(ngModel)]="favoriteLocIdSelected" required>
+							<option *ngFor="let location of favoriteLocations | async" [value]="location.id">
+								<label>{{location.name}}</label>
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-12">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" [(ngModel)]="favoriteLocation" name="favoriteLocations">
+								Favorite locations only
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group" [class.has-error]="!dropdownUnits.valid">
+			<label for="dropdownUnits" class="col-sm-4 control-label control-label-left">Units</label>
+			<div class="col-sm-4">
+				<select class="form-control" name="dropdownUnits" id="dropdownUnits" [(ngModel)]="lot.unitId" [required]="initialDeposit" #dropdownUnits="ngModel">
+					<option *ngFor="let unit of units | async" [value]="unit.id">
+						<label>{{unit.name}}</label>
+					</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="lotNotes" class="col-sm-4">Notes</label>
+			<div class="col-sm-4">
+				<textarea class="form-control" rows="3" name="lotNotes" id="lotNotes" [(ngModel)]="lot.notes" #lotNotes="ngModel"></textarea>
+			</div>
+		</div>
+		<!-- TODO <div *jhiHasAnyAuthority="CREATE_DEPOSIT_INVENTORY_PERMISSION">-->
+		<div>
+			<h4 class="modal-title">Deposit</h4>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" class="form-check-input" [(ngModel)]="initialDeposit" name="depositAvailable" id="depositAvailable">
+					Initial deposit
+				</label>
+			</div>
+			<hr>
+			<br>
+			<div class="form-group" [class.has-error]="!(depositAmount?.valid || !initialDeposit)">
+				<label for="depositAmount" class="col-sm-4 control-label control-label-left">Amount</label>
+				<div class="col-sm-4">
+					<input type="number" class="form-control" name="depositAmount" id="depositAmount" [disabled]="!initialDeposit"
+						   [(ngModel)]="deposit.amount" min="0" #depositAmount="ngModel"
+						   jhi-customMinGreaterThanValidator [required]="initialDeposit" />
+					<span *ngIf="!(depositAmount?.valid || depositAmount?.pristine || !initialDeposit)" class="help-block">Initial amount must be higher than zero</span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="depositNotes" class="col-sm-4 control-label control-label-left">Notes</label>
+				<div class="col-sm-4">
+					<textarea class="form-control" rows="3" name="depositNotes" id="depositNotes" [disabled]="!initialDeposit" [(ngModel)]="deposit.notes" #depositNotes="ngModel"></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<!--<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+		<span jhiTranslate="entity.action.cancel">Cancel</span>
+	</button>-->
+	<button (click)="save()" [disabled]="f.form.invalid" class="btn btn-primary">
+		<span jhiTranslate="entity.action.save">Save</span>
+	</button>
+</div>
+

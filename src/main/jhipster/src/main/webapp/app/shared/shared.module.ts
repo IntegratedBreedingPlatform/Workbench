@@ -11,6 +11,13 @@ import { ModalService } from './modal/modal.service';
 import { DragDropModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
 import { SharedModule } from 'primeng/shared';
+import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
+import { HasNotAnyAuthorityDirective } from './auth/has-not-any-authority.directive';
+import { InventoryService } from './inventory/service/inventory.service';
+import { LotService } from './inventory/service/lot.service';
+import { TransactionService } from './inventory/service/transaction.service';
+import { ParamContext } from './service/param.context';
+import { CustomMinGreaterThanValidatorDirective } from './validators/custom-min-greater-than-validator.directive';
 
 @NgModule({
     imports: [
@@ -19,13 +26,20 @@ import { SharedModule } from 'primeng/shared';
     ],
     declarations: [
         ModalComponent,
-        ModalConfirmComponent
+        ModalConfirmComponent,
+        HasAnyAuthorityDirective,
+        HasNotAnyAuthorityDirective,
+        CustomMinGreaterThanValidatorDirective
     ],
     providers: [
         DatePipe,
         ModalService,
         Principal,
-        AccountService
+        AccountService,
+        InventoryService,
+        LotService,
+        TransactionService,
+        ParamContext
     ],
     entryComponents: [
         ModalComponent,
@@ -38,7 +52,10 @@ import { SharedModule } from 'primeng/shared';
         DragDropModule,
         DatePipe,
         ModalComponent,
-        ModalConfirmComponent
+        ModalConfirmComponent,
+        HasAnyAuthorityDirective,
+        HasNotAnyAuthorityDirective,
+        CustomMinGreaterThanValidatorDirective
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

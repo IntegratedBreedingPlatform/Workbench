@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AccountService } from './account.service';
+import { Subject, Observable } from 'rxjs';
 
 @Injectable()
 export class Principal {
     private userIdentity: any;
+    private authenticated = false;
+    private authenticationState = new Subject<any>();
 
     constructor(
         private account: AccountService
@@ -14,7 +17,7 @@ export class Principal {
     }
 
     hasAnyAuthorityDirect(authorities: string[]): boolean {
-        if (!this.userIdentity || !this.userIdentity.authorities) {
+        if (!this.authenticated || !this.userIdentity || !this.userIdentity.authorities) {
             return false;
         }
 
@@ -45,10 +48,16 @@ export class Principal {
             } else {
                 this.userIdentity = null;
             }
+            this.authenticationState.next(this.userIdentity);
             return this.userIdentity;
         }).catch((err) => {
             this.userIdentity = null;
+            this.authenticationState.next(this.userIdentity);
             return null;
         });
+    }
+
+    getAuthenticationState(): Observable<any> {
+        return this.authenticationState.asObservable();
     }
 }

@@ -32,6 +32,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	private ContextMenuItem listEditingOptions;
 	private ContextMenuItem codingAndGroupingOptions;
 	private ContextMenuItem removeSelectedGermplasm;
+	private ContextMenuItem createInventoryLots;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -54,6 +55,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.codingAndGroupingOptions = this.addItem(this.messageSource.getMessage(Message.CODING_AND_GROUPING_OPTIONS));
 		this.menuGroupLines = this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.GROUP));
 		this.menuAssignCodes = this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.ASSIGN_CODES));
+		this.createInventoryLots = this.addItem(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM));
 		try {
 			this.layoutAdminLink();
 		} catch (final AccessDeniedException e) {
