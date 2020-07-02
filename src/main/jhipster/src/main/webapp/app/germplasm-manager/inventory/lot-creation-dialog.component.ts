@@ -14,6 +14,7 @@ import { InventoryService } from '../../shared/inventory/service/inventory.servi
 import { Location } from '../../shared/model/location.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { ParamContext } from '../../shared/service/param.context';
+import { SearchComposite } from '../../shared/model/search-composite';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -24,9 +25,13 @@ export class LotCreationDialogComponent implements OnInit {
     STOCK_ID_PREFIX_REGEX = '(^\\w*[a-zA-Z]$|^$)';
     CREATE_DEPOSIT_INVENTORY_PERMISSION = [...MANAGE_LOT_PERMISSIONS, 'DEPOSIT_INVENTORY', 'CREATE_CONFIRMED_DEPOSITS'];
 
+    /** Indicates that the creation process has finished */
+    isSuccess = false;
+
     lot: Lot;
-    model;
+    model = { stockIdPrefix: '' };
     deposit: Transaction;
+    searchRequestId;
 
     units: Promise<InventoryUnit[]>;
     storageLocations: Promise<Location[]>;
@@ -48,12 +53,11 @@ export class LotCreationDialogComponent implements OnInit {
                 private paramContext: ParamContext
     ) {
         this.paramContext.readParams();
+        const queryParams = this.activatedRoute.snapshot.queryParams;
+        this.searchRequestId = queryParams.searchRequestId;
 
-        this.model = { stockIdPrefix: '' };
         this.lot = new Lot();
         this.deposit = new Transaction();
-        this.deposit.transactionType = 'Deposit';
-        this.deposit.transactionStatus = 'Confirmed';
 
         this.units = this.inventoryService.queryUnits().toPromise();
 
@@ -69,9 +73,6 @@ export class LotCreationDialogComponent implements OnInit {
             const defaultFavoriteLocation = favoriteLocations.find((location) => location.defaultLocation);
             this.favoriteLocIdSelected = defaultFavoriteLocation ? defaultFavoriteLocation.id : favoriteLocations[0] && favoriteLocations[0].id;
         });
-
-        // this.lot.unitId = null;
-
     }
 
     ngOnInit() {
@@ -83,15 +84,25 @@ export class LotCreationDialogComponent implements OnInit {
 
     save() {
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
-        this.lotService.createLots(this.lot, this.model.stockIdPrefix).subscribe(
-            (res) => this.createDeposit(res), (error) => this.onError(error));
+        const lotGeneratorBatchRequest = {
+            searchComposite: <SearchComposite>({
+                itemIds: null,
+                searchRequest: this.searchRequestId
+            }),
+            lotGeneratorInput: Object.assign({
+                generateStock: true,
+                stockPrefix: this.model.stockIdPrefix
+            }, this.lot)
+        };
+        this.lotService.createLots(lotGeneratorBatchRequest).subscribe(
+            (res) => this.createDeposit(res),
+            (res) => this.onError(res));
     }
 
-    private createDeposit(lotUUID: any) {
-        this.lot.lotUUID = lotUUID;
+    private createDeposit(lotUUIDs: string[]) {
         if (this.initialDeposit) {
             const lotDepositRequest = {
-                selectedLots: { searchRequest: null, itemIds: [lotUUID] },
+                selectedLots: <SearchComposite>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
                 depositsPerUnit: {}
             };
@@ -99,21 +110,26 @@ export class LotCreationDialogComponent implements OnInit {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
                 lotDepositRequest.depositsPerUnit[lotUnit[0].name] = this.deposit.amount;
                 this.transactionService.createConfirmedDeposits(lotDepositRequest).subscribe(
-                        (res: HttpResponse<Lot>) => this.onSaveSuccess(res),
-                        (res: HttpErrorResponse) => this.onError(res.error.errors[0]));
+                    (res) => this.onSaveSuccess(lotUUIDs),
+                    (res) => this.onError(res));
             });
         } else {
-            this.onSaveSuccess(lotUUID);
+            this.onSaveSuccess(lotUUIDs);
         }
 
     }
 
-    private onSaveSuccess(result: any) {
-        // TODO toast false?
-        this.jhiAlertService.success('inventoryManagerApp.lot.createLot.success', null, null);
+    private onSaveSuccess(lotUUIDs: string[]) {
+        this.jhiAlertService.addAlert({msg: 'lot-creation.success', type: 'success', toast: false, params: {param: lotUUIDs.length}}, null);
+        this.isSuccess = true;
     }
 
-    private onError(response: HttpErrorResponse) {
-        this.jhiAlertService.error('error.custom', { param: formatErrorList(response.error.errors) });
+    private onError(error) {
+        const msg = formatErrorList(error.errors);
+        if (msg) {
+            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: {param: msg} }, null);
+        } else {
+            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false}, null);
+        }
     }
 }

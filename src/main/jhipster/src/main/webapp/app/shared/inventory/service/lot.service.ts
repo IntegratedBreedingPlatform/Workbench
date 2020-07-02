@@ -13,9 +13,7 @@ export class LotService {
                 private http: HttpClient) {
     }
 
-    createLots(lot: Lot, stockIdPrefix: string): Observable<string> {
-        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/lot-list`,
-            Object.assign({ generateStock: true, stockPrefix: stockIdPrefix }, lot), { observe: 'response' })
-            .pipe(map((res: any) => res.body.result));
+    createLots(lotGeneratorBatchRequest): Observable<string[]> {
+        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/lots/generation`, lotGeneratorBatchRequest);
     }
 }

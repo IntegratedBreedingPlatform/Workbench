@@ -75,6 +75,7 @@ import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.inventory.ListEntryLotDetails;
+import org.generationcp.middleware.domain.search_request.GidSearchDto;
 import org.generationcp.middleware.domain.workbench.RoleType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.GermplasmDataManagerUtil;
@@ -82,6 +83,7 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
+import org.generationcp.middleware.manager.api.SearchRequestService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
@@ -241,6 +243,9 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
+
+	@Autowired
+	private SearchRequestService searchRequestService;
 
 	private Integer localUserId = null;
 
@@ -1297,14 +1302,17 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 		final Set<Integer> gidsToProcess = this.extractGidListFromListDataTable(this.listDataTable);
 
 		if (!gidsToProcess.isEmpty()) {
-			// TODO save search request
+			final GidSearchDto searchRequestDto = new GidSearchDto();
+			searchRequestDto.setGids(new ArrayList<>(gidsToProcess));
+			final Integer searchRequestId = this.searchRequestService.saveSearchRequest(searchRequestDto, GidSearchDto.class);
 
 			final String params = Util.getAdditionalParams(this.workbenchDataManager);
 			final Project projectInContext = this.contextUtil.getProjectInContext();
 			final ExternalResource createInventoryLotsUrl = new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(
 				"/ibpworkbench/controller/jhipster#/lot-creation-dialog") + "?restartApplication" + params
 				+ addQueryParameter("cropName", projectInContext.getCropType().getCropName()
-				+ addQueryParameter("programUUID", projectInContext.getUniqueID())));
+				+ addQueryParameter("programUUID", projectInContext.getUniqueID()
+				+ addQueryParameter("searchRequestId", searchRequestId.toString()))));
 
 			final Embedded createInventoryLotsDialog = new Embedded(null, createInventoryLotsUrl);
 			createInventoryLotsDialog.setDebugId("createInventoryLotsDialog");
