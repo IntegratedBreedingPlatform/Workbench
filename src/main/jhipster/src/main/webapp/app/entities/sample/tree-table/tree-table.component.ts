@@ -22,6 +22,9 @@ const AUTH_PARAMS = {
     loggedInUserId
 };
 
+/**
+ * TODO tree state persist
+ */
 @Component({
     selector: 'jhi-tree-table',
     animations: [ModalAnimation],
