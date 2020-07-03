@@ -1,24 +1,20 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 import { BmsjHipsterSharedModule } from '../../shared';
-import {
-    SampleService,
-    SampleComponent,
-    sampleRoute,
-    SampleResolvePagingParams,
-    SampleManagerComponent
-} from './';
+import { SampleComponent, SampleManagerComponent, SampleResolvePagingParams, sampleRoute, SampleService } from './';
 import { TreeTableComponent } from './tree-table/tree-table.component';
 import { SampleTreeService } from './tree-table/sample-tree.service';
 
-import {SampleSearchListComponent} from './sample-search-list.component';
-import {SampleListService} from './sample-list.service';
-import {FileDownloadHelper} from './file-download.helper';
-import {SampleImportPlateComponent} from './sample-import-plate.component';
-import {ExcelService} from './excel.service';
-import {SampleImportPlateMappingComponent} from './sample-import-plate-mapping.component';
-import {SampleContext} from './sample.context';
+import { SampleSearchListComponent } from './sample-search-list.component';
+import { SampleListService } from './sample-list.service';
+import { FileDownloadHelper } from './file-download.helper';
+import { SampleImportPlateComponent } from './sample-import-plate.component';
+import { ExcelService } from './excel.service';
+import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
+import { SampleContext } from './sample.context';
+import { SampleListGobiiSubmissionComponent } from './sample-list-gobii-submission.component';
+import { GobiiContactService } from './gobii-contact.service';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -35,18 +31,21 @@ const ENTITY_STATES = [
         TreeTableComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
-        SampleImportPlateMappingComponent
+        SampleImportPlateMappingComponent,
+        SampleListGobiiSubmissionComponent
     ],
     entryComponents: [
         SampleComponent,
         SampleManagerComponent,
         TreeTableComponent,
         SampleImportPlateComponent,
-        SampleImportPlateMappingComponent
+        SampleImportPlateMappingComponent,
+        SampleListGobiiSubmissionComponent
     ],
     providers: [
         SampleService,
         SampleListService,
+        GobiiContactService,
         SampleResolvePagingParams,
         SampleTreeService,
         FileDownloadHelper,

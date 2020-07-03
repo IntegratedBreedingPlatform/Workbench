@@ -1,0 +1,34 @@
+<jhi-app-modal modalId="{{modalId}}" modalTitle="Submit sample list to GOBii" modalSize="small" closebtn="true" (onClose)="close()">
+
+	<div class="row form-group clearfix">
+		<div class="col-xs-12 col-md-12">
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-xs-12 col-md-12">
+			<label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<div class="col-xs-7 col-md-7">
+			<label class="control-label add_top_padding label-bold">Select GOBii Contact:</label><span
+			class="required"> *</span>
+		</div>
+		<div class="col-xs-5 col-md-5">
+			<select class="form-control" style="width: 205px" name="dropdownGobiiContact" id="dropdownGobiiContact" [(ngModel)]="gobiiContactId" required>
+				<option *ngFor="let contact of gobiiContacts | async" [value]="contact.id">
+					<label>{{contact.firstName}} {{contact.lastName}}</label>
+				</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" (click)="close()">Cancel
+		</button>
+		<button type="button" class="btn btn-primary" (click)="submit()" aria-hidden="true">Proceed
+		</button>
+	</div>
+</jhi-app-modal>

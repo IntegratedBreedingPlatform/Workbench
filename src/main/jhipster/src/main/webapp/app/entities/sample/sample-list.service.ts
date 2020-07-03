@@ -52,7 +52,7 @@ export class SampleListService {
             params: options});
     }
 
-    submitToGOBii(sampleListId: number) {
+    submitToGOBii(sampleListId: number, gobiiContactId: number) {
         return this.http.post(`${this.resourceUrl}/${sampleListId}/submitToGOBii`, null);
     }
 

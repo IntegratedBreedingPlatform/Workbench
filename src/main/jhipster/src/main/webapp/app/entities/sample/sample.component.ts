@@ -1,18 +1,16 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
-// import { ITEMS_PER_PAGE } from '../../shared';
-import { ITEMS_PER_PAGE, convertErrorResponse } from '../../shared';
+import { convertErrorResponse, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
-import {ModalService} from '../../shared/modal/modal.service';
+import { ModalService } from '../../shared/modal/modal.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -113,10 +111,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     submitToGOBii() {
-        this.sampleListService.submitToGOBii(this.sampleList.id).subscribe((resp: number) => {;
-            this.jhiAlertService.success('bmsjHipsterApp.sample.gobii.submit.success', { sampleList: this.sampleList.listName })
-            this.sampleList.gobiiProjectId = resp;
-        }, (resp) => convertErrorResponse(resp, this.jhiAlertService));
+        this.modalService.open('gobii-submission-modal');
     }
 
     ngOnInit() {
