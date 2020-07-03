@@ -124,8 +124,8 @@ export class LotCreationDialogComponent implements OnInit {
         this.isSuccess = true;
     }
 
-    private onError(error) {
-        const msg = formatErrorList(error.errors);
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
         if (msg) {
             this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: {param: msg} }, null);
         } else {
