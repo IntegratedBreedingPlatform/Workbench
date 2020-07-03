@@ -5,7 +5,6 @@ import { Subject, Observable } from 'rxjs';
 @Injectable()
 export class Principal {
     private userIdentity: any;
-    private authenticated = false;
     private authenticationState = new Subject<any>();
 
     constructor(
@@ -17,7 +16,7 @@ export class Principal {
     }
 
     hasAnyAuthorityDirect(authorities: string[]): boolean {
-        if (!this.authenticated || !this.userIdentity || !this.userIdentity.authorities) {
+        if (!this.userIdentity || !this.userIdentity.authorities) {
             return false;
         }
 
