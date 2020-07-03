@@ -42,6 +42,10 @@ Generic styles
 .footer {
     border-top: 1px solid rgba(0, 0, 0, .125);
 }
+/* To be useful for elements that has display attribute */
+[hidden] {
+    display: none !important;
+}
 /* ==========================================================================
 make sure browsers use the pointer cursor for anchors, even with no href
 ========================================================================== */

@@ -1,6 +1,6 @@
 <div class="modal-body">
 	<form name="form" #f="ngForm" class="form-horizontal">
-		<div class="form-group">
+		<div class="form-group" [class.has-error]="!stockIdPrefix.valid">
 			<label for="stockIdPrefix" class="col-sm-4 control-label control-label-left">Stock ID Prefix
 				<i class="fa fa-info-circle col-1" data-toggle="tooltip" data-placement="top" title="If no prefix is specified, the default SID prefix will be used"></i></label>
 			<div class="col-sm-4">
@@ -8,19 +8,19 @@
 			</div>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group" [class.has-error]="!dropdownStorageLocation.valid || !dropdownFavoriteLocation.valid">
 			<label class="col-sm-4 control-label control-label-left">
 				Storage Location
 			</label>
 			<div class="col-sm-4">
 				<div class="form-group">
 					<div class="col-sm-12">
-						<select *ngIf="!favoriteLocation" class="form-control" name="dropdownStorageLocation" id="dropdownStorageLocation" [(ngModel)]="storageLocIdSelected" required>
+						<select [hidden]="favoriteLocation" class="form-control" name="dropdownStorageLocation" id="dropdownStorageLocation" #dropdownStorageLocation="ngModel" [(ngModel)]="storageLocIdSelected" [required]="!favoriteLocation">
 							<option *ngFor="let location of storageLocations | async" [value]="location.id">
 								<label>{{location.name}}</label>
 							</option>
 						</select>
-						<select *ngIf="favoriteLocation" class="form-control" name="dropdownFavoriteLocation" id="dropdownFavoriteLocation" [(ngModel)]="favoriteLocIdSelected" required>
+						<select [hidden]="!favoriteLocation" class="form-control" name="dropdownFavoriteLocation" id="dropdownFavoriteLocation" #dropdownFavoriteLocation="ngModel" [(ngModel)]="favoriteLocIdSelected" [required]="favoriteLocation">
 							<option *ngFor="let location of favoriteLocations | async" [value]="location.id">
 								<label>{{location.name}}</label>
 							</option>
