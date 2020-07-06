@@ -55,7 +55,11 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.codingAndGroupingOptions = this.addItem(this.messageSource.getMessage(Message.CODING_AND_GROUPING_OPTIONS));
 		this.menuGroupLines = this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.GROUP));
 		this.menuAssignCodes = this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.ASSIGN_CODES));
-		this.createInventoryLots = this.addItem(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM));
+		try {
+			this.addCreateInventoryLotsLink();
+		} catch (final AccessDeniedException e) {
+			// NOOP
+		}
 		try {
 			this.layoutAdminLink();
 		} catch (final AccessDeniedException e) {
@@ -186,6 +190,11 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	protected void layoutAdminLink() {
 		this.removeSelectedGermplasm = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.REMOVE_SELECTED_GERMPLASM));
 		this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.UNGROUP));
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')")
+	private void addCreateInventoryLotsLink() {
+		this.createInventoryLots = this.addItem(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM));
 	}
 
 	protected void setListEditingOptions(final ContextMenuItem listEditingOptions) {
