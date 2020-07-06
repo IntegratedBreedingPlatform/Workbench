@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../shared/inventory/model/lot.model';
 import { Transaction } from '../../shared/inventory/model/transaction.model';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
-import { MANAGE_LOT_PERMISSIONS } from '../../shared/auth/permissions';
 import { TransactionService } from '../../shared/inventory/service/transaction.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { HttpResponse } from '@angular/common/http';
 import { LotService } from '../../shared/inventory/service/lot.service';
 import { InventoryService } from '../../shared/inventory/service/inventory.service';
 import { Location } from '../../shared/model/location.model';
@@ -23,7 +20,6 @@ import { SearchComposite } from '../../shared/model/search-composite';
 export class LotCreationDialogComponent implements OnInit {
 
     STOCK_ID_PREFIX_REGEX = '(^\\w*[a-zA-Z]$|^$)';
-    CREATE_DEPOSIT_INVENTORY_PERMISSION = [...MANAGE_LOT_PERMISSIONS, 'DEPOSIT_INVENTORY', 'CREATE_CONFIRMED_DEPOSITS'];
 
     /** Indicates that the creation process has finished */
     isSuccess = false;
