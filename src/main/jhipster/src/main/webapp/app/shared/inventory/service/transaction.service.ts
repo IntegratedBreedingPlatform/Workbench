@@ -13,7 +13,7 @@ export class TransactionService {
 
     createConfirmedDeposits(lotDepositRequest: any) {
         return this.http.post<any>(
-            SERVER_API_URL + `crops/${this.context.cropName}/transactions/confirmed-deposits-lists`, lotDepositRequest, { observe: 'response' })
-            .pipe(map((res) => res.body));
+            SERVER_API_URL + `crops/${this.context.cropName}/transactions/confirmed-deposits-lists?programUUID=` + this.context.programUUID,
+            lotDepositRequest);
     }
 }

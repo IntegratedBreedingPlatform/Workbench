@@ -14,6 +14,7 @@ export class LotService {
     }
 
     createLots(lotGeneratorBatchRequest): Observable<string[]> {
-        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/lots/generation`, lotGeneratorBatchRequest);
+        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/lots/generation?programUUID=` + this.context.programUUID,
+            lotGeneratorBatchRequest);
     }
 }
