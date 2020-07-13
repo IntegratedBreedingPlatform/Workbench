@@ -11,6 +11,7 @@ import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
 import { ModalService } from '../../shared/modal/modal.service';
+import { GobiiService } from './gobii.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -40,6 +41,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     reverse: any;
     crop: string;
     private paramSubscription: Subscription;
+    gobiiSubmissionStatus: boolean;
 
     constructor(
         private sampleService: SampleService,
@@ -51,7 +53,8 @@ export class SampleComponent implements OnInit, OnDestroy {
         private router: Router,
         private eventManager: JhiEventManager,
         private fileDownloadHelper: FileDownloadHelper,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private gobiiService: GobiiService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -69,6 +72,10 @@ export class SampleComponent implements OnInit, OnDestroy {
 
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
+        this.gobiiService.getGobiiSubmissionStatus().subscribe((resp) => {
+            this.gobiiSubmissionStatus = resp;
+        })
+
     }
 
     loadAll() {

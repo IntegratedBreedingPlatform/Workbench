@@ -14,7 +14,7 @@ import { ExcelService } from './excel.service';
 import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
 import { SampleContext } from './sample.context';
 import { SampleListGobiiSubmissionComponent } from './sample-list-gobii-submission.component';
-import { GobiiContactService } from './gobii-contact.service';
+import { GobiiService } from './gobii.service';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -45,7 +45,7 @@ const ENTITY_STATES = [
     providers: [
         SampleService,
         SampleListService,
-        GobiiContactService,
+        GobiiService,
         SampleResolvePagingParams,
         SampleTreeService,
         FileDownloadHelper,

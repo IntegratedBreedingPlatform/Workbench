@@ -22,7 +22,7 @@
 					<li>
 						<a (click)="importPlate()">Import Plate Information</a>
 					</li>
-					<li>
+					<li *ngIf="gobiiSubmissionStatus">
 						<a (click)="submitToGOBii()">Submit to GOBii</a>
 					</li>
 				</ul>

@@ -3,7 +3,7 @@ import { ModalService } from '../../shared/modal/modal.service';
 import { SampleContext } from './sample.context';
 import { JhiAlertService } from 'ng-jhipster';
 import { SampleListService } from './sample-list.service';
-import { GobiiContactService } from './gobii-contact.service';
+import { GobiiService } from './gobii.service';
 import { convertErrorResponse } from '../../shared';
 import { GobiiContact } from './gobii-contact.model';
 
@@ -26,8 +26,8 @@ export class SampleListGobiiSubmissionComponent {
                 private alertService: JhiAlertService,
                 private sampleContext: SampleContext,
                 private sampleListService: SampleListService,
-                private gobiiContactService: GobiiContactService) {
-        this.gobiiContacts = this.gobiiContactService.getAll().toPromise();
+                private gobiiService: GobiiService) {
+        this.gobiiContacts = this.gobiiService.getAllContacts().toPromise();
     }
 
     submit() {
