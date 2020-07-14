@@ -19,7 +19,11 @@ import org.generationcp.middleware.domain.gms.search.GermplasmSearchParameter;
 import org.generationcp.middleware.domain.inventory.GermplasmInventory;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
+import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.junit.Before;
@@ -54,6 +58,10 @@ public class GermplasmQueryTest {
 	public static final String GERMPLSM_SCALE = "kg";
 	public static final String TEST_CROSS_EXPANSION_STRING = "TEST CROSS EXPANSION STRING";
 	public static final String TEST_GERMPLASM_NAME = "TEST GERMPLASM NAME";
+	public static final Integer TEST_CROSS_EXPANSION_FGID = 1;
+	public static final String TEST_CROSS_EXPANSION_FGID_NAME = "FGID NAME";
+	public static final Integer TEST_CROSS_EXPANSION_MGID = 2;
+	public static final String TEST_CROSS_EXPANSION_MGID_NAME = "MGID NAME";
 	public static final String TEST_DASH_STRING = "-";
 	public static final int TEST_GID = 0;
 	public static final Integer TEST_SEED_RES_COUNT = 10;
@@ -75,6 +83,8 @@ public class GermplasmQueryTest {
 	private PedigreeService pedigreeService;
 	@Mock
 	private CrossExpansionProperties crossExpansionProperties;
+	@Mock
+	private PedigreeDataManager pedigreeDataManager;
 	private final GermplasmSearchParameter germplasmSearchParameter =
 			new GermplasmSearchParameter(GermplasmQueryTest.SEARCH_STRING, Operation.LIKE);
 	private final List<Germplasm> allGermplasm = new ArrayList<>();
@@ -173,7 +183,8 @@ public class GermplasmQueryTest {
 		final Germplasm germplasm = this.allGermplasm.get(0);
 		final Item item = this.query.getGermplasmItem(germplasm, 1,
 			Collections.singletonMap(germplasm.getGid(), GermplasmQueryTest.TEST_CROSS_EXPANSION_STRING),
-			Collections.singletonMap(germplasm.getGid(), GermplasmQueryTest.TEST_GERMPLASM_NAME));
+			Collections.singletonMap(germplasm.getGid(), GermplasmQueryTest.TEST_GERMPLASM_NAME),
+			this.createPedigreeTree(germplasm.getGid()));
 
 		final List<String> itemPropertyIDList = this.itemPropertyIds;
 
@@ -226,10 +237,10 @@ public class GermplasmQueryTest {
 		Assert.assertEquals(germplasm.getGermplasmDate(), item.getItemProperty(ColumnLabels.GERMPLASM_DATE.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodCode(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodId(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_NUMBER.getName()).getValue());
-		Assert.assertEquals(germplasm.getFemaleParentPreferredID(), item.getItemProperty(ColumnLabels.FGID.getName()).getValue());
-		Assert.assertEquals(germplasm.getFemaleParentPreferredName(), item.getItemProperty(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).getValue());
-		Assert.assertEquals(germplasm.getMaleParentPreferredID(), item.getItemProperty(ColumnLabels.MGID.getName()).getValue());
-		Assert.assertEquals(germplasm.getMaleParentPreferredName(), item.getItemProperty(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID, item.getItemProperty(ColumnLabels.FGID.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME, item.getItemProperty(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID, item.getItemProperty(ColumnLabels.MGID.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME, item.getItemProperty(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName()).getValue());
 		Assert.assertEquals(germplasm.getGroupSourceGID(), item.getItemProperty(ColumnLabels.GROUP_SOURCE_GID.getName()).getValue());
 		Assert.assertEquals(germplasm.getGroupSourcePreferredName(), item.getItemProperty(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName()).getValue());
 		Assert.assertEquals(germplasm.getImmediateSourceGID(), item.getItemProperty(ColumnLabels.IMMEDIATE_SOURCE_GID.getName()).getValue());
@@ -360,5 +371,44 @@ public class GermplasmQueryTest {
 
 		Assert.assertTrue(result.contains(ORI_COUN));
 
+	}
+
+	private Map<Integer, GermplasmPedigreeTree> createPedigreeTree(final Integer gid) {
+		final Map<Integer, GermplasmPedigreeTree> treeNodeMap = new HashMap<>();
+		final GermplasmPedigreeTreeNode rootNode = new GermplasmPedigreeTreeNode();
+		final Germplasm rootGermplasm = new Germplasm(gid);
+		rootNode.setGermplasm(rootGermplasm);
+
+		final List<GermplasmPedigreeTreeNode> parentNodeList = new ArrayList<>();
+
+		final Name name = new Name();
+		name.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME);
+		final Germplasm femaleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID);
+		femaleGermplasm.setNames(Arrays.asList(name));
+		femaleGermplasm.setSelectionHistory("femaleSelectionHistory");
+		femaleGermplasm.setPreferredName(name);
+		final GermplasmPedigreeTreeNode femaleTreeNode = new GermplasmPedigreeTreeNode();
+		femaleTreeNode.setGermplasm(femaleGermplasm);
+		rootNode.setFemaleParent(femaleTreeNode);
+		parentNodeList.add(femaleTreeNode);
+
+		final Name maleName = new Name();
+		maleName.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME);
+		final Germplasm maleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID);
+		maleGermplasm.setNames(Arrays.asList(maleName));
+		maleGermplasm.setSelectionHistory("femaleSelectionHistory");
+		maleGermplasm.setPreferredName(maleName);
+		final GermplasmPedigreeTreeNode maleTreeNode = new GermplasmPedigreeTreeNode();
+		maleTreeNode.setGermplasm(maleGermplasm);
+
+		rootNode.setFemaleParent(maleTreeNode);
+		parentNodeList.add(maleTreeNode);
+
+		rootNode.setLinkedNodes(parentNodeList);
+		final GermplasmPedigreeTree tree = new GermplasmPedigreeTree();
+		tree.setRoot(rootNode);
+
+		treeNodeMap.put(gid, tree);
+		return treeNodeMap;
 	}
 }

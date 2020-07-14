@@ -30,11 +30,15 @@ import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.gms.search.GermplasmSearchParameter;
 import org.generationcp.middleware.domain.inventory.GermplasmInventory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
@@ -73,6 +77,9 @@ public class GermplasmQuery implements Query {
 
 	@Resource
 	private CrossExpansionProperties crossExpansionProperties;
+
+	@Resource
+	private PedigreeDataManager pedigreeDataManager;
 
 	private static final List<String> DEFAULT_COLUMNS = new ArrayList<>();
 
@@ -144,9 +151,10 @@ public class GermplasmQuery implements Query {
 		final Map<Integer, String> pedigreeStringMap =
 				this.pedigreeService.getCrossExpansions(new HashSet<>(gids), null, this.crossExpansionProperties);
 		final Map<Integer, String> preferredNamesMap = this.germplasmDataManager.getPreferredNamesByGids(gids);
+		final Map<Integer, GermplasmPedigreeTree> pedigreeTreeMap = this.pedigreeDataManager.generatePedigreeTreeMap(new HashSet<>(gids), this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName()) + 1, false);
 
 		for (int i = 0; i < germplasmResults.size(); i++) {
-			items.add(this.getGermplasmItem(germplasmResults.get(i), i + startIndex, pedigreeStringMap, preferredNamesMap));
+			items.add(this.getGermplasmItem(germplasmResults.get(i), i + startIndex, pedigreeStringMap, preferredNamesMap, pedigreeTreeMap));
 		}
 
 		return items;
@@ -169,10 +177,21 @@ public class GermplasmQuery implements Query {
 
 	@SuppressWarnings("rawtypes")
 	Item getGermplasmItem(final Germplasm germplasm, final int index, final Map<Integer, String> pedigreeStringMap,
-			final Map<Integer, String> preferredNamesMap) {
+			final Map<Integer, String> preferredNamesMap, final Map<Integer, GermplasmPedigreeTree> pedigreeTreeMap) {
 
 		final Integer gid = germplasm.getGid();
 		final GermplasmInventory inventoryInfo = germplasm.getInventoryInfo();
+		Germplasm female = null;
+		Germplasm male = null;
+		if(pedigreeTreeMap.containsKey(gid)) {
+			for(final GermplasmPedigreeTreeNode node : pedigreeTreeMap.get(gid).getRoot().getLinkedNodes()) {
+				if(female == null) {
+					female = node.getGermplasm();
+				} else {
+					male = node.getGermplasm();
+				}
+			}
+		}
 
 		final Item item = new PropertysetItem();
 
@@ -198,10 +217,21 @@ public class GermplasmQuery implements Query {
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName(), new ObjectProperty<>(germplasm.getMethodCode()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_NUMBER.getName(), new ObjectProperty<>(germplasm.getMethodId()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_GROUP.getName(), new ObjectProperty<>(germplasm.getMethodGroup()));
-		propertyMap.put(ColumnLabels.FGID.getName(), new ObjectProperty<>(germplasm.getFemaleParentPreferredID()));
-		propertyMap.put(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), new ObjectProperty<>(germplasm.getFemaleParentPreferredName()));
-		propertyMap.put(ColumnLabels.MGID.getName(), new ObjectProperty<>(germplasm.getMaleParentPreferredID()));
-		propertyMap.put(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), new ObjectProperty<>(germplasm.getMaleParentPreferredName()));
+		if (female != null) {
+			propertyMap.put(ColumnLabels.FGID.getName(), new ObjectProperty<>(female.getGid()));
+			propertyMap.put(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), new ObjectProperty<>(female.getPreferredName().getNval()));
+		} else {
+			propertyMap.put(ColumnLabels.FGID.getName(), new ObjectProperty<>("-"));
+			propertyMap.put(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), new ObjectProperty<>("-"));
+
+		}
+		if(male != null) {
+			propertyMap.put(ColumnLabels.MGID.getName(), new ObjectProperty<>(male.getGid()));
+			propertyMap.put(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), new ObjectProperty<>(male.getPreferredName().getNval()));
+		} else {
+			propertyMap.put(ColumnLabels.MGID.getName(), new ObjectProperty<>("-"));
+			propertyMap.put(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), new ObjectProperty<>("-"));
+		}
 		propertyMap.put(ColumnLabels.GROUP_SOURCE_GID.getName(), new ObjectProperty<>(germplasm.getGroupSourceGID()));
 		propertyMap.put(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName(), new ObjectProperty<>(germplasm.getGroupSourcePreferredName()));
 		propertyMap.put(ColumnLabels.IMMEDIATE_SOURCE_GID.getName(), new ObjectProperty<>(germplasm.getImmediateSourceGID()));
@@ -280,13 +310,11 @@ public class GermplasmQuery implements Query {
 		final StringBuilder available = new StringBuilder();
 
 		if (germplasm.getInventoryInfo().getScaleForGermplsm() != null) {
-			if (GermplasmInventory.MIXED.equals(germplasm.getInventoryInfo().getScaleForGermplsm())) {
-				available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
-			} else {
+			if (!GermplasmInventory.MIXED.equals(germplasm.getInventoryInfo().getScaleForGermplsm())) {
 				available.append(germplasm.getInventoryInfo().getTotalAvailableBalance());
 				available.append(" ");
-				available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
 			}
+			available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
 
 		} else {
 			available.append("-");
