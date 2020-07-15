@@ -173,7 +173,7 @@ public class GermplasmColumnValuesGenerator {
 					if(germplasmPedigreeTree.getRoot().getLinkedNodes().size() < 2) {
 						value = Name.UNKNOWN;
 					} else {
-						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm() == null ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().toString();
+						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().intValue() == 0 ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().toString();
 					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 				} else {
@@ -213,7 +213,7 @@ public class GermplasmColumnValuesGenerator {
 					if(germplasmPedigreeTree.getRoot().getLinkedNodes().size() < 2) {
 						value = Name.UNKNOWN;
 					} else {
-						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm() == null ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getPreferredName().getNval();
+						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().intValue() == 0 ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getPreferredName().getNval();
 					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 				} else {
