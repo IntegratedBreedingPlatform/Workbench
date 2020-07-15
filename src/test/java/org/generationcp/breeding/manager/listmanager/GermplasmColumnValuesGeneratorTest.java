@@ -319,8 +319,8 @@ public class GermplasmColumnValuesGeneratorTest {
 		final String columnName = ColumnLabels.DESIGNATION.getName();
 		final String prefix = "LEAFYNODE";
 		final String suffix = "4EV";
-		final Integer startNumber = 100;
-		final Integer numberofZeros = 5;
+		final int startNumber = 100;
+		final int numberofZeros = 5;
 		final boolean withSpaceBetweenPrefixAndCode = true;
 		final boolean withSpaceBetweenSuffixAndCode = false;
 
@@ -343,8 +343,8 @@ public class GermplasmColumnValuesGeneratorTest {
 		final String columnName = ColumnLabels.DESIGNATION.getName();
 		final String prefix = "LEAFYNODE";
 		final String suffix = "4EV";
-		final Integer startNumber = 100;
-		final Integer numberofZeros = 0;
+		final int startNumber = 100;
+		final int numberofZeros = 0;
 		final boolean withSpaceBetweenPrefixAndCode = false;
 		final boolean withSpaceBetweenSuffixAndCode = true;
 
@@ -623,8 +623,8 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossMaleInfoColumnValuesWithParentNAME() {
-		List<Germplasm> germplasms = this.generateListofGermplasm(true, 1, 2);
-		ArrayList<Integer> parent = new ArrayList<>();
+		final List<Germplasm> germplasms = this.generateListofGermplasm(true, 1, 2);
+		final ArrayList<Integer> parent = new ArrayList<>();
 		parent.add(2);
 
 		final Map<Integer, String> namesMap = this.generateGIDStringMap("ABCDEFG",parent);
@@ -640,8 +640,8 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossFemaleInfoColumnValuesWithParentNAME() {
-		List<Germplasm> germplasms = this.generateListofGermplasm(true, 1, 2);
-		ArrayList<Integer> parent = new ArrayList<>();
+		final List<Germplasm> germplasms = this.generateListofGermplasm(true, 1, 2);
+		final ArrayList<Integer> parent = new ArrayList<>();
 		parent.add(1);
 
 		final Map<Integer, String> namesMap = this.generateGIDStringMap("ABCDEFG",parent);
@@ -659,7 +659,7 @@ public class GermplasmColumnValuesGeneratorTest {
 		}
 	}
 
-	private List<Germplasm> generateListofGermplasm(final boolean isDerivative, Integer femaleParent, Integer maleParent) {
+	private List<Germplasm> generateListofGermplasm(final boolean isDerivative, final Integer femaleParent, final Integer maleParent) {
 		final List<Germplasm> list = new ArrayList<>();
 		for (final Integer gid : GermplasmColumnValuesGeneratorTest.GID_LIST) {
 			final Germplasm germplasm = new Germplasm();
@@ -673,7 +673,7 @@ public class GermplasmColumnValuesGeneratorTest {
 		}
 		return list;
 	}
-	private GermplasmPedigreeTree createPedigreeTree(final Integer gid, boolean withFemaleParent, boolean withMaleParent) {
+	private GermplasmPedigreeTree createPedigreeTree(final Integer gid, final boolean withFemaleParent, final boolean withMaleParent) {
 		final GermplasmPedigreeTreeNode rootNode = new GermplasmPedigreeTreeNode();
 		final Germplasm rootGermplasm = new Germplasm(gid);
 		rootNode.setGermplasm(rootGermplasm);
@@ -714,7 +714,7 @@ public class GermplasmColumnValuesGeneratorTest {
 		return tree;
 	}
 
-	private GermplasmPedigreeTree createPedigreeTree(final Integer gid, boolean withFemaleParent, boolean withMaleParent, final String preferredFemaleName, final String preferredMaleName) {
+	private GermplasmPedigreeTree createPedigreeTree(final Integer gid, final boolean withFemaleParent, final boolean withMaleParent, final String preferredFemaleName, final String preferredMaleName) {
 		final GermplasmPedigreeTreeNode rootNode = new GermplasmPedigreeTreeNode();
 		final Germplasm rootGermplasm = new Germplasm(gid);
 		rootNode.setGermplasm(rootGermplasm);
