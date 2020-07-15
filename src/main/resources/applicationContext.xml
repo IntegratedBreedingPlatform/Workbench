@@ -489,6 +489,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="searchRequestService" factory-bean="managerFactory" factory-method="getSearchRequestService"
+		  scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 	
 </beans>
