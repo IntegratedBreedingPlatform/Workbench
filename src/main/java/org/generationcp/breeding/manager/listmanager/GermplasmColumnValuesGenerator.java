@@ -169,7 +169,12 @@ public class GermplasmColumnValuesGenerator {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
 				final GermplasmPedigreeTree germplasmPedigreeTree = this.pedigreeDataManager.generatePedigreeTree(gid, 2, false);
 				if (germplasmPedigreeTree != null && germplasmPedigreeTree.getRoot().getLinkedNodes() != null) {
-					final String value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(2).getGermplasm().getGid().toString();
+					String value = null;
+					if(germplasmPedigreeTree.getRoot().getLinkedNodes().size() < 2) {
+						value = Name.UNKNOWN;
+					} else {
+						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm() == null ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().toString();
+					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 				} else {
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
@@ -198,17 +203,18 @@ public class GermplasmColumnValuesGenerator {
 	public void setCrossMalePrefNameColumnValues(final String columnName) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
 		if (!itemIds.isEmpty()) {
-			final List<Integer> gids = this.fillColumnSource.getGidsToProcess();
-			final ImmutableMap<Integer, Germplasm> germplasmMap = this.retrieveGermplasmAndGenerateMap(gids);
-
 			final Map<Integer, List<Object>> gidToItemIdMap = new HashMap<>();
 			final List<Integer> gidsToUseForQuery = new ArrayList<>();
-
 			for (final Object itemId : itemIds) {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
 				final GermplasmPedigreeTree germplasmPedigreeTree = this.pedigreeDataManager.generatePedigreeTree(gid, 2, false);
 				if (germplasmPedigreeTree != null && germplasmPedigreeTree.getRoot().getLinkedNodes() != null) {
-					final String value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(2).getGermplasm().getPreferredName().getNval();
+					String value = null;
+					if(germplasmPedigreeTree.getRoot().getLinkedNodes().size() < 2) {
+						value = Name.UNKNOWN;
+					} else {
+						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm() == null ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getPreferredName().getNval();
+					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 				} else {
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
@@ -246,7 +252,8 @@ public class GermplasmColumnValuesGenerator {
 					String value = "-";
 					if (FillWithOption.FILL_WITH_CROSS_FEMALE_GID.equals(option)) {
 						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(0).getGermplasm().getGid().toString();
-					} else {
+
+					} else if(FillWithOption.FILL_WITH_CROSS_FEMALE_NAME.equals(option)){
 						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(0).getGermplasm().getPreferredName().getNval();
 					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
@@ -254,19 +261,6 @@ public class GermplasmColumnValuesGenerator {
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
 				}
 			}
-
-			if (!gidsToUseForQuery.isEmpty()) {
-				final Map<Integer, String> gidToNameMap = this.germplasmDataManager.getPreferredNamesByGids(gidsToUseForQuery);
-
-				for (final Integer gid : gidToNameMap.keySet()) {
-					final String prefName = gidToNameMap.get(gid);
-					final List<Object> itemIdsInMap = gidToItemIdMap.get(gid);
-					for (final Object itemId : itemIdsInMap) {
-						this.fillColumnSource.setColumnValueForItem(itemId, columnName, prefName);
-					}
-				}
-			}
-
 			this.fillColumnSource.propagateUIChanges();
 		}
 	}
@@ -391,6 +385,10 @@ public class GermplasmColumnValuesGenerator {
 
 	public void setPedigreeService(final PedigreeService pedigreeService) {
 		this.pedigreeService = pedigreeService;
+	}
+
+	public void setPedigreeDataManager(final PedigreeDataManager pedigreeDataManager) {
+		this.pedigreeDataManager = pedigreeDataManager;
 	}
 
 	public void setGroupSourceGidColumnValues(final String columnName) {

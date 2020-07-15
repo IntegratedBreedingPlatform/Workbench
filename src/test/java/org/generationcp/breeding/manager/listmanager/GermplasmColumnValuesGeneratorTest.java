@@ -7,13 +7,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.generationcp.breeding.manager.containers.GermplasmQueryTest;
 import org.generationcp.breeding.manager.listmanager.api.FillColumnSource;
 import org.generationcp.breeding.manager.listmanager.util.FillWithOption;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.service.api.PedigreeService;
@@ -22,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -41,14 +47,24 @@ public class GermplasmColumnValuesGeneratorTest {
 	@Mock
 	private FillColumnSource fillColumnSource;
 
+	@Mock
+	private PedigreeDataManager pedigreeDataManager;
+
 	@InjectMocks
 	private GermplasmColumnValuesGenerator valuesGenerator;
+
+	public static final String TEST_GERMPLASM_NAME = "TEST GERMPLASM NAME";
+	public static final Integer TEST_CROSS_EXPANSION_FGID = 1;
+	public static final String TEST_CROSS_EXPANSION_FGID_NAME = "FGID NAME";
+	public static final Integer TEST_CROSS_EXPANSION_MGID = 2;
+	public static final String TEST_CROSS_EXPANSION_MGID_NAME = "MGID NAME";
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.valuesGenerator.setGermplasmDataManager(this.germplasmDataManager);
 		this.valuesGenerator.setPedigreeService(this.pedigreeService);
+		this.valuesGenerator.setPedigreeDataManager(this.pedigreeDataManager);
 
 		Mockito.doReturn(GermplasmColumnValuesGeneratorTest.ITEMS_LIST).when(this.fillColumnSource)
 				.getItemIdsToProcess();
@@ -402,9 +418,7 @@ public class GermplasmColumnValuesGeneratorTest {
 		this.valuesGenerator.setCrossMaleGIDColumnValues(columnName);
 		// Expecting gpid2 to be set as all germplasm have gnpgs = 2
 		for (int i = 0; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
-			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
-					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName,
-					germplasmList.get(i).getGpid2().toString());
+			Mockito.verify(this.fillColumnSource).setColumnValueForItem(GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, "-");
 		}
 		Mockito.verify(this.fillColumnSource).propagateUIChanges();
 	}
@@ -412,10 +426,12 @@ public class GermplasmColumnValuesGeneratorTest {
 	@Test
 	public void testSetCrossMaleGIDColumnValuesForUnknownMaleParent() {
 		final List<Germplasm> germplasmList = this.generateListofGermplasm(false);
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), true, false);
 		// Set unknown male parent for the first germplasm
 		germplasmList.get(0).setGpid2(0);
 		Mockito.doReturn(germplasmList).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTree(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(germplasmPedigreeTree);
 
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossMaleGIDColumnValues(columnName);
@@ -425,9 +441,7 @@ public class GermplasmColumnValuesGeneratorTest {
 				Name.UNKNOWN);
 		// Expecting gpid2 to be set as all germplasm have gnpgs = 2
 		for (int i = 1; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
-			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
-					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName,
-					germplasmList.get(i).getGpid2().toString());
+			Mockito.verify(this.fillColumnSource).setColumnValueForItem(GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, Name.UNKNOWN);
 		}
 		Mockito.verify(this.fillColumnSource).propagateUIChanges();
 	}
@@ -450,16 +464,10 @@ public class GermplasmColumnValuesGeneratorTest {
 	@Test
 	public void testSetCrossMalePrefNameColumnValuesForGenerativeGermplasm() {
 		final List<Germplasm> germplasmList = this.generateListofGermplasm(false);
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), true, true, "FemaleParent", "MaleParent");
 		Mockito.doReturn(germplasmList).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
-		final Map<Integer, Integer> maleParentsMap = new HashMap<>();
-		for (final Germplasm germplasm : germplasmList) {
-			maleParentsMap.put(germplasm.getGid(), germplasm.getGpid2());
-		}
-		final Map<Integer, String> namesMap = this.generateGIDStringMap("ABCDEFG",
-				new ArrayList<>(maleParentsMap.values()));
-		Mockito.doReturn(namesMap).when(this.germplasmDataManager)
-				.getPreferredNamesByGids(ArgumentMatchers.anyListOf(Integer.class));
+		Mockito.doReturn(germplasmPedigreeTree).when(this.pedigreeDataManager).generatePedigreeTree(Matchers.anyInt(),Matchers.anyInt(),Matchers.anyBoolean());
 
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossMalePrefNameColumnValues(columnName);
@@ -468,11 +476,9 @@ public class GermplasmColumnValuesGeneratorTest {
 		// gnpgs = 2
 		for (int i = 0; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(i);
-			final Integer maleParentId2 = maleParentsMap.get(gid);
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
-					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, namesMap.get(maleParentId2));
+					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, "MaleParent");
 		}
-		Mockito.verify(this.germplasmDataManager).getPreferredNamesByGids(ArgumentMatchers.anyListOf(Integer.class));
 		Mockito.verify(this.fillColumnSource).propagateUIChanges();
 	}
 	
@@ -480,19 +486,13 @@ public class GermplasmColumnValuesGeneratorTest {
 	public void testSetCrossMalePrefNameColumnValuesForUnknownMaleParent() {
 		final List<Germplasm> germplasmList = this.generateListofGermplasm(false);
 		// Set unknown male parent for the first germplasm
-		germplasmList.get(0).setGpid2(0);
 		Mockito.doReturn(germplasmList).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
-		final Map<Integer, Integer> maleParentsMap = new HashMap<>();
-		for (final Germplasm germplasm : germplasmList) {
-			maleParentsMap.put(germplasm.getGid(), germplasm.getGpid2());
-		}
-		final Map<Integer, String> namesMap = this.generateGIDStringMap("ABCDEFG",
-				new ArrayList<>(maleParentsMap.values()));
+
 		final String unknownStringFromMiddleware = RandomStringUtils.randomAlphabetic(20);
-		namesMap.put(0, unknownStringFromMiddleware);
-		Mockito.doReturn(namesMap).when(this.germplasmDataManager)
-				.getPreferredNamesByGids(ArgumentMatchers.anyListOf(Integer.class));
+
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), false, true, "femaleName", unknownStringFromMiddleware);
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), 2, false)).thenReturn(germplasmPedigreeTree);
 
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossMalePrefNameColumnValues(columnName);
@@ -502,11 +502,11 @@ public class GermplasmColumnValuesGeneratorTest {
 				GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(0), columnName, unknownStringFromMiddleware);
 		for (int i = 1; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(i);
-			final Integer maleParentId2 = maleParentsMap.get(gid);
+			//No germplasmPedigreeTree
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
-					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, namesMap.get(maleParentId2));
+					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, "-");
 		}
-		Mockito.verify(this.germplasmDataManager).getPreferredNamesByGids(ArgumentMatchers.anyListOf(Integer.class));
+
 		Mockito.verify(this.fillColumnSource).propagateUIChanges();
 	}
 
@@ -526,16 +526,17 @@ public class GermplasmColumnValuesGeneratorTest {
 	@Test
 	public void testSetCrossFemaleGIDColumnValuesForGenerativeGermplasm() {
 		final List<Germplasm> germplasmList = this.generateListofGermplasm(false);
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), true, true);
 		Mockito.doReturn(germplasmList).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTree(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(germplasmPedigreeTree);
 
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossFemaleInfoColumnValues(columnName, FillWithOption.FILL_WITH_CROSS_FEMALE_GID);
 		// Expecting gpid1 to be set as all germplasm have gnpgs = 2
 		for (int i = 0; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
-					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName,
-					germplasmList.get(i).getGpid1().toString());
+					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, GermplasmColumnValuesGeneratorTest.TEST_CROSS_EXPANSION_FGID.toString());
 		}
 		Mockito.verify(this.fillColumnSource).propagateUIChanges();
 	}
@@ -558,16 +559,10 @@ public class GermplasmColumnValuesGeneratorTest {
 	@Test
 	public void testSetCrossFemalePrefNameColumnValuesForGenerativeGermplasm() {
 		final List<Germplasm> germplasmList = this.generateListofGermplasm(false);
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), true, true, "FemaleName", "MaleName");
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTree(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(germplasmPedigreeTree);
 		Mockito.doReturn(germplasmList).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
-		final Map<Integer, Integer> femaleParentsMap = new HashMap<>();
-		for (final Germplasm germplasm : germplasmList) {
-			femaleParentsMap.put(germplasm.getGid(), germplasm.getGpid1());
-		}
-		final Map<Integer, String> namesMap = this.generateGIDStringMap("ABCDEFG",
-				new ArrayList<>(femaleParentsMap.values()));
-		Mockito.doReturn(namesMap).when(this.germplasmDataManager)
-				.getPreferredNamesByGids(Mockito.anyListOf(Integer.class));
 
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossFemaleInfoColumnValues(columnName, FillWithOption.FILL_WITH_CROSS_FEMALE_NAME);
@@ -576,11 +571,8 @@ public class GermplasmColumnValuesGeneratorTest {
 		// gnpgs = 2
 		for (int i = 0; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(i);
-			final Integer maleParentId2 = femaleParentsMap.get(gid);
-			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
-					GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, namesMap.get(maleParentId2));
+			Mockito.verify(this.fillColumnSource).setColumnValueForItem(GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, "FemaleName");
 		}
-		Mockito.verify(this.germplasmDataManager).getPreferredNamesByGids(ArgumentMatchers.anyListOf(Integer.class));
 		Mockito.verify(this.fillColumnSource).propagateUIChanges();
 	}
 
@@ -606,10 +598,12 @@ public class GermplasmColumnValuesGeneratorTest {
 	public void testSetCrossFemalePrefNameColumnValuesForDerivativeGermplasmWithParentGID() {
 		Mockito.doReturn(this.generateListofGermplasm(true, 1, 2)).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(1, true, false);
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTree(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(germplasmPedigreeTree);
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossFemaleInfoColumnValues(columnName, FillWithOption.FILL_WITH_CROSS_FEMALE_GID);
 		for (final Object itemId : GermplasmColumnValuesGeneratorTest.ITEMS_LIST) {
-			Mockito.verify(this.fillColumnSource).setColumnValueForItem(itemId, columnName, "1");
+			Mockito.verify(this.fillColumnSource).setColumnValueForItem(itemId, columnName, GermplasmColumnValuesGeneratorTest.TEST_CROSS_EXPANSION_FGID.toString());
 		}
 	}
 
@@ -617,10 +611,13 @@ public class GermplasmColumnValuesGeneratorTest {
 	public void testSetCrossMaleGIDColumnValuesWithParentGID() {
 		Mockito.doReturn(this.generateListofGermplasm(true, 1, 2)).when(this.germplasmDataManager)
 				.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
+		final GermplasmPedigreeTree germplasmPedigreeTree = this.createPedigreeTree(GermplasmColumnValuesGeneratorTest.GID_LIST.get(0), true, true);
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTree(Matchers.anyInt(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(germplasmPedigreeTree);
+
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 		this.valuesGenerator.setCrossMaleGIDColumnValues(columnName);
 		for (final Object itemId : GermplasmColumnValuesGeneratorTest.ITEMS_LIST) {
-			Mockito.verify(this.fillColumnSource).setColumnValueForItem(itemId, columnName, "2");
+			Mockito.verify(this.fillColumnSource).setColumnValueForItem(itemId, columnName, germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().toString());
 		}
 	}
 
@@ -676,5 +673,82 @@ public class GermplasmColumnValuesGeneratorTest {
 		}
 		return list;
 	}
+	private GermplasmPedigreeTree createPedigreeTree(final Integer gid, boolean withFemaleParent, boolean withMaleParent) {
+		final GermplasmPedigreeTreeNode rootNode = new GermplasmPedigreeTreeNode();
+		final Germplasm rootGermplasm = new Germplasm(gid);
+		rootNode.setGermplasm(rootGermplasm);
 
+		final List<GermplasmPedigreeTreeNode> parentNodeList = new ArrayList<>();
+		if(withFemaleParent) {
+			final Name name = new Name();
+			name.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME);
+			final Germplasm femaleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID);
+			femaleGermplasm.setNames(Arrays.asList(name));
+			femaleGermplasm.setSelectionHistory("femaleSelectionHistory");
+			femaleGermplasm.setPreferredName(name);
+			final GermplasmPedigreeTreeNode femaleTreeNode = new GermplasmPedigreeTreeNode();
+			femaleTreeNode.setGermplasm(femaleGermplasm);
+			rootNode.setFemaleParent(femaleTreeNode);
+			parentNodeList.add(femaleTreeNode);
+		}
+
+		if(withMaleParent) {
+			final Name maleName = new Name();
+			maleName.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME);
+			final Germplasm maleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID);
+			maleGermplasm.setNames(Arrays.asList(maleName));
+			maleGermplasm.setSelectionHistory("femaleSelectionHistory");
+			maleGermplasm.setPreferredName(maleName);
+			final GermplasmPedigreeTreeNode maleTreeNode = new GermplasmPedigreeTreeNode();
+			maleTreeNode.setGermplasm(maleGermplasm);
+
+			rootNode.setFemaleParent(maleTreeNode);
+			parentNodeList.add(maleTreeNode);
+		}
+
+
+		rootNode.setLinkedNodes(parentNodeList);
+		final GermplasmPedigreeTree tree = new GermplasmPedigreeTree();
+		tree.setRoot(rootNode);
+
+		return tree;
+	}
+
+	private GermplasmPedigreeTree createPedigreeTree(final Integer gid, boolean withFemaleParent, boolean withMaleParent, final String preferredFemaleName, final String preferredMaleName) {
+		final GermplasmPedigreeTreeNode rootNode = new GermplasmPedigreeTreeNode();
+		final Germplasm rootGermplasm = new Germplasm(gid);
+		rootNode.setGermplasm(rootGermplasm);
+
+		final List<GermplasmPedigreeTreeNode> parentNodeList = new ArrayList<>();
+
+		final Name name = new Name();
+		name.setNval(preferredFemaleName);
+		final Germplasm femaleGermplasm = new Germplasm(withFemaleParent ? GermplasmColumnValuesGeneratorTest.TEST_CROSS_EXPANSION_FGID : null);
+		femaleGermplasm.setNames(Arrays.asList(name));
+		femaleGermplasm.setSelectionHistory("femaleSelectionHistory");
+		femaleGermplasm.setPreferredName(name);
+		final GermplasmPedigreeTreeNode femaleTreeNode = new GermplasmPedigreeTreeNode();
+		femaleTreeNode.setGermplasm(femaleGermplasm);
+		rootNode.setFemaleParent(femaleTreeNode);
+		parentNodeList.add(femaleTreeNode);
+
+		final Name maleName = new Name();
+		maleName.setNval(preferredMaleName);
+		final Germplasm maleGermplasm = new Germplasm(withMaleParent ? GermplasmColumnValuesGeneratorTest.TEST_CROSS_EXPANSION_MGID : null);
+		maleGermplasm.setNames(Arrays.asList(maleName));
+		maleGermplasm.setSelectionHistory("femaleSelectionHistory");
+		maleGermplasm.setPreferredName(maleName);
+		final GermplasmPedigreeTreeNode maleTreeNode = new GermplasmPedigreeTreeNode();
+		maleTreeNode.setGermplasm(maleGermplasm);
+
+		rootNode.setFemaleParent(maleTreeNode);
+		parentNodeList.add(maleTreeNode);
+
+
+		rootNode.setLinkedNodes(parentNodeList);
+		final GermplasmPedigreeTree tree = new GermplasmPedigreeTree();
+		tree.setRoot(rootNode);
+
+		return tree;
+	}
 }
