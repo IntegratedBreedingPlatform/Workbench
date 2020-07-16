@@ -372,9 +372,9 @@ public class GermplasmQuery implements Query {
 		return this.allGids;
 	}
 
-	private String getGermplasmGid(Optional<Germplasm> germplasm) {
+	private Object getGermplasmGid(Optional<Germplasm> germplasm) {
 		if (germplasm.isPresent()) {
-			return germplasm.get().getGid().toString();
+			return germplasm.get().getGid();
 		} else {
 			return "-";
 		}
