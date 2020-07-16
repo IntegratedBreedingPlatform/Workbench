@@ -23,8 +23,8 @@
 
 		<!--BREEDING ACTIVITIES-->
 		<!--MANAGE_GERMPLASM-->
-		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM')"/>
-		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM')"/>
+		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
+		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 
 
 		<!--INFORMATION_MANAGEMENT-->

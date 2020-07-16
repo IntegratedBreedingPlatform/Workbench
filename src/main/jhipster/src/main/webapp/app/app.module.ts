@@ -8,7 +8,6 @@ import { Ng2Webstorage, LocalStorageService, SessionStorageService  } from 'ngx-
 import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { BmsjHipsterSharedModule, RouteAccessService } from './shared';
 import { BmsjHipsterAppRoutingModule} from './app-routing.module';
-import { BmsjHipsterHomeModule } from './home';
 import { BmsjHipsterEntityModule } from './entities/entity.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import {
@@ -18,6 +17,7 @@ import {
 } from './layouts';
 import { LabelPrintingModule } from './label-printing/label-printing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.module';
 
 @NgModule({
     imports: [
@@ -26,9 +26,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         BmsjHipsterAppRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         BmsjHipsterSharedModule,
-        BmsjHipsterHomeModule,
         BmsjHipsterEntityModule,
-        LabelPrintingModule
+        LabelPrintingModule,
+        GermplasmManagerModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

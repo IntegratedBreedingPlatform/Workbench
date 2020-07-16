@@ -11,15 +11,6 @@ Browser Upgrade Prompt
 Generic styles
 ========================================================================== */
 
-/* Error highlight on input fields */
-.ng-valid[required], .ng-valid.required {
-    border-left: 5px solid green;
-}
-.ng-invalid:not(form) {
-    border-left: 5px solid red;
-}
-/* other generic styles */
-
 /*
 .jh-card {
     padding: 1.5%;
@@ -50,6 +41,10 @@ Generic styles
 }
 .footer {
     border-top: 1px solid rgba(0, 0, 0, .125);
+}
+/* To be useful for elements that has display attribute */
+[hidden] {
+    display: none !important;
 }
 /* ==========================================================================
 make sure browsers use the pointer cursor for anchors, even with no href
