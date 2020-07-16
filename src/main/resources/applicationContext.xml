@@ -341,11 +341,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="listDataProjectSaver" factory-bean="managerFactory"
-          factory-method="getListDataProjectSaver" scope="request">
-        <aop:scoped-proxy />
-    </bean>
-
 	<bean id="pedigreeService" factory-bean="managerFactory"
 		  factory-method="getPedigreeService" scope="request">
 		<aop:scoped-proxy />
