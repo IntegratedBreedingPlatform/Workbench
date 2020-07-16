@@ -168,7 +168,7 @@ public class GermplasmColumnValuesGenerator {
 	public void setCrossMaleGIDColumnValues(final String columnName) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
 		final Integer level = this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName());
-		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getAllGids()), level, false);
+		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getGidsToProcess()), level, false);
 
 		if (!itemIds.isEmpty()) {
 			final List<Integer> gids = this.fillColumnSource.getGidsToProcess();
@@ -212,7 +212,7 @@ public class GermplasmColumnValuesGenerator {
 	public void setCrossMalePrefNameColumnValues(final String columnName) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
 		final Integer level = this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName());
-		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getAllGids()), level, false);
+		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getGidsToProcess()), level, false);
 		if (!itemIds.isEmpty()) {
 			final Map<Integer, List<Object>> gidToItemIdMap = new HashMap<>();
 			final List<Integer> gidsToUseForQuery = new ArrayList<>();
@@ -247,7 +247,7 @@ public class GermplasmColumnValuesGenerator {
 	public void setCrossFemaleInfoColumnValues(final String columnName, final FillWithOption option) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
 		final Integer level = this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName());
-		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getAllGids()), level, false);
+		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getGidsToProcess()), level, false);
 
 		if (!itemIds.isEmpty()) {
 			final List<Integer> gids = this.fillColumnSource.getGidsToProcess();
