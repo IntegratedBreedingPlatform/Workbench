@@ -1,6 +1,7 @@
 
 package org.generationcp.breeding.manager.containers;
 
+import com.google.common.collect.HashBasedTable;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -45,6 +46,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmQueryTest {
@@ -85,6 +88,7 @@ public class GermplasmQueryTest {
 	private CrossExpansionProperties crossExpansionProperties;
 	@Mock
 	private PedigreeDataManager pedigreeDataManager;
+
 	private final GermplasmSearchParameter germplasmSearchParameter =
 			new GermplasmSearchParameter(GermplasmQueryTest.SEARCH_STRING, Operation.LIKE);
 	private final List<Germplasm> allGermplasm = new ArrayList<>();
@@ -172,7 +176,7 @@ public class GermplasmQueryTest {
 			.thenReturn(pedigreeString);
 		Mockito.when(this.germplasmDataManager.searchForGermplasm(this.germplasmSearchParameter)).thenReturn(this.currentGermplasm);
 		Mockito.when(this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(this.germplasmSearchParameter)).thenReturn(new HashSet<Integer>(this.gids));
-
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTable(Matchers.anySet(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(this.createPedigreeTree(new HashSet<Integer>(this.gids)));
 		this.searchAllParameter = new GermplasmSearchParameter(this.germplasmSearchParameter);
 		this.searchAllParameter.setStartingRow(0);
 		this.searchAllParameter.setNumberOfEntries(GermplasmQuery.RESULTS_LIMIT);
@@ -373,24 +377,15 @@ public class GermplasmQueryTest {
 
 	}
 
-	private Map<Integer, GermplasmPedigreeTree> createPedigreeTree(final Integer gid) {
-		final Map<Integer, GermplasmPedigreeTree> treeNodeMap = new HashMap<>();
-		final GermplasmPedigreeTreeNode rootNode = new GermplasmPedigreeTreeNode();
-		final Germplasm rootGermplasm = new Germplasm(gid);
-		rootNode.setGermplasm(rootGermplasm);
-
-		final List<GermplasmPedigreeTreeNode> parentNodeList = new ArrayList<>();
-
+	private com.google.common.collect.Table<Integer, String, Optional<Germplasm>> createPedigreeTree(final Integer gid) {
+		final com.google.common.collect.Table<Integer, String, Optional<Germplasm>> table = HashBasedTable.create();
 		final Name name = new Name();
 		name.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME);
 		final Germplasm femaleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID);
 		femaleGermplasm.setNames(Arrays.asList(name));
 		femaleGermplasm.setSelectionHistory("femaleSelectionHistory");
 		femaleGermplasm.setPreferredName(name);
-		final GermplasmPedigreeTreeNode femaleTreeNode = new GermplasmPedigreeTreeNode();
-		femaleTreeNode.setGermplasm(femaleGermplasm);
-		rootNode.setFemaleParent(femaleTreeNode);
-		parentNodeList.add(femaleTreeNode);
+		table.put(gid, ColumnLabels.FGID.getName(), Optional.of(femaleGermplasm));
 
 		final Name maleName = new Name();
 		maleName.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME);
@@ -398,17 +393,15 @@ public class GermplasmQueryTest {
 		maleGermplasm.setNames(Arrays.asList(maleName));
 		maleGermplasm.setSelectionHistory("femaleSelectionHistory");
 		maleGermplasm.setPreferredName(maleName);
-		final GermplasmPedigreeTreeNode maleTreeNode = new GermplasmPedigreeTreeNode();
-		maleTreeNode.setGermplasm(maleGermplasm);
+		table.put(gid, ColumnLabels.MGID.getName(), Optional.of(maleGermplasm));
+		return table;
+	}
 
-		rootNode.setFemaleParent(maleTreeNode);
-		parentNodeList.add(maleTreeNode);
-
-		rootNode.setLinkedNodes(parentNodeList);
-		final GermplasmPedigreeTree tree = new GermplasmPedigreeTree();
-		tree.setRoot(rootNode);
-
-		treeNodeMap.put(gid, tree);
-		return treeNodeMap;
+	private com.google.common.collect.Table<Integer, String, Optional<Germplasm>> createPedigreeTree(final Set<Integer> gids) {
+		final com.google.common.collect.Table<Integer, String, Optional<Germplasm>> table = HashBasedTable.create();
+		for(final Integer gid : gids) {
+			table.putAll(this.createPedigreeTree(gid));
+		}
+		return table;
 	}
 }
