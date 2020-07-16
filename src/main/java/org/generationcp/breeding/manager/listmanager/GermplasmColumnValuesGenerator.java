@@ -6,13 +6,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import javax.swing.text.html.Option;
 
+import com.google.common.collect.Table;
+import org.apache.poi.common.usermodel.Fill;
 import org.generationcp.breeding.manager.listmanager.api.FillColumnSource;
 import org.generationcp.breeding.manager.listmanager.util.FillWithOption;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
@@ -162,20 +167,24 @@ public class GermplasmColumnValuesGenerator {
 
 	public void setCrossMaleGIDColumnValues(final String columnName) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
+		final Integer level = this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName());
+		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getAllGids()), level, false);
+
 		if (!itemIds.isEmpty()) {
 			final List<Integer> gids = this.fillColumnSource.getGidsToProcess();
 			final ImmutableMap<Integer, Germplasm> germplasmMap = this.retrieveGermplasmAndGenerateMap(gids);
 			for (final Object itemId : itemIds) {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
-				final GermplasmPedigreeTree germplasmPedigreeTree = this.pedigreeDataManager.generatePedigreeTree(gid, 2, false);
-				if (germplasmPedigreeTree != null && germplasmPedigreeTree.getRoot().getLinkedNodes() != null) {
-					String value = null;
-					if(germplasmPedigreeTree.getRoot().getLinkedNodes().size() < 2) {
+				final Optional<Germplasm> maleParent = table.get(gid, ColumnLabels.MGID.getName());
+				if(maleParent.isPresent()) {
+					final String value;
+					if(maleParent.get().getGid().intValue() == 0) {
 						value = Name.UNKNOWN;
-					} else {
-						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().intValue() == 0 ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().toString();
+					} else{
+						value = maleParent.get().getGid().toString();
 					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
+
 				} else {
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
 				}
@@ -202,23 +211,21 @@ public class GermplasmColumnValuesGenerator {
 
 	public void setCrossMalePrefNameColumnValues(final String columnName) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
+		final Integer level = this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName());
+		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getAllGids()), level, false);
 		if (!itemIds.isEmpty()) {
 			final Map<Integer, List<Object>> gidToItemIdMap = new HashMap<>();
 			final List<Integer> gidsToUseForQuery = new ArrayList<>();
 			for (final Object itemId : itemIds) {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
-				final GermplasmPedigreeTree germplasmPedigreeTree = this.pedigreeDataManager.generatePedigreeTree(gid, 2, false);
-				if (germplasmPedigreeTree != null && germplasmPedigreeTree.getRoot().getLinkedNodes() != null) {
-					String value = null;
-					if(germplasmPedigreeTree.getRoot().getLinkedNodes().size() < 2) {
-						value = Name.UNKNOWN;
-					} else {
-						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getGid().intValue() == 0 ? Name.UNKNOWN : germplasmPedigreeTree.getRoot().getLinkedNodes().get(1).getGermplasm().getPreferredName().getNval();
-					}
-					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
+				final Optional<Germplasm> maleParent = table.get(gid, ColumnLabels.MGID.getName());
+				final String value;
+				if (maleParent.isPresent()) {
+					value = maleParent.get().getPreferredName().getNval();
 				} else {
-					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
+					value = "-";
 				}
+				this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 			}
 
 			if (!gidsToUseForQuery.isEmpty()) {
@@ -239,6 +246,9 @@ public class GermplasmColumnValuesGenerator {
 
 	public void setCrossFemaleInfoColumnValues(final String columnName, final FillWithOption option) {
 		final List<Object> itemIds = this.fillColumnSource.getItemIdsToProcess();
+		final Integer level = this.crossExpansionProperties.getCropGenerationLevel(this.pedigreeService.getCropName());
+		final Table<Integer, String, Optional<Germplasm>> table = this.pedigreeDataManager.generatePedigreeTable(new HashSet<>(this.fillColumnSource.getAllGids()), level, false);
+
 		if (!itemIds.isEmpty()) {
 			final List<Integer> gids = this.fillColumnSource.getGidsToProcess();
 			final ImmutableMap<Integer, Germplasm> germplasmMap = this.retrieveGermplasmAndGenerateMap(gids);
@@ -247,16 +257,18 @@ public class GermplasmColumnValuesGenerator {
 
 			for (final Object itemId : itemIds) {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
-				final GermplasmPedigreeTree germplasmPedigreeTree = this.pedigreeDataManager.generatePedigreeTree(gid, 2, false);
-				if (germplasmPedigreeTree != null && germplasmPedigreeTree.getRoot().getLinkedNodes() != null && germplasmPedigreeTree.getRoot().getLinkedNodes().size() >= 1 ) {
-					String value = "-";
+				final Optional<Germplasm> femaleParent = table.get(gid, ColumnLabels.FGID.getName());
+				if (femaleParent.isPresent()) {
+					final String value;
 					if (FillWithOption.FILL_WITH_CROSS_FEMALE_GID.equals(option)) {
-						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(0).getGermplasm().getGid().toString();
-
-					} else if(FillWithOption.FILL_WITH_CROSS_FEMALE_NAME.equals(option)){
-						value = germplasmPedigreeTree.getRoot().getLinkedNodes().get(0).getGermplasm().getPreferredName().getNval();
+						value = femaleParent.get().getGid().toString();
+					} else if (FillWithOption.FILL_WITH_CROSS_FEMALE_NAME.equals(option)) {
+						value = femaleParent.get().getPreferredName().getNval();
+					} else {
+						value = "-";
 					}
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
+
 				} else {
 					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
 				}
@@ -389,6 +401,10 @@ public class GermplasmColumnValuesGenerator {
 
 	public void setPedigreeDataManager(final PedigreeDataManager pedigreeDataManager) {
 		this.pedigreeDataManager = pedigreeDataManager;
+	}
+
+	public void setCrossExpansionProperties(final CrossExpansionProperties crossExpansionProperties) {
+		this.crossExpansionProperties = crossExpansionProperties;
 	}
 
 	public void setGroupSourceGidColumnValues(final String columnName) {
