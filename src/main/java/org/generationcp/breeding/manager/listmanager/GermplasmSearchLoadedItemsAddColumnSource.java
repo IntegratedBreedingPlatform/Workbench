@@ -88,7 +88,7 @@ public class GermplasmSearchLoadedItemsAddColumnSource implements AddColumnSourc
 
 		if (!definition.getPropertyIds().contains(columnLabel.getName())) {
 
-			definition.addProperty(columnLabel.getName(), String.class, "", false, isSortable(columnLabel.getName()));
+			definition.addProperty(columnLabel.getName(), String.class, "", false, this.isSortable(columnLabel.getName()));
 
 			this.targetTable.addGeneratedColumn(columnLabel.getName(), new Table.ColumnGenerator() {
 

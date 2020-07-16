@@ -372,7 +372,7 @@ public class GermplasmQuery implements Query {
 		return this.allGids;
 	}
 
-	private Object getGermplasmGid(Optional<Germplasm> germplasm) {
+	private Object getGermplasmGid(final Optional<Germplasm> germplasm) {
 		if (germplasm.isPresent()) {
 			return germplasm.get().getGid();
 		} else {
@@ -380,7 +380,7 @@ public class GermplasmQuery implements Query {
 		}
 	}
 
-	private String getGermplasmPreferredName(Optional<Germplasm> germplasm) {
+	private String getGermplasmPreferredName(final Optional<Germplasm> germplasm) {
 		if (germplasm.isPresent()) {
 			return germplasm.get().getPreferredName().getNval();
 		} else {
