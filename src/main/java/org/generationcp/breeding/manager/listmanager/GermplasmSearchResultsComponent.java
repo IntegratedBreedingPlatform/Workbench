@@ -19,6 +19,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.gms.search.GermplasmSearchParameter;
+import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.Name;
@@ -416,31 +417,34 @@ public class GermplasmSearchResultsComponent extends VerticalLayout
 		this.allGids = new ArrayList<>();
 		final GermplasmQueryFactory factory = this.createGermplasmQueryFactory(searchParameter);
 		final LazyQueryContainer container = this.createContainer(factory);
+		try {
+			this.matchingGermplasmTable.setContainerDataSource(container);
+			this.matchingGermplasmTable.setImmediate(true);
 
-		this.matchingGermplasmTable.setContainerDataSource(container);
-		this.matchingGermplasmTable.setImmediate(true);
+			// set the current page to first page before updating the entries with the new search results
+			// This triggers the page change listener that enables/disables pagination controls properly
+			this.matchingGermplasmTable.setCurrentPage(1);
 
-		// set the current page to first page before updating the entries with the new search results
-		// This triggers the page change listener that enables/disables pagination controls properly
-		this.matchingGermplasmTable.setCurrentPage(1);
+			this.hideInternalGIDColumn();
 
-		this.hideInternalGIDColumn();
+			// GermplasmQueryFactory#getNumberOfItems must be called first to retrieve list of all matched GIDs
+			this.updateNoOfEntries(factory.getNumberOfItems());
+			this.allGids = factory.getAllGids();
 
-		// GermplasmQueryFactory#getNumberOfItems must be called first to retrieve list of all matched GIDs
-		this.updateNoOfEntries(factory.getNumberOfItems());
-		this.allGids = factory.getAllGids();
+			// update paged table controls given the latest table entries
+			this.matchingGermplasmTableWithSelectAll.updateSelectAllCheckboxes();
 
-		// update paged table controls given the latest table entries
-		this.matchingGermplasmTableWithSelectAll.updateSelectAllCheckboxes();
+			if (!this.matchingGermplasmTable.getItemIds().isEmpty()) {
+				this.updateActionMenuOptions(true);
 
-		if (!this.matchingGermplasmTable.getItemIds().isEmpty()) {
-			this.updateActionMenuOptions(true);
-
-		} else {
-			throw new BreedingManagerSearchException(Message.NO_SEARCH_RESULTS);
+			} else {
+				throw new BreedingManagerSearchException(Message.NO_SEARCH_RESULTS);
+			}
+		} catch (final MiddlewareException e) {
+			throw new BreedingManagerSearchException(Message.ERROR_IN_GETTING_CROSSING_NAME_TYPE, e);
+		} finally {
+			GermplasmSearchResultsComponent.LOG.debug("" + monitor.stop());
 		}
-
-		GermplasmSearchResultsComponent.LOG.debug("" + monitor.stop());
 
 	}
 
