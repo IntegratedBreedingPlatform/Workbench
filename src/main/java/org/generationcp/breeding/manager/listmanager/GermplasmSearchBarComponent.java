@@ -269,13 +269,13 @@ public class GermplasmSearchBarComponent extends CssLayout
 	public void searchButtonClickAction() {
 
 		try {
-			final String q = GermplasmSearchBarComponent.this.searchField.getValue().toString();
-			final String searchType = (String) GermplasmSearchBarComponent.this.searchTypeOptions.getValue();
-			if (GermplasmSearchBarComponent.this.matchesContaining.equals(searchType)) {
-				ConfirmDialog.show(this.getSourceWindow(), GermplasmSearchBarComponent.this.messageSource.getMessage(Message.WARNING),
-					GermplasmSearchBarComponent.this.messageSource.getMessage(Message.SEARCH_TAKE_TOO_LONG_WARNING),
-					GermplasmSearchBarComponent.this.messageSource.getMessage(Message.OK),
-					GermplasmSearchBarComponent.this.messageSource.getMessage(Message.CANCEL), new ConfirmDialog.Listener() {
+			final String q = this.searchField.getValue().toString();
+			final String searchType = (String) this.searchTypeOptions.getValue();
+			if (this.matchesContaining.equals(searchType)) {
+				ConfirmDialog.show(this.getSourceWindow(), this.messageSource.getMessage(Message.WARNING),
+					this.messageSource.getMessage(Message.SEARCH_TAKE_TOO_LONG_WARNING),
+					this.messageSource.getMessage(Message.OK),
+					this.messageSource.getMessage(Message.CANCEL), new ConfirmDialog.Listener() {
 
 						private static final long serialVersionUID = 1L;
 
@@ -291,7 +291,7 @@ public class GermplasmSearchBarComponent extends CssLayout
 						}
 					});
 			} else {
-				GermplasmSearchBarComponent.this.doSearch(q);
+				this.doSearch(q);
 			}
 		} catch (final Exception e) {
 			LOG.debug(e.getMessage());

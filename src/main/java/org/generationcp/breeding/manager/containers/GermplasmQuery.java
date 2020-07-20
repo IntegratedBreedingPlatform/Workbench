@@ -283,13 +283,11 @@ public class GermplasmQuery implements Query {
 		final StringBuilder available = new StringBuilder();
 
 		if (germplasm.getInventoryInfo().getScaleForGermplsm() != null) {
-			if (GermplasmInventory.MIXED.equals(germplasm.getInventoryInfo().getScaleForGermplsm())) {
-				available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
-			} else {
+			if (!GermplasmInventory.MIXED.equals(germplasm.getInventoryInfo().getScaleForGermplsm())) {
 				available.append(germplasm.getInventoryInfo().getTotalAvailableBalance());
 				available.append(" ");
-				available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
 			}
+			available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
 
 		} else {
 			available.append("-");
