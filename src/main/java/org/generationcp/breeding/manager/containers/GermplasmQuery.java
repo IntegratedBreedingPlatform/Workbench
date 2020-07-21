@@ -76,6 +76,9 @@ public class GermplasmQuery implements Query {
 
 	private static final List<String> DEFAULT_COLUMNS = new ArrayList<>();
 
+	private boolean isValidPedigree;
+	private boolean isValidatedPedigree;
+
 	static {
 
 		GermplasmQuery.DEFAULT_COLUMNS.add(GermplasmSearchResultsComponent.CHECKBOX_COLUMN_ID);
@@ -280,13 +283,11 @@ public class GermplasmQuery implements Query {
 		final StringBuilder available = new StringBuilder();
 
 		if (germplasm.getInventoryInfo().getScaleForGermplsm() != null) {
-			if (GermplasmInventory.MIXED.equals(germplasm.getInventoryInfo().getScaleForGermplsm())) {
-				available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
-			} else {
+			if (!GermplasmInventory.MIXED.equals(germplasm.getInventoryInfo().getScaleForGermplsm())) {
 				available.append(germplasm.getInventoryInfo().getTotalAvailableBalance());
 				available.append(" ");
-				available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
 			}
+			available.append(germplasm.getInventoryInfo().getScaleForGermplsm());
 
 		} else {
 			available.append("-");
@@ -349,17 +350,39 @@ public class GermplasmQuery implements Query {
 		return stockLabel;
 	}
 
+
 	void retrieveGIDsofMatchingGermplasm() {
 
-		final GermplasmSearchParameter searchAllParameter = new GermplasmSearchParameter(this.searchParameter);
-		final Set<Integer> allGermplasmGids = this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(searchAllParameter);
+		// Validate pedigree
+		Set<Integer> allGermplasmGids = null;
+		if(!this.isValidatedPedigree) {
+			allGermplasmGids = this.validatePedigree();
+		}
 
-		this.allGids = new ArrayList<>(allGermplasmGids);
-
+		if(this.isValidPedigree) {
+			if(allGermplasmGids == null) {
+				final GermplasmSearchParameter searchAllParameter = new GermplasmSearchParameter(this.searchParameter);
+				allGermplasmGids = this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(searchAllParameter);
+			}
+			this.allGids = new ArrayList<>(allGermplasmGids);
+		}
 	}
 
 	public List<Integer> getAllGids() {
 		return this.allGids;
+	}
+
+	/**
+	 * Use to check if pedigree is valid for searched germplasm id
+	 * @return Set of Ineger of valid germplsm
+	 */
+	private Set<Integer> validatePedigree() {
+		this.isValidatedPedigree = true;
+		final GermplasmSearchParameter searchAllParameter = new GermplasmSearchParameter(this.searchParameter);
+		final Set<Integer> allGermplasmGids = this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(searchAllParameter);
+		this.pedigreeService.getCrossExpansions(new HashSet<>(allGermplasmGids), null, this.crossExpansionProperties);
+		this.isValidPedigree = true;
+		return allGermplasmGids;
 	}
 
 }
