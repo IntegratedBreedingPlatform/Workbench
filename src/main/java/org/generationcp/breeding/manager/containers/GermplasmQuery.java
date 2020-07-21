@@ -34,6 +34,7 @@ import org.generationcp.middleware.domain.inventory.GermplasmInventory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
@@ -374,7 +375,11 @@ public class GermplasmQuery implements Query {
 
 	private Object getGermplasmGid(final Optional<Germplasm> germplasm) {
 		if (germplasm.isPresent()) {
-			return germplasm.get().getGid();
+			if(germplasm.get().getGid()!=0) {
+				return germplasm.get().getGid();
+			} else {
+				return Name.UNKNOWN;
+			}
 		} else {
 			return "-";
 		}
