@@ -288,6 +288,7 @@ public class SpecifyGermplasmDetailsComponent extends VerticalLayout
 		} else if (!visible) {
 			this.pedigreeOptionComboBox.removeItem(1);
 		}
+		this.pedigreeOptionComboBox.select(3);
 	}
 
 	public Integer getPedigreeOptionGroupValue() {
