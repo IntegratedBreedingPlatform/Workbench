@@ -59,7 +59,7 @@
 			<h4 class="modal-title">Deposit</h4>
 			<div class="checkbox">
 				<label>
-					<input type="checkbox" class="form-check-input" [(ngModel)]="initialDeposit" name="depositAvailable" id="depositAvailable">
+					<input type="checkbox" class="form-check-input" [(ngModel)]="initialDeposit" name="depositAvailable" id="depositAvailable" [disabled]="studyId">
 					Initial deposit
 				</label>
 			</div>

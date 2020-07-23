@@ -28,6 +28,7 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
+    studyId;
 
     units: Promise<InventoryUnit[]>;
     storageLocations: Promise<Location[]>;
@@ -52,6 +53,13 @@ export class LotCreationDialogComponent implements OnInit {
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
 
+        if (queryParams.studyId) {
+            // studyId has value if this Lot Creation page is called from Study Manager.
+            // In this case, deposit is required.
+            this.studyId = queryParams.studyId;
+            this.initialDeposit = true;
+        }
+
         this.lot = new Lot();
         this.deposit = new Transaction();
 
@@ -69,6 +77,7 @@ export class LotCreationDialogComponent implements OnInit {
             const defaultFavoriteLocation = favoriteLocations.find((location) => location.defaultLocation);
             this.favoriteLocIdSelected = defaultFavoriteLocation ? defaultFavoriteLocation.id : favoriteLocations[0] && favoriteLocations[0].id;
         });
+
     }
 
     ngOnInit() {
