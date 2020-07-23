@@ -268,26 +268,35 @@ public class GermplasmSearchBarComponent extends CssLayout
 
 	public void searchButtonClickAction() {
 
-		final String q = GermplasmSearchBarComponent.this.searchField.getValue().toString();
-		final String searchType = (String) GermplasmSearchBarComponent.this.searchTypeOptions.getValue();
-		if (GermplasmSearchBarComponent.this.matchesContaining.equals(searchType)) {
-			ConfirmDialog.show(this.getSourceWindow(), GermplasmSearchBarComponent.this.messageSource.getMessage(Message.WARNING),
-					GermplasmSearchBarComponent.this.messageSource.getMessage(Message.SEARCH_TAKE_TOO_LONG_WARNING),
-					GermplasmSearchBarComponent.this.messageSource.getMessage(Message.OK),
-					GermplasmSearchBarComponent.this.messageSource.getMessage(Message.CANCEL), new ConfirmDialog.Listener() {
+		try {
+			final String q = this.searchField.getValue().toString();
+			final String searchType = (String) this.searchTypeOptions.getValue();
+			if (this.matchesContaining.equals(searchType)) {
+				ConfirmDialog.show(this.getSourceWindow(), this.messageSource.getMessage(Message.WARNING),
+					this.messageSource.getMessage(Message.SEARCH_TAKE_TOO_LONG_WARNING),
+					this.messageSource.getMessage(Message.OK),
+					this.messageSource.getMessage(Message.CANCEL), new ConfirmDialog.Listener() {
 
 						private static final long serialVersionUID = 1L;
 
 						@Override
 						public void onClose(final ConfirmDialog dialog) {
 							if (dialog.isConfirmed()) {
-								GermplasmSearchBarComponent.this.doSearch(q);
+								try{
+									GermplasmSearchBarComponent.this.doSearch(q);
+								} catch (final Exception e) {
+									LOG.debug(e.getMessage());
+								}
 							}
 						}
 					});
-		} else {
-			GermplasmSearchBarComponent.this.doSearch(q);
+			} else {
+				this.doSearch(q);
+			}
+		} catch (final Exception e) {
+			LOG.debug(e.getMessage());
 		}
+
 	}
 
 	private Window getSourceWindow() {
@@ -330,6 +339,9 @@ public class GermplasmSearchBarComponent extends CssLayout
 						MessageNotifier.showWarning(GermplasmSearchBarComponent.this.getWindow(),
 								GermplasmSearchBarComponent.this.messageSource.getMessage(Message.UNABLE_TO_SEARCH),
 								GermplasmSearchBarComponent.this.messageSource.getMessage(e.getErrorMessage()));
+					} else if (Message.ERROR_IN_GETTING_CROSSING_NAME_TYPE.equals(e.getErrorMessage())) {
+						final String gid = e.getCause().getMessage().replaceAll("\\D+", "");
+						MessageNotifier.showError(GermplasmSearchBarComponent.this.getWindow(), "Error with Cross Expansion", String.format("There is a data problem that prevents the generation of the cross expansion for GID '%s'. Please contact your administrator", gid));
 					} else {
 						// case for no results, database error
 						MessageNotifier.showWarning(GermplasmSearchBarComponent.this.getWindow(),

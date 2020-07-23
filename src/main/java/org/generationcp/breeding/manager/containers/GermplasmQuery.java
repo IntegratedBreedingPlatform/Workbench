@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Resource;
-import javax.swing.text.html.Option;
 
 import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListener;
 import org.generationcp.breeding.manager.listmanager.GermplasmSearchResultsComponent;
@@ -82,6 +81,9 @@ public class GermplasmQuery implements Query {
 	private PedigreeDataManager pedigreeDataManager;
 
 	private static final List<String> DEFAULT_COLUMNS = new ArrayList<>();
+
+	private boolean isValidPedigree;
+	private boolean isValidatedPedigree;
 
 	static {
 
@@ -360,17 +362,39 @@ public class GermplasmQuery implements Query {
 		return stockLabel;
 	}
 
+
 	void retrieveGIDsofMatchingGermplasm() {
 
-		final GermplasmSearchParameter searchAllParameter = new GermplasmSearchParameter(this.searchParameter);
-		final Set<Integer> allGermplasmGids = this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(searchAllParameter);
+		// Validate pedigree
+		Set<Integer> allGermplasmGids = null;
+		if(!this.isValidatedPedigree) {
+			allGermplasmGids = this.validatePedigree();
+		}
 
-		this.allGids = new ArrayList<>(allGermplasmGids);
-
+		if(this.isValidPedigree) {
+			if(allGermplasmGids == null) {
+				final GermplasmSearchParameter searchAllParameter = new GermplasmSearchParameter(this.searchParameter);
+				allGermplasmGids = this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(searchAllParameter);
+			}
+			this.allGids = new ArrayList<>(allGermplasmGids);
+		}
 	}
 
 	public List<Integer> getAllGids() {
 		return this.allGids;
+	}
+
+	/**
+	 * Use to check if pedigree is valid for searched germplasm id
+	 * @return Set of Ineger of valid germplsm
+	 */
+	private Set<Integer> validatePedigree() {
+		this.isValidatedPedigree = true;
+		final GermplasmSearchParameter searchAllParameter = new GermplasmSearchParameter(this.searchParameter);
+		final Set<Integer> allGermplasmGids = this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(searchAllParameter);
+		this.pedigreeService.getCrossExpansions(new HashSet<>(allGermplasmGids), null, this.crossExpansionProperties);
+		this.isValidPedigree = true;
+		return allGermplasmGids;
 	}
 
 	private Object getGermplasmGid(final Optional<Germplasm> germplasm) {
@@ -392,5 +416,4 @@ public class GermplasmQuery implements Query {
 			return "-";
 		}
 	}
-
 }
