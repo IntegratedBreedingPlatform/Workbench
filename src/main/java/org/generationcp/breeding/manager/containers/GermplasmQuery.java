@@ -397,10 +397,10 @@ public class GermplasmQuery implements Query {
 		return allGermplasmGids;
 	}
 
-	private Object getGermplasmGid(final Optional<Germplasm> germplasm) {
+	private String getGermplasmGid(final Optional<Germplasm> germplasm) {
 		if (germplasm.isPresent()) {
 			if(germplasm.get().getGid()!=0) {
-				return germplasm.get().getGid();
+				return String.valueOf(germplasm.get().getGid());
 			} else {
 				return Name.UNKNOWN;
 			}

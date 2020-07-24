@@ -241,9 +241,9 @@ public class GermplasmQueryTest {
 		Assert.assertEquals(germplasm.getGermplasmDate(), item.getItemProperty(ColumnLabels.GERMPLASM_DATE.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodCode(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodId(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_NUMBER.getName()).getValue());
-		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID, item.getItemProperty(ColumnLabels.FGID.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID.toString(), item.getItemProperty(ColumnLabels.FGID.getName()).getValue());
 		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME, item.getItemProperty(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).getValue());
-		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID, item.getItemProperty(ColumnLabels.MGID.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID.toString(), item.getItemProperty(ColumnLabels.MGID.getName()).getValue());
 		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME, item.getItemProperty(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName()).getValue());
 		Assert.assertEquals(germplasm.getGroupSourceGID(), item.getItemProperty(ColumnLabels.GROUP_SOURCE_GID.getName()).getValue());
 		Assert.assertEquals(germplasm.getGroupSourcePreferredName(), item.getItemProperty(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName()).getValue());
