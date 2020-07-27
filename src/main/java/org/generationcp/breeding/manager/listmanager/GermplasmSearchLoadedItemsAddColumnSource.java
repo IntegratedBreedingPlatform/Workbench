@@ -88,7 +88,7 @@ public class GermplasmSearchLoadedItemsAddColumnSource implements AddColumnSourc
 
 		if (!definition.getPropertyIds().contains(columnLabel.getName())) {
 
-			definition.addProperty(columnLabel.getName(), String.class, "", false, true);
+			definition.addProperty(columnLabel.getName(), String.class, "", false, this.isSortable(columnLabel.getName()));
 
 			this.targetTable.addGeneratedColumn(columnLabel.getName(), new Table.ColumnGenerator() {
 
@@ -168,4 +168,11 @@ public class GermplasmSearchLoadedItemsAddColumnSource implements AddColumnSourc
 		this.ontologyDataManager = ontologyDataManager;
 	}
 
+	private boolean isSortable(final String columnName) {
+		return !ColumnLabels.MGID.getName().equals(columnName) &&
+		!ColumnLabels.FGID.getName().equals(columnName) &&
+		!ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName().equals(columnName) &&
+		!ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName().equals(columnName);
+
+	}
 }
