@@ -109,7 +109,8 @@ export class LotCreationDialogComponent implements OnInit {
             const lotDepositRequest = {
                 selectedLots: <SearchComposite>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
-                depositsPerUnit: {}
+                depositsPerUnit: {},
+                sourceStudy: this.studyId
             };
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
