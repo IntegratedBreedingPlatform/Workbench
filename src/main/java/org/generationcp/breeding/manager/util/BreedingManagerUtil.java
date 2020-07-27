@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,9 +20,11 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
@@ -417,5 +420,25 @@ public class BreedingManagerUtil {
 
 	public static HttpServletRequest getApplicationRequest() {
 		return ContextApplication.currentRequest();
+	}
+
+	public static String getGermplasmGid(final Optional<Germplasm> germplasm) {
+		if (germplasm.isPresent()) {
+			if(germplasm.get().getGid()!=0) {
+				return String.valueOf(germplasm.get().getGid());
+			} else {
+				return Name.UNKNOWN;
+			}
+		} else {
+			return "-";
+		}
+	}
+
+	public static String getGermplasmPreferredName(final Optional<Germplasm> germplasm) {
+		if (germplasm.isPresent()) {
+			return germplasm.get().getPreferredName().getNval();
+		} else {
+			return "-";
+		}
 	}
 }

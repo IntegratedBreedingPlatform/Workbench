@@ -26,6 +26,7 @@ import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListe
 import org.generationcp.breeding.manager.listmanager.GermplasmSearchResultsComponent;
 import org.generationcp.breeding.manager.listmanager.ListManagerMain;
 import org.generationcp.breeding.manager.listmanager.listeners.GidLinkButtonClickListener;
+import org.generationcp.breeding.manager.util.BreedingManagerUtil;
 import org.generationcp.commons.Listener.LotDetailsButtonClickListener;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.gms.search.GermplasmSearchParameter;
@@ -212,10 +213,10 @@ public class GermplasmQuery implements Query {
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName(), new ObjectProperty<>(germplasm.getMethodCode()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_NUMBER.getName(), new ObjectProperty<>(germplasm.getMethodId()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_GROUP.getName(), new ObjectProperty<>(germplasm.getMethodGroup()));
-		propertyMap.put(ColumnLabels.FGID.getName(), new ObjectProperty<>(this.getGermplasmGid(female)));
-		propertyMap.put(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), new ObjectProperty<>(this.getGermplasmPreferredName(female)));
-		propertyMap.put(ColumnLabels.MGID.getName(), new ObjectProperty<>(this.getGermplasmGid(male)));
-		propertyMap.put(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), new ObjectProperty<>(this.getGermplasmPreferredName(male)));
+		propertyMap.put(ColumnLabels.FGID.getName(), new ObjectProperty<>(BreedingManagerUtil.getGermplasmGid(female)));
+		propertyMap.put(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), new ObjectProperty<>(BreedingManagerUtil.getGermplasmPreferredName(female)));
+		propertyMap.put(ColumnLabels.MGID.getName(), new ObjectProperty<>(BreedingManagerUtil.getGermplasmGid(male)));
+		propertyMap.put(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), new ObjectProperty<>(BreedingManagerUtil.getGermplasmPreferredName(male)));
 
 		propertyMap.put(ColumnLabels.GROUP_SOURCE_GID.getName(), new ObjectProperty<>(germplasm.getGroupSourceGID()));
 		propertyMap.put(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName(), new ObjectProperty<>(germplasm.getGroupSourcePreferredName()));
@@ -397,23 +398,4 @@ public class GermplasmQuery implements Query {
 		return allGermplasmGids;
 	}
 
-	private String getGermplasmGid(final Optional<Germplasm> germplasm) {
-		if (germplasm.isPresent()) {
-			if(germplasm.get().getGid()!=0) {
-				return String.valueOf(germplasm.get().getGid());
-			} else {
-				return Name.UNKNOWN;
-			}
-		} else {
-			return "-";
-		}
-	}
-
-	private String getGermplasmPreferredName(final Optional<Germplasm> germplasm) {
-		if (germplasm.isPresent()) {
-			return germplasm.get().getPreferredName().getNval();
-		} else {
-			return "-";
-		}
-	}
 }

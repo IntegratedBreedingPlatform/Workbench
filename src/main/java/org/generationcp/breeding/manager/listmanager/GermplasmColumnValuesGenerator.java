@@ -17,6 +17,7 @@ import com.google.common.collect.Table;
 import org.apache.poi.common.usermodel.Fill;
 import org.generationcp.breeding.manager.listmanager.api.FillColumnSource;
 import org.generationcp.breeding.manager.listmanager.util.FillWithOption;
+import org.generationcp.breeding.manager.util.BreedingManagerUtil;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
@@ -175,18 +176,8 @@ public class GermplasmColumnValuesGenerator {
 			for (final Object itemId : itemIds) {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
 				final Optional<Germplasm> maleParent = table.get(gid, ColumnLabels.MGID.getName());
-				if(maleParent.isPresent()) {
-					final String value;
-					if(maleParent.get().getGid().intValue() == 0) {
-						value = Name.UNKNOWN;
-					} else{
-						value = maleParent.get().getGid().toString();
-					}
-					this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
-
-				} else {
-					this.fillColumnSource.setColumnValueForItem(itemId, columnName, "-");
-				}
+				final String value = BreedingManagerUtil.getGermplasmGid(maleParent);
+				this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 			}
 
 			this.fillColumnSource.propagateUIChanges();
@@ -217,12 +208,7 @@ public class GermplasmColumnValuesGenerator {
 			for (final Object itemId : itemIds) {
 				final Integer gid = this.fillColumnSource.getGidForItemId(itemId);
 				final Optional<Germplasm> maleParent = table.get(gid, ColumnLabels.MGID.getName());
-				final String value;
-				if (maleParent.isPresent()) {
-					value = maleParent.get().getPreferredName().getNval();
-				} else {
-					value = "-";
-				}
+				final String value = BreedingManagerUtil.getGermplasmPreferredName(maleParent);
 				this.fillColumnSource.setColumnValueForItem(itemId, columnName, value);
 			}
 			this.fillColumnSource.propagateUIChanges();
@@ -243,9 +229,9 @@ public class GermplasmColumnValuesGenerator {
 				if (femaleParent.isPresent()) {
 					final String value;
 					if (FillWithOption.FILL_WITH_CROSS_FEMALE_GID.equals(option)) {
-						value = femaleParent.get().getGid().toString();
+						value = BreedingManagerUtil.getGermplasmGid(femaleParent);
 					} else if (FillWithOption.FILL_WITH_CROSS_FEMALE_NAME.equals(option)) {
-						value = femaleParent.get().getPreferredName().getNval();
+						value = BreedingManagerUtil.getGermplasmPreferredName(femaleParent);
 					} else {
 						value = "-";
 					}
