@@ -215,11 +215,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="ontologyVariableManager" factory-bean="managerFactory"
-		factory-method="getOntologyVariableDataManager" scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="sampleListService" factory-bean="managerFactory"
 		  factory-method="getSampleListService" scope="request">
 		<aop:scoped-proxy proxy-target-class="false" />
