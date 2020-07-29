@@ -41,6 +41,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
@@ -69,7 +70,7 @@ public class GermplasmListExporterTest {
 	private static final GermplasmListNewColumnsInfo CURRENT_COLUMNS_INFO =
 			new GermplasmListNewColumnsInfo(GermplasmListExporterTest.GERMPLASM_LIST_ID);
 	public static final String LIST_NAME = "ABCD";
-	public static final String PREFERRED_NAME = "PREFERRED_NAME";
+	public static final String PREFERRED_NAME = "PREFERRED NAME";
 	public static final  String CODE1 = "CODE1";
 	public static final  String CODE_1 = "CODE 1";
 	public static final String NEWNOTE200 = "NEWNOTE200";
@@ -463,10 +464,10 @@ public class GermplasmListExporterTest {
 	public void testAddAttributeAndNameTypeHeadersForAttributes() {
 		final List<ExportColumnHeader> exportColumnHeaders = new ArrayList<>();
 		final GermplasmListNewColumnsInfo currentColumnsInfo = GermplasmListNewColumnsInfoTestDataInitializer.createGermplasmListNewColumnsInfo();
-		this.germplasmListExporter.addAttributeAndNameTypeHeaders(currentColumnsInfo, exportColumnHeaders);
-		int counter = 0;
+		int colIndex = 0;
+		this.germplasmListExporter.addAttributeAndNameTypeHeaders(currentColumnsInfo, exportColumnHeaders, colIndex);
 		for (final Map.Entry<String, List<ListDataColumnValues>> columnEntry : currentColumnsInfo.getColumnValuesMap().entrySet()) {
-			Assert.assertEquals(columnEntry.getKey(), exportColumnHeaders.get(counter++).getName());
+			Assert.assertEquals(columnEntry.getKey(), exportColumnHeaders.get(colIndex++).getName());
 		}
 	}
 	@Test
@@ -474,7 +475,8 @@ public class GermplasmListExporterTest {
 		final List<ExportColumnHeader> exportColumnHeaders = new ArrayList<>();
 		final GermplasmListNewColumnsInfo currentColumnsInfo = GermplasmListNewColumnsInfoTestDataInitializer.createGermplasmListNewColumnsInfo(GermplasmListExporterTest.CODE_1, GermplasmListExporterTest.CODE_1);
 		Mockito.when(this.germplasmListManager.getGermplasmNameTypes()).thenReturn(Arrays.asList(UserDefinedFieldTestDataInitializer.createUserDefinedField(GermplasmListExporterTest.CODE1, GermplasmListExporterTest.CODE_1)));
-		this.germplasmListExporter.addAttributeAndNameTypeHeaders(currentColumnsInfo, exportColumnHeaders);
+		final int colIndex = 6;
+		this.germplasmListExporter.addAttributeAndNameTypeHeaders(currentColumnsInfo, exportColumnHeaders, colIndex);
 		Assert.assertEquals(GermplasmListExporterTest.CODE1, exportColumnHeaders.get(0).getName());
 	}
 
@@ -482,10 +484,10 @@ public class GermplasmListExporterTest {
 	public void testAddAttributesValues() {
 		final GermplasmListNewColumnsInfo currentColumnsInfo = GermplasmListNewColumnsInfoTestDataInitializer.createGermplasmListNewColumnsInfo();
 		final ExportRow row = new ExportRow();
-		this.germplasmListExporter.addAttributeAndNameTypeValues(currentColumnsInfo, (Object)1, row);
-		final Integer counter = 6;
+		final Integer colIndex = 6;
+		this.germplasmListExporter.addAttributeAndNameTypeValues(currentColumnsInfo, (Object)1, row, colIndex);
 		for (final Map.Entry<String, List<ListDataColumnValues>> columnEntry : currentColumnsInfo.getColumnValuesMap().entrySet()) {
-			Assert.assertEquals(columnEntry.getValue().get(0).getValue(), row.getValueForColumn(counter));
+			Assert.assertEquals(columnEntry.getValue().get(0).getValue(), row.getValueForColumn(colIndex));
 		}
 	}
 

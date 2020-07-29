@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -421,33 +423,126 @@ public class GermplasmListExporter {
 		final Map<String, Boolean> visibleColumns = this.getVisibleColumnMap(listDataTable);
 
 		final List<ExportColumnHeader> exportColumnHeaders = new ArrayList<>();
+		int colIndex = 0;
 
-		exportColumnHeaders.add(new ExportColumnHeader(0, this.getTermNameFromOntology(ColumnLabels.ENTRY_ID), visibleColumns.get(String
+		exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.ENTRY_ID), visibleColumns.get(String
 				.valueOf(ColumnLabels.ENTRY_ID.getTermId().getId()))));
 
-		exportColumnHeaders.add(new ExportColumnHeader(1, this.getTermNameFromOntology(ColumnLabels.GID), visibleColumns.get(String
+		exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.GID), visibleColumns.get(String
 				.valueOf(ColumnLabels.GID.getTermId().getId()))));
 
-		exportColumnHeaders.add(new ExportColumnHeader(2, this.getTermNameFromOntology(ColumnLabels.ENTRY_CODE), visibleColumns.get(String
+		exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.ENTRY_CODE), visibleColumns.get(String
 				.valueOf(ColumnLabels.ENTRY_CODE.getTermId().getId()))));
 
-		exportColumnHeaders.add(new ExportColumnHeader(3, this.getTermNameFromOntology(ColumnLabels.DESIGNATION), visibleColumns.get(String
+		exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.DESIGNATION), visibleColumns.get(String
 				.valueOf(ColumnLabels.DESIGNATION.getTermId().getId()))));
 
-		exportColumnHeaders.add(new ExportColumnHeader(4, this.getTermNameFromOntology(ColumnLabels.PARENTAGE), visibleColumns.get(String
+		exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.PARENTAGE), visibleColumns.get(String
 				.valueOf(ColumnLabels.PARENTAGE.getTermId().getId()))));
 
-		exportColumnHeaders.add(new ExportColumnHeader(5, this.getTermNameFromOntology(ColumnLabels.SEED_SOURCE), visibleColumns.get(String
+		exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.SEED_SOURCE), visibleColumns.get(String
 				.valueOf(ColumnLabels.SEED_SOURCE.getTermId().getId()))));
 
-		this.addAttributeAndNameTypeHeaders(currentColumnsInfo, exportColumnHeaders);
+		colIndex = this.addAddedColumnsHeaders(visibleColumns, exportColumnHeaders, colIndex);
+		colIndex = this.addAttributeAndNameTypeHeaders(currentColumnsInfo, exportColumnHeaders, colIndex);
 
 		return exportColumnHeaders;
 	}
 
-	protected void addAttributeAndNameTypeHeaders(final GermplasmListNewColumnsInfo currentColumnsInfo,
-			final List<ExportColumnHeader> exportColumnHeaders) {
-		int j = 6;
+	private int addAddedColumnsHeaders(final Map<String, Boolean> visibleColumnMap, final List<ExportColumnHeader> exportColumnHeaders,
+		int colIndex) {
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.PREFERRED_ID))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.PREFERRED_ID))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.PREFERRED_ID.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.PREFERRED_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.PREFERRED_NAME))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.PREFERRED_NAME.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_DATE))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_DATE))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GERMPLASM_DATE.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_LOCATION))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_LOCATION))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GERMPLASM_LOCATION.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NAME))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_NAME.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_ABBREVIATION))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_ABBREVIATION))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NUMBER))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NUMBER))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_NUMBER.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_GROUP))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_GROUP))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_GROUP.getName(), true));
+		}
+
+		/**
+		 * TODO verify explicit exclusion in {@link GermplasmListExporter#getVisibleColumnMap(com.vaadin.ui.Table)}
+		 */
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.FGID))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.FGID))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.FGID.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.MGID))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.MGID))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.MGID.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.CROSS_MALE_PREFERRED_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.CROSS_MALE_PREFERRED_NAME))) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), true));
+		}
+
+		// columns with termid=null
+
+		if (visibleColumnMap.containsKey(ColumnLabels.GROUP_SOURCE_GID.getName())
+			&& visibleColumnMap.get(ColumnLabels.GROUP_SOURCE_GID.getName())) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GROUP_SOURCE_GID.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName())
+			&& visibleColumnMap.get(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName())) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(ColumnLabels.IMMEDIATE_SOURCE_GID.getName())
+			&& visibleColumnMap.get(ColumnLabels.IMMEDIATE_SOURCE_GID.getName())) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.IMMEDIATE_SOURCE_GID.getName(), true));
+		}
+
+		if (visibleColumnMap.containsKey(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName())
+			&& visibleColumnMap.get(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName())) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName(), true));
+		}
+
+		return colIndex;
+	}
+
+	protected int addAttributeAndNameTypeHeaders(final GermplasmListNewColumnsInfo currentColumnsInfo,
+		final List<ExportColumnHeader> exportColumnHeaders, int colIndex) {
+
 		if (currentColumnsInfo != null && !currentColumnsInfo.getColumns().isEmpty()) {
 			final List<UserDefinedField> nameTypes = this.germplasmListManager.getGermplasmNameTypes();
 			final Map<String, String> nameTypesNameToCodeMap = new HashMap<>();
@@ -457,14 +552,24 @@ public class GermplasmListExporter {
 			for (final String column : currentColumnsInfo.getColumns()) {
 				if(ColumnLabels.get(column) == null) {
 					final String columnHeader = nameTypesNameToCodeMap.get(column) != null ? nameTypesNameToCodeMap.get(column.toUpperCase()) : column;
-					exportColumnHeaders.add(new ExportColumnHeader(j++, columnHeader, true));
+					exportColumnHeaders.add(new ExportColumnHeader(colIndex++, columnHeader, true));
 				}
 			}
 		}
+		return colIndex;
 	}
 
 	protected List<ExportRow> getExportColumnValuesFromTable(final Table listDataTable,
 		final GermplasmListNewColumnsInfo currentColumnsInfo) {
+
+		final Map<String, Boolean> visibleColumnMap = this.getVisibleColumnMap(listDataTable);
+		Map<String, Map<Integer, ListDataColumnValues>> columnValuesByListDataIdByName = null;
+		if (currentColumnsInfo != null && currentColumnsInfo.getColumnValuesMap() != null) {
+			columnValuesByListDataIdByName = currentColumnsInfo.getColumnValuesMap().entrySet().stream()
+				.collect(Collectors.toMap(entry -> entry.getKey(), entry ->
+					entry.getValue().stream().collect(Collectors.toMap(ListDataColumnValues::getListDataId, Function.identity()))
+				));
+		}
 
 		final List<ExportRow> exportRows = new ArrayList<>();
 		for (final Object itemId : listDataTable.getItemIds()) {
@@ -479,23 +584,146 @@ public class GermplasmListExporter {
 			final String seedSourceValue =
 					listDataTable.getItem(itemId).getItemProperty(ColumnLabels.SEED_SOURCE.getName()).getValue().toString();
 
-			row.addColumnValue(0, entryIdValue);
-			row.addColumnValue(1, gidValue);
-			row.addColumnValue(2, entryCodeValue);
-			row.addColumnValue(3, designationValue);
-			row.addColumnValue(4, parentageValue);
-			row.addColumnValue(5, seedSourceValue);
+			int colIndex = 0;
+			row.addColumnValue(colIndex++, entryIdValue);
+			row.addColumnValue(colIndex++, gidValue);
+			row.addColumnValue(colIndex++, entryCodeValue);
+			row.addColumnValue(colIndex++, designationValue);
+			row.addColumnValue(colIndex++, parentageValue);
+			row.addColumnValue(colIndex++, seedSourceValue);
 
-			this.addAttributeAndNameTypeValues(currentColumnsInfo, itemId, row);
+			colIndex = this.addAddedColumnsValues(visibleColumnMap, columnValuesByListDataIdByName, itemId, row, colIndex);
+			colIndex = this.addAttributeAndNameTypeValues(currentColumnsInfo, itemId, row, colIndex);
 			exportRows.add(row);
 		}
 
 		return exportRows;
 	}
 
-	protected void addAttributeAndNameTypeValues(final GermplasmListNewColumnsInfo currentColumnsInfo, final Object itemId,
-			final ExportRow row) {
-		int i = 6;
+	private int addAddedColumnsValues(
+		final Map<String, Boolean> visibleColumnMap,
+		final Map<String, Map<Integer, ListDataColumnValues>> columnValuesByListDataIdByName,
+		final Object itemId,
+		final ExportRow row,
+		int colIndex) {
+
+		if (columnValuesByListDataIdByName == null) {
+			return colIndex;
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.PREFERRED_ID))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.PREFERRED_ID))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.PREFERRED_ID.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.PREFERRED_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.PREFERRED_NAME))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.PREFERRED_NAME.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_DATE))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_DATE))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.GERMPLASM_DATE.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_LOCATION))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.GERMPLASM_LOCATION))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.GERMPLASM_LOCATION.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NAME))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.BREEDING_METHOD_NAME.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_ABBREVIATION))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_ABBREVIATION))) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NUMBER))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_NUMBER))) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.BREEDING_METHOD_NUMBER.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_GROUP))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.BREEDING_METHOD_GROUP))) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.BREEDING_METHOD_GROUP.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		/**
+		 * TODO verify explicit exclusion in {@link GermplasmListExporter#getVisibleColumnMap(com.vaadin.ui.Table)}
+		 */
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.FGID))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.FGID))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.FGID.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.MGID))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.MGID))) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.MGID.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME))) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(this.getColumnNamesTermId(ColumnLabels.CROSS_MALE_PREFERRED_NAME))
+			&& visibleColumnMap.get(this.getColumnNamesTermId(ColumnLabels.CROSS_MALE_PREFERRED_NAME))) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		// columns with termid=null
+
+		if (visibleColumnMap.containsKey(ColumnLabels.GROUP_SOURCE_GID.getName())
+			&& visibleColumnMap.get(ColumnLabels.GROUP_SOURCE_GID.getName())) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.GROUP_SOURCE_GID.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName())
+			&& visibleColumnMap.get(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName())) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(ColumnLabels.IMMEDIATE_SOURCE_GID.getName())
+			&& visibleColumnMap.get(ColumnLabels.IMMEDIATE_SOURCE_GID.getName())) {
+			final String value = columnValuesByListDataIdByName.get(ColumnLabels.IMMEDIATE_SOURCE_GID.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		if (visibleColumnMap.containsKey(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName())
+			&& visibleColumnMap.get(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName())) {
+			final String value =
+				columnValuesByListDataIdByName.get(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName()).get(itemId).getValue();
+			row.addColumnValue(colIndex++, value);
+		}
+
+		return colIndex;
+	}
+
+	protected int addAttributeAndNameTypeValues(final GermplasmListNewColumnsInfo currentColumnsInfo, final Object itemId,
+			final ExportRow row, int colIndex) {
 		if (currentColumnsInfo != null && !currentColumnsInfo.getColumns().isEmpty()) {
 			for(final String column : currentColumnsInfo.getColumns()){
 				if(ColumnLabels.get(column) == null) {
@@ -508,11 +736,11 @@ public class GermplasmListExporter {
 							}
 						});
 					final String value = (listDataColumnValues != null ? listDataColumnValues.getValue() : "");
-					row.addColumnValue(i, value);
-					i++;
+					row.addColumnValue(colIndex++, value);
 				}
 			}
 		}
+		return colIndex;
 	}
 
 	protected void setGermplasmExportService(final GermplasmExportService germplasmExportService) {
@@ -537,6 +765,13 @@ public class GermplasmListExporter {
 
 	protected String getTermNameFromOntology(final ColumnLabels columnLabel) {
 		return columnLabel.getTermNameFromOntology(this.ontologyDataManager);
+	}
+
+	private String getColumnNamesTermId(final ColumnLabels columnLabel) {
+		if (columnLabel.getTermId() != null) {
+			return String.valueOf(columnLabel.getTermId().getId());
+		}
+		return "";
 	}
 
 }
