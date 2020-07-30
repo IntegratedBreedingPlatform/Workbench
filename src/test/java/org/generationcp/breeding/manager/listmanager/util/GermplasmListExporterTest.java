@@ -690,28 +690,6 @@ public class GermplasmListExporterTest {
 	}
 
 	@Test
-	public void testGetVisibleColumnMapWithMGID() {
-
-		GermplasmListExporterTest.listDataTable = GermplasmListExporterTest.generateTestTable(new ArrayList<>(Arrays.asList(ColumnLabels.MGID.getName())));
-
-		final Map<String, Boolean>  visibleColumnsMap = this.germplasmListExporter.getVisibleColumnMap(GermplasmListExporterTest.listDataTable);
-		final int visibleColumnCount = this.getNoOfVisibleColumns(visibleColumnsMap);
-		Assert.assertFalse("MGID is not visible", this.isColumnVisible(visibleColumnsMap, String.valueOf(ColumnLabels.MGID.getTermId().getId())));
-		Assert.assertTrue("Expected to have exactly 10 visible columns.", visibleColumnCount == 10);
-	}
-
-	@Test
-	public void testGetVisibleColumnMapWithFGID() {
-
-		GermplasmListExporterTest.listDataTable = GermplasmListExporterTest.generateTestTable(new ArrayList<>(Arrays.asList(ColumnLabels.FGID.getName())));
-
-		final Map<String, Boolean> visibleColumnsMap = this.germplasmListExporter.getVisibleColumnMap(GermplasmListExporterTest.listDataTable);
-		final int visibleColumnCount = this.getNoOfVisibleColumns(visibleColumnsMap);
-		Assert.assertFalse("FGID is not visible ", this.isColumnVisible(visibleColumnsMap,String.valueOf( ColumnLabels.FGID.getTermId().getId())));
-		Assert.assertTrue("Expected to have exactly 10 visible columns.", visibleColumnCount == 10);
-	}
-
-	@Test
 	public void testGetVisibleColumnMapWithAddedColumn() {
 
 		GermplasmListExporterTest.listDataTable = GermplasmListExporterTest.generateTestTable(new ArrayList<String>(Arrays.asList(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName())));
@@ -719,13 +697,6 @@ public class GermplasmListExporterTest {
 		final int visibleColumnCount = this.getNoOfVisibleColumns(visibleColumnsMap);
 		Assert.assertTrue("CROSS-FEMALE PREFERRED NAME is visible ", visibleColumnsMap.containsKey(String.valueOf(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getTermId().getId())));
 		Assert.assertTrue("Expected to have exactly 11 visible columns.", visibleColumnCount == 11);
-	}
-
-	private boolean isColumnVisible(final Map<String, Boolean> visibleColumnsMap, final String column) {
-			if(visibleColumnsMap.containsKey(column)) {
-				return visibleColumnsMap.get(column);
-			}
-			return false;
 	}
 
 	@Test
