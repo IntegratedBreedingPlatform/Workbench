@@ -143,4 +143,43 @@ public class GenerateStockIDsDialogTest {
 		Assert.assertTrue("Expecting that prefix with characters other than letters is invalid.",
 				this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
+
+	@Test
+	public void testIsValidPrefix_ForNumbersOnly() {
+		String prefix = "123";
+		Assert.assertTrue("Expecting that prefix with numbers is valid.",
+			this.generateStockIDsDialog.isValidPrefix(prefix));
+	}
+
+	@Test
+	public void testIsValidPrefix_ForStringWithNumbersAndLetters() {
+		String prefix = "123Abb";
+		Assert.assertTrue("Expecting that prefix with numbers and letters is valid.",
+			this.generateStockIDsDialog.isValidPrefix(prefix));
+	}
+
+	@Test
+	public void testIsValidPrefix_ForStringWithLettersAndNumbers() {
+		String prefix = "RTST13";
+		Assert.assertTrue("Expecting that prefix with letters and numbers is valid.",
+			this.generateStockIDsDialog.isValidPrefix(prefix));
+	}
+
+	@Test
+	public void testIsValidPrefix_ForStringWithCharactersOtherThanNumbers() {
+		// start
+		String prefix = "?123";
+		Assert.assertFalse("Expecting that prefix with characters other than numbers is invalid.",
+			this.generateStockIDsDialog.isValidPrefix(prefix));
+
+		// end
+		prefix = "096?";
+		Assert.assertFalse("Expecting that prefix with characters other than numbers is invalid.",
+			this.generateStockIDsDialog.isValidPrefix(prefix));
+
+		// middle
+		prefix = "13?6";
+		Assert.assertFalse("Expecting that prefix with characters other than numbers is invalid.",
+			this.generateStockIDsDialog.isValidPrefix(prefix));
+	}
 }
