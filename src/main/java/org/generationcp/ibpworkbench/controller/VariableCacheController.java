@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/variableCache")
 public class VariableCacheController {
 
-	@Resource(name = "ontologyVariableManager")
+	@Resource(name = "ontologyVariableDataManager")
 	private OntologyVariableDataManager ontologyVariableDataManager;
 
 	@ResponseBody
