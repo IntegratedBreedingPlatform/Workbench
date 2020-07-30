@@ -1,6 +1,7 @@
 
 package org.generationcp.breeding.manager.crossingmanager.settings;
 
+import com.vaadin.ui.*;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -17,16 +18,9 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.HeaderLabelLayout;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.pojos.GermplasmList;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class ManageCrossingSettingsMain extends VerticalLayout
@@ -49,7 +43,6 @@ public class ManageCrossingSettingsMain extends VerticalLayout
 	private CrossesMade crossesMade = new CrossesMade();
 	private final ComponentContainer parent;
 
-	private GermplasmList germplasmList = null;
 	private Integer studyId = null;
 
 	public ManageCrossingSettingsMain(final ComponentContainer parent) {
