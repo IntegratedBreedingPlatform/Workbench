@@ -46,13 +46,13 @@ public class GenerateStockIDsDialogTest {
 	@Test
 	public void testApplyStockIdToImportedGermplasmDefaultPrefix() {
 
-		List<ImportedGermplasm> list = this.createImportedGermplasmList();
+		final List<ImportedGermplasm> list = this.createImportedGermplasmList();
 
 		this.generateStockIDsDialog.applyStockIdToImportedGermplasm("", list);
 
 		// If there is no prefix specified by the user, the default prefix will be SID.
 		Assert.assertEquals("SID1-1", list.get(0).getInventoryId());
-		Assert.assertEquals(null, list.get(1).getInventoryId());
+		Assert.assertNull(list.get(1).getInventoryId());
 		Assert.assertEquals("SID1-2", list.get(2).getInventoryId());
 		Assert.assertEquals("SID1-3", list.get(3).getInventoryId());
 	}
@@ -60,12 +60,12 @@ public class GenerateStockIDsDialogTest {
 	@Test
 	public void testApplyStockIdToImportedGermplasmUserSpecifiedPrefix() {
 
-		List<ImportedGermplasm> list = this.createImportedGermplasmList();
+		final List<ImportedGermplasm> list = this.createImportedGermplasmList();
 
 		this.generateStockIDsDialog.applyStockIdToImportedGermplasm("TEST", list);
 
 		Assert.assertEquals("TEST1-1", list.get(0).getInventoryId());
-		Assert.assertEquals(null, list.get(1).getInventoryId());
+		Assert.assertNull(list.get(1).getInventoryId());
 		Assert.assertEquals("TEST1-2", list.get(2).getInventoryId());
 		Assert.assertEquals("TEST1-3", list.get(3).getInventoryId());
 	}
@@ -92,21 +92,21 @@ public class GenerateStockIDsDialogTest {
 
 	private List<ImportedGermplasm> createImportedGermplasmList() {
 
-		List<ImportedGermplasm> list = new ArrayList<>();
+		final List<ImportedGermplasm> list = new ArrayList<>();
 
-		ImportedGermplasm importedGermplasm1 = new ImportedGermplasm();
+		final ImportedGermplasm importedGermplasm1 = new ImportedGermplasm();
 		importedGermplasm1.setSeedAmount(100D);
 		list.add(importedGermplasm1);
 
-		ImportedGermplasm importedGermplasm2 = new ImportedGermplasm();
+		final ImportedGermplasm importedGermplasm2 = new ImportedGermplasm();
 		importedGermplasm2.setSeedAmount(0D);
 		list.add(importedGermplasm2);
 
-		ImportedGermplasm importedGermplasm3 = new ImportedGermplasm();
+		final ImportedGermplasm importedGermplasm3 = new ImportedGermplasm();
 		importedGermplasm3.setSeedAmount(500D);
 		list.add(importedGermplasm3);
 
-		ImportedGermplasm importedGermplasm4 = new ImportedGermplasm();
+		final ImportedGermplasm importedGermplasm4 = new ImportedGermplasm();
 		importedGermplasm4.setSeedAmount(20D);
 		list.add(importedGermplasm4);
 
@@ -139,28 +139,28 @@ public class GenerateStockIDsDialogTest {
 
 	@Test
 	public void testIsValidPrefix_ForStringWithLettersOnly() {
-		String prefix = "STK";
+		final String prefix = "STK";
 		Assert.assertTrue("Expecting that prefix with characters other than letters is invalid.",
 				this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
 
 	@Test
 	public void testIsValidPrefix_ForNumbersOnly() {
-		String prefix = "123";
+		final String prefix = "123";
 		Assert.assertTrue("Expecting that prefix with numbers is valid.",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
 
 	@Test
 	public void testIsValidPrefix_ForStringWithNumbersAndLetters() {
-		String prefix = "123Abb";
+		final String prefix = "123Abb";
 		Assert.assertTrue("Expecting that prefix with numbers and letters is valid.",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
 
 	@Test
 	public void testIsValidPrefix_ForStringWithLettersAndNumbers() {
-		String prefix = "RTST13";
+		final String prefix = "RTST13";
 		Assert.assertTrue("Expecting that prefix with letters and numbers is valid.",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
