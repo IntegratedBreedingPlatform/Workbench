@@ -455,67 +455,67 @@ public class GermplasmListExporter {
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.PREFERRED_ID.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.PREFERRED_ID.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.PREFERRED_ID), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.PREFERRED_NAME.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.PREFERRED_NAME.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.PREFERRED_NAME), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.GERMPLASM_DATE.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GERMPLASM_DATE.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.GERMPLASM_DATE), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.GERMPLASM_LOCATION.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GERMPLASM_LOCATION.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.GERMPLASM_LOCATION), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.BREEDING_METHOD_NAME.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_NAME.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.BREEDING_METHOD_NAME), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.BREEDING_METHOD_ABBREVIATION), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.BREEDING_METHOD_NUMBER.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_NUMBER.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.BREEDING_METHOD_NUMBER), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.BREEDING_METHOD_GROUP.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.BREEDING_METHOD_GROUP.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.BREEDING_METHOD_GROUP), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.FGID.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.FGID.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.FGID), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.MGID.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.MGID.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.MGID), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.CROSS_MALE_PREFERRED_NAME), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.GROUP_SOURCE_GID.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GROUP_SOURCE_GID.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.GROUP_SOURCE_GID), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.IMMEDIATE_SOURCE_GID.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.IMMEDIATE_SOURCE_GID.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.IMMEDIATE_SOURCE_GID), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME.getName(), true));
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, this.getTermNameFromOntology(ColumnLabels.IMMEDIATE_SOURCE_PREFERRED_NAME), true));
 		}
 
 		return colIndex;
