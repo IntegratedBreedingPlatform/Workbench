@@ -490,12 +490,12 @@ public class GermplasmListExporter {
 			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.FGID.getName(), true));
 		}
 
-		if (valuesMap.containsKey(ColumnLabels.MGID.getName())) {
-			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.MGID.getName(), true));
-		}
-
 		if (valuesMap.containsKey(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName())) {
 			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName(), true));
+		}
+
+		if (valuesMap.containsKey(ColumnLabels.MGID.getName())) {
+			exportColumnHeaders.add(new ExportColumnHeader(colIndex++, ColumnLabels.MGID.getName(), true));
 		}
 
 		if (valuesMap.containsKey(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName())) {
@@ -630,13 +630,13 @@ public class GermplasmListExporter {
 			row.addColumnValue(colIndex++, value);
 		}
 
-		if (valuesMap.containsKey(ColumnLabels.MGID.getName())) {
-			final String value = valuesMap.get(ColumnLabels.MGID.getName()).get(itemId).getValue();
+		if (valuesMap.containsKey(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName())) {
+			final String value = valuesMap.get(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).get(itemId).getValue();
 			row.addColumnValue(colIndex++, value);
 		}
 
-		if (valuesMap.containsKey(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName())) {
-			final String value = valuesMap.get(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).get(itemId).getValue();
+		if (valuesMap.containsKey(ColumnLabels.MGID.getName())) {
+			final String value = valuesMap.get(ColumnLabels.MGID.getName()).get(itemId).getValue();
 			row.addColumnValue(colIndex++, value);
 		}
 
