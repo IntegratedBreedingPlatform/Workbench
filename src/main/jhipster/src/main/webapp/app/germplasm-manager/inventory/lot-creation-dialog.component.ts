@@ -36,7 +36,7 @@ export class LotCreationDialogComponent implements OnInit {
 
     favoriteLocation = false;
     storageLocationType = [1500];
-    initialDeposit = false;
+    initialDepositRequired = false;
     storageLocIdSelected;
     favoriteLocIdSelected;
 
@@ -57,7 +57,7 @@ export class LotCreationDialogComponent implements OnInit {
             // studyId has value if this Lot Creation page is called from Study Manager.
             // In this case, deposit is required.
             this.studyId = queryParams.studyId;
-            this.initialDeposit = true;
+            this.initialDepositRequired = true;
         }
 
         this.lot = new Lot();
@@ -105,12 +105,12 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private createDeposit(lotUUIDs: string[]) {
-        if (this.initialDeposit) {
+        if (this.initialDepositRequired) {
             const lotDepositRequest = {
                 selectedLots: <SearchComposite>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
                 depositsPerUnit: {},
-                sourceStudy: this.studyId
+                sourceStudyId: this.studyId
             };
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
