@@ -266,7 +266,8 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 	}
 
 	boolean isValidPrefix(final String prefix) {
-		final String pattern = "^[a-zA-Z0-9]*$";
+		//Or Empty string to match previous validation
+		final String pattern = "^[a-zA-Z0-9]*[a-zA-z]$|^$";
 		return Pattern.matches(pattern, prefix);
 	}
 

@@ -147,21 +147,21 @@ public class GenerateStockIDsDialogTest {
 	@Test
 	public void testIsValidPrefix_ForNumbersOnly() {
 		final String prefix = "123";
-		Assert.assertTrue("Expecting that prefix with numbers is valid.",
+		Assert.assertFalse("Expecting that prefix with numbers is not valid.",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
 
 	@Test
 	public void testIsValidPrefix_ForStringWithNumbersAndLetters() {
 		final String prefix = "123Abb";
-		Assert.assertTrue("Expecting that prefix with numbers and letters is valid.",
+		Assert.assertTrue("Expecting that prefix ends with letter is valid.",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
 
 	@Test
 	public void testIsValidPrefix_ForStringWithLettersAndNumbers() {
 		final String prefix = "RTST13";
-		Assert.assertTrue("Expecting that prefix with letters and numbers is valid.",
+		Assert.assertFalse("Expecting that prefix ends with letter is invalid",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 	}
 
