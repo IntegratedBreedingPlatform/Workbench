@@ -173,7 +173,7 @@ public class GenerateStockIDsDialogTest {
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 
 		// end
-		prefix = "096?";
+		prefix = "096\\";
 		Assert.assertFalse("Expecting that prefix with characters other than numbers is invalid.",
 			this.generateStockIDsDialog.isValidPrefix(prefix));
 
