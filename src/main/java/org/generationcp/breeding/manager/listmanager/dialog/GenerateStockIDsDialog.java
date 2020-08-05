@@ -43,6 +43,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 	private static final String DEFAULT_STOCKID_PREFIX = "SID";
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(GenerateStockIDsDialog.class);
+	private static final String STOCK_ID_PREFIX_REGEXP = "[a-zA-Z0-9]{0,14}[a-zA-Z]|^$";
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
@@ -266,9 +267,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 	}
 
 	boolean isValidPrefix(final String prefix) {
-		//Or Empty string to match previous validation
-		final String pattern = "^[a-zA-Z0-9]*[a-zA-Z]$|^$";
-		return Pattern.matches(pattern, prefix);
+		return Pattern.matches(GenerateStockIDsDialog.STOCK_ID_PREFIX_REGEXP, prefix);
 	}
 
 	protected void applyStockIdToImportedGermplasm(final String prefix, final List<ImportedGermplasm> importedGermplasmList) {
