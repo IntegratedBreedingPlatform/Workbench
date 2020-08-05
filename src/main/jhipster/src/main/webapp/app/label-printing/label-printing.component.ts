@@ -94,10 +94,6 @@ export class LabelPrintingComponent implements OnInit {
         return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
     }
 
-    isExcelEnabled() {
-        return this.context.printingLabelType === LabelPrintingType.LOT;
-    }
-
     /**
      * Indicates if the export is for label printing
      */
