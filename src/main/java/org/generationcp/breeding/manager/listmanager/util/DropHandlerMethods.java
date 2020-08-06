@@ -508,7 +508,7 @@ public class DropHandlerMethods {
 	}
 
 	public GermplasmListData getListDataByListIdAndLrecId(final Integer listId, final Integer lrecid, final GermplasmList germplasmList) {
-		return this.inventoryDataManager.getLotCountsForListEntries(listId, Lists.newArrayList(lrecid)).get(0);
+		return this.inventoryDataManager.getLotCountsForListEntries(Lists.newArrayList(lrecid)).get(0);
 	}
 
 	List<Integer> extractGidsFromTable(final Table sourceTable, final List<Integer> selectedTableItemIds) {
