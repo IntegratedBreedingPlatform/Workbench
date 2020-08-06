@@ -423,10 +423,11 @@ export enum FileType {
 
 /** aka printingLabelType in params */
 export enum LabelPrintingType {
+    OBSERVATION_DATASET = 'ObservationDataset',
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
     LOT = 'Lot'
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [
-    LabelPrintingType.SUBOBSERVATION_DATASET
+    LabelPrintingType.OBSERVATION_DATASET, LabelPrintingType.SUBOBSERVATION_DATASET
 ]
