@@ -43,6 +43,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 	private static final String DEFAULT_STOCKID_PREFIX = "SID";
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOG = LoggerFactory.getLogger(GenerateStockIDsDialog.class);
+	private static final String STOCK_ID_PREFIX_REGEXP = "[a-zA-Z0-9]{0,14}[a-zA-Z]|^$";
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
@@ -64,7 +65,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 
 	private final VerticalLayout source;
 
-	public GenerateStockIDsDialog(VerticalLayout source, GermplasmList germplasmList) {
+	public GenerateStockIDsDialog(final VerticalLayout source, final GermplasmList germplasmList) {
 		this.source = source;
 	}
 
@@ -153,8 +154,8 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 			private static final long serialVersionUID = 1271362384141739702L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
-				Window win = event.getButton().getWindow();
+			public void buttonClick(final ClickEvent event) {
+				final Window win = event.getButton().getWindow();
 				win.getParent().removeWindow(win);
 			}
 
@@ -165,7 +166,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 			private static final long serialVersionUID = 2853818327406493402L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GenerateStockIDsDialog.this.continueAction(event);
 			}
 		});
@@ -175,7 +176,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 				GenerateStockIDsDialog.this.updateSampleStockId(GenerateStockIDsDialog.this.txtSpecifyPrefix.getValue().toString());
 			}
 		});
@@ -185,7 +186,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 	@Override
 	public void layoutComponents() {
 
-		VerticalLayout rootLayout = new VerticalLayout();
+		final VerticalLayout rootLayout = new VerticalLayout();
 		rootLayout.setDebugId("rootLayout");
 		rootLayout.setWidth("100%");
 		rootLayout.setSpacing(true);
@@ -197,7 +198,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 		rootLayout.addComponent(new OneLineLayout(this.lblNextPrefixInSequence, this.lblExampleNextPrefixInSequence));
 		rootLayout.addComponent(new OneLineLayout(this.lblStockIdForThisList, this.lblExampleStockIdForThisList));
 
-		HorizontalLayout hButton = new HorizontalLayout();
+		final HorizontalLayout hButton = new HorizontalLayout();
 		hButton.setDebugId("hButton");
 		hButton.setSpacing(true);
 		hButton.setMargin(true);
@@ -227,16 +228,16 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 
 		private static final long serialVersionUID = 1L;
 
-		OneLineLayout(AbstractComponent... components) {
+		OneLineLayout(final AbstractComponent... components) {
 			this.setSpacing(true);
-			for (AbstractComponent component : components) {
+			for (final AbstractComponent component : components) {
 				this.addComponent(component);
 			}
 		}
 
 	}
 
-	protected void updateSampleStockId(String prefix) {
+	protected void updateSampleStockId(final String prefix) {
 		try {
 
 			if (!this.isValidPrefix(prefix)) {
@@ -254,7 +255,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 				this.lblExampleStockIdForThisList.setValue(nextStockIDPrefix + "1");
 			}
 
-		} catch (MiddlewareException e) {
+		} catch (final MiddlewareException e) {
 			GenerateStockIDsDialog.LOG.error(e.getMessage(), e);
 		}
 	}
@@ -265,14 +266,13 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 		this.txtSpecifyPrefix.focus();
 	}
 
-	boolean isValidPrefix(String prefix) {
-		String pattern = "^[a-zA-Z]*$";
-		return Pattern.matches(pattern, prefix);
+	boolean isValidPrefix(final String prefix) {
+		return Pattern.matches(GenerateStockIDsDialog.STOCK_ID_PREFIX_REGEXP, prefix);
 	}
 
-	protected void applyStockIdToImportedGermplasm(String prefix, List<ImportedGermplasm> importedGermplasmList) {
+	protected void applyStockIdToImportedGermplasm(final String prefix, final List<ImportedGermplasm> importedGermplasmList) {
 
-		String nextStockIDPrefix;
+		final String nextStockIDPrefix;
 		try {
 
 			if (StringUtils.isEmpty(prefix)) {
@@ -282,7 +282,7 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 			}
 
 			int stockIdSequence = 1;
-			for (ImportedGermplasm importedGermplasm : importedGermplasmList) {
+			for (final ImportedGermplasm importedGermplasm : importedGermplasmList) {
 				if (importedGermplasm.getSeedAmount() != null && importedGermplasm.getSeedAmount() > 0) {
 					if (StringUtils.isEmpty(importedGermplasm.getInventoryId())) {
 						importedGermplasm.setInventoryId(nextStockIDPrefix + stockIdSequence);
@@ -291,25 +291,25 @@ public class GenerateStockIDsDialog extends BaseSubWindow implements Initializin
 				}
 
 			}
-		} catch (MiddlewareException e) {
+		} catch (final MiddlewareException e) {
 			GenerateStockIDsDialog.LOG.error(e.getMessage(), e);
 		}
 
 	}
 
-	private void continueAction(ClickEvent event) {
-		if (GenerateStockIDsDialog.this.source instanceof SpecifyGermplasmDetailsComponent) {
+	private void continueAction(final ClickEvent event) {
+		if (this.source instanceof SpecifyGermplasmDetailsComponent) {
 
-			String prefix = GenerateStockIDsDialog.this.txtSpecifyPrefix.getValue().toString();
+			final String prefix = this.txtSpecifyPrefix.getValue().toString();
 
-			if (!GenerateStockIDsDialog.this.isValidPrefix(prefix)) {
-				GenerateStockIDsDialog.this.showMessageValidationForPrefix();
+			if (!this.isValidPrefix(prefix)) {
+				this.showMessageValidationForPrefix();
 			} else {
-				GenerateStockIDsDialog.this.applyStockIdToImportedGermplasm(prefix,
-						((SpecifyGermplasmDetailsComponent) GenerateStockIDsDialog.this.source).getImportedGermplasm());
+				this.applyStockIdToImportedGermplasm(prefix,
+						((SpecifyGermplasmDetailsComponent) this.source).getImportedGermplasm());
 
-				((SpecifyGermplasmDetailsComponent) GenerateStockIDsDialog.this.source).popupSaveAsDialog();
-				Window win = event.getButton().getWindow();
+				((SpecifyGermplasmDetailsComponent) this.source).popupSaveAsDialog();
+				final Window win = event.getButton().getWindow();
 				win.getParent().removeWindow(win);
 			}
 
