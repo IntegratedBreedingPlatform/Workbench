@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/graphical-filtering")
-public class GraphicalFilteringController {
+@RequestMapping("/graphical-queries")
+public class GraphicalQueriesController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(final Model model) throws MiddlewareQueryException {
-		return "BrAPI-Graphical-Filtering/index";
+		return "BrAPI-Graphical-Queries/index";
 	}
 
 	@Value("${pagedresult.max.page.size}")

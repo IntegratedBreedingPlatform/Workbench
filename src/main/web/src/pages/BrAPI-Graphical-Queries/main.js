@@ -10,7 +10,7 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/locations?pageSize=10000";
+	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/locations?pageSize=10000";
 
 	return $.get({
 		dataType: "json",
@@ -40,7 +40,7 @@ function buildLocationsCombo(response) {
 
 function loadObservationLevels() {
 
-	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/observationLevels";
+	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/observationLevels";
 
 	return $.get({
 		dataType: "json",
@@ -66,8 +66,8 @@ function buildObservationLevelsCombo(response) {
 }
 
 function loadTrials() {
-	var url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/trials"
-		+ '?programDbId=' + getUrlParameter('programUuid');
+	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/trials"
+		+ '?programDbId=' + getUrlParameter('programUUID');
 
 	$.get({
 		dataType: "json",
@@ -135,7 +135,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			studyDbIds: studyDbId ? [studyDbId] : [],
 			locationDbIds: $('#locations select').val() || null,
 			observationLevel: form.observationLevel || null,
-			programDbIds: [getUrlParameter('programUuid')],
+			programDbIds: [getUrlParameter('programUUID')],
 			trialDbIds: $('#trials select').val() || null,
 			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
@@ -147,6 +147,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		switch ($scope.toolId) {
 			case 'graphical-filtering':
 				phenotypesSearchPromise.then(function (response) {
+
 					if ($.fn.DataTable.isDataTable("#filtered_results")) {
 						$("#filtered_results").DataTable().destroy();
 						$("#filtered_results").html("");
@@ -175,7 +176,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 
 	$scope.openExportModal = function () {
 		$uibModal.open({
-			templateUrl: 'pages/BrAPI-Graphical-Filtering/exportModal.html',
+			templateUrl: 'pages/BrAPI-Graphical-Queries/exportModal.html',
 			controller: 'ExportModalController',
 			resolve: {
 				filteredDataResult: function () {
@@ -292,7 +293,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 	$scope.phenotypesSearch = function (data) {
 		return $http({
 			method: 'POST',
-			url: "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/phenotypes-search",
+			url: "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/phenotypes-search",
 			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token},
 			data: data
 		});
