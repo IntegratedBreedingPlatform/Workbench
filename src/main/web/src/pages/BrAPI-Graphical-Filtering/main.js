@@ -90,26 +90,6 @@ function loadTrials() {
 	});
 }
 
-function loadBrAPIData(parameters) {
-	var load_url = "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/phenotypes-search";
-	var data = {
-		"page": 0
-	};
-	d3.entries(parameters).forEach(function (entry) {
-		data[entry.key] = data[entry.key] || entry.value;
-	});
-
-	return $.ajax({
-		type: "POST",
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
-		url: load_url,
-		beforeSend: beforeSend,
-		data: JSON.stringify(data),
-		error: error
-	});
-}
-
 function beforeSend(xhr) {
 	var xAuthToken = JSON.parse(localStorage["bms.xAuthToken"]).token;
 	xhr.setRequestHeader('Authorization', "Bearer " + xAuthToken);
@@ -128,21 +108,22 @@ function error(data) {
 
 var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
 
-mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $uibModal) {
+mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function ($scope, $uibModal, $http) {
 
 	$scope.flags = {
 		groupByAccession: false,
 		isDataLoaded: false
 	};
 
+	$scope.tools = [
+		{id: 'graphical-filtering', name: 'Graphical Filtering'},
+		{id: 'study-comparison', name: 'Study Comparison'}
+	];
+	$scope.toolId = $scope.tools[0].id;
+
 	$scope.filteredDataResult = [];
 
 	$scope.loadData = function () {
-
-		if ($.fn.DataTable.isDataTable("#filtered_results")) {
-			$("#filtered_results").DataTable().destroy();
-			$("#filtered_results").html("");
-		}
 
 		var form = $("#brapi-form").serializeArray().reduce(function (vals, entry) {
 			vals[entry.name] = entry.value;
@@ -150,8 +131,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 		}, {});
 		var studyDbId = getUrlParameter("studyDbId");
 
-		// FIXME: Refactor these to Angular.
-		loadBrAPIData({
+		const phenotypesSearchPromise = $scope.phenotypesSearch({
 			studyDbIds: studyDbId ? [studyDbId] : [],
 			locationDbIds: $('#locations select').val() || null,
 			observationLevel: form.observationLevel || null,
@@ -160,14 +140,29 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
 			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
-			pageSize: form.pageSize
-		}).then(function (response) {
-			$scope.$apply(function () {
-				$scope.flags.isDataLoaded = response.result.data.length > 0;
-				$scope.processData(response.result.data, (!!form.group));
-			});
-
+			pageSize: form.pageSize,
+			page: 0
 		});
+
+		switch ($scope.toolId) {
+			case 'graphical-filtering':
+				phenotypesSearchPromise.then(function (response) {
+					if ($.fn.DataTable.isDataTable("#filtered_results")) {
+						$("#filtered_results").DataTable().destroy();
+						$("#filtered_results").html("");
+					}
+
+					$scope.flags.isDataLoaded = response.data.result.data.length > 0;
+					$scope.processGraphicalFilterBrAPIData(response.data.result.data, (!!form.group));
+				});
+				break;
+			case 'study-comparison':
+				phenotypesSearchPromise.then(function (response) {
+					$scope.flags.isDataLoaded = response.data.result.data.length > 0;
+					$scope.createStudyComparison(response.data.result.data);
+				});
+				break;
+		}
 
 	};
 
@@ -192,7 +187,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 
 	// filters and modifies the response and then creates the root filter object
 	// and datatable
-	$scope.processData = function (responseData, groupByAccession) {
+	$scope.processGraphicalFilterBrAPIData = function (responseData, groupByAccession) {
 		var traits = {};
 		var data = responseData.map(function (observeUnit) {
 			var newObj = {};
@@ -267,6 +262,41 @@ mainApp.controller('MainController', ['$scope', '$uibModal', function ($scope, $
 		// Store the filtered data so we can transform and send it to OpenCPU api later.
 		$scope.filteredDataResult = gfilter.filteredData;
 	};
+
+	$scope.createStudyComparison = function (data) {
+
+		var scomp = StudyComparison().links(function(dbId){
+			return '/ibpworkbench/maingpsb/germplasm-' + dbId;
+		});
+		var sharedVars = scomp.loadData(data);
+
+		var varOpts = d3.select("#scomp-select-var")
+			.selectAll("option:not([disabled])")
+			.data(sharedVars);
+		varOpts.exit().remove();
+		varOpts.enter().append("option").merge(varOpts)
+			.attr("value",function(d){return d})
+			.text(function(d){return d})
+			.raise();
+
+		$("#graph_div").html("");
+		$("#hist_div").html("");
+
+		$("#scomp-form").click(function(){
+			scomp.setVariable($("#scomp-select-var").val());
+			scomp.graphGrid("#graph_div");
+			scomp.multiHist("#hist_div");
+		});
+	};
+
+	$scope.phenotypesSearch = function (data) {
+		return $http({
+			method: 'POST',
+			url: "/bmsapi/" + getUrlParameter("crop") + "/brapi/v1/phenotypes-search",
+			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token},
+			data: data
+		});
+	}
 
 	function tryParseNumber(str) {
 		var retValue = null;

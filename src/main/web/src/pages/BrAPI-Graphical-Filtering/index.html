@@ -17,12 +17,12 @@
 <body ng-controller="MainController">
 <div style="margin:1em" class="container-fluid">
 	<div class="row">
-		<div class="col-md-8 col-xs-8">
+		<div class="col-xs-6">
 			<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI Graphical Filtering</h2>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-8 col-xs-8">
+		<div class="col-xs-6">
 			<form id="brapi-form" action="javascript:void(0);" class="form-horizontal">
 				<div class="form-group">
 					<label class="control-label col-sm-4">Study name</label>
@@ -61,11 +61,28 @@
 				<div class="form-group">
 					<label class="control-label col-sm-4">Group By Accession</label>
 					<div class="col-sm-8">
-						<input type="checkbox" name="group" ng-model="flags.groupByAccession"/>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name="group" ng-model="flags.groupByAccession"/>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<label class="control-label col-sm-4">Query type</label>
+					<div class="col-sm-8">
+						<select class="form-control" ng-model="toolId" >
+							<option ng-repeat="tool in tools" value="{{tool.id}}">{{tool.name}}</option>
+						</select>
 					</div>
 				</div>
 				<div class="form-group" style="display:none;">
 					<input type="text" name="pageSize" th:value="${maxPageSize}"/>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						&nbsp;
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-sm-4"></div>
@@ -81,10 +98,29 @@
 			</form>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-12 col-xs-12">
-			<div id="filter_div" style="margin:1em"></div>
-			<table id="filtered_results" width="100%"></table>
+	<div ng-switch="toolId" ng-if="flags.isDataLoaded">
+		<div class="row" ng-switch-when="graphical-filtering">
+			<div class="col-xs-12">
+				<div id="filter_div" style="margin:1em"></div>
+				<table id="filtered_results" width="100%"></table>
+			</div>
+		</div>
+		<div class="row" ng-switch-when="study-comparison">
+			<form id="scomp-form" class="form-inline" style="margin:1em;" name="scomp-form">
+				<div class="form-group">
+					<select id="scomp-select-var" class="form-control" name="variable">
+						<option value="" disabled selected>
+							Select Variable
+						</option>
+					</select>
+				</div>
+				<input type="button" class="btn btn-primary" value="Compare Variable">
+			</form>
+			<div class="col-xs-12">
+				<div id="graph_div" style="margin:1em;float:left;"></div>
+				<div id="hist_div" style="margin:1em;float:left;"></div>
+				<div style="clear:both"></div>
+			</div>
 		</div>
 	</div>
 	<hr/>
@@ -106,6 +142,8 @@
 <script th:src="@{/controller/static/js/lib/angular-1.4.7/angular.min.js}" charset="utf-8"></script>
 <script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-animate.min.js}" charset="utf-8"></script>
 <script th:src="@{/controller/static/js/lib/angular-1.4.7/ui-bootstrap-tpls-2.5.0.js}" charset="utf-8"></script>
+
 <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/GraphicalFilter.js}"></script>
 <script th:src="@{/controller/pages/BrAPI-Graphical-Filtering/main.js}"></script>
+<script th:src="@{/controller/static/js/lib/%40solgenomics/brapi-study-comparison/build/StudyComparison.js}" charset="utf-8"></script>
 </html>

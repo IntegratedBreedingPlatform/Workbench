@@ -43,6 +43,7 @@
     "@angular/router-deprecated": "2.0.0-rc.2",
     "@angular/upgrade": "2.0.2",
     "@solgenomics/brapi-fieldmap": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:^1.0.0",
+    "@solgenomics/brapi-study-comparison": "^1.1.2",
     "angular2-in-memory-web-api": "0.0.21",
     "babel-polyfill": "^6.26.0",
     "core-js": "^2.5.3",
