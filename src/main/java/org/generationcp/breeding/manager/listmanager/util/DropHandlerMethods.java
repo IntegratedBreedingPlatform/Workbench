@@ -392,7 +392,7 @@ public class DropHandlerMethods {
 				}
 			}
 
-			final GermplasmListData germplasmListData = this.getListDataByListIdAndLrecId(listId, lrecid, germplasmList);
+			final GermplasmListData germplasmListData = this.getListDataByListIdAndLrecId(lrecid);
 
 			// handles the data for inventory
 
@@ -507,7 +507,7 @@ public class DropHandlerMethods {
 
 	}
 
-	public GermplasmListData getListDataByListIdAndLrecId(final Integer listId, final Integer lrecid, final GermplasmList germplasmList) {
+	public GermplasmListData getListDataByListIdAndLrecId(final Integer lrecid) {
 		return this.inventoryDataManager.getLotCountsForListEntries(Lists.newArrayList(lrecid)).get(0);
 	}
 
