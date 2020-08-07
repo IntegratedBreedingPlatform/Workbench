@@ -23,31 +23,47 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/locations?pageSize=10000";
+	var url = "/bmsapi/crops/" + getUrlParameter("cropName") + "/programs/" + getUrlParameter("programUUID")
+		+ "/locations?favoriteLocations=false&locationTypes" ;
 
-	return $.get({
+	return Promise.all([$.get({
 		dataType: "json",
 		contentType: "application/json;charset=utf-8",
 		url: url,
 		beforeSend: beforeSend,
 		error: error
-	});
+	}), $.get({
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: url + '=410,411,412',
+		beforeSend: beforeSend,
+		error: error
+	})]);
 }
 
 function buildLocationsCombo(response) {
-	if (!response
-		|| !response.result
-		|| !response.result.data) {
+	if (!response || !response.length) {
 		return;
 	}
 
-	$('#locations').html('<select multiple ></select>');
-	$('#locations select').append(response.result.data.map(function (location) {
-		return '<option value="' + location.locationDbId + '">'
+	let allLocations = response[0];
+	let breedingLocations = response[1];
+
+	$('#allLocations').html('<select multiple ></select>');
+	$('#allLocations select').append(allLocations.map(function (location) {
+		return '<option value="' + location.id + '">'
 			+ location.name + ' - (' + location.abbreviation + ')'
 			+ '</option>';
 	}));
-	$('#locations select').select2({containerCss: {width: '100%'}});
+	$('#allLocations select').select2({containerCss: {width: '100%'}});
+
+	$('#breedingLocations').html('<select multiple ></select>');
+	$('#breedingLocations select').append(breedingLocations.map(function (location) {
+		return '<option value="' + location.id + '">'
+			+ location.name + ' - (' + location.abbreviation + ')'
+			+ '</option>';
+	}));
+	$('#breedingLocations select').select2({containerCss: {width: '100%'}});
 }
 
 
@@ -121,7 +137,8 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 
 	$scope.flags = {
 		groupByAccession: false,
-		isDataLoaded: false
+		isDataLoaded: false,
+		isBreedingLocationSelected: true
 	};
 
 	$scope.tools = [
@@ -140,9 +157,11 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		}, {});
 		var studyDbId = getUrlParameter("studyDbId");
 
+		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
+
 		const phenotypesSearchPromise = $scope.phenotypesSearch({
 			studyDbIds: studyDbId ? [studyDbId] : [],
-			locationDbIds: $('#locations select').val() || null,
+			locationDbIds: locationDbIds || null,
 			observationLevel: form.observationLevel || null,
 			programDbIds: [getUrlParameter('programUUID')],
 			trialDbIds: $('#trials select').val() || null,
