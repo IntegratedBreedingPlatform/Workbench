@@ -1,5 +1,18 @@
 // FIXME: Refactor these to Angular.
 $(document).ready(function () {
+	$.ajax({
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		url: '/bmsapi/validateToken',
+		beforeSend: beforeSend,
+		error: function (data) {
+			if (data.status === 401) {
+				// TODO IBP-3271
+				alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
+				window.top.location.href = '/ibpworkbench/logout';
+			}
+		}
+	});
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
 	});
@@ -96,11 +109,7 @@ function beforeSend(xhr) {
 }
 
 function error(data) {
-	if (data.status === 401) {
-		// TODO BMS-4743
-		alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
-		window.top.location.href = '/ibpworkbench/logout';
-	}
+	// TODO toast
 }
 
 

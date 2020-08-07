@@ -98,9 +98,10 @@
 			</form>
 		</div>
 	</div>
-	<div ng-switch="toolId" ng-if="flags.isDataLoaded">
+	<hr  ng-show="flags.isDataLoaded" />
+	<div ng-switch="toolId" ng-show="flags.isDataLoaded">
 		<div class="row" ng-switch-when="graphical-filtering">
-			<div class="col-xs-12">
+			<div class="col-xs-12" style="overflow-x: auto">
 				<div id="filter_div" style="margin:1em"></div>
 				<table id="filtered_results" width="100%"></table>
 			</div>
