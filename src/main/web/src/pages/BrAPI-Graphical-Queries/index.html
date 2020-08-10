@@ -12,6 +12,47 @@
 		.my-popover-content {
 			display: none;
 		}
+
+		/* ==========================================================================
+		Loading spinner
+		========================================================================== */
+		.throbber {
+			width: 18px;
+			width: 1.5rem;
+			height: 18px;
+			height: 1.5rem;
+			border-radius: .75rem;
+			box-sizing: border-box;
+			border: 2px solid rgba(27,149,178,.2);
+			border-top-color: #1b95b2;
+			-webkit-animation: spin 1s infinite linear;
+			animation: spin 1s infinite linear;
+			transition: visibility .5s ease-in,opacity .5s ease-in;
+			visibility: visible;
+			display: inline-block;
+		}
+
+		.throbber-2x {
+			width: 30px;
+			width: 2.5rem;
+			height: 30px;
+			height: 2.5rem;
+			border-radius: 1.25rem;
+		}
+
+		@-webkit-keyframes spin {
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+			}
+		}
+
+		@keyframes spin {
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+			}
+		}
 	</style>
 </head>
 <body ng-controller="MainController">
@@ -86,7 +127,7 @@
 				<div class="row">
 					<label class="control-label col-sm-4">Query type</label>
 					<div class="col-sm-8">
-						<select class="form-control" ng-model="toolId" >
+						<select class="form-control" ng-model="toolId" ng-change="onQueryTypeChange()">
 							<option ng-repeat="tool in tools" value="{{tool.id}}">{{tool.name}}</option>
 						</select>
 					</div>
@@ -104,18 +145,19 @@
 					<div class="col-sm-3">
 						<button id="load-brapi"
 							   class="btn btn-primary" ng-click="loadData()">Load</button>
-						<button id="export"
-								class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
-							Export
-						</button>
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
 	<hr  ng-show="flags.isDataLoaded" />
+	<span class="throbber throbber-2x" ng-if="isLoading"></span>
 	<div ng-switch="toolId" ng-show="flags.isDataLoaded">
 		<div class="row" ng-switch-when="graphical-filtering">
+			<button id="export"
+					class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
+				Export
+			</button>
 			<div class="col-xs-12" style="overflow-x: auto">
 				<div id="filter_div" style="margin:1em"></div>
 				<table id="filtered_results" width="100%"></table>
@@ -142,7 +184,7 @@
 	<hr/>
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
-			<a href="https://github.com/solgenomics" target="_blank">
+			<a href="https://github.com/solgenomics/BrAPI-Graphical-Filtering" target="_blank">
 				<img style="width: 40px;"
 					 th:src="@{/controller/static/images/solgenomics.png}"/></a>
 		</div>

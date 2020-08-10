@@ -155,12 +155,10 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			vals[entry.name] = entry.value;
 			return vals
 		}, {});
-		var studyDbId = getUrlParameter("studyDbId");
 
 		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
 
 		const phenotypesSearchPromise = $scope.phenotypesSearch({
-			studyDbIds: studyDbId ? [studyDbId] : [],
 			locationDbIds: locationDbIds || null,
 			observationLevel: form.observationLevel || null,
 			programDbIds: [getUrlParameter('programUUID')],
@@ -193,6 +191,10 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 				break;
 		}
 
+	};
+
+	$scope.onQueryTypeChange = function () {
+		$scope.flags.isDataLoaded = false;
 	};
 
 	$scope.$watch('flags.groupByAccession', function (newValue, oldValue) {
@@ -242,7 +244,6 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		});
 		var tableCols = [
 			{title: "TrialInstance", data: "instanceNumber"},
-			{title: "StudyDbId", data: "studyDbId"},
 			{title: "Study", data: "studyName"},
 			{title: "Name", data: "observationUnitName"},
 			{title: "observationUnitDbId", data: "observationUnitDbId"},
@@ -294,6 +295,9 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 
 	$scope.createStudyComparison = function (data) {
 
+		$("#graph_div").html("");
+		$("#hist_div").html("");
+
 		var scomp = StudyComparison().links(function(dbId){
 			return '/ibpworkbench/maingpsb/germplasm-' + dbId;
 		});
@@ -308,10 +312,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			.text(function(d){return d})
 			.raise();
 
-		$("#graph_div").html("");
-		$("#hist_div").html("");
-
-		$("#scomp-form").click(function(){
+		$("#scomp-form").off().click(function(){
 			scomp.setVariable($("#scomp-select-var").val());
 			scomp.graphGrid("#graph_div");
 			scomp.multiHist("#hist_div");
@@ -319,11 +320,14 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 	};
 
 	$scope.phenotypesSearch = function (data) {
+		$scope.isLoading = true;
 		return $http({
 			method: 'POST',
 			url: "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/phenotypes-search",
 			headers: {'x-auth-token': JSON.parse(localStorage["bms.xAuthToken"]).token},
 			data: data
+		}).finally(function () {
+			$scope.isLoading = false;
 		});
 	}
 
