@@ -129,8 +129,7 @@ public class ListComponentAddEntryDialogSource implements AddEntryDialogSource {
 			this.listComponent.initializeValues();
 		} else {
 			this.listDataTable.setEditable(false);
-			final List<GermplasmListData> inventoryData = this.inventoryDataManager.getLotCountsForListEntries(
-					this.listComponent.getGermplasmList().getId(), new ArrayList<>(Collections.singleton(listDataId)));
+			final List<GermplasmListData> inventoryData = this.inventoryDataManager.getLotCountsForListEntries(new ArrayList<>(Collections.singleton(listDataId)));
 			if (inventoryData != null) {
 				listData = inventoryData.get(0);
 			}

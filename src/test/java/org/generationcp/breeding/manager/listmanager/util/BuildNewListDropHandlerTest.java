@@ -181,7 +181,7 @@ public class BuildNewListDropHandlerTest {
 		final GermplasmList germplasmList = GermplasmListTestDataInitializer.createGermplasmListWithListDataAndInventoryInfo(1, 1);
 		List<GermplasmListData> listData = germplasmList.getListData();
 
-		Mockito.doReturn(listData).when(this.inventoryDataManager).getLotCountsForListEntries(Mockito.anyInt(),
+		Mockito.doReturn(listData).when(this.inventoryDataManager).getLotCountsForListEntries(
 				ArgumentMatchers.<List<Integer>>any());
 
 		this.dropHandler = new BuildNewListDropHandler(this.listManagerMain, this.targetTable);
