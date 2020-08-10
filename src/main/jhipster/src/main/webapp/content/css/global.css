@@ -284,3 +284,11 @@ table > thead > tr > th[jhisortby] {
 }
 
 /* jhipster-needle-css-add-main JHipster will add new css style */
+
+.bms-helpicon {
+    font-size: 20px!important;
+    color: #5A5A5A;
+    top: 10px;
+    left: 20px;
+    font-weight: bold;
+}
