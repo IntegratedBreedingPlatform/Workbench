@@ -244,9 +244,6 @@ public class RemoveSelectedGermplasmAsDialogTest {
 		// #2 Seed Reserved
 		// default value
 		String seedRes = "-";
-		if (entry.getInventoryInfo().getReservedLotCount().intValue() != 0) {
-			seedRes = entry.getInventoryInfo().getReservedLotCount().toString().trim();
-		}
 		newItem.getItemProperty(ColumnLabels.SEED_RESERVATION.getName()).setValue(seedRes);
 	}
 

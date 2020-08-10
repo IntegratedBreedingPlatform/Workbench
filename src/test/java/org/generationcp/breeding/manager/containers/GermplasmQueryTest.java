@@ -128,7 +128,6 @@ public class GermplasmQueryTest {
 			final GermplasmInventory inventoryInfo = new GermplasmInventory(gid);
 			inventoryInfo.setStockIDs(GermplasmQueryTest.TEST_STOCK_ID_STRING);
 			inventoryInfo.setActualInventoryLotCount(GermplasmQueryTest.TEST_INVENTORY_COUNT);
-			inventoryInfo.setReservedLotCount(GermplasmQueryTest.TEST_SEED_RES_COUNT);
 			inventoryInfo.setScaleForGermplsm(GermplasmQueryTest.GERMPLSM_SCALE);
 			inventoryInfo.setTotalAvailableBalance(GermplasmQueryTest.AVAILABLE_BALANCE);
 			germplasm.setInventoryInfo(inventoryInfo);

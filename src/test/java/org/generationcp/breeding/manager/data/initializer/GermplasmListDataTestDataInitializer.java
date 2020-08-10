@@ -36,7 +36,6 @@ public class GermplasmListDataTestDataInitializer {
 		final ListDataInventory listDataInventory = new ListDataInventory(id, gid);
 		listDataInventory.setLotCount(id % 4);
 		listDataInventory.setActualInventoryLotCount(id % 3);
-		listDataInventory.setReservedLotCount(id % 2);
 		listData.setInventoryInfo(listDataInventory);
 
 		return listData;
