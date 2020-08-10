@@ -78,7 +78,7 @@ export class TreeTableComponent implements OnInit {
     }
 
     private loadTree() {
-        this.service.getInitTree(AUTH_PARAMS).subscribe((res: HttpResponse<TreeNode[]>) => {
+        this.service.expand(null, AUTH_PARAMS).subscribe((res: HttpResponse<TreeNode[]>) => {
             res.body.forEach((node) => this.addNode(node));
             this.redrawNodes();
             this.nodes.forEach((parent) => {
