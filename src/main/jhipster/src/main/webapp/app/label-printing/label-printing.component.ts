@@ -358,6 +358,7 @@ export class LabelPrintingComponent implements OnInit {
 
     private getToolSection() {
         switch (this.context.printingLabelType) {
+            case LabelPrintingType.OBSERVATION_DATASET:
             case LabelPrintingType.SUBOBSERVATION_DATASET:
                 return 'DATASET_LABEL_PRINTING_PRESET';
             case LabelPrintingType.LOT:
