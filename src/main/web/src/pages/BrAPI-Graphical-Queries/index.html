@@ -164,7 +164,7 @@
 			</div>
 		</div>
 		<div class="row" ng-switch-when="study-comparison">
-			<form id="scomp-form" class="form-inline" style="margin:1em;" name="scomp-form">
+			<form class="form-inline">
 				<div class="form-group">
 					<select id="scomp-select-var" class="form-control" name="variable">
 						<option value="" disabled selected>
@@ -172,7 +172,7 @@
 						</option>
 					</select>
 				</div>
-				<input type="button" class="btn btn-primary" value="Compare Variable">
+				<button id="scomp-compare" class="btn btn-primary">Compare Variable</button>
 			</form>
 			<div class="col-xs-12">
 				<div id="graph_div" style="margin:1em;float:left;"></div>

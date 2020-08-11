@@ -312,7 +312,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			.text(function(d){return d})
 			.raise();
 
-		$("#scomp-form").off().click(function(){
+		$("#scomp-compare").off().click(function(){
 			scomp.setVariable($("#scomp-select-var").val());
 			scomp.graphGrid("#graph_div");
 			scomp.multiHist("#hist_div");
