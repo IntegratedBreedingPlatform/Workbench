@@ -88,7 +88,7 @@ public class ListComponentAddEntryDialogSourceTest {
 		Mockito.doReturn(Arrays.asList(GermplasmListDataTestDataInitializer.getGermplasmListData(germplasmList,
 				ListComponentAddEntryDialogSourceTest.GERMPLASM_LIST_ID, ListComponentAddEntryDialogSourceTest.GID, 4)))
 				.when(this.inventoryDataManager).getLotCountsForListEntries(
-						Matchers.eq(ListComponentAddEntryDialogSourceTest.GERMPLASM_LIST_ID), Matchers.anyListOf(Integer.class));
+						 Matchers.anyListOf(Integer.class));
 		Mockito.doReturn(ListComponentAddEntryDialogSourceTest.STANDARD_COLUMNS).when(this.table).getVisibleColumns();
 	}
 

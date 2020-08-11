@@ -188,7 +188,7 @@ public class DropHandlerMethodsTest {
 		final List<GermplasmListData> listData4 = Lists.newArrayList(germplasmLists.get(0).getListData().get(3));
 		final List<GermplasmListData> listData5 = Lists.newArrayList(germplasmLists.get(0).getListData().get(4));
 
-		Mockito.when(this.inventoryDataManager.getLotCountsForListEntries(Mockito.anyInt(), ArgumentMatchers.<List<Integer>>any())).thenReturn(listData1,
+		Mockito.when(this.inventoryDataManager.getLotCountsForListEntries(ArgumentMatchers.<List<Integer>>any())).thenReturn(listData1,
 				listData2, listData3, listData4, listData5, listData1,
 				listData2, listData3, listData4, listData5);
 
@@ -335,7 +335,7 @@ public class DropHandlerMethodsTest {
 		// MGID or group ID of Germplasm List Data has default value to 0, so this field will never be null
 		listData.setGroupId(DropHandlerMethodsTest.GROUP_ID);
 
-		Mockito.doReturn(testList.getListData()).when(this.inventoryDataManager).getLotCountsForListEntries(Mockito.anyInt(), ArgumentMatchers.<List<Integer>>any());
+		Mockito.doReturn(testList.getListData()).when(this.inventoryDataManager).getLotCountsForListEntries( ArgumentMatchers.<List<Integer>>any());
 
 		this.dropHandlerMethods.addGermplasmFromList(DropHandlerMethodsTest.GERMPLASM_LIST_ID, listData.getId(), testList, false);
 
@@ -371,7 +371,7 @@ public class DropHandlerMethodsTest {
 		final List<GermplasmListData> listData4 = Lists.newArrayList(germplasmList.getListData().get(3));
 		final List<GermplasmListData> listData5 = Lists.newArrayList(germplasmList.getListData().get(4));
 
-		Mockito.when(this.inventoryDataManager.getLotCountsForListEntries(Mockito.anyInt(), ArgumentMatchers.<List<Integer>>any())).thenReturn(listData1,
+		Mockito.when(this.inventoryDataManager.getLotCountsForListEntries(ArgumentMatchers.<List<Integer>>any())).thenReturn(listData1,
 				listData2, listData3, listData4, listData5);
 
 		this.dropHandlerMethods.addGermplasmList(DropHandlerMethodsTest.GERMPLASM_LIST_ID);
