@@ -51,7 +51,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
                 if (response.body) {
                     this.helpLink = response.body;
                 }
-            }).catch((error)=>{});
+            }).catch((error) => {});
         }
     }
 

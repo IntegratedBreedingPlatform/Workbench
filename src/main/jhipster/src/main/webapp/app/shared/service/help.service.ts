@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class HelpService {
-    constructor(@Inject(HttpClient) private http:HttpClient) {
+    constructor(@Inject(HttpClient) private http: HttpClient) {
     }
 
     getOnlinHelpLink(): Observable<any> {
