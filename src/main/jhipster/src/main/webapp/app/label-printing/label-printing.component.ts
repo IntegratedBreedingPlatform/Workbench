@@ -98,7 +98,7 @@ export class LabelPrintingComponent implements OnInit {
      * Indicates if the export is for label printing
      */
     isLabelPrinting() {
-        return this.fileType === FileType.PDF || this.context.printingLabelType === LabelPrintingType.OBSERVATION_DATASET;
+        return this.fileType === FileType.PDF;
     }
 
     applySelectedSetting() {
