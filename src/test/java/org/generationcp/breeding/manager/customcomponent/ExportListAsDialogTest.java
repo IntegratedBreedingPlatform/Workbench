@@ -310,7 +310,6 @@ public class ExportListAsDialogTest {
 			germplasmListData.setGroupName(ColumnLabels.PARENTAGE.getName() + x);
 			final ListDataInventory inventoryInfo = new ListDataInventory(x, x);
 			inventoryInfo.setLotCount(1);
-			inventoryInfo.setReservedLotCount(1);
 			inventoryInfo.setActualInventoryLotCount(1);
 			germplasmListData.setInventoryInfo(inventoryInfo);
 			germplasmListData.setEntryCode(ColumnLabels.ENTRY_CODE.getName() + x);
@@ -390,9 +389,6 @@ public class ExportListAsDialogTest {
 		// #2 Seed Reserved
 		// default value
 		String seedRes = "-";
-		if (entry.getInventoryInfo().getReservedLotCount().intValue() != 0) {
-			seedRes = entry.getInventoryInfo().getReservedLotCount().toString().trim();
-		}
 		newItem.getItemProperty(ColumnLabels.SEED_RESERVATION.getName()).setValue(seedRes);
 	}
 

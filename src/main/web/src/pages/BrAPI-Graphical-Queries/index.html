@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" ng-app="mainApp">
+<head>
+	<meta charset="utf-8">
+	<title>BrAPI Graphical Queries</title>
+	<link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/pages/BrAPI-Graphical-Queries/style.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/jquery.dataTables-1.10.16.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/select2/select2.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<style type="text/css">
+		.my-popover-content {
+			display: none;
+		}
+
+		/* ==========================================================================
+		Loading spinner
+		========================================================================== */
+		.throbber {
+			width: 18px;
+			width: 1.5rem;
+			height: 18px;
+			height: 1.5rem;
+			border-radius: .75rem;
+			box-sizing: border-box;
+			border: 2px solid rgba(27,149,178,.2);
+			border-top-color: #1b95b2;
+			-webkit-animation: spin 1s infinite linear;
+			animation: spin 1s infinite linear;
+			transition: visibility .5s ease-in,opacity .5s ease-in;
+			visibility: visible;
+			display: inline-block;
+		}
+
+		.throbber-2x {
+			width: 30px;
+			width: 2.5rem;
+			height: 30px;
+			height: 2.5rem;
+			border-radius: 1.25rem;
+		}
+
+		@-webkit-keyframes spin {
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+			}
+		}
+
+		@keyframes spin {
+			100% {
+				-webkit-transform: rotate(360deg);
+				transform: rotate(360deg);
+			}
+		}
+	</style>
+</head>
+<body ng-controller="MainController">
+<div style="margin:1em" class="container-fluid">
+	<div class="row">
+		<div class="col-xs-6">
+			<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI Graphical Queries</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6">
+			<form id="brapi-form" action="javascript:void(0);" class="form-horizontal">
+				<div class="form-group">
+					<label class="control-label col-sm-4">Study name</label>
+					<div class="col-sm-8" id="trials">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Locations</label>
+					<div class="col-sm-8">
+						<div class="form-group">
+							<div class="col-sm-12" id="allLocations" ng-show="!flags.isBreedingLocationSelected">
+
+							</div>
+							<div class="col-sm-12" id="breedingLocations" ng-show="flags.isBreedingLocationSelected">
+
+							</div>
+							<div class="col-sm-12" id="locations">
+								<label class="radio-inline">
+									<input type="radio" name="locationRadioOptions" ng-model="flags.isBreedingLocationSelected" ng-value="true">Breeding locations
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="locationRadioOptions" ng-model="flags.isBreedingLocationSelected" ng-value="false">All location types
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">GIDs</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" name="germplasmDbIds"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Observation level</label>
+					<div class="col-sm-8" id="observationLevels"></div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Observation timestamp range start</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" name="observationTimeStampRangeStart"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-4">Observation timestamp range end</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" name="observationTimeStampRangeEnd"/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label col-sm-4">Group By Accession</label>
+					<div class="col-sm-8">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name="group" ng-model="flags.groupByAccession"/>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<label class="control-label col-sm-4">Query type</label>
+					<div class="col-sm-8">
+						<select class="form-control" ng-model="toolId" ng-change="onQueryTypeChange()">
+							<option ng-repeat="tool in tools" value="{{tool.id}}">{{tool.name}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group" style="display:none;">
+					<input type="text" name="pageSize" th:value="${maxPageSize}"/>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						&nbsp;
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-4"></div>
+					<div class="col-sm-3">
+						<button id="load-brapi"
+							   class="btn btn-primary" ng-click="loadData()">Load</button>
+						<span class="throbber throbber-2x" ng-if="isLoading" style="vertical-align: middle;margin-left: 10px;"></span>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<hr  ng-show="flags.isDataLoaded" />
+	<div ng-switch="toolId" ng-show="flags.isDataLoaded">
+		<div class="row" ng-switch-when="graphical-filtering">
+			<button id="export"
+					class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
+				Export
+			</button>
+			<div class="col-xs-12" style="overflow-x: auto">
+				<div id="filter_div" style="margin:1em"></div>
+				<table id="filtered_results" width="100%"></table>
+			</div>
+		</div>
+		<div class="row" ng-switch-when="study-comparison">
+			<form class="form-inline">
+				<div class="form-group">
+					<select id="scomp-select-var" class="form-control" name="variable">
+						<option value="" disabled selected>
+							Select Variable
+						</option>
+					</select>
+				</div>
+				<button id="scomp-compare" class="btn btn-primary">Compare Variable</button>
+			</form>
+			<div class="col-xs-12">
+				<div id="graph_div" style="margin:1em;float:left;"></div>
+				<div id="hist_div" style="margin:1em;float:left;"></div>
+				<div style="clear:both"></div>
+			</div>
+		</div>
+	</div>
+	<hr/>
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			<a href="https://github.com/solgenomics/BrAPI-Graphical-Filtering" target="_blank">
+				<img style="width: 40px;"
+					 th:src="@{/controller/static/images/solgenomics.png}"/></a>
+		</div>
+	</div>
+</div>
+</body>
+<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}"></script>
+<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}"></script>
+<script th:src="@{/controller/static/js/lib/jquery.dataTables-1.10.16.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/select2.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-animate.min.js}" charset="utf-8"></script>
+<script th:src="@{/controller/static/js/lib/angular-1.4.7/ui-bootstrap-tpls-2.5.0.js}" charset="utf-8"></script>
+
+<script th:src="@{/controller/pages/BrAPI-Graphical-Queries/GraphicalFilter.js}"></script>
+<script th:src="@{/controller/pages/BrAPI-Graphical-Queries/main.js}"></script>
+<script th:src="@{/controller/static/js/lib/%40solgenomics/brapi-study-comparison/build/StudyComparison.js}" charset="utf-8"></script>
+</html>

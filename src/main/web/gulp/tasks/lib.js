@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 
-gulp.task('lib', ['brapi-fieldmap', 'common-libs']);
+gulp.task('lib', ['brapi-fieldmap', 'common-libs', 'brapi-study-comparison']);
 gulp.task('brapi-fieldmap', ['brapi-fieldmap-js', 'brapi-fieldmap-css']);
 
 gulp.task('common-libs', function() {
@@ -34,3 +34,10 @@ gulp.task('brapi-fieldmap-css', function() {
 		.pipe(gulp.dest('../webapp/WEB-INF/static/lib'));
 });
 
+gulp.task('brapi-study-comparison', function() {
+
+	return gulp.src([
+		'@solgenomics/brapi-study-comparison/build/StudyComparison.js'
+	], { cwd: 'node_modules/**' }) /* Glob required here. */
+		.pipe(gulp.dest('../webapp/WEB-INF/static/js/lib'));
+});

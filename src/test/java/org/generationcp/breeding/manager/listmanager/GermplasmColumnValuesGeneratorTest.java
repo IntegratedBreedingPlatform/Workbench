@@ -319,8 +319,8 @@ public class GermplasmColumnValuesGeneratorTest {
 		final String columnName = ColumnLabels.DESIGNATION.getName();
 		final String prefix = "LEAFYNODE";
 		final String suffix = "4EV";
-		final int startNumber = 100;
-		final int numberofZeros = 5;
+		final Integer startNumber = 100;
+		final Integer numberofZeros = 5;
 		final boolean withSpaceBetweenPrefixAndCode = true;
 		final boolean withSpaceBetweenSuffixAndCode = false;
 
@@ -343,8 +343,8 @@ public class GermplasmColumnValuesGeneratorTest {
 		final String columnName = ColumnLabels.DESIGNATION.getName();
 		final String prefix = "LEAFYNODE";
 		final String suffix = "4EV";
-		final int startNumber = 100;
-		final int numberofZeros = 0;
+		final Integer startNumber = 100;
+		final Integer numberofZeros = 0;
 		final boolean withSpaceBetweenPrefixAndCode = false;
 		final boolean withSpaceBetweenSuffixAndCode = true;
 
@@ -397,7 +397,7 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossMaleGIDColumnValuesForDerivativeGermplasm() {
-		Mockito.doReturn(this.generateListofGermplasm(true, null, null)).when(this.germplasmDataManager)
+		Mockito.doReturn(this.generateListOfGermplasm(true, null, null)).when(this.germplasmDataManager)
 			.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 
@@ -466,7 +466,6 @@ public class GermplasmColumnValuesGeneratorTest {
 		// Expecting gpid2 to be set as all germplasm have gnpgs = 2
 		for (int i = 1; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(i);
-			Assert.assertTrue(table.get(gid, ColumnLabels.MGID.getName()).isPresent());
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
 				GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName,
 				table.get(gid, ColumnLabels.MGID.getName()).get().getGid().toString());
@@ -476,7 +475,7 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossMalePrefNameColumnValuesForDerivativeGermplasm() {
-		Mockito.doReturn(this.generateListofGermplasm(true, null, null)).when(this.germplasmDataManager)
+		Mockito.doReturn(this.generateListOfGermplasm(true, null, null)).when(this.germplasmDataManager)
 			.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
 
 		final Table<Integer, String, Optional<Germplasm>> table =
@@ -515,7 +514,7 @@ public class GermplasmColumnValuesGeneratorTest {
 		// gnpgs = 2
 		for (int i = 0; i < GermplasmColumnValuesGeneratorTest.ITEMS_LIST.size(); i++) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(i);
-			Assert.assertTrue(table.get(gid, ColumnLabels.MGID.getName()).isPresent());
+			final Integer maleParentId2 = maleParentsMap.get(gid);
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(
 				GermplasmColumnValuesGeneratorTest.ITEMS_LIST.get(i), columnName, table.get(gid, ColumnLabels.MGID.getName()).get().getPreferredName().getNval());
 		}
@@ -669,7 +668,7 @@ public class GermplasmColumnValuesGeneratorTest {
 	 */
 	@Test
 	public void testSetCrossFemalePrefNameColumnValuesForDerivativeGermplasmWithParentGID() {
-		Mockito.doReturn(this.generateListofGermplasm(true, 1, 2)).when(this.germplasmDataManager)
+		Mockito.doReturn(this.generateListOfGermplasm(true, 1, 2)).when(this.germplasmDataManager)
 			.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
 		final String columnName = ColumnLabels.PARENTAGE.getName();
 
@@ -681,7 +680,6 @@ public class GermplasmColumnValuesGeneratorTest {
 		int ctr = 0;
 		for (final Object itemId : GermplasmColumnValuesGeneratorTest.ITEMS_LIST) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(ctr);
-			Assert.assertTrue(table.get(gid, ColumnLabels.FGID.getName()).isPresent());
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(itemId, columnName, table.get(gid, ColumnLabels.FGID.getName()).get().getGid().toString());
 			ctr++;
 		}
@@ -689,7 +687,7 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossMaleGIDColumnValuesWithParentGID() {
-		Mockito.doReturn(this.generateListofGermplasm(true, 1, 2)).when(this.germplasmDataManager)
+		Mockito.doReturn(this.generateListOfGermplasm(true, 1, 2)).when(this.germplasmDataManager)
 			.getGermplasms(GermplasmColumnValuesGeneratorTest.GID_LIST);
 
 		final Table<Integer, String, Optional<Germplasm>> table =
@@ -701,7 +699,6 @@ public class GermplasmColumnValuesGeneratorTest {
 		int ctr = 0;
 		for (final Object itemId : GermplasmColumnValuesGeneratorTest.ITEMS_LIST) {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(ctr);
-			Assert.assertTrue(table.get(gid, ColumnLabels.MGID.getName()).isPresent());
 			Mockito.verify(this.fillColumnSource).setColumnValueForItem(itemId, columnName, table.get(gid, ColumnLabels.MGID.getName()).get().getGid().toString());
 			ctr++;
 		}
@@ -709,8 +706,8 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossMaleInfoColumnValuesWithParentNAME() {
-		final List<Germplasm> germplasms = this.generateListofGermplasm(true, 1, 2);
-		final ArrayList<Integer> parent = new ArrayList<>();
+		List<Germplasm> germplasms = this.generateListOfGermplasm(true, 1, 2);
+		ArrayList<Integer> parent = new ArrayList<>();
 		parent.add(2);
 
 		Mockito.doReturn(germplasms).when(this.germplasmDataManager)
@@ -725,7 +722,6 @@ public class GermplasmColumnValuesGeneratorTest {
 		int ctr = 0;
 		for(final Object itemId : parent)  {
 			final Integer gid = GermplasmColumnValuesGeneratorTest.GID_LIST.get(ctr);
-			Assert.assertTrue(table.get(gid, ColumnLabels.MGID.getName()).isPresent());
 			this.fillColumnSource.setColumnValueForItem(itemId, columnName, table.get(gid, ColumnLabels.MGID.getName()).get().getPreferredName().getNval());
 			ctr++;
 		}
@@ -733,8 +729,8 @@ public class GermplasmColumnValuesGeneratorTest {
 
 	@Test
 	public void testSetCrossFemaleInfoColumnValuesWithParentNAME() {
-		final List<Germplasm> germplasms = this.generateListofGermplasm(true, 1, 2);
-		final ArrayList<Integer> parent = new ArrayList<>();
+		List<Germplasm> germplasms = this.generateListOfGermplasm(true, 1, 2);
+		ArrayList<Integer> parent = new ArrayList<>();
 		parent.add(1);
 
 		final Table<Integer, String, Optional<Germplasm>> table =
@@ -756,7 +752,7 @@ public class GermplasmColumnValuesGeneratorTest {
 		}
 	}
 
-	private List<Germplasm> generateListofGermplasm(final boolean isDerivative, final Integer femaleParent, final Integer maleParent) {
+	private List<Germplasm> generateListOfGermplasm(final boolean isDerivative, Integer femaleParent, Integer maleParent) {
 		final List<Germplasm> list = new ArrayList<>();
 		for (final Integer gid : GermplasmColumnValuesGeneratorTest.GID_LIST) {
 			final Germplasm germplasm = new Germplasm();

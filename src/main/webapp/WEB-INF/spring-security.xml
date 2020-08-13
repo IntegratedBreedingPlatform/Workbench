@@ -9,7 +9,7 @@
 
 	<http pattern="/controller/static/**" security="none" />
 	<http pattern="/controller/pages/angular2/lib/**" security="none" />
-	<http pattern="/controller/pages/BrAPI-Graphical-Filtering/**" security="none" />
+	<http pattern="/controller/pages/BrAPI-Graphical-Queries/**" security="none" />
 	<http pattern="/controller/pages/brapi-fieldmap/**" security="none" />
 	<http pattern="/VAADIN/themes/**" security="none" />
 
@@ -30,8 +30,8 @@
 		<!--INFORMATION_MANAGEMENT-->
 		<!--ROLE_BROWSE_STUDIES-->
 		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
-		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
-		<intercept-url pattern="/controller/BrAPI-Graphical-Filtering/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
+		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_GRAPHICAL_QUERIES')"/>
+		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_GRAPHICAL_QUERIES')"/>
 		<intercept-url pattern="/controller/brapi-fieldmap/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_STUDIES')"/>
 		<intercept-url pattern="/controller/brapi-fieldmap/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_STUDIES')"/>
 		<!--HEAD_TO_HEAD_QUERY-->
