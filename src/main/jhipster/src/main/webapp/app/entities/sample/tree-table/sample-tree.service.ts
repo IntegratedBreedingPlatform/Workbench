@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { TreeNode } from './tree-node.model';
-import { createRequestOption } from '../../../shared';
 import { map } from 'rxjs/operators';
 
 export type EntityResponseType = HttpResponse<TreeNode>;
@@ -10,22 +9,17 @@ export type EntityResponseType = HttpResponse<TreeNode>;
 @Injectable()
 export class SampleTreeService {
 
-    private isFolderOnly = 0;
-    private fieldbookUrl = '/Fieldbook/SampleListTreeManager';
     private resourceUrl;
+    private crop;
+    private programUUID;
 
     constructor(private http: HttpClient) {
     }
 
     setCropAndProgram(crop: string, programUUID: string) {
+        this.crop = crop;
+        this.programUUID = programUUID;
         this.resourceUrl = `/bmsapi/crops/${crop}/programs/${programUUID}/sample-list-folders/`;
-    }
-
-    getInitTree(req?: any): Observable<HttpResponse<TreeNode[]>> {
-        const options = createRequestOption(req);
-        const url = `${this.fieldbookUrl}/loadInitTree/${this.isFolderOnly}`;
-        return this.http.get<TreeNode[]>(url, { params: options, observe: 'response' })
-            .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res)));
     }
 
     move(source: string, target: string): Observable<any> {
@@ -54,13 +48,22 @@ export class SampleTreeService {
     }
 
     expand(parentKey: string, req?: any): Observable<HttpResponse<TreeNode[]>> {
-        const options = createRequestOption(req);
-        return this.http.get<TreeNode[]>(this.getUrl(parentKey), { params: options, observe: 'response' })
-            .pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res, parentKey)));
-    }
 
-    private getUrl(parentKey: string) {
-        return `${this.fieldbookUrl}/expandTree/${parentKey}/${this.isFolderOnly}`;
+        const url = `/bmsapi/crops/${this.crop}/sample-lists/tree`;
+        const params = {
+            onlyFolders: '0'
+        };
+        if (parentKey) {
+            params['parentFolderId'] = parentKey;
+        }
+        if (this.programUUID) {
+            params['programUUID'] = this.programUUID;
+        }
+        return this.http.get<TreeNode[]>(url, {
+            params,
+            observe: 'response'
+        }).pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res, parentKey)));
+
     }
 
     private convertArrayResponse(res: HttpResponse<TreeNode[]>, parentKey?: string): HttpResponse<TreeNode[]> {
@@ -72,11 +75,6 @@ export class SampleTreeService {
         return res.clone({ body });
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: TreeNode = this.convertItemFromServer(res.body);
-        return res.clone({ body });
-    }
-
     private convertItemFromServer(treeNode: TreeNode, parentKey?: string): TreeNode {
         const copy: TreeNode = Object.assign({}, treeNode);
         copy.parentId = parentKey;
@@ -84,4 +82,5 @@ export class SampleTreeService {
         copy.name = treeNode.title;
         return copy;
     }
+
 }

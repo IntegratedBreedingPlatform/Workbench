@@ -28,6 +28,7 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
+    studyId;
 
     units: Promise<InventoryUnit[]>;
     storageLocations: Promise<Location[]>;
@@ -35,7 +36,7 @@ export class LotCreationDialogComponent implements OnInit {
 
     favoriteLocation = false;
     storageLocationType = [1500];
-    initialDeposit = false;
+    initialDepositRequired = false;
     storageLocIdSelected;
     favoriteLocIdSelected;
 
@@ -51,6 +52,13 @@ export class LotCreationDialogComponent implements OnInit {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
+
+        if (queryParams.studyId) {
+            // studyId has value if this Lot Creation page is called from Study Manager.
+            // In this case, deposit is required.
+            this.studyId = queryParams.studyId;
+            this.initialDepositRequired = true;
+        }
 
         this.lot = new Lot();
         this.deposit = new Transaction();
@@ -69,6 +77,7 @@ export class LotCreationDialogComponent implements OnInit {
             const defaultFavoriteLocation = favoriteLocations.find((location) => location.defaultLocation);
             this.favoriteLocIdSelected = defaultFavoriteLocation ? defaultFavoriteLocation.id : favoriteLocations[0] && favoriteLocations[0].id;
         });
+
     }
 
     ngOnInit() {
@@ -96,11 +105,12 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private createDeposit(lotUUIDs: string[]) {
-        if (this.initialDeposit) {
+        if (this.initialDepositRequired) {
             const lotDepositRequest = {
                 selectedLots: <SearchComposite>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
-                depositsPerUnit: {}
+                depositsPerUnit: {},
+                sourceStudyId: this.studyId
             };
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());

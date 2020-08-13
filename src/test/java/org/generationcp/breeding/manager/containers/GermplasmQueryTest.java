@@ -1,6 +1,7 @@
 
 package org.generationcp.breeding.manager.containers;
 
+import com.google.common.collect.HashBasedTable;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -19,7 +20,11 @@ import org.generationcp.middleware.domain.gms.search.GermplasmSearchParameter;
 import org.generationcp.middleware.domain.inventory.GermplasmInventory;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
+import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
+import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.junit.Before;
@@ -41,6 +46,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmQueryTest {
@@ -54,6 +61,10 @@ public class GermplasmQueryTest {
 	public static final String GERMPLSM_SCALE = "kg";
 	public static final String TEST_CROSS_EXPANSION_STRING = "TEST CROSS EXPANSION STRING";
 	public static final String TEST_GERMPLASM_NAME = "TEST GERMPLASM NAME";
+	public static final Integer TEST_CROSS_EXPANSION_FGID = 1;
+	public static final String TEST_CROSS_EXPANSION_FGID_NAME = "FGID NAME";
+	public static final Integer TEST_CROSS_EXPANSION_MGID = 2;
+	public static final String TEST_CROSS_EXPANSION_MGID_NAME = "MGID NAME";
 	public static final String TEST_DASH_STRING = "-";
 	public static final int TEST_GID = 0;
 	public static final Integer TEST_SEED_RES_COUNT = 10;
@@ -75,6 +86,9 @@ public class GermplasmQueryTest {
 	private PedigreeService pedigreeService;
 	@Mock
 	private CrossExpansionProperties crossExpansionProperties;
+	@Mock
+	private PedigreeDataManager pedigreeDataManager;
+
 	private final GermplasmSearchParameter germplasmSearchParameter =
 			new GermplasmSearchParameter(GermplasmQueryTest.SEARCH_STRING, Operation.LIKE);
 	private final List<Germplasm> allGermplasm = new ArrayList<>();
@@ -114,7 +128,6 @@ public class GermplasmQueryTest {
 			final GermplasmInventory inventoryInfo = new GermplasmInventory(gid);
 			inventoryInfo.setStockIDs(GermplasmQueryTest.TEST_STOCK_ID_STRING);
 			inventoryInfo.setActualInventoryLotCount(GermplasmQueryTest.TEST_INVENTORY_COUNT);
-			inventoryInfo.setReservedLotCount(GermplasmQueryTest.TEST_SEED_RES_COUNT);
 			inventoryInfo.setScaleForGermplsm(GermplasmQueryTest.GERMPLSM_SCALE);
 			inventoryInfo.setTotalAvailableBalance(GermplasmQueryTest.AVAILABLE_BALANCE);
 			germplasm.setInventoryInfo(inventoryInfo);
@@ -162,7 +175,7 @@ public class GermplasmQueryTest {
 			.thenReturn(pedigreeString);
 		Mockito.when(this.germplasmDataManager.searchForGermplasm(this.germplasmSearchParameter)).thenReturn(this.currentGermplasm);
 		Mockito.when(this.germplasmDataManager.retrieveGidsOfSearchGermplasmResult(this.germplasmSearchParameter)).thenReturn(new HashSet<Integer>(this.gids));
-
+		Mockito.when(this.pedigreeDataManager.generatePedigreeTable(Matchers.anySet(), Matchers.anyInt(), Matchers.anyBoolean())).thenReturn(this.createPedigreeTree(new HashSet<Integer>(this.gids)));
 		this.searchAllParameter = new GermplasmSearchParameter(this.germplasmSearchParameter);
 		this.searchAllParameter.setStartingRow(0);
 		this.searchAllParameter.setNumberOfEntries(GermplasmQuery.RESULTS_LIMIT);
@@ -173,7 +186,8 @@ public class GermplasmQueryTest {
 		final Germplasm germplasm = this.allGermplasm.get(0);
 		final Item item = this.query.getGermplasmItem(germplasm, 1,
 			Collections.singletonMap(germplasm.getGid(), GermplasmQueryTest.TEST_CROSS_EXPANSION_STRING),
-			Collections.singletonMap(germplasm.getGid(), GermplasmQueryTest.TEST_GERMPLASM_NAME));
+			Collections.singletonMap(germplasm.getGid(), GermplasmQueryTest.TEST_GERMPLASM_NAME),
+			this.createPedigreeTree(germplasm.getGid()));
 
 		final List<String> itemPropertyIDList = this.itemPropertyIds;
 
@@ -226,10 +240,10 @@ public class GermplasmQueryTest {
 		Assert.assertEquals(germplasm.getGermplasmDate(), item.getItemProperty(ColumnLabels.GERMPLASM_DATE.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodCode(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodId(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_NUMBER.getName()).getValue());
-		Assert.assertEquals(germplasm.getFemaleParentPreferredID(), item.getItemProperty(ColumnLabels.FGID.getName()).getValue());
-		Assert.assertEquals(germplasm.getFemaleParentPreferredName(), item.getItemProperty(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).getValue());
-		Assert.assertEquals(germplasm.getMaleParentPreferredID(), item.getItemProperty(ColumnLabels.MGID.getName()).getValue());
-		Assert.assertEquals(germplasm.getMaleParentPreferredName(), item.getItemProperty(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID.toString(), item.getItemProperty(ColumnLabels.FGID.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME, item.getItemProperty(ColumnLabels.CROSS_FEMALE_PREFERRED_NAME.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID.toString(), item.getItemProperty(ColumnLabels.MGID.getName()).getValue());
+		Assert.assertEquals(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME, item.getItemProperty(ColumnLabels.CROSS_MALE_PREFERRED_NAME.getName()).getValue());
 		Assert.assertEquals(germplasm.getGroupSourceGID(), item.getItemProperty(ColumnLabels.GROUP_SOURCE_GID.getName()).getValue());
 		Assert.assertEquals(germplasm.getGroupSourcePreferredName(), item.getItemProperty(ColumnLabels.GROUP_SOURCE_PREFERRED_NAME.getName()).getValue());
 		Assert.assertEquals(germplasm.getImmediateSourceGID(), item.getItemProperty(ColumnLabels.IMMEDIATE_SOURCE_GID.getName()).getValue());
@@ -360,5 +374,33 @@ public class GermplasmQueryTest {
 
 		Assert.assertTrue(result.contains(ORI_COUN));
 
+	}
+
+	private com.google.common.collect.Table<Integer, String, Optional<Germplasm>> createPedigreeTree(final Integer gid) {
+		final com.google.common.collect.Table<Integer, String, Optional<Germplasm>> table = HashBasedTable.create();
+		final Name name = new Name();
+		name.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID_NAME);
+		final Germplasm femaleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_FGID);
+		femaleGermplasm.setNames(Arrays.asList(name));
+		femaleGermplasm.setSelectionHistory("femaleSelectionHistory");
+		femaleGermplasm.setPreferredName(name);
+		table.put(gid, ColumnLabels.FGID.getName(), Optional.of(femaleGermplasm));
+
+		final Name maleName = new Name();
+		maleName.setNval(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID_NAME);
+		final Germplasm maleGermplasm = new Germplasm(GermplasmQueryTest.TEST_CROSS_EXPANSION_MGID);
+		maleGermplasm.setNames(Arrays.asList(maleName));
+		maleGermplasm.setSelectionHistory("femaleSelectionHistory");
+		maleGermplasm.setPreferredName(maleName);
+		table.put(gid, ColumnLabels.MGID.getName(), Optional.of(maleGermplasm));
+		return table;
+	}
+
+	private com.google.common.collect.Table<Integer, String, Optional<Germplasm>> createPedigreeTree(final Set<Integer> gids) {
+		final com.google.common.collect.Table<Integer, String, Optional<Germplasm>> table = HashBasedTable.create();
+		for(final Integer gid : gids) {
+			table.putAll(this.createPedigreeTree(gid));
+		}
+		return table;
 	}
 }

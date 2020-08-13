@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,9 +20,11 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
+import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
@@ -54,11 +57,11 @@ public class BreedingManagerUtil {
 	 * @param germplasmListManager
 	 * @return @
 	 */
-	public static Integer getIDForUserDefinedFieldCrossingName(GermplasmListManager germplasmListManager) {
+	public static Integer getIDForUserDefinedFieldCrossingName(final GermplasmListManager germplasmListManager) {
 
-		List<UserDefinedField> nameTypes = germplasmListManager.getGermplasmNameTypes();
-		for (UserDefinedField type : nameTypes) {
-			for (String crossNameValue : BreedingManagerUtil.USER_DEF_FIELD_CROSS_NAME) {
+		final List<UserDefinedField> nameTypes = germplasmListManager.getGermplasmNameTypes();
+		for (final UserDefinedField type : nameTypes) {
+			for (final String crossNameValue : BreedingManagerUtil.USER_DEF_FIELD_CROSS_NAME) {
 				if (crossNameValue.equalsIgnoreCase(type.getFcode()) || crossNameValue.equalsIgnoreCase(type.getFname())) {
 					return type.getFldno();
 				}
@@ -78,14 +81,14 @@ public class BreedingManagerUtil {
 	 * @param messageSource - resource bundle where the error message will be retrieved from
 	 * @return
 	 */
-	public static Integer getIDForUserDefinedFieldCrossingName(GermplasmListManager germplasmListManager, Window window,
-			SimpleResourceBundleMessageSource messageSource) {
+	public static Integer getIDForUserDefinedFieldCrossingName(final GermplasmListManager germplasmListManager, final Window window,
+			final SimpleResourceBundleMessageSource messageSource) {
 
 		try {
 
 			return BreedingManagerUtil.getIDForUserDefinedFieldCrossingName(germplasmListManager);
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			BreedingManagerUtil.LOG.error(e.getMessage(), e);
 			if (window != null && messageSource != null) {
 				MessageNotifier.showError(window, messageSource.getMessage(Message.ERROR_DATABASE),
@@ -106,8 +109,8 @@ public class BreedingManagerUtil {
 	 *        name.
 	 * @return false if field is null. Else, return true;
 	 */
-	public static boolean validateRequiredField(Window window, AbstractField field, SimpleResourceBundleMessageSource messageSource,
-			String fieldName) {
+	public static boolean validateRequiredField(final Window window, final AbstractField field, final SimpleResourceBundleMessageSource messageSource,
+			final String fieldName) {
 		// either the field caption or fieldName param must be available
 		assert field.getCaption() != null || fieldName != null;
 
@@ -129,8 +132,9 @@ public class BreedingManagerUtil {
 	 *        name.
 	 * @return false if field is null. Else, return true;
 	 */
-	public static boolean validateRequiredStringField(Window window, AbstractField field, SimpleResourceBundleMessageSource messageSource,
-			String fieldName) {
+	public static boolean validateRequiredStringField(
+		final Window window, final AbstractField field, final SimpleResourceBundleMessageSource messageSource,
+			final String fieldName) {
 
 		if (BreedingManagerUtil.validateRequiredField(window, field, messageSource, fieldName)) {
 			if (StringUtils.isEmpty(((String) field.getValue()).trim())) {
@@ -153,7 +157,7 @@ public class BreedingManagerUtil {
 	 *        name.
 	 * 
 	 */
-	public static void showFieldIsRequiredMessage(Window window, SimpleResourceBundleMessageSource messageSource, String fieldName) {
+	public static void showFieldIsRequiredMessage(final Window window, final SimpleResourceBundleMessageSource messageSource, final String fieldName) {
 		// either the field caption or fieldName param must be available
 		assert fieldName != null;
 		assert messageSource != null;
@@ -175,26 +179,26 @@ public class BreedingManagerUtil {
 	 * @param locationType @
 	 */
 	@SuppressWarnings("deprecation")
-	public static void populateWithFavoriteLocations(WorkbenchDataManager workbenchDataManager, GermplasmDataManager germplasmDataManager,
-			ComboBox locationComboBox, Map<String, Integer> mapLocation, Integer locationType, String programUUID) {
+	public static void populateWithFavoriteLocations(final WorkbenchDataManager workbenchDataManager, final GermplasmDataManager germplasmDataManager,
+			final ComboBox locationComboBox, final Map<String, Integer> mapLocation, final Integer locationType, final String programUUID) {
 
 		locationComboBox.removeAllItems();
 
-		List<Integer> favoriteLocationIds = new ArrayList<Integer>();
+		final List<Integer> favoriteLocationIds = new ArrayList<Integer>();
 		List<Location> favoriteLocations = new ArrayList<Location>();
 
 		// Get location Id's
-		List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, 1000, programUUID);
-		for (ProgramFavorite f : list) {
+		final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, 1000, programUUID);
+		for (final ProgramFavorite f : list) {
 			favoriteLocationIds.add(f.getEntityId());
 		}
 
 		// Get locations
 		favoriteLocations = germplasmDataManager.getLocationsByIDs(favoriteLocationIds);
 
-		for (Location favoriteLocation : favoriteLocations) {
+		for (final Location favoriteLocation : favoriteLocations) {
 			if (locationType > 0 && favoriteLocation.getLtype().equals(locationType) || locationType.equals(Integer.valueOf(0))) {
-				Integer locId = favoriteLocation.getLocid();
+				final Integer locId = favoriteLocation.getLocid();
 				locationComboBox.addItem(locId);
 				locationComboBox.setItemCaption(locId, BreedingManagerUtil.getLocationNameDisplay(favoriteLocation));
 				if (mapLocation != null) {
@@ -204,7 +208,7 @@ public class BreedingManagerUtil {
 		}
 	}
 
-	public static String getLocationNameDisplay(Location loc) {
+	public static String getLocationNameDisplay(final Location loc) {
 		String locNameDisplay = loc.getLname();
 		if (loc.getLabbr() != null && !"".equalsIgnoreCase(loc.getLabbr()) && !"-".equalsIgnoreCase(loc.getLabbr())) {
 			locNameDisplay += " - (" + loc.getLabbr() + ")";
@@ -220,8 +224,8 @@ public class BreedingManagerUtil {
 	 * @param locationComboBox
 	 * @param mapLocation @
 	 */
-	public static void populateWithFavoriteLocations(WorkbenchDataManager workbenchDataManager, GermplasmDataManager germplasmDataManager,
-			ComboBox locationComboBox, Map<String, Integer> mapLocation, String programUUID) {
+	public static void populateWithFavoriteLocations(final WorkbenchDataManager workbenchDataManager, final GermplasmDataManager germplasmDataManager,
+			final ComboBox locationComboBox, final Map<String, Integer> mapLocation, final String programUUID) {
 		BreedingManagerUtil.populateWithFavoriteLocations(workbenchDataManager, germplasmDataManager, locationComboBox, mapLocation, 0,
 				programUUID);
 	}
@@ -236,29 +240,29 @@ public class BreedingManagerUtil {
 	 * @param mapLocation @
 	 */
 	@SuppressWarnings("deprecation")
-	public static void populateWithFavoriteBreedingLocations(WorkbenchDataManager workbenchDataManager,
-			GermplasmDataManager germplasmDataManager, ComboBox locationComboBox, Map<String, Integer> mapLocation, String programUUID) {
+	public static void populateWithFavoriteBreedingLocations(final WorkbenchDataManager workbenchDataManager,
+			final GermplasmDataManager germplasmDataManager, final ComboBox locationComboBox, final Map<String, Integer> mapLocation, final String programUUID) {
 
 		locationComboBox.removeAllItems();
 
-		List<Integer> favoriteLocationIds = new ArrayList<Integer>();
+		final List<Integer> favoriteLocationIds = new ArrayList<Integer>();
 		List<Location> favoriteLocations = new ArrayList<Location>();
 
 		// Get location Id's
-		List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, 1000, programUUID);
-		for (ProgramFavorite f : list) {
+		final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, 1000, programUUID);
+		for (final ProgramFavorite f : list) {
 			favoriteLocationIds.add(f.getEntityId());
 		}
 
 		// Get locations
 		favoriteLocations = germplasmDataManager.getLocationsByIDs(favoriteLocationIds);
 
-		for (Location favoriteLocation : favoriteLocations) {
+		for (final Location favoriteLocation : favoriteLocations) {
 			if (favoriteLocation.getLtype() != null
 					&& (favoriteLocation.getLtype().equals(Integer.valueOf(410))
 							|| favoriteLocation.getLtype().equals(Integer.valueOf(411)) || favoriteLocation.getLtype().equals(
 							Integer.valueOf(412)))) {
-				Integer locId = favoriteLocation.getLocid();
+				final Integer locId = favoriteLocation.getLocid();
 				locationComboBox.addItem(locId);
 				locationComboBox.setItemCaption(locId, BreedingManagerUtil.getLocationNameDisplay(favoriteLocation));
 				if (mapLocation != null) {
@@ -277,20 +281,20 @@ public class BreedingManagerUtil {
 	 * @param locationComboBox
 	 * @param mapLocation @
 	 */
-	public static void populateWithFavoriteMethods(WorkbenchDataManager workbenchDataManager, GermplasmDataManager germplasmDataManager,
-			ComboBox methodComboBox, String programUUID) {
+	public static void populateWithFavoriteMethods(final WorkbenchDataManager workbenchDataManager, final GermplasmDataManager germplasmDataManager,
+			final ComboBox methodComboBox, final String programUUID) {
 		BreedingManagerUtil.populateWithFavoriteMethods(workbenchDataManager, germplasmDataManager, methodComboBox, null,
 				programUUID);
 	}
 
-	public static boolean hasFavoriteMethods(GermplasmDataManager germplasmDataManager, String programUUID) {
+	public static boolean hasFavoriteMethods(final GermplasmDataManager germplasmDataManager, final String programUUID) {
 		boolean hasFavMethod = false;
 		try {
-			List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, programUUID);
+			final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, programUUID);
 			if (list != null && !list.isEmpty()) {
 				hasFavMethod = true;
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			BreedingManagerUtil.LOG.error(e.getMessage(), e);
 		}
 		return hasFavMethod;
@@ -340,18 +344,18 @@ public class BreedingManagerUtil {
 	 * @param mapLocation
 	 * @param mType @
 	 */
-	public static void populateWithFavoriteMethods(WorkbenchDataManager workbenchDataManager, GermplasmDataManager germplasmDataManager,
-			ComboBox methodComboBox, String mType, String programUUID) {
+	public static void populateWithFavoriteMethods(final WorkbenchDataManager workbenchDataManager, final GermplasmDataManager germplasmDataManager,
+			final ComboBox methodComboBox, final String mType, final String programUUID) {
 
 		methodComboBox.removeAllItems();
 
-		List<Integer> favoriteMethodIds = new ArrayList<Integer>();
+		final List<Integer> favoriteMethodIds = new ArrayList<Integer>();
 		List<Method> favoriteMethods = new ArrayList<Method>();
 
 		try {
 
-			List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, programUUID);
-			for (ProgramFavorite f : list) {
+			final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, programUUID);
+			for (final ProgramFavorite f : list) {
 				favoriteMethodIds.add(f.getEntityId());
 			}
 
@@ -360,7 +364,7 @@ public class BreedingManagerUtil {
 				favoriteMethods = germplasmDataManager.getMethodsByIDs(favoriteMethodIds);
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			BreedingManagerUtil.LOG.error(e.getMessage(), e);
 		}
 
@@ -368,26 +372,26 @@ public class BreedingManagerUtil {
 
 	}
 	
-	public static void populateMethodsComboBox(ComboBox methodComboBox, String mType,
-				List<Method> methods) {
-		for (Method method : methods) {
+	public static void populateMethodsComboBox(final ComboBox methodComboBox, final String mType,
+				final List<Method> methods) {
+		for (final Method method : methods) {
 			if (mType != null && mType.length() > 0 && method.getMtype() != null && method.getMtype().equals(mType)
 					|| mType == null || mType.length() == 0) {
-				Integer methodId = method.getMid();
+				final Integer methodId = method.getMid();
 				methodComboBox.addItem(methodId);
 				methodComboBox.setItemCaption(methodId, method.getMname());
 			}
 		}
 	}
 
-	public static String getTypeString(String typeCode, List<UserDefinedField> listTypes) {
+	public static String getTypeString(final String typeCode, final List<UserDefinedField> listTypes) {
 		try {
-			for (UserDefinedField listType : listTypes) {
+			for (final UserDefinedField listType : listTypes) {
 				if (listType.getFcode().equals(typeCode)) {
 					return listType.getFname();
 				}
 			}
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			BreedingManagerUtil.LOG.error("Error in getting list types.", ex);
 			return "Error in getting list types.";
 		}
@@ -395,7 +399,7 @@ public class BreedingManagerUtil {
 		return "Germplasm List";
 	}
 
-	public static String getDescriptionForDisplay(GermplasmList germplasmList) {
+	public static String getDescriptionForDisplay(final GermplasmList germplasmList) {
 		String description = "-";
 		if (germplasmList != null && germplasmList.getDescription() != null && germplasmList.getDescription().length() != 0) {
 			description = germplasmList.getDescription().replaceAll("<", "&lt;");
@@ -407,7 +411,7 @@ public class BreedingManagerUtil {
 		return description;
 	}
 
-	private static String getNameFromDao(WorkbenchUser user, Person p) {
+	private static String getNameFromDao(final WorkbenchUser user, final Person p) {
 		if (p != null) {
 			return p.getFirstName() + " " + p.getMiddleName() + " " + p.getLastName();
 		} else {
@@ -417,5 +421,25 @@ public class BreedingManagerUtil {
 
 	public static HttpServletRequest getApplicationRequest() {
 		return ContextApplication.currentRequest();
+	}
+
+	public static String getGermplasmGid(final Optional<Germplasm> germplasm) {
+		if (germplasm.isPresent()) {
+			if(germplasm.get().getGid()!=0) {
+				return String.valueOf(germplasm.get().getGid());
+			} else {
+				return Name.UNKNOWN;
+			}
+		} else {
+			return "-";
+		}
+	}
+
+	public static String getGermplasmPreferredName(final Optional<Germplasm> germplasm) {
+		if (germplasm.isPresent()) {
+			return germplasm.get().getPreferredName().getNval();
+		} else {
+			return "-";
+		}
 	}
 }
