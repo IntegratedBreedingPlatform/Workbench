@@ -6,9 +6,9 @@
         'variableSelect','contentEditable']);
 
 	app.controller('AddFormulaController', ['$scope', '$window', '$location', 'variablesService', 'variableStateService'
-        ,'serviceUtilities', 'formUtilities',
+        ,'serviceUtilities', 'formUtilities', 'helpLinkService',
 		function ($scope, $window, $location, variablesService,
-				  variableStateService, serviceUtilities, formUtilities) {
+				  variableStateService, serviceUtilities, formUtilities, helpLinkService) {
 
 			var VARIABLES_PATH = '/variables/', storedData;
             // matches any word (with alphanumeric characters, underscore , space and carriage return) enclosed with {{ and }}
@@ -22,6 +22,9 @@
 			$scope.model = storedData.variable;
 			$scope.serverErrors.general = storedData.errors;
 			$scope.showWarningEditableMessage = $scope.model && $scope.model.formula && $scope.model.formula.formulaId && $scope.model.metadata && !$scope.model.metadata.deletable || false;
+			helpLinkService.helpLink('MANAGE_ONTOLOGIES_FORMULAS').then(function (url) {
+				$scope.helpLink = url;
+			});
 			$scope.saveFormula = function (e, variable) {
 				e.preventDefault();
 

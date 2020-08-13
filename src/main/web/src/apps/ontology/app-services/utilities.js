@@ -290,4 +290,20 @@
 		};
 	});
 
+	app.service('helpLinkService',['$http',function ($http) {
+		return {
+			helpLink: function (value) {
+				var config = {responseType: 'text', observe: 'response'};
+				return $http({
+					method: 'GET',
+					url: '/ibpworkbench/controller/help/getUrl/' + value,
+					responseType: 'text',
+					transformResponse: undefined
+				}).then(function (response) {
+					return response.data;
+				});
+			}
+		};
+	}]);
+
 }());
