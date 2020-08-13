@@ -3,8 +3,6 @@ import { Observable } from 'rxjs';
 import { ParamContext } from '../../service/param.context';
 import { HttpClient } from '@angular/common/http';
 import { SERVER_API_URL } from '../../../app.constants';
-import { map } from 'rxjs/operators';
-import { Lot } from '../model/lot.model';
 
 @Injectable()
 export class LotService {
