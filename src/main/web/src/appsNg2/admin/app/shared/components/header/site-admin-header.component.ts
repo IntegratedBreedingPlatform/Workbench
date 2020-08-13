@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HelpService } from '../../services/help.service';
 
 
 @Component({
@@ -8,5 +9,18 @@ import { Component } from '@angular/core';
 })
 
 export class SiteAdminHeader {
-
+   helpLink: string;
+   constructor(helpService: HelpService) {
+      if (!this.helpLink || !this.helpLink.length)
+      helpService.getOnlinHelpLink().toPromise().then((response)=>{
+        let body = response.text();
+        console.log(body);
+        if(body) {
+           this.helpLink = body.data || body;
+        }
+        console.log(this.helpLink);
+      }).catch((error)=>{
+         console.log(error);
+      });
+   }
 }
