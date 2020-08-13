@@ -767,7 +767,11 @@ public class GermplasmColumnValuesGeneratorTest {
 		if (femaleParent) {
 			final Name name = new Name();
 			name.setNval(RandomStringUtils.randomAlphabetic(10));
-			final Germplasm femaleGermplasm = new Germplasm(Integer.parseInt(RandomStringUtils.randomNumeric(2)));
+			int randomId = Integer.parseInt(RandomStringUtils.randomNumeric(2));
+			if(randomId <= 0) {
+				randomId = 1;
+			}
+			final Germplasm femaleGermplasm = new Germplasm(randomId);
 			femaleGermplasm.setNames(Arrays.asList(name));
 			femaleGermplasm.setSelectionHistory("femaleSelectionHistory");
 			femaleGermplasm.setPreferredName(name);
@@ -779,7 +783,11 @@ public class GermplasmColumnValuesGeneratorTest {
 		if (maleParent) {
 			final Name maleName = new Name();
 			maleName.setNval(RandomStringUtils.randomAlphabetic(10));
-			final Germplasm maleGermplasm = new Germplasm(Integer.parseInt(RandomStringUtils.randomNumeric(2)));
+			int randomId = Integer.parseInt(RandomStringUtils.randomNumeric(2));
+			if(randomId <= 0) {
+				randomId = 1;
+			}
+			final Germplasm maleGermplasm = new Germplasm(randomId);
 			maleGermplasm.setNames(Arrays.asList(maleName));
 			maleGermplasm.setSelectionHistory("femaleSelectionHistory");
 			maleGermplasm.setPreferredName(maleName);
