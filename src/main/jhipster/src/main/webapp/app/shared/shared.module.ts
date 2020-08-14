@@ -18,6 +18,7 @@ import { LotService } from './inventory/service/lot.service';
 import { TransactionService } from './inventory/service/transaction.service';
 import { ParamContext } from './service/param.context';
 import { CustomMinGreaterThanValidatorDirective } from './validators/custom-min-greater-than-validator.directive';
+import { HelpService } from './service/help.service';
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import { CustomMinGreaterThanValidatorDirective } from './validators/custom-min-
         InventoryService,
         LotService,
         TransactionService,
-        ParamContext
+        ParamContext,
+        HelpService
     ],
     entryComponents: [
         ModalComponent,

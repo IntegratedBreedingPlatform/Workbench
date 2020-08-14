@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalService } from '../../shared/modal/modal.service';
 import { SampleContext } from './sample.context';
+import { HelpService } from '../../shared/service/help.service';
 
 declare const cropName: string;
 declare var $: any;
@@ -19,13 +20,15 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     private crop: string;
     private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
+    helpLink: string;
 
     lists: SampleList[] = [];
 
     constructor(private activatedRoute: ActivatedRoute,
                 private modalService: ModalService,
                 private router: Router,
-                private sampleContext: SampleContext) {
+                private sampleContext: SampleContext,
+                private helpService: HelpService) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
 
@@ -42,6 +45,14 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
         });
+
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getOnlinHelpLink().toPromise().then((response) => {
+                if (response.body) {
+                    this.helpLink = response.body;
+                }
+            }).catch((error) => {});
+        }
     }
 
     closeTab(list: SampleList) {

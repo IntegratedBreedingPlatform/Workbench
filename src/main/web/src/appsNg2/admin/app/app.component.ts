@@ -8,6 +8,7 @@ import { UserService } from './shared/services/user.service';
 import { RoleService } from './shared/services/role.service';
 import { MailService } from './shared/services/mail.service';
 import { CropService } from './shared/services/crop.service';
+import { HelpService } from './shared/services/help.service';
 
 
 /*
@@ -26,7 +27,7 @@ import { CropService } from './shared/services/crop.service';
     </div>
   `,
   moduleId: module.id,
-  providers: [UserService, RoleService, MailService, CropService]
+  providers: [UserService, RoleService, MailService, CropService, HelpService]
 
 })
 export class AppComponent {
