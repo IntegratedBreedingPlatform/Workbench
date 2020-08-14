@@ -117,8 +117,7 @@
 												<select class="form-control" [(ngModel)]="fileType" (ngModelChange)="reset()">
 													<option [value]="FILE_TYPES.NONE">Please Choose</option>
 													<option [value]="FILE_TYPES.PDF">Formatted PDF Label Sheets</option>
-													<option *ngIf="isExcelEnabled()" [value]="FILE_TYPES.EXCEL">Excel Data</option>
-													<option *ngIf="!isExcelEnabled()" [value]="FILE_TYPES.EXCEL" disabled>Excel Data (not available)</option>
+													<option [value]="FILE_TYPES.EXCEL">Excel Data</option>
 													<option [value]="FILE_TYPES.CSV">CSV Data</option>
 												</select>
 											</div>

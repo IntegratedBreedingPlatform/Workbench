@@ -94,10 +94,6 @@ export class LabelPrintingComponent implements OnInit {
         return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
     }
 
-    isExcelEnabled() {
-        return this.context.printingLabelType === LabelPrintingType.LOT;
-    }
-
     /**
      * Indicates if the export is for label printing
      */
@@ -362,6 +358,7 @@ export class LabelPrintingComponent implements OnInit {
 
     private getToolSection() {
         switch (this.context.printingLabelType) {
+            case LabelPrintingType.OBSERVATION_DATASET:
             case LabelPrintingType.SUBOBSERVATION_DATASET:
                 return 'DATASET_LABEL_PRINTING_PRESET';
             case LabelPrintingType.LOT:
@@ -427,10 +424,11 @@ export enum FileType {
 
 /** aka printingLabelType in params */
 export enum LabelPrintingType {
+    OBSERVATION_DATASET = 'ObservationDataset',
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
     LOT = 'Lot'
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [
-    LabelPrintingType.SUBOBSERVATION_DATASET
+    LabelPrintingType.OBSERVATION_DATASET, LabelPrintingType.SUBOBSERVATION_DATASET
 ]
