@@ -247,7 +247,10 @@ public class SaveListAsDialog extends BaseSubWindow implements InitializingBean,
 			this.germplasmList = this.getSelectedListOnTree();
 
 			// Needed for overwriting
-			this.source.setCurrentlySavedGermplasmList(this.germplasmList);
+			if (!(this.source instanceof ListBuilderComponent)) {
+				// Overwrite currently if not ListBuilderComponent
+				this.source.setCurrentlySavedGermplasmList(this.germplasmList);
+			}
 
 			// If selected item is a folder, get parent of that folder
 			selectedList = this.germplasmListManager.getGermplasmListById(selectedList.getParentId());
