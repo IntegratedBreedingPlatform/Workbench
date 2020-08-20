@@ -466,7 +466,6 @@ public class SaveListAsDialogTest {
 
 		final GermplasmList germplasmListToSave = this.dialog.getGermplasmListToSave();
 
-		Mockito.verify(this.source).setCurrentlySavedGermplasmList(germplasmListToSave);
 		Assert.assertEquals(selectedGermplasmListParent, germplasmListToSave.getParent());
 
 	}
