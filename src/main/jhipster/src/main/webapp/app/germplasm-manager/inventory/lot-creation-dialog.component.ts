@@ -40,6 +40,8 @@ export class LotCreationDialogComponent implements OnInit {
     storageLocIdSelected;
     favoriteLocIdSelected;
 
+    isConfirmDeposit = false;
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private transactionService: TransactionService,
@@ -115,9 +117,15 @@ export class LotCreationDialogComponent implements OnInit {
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
                 lotDepositRequest.depositsPerUnit[lotUnit[0].name] = this.deposit.amount;
-                this.transactionService.createConfirmedDeposits(lotDepositRequest).subscribe(
-                    (res) => this.onSaveSuccess(lotUUIDs),
-                    (res) => this.onError(res));
+                if (this.isConfirmDeposit) {
+                    this.transactionService.createConfirmedDeposits(lotDepositRequest).subscribe(
+                        (res) => this.onSaveSuccess(lotUUIDs),
+                        (res) => this.onError(res));
+                } else {
+                    this.transactionService.createPendingDeposits(lotDepositRequest).subscribe(
+                        (res) => this.onSaveSuccess(lotUUIDs),
+                        (res) => this.onError(res));
+                }
             });
         } else {
             this.onSaveSuccess(lotUUIDs);
