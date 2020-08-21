@@ -13,7 +13,9 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
                 'BREEDING_ACTIVITIES',
                 'MANAGE_GERMPLASM',
                 'MG_MANAGE_INVENTORY',
-                'MG_CREATE_LOTS'
+                'MG_CREATE_LOTS',
+                'MANAGE_STUDIES',
+                'MS_CREATE_LOTS'
             ]
         },
         canActivate: [RouteAccessService]
