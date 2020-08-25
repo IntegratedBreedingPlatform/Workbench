@@ -16,4 +16,10 @@ export class TransactionService {
             SERVER_API_URL + `crops/${this.context.cropName}/transactions/confirmed-deposits/generation?programUUID=` + this.context.programUUID,
             lotDepositRequest);
     }
+
+    createPendingDeposits(lotDepositRequest: any) {
+        return this.http.post<any>(
+            SERVER_API_URL + `crops/${this.context.cropName}/transactions/pending-deposits/generation?programUUID=` + this.context.programUUID,
+            lotDepositRequest);
+    }
 }

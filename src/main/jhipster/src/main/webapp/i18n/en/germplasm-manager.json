@@ -1,3 +1,6 @@
 {
-    "lot-creation.success": "{{param}} lots were created successfully"
+    "lot-creation": {
+        "success": "{{param}} lots were created successfully",
+        "confirm.transactions.checkbox.label": "Confirm transactions on saving"
+    }
 }
