@@ -163,7 +163,7 @@ public class SaveListAsDialog extends BaseSubWindow implements InitializingBean,
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void windowClose(CloseEvent event) {
+			public void windowClose(final CloseEvent event) {
 				SaveListAsDialog.this.source.updateListUI();
 			}
 		});
@@ -246,16 +246,13 @@ public class SaveListAsDialog extends BaseSubWindow implements InitializingBean,
 		if (selectedList != null && !SaveListAsDialog.FOLDER_TYPE.equalsIgnoreCase(selectedList.getType())) {
 			this.germplasmList = this.getSelectedListOnTree();
 
-			// Needed for overwriting
-			this.source.setCurrentlySavedGermplasmList(this.germplasmList);
-
 			// If selected item is a folder, get parent of that folder
 			selectedList = this.germplasmListManager.getGermplasmListById(selectedList.getParentId());
 
 			// If not, use old method, get germplasm list the old way
 		} else {
 			this.germplasmList =
-					this.listDetailsComponent.createGermplasmListFromListDetails(this.isCropList(germplasmListTree.getSelectedListId()));
+					this.listDetailsComponent.createGermplasmListFromListDetails(this.isCropList(this.germplasmListTree.getSelectedListId()));
 			this.germplasmList.setId(currentId);
 			this.germplasmList.setStatus(SaveListAsDialog.LIST_NAMES_STATUS);
 		}
