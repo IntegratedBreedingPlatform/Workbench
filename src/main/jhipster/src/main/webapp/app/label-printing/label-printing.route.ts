@@ -11,7 +11,7 @@ export const LABEL_PRINTING_ROUTES: Routes = [
     data: {
       authorities: [
         'ADMIN',
-        'BREEDING_ACTIVITIES',
+        'STUDIES',
         'MANAGE_STUDIES',
         ...LOT_LABEL_PRINTING_PERMISSIONS
       ]

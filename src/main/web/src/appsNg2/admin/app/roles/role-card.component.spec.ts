@@ -97,7 +97,7 @@ export function main() {
                 },
                 {
                     id: '6',
-                    name: 'BREEDING_ACTIVITIES',
+                    name: 'STUDIES',
                     description: 'Breeding activities',
                     selectable: false,
                     children: [
