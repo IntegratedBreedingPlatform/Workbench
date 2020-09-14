@@ -27,6 +27,7 @@ import org.generationcp.middleware.pojos.ims.Lot;
 import org.generationcp.middleware.pojos.ims.Transaction;
 import org.generationcp.middleware.pojos.ims.TransactionStatus;
 import org.generationcp.middleware.pojos.ims.TransactionType;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.util.Util;
 import org.springframework.beans.factory.InitializingBean;
@@ -204,6 +205,8 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 
 		final Map<Integer, Integer> tempGidToRealGidMap = new HashMap<>();
 		final Map<Integer, Germplasm> createdGermplasmMap = new HashMap<>();
+		final CropType cropType = this.contextUtil.getProjectInContext().getCropType();
+
 		for (final GermplasmName germplasmName : germplasmNameObjects) {
 			final Name name = germplasmName.getName();
 			name.setNid(null);
@@ -244,7 +247,7 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 					}
 
 					// For now have to do saving of germplasm one at a time for setting of final GIDs to duplicate entries
-					finalGid = this.germplasmManager.addGermplasm(germplasm, name);
+					finalGid = this.germplasmManager.addGermplasm(germplasm, name, cropType);
 
 					createdGermplasmMap.put(finalGid, germplasm);
 					tempGidToRealGidMap.put(gid, finalGid);

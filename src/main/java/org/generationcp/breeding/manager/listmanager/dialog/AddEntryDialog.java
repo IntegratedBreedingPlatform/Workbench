@@ -603,7 +603,7 @@ public class AddEntryDialog extends BaseSubWindow
 
 	private List<Integer> saveGermplasmToDatabase(final Map<Germplasm, Name> germplasmNameMap) {
 		try {
-			return this.germplasmDataManager.addGermplasm(germplasmNameMap);
+			return this.germplasmDataManager.addGermplasm(germplasmNameMap, this.contextUtil.getProjectInContext().getCropType());
 		} catch (final MiddlewareQueryException ex) {
 			AddEntryDialog.LOG.error("Error with saving germplasm and name records!", ex);
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),

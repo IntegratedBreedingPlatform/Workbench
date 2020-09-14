@@ -362,7 +362,7 @@ public class SaveGermplasmListActionTest {
 		this.action.processGermplasmNamesAndLots(this.germplasmNameObjects, matchedGids, SaveGermplasmListActionTest.SEED_STORAGE_LOCATION);
 
 		// Verify that no new germplasm was saved
-		Mockito.verify(this.germplasmManager, Mockito.times(0)).addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class));
+		Mockito.verify(this.germplasmManager, Mockito.times(0)).addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class), Matchers.eq(this.cropType));
 	}
 
 	@Test
@@ -373,7 +373,7 @@ public class SaveGermplasmListActionTest {
 
 		// Verify that new germplasm record was saved per each entry
 		Mockito.verify(this.germplasmManager, Mockito.times(SaveGermplasmListActionTest.NO_OF_ENTRIES))
-				.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class));
+				.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class), Matchers.eq(this.cropType));
 	}
 
 	@Test
@@ -394,7 +394,7 @@ public class SaveGermplasmListActionTest {
 
 		// Verify that no unique germplasm record was created for duplicate entries
 		Mockito.verify(this.germplasmManager, Mockito.times(SaveGermplasmListActionTest.NO_OF_ENTRIES - 2))
-				.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class));
+				.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class), Matchers.eq(this.cropType));
 	}
 
 	@Test
@@ -402,7 +402,7 @@ public class SaveGermplasmListActionTest {
 		// Indicate that inventory is present
 		this.action.setSeedAmountScaleId(SaveGermplasmListActionTest.SEED_AMOUNT_SCALE_ID);
 
-		Mockito.when(this.germplasmManager.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class))).thenReturn(101, 102, 103,
+		Mockito.when(this.germplasmManager.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class), Matchers.eq(this.cropType))).thenReturn(101, 102, 103,
 				104, 105, 106, 107, 108, 109, 110);
 		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.project);
 		Mockito.when(this.contextUtil.getProjectInContext().getCropType()).thenReturn(this.cropType);
@@ -473,7 +473,7 @@ public class SaveGermplasmListActionTest {
 
 		// Verify that new germplasm record was created for 10th entry
 		final ArgumentCaptor<Germplasm> germplasmCaptor = ArgumentCaptor.forClass(Germplasm.class);
-		Mockito.verify(this.germplasmManager, Mockito.times(1)).addGermplasm(germplasmCaptor.capture(), Matchers.any(Name.class));
+		Mockito.verify(this.germplasmManager, Mockito.times(1)).addGermplasm(germplasmCaptor.capture(), Matchers.any(Name.class), Matchers.eq(this.cropType));
 
 	}
 

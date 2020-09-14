@@ -145,7 +145,7 @@ public class SaveCrossesMadeAction implements Serializable {
 		}
 
 		if (!crossesToInsert.isEmpty()) {
-			germplasmIDs = this.germplasmManager.addGermplasm(crossesToInsert);
+			germplasmIDs = this.germplasmManager.addGermplasm(crossesToInsert, this.contextUtil.getProjectInContext().getCropType());
 		}
 		return germplasmIDs;
 	}

@@ -24,6 +24,7 @@ import org.generationcp.middleware.data.initializer.GermplasmTestDataInitializer
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.Name;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
@@ -92,6 +93,8 @@ public class AddEntryDialogTest {
 	private PagedBreedingManagerTable table;
 	private OptionGroup optionGroup;
 
+	private CropType cropType;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -101,6 +104,10 @@ public class AddEntryDialogTest {
 		final Project testProject = new Project();
 		testProject.setUniqueID(UUID.randomUUID().toString());
 
+		this.cropType = new CropType();
+		this.cropType.setUseUUID(false);
+
+
 		Mockito.when(this.breedingManagerService.getCurrentProject()).thenReturn(testProject);
 		this.addEntryDialog.setBreedingManagerService(this.breedingManagerService);
 
@@ -108,6 +115,7 @@ public class AddEntryDialogTest {
 		this.addEntryDialog.setSearchResultsComponent(this.searchResultsComponent);
 		this.addEntryDialog.setSearchBarComponent(this.searchBarComponent);
 		this.addEntryDialog.setMessageSource(this.messageSource);
+
 	}
 
 	@Test
@@ -200,7 +208,7 @@ public class AddEntryDialogTest {
 		Assert.assertEquals("Expecting germplasmManager.getPreferredNamesByGids was called.", this.selectedGids,
 				this.idsListCaptor.getValue());
 
-		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture());
+		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), this.cropType);
 		Assert.assertNotNull(this.germplasmNameMapCaptor.getValue());
 		Assert.assertEquals("Expecting " + this.selectedGids.size() + " germplasm and names was saved.", this.selectedGids.size(),
 				this.germplasmNameMapCaptor.getValue().size());
@@ -230,7 +238,7 @@ public class AddEntryDialogTest {
 		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getPreferredNamesByGids(Matchers.anyListOf(Integer.class));
 
 		// Verify only one germplasm saved even if there are 5 selected
-		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture());
+		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), this.cropType);
 		Assert.assertNotNull(this.germplasmNameMapCaptor.getValue());
 		Assert.assertEquals("Expecting only one germplasm and name pair was saved.", 1, this.germplasmNameMapCaptor.getValue().size());
 
@@ -274,10 +282,10 @@ public class AddEntryDialogTest {
 			newIds.add(100 + id);
 		}
 		if (AddEntryDialog.OPTION_2_ID.equals(this.optionGroup.getValue())) {
-			Mockito.doReturn(newIds).when(this.germplasmDataManager).addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any());
+			Mockito.doReturn(newIds).when(this.germplasmDataManager).addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any(), this.cropType);
 		} else {
 			Mockito.doReturn(Collections.singletonList(AddEntryDialogTest.NEW_ID)).when(this.germplasmDataManager)
-					.addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any());
+					.addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any(), this.cropType);
 		}
 
 	}
