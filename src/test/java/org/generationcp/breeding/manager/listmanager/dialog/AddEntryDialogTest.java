@@ -208,7 +208,7 @@ public class AddEntryDialogTest {
 		Assert.assertEquals("Expecting germplasmManager.getPreferredNamesByGids was called.", this.selectedGids,
 				this.idsListCaptor.getValue());
 
-		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), this.cropType);
+		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), ArgumentMatchers.eq(this.cropType));
 		Assert.assertNotNull(this.germplasmNameMapCaptor.getValue());
 		Assert.assertEquals("Expecting " + this.selectedGids.size() + " germplasm and names was saved.", this.selectedGids.size(),
 				this.germplasmNameMapCaptor.getValue().size());
@@ -238,7 +238,7 @@ public class AddEntryDialogTest {
 		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getPreferredNamesByGids(Matchers.anyListOf(Integer.class));
 
 		// Verify only one germplasm saved even if there are 5 selected
-		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), this.cropType);
+		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), ArgumentMatchers.eq(this.cropType));
 		Assert.assertNotNull(this.germplasmNameMapCaptor.getValue());
 		Assert.assertEquals("Expecting only one germplasm and name pair was saved.", 1, this.germplasmNameMapCaptor.getValue().size());
 
@@ -269,6 +269,10 @@ public class AddEntryDialogTest {
 		Mockito.doReturn(textField).when(this.searchBarComponent).getSearchField();
 		this.addEntryDialog.setContextUtil(this.contextUtil);
 
+		final Project project = new Project();
+		project.setCropType(this.cropType);
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(project);
+
 		// set Middleware mocks
 		this.addEntryDialog.setGermplasmDataManager(this.germplasmDataManager);
 		final List<Germplasm> listOfGermplasm = new ArrayList<>();
@@ -282,10 +286,10 @@ public class AddEntryDialogTest {
 			newIds.add(100 + id);
 		}
 		if (AddEntryDialog.OPTION_2_ID.equals(this.optionGroup.getValue())) {
-			Mockito.doReturn(newIds).when(this.germplasmDataManager).addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any(), this.cropType);
+			Mockito.doReturn(newIds).when(this.germplasmDataManager).addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any(), ArgumentMatchers.eq(this.cropType));
 		} else {
 			Mockito.doReturn(Collections.singletonList(AddEntryDialogTest.NEW_ID)).when(this.germplasmDataManager)
-					.addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any(), this.cropType);
+					.addGermplasm(ArgumentMatchers.<Map<Germplasm, Name>>any(), ArgumentMatchers.eq(this.cropType));
 		}
 
 	}

@@ -105,6 +105,9 @@ public class SaveGermplasmListActionTest {
 
 	@Before
 	public void setup() {
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.project);
+		Mockito.when(this.contextUtil.getProjectInContext().getCropType()).thenReturn(this.cropType);
+
 		this.germplasmList = GermplasmListTestDataInitializer.createGermplasmList(SaveGermplasmListActionTest.LIST_ID);
 		this.importedGermplasmList =
 				ImportedGermplasmListDataInitializer.createImportedGermplasmList(SaveGermplasmListActionTest.NO_OF_ENTRIES, true);
@@ -404,8 +407,6 @@ public class SaveGermplasmListActionTest {
 
 		Mockito.when(this.germplasmManager.addGermplasm(Matchers.any(Germplasm.class), Matchers.any(Name.class), Matchers.eq(this.cropType))).thenReturn(101, 102, 103,
 				104, 105, 106, 107, 108, 109, 110);
-		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.project);
-		Mockito.when(this.contextUtil.getProjectInContext().getCropType()).thenReturn(this.cropType);
 		// Method to test
 		this.action.processGermplasmNamesAndLots(this.germplasmNameObjects, new ArrayList<Integer>(),
 				SaveGermplasmListActionTest.SEED_STORAGE_LOCATION);
@@ -426,8 +427,6 @@ public class SaveGermplasmListActionTest {
 
 	@Test
 	public void testProcessGermplasmNamesAndLotsForExistingGermplasmAddingInventory() {
-		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(this.project);
-		Mockito.when(this.contextUtil.getProjectInContext().getCropType()).thenReturn(this.cropType);
 		// Indicate that inventory is present
 		this.action.setSeedAmountScaleId(SaveGermplasmListActionTest.SEED_AMOUNT_SCALE_ID);
 		// Set existing GIDs as "finalized" (or flagged as real GIDs in DB versus just a temporary GID)
