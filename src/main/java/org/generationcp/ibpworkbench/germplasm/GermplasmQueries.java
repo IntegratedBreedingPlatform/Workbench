@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.germplasm;
@@ -160,6 +160,7 @@ public class GermplasmQueries implements Serializable, InitializingBean {
 				this.germplasmDetail.setGermplasmLocation(this.getLocation(g.getLocationId()));
 				this.germplasmDetail.setReference(this.getReference(g.getReferenceId()));
 				this.germplasmDetail.setmGid(g.getMgid());
+				this.germplasmDetail.setGermplasmUUID(g.getGermplasmUUID());
 			}
 			return this.germplasmDetail;
 		} catch (final MiddlewareQueryException e) {
