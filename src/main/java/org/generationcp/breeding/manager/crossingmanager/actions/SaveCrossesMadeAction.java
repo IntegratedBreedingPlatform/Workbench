@@ -151,7 +151,7 @@ public class SaveCrossesMadeAction implements Serializable {
 	}
 
 	GermplasmList saveGermplasmListRecord(final CrossesMade crossesMade) {
-		int listId;
+		final int listId;
 		final GermplasmList listToSave = crossesMade.getGermplasmList();
 		listToSave.setProgramUUID(this.contextUtil.getCurrentProgramUUID());
 		if (this.germplasmList == null) {
@@ -181,7 +181,7 @@ public class SaveCrossesMadeAction implements Serializable {
 		final Map<Integer, String> resultMap = new HashMap<>();
 		for (final List<Integer> partitionedList : partition) {
 			resultMap.putAll(
-					this.pedigreeService.getCrossExpansions(new HashSet<Integer>(partitionedList), null, this.crossExpansionProperties));
+					this.pedigreeService.getCrossExpansions(new HashSet<>(partitionedList), null, this.crossExpansionProperties));
 		}
 		return resultMap;
 	}

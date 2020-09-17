@@ -174,7 +174,7 @@ public class AddEntryDialog extends BaseSubWindow
 		this.doneButton.addListener(new GermplasmListButtonClickListener(this));
 	}
 
-	protected void addListenerToOptionGroup() {
+	private void addListenerToOptionGroup() {
 		this.optionGroup.addListener(new Property.ValueChangeListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -195,7 +195,7 @@ public class AddEntryDialog extends BaseSubWindow
 		});
 	}
 
-	protected void addSearchResultsListeners() {
+	private void addSearchResultsListeners() {
 		this.searchResultsComponent.getMatchingGermplasmTable().addListener(new Table.ValueChangeListener() {
 
 			private static final long serialVersionUID = 4523431033752074159L;
@@ -283,7 +283,7 @@ public class AddEntryDialog extends BaseSubWindow
 
 		final Tool tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
 		final String addtlParams = Util.getAdditionalParams(this.workbenchDataManager);
-		ExternalResource germplasmBrowserLink;
+		final ExternalResource germplasmBrowserLink;
 		if (tool == null) {
 			germplasmBrowserLink = new ExternalResource(WorkbenchAppPathResolver
 					.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK + gid, "?restartApplication" + addtlParams));
@@ -317,7 +317,7 @@ public class AddEntryDialog extends BaseSubWindow
 		this.parentWindow.addWindow(germplasmWindow);
 	}
 
-	protected void initializeTopPart() {
+	private void initializeTopPart() {
 		this.topPart = new VerticalLayout();
 		this.topPart.setDebugId("topPart");
 		this.topPart.setSpacing(true);
@@ -356,7 +356,7 @@ public class AddEntryDialog extends BaseSubWindow
 		this.optionGroup.setImmediate(true);
 	}
 
-	protected void initializeBottomPart() {
+	private void initializeBottomPart() {
 		this.bottomPart = new AbsoluteLayout();
 		this.bottomPart.setDebugId("bottomPart");
 		this.bottomPart.setWidth("600px");
@@ -390,7 +390,7 @@ public class AddEntryDialog extends BaseSubWindow
 		this.nameTypeComboBox.setWidth("400px");
 	}
 
-	public void initializeButtonLayout() {
+	void initializeButtonLayout() {
 		this.cancelButton = new Button(this.messageSource.getMessage(Message.CANCEL));
 		this.cancelButton.setDebugId("cancelButton");
 		this.cancelButton.setData(AddEntryDialog.CANCEL_BUTTON_ID);
@@ -470,7 +470,7 @@ public class AddEntryDialog extends BaseSubWindow
 	 *
 	 * @return
 	 */
-	public Boolean saveNewGermplasm() {
+	Boolean saveNewGermplasm() {
 		if (!this.optionGroup.getValue().equals(AddEntryDialog.OPTION_2_ID)
 				&& !this.optionGroup.getValue().equals(AddEntryDialog.OPTION_3_ID)) {
 			return false;
@@ -480,7 +480,7 @@ public class AddEntryDialog extends BaseSubWindow
 			this.source.finishAddingEntry(addedGids);
 
 		} else {
-			final List<Integer> addedGids = this.addGermplasm(new ArrayList<Integer>());
+			final List<Integer> addedGids = this.addGermplasm(new ArrayList<>());
 			if (addedGids == null || addedGids.isEmpty()) {
 				return false;
 			}
@@ -549,7 +549,7 @@ public class AddEntryDialog extends BaseSubWindow
 	}
 
 	private Integer getCurrentUserLocalId() {
-		Integer currentUserLocalId = -1;
+		int currentUserLocalId = -1;
 		try {
 			currentUserLocalId = this.contextUtil.getCurrentWorkbenchUserId();
 		} catch (final MiddlewareQueryException e) {
@@ -563,15 +563,15 @@ public class AddEntryDialog extends BaseSubWindow
 
 		final Germplasm germplasm = new Germplasm();
 		germplasm.setGdate(date);
-		germplasm.setGnpgs(Integer.valueOf(-1));
-		germplasm.setGpid1(Integer.valueOf(0));
-		germplasm.setGpid2(Integer.valueOf(0));
-		germplasm.setGrplce(Integer.valueOf(0));
-		germplasm.setLgid(Integer.valueOf(0));
+		germplasm.setGnpgs(-1);
+		germplasm.setGpid1(0);
+		germplasm.setGpid2(0);
+		germplasm.setGrplce(0);
+		germplasm.setLgid(0);
 		germplasm.setLocationId(locationId);
 		germplasm.setMethodId(breedingMethodId);
-		germplasm.setMgid(Integer.valueOf(0));
-		germplasm.setReferenceId(Integer.valueOf(0));
+		germplasm.setMgid(0);
+		germplasm.setReferenceId(0);
 		germplasm.setUserId(currentUserLocalId);
 
 		if (selectedGermplasm != null) {
@@ -594,8 +594,8 @@ public class AddEntryDialog extends BaseSubWindow
 		name.setNval(germplasmName);
 		name.setLocationId(locationId);
 		name.setNdate(date);
-		name.setNstat(Integer.valueOf(1));
-		name.setReferenceId(Integer.valueOf(0));
+		name.setNstat(1);
+		name.setReferenceId(0);
 		name.setTypeId(nameTypeId);
 		name.setUserId(currentUserLocalId);
 		return name;
@@ -631,7 +631,7 @@ public class AddEntryDialog extends BaseSubWindow
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 					this.messageSource.getMessage(Message.ERROR_WITH_GETTING_GERMPLASM_NAME_TYPES)
 							+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
-			final Integer unknownId = Integer.valueOf(0);
+			final Integer unknownId = 0;
 			this.nameTypeComboBox.addItem(unknownId);
 			this.nameTypeComboBox.setItemCaption(unknownId, this.messageSource.getMessage(Message.UNKNOWN));
 		}
@@ -649,9 +649,9 @@ public class AddEntryDialog extends BaseSubWindow
 	@SuppressWarnings("unchecked")
 	private List<Integer> getSelectedItemGids() {
 		final Table table = this.searchResultsComponent.getMatchingGermplasmTable();
-		List<Integer> itemIds = new ArrayList<Integer>();
-		final List<Integer> selectedItemIds = new ArrayList<Integer>();
-		final List<Integer> trueOrderedSelectedItemIds = new ArrayList<Integer>();
+		List<Integer> itemIds = new ArrayList<>();
+		final List<Integer> selectedItemIds = new ArrayList<>();
+		final List<Integer> trueOrderedSelectedItemIds = new ArrayList<>();
 
 		selectedItemIds.addAll((Collection<? extends Integer>) table.getValue());
 		itemIds = this.getItemIds(table);
@@ -708,11 +708,11 @@ public class AddEntryDialog extends BaseSubWindow
 		}
 	}
 
-	public void setOptionGroup(final OptionGroup optionGroup) {
+	void setOptionGroup(final OptionGroup optionGroup) {
 		this.optionGroup = optionGroup;
 	}
 
-	public Button getDoneButton() {
+	Button getDoneButton() {
 		return this.doneButton;
 	}
 
@@ -728,27 +728,27 @@ public class AddEntryDialog extends BaseSubWindow
 		this.breedingManagerService = breedingManagerService;
 	}
 
-	public void setSearchResultsComponent(final GermplasmSearchResultsComponent searchResultsComponent) {
+	void setSearchResultsComponent(final GermplasmSearchResultsComponent searchResultsComponent) {
 		this.searchResultsComponent = searchResultsComponent;
 	}
 
-	public void setSearchBarComponent(final GermplasmSearchBarComponent searchBarComponent) {
+	void setSearchBarComponent(final GermplasmSearchBarComponent searchBarComponent) {
 		this.searchBarComponent = searchBarComponent;
 	}
 
-	public void setBreedingMethodField(final BreedingMethodField breedingMethodField) {
+	void setBreedingMethodField(final BreedingMethodField breedingMethodField) {
 		this.breedingMethodField = breedingMethodField;
 	}
 
-	public void setBreedingLocationField(final BreedingLocationField breedingLocationField) {
+	void setBreedingLocationField(final BreedingLocationField breedingLocationField) {
 		this.breedingLocationField = breedingLocationField;
 	}
 
-	public void setNameTypeComboBox(final ComboBox nameTypeComboBox) {
+	void setNameTypeComboBox(final ComboBox nameTypeComboBox) {
 		this.nameTypeComboBox = nameTypeComboBox;
 	}
 
-	public void setGermplasmDateField(final ListDateField germplasmDateField) {
+	void setGermplasmDateField(final ListDateField germplasmDateField) {
 		this.germplasmDateField = germplasmDateField;
 	}
 

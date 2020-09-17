@@ -119,7 +119,7 @@ public class AddEntryDialogTest {
 	}
 
 	@Test
-	public void testValidateButtonListenersCount() throws Exception {
+	public void testValidateButtonListenersCount() {
 		// Initialize buttons
 		this.addEntryDialog.initializeButtonLayout();
 		this.addEntryDialog.addButtonListeners();
@@ -163,7 +163,7 @@ public class AddEntryDialogTest {
 
 		// Verify callback function for Option 1
 		Mockito.verify(this.dialogSource).finishAddingEntry(this.selectedGids);
-		Mockito.verify(this.parentWindow).removeWindow(Matchers.any(Window.class));
+		Mockito.verify(this.parentWindow).removeWindow(ArgumentMatchers.any(Window.class));
 	}
 
 	@Test
@@ -234,8 +234,8 @@ public class AddEntryDialogTest {
 		Assert.assertTrue(addedSuccesfully);
 
 		// Verify no Middleware retrieval for existing germplasm and names
-		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getGermplasms(Matchers.anyListOf(Integer.class));
-		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getPreferredNamesByGids(Matchers.anyListOf(Integer.class));
+		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getGermplasms(ArgumentMatchers.anyListOf(Integer.class));
+		Mockito.verify(this.germplasmDataManager, Mockito.times(0)).getPreferredNamesByGids(ArgumentMatchers.anyListOf(Integer.class));
 
 		// Verify only one germplasm saved even if there are 5 selected
 		Mockito.verify(this.germplasmDataManager).addGermplasm(this.germplasmNameMapCaptor.capture(), ArgumentMatchers.eq(this.cropType));

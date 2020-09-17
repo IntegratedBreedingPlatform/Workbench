@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class GermplasmDetailModel {
 
 	private int gid;
-	String germplasmPreferredName; // nval value where names.nstat=1
+	private String germplasmPreferredName; // nval value where names.nstat=1
 	private String dateNamed; // ndate value where names.nstat=1
 	private String nameLocation;
 	private String germplasmMethod;
