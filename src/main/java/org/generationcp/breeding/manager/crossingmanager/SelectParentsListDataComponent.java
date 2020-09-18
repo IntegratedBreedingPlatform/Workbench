@@ -321,7 +321,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		try {
 
 			if (this.studyId != null) {
-				this.count = this.studyGermplasmListService.countStudyGermplasm(this.studyId);
+				this.count = this.studyGermplasmListService.countStudyEntries(this.studyId);
 			} else {
 				this.germplasmList = this.germplasmListManager.getGermplasmListById(this.germplasmListId);
 				this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
