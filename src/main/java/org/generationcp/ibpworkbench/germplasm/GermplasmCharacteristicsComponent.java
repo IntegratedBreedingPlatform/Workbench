@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.germplasm;
@@ -33,9 +33,10 @@ public class GermplasmCharacteristicsComponent extends GridLayout implements Ini
 	private Label lblLocation;
 	private Label lblGermplasmMethod;
 	private Label lblCreationDate;
-	private Label lblReference;
+	private Label lblGermplasmUUID;
 	private CheckBox chkFixedLines;
 	private Label lblGroupId;
+	private Label lblReference;
 
 	private final GermplasmDetailModel gDetailModel;
 
@@ -81,6 +82,19 @@ public class GermplasmCharacteristicsComponent extends GridLayout implements Ini
 		this.lblGID =
 				new Label("<b>" + this.messageSource.getMessage(Message.GID_LABEL) + ":</b> " + String.valueOf(this.gDetailModel.getGid())); // "GID"
 		this.lblGID.setContentMode(Label.CONTENT_XHTML);
+
+		final String germplasmUUD = StringUtils.isEmpty(this.gDetailModel.getGermplasmUUID())? "-" : this.gDetailModel.getGermplasmUUID();
+		this.lblGermplasmUUID = new Label("<b>" + this.messageSource.getMessage(Message.GERMPLASM_UUID_LABEL) + ":</b> " + germplasmUUD); // "Germplasm UUID"
+		this.lblGermplasmUUID.setContentMode(Label.CONTENT_XHTML);
+		this.lblGermplasmUUID.setDescription(this.gDetailModel.getGermplasmUUID());
+
+		this.chkFixedLines = new CheckBox(this.messageSource.getMessage(Message.GROUPED_LINE_LABEL));
+
+		this.lblGroupId =
+				new Label("<b>" + this.messageSource.getMessage(Message.GROUP_ID_LABEL) + ":</b> "
+						+ String.valueOf(this.gDetailModel.getMGid())); // "MGID"
+		this.lblGroupId.setContentMode(Label.CONTENT_XHTML);
+
 		String reference = "-";
 		String referenceFullString = null;
 		if (this.gDetailModel.getReference() != null) {
@@ -94,13 +108,6 @@ public class GermplasmCharacteristicsComponent extends GridLayout implements Ini
 		this.lblReference = new Label("<b>" + this.messageSource.getMessage(Message.REFERENCE_LABEL) + ":</b> " + reference); // "Reference"
 		this.lblReference.setContentMode(Label.CONTENT_XHTML);
 		this.lblReference.setDescription(referenceFullString);
-
-		this.chkFixedLines = new CheckBox(this.messageSource.getMessage(Message.GROUPED_LINE_LABEL));
-
-		this.lblGroupId =
-				new Label("<b>" + this.messageSource.getMessage(Message.GROUP_ID_LABEL) + ":</b> "
-						+ String.valueOf(this.gDetailModel.getMGid())); // "MGID"
-		this.lblGroupId.setContentMode(Label.CONTENT_XHTML);
 	}
 
 	@Override
@@ -128,13 +135,14 @@ public class GermplasmCharacteristicsComponent extends GridLayout implements Ini
 		this.setWidth("90%");
 
 		this.addComponent(this.lblPrefName, 0, 0);
-		this.addComponent(this.lblGermplasmMethod, 0, 1);
 		this.addComponent(this.lblCreationDate, 1, 0);
-		this.addComponent(this.lblLocation, 1, 1);
 		this.addComponent(this.lblGID, 2, 0);
+		this.addComponent(this.lblGermplasmMethod, 0, 1);
+		this.addComponent(this.lblLocation, 1, 1);
 		this.addComponent(this.lblReference, 2, 1);
 		this.addComponent(this.chkFixedLines, 0, 2);
 		this.addComponent(this.lblGroupId, 1, 2);
+		this.addComponent(this.lblGermplasmUUID, 2, 2);
 	}
 
 	@Override
@@ -150,7 +158,7 @@ public class GermplasmCharacteristicsComponent extends GridLayout implements Ini
 
 	/**
 	 * FOR TEST ONLY
-	 * 
+	 *
 	 * @param messageSource
 	 */
 	void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {

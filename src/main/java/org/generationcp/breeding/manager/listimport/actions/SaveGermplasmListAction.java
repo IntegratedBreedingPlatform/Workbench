@@ -27,6 +27,7 @@ import org.generationcp.middleware.pojos.ims.Lot;
 import org.generationcp.middleware.pojos.ims.Transaction;
 import org.generationcp.middleware.pojos.ims.TransactionStatus;
 import org.generationcp.middleware.pojos.ims.TransactionType;
+import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.util.Util;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,20 +52,19 @@ import java.util.Set;
 @Configurable
 public class SaveGermplasmListAction implements Serializable, InitializingBean {
 
-	public static final String INVENTORY_COMMENT = "From List Import";
-	public static final String WB_ACTIVITY_NAME = "Imported a Germplasm List";
-	public static final String WB_ACTIVITY_DESCRIPTION = "Imported list from file ";
-	public static final Integer LIST_DATA_STATUS = 0;
-	public static final Integer LIST_DATA_LRECID = 0;
+	static final String INVENTORY_COMMENT = "From List Import";
+	private static final String WB_ACTIVITY_NAME = "Imported a Germplasm List";
+	private static final String WB_ACTIVITY_DESCRIPTION = "Imported list from file ";
+	private static final Integer LIST_DATA_STATUS = 0;
 
-	public static final int FCODE_TYPE_NAME = 0;
-	public static final int FCODE_TYPE_ATTRIBUTE = 1;
+	static final int FCODE_TYPE_NAME = 0;
+	static final int FCODE_TYPE_ATTRIBUTE = 1;
 
-	public static final String FTABLE_NAME = "NAMES";
-	public static final String FTYPE_NAME = "NAME";
-	public static final String FTABLE_ATTRIBUTE = "ATRIBUTS";
-	public static final String FTYPE_ATTRIBUTE = "ATTRIBUTE";
-	public static final String FTYPE_PASSPORT = "PASSPORT";
+	static final String FTABLE_NAME = "NAMES";
+	static final String FTYPE_NAME = "NAME";
+	static final String FTABLE_ATTRIBUTE = "ATRIBUTS";
+	static final String FTYPE_ATTRIBUTE = "ATTRIBUTE";
+	static final String FTYPE_PASSPORT = "PASSPORT";
 
 	private static final long serialVersionUID = -6273933938066390358L;
 
@@ -204,6 +204,8 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 
 		final Map<Integer, Integer> tempGidToRealGidMap = new HashMap<>();
 		final Map<Integer, Germplasm> createdGermplasmMap = new HashMap<>();
+		final CropType cropType = this.contextUtil.getProjectInContext().getCropType();
+
 		for (final GermplasmName germplasmName : germplasmNameObjects) {
 			final Name name = germplasmName.getName();
 			name.setNid(null);
@@ -244,7 +246,7 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 					}
 
 					// For now have to do saving of germplasm one at a time for setting of final GIDs to duplicate entries
-					finalGid = this.germplasmManager.addGermplasm(germplasm, name);
+					finalGid = this.germplasmManager.addGermplasm(germplasm, name, cropType);
 
 					createdGermplasmMap.put(finalGid, germplasm);
 					tempGidToRealGidMap.put(gid, finalGid);
@@ -655,19 +657,19 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 		return germplasmListData;
 	}
 
-	public Map<Integer, List<Lot>> getGidLotMap() {
+	Map<Integer, List<Lot>> getGidLotMap() {
 		return this.gidLotMap;
 	}
 
-	public Map<Integer, List<Transaction>> getGidTransactionSetMap() {
+	Map<Integer, List<Transaction>> getGidTransactionSetMap() {
 		return this.gidTransactionSetMap;
 	}
 
-	public void setSeedAmountScaleId(final Integer seedAmountScaleId) {
+	void setSeedAmountScaleId(final Integer seedAmountScaleId) {
 		this.seedAmountScaleId = seedAmountScaleId;
 	}
 
-	public Map<Integer, List<Lot>> getGidLotMapClone() {
+	Map<Integer, List<Lot>> getGidLotMapClone() {
 		return this.gidLotMapClone;
 	}
 }

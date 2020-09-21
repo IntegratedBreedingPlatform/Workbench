@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.germplasm;
@@ -19,13 +19,14 @@ import java.util.ArrayList;
 public class GermplasmDetailModel {
 
 	private int gid;
-	String germplasmPreferredName; // nval value where names.nstat=1
+	private String germplasmPreferredName; // nval value where names.nstat=1
 	private String dateNamed; // ndate value where names.nstat=1
 	private String nameLocation;
 	private String germplasmMethod;
 	private String germplasmCreationDate;
 	private String germplasmLocation;
 	private String reference;
+	private String germplasmUUID;
 	private String germplasmUser;
 	private String prefID; // nval value where names.nstat=8
 	private ArrayList<GermplasmNamesAttributesModel> attributes;
@@ -182,5 +183,13 @@ public class GermplasmDetailModel {
 
 	public void setmGid(final Integer mGid) {
 		this.mGid = mGid;
+	}
+
+	public String getGermplasmUUID() {
+		return this.germplasmUUID;
+	}
+
+	public void setGermplasmUUID(final String germplasmUUID) {
+		this.germplasmUUID = germplasmUUID;
 	}
 }

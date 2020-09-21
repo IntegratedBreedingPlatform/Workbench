@@ -4,7 +4,6 @@ package org.generationcp.breeding.manager.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
 
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -15,6 +14,7 @@ import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -80,7 +80,7 @@ public class SaveGermplasmListActionTest {
 	}
 
 	private List<GermplasmListEntry> getGermplasmListEntries() {
-		List<GermplasmListEntry> listEntries = new ArrayList<GermplasmListEntry>();
+		final List<GermplasmListEntry> listEntries = new ArrayList<>();
 
 		listEntries.add(new GermplasmListEntry(1, 1, 1));
 		listEntries.add(new GermplasmListEntry(2, 2, 2));
@@ -89,7 +89,7 @@ public class SaveGermplasmListActionTest {
 	}
 
 	private GermplasmList getGermplasmList() {
-		GermplasmList germplasmList = new GermplasmList();
+		final GermplasmList germplasmList = new GermplasmList();
 		germplasmList.setId(LIST_ID);
 		germplasmList.setName("Germplasm List");
 		germplasmList.setDescription("Germplasm List Description");
@@ -97,8 +97,8 @@ public class SaveGermplasmListActionTest {
 	}
 
 	@Test
-	public void testSaveRecords() throws Exception {
-		GermplasmList germplasmList = this.saveGermplasmListAction.saveRecords();
+	public void testSaveRecords() {
+		final GermplasmList germplasmList = this.saveGermplasmListAction.saveRecords();
 
 		Assert.assertEquals("Expecting that a list id is returned after succesfull saving of records but didn't.", LIST_ID, germplasmList
 				.getId().intValue());

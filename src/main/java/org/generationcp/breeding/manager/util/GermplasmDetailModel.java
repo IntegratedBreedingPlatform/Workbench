@@ -32,7 +32,7 @@ public class GermplasmDetailModel {
 		return this.bibRef;
 	}
 
-	public void setBibRef(Bibref bibRef) {
+	public void setBibRef(final Bibref bibRef) {
 		this.bibRef = bibRef;
 	}
 
@@ -40,7 +40,7 @@ public class GermplasmDetailModel {
 		return this.gid;
 	}
 
-	public void setGid(int gid) {
+	public void setGid(final int gid) {
 		this.gid = gid;
 	}
 
@@ -48,7 +48,7 @@ public class GermplasmDetailModel {
 		return this.dateNamed;
 	}
 
-	public void setDateNamed(String dateNamed) {
+	public void setDateNamed(final String dateNamed) {
 		this.dateNamed = dateNamed;
 	}
 
@@ -56,7 +56,7 @@ public class GermplasmDetailModel {
 		return this.nameLocation;
 	}
 
-	public void setNameLocation(String nameLocation) {
+	public void setNameLocation(final String nameLocation) {
 		this.nameLocation = nameLocation;
 	}
 
@@ -64,7 +64,7 @@ public class GermplasmDetailModel {
 		return this.germplasmLocation;
 	}
 
-	public void setGermplasmLocation(String germplasmLocation) {
+	public void setGermplasmLocation(final String germplasmLocation) {
 		this.germplasmLocation = germplasmLocation;
 	}
 
@@ -72,7 +72,7 @@ public class GermplasmDetailModel {
 		return this.reference;
 	}
 
-	public void setReference(String reference) {
+	public void setReference(final String reference) {
 		this.reference = reference;
 	}
 
@@ -80,7 +80,7 @@ public class GermplasmDetailModel {
 		return this.germplasmUser;
 	}
 
-	public void setGermplasmUser(String germplasmUser) {
+	public void setGermplasmUser(final String germplasmUser) {
 		this.germplasmUser = germplasmUser;
 	}
 
@@ -88,7 +88,7 @@ public class GermplasmDetailModel {
 		return this.germplasmMethod;
 	}
 
-	public void setGermplasmMethod(String germplasmMethod) {
+	public void setGermplasmMethod(final String germplasmMethod) {
 		this.germplasmMethod = germplasmMethod;
 	}
 
@@ -96,7 +96,7 @@ public class GermplasmDetailModel {
 		return this.germplasmPreferredName;
 	}
 
-	public void setGermplasmPreferredName(String germplasmPreferredName) {
+	public void setGermplasmPreferredName(final String germplasmPreferredName) {
 		this.germplasmPreferredName = germplasmPreferredName;
 	}
 
@@ -104,7 +104,7 @@ public class GermplasmDetailModel {
 		return this.germplasmCreationDate;
 	}
 
-	public void setGermplasmCreationDate(String germplasmCreationDate) {
+	public void setGermplasmCreationDate(final String germplasmCreationDate) {
 		this.germplasmCreationDate = germplasmCreationDate;
 	}
 
@@ -112,7 +112,7 @@ public class GermplasmDetailModel {
 		return this.prefID;
 	}
 
-	public void setPrefID(String prefID) {
+	public void setPrefID(final String prefID) {
 		this.prefID = prefID;
 	}
 
