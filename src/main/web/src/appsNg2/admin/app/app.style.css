@@ -126,3 +126,7 @@ users-admin app-dialog div.modal-footer > .message {
 .ul-tree > li > div.checkbox {
     padding-top: 0;
 }
+
+.select2-results__option[aria-selected='true'] {
+    display: none;
+}
