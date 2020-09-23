@@ -10,7 +10,7 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
             authorities: [
                 'ADMIN',
                 'CROP_MANAGEMENT',
-                'BREEDING_ACTIVITIES',
+                'STUDIES',
                 'MANAGE_GERMPLASM',
                 'MG_MANAGE_INVENTORY',
                 'MG_CREATE_LOTS',

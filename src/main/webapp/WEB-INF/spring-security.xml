@@ -17,36 +17,36 @@
 		<intercept-url pattern="/controller/auth/**" access="permitAll" />
 		<intercept-url pattern="/web_login_forward*" access="permitAll" />
 
-		<!--MANAGE_SAMPLES-->
+		<!--SAMPLE_LISTS-->
 		<!--TODO jhipster frontend apps-->
 		<!--<intercept-url pattern="/controller/pages/jhipster/#/sample-manager" access="hasAnyAuthority()"/>-->
 
-		<!--BREEDING ACTIVITIES-->
+		<!--GERMPLASM-->
 		<!--MANAGE_GERMPLASM-->
-		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
-		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
+		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
+		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 
 
-		<!--INFORMATION_MANAGEMENT-->
+		<!--STUDIES-->
 		<!--ROLE_BROWSE_STUDIES-->
-		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_BROWSE_STUDIES')"/>
-		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_GRAPHICAL_QUERIES')"/>
-		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_GRAPHICAL_QUERIES')"/>
-		<intercept-url pattern="/controller/brapi-fieldmap/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_STUDIES')"/>
-		<intercept-url pattern="/controller/brapi-fieldmap/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_BREEDING_ACTIVITIES', 'ROLE_MANAGE_STUDIES')"/>
+		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_BROWSE_STUDIES')"/>
+		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_GRAPHICAL_QUERIES')"/>
+		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_GRAPHICAL_QUERIES')"/>
+		<intercept-url pattern="/controller/brapi-fieldmap/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_MANAGE_STUDIES')"/>
+		<intercept-url pattern="/controller/brapi-fieldmap/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_MANAGE_STUDIES')"/>
 		<!--HEAD_TO_HEAD_QUERY-->
-		<intercept-url pattern="/maingpsb/Head_to_head_comparison" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_HEAD_TO_HEAD_QUERY')"/>
+		<intercept-url pattern="/maingpsb/Head_to_head_comparison" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_HEAD_TO_HEAD_QUERY')"/>
 		<!--MULTI_TRAIT_QUERY-->
-		<intercept-url pattern="/maingpsb/Trait_Donors_Query" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_INFORMATION_MANAGEMENT', 'ROLE_MULTI_TRAIT_QUERY')"/>
+		<intercept-url pattern="/maingpsb/Trait_Donors_Query" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_MULTI_TRAIT_QUERY')"/>
 
 
 		<!--CROP_MANAGEMENT-->
 		<!--IMPORT_GERMPLASM-->
-		<intercept-url pattern="/main/germplasm-import/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_IMPORT_GERMPLASM')"/>
+		<intercept-url pattern="/main/germplasm-import/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_IMPORT_GERMPLASM')"/>
 
 		<!--MANAGE_ONTOLOGIES-->
 		<intercept-url pattern="/controller/ontology/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_MANAGE_ONTOLOGIES')"/>
-		<!--MANAGE_GENOTYPING_DATA-->
+		<!--LOW_DENSITY-->
 		<!-- TODO GDMS add spring security -->
 
 		<!-- TODO - vaadin frontend app -->

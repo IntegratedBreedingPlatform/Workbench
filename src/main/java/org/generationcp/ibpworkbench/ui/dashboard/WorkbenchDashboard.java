@@ -223,7 +223,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 			final Project project = this.programs.get(i);
 
 			final Button button = new Button("<span class='glyphicon glyphicon-play'></span>");
-			button.setDebugId("button");
+			button.setDebugId("launchProgramButton");
 			button.setHtmlContentAllowed(true);
 			button.setData(WorkbenchDashboard.BUTTON_LIST_MANAGER_COLUMN_ID);
 			button.setStyleName(Bootstrap.Buttons.LINK.styleName() + " launch");

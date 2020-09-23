@@ -173,7 +173,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		}
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_BREEDING_ACTIVITIES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_STUDIES')")
 	private void availableLinkToStudy(final LinkButton linkStudyButton) {
 		linkStudyButton.setEnabled(true);
 	}
