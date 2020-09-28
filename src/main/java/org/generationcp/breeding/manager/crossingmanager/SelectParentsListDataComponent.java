@@ -30,7 +30,7 @@ import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.service.api.study.StudyEntryDto;
-import org.generationcp.middleware.service.api.study.StudyGermplasmService;
+import org.generationcp.middleware.service.api.study.StudyEntryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,7 +56,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private PlatformTransactionManager transactionManager;
 
 	@Autowired
-	private StudyGermplasmService studyGermplasmListService;
+	private StudyEntryService studyEntryService;
 
 
 	private final class ListDataTableActionHandler implements Action.Handler {
@@ -317,7 +317,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		try {
 
 			if (this.studyId != null) {
-				this.count = this.studyGermplasmListService.countStudyEntries(this.studyId);
+				this.count = this.studyEntryService.countStudyEntries(this.studyId);
 			} else {
 				this.germplasmList = this.germplasmListManager.getGermplasmListById(this.germplasmListId);
 				this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
@@ -334,7 +334,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			// If Study is not empty, that means the germplasm list must be retrieved from Stock table.
 			if (this.studyId != null) {
-				final List<StudyEntryDto> studyEntryDtoList = this.studyGermplasmListService.getStudyEntries(studyId);
+				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(studyId);
 				for (final StudyEntryDto entry : studyEntryDtoList) {
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
 						entry.getEntryCode(), entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));

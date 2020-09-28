@@ -68,7 +68,7 @@ import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitRow;
 import org.generationcp.middleware.service.api.study.StudyEntryDto;
-import org.generationcp.middleware.service.api.study.StudyGermplasmService;
+import org.generationcp.middleware.service.api.study.StudyEntryService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.generationcp.middleware.util.Util;
 import org.slf4j.Logger;
@@ -137,7 +137,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 
 	@Autowired
-	private StudyGermplasmService studyGermplasmService;
+	private StudyEntryService studyEntryService;
 
 	@Autowired
 	private StudyDataManager studyDataManager;
@@ -747,7 +747,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			this.datasetService.getObservationSetVariables(this.makeCrossesMain.getWorkbook().getTrialDatasetId(),
 				Collections.singletonList(VariableType.ENVIRONMENT_DETAIL.getId()));
 		// Store all germplasm with plot info in memory
-		this.plotEntriesMap = this.studyGermplasmService.getPlotEntriesMap(studyId, Collections.emptySet());
+		this.plotEntriesMap = this.studyEntryService.getPlotEntriesMap(studyId, Collections.emptySet());
 	}
 
 	@Override
