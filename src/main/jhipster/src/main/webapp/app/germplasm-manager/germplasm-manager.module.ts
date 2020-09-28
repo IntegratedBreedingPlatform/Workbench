@@ -3,6 +3,8 @@ import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.comp
 import { RouterModule } from '@angular/router';
 import { GERMPLASM_MANAGER_ROUTES } from './germplasm-manager.route';
 import { BmsjHipsterSharedModule } from '../shared';
+import { GermplasmTabComponent } from './germplasm-tab.component';
+import { GermplasmSearchComponent } from './germplasm-search.component';
 
 @NgModule({
     imports: [
@@ -10,10 +12,14 @@ import { BmsjHipsterSharedModule } from '../shared';
         RouterModule.forChild(GERMPLASM_MANAGER_ROUTES)
     ],
     declarations: [
-        LotCreationDialogComponent
+        LotCreationDialogComponent,
+        GermplasmTabComponent,
+        GermplasmSearchComponent
     ],
     entryComponents: [
-        LotCreationDialogComponent
+        LotCreationDialogComponent,
+        GermplasmTabComponent,
+        GermplasmSearchComponent
     ]
 })
 export class GermplasmManagerModule {

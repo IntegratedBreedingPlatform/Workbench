@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.component';
 import { RouteAccessService } from '../shared';
+import { GermplasmTabComponent } from './germplasm-tab.component';
+import { GermplasmSearchComponent } from './germplasm-search.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
@@ -19,5 +21,17 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
             ]
         },
         canActivate: [RouteAccessService]
+    },
+    {
+        path: 'germplasm-tab',
+        component: GermplasmTabComponent,
+        data: {},
+        children: [
+            {
+                path: 'germplasm-search',
+                component: GermplasmSearchComponent,
+                data: {}
+            }
+        ]
     }
 ]
