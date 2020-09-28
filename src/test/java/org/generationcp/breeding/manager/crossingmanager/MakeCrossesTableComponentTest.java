@@ -1,11 +1,6 @@
 package org.generationcp.breeding.manager.crossingmanager;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
+import com.vaadin.ui.*;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,9 +14,6 @@ import org.generationcp.commons.parsing.pojo.ImportedGermplasmParent;
 import org.generationcp.commons.ruleengine.generator.SeedSourceGenerator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.middleware.data.initializer.MeasurementDataTestDataInitializer;
-import org.generationcp.middleware.domain.etl.MeasurementData;
-import org.generationcp.middleware.domain.etl.MeasurementRow;
 import org.generationcp.middleware.domain.etl.MeasurementVariable;
 import org.generationcp.middleware.domain.etl.Workbook;
 import org.generationcp.middleware.domain.oms.Term;
@@ -37,36 +29,19 @@ import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitRow;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitUtils;
-import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
+import org.generationcp.middleware.service.api.study.StudyEntryDto;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.exceptions.verification.NeverWantedButInvoked;
 import org.mockito.exceptions.verification.TooLittleActualInvocations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static org.generationcp.breeding.manager.crossingmanager.ParentTabComponent.TAG_COLUMN_ID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class MakeCrossesTableComponentTest {
 
@@ -398,7 +373,7 @@ public class MakeCrossesTableComponentTest {
 		final List<MeasurementVariable> conditions = Collections.singletonList(condition);
 		Mockito.when(workbook.getConditions()).thenReturn(conditions);
 
-		this.makeCrossesTableComponent.setStudyGermplasmList(this.createStudyList(10, studyName));
+		this.makeCrossesTableComponent.setPlotEntriesMap(this.createPlotEntriesMap(10, studyName));
 		final Map<String, String> locationMap = Collections.singletonMap("1", "Unknown Location");
 		this.makeCrossesTableComponent.setStudyLocationMap(locationMap);
 		final MeasurementVariable variable = new MeasurementVariable();
@@ -424,16 +399,13 @@ public class MakeCrossesTableComponentTest {
 		Assert.assertEquals(5, cross.getFemalePlotNo().intValue());
 	}
 
-	private List<StudyGermplasmDto> createStudyList(final Integer count, final String studyName) {
-		final List<StudyGermplasmDto> list = new ArrayList<>();
+	private Map<Integer, StudyEntryDto> createPlotEntriesMap(final Integer count, final String studyName) {
+		final Map<Integer, StudyEntryDto> map = new HashMap<>();
 		for (int i = 1; i <= count; i++) {
-			final StudyGermplasmDto parent = new StudyGermplasmDto();
-			parent.setGermplasmId(100 + i);
-			parent.setDesignation(studyName + ":" + i);
-			parent.setPosition(String.valueOf(i));
-			list.add(parent);
+			final StudyEntryDto parent = new StudyEntryDto(i, 100+i, studyName + ":" + i);
+			map.put(i, parent);
 		}
-		return list;
+		return map;
 	}
 	
 	@Test
@@ -448,7 +420,7 @@ public class MakeCrossesTableComponentTest {
 		final List<MeasurementVariable> conditions = Collections.singletonList(condition);
 		Mockito.when(workbook.getConditions()).thenReturn(conditions);
 
-		this.makeCrossesTableComponent.setStudyGermplasmList(this.createStudyList(10, studyName));
+		this.makeCrossesTableComponent.setPlotEntriesMap(this.createPlotEntriesMap(10, studyName));
 		final Map<String, String> locationMap = Collections.singletonMap("1", "Unknown Location");
 		this.makeCrossesTableComponent.setStudyLocationMap(locationMap);
 		final MeasurementVariable variable = new MeasurementVariable();
@@ -654,7 +626,7 @@ public class MakeCrossesTableComponentTest {
 		final List<MeasurementVariable> conditions = Collections.singletonList(condition);
 		Mockito.when(workbook.getConditions()).thenReturn(conditions);
 
-		this.makeCrossesTableComponent.setStudyGermplasmList(this.createStudyList(10, studyName));
+		this.makeCrossesTableComponent.setPlotEntriesMap(this.createPlotEntriesMap(10, studyName));
 		final Map<String, String> locationMap = Collections.singletonMap("1", "Unknown Location");
 		this.makeCrossesTableComponent.setStudyLocationMap(locationMap);
 		final MeasurementVariable variable = new MeasurementVariable();

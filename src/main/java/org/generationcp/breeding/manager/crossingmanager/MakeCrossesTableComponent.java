@@ -67,7 +67,7 @@ import org.generationcp.middleware.pojos.Progenitor;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitRow;
-import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
+import org.generationcp.middleware.service.api.study.StudyEntryDto;
 import org.generationcp.middleware.service.api.study.StudyGermplasmService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.generationcp.middleware.util.Util;
@@ -168,7 +168,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	private List<MeasurementVariable> studyEnvironmentVariables;
 
-	private List<StudyGermplasmDto> studyGermplasmList;
+	private Map<Integer, StudyEntryDto> plotEntriesMap;
 
 	MakeCrossesTableComponent(final CrossingManagerMakeCrossesComponent makeCrossesMain) {
 		this.makeCrossesMain = makeCrossesMain;
@@ -548,9 +548,9 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	private String getParentPlotNo(final Integer parentGid) {
 		// Use "0" for unknown parent. If the GID is not found in study observations, the plot # will just be blank
 		String parentPlotNo = parentGid.equals(0)? "0" : "";
-		for (final StudyGermplasmDto row : this.studyGermplasmList) {
-			final String plotNumber = row.getPosition();
-			final Integer gid = row.getGermplasmId();
+		for (final Map.Entry<Integer, StudyEntryDto> row : this.plotEntriesMap.entrySet()) {
+			final String plotNumber = row.getKey().toString();
+			final Integer gid = row.getValue().getGid();
 			if (gid != null && gid.equals(parentGid) && plotNumber != null) {
 				parentPlotNo = plotNumber;
 			}
@@ -747,7 +747,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			this.datasetService.getObservationSetVariables(this.makeCrossesMain.getWorkbook().getTrialDatasetId(),
 				Collections.singletonList(VariableType.ENVIRONMENT_DETAIL.getId()));
 		// Store all germplasm with plot info in memory
-		this.studyGermplasmList = this.studyGermplasmService.getGermplasmFromPlots(studyId, Collections.emptySet());
+		this.plotEntriesMap = this.studyGermplasmService.getPlotEntriesMap(studyId, Collections.emptySet());
 	}
 
 	@Override
@@ -974,8 +974,8 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		this.germplasmListManager = germplasmListManager;
 	}
 
-	public void setStudyGermplasmList(final List<StudyGermplasmDto> studyGermplasmList) {
-		this.studyGermplasmList = studyGermplasmList;
+	public void setPlotEntriesMap(final Map<Integer, StudyEntryDto> plotEntriesMap) {
+		this.plotEntriesMap = plotEntriesMap;
 	}
 
 	public void setStudyLocationMap(final Map<String, String> studyLocationMap) {
