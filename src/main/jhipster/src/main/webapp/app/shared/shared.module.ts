@@ -1,10 +1,7 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
-import {
-    BmsjHipsterSharedLibsModule,
-    BmsjHipsterSharedCommonModule, Principal, AccountService
-} from './';
+import { AccountService, BmsjHipsterSharedCommonModule, BmsjHipsterSharedLibsModule, Principal } from './';
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { ModalService } from './modal/modal.service';
@@ -19,18 +16,36 @@ import { TransactionService } from './inventory/service/transaction.service';
 import { ParamContext } from './service/param.context';
 import { CustomMinGreaterThanValidatorDirective } from './validators/custom-min-greater-than-validator.directive';
 import { HelpService } from './service/help.service';
+import { ColumnFilterComponent } from './column-filter/column-filter.component';
+import { ColVisButtonComponent } from './col-vis/col-vis-button.component';
+import { ColumnFilterNumberComponent } from './column-filter/column-filter-number-component';
+import { ColumnFilterDateComponent } from './column-filter/column-filter-date-component';
+import { ColumnFilterChecklistComponent } from './column-filter/column-filter-checklist-component';
+import { ColumnFilterTextComponent } from './column-filter/column-filter-text-component';
+import { ColumnFilterRadioComponent } from './column-filter/column-filter-radio-component';
+import { ColumnFilterListComponent } from './column-filter/column-filter-list-component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedLibsModule,
-        BmsjHipsterSharedCommonModule
+        BmsjHipsterSharedCommonModule,
+        ReactiveFormsModule
     ],
     declarations: [
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
-        CustomMinGreaterThanValidatorDirective
+        CustomMinGreaterThanValidatorDirective,
+        ColumnFilterNumberComponent,
+        ColumnFilterDateComponent,
+        ColumnFilterChecklistComponent,
+        ColumnFilterTextComponent,
+        ColumnFilterRadioComponent,
+        ColumnFilterListComponent,
+        ColumnFilterComponent,
+        ColVisButtonComponent
     ],
     providers: [
         DatePipe,
@@ -57,9 +72,18 @@ import { HelpService } from './service/help.service';
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
-        CustomMinGreaterThanValidatorDirective
+        CustomMinGreaterThanValidatorDirective,
+        ColumnFilterNumberComponent,
+        ColumnFilterDateComponent,
+        ColumnFilterChecklistComponent,
+        ColumnFilterTextComponent,
+        ColumnFilterRadioComponent,
+        ColumnFilterListComponent,
+        ColumnFilterComponent,
+        ColVisButtonComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
 })
-export class BmsjHipsterSharedModule {}
+export class BmsjHipsterSharedModule {
+}
