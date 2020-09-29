@@ -25,6 +25,7 @@ import { ColumnFilterTextComponent } from './column-filter/column-filter-text-co
 import { ColumnFilterRadioComponent } from './column-filter/column-filter-radio-component';
 import { ColumnFilterListComponent } from './column-filter/column-filter-list-component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { GermplasmService } from './germplasm/service/germplasm.service';
 
 @NgModule({
     imports: [
@@ -56,7 +57,8 @@ import { ReactiveFormsModule } from '@angular/forms';
         LotService,
         TransactionService,
         ParamContext,
-        HelpService
+        HelpService,
+        GermplasmService
     ],
     entryComponents: [
         ModalComponent,

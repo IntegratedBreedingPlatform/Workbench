@@ -1,0 +1,33 @@
+
+{
+    "bmsjHipsterApp": {
+        "germplasmSearch" : {
+            "column" : {
+                "gid" : "GID",
+                "groupId": "GROUP ID",
+                "names": "NAMES",
+                "methodName": "METHOD NAME",
+                "locationName": "LOCATION",
+                "stockIds": "STOCK IDS",
+                "availableBalance": "AVAILABLE",
+                "unit": "UNIT",
+                "lotCount": "LOTS",
+                "germplasmDate": "GERMPLASM DATE",
+                "methodCode": "METHOD CODE",
+                "methodNumber": "METHOD NUMBER",
+                "methodGroup": "METHOD GROUP",
+                "germplasmPeferredName": "PREFERRED NAME",
+                "germplasmPeferredId": "PREFERRED ID",
+                "groupSourceGID": "GROUP SOURCE GID",
+                "groupSourcePreferredName": "GROUP SOURCE PREFERRED NAME",
+                "immediateSourceGID": "IMMEDIATE SOURCE GID",
+                "immediateSourcePreferredName": "IMMEDIATE SOURCE PREFERRED NAME",
+                "femaleParentGID": "FEMALE PARENT GID",
+                "femaleParentPreferredName": "FEMALE PARENT PREFERRED NAME",
+                "maleParentGID": "MALE PARENT GID",
+                "maleParentPreferredName": "MALE PARENT PREFERRED NAME",
+                "pedigreeString": "CROSS"
+            }
+        }
+    }
+}
