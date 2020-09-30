@@ -9,6 +9,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.themes.BaseTheme;
+import liquibase.util.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -343,8 +344,10 @@ public class SelectParentsListDataComponent extends VerticalLayout
 				final List<GermplasmListData> listEntries =
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 				for (final GermplasmListData entry : listEntries) {
-					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(), Optional.of(entry.getGroupName()), entry.getEntryCode(),
-						Optional.of(entry.getSeedSource()), entry.getGroupId() == null || entry.getGroupId() ==0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
+					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(),
+							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), entry.getEntryCode(),
+							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
+							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}
 			}
 
