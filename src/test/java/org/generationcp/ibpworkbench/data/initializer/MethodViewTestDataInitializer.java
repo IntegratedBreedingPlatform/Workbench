@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.data.initializer;
 
 import org.generationcp.ibpworkbench.ui.programmethods.MethodView;
-import org.generationcp.middleware.pojos.workbench.MethodType;
+import org.generationcp.middleware.pojos.MethodType;
 
 public class MethodViewTestDataInitializer {
 	public static MethodView createMethodView() {

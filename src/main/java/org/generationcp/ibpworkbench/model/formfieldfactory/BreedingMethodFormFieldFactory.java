@@ -26,7 +26,8 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Method;
-import org.generationcp.middleware.pojos.workbench.MethodType;
+import org.generationcp.middleware.pojos.MethodClass;
+import org.generationcp.middleware.pojos.MethodType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -127,37 +129,16 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			@Override
 			public void valueChange(final ValueChangeEvent event) {
 				BreedingMethodFormFieldFactory.this.methodSelectClass.removeAllItems();
-				if (MethodType.GENERATIVE.getCode().equals(event.getProperty().getValue().toString())) {
-					for (final Integer key : classMap.keySet()) {
-						final String value = classMap.get(key);
 
-						if (key.equals(TermId.CROSSING_METHODS_CLASS.getId()) || key.equals(TermId.MUTATION_METHODS_CLASS.getId()) || key
-								.equals(TermId.GENETIC_MODIFICATION_CLASS.getId()) || key.equals(TermId.CYTOGENETIC_MANIPULATION.getId())) {
-							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
-							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
-						}
-					}
-				} else if (MethodType.DERIVATIVE.getCode().equals(event.getProperty().getValue().toString())) {
-					for (final Integer key : classMap.keySet()) {
-						final String value = classMap.get(key);
-						if (key.equals(TermId.BULKING_BREEDING_METHOD_CLASS.getId()) || key
-								.equals(TermId.NON_BULKING_BREEDING_METHOD_CLASS.getId())) {
-							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
-							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
-						}
-					}
-				} else if (MethodType.MAINTENANCE.getCode().equals(event.getProperty().getValue().toString())) {
-					for (final Integer key : classMap.keySet()) {
-						final String value = classMap.get(key);
-						if (key.equals(TermId.SEED_INCREASE_METHOD_CLASS.getId()) || key
-								.equals(TermId.SEED_ACQUISITION_METHOD_CLASS.getId()) || key
-								.equals(TermId.CULTIVAR_FORMATION_METHOD_CLASS.getId())) {
-							BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
-							BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
-						}
-					}
+				final List<MethodClass> methodClasses =
+					MethodClass.getByMethodType().get(MethodType.getMethodType(event.getProperty().getValue().toString()));
+
+				for (final MethodClass methodClass : methodClasses) {
+					final Integer key = methodClass.getId();
+					final String value = classMap.get(key);
+					BreedingMethodFormFieldFactory.this.methodSelectClass.addItem(key);
+					BreedingMethodFormFieldFactory.this.methodSelectClass.setItemCaption(key, value);
 				}
-
 			}
 
 		});
