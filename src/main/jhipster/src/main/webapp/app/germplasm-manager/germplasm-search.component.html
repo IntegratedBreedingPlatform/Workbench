@@ -56,11 +56,10 @@
 		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-				<th></th>
 				<th *ngIf="!allItemsPerPages"><input type="checkbox" tooltip="select current page" [checked]="isAllPageSelected()" (click)="onSelectAllPage()" [title]="'select current page'"></th>
 				<th jhiSortBy="gid" [hidden]="hiddenColumns['gid']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.gid">GID</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="groupId" [hidden]="hiddenColumns['groupId']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupId">GROUP ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="names" [hidden]="hiddenColumns['names']"><span jhiTranslate="bmsjHipsterApp.bmsjHipsterApp.germplasmSearch.column.names">NAMES</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="names" [hidden]="hiddenColumns['names']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.names">NAMES</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="methodName" [hidden]="hiddenColumns['methodName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodName">METHOD NAME</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="locationName" [hidden]="hiddenColumns['locationName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.locationName">LOCATION NAME</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="stockIds" [hidden]="hiddenColumns['stockIds']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.stockIds">STOCKIDS</span> <span class="fa fa-sort"></span></th>

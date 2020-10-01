@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ParamContext } from '../shared/service/param.context';
 
 
 @Component({
@@ -8,8 +9,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GermplasmTabComponent implements OnInit {
 
-    constructor() {
-
+    constructor(private paramContext: ParamContext) {
+        this.paramContext.readParams();
     }
 
     ngOnInit() {

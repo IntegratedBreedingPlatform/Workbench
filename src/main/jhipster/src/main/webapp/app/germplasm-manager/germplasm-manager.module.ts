@@ -5,6 +5,7 @@ import { GERMPLASM_MANAGER_ROUTES } from './germplasm-manager.route';
 import { BmsjHipsterSharedModule } from '../shared';
 import { GermplasmTabComponent } from './germplasm-tab.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
+import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
 
 @NgModule({
     imports: [
@@ -20,6 +21,9 @@ import { GermplasmSearchComponent } from './germplasm-search.component';
         LotCreationDialogComponent,
         GermplasmTabComponent,
         GermplasmSearchComponent
+    ],
+    providers: [
+        GermplasmSearchResolvePagingParams
     ]
 })
 export class GermplasmManagerModule {

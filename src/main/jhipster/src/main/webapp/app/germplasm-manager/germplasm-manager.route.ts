@@ -3,6 +3,7 @@ import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.comp
 import { RouteAccessService } from '../shared';
 import { GermplasmTabComponent } from './germplasm-tab.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
+import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
@@ -28,9 +29,17 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         data: {},
         children: [
             {
+                path: '',
+                redirectTo: 'germplasm-search',
+                pathMatch: 'full'
+            },
+            {
                 path: 'germplasm-search',
                 component: GermplasmSearchComponent,
-                data: {}
+                data: {},
+                resolve: {
+                    'pagingParams': GermplasmSearchResolvePagingParams
+                },
             }
         ]
     }

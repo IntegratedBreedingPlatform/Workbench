@@ -7,13 +7,13 @@ import { ColumnFilterComponent } from '../shared/column-filter/column-filter.com
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-germplasm-search',
     templateUrl: './germplasm-search.component.html',
-    styles: []
+    styleUrls: [] // TODO: Copy styles from Invetory Manager
 })
 export class GermplasmSearchComponent implements OnInit {
 
@@ -70,10 +70,12 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     constructor(private activatedRoute: ActivatedRoute,
+                private jhiLanguageService: JhiLanguageService,
                 private germplasmService: GermplasmService,
                 private router: Router,
                 private jhiAlertService: JhiAlertService,
                 private modal: NgbModal) {
+
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe((data) => {
             this.page = data.pagingParams.page;
@@ -142,9 +144,6 @@ export class GermplasmSearchComponent implements OnInit {
 
     sort() {
         const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'gid') {
-            result.push('gid');
-        }
         return result;
     }
 
