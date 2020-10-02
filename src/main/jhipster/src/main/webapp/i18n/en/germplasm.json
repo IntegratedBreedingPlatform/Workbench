@@ -4,9 +4,9 @@
         "germplasmSearch" : {
             "column" : {
                 "gid" : "GID",
-                "groupId": "GROUP ID",
+                "groupId": "GROUPID",
                 "names": "NAMES",
-                "methodName": "METHOD NAME",
+                "methodName": "BREEDING METHOD NAME",
                 "locationName": "LOCATION",
                 "stockIds": "STOCK IDS",
                 "availableBalance": "AVAILABLE",

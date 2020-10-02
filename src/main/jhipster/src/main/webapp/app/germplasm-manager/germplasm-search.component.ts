@@ -12,8 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-germplasm-search',
-    templateUrl: './germplasm-search.component.html',
-    styleUrls: [] // TODO: Copy styles from Invetory Manager
+    templateUrl: './germplasm-search.component.html'
 })
 export class GermplasmSearchComponent implements OnInit {
 
@@ -140,6 +139,23 @@ export class GermplasmSearchComponent implements OnInit {
 
     ngOnInit() {
         this.loadAll(this.request);
+        this.hiddenColumns['groupId'] = true;
+        this.hiddenColumns['stockIds'] = true;
+        this.hiddenColumns['unit'] = true;
+        this.hiddenColumns['germplasmDate'] = true;
+        this.hiddenColumns['methodCode'] = true;
+        this.hiddenColumns['methodNumber'] = true;
+        this.hiddenColumns['methodGroup'] = true;
+        this.hiddenColumns['germplasmPeferredName'] = true;
+        this.hiddenColumns['germplasmPeferredId'] = true;
+        this.hiddenColumns['groupSourceGID'] = true;
+        this.hiddenColumns['groupSourcePreferredName'] = true;
+        this.hiddenColumns['immediateSourceGID'] = true;
+        this.hiddenColumns['immediateSourcePreferredName'] = true;
+        this.hiddenColumns['femaleParentGID'] = true;
+        this.hiddenColumns['femaleParentPreferredName'] = true;
+        this.hiddenColumns['maleParentGID'] = true;
+        this.hiddenColumns['maleParentPreferredName'] = true;
     }
 
     sort() {
