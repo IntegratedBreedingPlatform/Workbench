@@ -292,3 +292,116 @@ table > thead > tr > th[jhisortby] {
     left: 20px;
     font-weight: bold;
 }
+
+/* ========================================================================== Navigation & Table ========================================================================== */
+
+.nav-tabs .nav-item .nav-link {
+    font-weight: bold;
+}
+.nav-tabs .nav-item .nav-link:not(.active) {
+    background-color: #cecece;
+}
+.nav-tabs .nav-item .nav-link.active {
+    background-color: #f6f6f6;
+    border-bottom-color: #f6f6f6;
+}
+.tab-content {
+    background: #f6f6f6;
+    border-bottom: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+}
+.table {
+    white-space: nowrap;
+    border-spacing: 0;
+}
+.table > thead {
+    background-color: #c8c6c6;
+}
+.table, .table > thead > tr > th, .table > tbody > tr > td {
+    border: 0;
+}
+.table.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #e3e3e3;
+}
+.table.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f0eeee;
+}
+.table.table-bordered {
+    border: 0 !important;
+}
+.table.table-bordered > thead > tr > th {
+    border-bottom: 1px solid #c2c3c4;
+}
+.table.table-bordered > tbody > tr > td {
+    border-right: 1px solid #c2c3c4;
+}
+.table.table-bordered > tbody > tr > td:last-child {
+    border-right: 0;
+}
+.table-curved {
+    border-collapse: separate;
+    border-radius: 0.625rem;
+}
+.table-curved > thead > tr > th:first-child {
+    border-top-left-radius: 0.625rem;
+}
+.table-curved > thead > tr > th:last-child {
+    border-top-right-radius: 0.625rem;
+}
+.table-curved > tbody > tr:last-child > td:first-child {
+    border-bottom-left-radius: 0.625rem;
+}
+.table-curved > tbody > tr:last-child > td:last-child {
+    border-bottom-right-radius: 0.625rem;
+}
+.btn-primary {
+    color: #fff;
+}
+/* modal */
+.modal-extra-small .modal-dialog {
+    width: 400px;
+}
+#columnVisibility {
+    width: 180px;
+}
+#columnVisibility button {
+    white-space: nowrap;
+    width: 100%;
+    padding: 0.5em 1em;
+    margin-bottom: 4px;
+}
+
+/* ========================================================================== Column filters ========================================================================== */
+.column-filter-badge {
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+.column-filter-badge button div {
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.column-filter-badge button i {
+    float: right;
+    line-height: 1.5;
+    margin-left: 5px;
+}
+
+/* ========================================================================== Pagination FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/a/33856609/1384743 Until something like justify-self is available https://stackoverflow.com/a/32583512/1384743 ========================================================================== */
+.pagination-container {
+    display: flex;
+    margin-top: 1rem;
+}
+.pagination-container .pagination-box {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+.pagination-container .pagination-box-right > div {
+    margin-left: auto;
+}
+.pagination-container .pagination-box-left > div {
+    margin-right: auto;
+}
