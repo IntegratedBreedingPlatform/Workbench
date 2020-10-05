@@ -26,6 +26,8 @@ import { ColumnFilterRadioComponent } from './column-filter/column-filter-radio-
 import { ColumnFilterListComponent } from './column-filter/column-filter-list-component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GermplasmService } from './germplasm/service/germplasm.service';
+import { StudyTreeComponent } from './tree/study/study-tree.component';
+import { ColumnFilterBooleanComponent } from './column-filter/column-filter-boolean-component';
 
 @NgModule({
     imports: [
@@ -46,7 +48,9 @@ import { GermplasmService } from './germplasm/service/germplasm.service';
         ColumnFilterRadioComponent,
         ColumnFilterListComponent,
         ColumnFilterComponent,
-        ColVisButtonComponent
+        ColVisButtonComponent,
+        ColumnFilterBooleanComponent,
+        StudyTreeComponent
     ],
     providers: [
         DatePipe,
@@ -62,7 +66,8 @@ import { GermplasmService } from './germplasm/service/germplasm.service';
     ],
     entryComponents: [
         ModalComponent,
-        ModalConfirmComponent
+        ModalConfirmComponent,
+        StudyTreeComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -82,7 +87,9 @@ import { GermplasmService } from './germplasm/service/germplasm.service';
         ColumnFilterRadioComponent,
         ColumnFilterListComponent,
         ColumnFilterComponent,
-        ColVisButtonComponent
+        ColVisButtonComponent,
+        ColumnFilterBooleanComponent,
+        StudyTreeComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

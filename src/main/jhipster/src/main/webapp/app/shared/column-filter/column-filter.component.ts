@@ -106,6 +106,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                     + (isNumeric(filter.max) ? filter.max : ''));
             case FilterType.TEXT:
             case FilterType.LIST:
+            case FilterType.BOOLEAN:
             case FilterType.MODAL:
                 return Promise.resolve(filter.value);
             default:
@@ -145,6 +146,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                     return Promise.resolve();
                 case FilterType.TEXT:
                 case FilterType.LIST:
+                case FilterType.BOOLEAN:
                 case FilterType.MODAL:
                     filter.value = request[filter.key];
                     return Promise.resolve();
@@ -209,6 +211,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             this.request[key] = filter.value;
         }
         this.resultSearch.searchResultDbId = '';
+        this.apply(filter);
+    }
+
+    updateBooleanFilter(filter: any, key: string) {
+        this.request[key] = filter.value;
         this.apply(filter);
     }
 
@@ -324,5 +331,6 @@ export enum FilterType {
     NUMBER,
     RADIOBUTTON,
     CHECKLIST,
-    MODAL
+    MODAL,
+    BOOLEAN
 }

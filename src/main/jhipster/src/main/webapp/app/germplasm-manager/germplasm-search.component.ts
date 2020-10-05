@@ -3,12 +3,15 @@ import { Germplasm } from '../entities/germplasm/germplasm.model';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITEMS_PER_PAGE } from '../shared';
-import { ColumnFilterComponent } from '../shared/column-filter/column-filter.component';
+import { ColumnFilterComponent, FilterType } from '../shared/column-filter/column-filter.component';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
+import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
+import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
 
 @Component({
     selector: 'jhi-germplasm-search',
@@ -16,6 +19,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class GermplasmSearchComponent implements OnInit {
 
+    eventSubscriber: Subscription;
     germplasmList: Germplasm[];
     error: any;
     currentSearch: string;
@@ -63,13 +67,96 @@ export class GermplasmSearchComponent implements OnInit {
     selectedItems: any[] = [];
     allItemsPerPages = false;
 
-    // TODO: add filters
     private static getInitialFilters() {
-        return [];
+        return [
+            { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
+            { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT },
+            { key: 'groupId', name: 'Group ID', placeholder: 'Match Text', type: FilterType.TEXT },
+            { key: 'sampleUID', name: 'Sample ID', placeholder: 'Match Text', type: FilterType.TEXT },
+            {
+                key: 'germplasmListIds', name: 'Germplasm List', type: FilterType.MODAL,
+                open(modal, request) {
+                    return new Promise((resolve) => {
+                        modal.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
+                            .result.then((germplasmList) => {
+                            if (germplasmList) {
+                                this.value = germplasmList.map((list) => list.name);
+                                request[this.key] = germplasmList.map((list) => list.id);
+                            }
+                            resolve();
+                        }, () => {
+                        });
+                    });
+                }
+            },
+            { key: 'stockID', name: 'Stock ID', placeholder: 'Starts with', type: FilterType.TEXT },
+            { key: 'locationOfOrigin', name: 'Location of Origin', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'locationOfUse', name: 'Location of Use', placeholder: 'Contains Text', type: FilterType.TEXT },
+            {
+                key: 'plantingStudyIds', name: 'Study of use', type: FilterType.MODAL,
+                open(modal, request) {
+                    return new Promise((resolve) => {
+                        modal.open(StudyTreeComponent as Component, { windowClass: 'modal-extra-small', backdrop: 'static' })
+                            .result.then((studyIds) => {
+                            if (studyIds) {
+                                this.value = studyIds.map((list) => list.name);
+                                request[this.key] = studyIds.map((list) => list.id);
+                            }
+                            resolve();
+                        }, () => {
+                        });
+                    });
+                }
+            },
+            {
+                key: 'harvestingStudyIds', name: 'Study of origin', type: FilterType.MODAL,
+                open(modal, request) {
+                    return new Promise((resolve) => {
+                        modal.open(StudyTreeComponent as Component, { windowClass: 'modal-extra-small', backdrop: 'static' })
+                            .result.then((studyIds) => {
+                            if (studyIds) {
+                                this.value = studyIds.map((list) => list.name);
+                                request[this.key] = studyIds.map((list) => list.id);
+                            }
+                            resolve();
+                        }, () => {
+                        });
+                    });
+                }
+            },
+            { key: 'reference', name: 'Reference', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'breedingMethodName', name: 'Breeding Method Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            {
+                key: 'harvestDate', name: 'Harvest Date', type: FilterType.DATE,
+                fromKey: 'harvestDateFrom',
+                toKey: 'harvestDateTo',
+                transform(req) {
+                    ColumnFilterComponent.transformDateFilter(this, req, this.fromKey, this.toKey);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDateFilter(this, req, this.fromKey, this.toKey);
+                },
+                reload(req) {
+                    this.from = req[this.fromKey];
+                    this.to = req[this.toKey];
+                }
+            },
+            { key: 'femaleParentName', name: 'Cross-Female Parent Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'maleParentName', name: 'Cross-Male Parent Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'groupSourceName', name: 'Group Source Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'immediateSourceName', name: 'Immediate Source Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'withInventoryOnly', name: 'With Inventory Only', type: FilterType.BOOLEAN, value: true },
+            { key: 'withRawObservationsOnly', name: 'With Observations Only', type: FilterType.BOOLEAN, value: true },
+            { key: 'withSampleOnly', name: 'With Sample Only', type: FilterType.BOOLEAN, value: true },
+            { key: 'inProgramListOnly', name: 'In Program List Only', type: FilterType.BOOLEAN, value: true },
+            { key: 'includeGroupMembers', name: 'Include Group Members', type: FilterType.BOOLEAN, value: true }
+            // TODO: Add filters for Attributes, Germplasm Name and Include Pedigree.
+        ];
     }
 
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
+                private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
                 private router: Router,
                 private jhiAlertService: JhiAlertService,
@@ -138,6 +225,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.registerChangeInGermplasm();
         this.loadAll(this.request);
         this.hiddenColumns['groupId'] = true;
         this.hiddenColumns['stockIds'] = true;
@@ -165,6 +253,21 @@ export class GermplasmSearchComponent implements OnInit {
 
     trackId(index: number, item: Germplasm) {
         return item.gid;
+    }
+
+    registerChangeInGermplasm() {
+        this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
+            if (event && event.content && event.content.filterBy) {
+                this.filterBy(event.content.filterBy);
+            }
+            this.resetTable();
+        });
+    }
+
+    resetTable() {
+        this.allItemsPerPages = false;
+        this.selectedItems = [];
+        this.loadAll(this.request);
     }
 
     private onSuccess(data, headers) {
@@ -229,6 +332,28 @@ export class GermplasmSearchComponent implements OnInit {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Filter by different fields.
+     * - Some filters may have a custom filtering logic
+     * - Will clear all existing filters
+     * @param filterBy map with key value filters
+     */
+    private filterBy(filterBy: { [p: string]: any }) {
+        if (!filterBy) {
+            return;
+        }
+        const entries = Object.entries(filterBy);
+        if (entries.length === 0) {
+            return;
+        }
+        this.resetFilters();
+    }
+
+    private resetFilters() {
+        this.filters = GermplasmSearchComponent.getInitialFilters();
+        this.request = new GermplasmSearchRequest();
     }
 
 }

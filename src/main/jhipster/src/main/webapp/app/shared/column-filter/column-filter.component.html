@@ -56,6 +56,11 @@
                                               (onApply)="updateRadioFilter(filter, filter.key)"
                                               (onReset)="reset(filter)">
                         </jhi-column-filter-radio>
+                        <jhi-column-filter-boolean *ngIf="filter.type === FILTER_TYPES.BOOLEAN"
+                                                 [filter]="filter"
+                                                 (onApply)="updateBooleanFilter(filter, filter.key)"
+                                                 (onReset)="reset(filter)">
+                        </jhi-column-filter-boolean>
                         <jhi-column-filter-list *ngIf="filter.type === FILTER_TYPES.LIST"
                                              [filter]="filter"
                                              (onApply)="updateListFilter(filter)"

@@ -6,6 +6,7 @@ import { BmsjHipsterSharedModule } from '../shared';
 import { GermplasmTabComponent } from './germplasm-tab.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
+import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 
 @NgModule({
     imports: [
@@ -15,12 +16,14 @@ import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-p
     declarations: [
         LotCreationDialogComponent,
         GermplasmTabComponent,
-        GermplasmSearchComponent
+        GermplasmSearchComponent,
+        GermplasmTreeTableComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
         GermplasmTabComponent,
-        GermplasmSearchComponent
+        GermplasmSearchComponent,
+        GermplasmTreeTableComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams
