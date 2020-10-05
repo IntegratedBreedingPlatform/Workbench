@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LabelsNeededSummary, LabelType, LabelPrintingData, PresetSetting, BarcodeSetting, FileConfiguration } from './label-printing.model';
+import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting } from './label-printing.model';
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
@@ -13,7 +13,7 @@ declare const $: any;
 @Component({
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
-    styleUrls: ['./label-printing.component.css']
+    styleUrls: ['../../content/css/fieldbook.css', '../../content/css/bootstrap3.min.css', './label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
     initComplete: boolean;
@@ -109,9 +109,9 @@ export class LabelPrintingComponent implements OnInit {
             const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
             const labelFieldsSelected = new Array();
 
-            presetSetting.selectedFields.forEach(function(idsSelected) {
+            presetSetting.selectedFields.forEach(function (idsSelected) {
                 const fieldsSelected: LabelType[] = new Array();
-                labelTypeList.forEach(function(label: LabelType) {
+                labelTypeList.forEach(function (label: LabelType) {
                     const labelType = new LabelType(label.title, label.key, []);
                     labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
                     fieldsSelected.push(labelType);
@@ -129,10 +129,10 @@ export class LabelPrintingComponent implements OnInit {
                 $('#rightSelectedFields').empty();
 
                 let listElem = '#leftSelectedFields';
-                labelFieldsSelected.forEach(function(fieldsList: LabelType[]) {
-                    fieldsList.forEach(function(labelsType: LabelType) {
+                labelFieldsSelected.forEach(function (fieldsList: LabelType[]) {
+                    fieldsList.forEach(function (labelsType: LabelType) {
                         const key = labelsType.key;
-                        labelsType.fields.forEach(function(field) {
+                        labelsType.fields.forEach(function (field) {
                             $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
                                 .attr('id', field.id).attr('data-label-type-key', key) //
                                 .text(field.name).appendTo(listElem);
@@ -269,7 +269,7 @@ export class LabelPrintingComponent implements OnInit {
         };
 
         this.proceed = function donwloadPrintingLabel(): void {
-            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any ) => {
+            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any) => {
                 const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
                 this.fileDownloadHelper.save(response.body, fileName);
 
@@ -403,7 +403,7 @@ export class LabelPrintingComponent implements OnInit {
     }
 }
 
-@Pipe({name: 'allLabels'})
+@Pipe({ name: 'allLabels' })
 export class AllLabelsPipe implements PipeTransform {
     transform(labelTypes: { fields: { id: number, name: string }[] }[]): any {
         if (!labelTypes) {

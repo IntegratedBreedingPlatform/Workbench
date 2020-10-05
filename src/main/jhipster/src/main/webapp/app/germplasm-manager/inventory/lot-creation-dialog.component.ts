@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../shared/inventory/model/lot.model';
@@ -14,8 +14,10 @@ import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
 
 @Component({
+    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-lot-creation-dialog',
-    templateUrl: './lot-creation-dialog.component.html'
+    templateUrl: './lot-creation-dialog.component.html',
+    styleUrls: ['../../../content/css/fieldbook.css', '../../../content/css/bootstrap3.min.css']
 })
 export class LotCreationDialogComponent implements OnInit {
 
@@ -134,16 +136,16 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private onSaveSuccess(lotUUIDs: string[]) {
-        this.jhiAlertService.addAlert({msg: 'lot-creation.success', type: 'success', toast: false, params: {param: lotUUIDs.length}}, null);
+        this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: {param: msg} }, null);
+            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
         } else {
-            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false}, null);
+            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
         }
     }
 }

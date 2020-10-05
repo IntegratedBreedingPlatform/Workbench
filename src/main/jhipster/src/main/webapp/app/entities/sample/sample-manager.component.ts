@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { SampleList } from './sample-list.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,9 +10,10 @@ declare const cropName: string;
 declare var $: any;
 
 @Component({
+    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-sample-manager',
     templateUrl: './sample-manager.component.html',
-    styles: []
+    styleUrls: ['../../../content/css/fieldbook.css', '../../../content/css/bootstrap3.min.css' ]
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 
@@ -51,7 +52,8 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
                 if (response.body) {
                     this.helpLink = response.body;
                 }
-            }).catch((error) => {});
+            }).catch((error) => {
+            });
         }
     }
 
@@ -88,7 +90,8 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
 
     private navigate(listId: any) {
         this.listId = listId;
-        this.router.navigate(['/sample-manager'], {queryParams: {
+        this.router.navigate(['/sample-manager'], {
+            queryParams: {
                 listId: this.listId
             }
         });
