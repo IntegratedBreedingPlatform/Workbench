@@ -23,8 +23,8 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/crops/" + getUrlParameter("cropName") + "/programs/" + getUrlParameter("programUUID")
-		+ "/locations?favoriteLocations=false&locationTypes" ;
+	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
+		+ "/locations?programUUID=" + getUrlParameter("programUUID") + "&favoriteLocations=false&locationTypes";
 
 	return Promise.all([$.get({
 		dataType: "json",
