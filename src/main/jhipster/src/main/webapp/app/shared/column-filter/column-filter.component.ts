@@ -61,6 +61,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
     }
 
+    static transformTextWithMatchOptionsFilter(filter, request) {
+        request[filter.key] = {
+            type: filter.matchType,
+            value: filter.value
+        }
+    }
+
     static resetDateFilter(filter, request, fromProperty, toProperty) {
         request[fromProperty] = undefined;
         request[toProperty] = undefined;
@@ -105,6 +112,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                     + ' - '
                     + (isNumeric(filter.max) ? filter.max : ''));
             case FilterType.TEXT:
+            case FilterType.TEXT_WITH_MATCH_OPTIONS:
             case FilterType.LIST:
             case FilterType.BOOLEAN:
             case FilterType.MODAL:
@@ -147,6 +155,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 case FilterType.TEXT:
                 case FilterType.LIST:
                 case FilterType.BOOLEAN:
+                case FilterType.TEXT_WITH_MATCH_OPTIONS:
                 case FilterType.MODAL:
                     filter.value = request[filter.key];
                     return Promise.resolve();
@@ -332,5 +341,6 @@ export enum FilterType {
     RADIOBUTTON,
     CHECKLIST,
     MODAL,
-    BOOLEAN
+    BOOLEAN,
+    TEXT_WITH_MATCH_OPTIONS
 }

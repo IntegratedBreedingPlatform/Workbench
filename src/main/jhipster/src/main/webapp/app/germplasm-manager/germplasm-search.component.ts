@@ -12,6 +12,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
+import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 
 @Component({
     selector: 'jhi-germplasm-search',
@@ -69,6 +70,20 @@ export class GermplasmSearchComponent implements OnInit {
 
     private static getInitialFilters() {
         return [
+            {
+                key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH,
+                transform(req) {
+                    ColumnFilterComponent.transformTextWithMatchOptionsFilter(this, req);
+                },
+                options: Promise.resolve([{
+                    id: MatchType.STARTSWITH, name: 'Starts with'
+                }, {
+                    id: MatchType.EXACTMATCH, name: 'Exact Match'
+                }, {
+                    id: MatchType.CONTAINS, name: 'Contains'
+                }])
+            },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'groupId', name: 'Group ID', placeholder: 'Match Text', type: FilterType.TEXT },

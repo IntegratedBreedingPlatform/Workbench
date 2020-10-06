@@ -28,6 +28,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { GermplasmService } from './germplasm/service/germplasm.service';
 import { StudyTreeComponent } from './tree/study/study-tree.component';
 import { ColumnFilterBooleanComponent } from './column-filter/column-filter-boolean-component';
+import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
 
 @NgModule({
     imports: [
@@ -50,6 +51,7 @@ import { ColumnFilterBooleanComponent } from './column-filter/column-filter-bool
         ColumnFilterComponent,
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
+        ColumnFilterTextWithMatchOptionsComponent,
         StudyTreeComponent
     ],
     providers: [
@@ -89,6 +91,7 @@ import { ColumnFilterBooleanComponent } from './column-filter/column-filter-bool
         ColumnFilterComponent,
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
+        ColumnFilterTextWithMatchOptionsComponent,
         StudyTreeComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

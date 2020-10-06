@@ -66,6 +66,11 @@
                                              (onApply)="updateListFilter(filter)"
                                              (onReset)="reset(filter)">
                         </jhi-column-filter-list>
+                        <jhi-column-filter-text-with-match-options *ngIf="filter.type === FILTER_TYPES.TEXT_WITH_MATCH_OPTIONS"
+                                                          [filter]="filter"
+                                                          (onApply)="updateTextFilter(filter, filter.key)"
+                                                          (onReset)="reset(filter)">
+                        </jhi-column-filter-text-with-match-options>
                         <!-- TODO dynamic custom popover filter -->
                     </ng-template>
                     <button *ngIf="filter.type !== FILTER_TYPES.MODAL"
