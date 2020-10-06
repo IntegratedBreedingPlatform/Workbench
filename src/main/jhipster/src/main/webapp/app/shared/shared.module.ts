@@ -5,7 +5,7 @@ import { AccountService, BmsjHipsterSharedCommonModule, BmsjHipsterSharedLibsMod
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { ModalService } from './modal/modal.service';
-import { DragDropModule } from 'primeng/primeng';
+import { DragDropModule, TreeModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
 import { SharedModule } from 'primeng/shared';
 import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
@@ -26,10 +26,10 @@ import { ColumnFilterRadioComponent } from './column-filter/column-filter-radio-
 import { ColumnFilterListComponent } from './column-filter/column-filter-list-component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GermplasmService } from './germplasm/service/germplasm.service';
-import { StudyTreeComponent } from './tree/study/study-tree.component';
 import { ColumnFilterBooleanComponent } from './column-filter/column-filter-boolean-component';
 import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
+import { ErrorComponent } from '../layouts';
 
 @NgModule({
     imports: [
@@ -53,8 +53,7 @@ import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-fil
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
-        ColumnFilterPedigreeOptionsComponent,
-        StudyTreeComponent
+        ColumnFilterPedigreeOptionsComponent
     ],
     providers: [
         DatePipe,
@@ -70,13 +69,13 @@ import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-fil
     ],
     entryComponents: [
         ModalComponent,
-        ModalConfirmComponent,
-        StudyTreeComponent
+        ModalConfirmComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
         SharedModule,
         TreeTableModule,
+        TreeModule,
         DragDropModule,
         DatePipe,
         ModalComponent,
@@ -94,8 +93,7 @@ import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-fil
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
-        ColumnFilterPedigreeOptionsComponent,
-        StudyTreeComponent
+        ColumnFilterPedigreeOptionsComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

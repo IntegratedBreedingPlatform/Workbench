@@ -7,6 +7,7 @@ import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { GermplasmManagerComponent } from './germplasm-manager.component';
+import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
 
 @NgModule({
     imports: [
@@ -16,14 +17,12 @@ import { GermplasmManagerComponent } from './germplasm-manager.component';
     declarations: [
         LotCreationDialogComponent,
         GermplasmManagerComponent,
-        GermplasmSearchComponent,
-        GermplasmTreeTableComponent
+        GermplasmSearchComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
         GermplasmManagerComponent,
-        GermplasmSearchComponent,
-        GermplasmTreeTableComponent
+        GermplasmSearchComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams

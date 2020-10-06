@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ParamContext } from '../shared/service/param.context';
 import { ViewEncapsulation } from '@angular/core';
 
-
 @Component({
     encapsulation: ViewEncapsulation.None,
     selector: 'jhi-germplasm-manager',

@@ -18,6 +18,10 @@ import {
 import { LabelPrintingModule } from './label-printing/label-printing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.module';
+import { GermplasmSearchComponent } from './germplasm-manager/germplasm-search.component';
+import { GermplasmTreeTableComponent } from './shared/tree/germplasm/germplasm-tree-table.component';
+import { StudyTreeComponent } from './shared/tree/study/study-tree.component';
+import { ModalConfirmComponent } from './shared/modal/modal-confirm.component';
 
 @NgModule({
     imports: [
@@ -34,7 +38,13 @@ import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.mo
     declarations: [
         JhiMainComponent,
         PageRibbonComponent,
-        ErrorComponent
+        ErrorComponent,
+        GermplasmTreeTableComponent,
+        StudyTreeComponent
+    ],
+    entryComponents: [
+        GermplasmTreeTableComponent,
+        StudyTreeComponent
     ],
     providers: [
         RouteAccessService,

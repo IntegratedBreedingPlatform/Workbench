@@ -226,24 +226,6 @@ table > thead > tr > th[jhisortby] {
     float: right;
     cursor: pointer;
 }
-.modal-extra-large {
-    width: 950px;
-}
-.modal-large {
-    width: 800px;
-}
-.modal-extra-medium {
-    width: 700px;
-}
-.modal-medium {
-    width: 650px;
-}
-.modal-small {
-    width: 500px;
-}
-.modal-extra-small {
-    width: 400px;
-}
 .disable-image {
     opacity: 0.5
 }
@@ -281,6 +263,23 @@ table > thead > tr > th[jhisortby] {
 }
 .tree-table .file {
     background-image: url("../images/document-icon.png");
+}
+/* tree */
+.ui-tree {
+    width: 100% !important;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    height: 350px;
+    overflow: auto;
+}
+.ui-tree .ui-state-highlight {
+    background: none repeat scroll 0% 0% #BED6B2 !important;
+    border-radius: 6pt;
+}
+/* Fix Chrome highlight issue */
+.ui-tree [tabindex] {
+    outline: none;
 }
 
 /* jhipster-needle-css-add-main JHipster will add new css style */
@@ -389,7 +388,11 @@ table > thead > tr > th[jhisortby] {
     margin-left: 5px;
 }
 
-/* ========================================================================== Pagination FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/a/33856609/1384743 Until something like justify-self is available https://stackoverflow.com/a/32583512/1384743 ========================================================================== */
+/* ==========================================================================
+Pagination
+FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/a/33856609/1384743
+ Until something like justify-self is available https://stackoverflow.com/a/32583512/1384743
+========================================================================== */
 .pagination-container {
     display: flex;
     margin-top: 1rem;
