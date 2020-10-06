@@ -25,7 +25,7 @@ export class InventoryService {
     queryLocation(requestLocation: any): Observable<Location[]> {
         const cropName = this.paramContext.cropName;
         const programUUID = this.paramContext.programUUID;
-        return this.http.get<Location[]>(SERVER_API_URL + `crops/${cropName}/programs/${programUUID}/locations`, {
+        return this.http.get<Location[]>(SERVER_API_URL + `crops/${cropName}/locations?programUUID=` + programUUID, {
             params: requestLocation,
             observe: 'response'
         }).pipe(map((res: HttpResponse<Location[]>) => res.body));
