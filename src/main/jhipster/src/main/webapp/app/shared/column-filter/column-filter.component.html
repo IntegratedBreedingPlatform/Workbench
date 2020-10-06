@@ -71,6 +71,12 @@
                                                           (onApply)="updateTextFilter(filter, filter.key)"
                                                           (onReset)="reset(filter)">
                         </jhi-column-filter-text-with-match-options>
+                        <jhi-column-filter-pedigree-options *ngIf="filter.type === FILTER_TYPES.PEDIGREE_OPTIONS"
+                                                            [filter]="filter"
+                                                            (onApply)="updateFilter(filter)"
+                                                            (onReset)="reset(filter)">
+
+                        </jhi-column-filter-pedigree-options>
                         <!-- TODO dynamic custom popover filter -->
                     </ng-template>
                     <button *ngIf="filter.type !== FILTER_TYPES.MODAL"

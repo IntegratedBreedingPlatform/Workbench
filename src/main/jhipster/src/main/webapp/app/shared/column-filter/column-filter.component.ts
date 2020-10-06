@@ -11,6 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     encapsulation: ViewEncapsulation.None
 })
 export class ColumnFilterComponent implements OnInit, OnDestroy {
+
     public isCollapsed = false;
 
     @Input() resultSearch: any;
@@ -68,6 +69,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
     }
 
+    static transformPedigreeOptionsFilter(filter, request) {
+        request[filter.key] = {
+            type: filter.pedigreeType,
+            generationLevel: filter.value
+        }
+    }
+
     static resetDateFilter(filter, request, fromProperty, toProperty) {
         request[fromProperty] = undefined;
         request[toProperty] = undefined;
@@ -113,6 +121,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                     + (isNumeric(filter.max) ? filter.max : ''));
             case FilterType.TEXT:
             case FilterType.TEXT_WITH_MATCH_OPTIONS:
+            case FilterType.PEDIGREE_OPTIONS:
             case FilterType.LIST:
             case FilterType.BOOLEAN:
             case FilterType.MODAL:
@@ -156,6 +165,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 case FilterType.LIST:
                 case FilterType.BOOLEAN:
                 case FilterType.TEXT_WITH_MATCH_OPTIONS:
+                case FilterType.PEDIGREE_OPTIONS:
                 case FilterType.MODAL:
                     filter.value = request[filter.key];
                     return Promise.resolve();
@@ -342,5 +352,6 @@ export enum FilterType {
     CHECKLIST,
     MODAL,
     BOOLEAN,
-    TEXT_WITH_MATCH_OPTIONS
+    TEXT_WITH_MATCH_OPTIONS,
+    PEDIGREE_OPTIONS
 }

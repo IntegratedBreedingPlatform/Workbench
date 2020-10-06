@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
+import { PedigreeType } from '../shared/column-filter/column-filter-pedigree-options-component';
 
 @Component({
     selector: 'jhi-germplasm-search',
@@ -164,8 +165,23 @@ export class GermplasmSearchComponent implements OnInit {
             { key: 'withRawObservationsOnly', name: 'With Observations Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withSampleOnly', name: 'With Sample Only', type: FilterType.BOOLEAN, value: true },
             { key: 'inProgramListOnly', name: 'In Program List Only', type: FilterType.BOOLEAN, value: true },
-            { key: 'includeGroupMembers', name: 'Include Group Members', type: FilterType.BOOLEAN, value: true }
-            // TODO: Add filters for Attributes, Germplasm Name and Include Pedigree.
+            { key: 'includeGroupMembers', name: 'Include Group Members', type: FilterType.BOOLEAN, value: true },
+            {
+                key: 'includePedigree', name: 'Include Pedigree', type: FilterType.PEDIGREE_OPTIONS,
+                pedigreeType: PedigreeType.GENERATIVE,
+                value: 1, // Generation Level
+                transform(req) {
+                    ColumnFilterComponent.transformPedigreeOptionsFilter(this, req);
+                },
+                options: Promise.resolve([{
+                    id: PedigreeType.GENERATIVE, name: 'Generative'
+                }, {
+                    id: PedigreeType.DERIVATIVE, name: 'Derivative and Maintenance'
+                }, {
+                    id: PedigreeType.BOTH, name: 'Both'
+                }])
+            }
+            // TODO: Add filters for Attributes
         ];
     }
 

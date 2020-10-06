@@ -29,6 +29,7 @@ import { GermplasmService } from './germplasm/service/germplasm.service';
 import { StudyTreeComponent } from './tree/study/study-tree.component';
 import { ColumnFilterBooleanComponent } from './column-filter/column-filter-boolean-component';
 import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
+import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 
 @NgModule({
     imports: [
@@ -52,6 +53,7 @@ import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/colum
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
+        ColumnFilterPedigreeOptionsComponent,
         StudyTreeComponent
     ],
     providers: [
@@ -92,6 +94,7 @@ import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/colum
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
+        ColumnFilterPedigreeOptionsComponent,
         StudyTreeComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
