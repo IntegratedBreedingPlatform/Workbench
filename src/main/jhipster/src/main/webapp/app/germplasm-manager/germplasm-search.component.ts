@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Germplasm } from '../entities/germplasm/germplasm.model';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ITEMS_PER_PAGE } from '../shared';
 import { ColumnFilterComponent, FilterType } from '../shared/column-filter/column-filter.component';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
@@ -29,7 +28,7 @@ export class GermplasmSearchComponent implements OnInit {
     links: any;
     totalItems: any;
     queryCount: any;
-    itemsPerPage: any;
+    itemsPerPage: any = 20;
     page: any;
     predicate: any;
     previousPage: any;
@@ -201,7 +200,6 @@ export class GermplasmSearchComponent implements OnInit {
                 private jhiAlertService: JhiAlertService,
                 private modal: NgbModal) {
 
-        this.itemsPerPage = ITEMS_PER_PAGE;
         this.routeData = this.activatedRoute.data.subscribe((data) => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
