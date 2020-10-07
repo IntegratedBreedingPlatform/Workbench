@@ -78,7 +78,11 @@ module.exports = (options) => ({
         }),
         new HtmlWebpackPlugin({
             template: './src/main/webapp/index.html',
-            chunks: ['vendors', 'polyfills', 'global', 'main'],
+            // TODO migrate IBP-4093
+            //  - discard global-bs3.
+            //  - rename global-bs4 and vendor-bs4
+            // chunks: ['vendors', 'polyfills', 'global', 'main'],
+            chunks: ['polyfills', 'main'],
             chunksSortMode: 'manual',
             inject: 'body'
         })

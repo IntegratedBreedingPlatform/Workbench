@@ -1,3 +1,7 @@
+@import url('/Fieldbook/static/css/lib/bootstrap/bootstrap.min.css');
+@import url('/Fieldbook/static/css/fieldbook.css');
+@import 'vendor-bs3.css';
+
 /* ==========================================================================
 Browser Upgrade Prompt
 ========================================================================== */
@@ -16,7 +20,7 @@ Generic styles
     padding: 1.5%;
     margin-top: 20px;
     border: none;
-}
+
 */
 .error {
     color: white;

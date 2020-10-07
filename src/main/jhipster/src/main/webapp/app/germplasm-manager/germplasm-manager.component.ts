@@ -8,7 +8,8 @@ import { ViewEncapsulation } from '@angular/core';
     templateUrl: './germplasm-manager.component.html',
     // Use Bootstrap 4 css file for this component to match with ng-bootstrap widgets.
     // Updating the bootstrap version globally will break other modules (sample manager, lot creation, etc)
-    styleUrls: ['../../../../../node_modules/bootstrap/dist/css/bootstrap.css']
+    // TODO migrate IBP-4093
+    styleUrls: ['../../content/css/global-bs4.scss']
 })
 export class GermplasmManagerComponent implements OnInit {
 

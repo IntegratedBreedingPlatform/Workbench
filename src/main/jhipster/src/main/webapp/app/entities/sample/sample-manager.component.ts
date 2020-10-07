@@ -13,7 +13,8 @@ declare var $: any;
     encapsulation: ViewEncapsulation.None,
     selector: 'jhi-sample-manager',
     templateUrl: './sample-manager.component.html',
-    styleUrls: ['../../../content/css/fieldbook.css', '../../../content/css/bootstrap3.min.css' ]
+    // TODO migrate IBP-4093
+    styleUrls: ['../../../content/css/global-bs3.css' ]
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 

@@ -17,7 +17,8 @@ import { SearchComposite } from '../../shared/model/search-composite';
     encapsulation: ViewEncapsulation.None,
     selector: 'jhi-lot-creation-dialog',
     templateUrl: './lot-creation-dialog.component.html',
-    styleUrls: ['../../../content/css/fieldbook.css', '../../../content/css/bootstrap3.min.css']
+    // TODO migrate IBP-4093
+    styleUrls: ['../../../content/css/global-bs3.css' ]
 })
 export class LotCreationDialogComponent implements OnInit {
 

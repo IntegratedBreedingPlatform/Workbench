@@ -13,7 +13,8 @@ declare const $: any;
 @Component({
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
-    styleUrls: ['../../content/css/fieldbook.css', '../../content/css/bootstrap3.min.css', './label-printing.component.css']
+    // TODO migrate IBP-4093
+    styleUrls: ['../../content/css/global-bs3.css', './label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
     initComplete: boolean;
