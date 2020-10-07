@@ -76,6 +76,19 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
     }
 
+    static transformAttributesFilter(filter, request) {
+        let attributes: any = {}
+        for (var attribute of filter.attributes) {
+            attributes[attribute.code] = attribute.value;
+        }
+        request[filter.key] = attributes;
+    }
+
+    static resetAttributesFilter(filter, request) {
+        request[filter.key] = undefined;
+        filter.attributes = [];
+    }
+
     static resetDateFilter(filter, request, fromProperty, toProperty) {
         request[fromProperty] = undefined;
         request[toProperty] = undefined;
@@ -122,6 +135,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             case FilterType.TEXT:
             case FilterType.TEXT_WITH_MATCH_OPTIONS:
             case FilterType.PEDIGREE_OPTIONS:
+            case FilterType.ATTRIBUTES:
             case FilterType.LIST:
             case FilterType.BOOLEAN:
             case FilterType.MODAL:
@@ -166,6 +180,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 case FilterType.BOOLEAN:
                 case FilterType.TEXT_WITH_MATCH_OPTIONS:
                 case FilterType.PEDIGREE_OPTIONS:
+                case FilterType.ATTRIBUTES:
                 case FilterType.MODAL:
                     filter.value = request[filter.key];
                     return Promise.resolve();
@@ -353,5 +368,6 @@ export enum FilterType {
     MODAL,
     BOOLEAN,
     TEXT_WITH_MATCH_OPTIONS,
-    PEDIGREE_OPTIONS
+    PEDIGREE_OPTIONS,
+    ATTRIBUTES
 }

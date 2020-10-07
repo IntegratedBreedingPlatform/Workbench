@@ -180,8 +180,16 @@ export class GermplasmSearchComponent implements OnInit {
                 }, {
                     id: PedigreeType.BOTH, name: 'Both'
                 }])
+            },
+            {
+                key: 'attributes', name: 'Attributes', type: FilterType.ATTRIBUTES, attributes: [],
+                transform(req) {
+                    ColumnFilterComponent.transformAttributesFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetAttributesFilter(this, req);
+                },
             }
-            // TODO: Add filters for Attributes
         ];
     }
 
@@ -257,6 +265,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     ngOnInit() {
         this.registerChangeInGermplasm();
+        this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns['groupId'] = true;
         this.hiddenColumns['stockIds'] = true;
@@ -302,8 +311,11 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        // this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
+        if (headers.get('X-Filtered-Count') < 5000) {
+            this.totalItems = headers.get('X-Filtered-Count');
+        } else {
+            this.totalItems = headers.get('X-Total-Count');
+        }
         this.queryCount = this.totalItems;
         // this.page = pagingParams.page;
         this.germplasmList = data;

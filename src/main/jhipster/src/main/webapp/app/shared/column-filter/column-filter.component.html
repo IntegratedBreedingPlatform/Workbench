@@ -77,6 +77,11 @@
                                                             (onReset)="reset(filter)">
 
                         </jhi-column-filter-pedigree-options>
+                        <jhi-column-filter-attributes *ngIf="filter.type === FILTER_TYPES.ATTRIBUTES"
+                                                      [filter]="filter"
+                                                      (onApply)="updateFilter(filter)"
+                                                      (onReset)="reset(filter)">
+                        </jhi-column-filter-attributes>
                         <!-- TODO dynamic custom popover filter -->
                     </ng-template>
                     <button *ngIf="filter.type !== FILTER_TYPES.MODAL"

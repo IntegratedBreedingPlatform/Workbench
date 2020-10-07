@@ -29,7 +29,9 @@ import { GermplasmService } from './germplasm/service/germplasm.service';
 import { ColumnFilterBooleanComponent } from './column-filter/column-filter-boolean-component';
 import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
+import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
 import { ErrorComponent } from '../layouts';
+import { AttributesService } from './attributes/service/attributes.service';
 
 @NgModule({
     imports: [
@@ -53,7 +55,8 @@ import { ErrorComponent } from '../layouts';
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
-        ColumnFilterPedigreeOptionsComponent
+        ColumnFilterPedigreeOptionsComponent,
+        ColumnFilterAttributesComponent
     ],
     providers: [
         DatePipe,
@@ -65,7 +68,8 @@ import { ErrorComponent } from '../layouts';
         TransactionService,
         ParamContext,
         HelpService,
-        GermplasmService
+        GermplasmService,
+        AttributesService
     ],
     entryComponents: [
         ModalComponent,
@@ -93,7 +97,8 @@ import { ErrorComponent } from '../layouts';
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
-        ColumnFilterPedigreeOptionsComponent
+        ColumnFilterPedigreeOptionsComponent,
+        ColumnFilterAttributesComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
