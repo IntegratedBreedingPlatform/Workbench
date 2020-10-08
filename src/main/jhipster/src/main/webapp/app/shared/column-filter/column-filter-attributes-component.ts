@@ -14,19 +14,19 @@ import { AttributesService } from '../attributes/service/attributes.service';
 					<input type="text" class="form-control" [formControl]="queryField" id="keyword" placeholder="search attributes..." autofocus/>
 				</div>
 				<ul class="filter-select">
-					<li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result.code)">
-						Code: {{result.code}} - Name: {{result.name}}</li>
+					<li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result)">
+						<label class="label-info">Code:</label> {{result.code}} - <label class="label-info">Name:</label> {{result.name}}</li>
 				</ul>
 			</section>
 			<div *ngIf="this.filter.attributes.length === 0"><span>Search for attributes that you want to filter</span></div>
 			<br/>
-			<div *ngFor="let item of filter.attributes">
-				<label for="{{item.code}}">{{item.code}}</label>
+			<div *ngFor="let attribute of filter.attributes">
 				<div class="form-group">
+					<label for="{{attribute.code}}">{{attribute.name}}</label>
 					<div class="input-group">
-						<input type="text" class="form-control" [(ngModel)]="item.value" name="{{item.code}}">
+						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.code}}">
 						<div class="input-group-append">
-							<button class="btn btn-danger float-right fa fa-minus" (click)="deleteAttribute(item.code)"></button>
+							<button class="btn btn-danger float-right fa fa-minus" (click)="deleteAttribute(attribute)"></button>
 						</div>
 					</div>
 				</div>
@@ -46,6 +46,8 @@ export class ColumnFilterAttributesComponent implements OnInit {
 
     @Input() filter: any;
 
+    @Output() onAdd = new EventEmitter();
+    @Output() onDelete = new EventEmitter();
     @Output() onApply = new EventEmitter();
     @Output() onReset = new EventEmitter();
 
@@ -66,17 +68,19 @@ export class ColumnFilterAttributesComponent implements OnInit {
             });
     }
 
-    addAttribute(code) {
+    addAttribute(attribute) {
         // Reset query field value
         this.queryField.setValue('');
         // Do not add attribute if it's already in the list
-        if (!this.filter.attributes.some(e => e.code === code)) {
-            this.filter.attributes.push({ code: code, value: '' });
+        if (!this.filter.attributes.some(e => e.code === attribute.code)) {
+            this.filter.attributes.push({ ...attribute, value: '' });
         }
+        this.onAdd.emit(attribute);
     }
 
-    deleteAttribute(code) {
-        this.filter.attributes = this.filter.attributes.filter(e => e.code !== code);
+    deleteAttribute(attribute) {
+        this.filter.attributes = this.filter.attributes.filter(e => e.code !== attribute.code);
+        this.onDelete.emit(attribute);
     }
 
     apply(form) {

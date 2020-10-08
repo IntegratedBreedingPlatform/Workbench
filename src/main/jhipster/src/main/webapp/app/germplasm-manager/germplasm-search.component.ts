@@ -308,6 +308,15 @@ export class GermplasmSearchComponent implements OnInit {
         this.loadAll(this.request);
     }
 
+    toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
+        if (isVisible) {
+            this.request.addedColumnsPropertyIds.push(columnPropertyId);
+        } else {
+            this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== columnPropertyId);
+        }
+        this.resetTable();
+    }
+
     private onSuccess(data, headers) {
         if (headers.get('X-Filtered-Count') < 5000) {
             this.totalItems = headers.get('X-Filtered-Count');

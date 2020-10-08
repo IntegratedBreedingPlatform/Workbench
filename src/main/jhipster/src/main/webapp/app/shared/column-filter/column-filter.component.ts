@@ -86,6 +86,12 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     static resetAttributesFilter(filter, request) {
         request[filter.key] = undefined;
+
+        // Remove all attributes column
+        for (var attribute of filter.attributes) {
+            request.addedColumnsPropertyIds.pop(attribute.code);
+        }
+
         filter.attributes = [];
     }
 
@@ -355,6 +361,14 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.request[key] = filter.value;
         this.resultSearch.searchResultDbId = '';
         this.apply(filter);
+    }
+
+    addAttributesColumn(attribute) {
+        this.request.addedColumnsPropertyIds.push(attribute.code);
+    }
+
+    removeAttributesColumn(attribute) {
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
     }
 }
 

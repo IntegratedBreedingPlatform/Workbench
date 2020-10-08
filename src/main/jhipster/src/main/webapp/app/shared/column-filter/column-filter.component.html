@@ -80,7 +80,7 @@
                         <jhi-column-filter-attributes *ngIf="filter.type === FILTER_TYPES.ATTRIBUTES"
                                                       [filter]="filter"
                                                       (onApply)="updateFilter(filter)"
-                                                      (onReset)="reset(filter)">
+                                                      (onReset)="reset(filter)" (onAdd)="addAttributesColumn($event)" (onDelete)="removeAttributesColumn($event)">
                         </jhi-column-filter-attributes>
                         <!-- TODO dynamic custom popover filter -->
                     </ng-template>
