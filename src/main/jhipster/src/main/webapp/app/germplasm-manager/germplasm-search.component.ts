@@ -303,6 +303,8 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     resetTable() {
+        this.page = 1;
+        this.previousPage = 1;
         this.allItemsPerPages = false;
         this.selectedItems = [];
         this.loadAll(this.request);
