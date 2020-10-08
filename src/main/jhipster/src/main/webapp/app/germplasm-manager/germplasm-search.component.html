@@ -81,6 +81,9 @@
 				<th jhiSortBy="groupSourcePreferredName" [hidden]="hiddenColumns['groupSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupSourcePreferredName">GROUP SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="immediateSourceGID" [hidden]="hiddenColumns['immediateSourceGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourceGID">IMMEDIATE SOURCE GID</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="immediateSourcePreferredName" [hidden]="hiddenColumns['immediateSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourcePreferredName">IMMEDIATE SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<ng-container *ngIf="germplasmList[0]">
+					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue"><span>{{entry.key}}</span></th>
+				</ng-container>
 			</tr>
 			</thead>
 			<tbody>
@@ -110,6 +113,7 @@
 				<td [hidden]="hiddenColumns['groupSourcePreferredName']">{{germplasm.groupSourcePreferredName}}</td>
 				<td [hidden]="hiddenColumns['immediateSourceGID']">{{germplasm.immediateSourceGID}}</td>
 				<td [hidden]="hiddenColumns['immediateSourcePreferredName']">{{germplasm.immediateSourcePreferredName}}</td>
+				<td *ngFor="let entry of germplasm.attributeTypesValueMap | keyvalue">{{entry.value}}</td>
 			</tr>
 			</tbody>
 		</table>

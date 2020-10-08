@@ -32,6 +32,7 @@ import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-fil
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
 import { ErrorComponent } from '../layouts';
 import { AttributesService } from './attributes/service/attributes.service';
+import { KeyValuePipe } from './util/keyvalue.pipe';
 
 @NgModule({
     imports: [
@@ -56,10 +57,12 @@ import { AttributesService } from './attributes/service/attributes.service';
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
-        ColumnFilterAttributesComponent
+        ColumnFilterAttributesComponent,
+        KeyValuePipe
     ],
     providers: [
         DatePipe,
+        KeyValuePipe,
         ModalService,
         Principal,
         AccountService,
@@ -82,6 +85,7 @@ import { AttributesService } from './attributes/service/attributes.service';
         TreeModule,
         DragDropModule,
         DatePipe,
+        KeyValuePipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
