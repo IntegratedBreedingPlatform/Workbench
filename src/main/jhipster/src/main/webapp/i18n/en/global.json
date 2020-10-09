@@ -85,7 +85,8 @@
         "ribbon": {
             "dev":"Development"
         },
-        "item-count": "Showing {{first}} - {{second}} of {{total}} items."
+        "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
+        "clear-sort": "Clear sort"
     },
     "entity": {
         "action": {

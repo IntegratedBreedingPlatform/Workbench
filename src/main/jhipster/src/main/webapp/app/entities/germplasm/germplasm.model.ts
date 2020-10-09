@@ -5,7 +5,6 @@ export class Germplasm {
         public names?: number,
         public methodName?: number,
         public locationName?: string,
-        public stockIds?: string,
         public availableBalance?: string,
         public unit?: string,
         public lotCount?: number,

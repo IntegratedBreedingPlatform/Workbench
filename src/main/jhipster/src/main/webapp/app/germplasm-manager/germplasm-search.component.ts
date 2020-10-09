@@ -13,6 +13,9 @@ import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-
 import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { PedigreeType } from '../shared/column-filter/column-filter-pedigree-options-component';
+import { SORT_PREDICATE_NONE } from './germplasm-search-resolve-paging-params';
+
+declare var $: any;
 
 @Component({
     selector: 'jhi-germplasm-search',
@@ -200,6 +203,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private jhiAlertService: JhiAlertService,
                 private modal: NgbModal) {
 
+        this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
             this.page = data.pagingParams.page;
             this.previousPage = data.pagingParams.page;
@@ -217,11 +221,11 @@ export class GermplasmSearchComponent implements OnInit {
 
     loadAll(request: GermplasmSearchRequest) {
         this.isLoading = true;
-        this.germplasmService.searchGermplasm(request, {
+        this.germplasmService.searchGermplasm(request,
+            this.addSortParam({
                 page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            }
+                size: this.itemsPerPage
+            })
         ).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
@@ -241,23 +245,12 @@ export class GermplasmSearchComponent implements OnInit {
     transition() {
         this.router.navigate(['./'], {
             queryParams:
-                {
+                this.addSortParam({
                     page: this.page,
                     size: this.itemsPerPage,
                     search: this.currentSearch,
-                    sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-                }, relativeTo: this.activatedRoute
+                }), relativeTo: this.activatedRoute
         });
-        this.loadAll(this.request);
-    }
-
-    clear() {
-        this.page = 0;
-        this.currentSearch = '';
-        this.router.navigate(['./', {
-            page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
-        }], { relativeTo: this.activatedRoute });
         this.loadAll(this.request);
     }
 
@@ -266,7 +259,6 @@ export class GermplasmSearchComponent implements OnInit {
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns['groupId'] = true;
-        this.hiddenColumns['stockIds'] = true;
         this.hiddenColumns['unit'] = true;
         this.hiddenColumns['germplasmDate'] = true;
         this.hiddenColumns['methodCode'] = true;
@@ -284,10 +276,36 @@ export class GermplasmSearchComponent implements OnInit {
         this.hiddenColumns['maleParentPreferredName'] = true;
     }
 
-    sort() {
-        const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        return result;
+    addSortParam(params) {
+        let sort = this.predicate && this.predicate !== SORT_PREDICATE_NONE ? {
+            sort: [this.getSort()]
+        } : {};
+        return Object.assign(params, sort);
     }
+
+    getSort() {
+        if (!this.predicate) {
+            return '';
+        }
+        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
+    }
+
+    clearSort($event) {
+        $event.preventDefault();
+        this.predicate = SORT_PREDICATE_NONE;
+        this.reverse = '';
+        $('.fa-sort').removeClass('fa-sort-up fa-sort-down')
+        this.transition();
+    }
+
+    /**
+     * Sorting limits the response size, so it's important to reset
+     */
+    sort() {
+        this.page = 1;
+        this.transition();
+    }
+
 
     trackId(index: number, item: Germplasm) {
         return item.gid;
@@ -320,7 +338,8 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        if (headers.get('X-Filtered-Count') < 5000) {
+        // filtering or sorting will limit the response
+        if (headers.get('X-Filtered-Count') < 5000 || this.predicate !== SORT_PREDICATE_NONE) {
             this.totalItems = headers.get('X-Filtered-Count');
         } else {
             this.totalItems = headers.get('X-Total-Count');

@@ -14,7 +14,6 @@
 					<jhi-col-vis-button [colName]="'groupId'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupId"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'names'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.names"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'methodName'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'stockIds'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.stockIds"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'availableBalance'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.availableBalance"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'unit'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.unit"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'lotCount'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.lotCount"></span></jhi-col-vis-button>
@@ -47,6 +46,9 @@
 						Select all pages
 					</label>
 				</div>
+				<div style="margin-left: 10px;">
+					<a href (click)="clearSort($event)" jhiTranslate="global.clear-sort"></a>
+				</div>
 				<span *ngIf="isLoading" class="throbber throbber-2x"></span>
 			</div>
 		</div>
@@ -55,32 +57,31 @@
 	<div class="table-responsive" *ngIf="germplasmList">
 		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
 			<thead>
-			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
 				<th *ngIf="!allItemsPerPages"><input type="checkbox" tooltip="select current page" [checked]="isAllPageSelected()" (click)="onSelectAllPage()" [title]="'select current page'"></th>
-				<th jhiSortBy="gid" [hidden]="hiddenColumns['gid']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.gid">GID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="groupId" [hidden]="hiddenColumns['groupId']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupId">GROUP ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="names" [hidden]="hiddenColumns['names']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.names">NAMES</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="stockIds" [hidden]="hiddenColumns['stockIds']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.stockIds">STOCKIDS</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="availableBalance" [hidden]="hiddenColumns['availableBalance']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.availableBalance">AVAILABLE BALANCE</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="unit" [hidden]="hiddenColumns['unit']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.unit">UNIT</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="lotCount" [hidden]="hiddenColumns['lotCount']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.lotCount">LOTS</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="pedigreeString" [hidden]="hiddenColumns['pedigreeString']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.pedigreeString">CROSS</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="germplasmPeferredId" [hidden]="hiddenColumns['germplasmPeferredId']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmPeferredId">PREFERRED ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="germplasmPeferredName" [hidden]="hiddenColumns['germplasmPeferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmPeferredName">PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="germplasmDate" [hidden]="hiddenColumns['germplasmDate']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmDate">GERMPLASM DATE</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="locationName" [hidden]="hiddenColumns['locationName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.locationName">LOCATION NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="methodName" [hidden]="hiddenColumns['methodName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodName">METHOD NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="methodCode" [hidden]="hiddenColumns['methodCode']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodCode">Units</span>METHOD CODE<span class="fa fa-sort"></span></th>
-				<th jhiSortBy="methodNumber" [hidden]="hiddenColumns['methodNumber']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodNumber">METHOD NUMBER</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="methodGroup" [hidden]="hiddenColumns['methodGroup']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodGroup">METHOD GROUP</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="femaleParentGID" [hidden]="hiddenColumns['femaleParentGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.femaleParentGID">FEMALE PARENT PREFERRED ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="femaleParentPreferredName" [hidden]="hiddenColumns['femaleParentPreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.femaleParentPreferredName">FEMALE PARENT PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="maleParentGID" [hidden]="hiddenColumns['maleParentGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.maleParentGID">MALE PARENT PREFERRED ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="maleParentPreferredName" [hidden]="hiddenColumns['maleParentPreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.maleParentPreferredName">MALE PARENT PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="groupSourceGID" [hidden]="hiddenColumns['groupSourceGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupSourceGID">GROUP SOURCE ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="groupSourcePreferredName" [hidden]="hiddenColumns['groupSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupSourcePreferredName">GROUP SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="immediateSourceGID" [hidden]="hiddenColumns['immediateSourceGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourceGID">IMMEDIATE SOURCE GID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="immediateSourcePreferredName" [hidden]="hiddenColumns['immediateSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourcePreferredName">IMMEDIATE SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="GID" [hidden]="hiddenColumns['gid']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.gid">GID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="GROUP ID" [hidden]="hiddenColumns['groupId']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupId">GROUP ID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="NAMES" [hidden]="hiddenColumns['names']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.names">NAMES</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="AVAILABLE" [hidden]="hiddenColumns['availableBalance']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.availableBalance">AVAILABLE BALANCE</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="LOT_UNITS" [hidden]="hiddenColumns['unit']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.unit">UNIT</span> <span class="fa fa-sort"></span></th>
+				<th [hidden]="hiddenColumns['lotCount']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.lotCount">LOTS</span></th>
+				<th [hidden]="hiddenColumns['pedigreeString']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.pedigreeString">CROSS</span></th>
+				<th jhiSortBy="PREFERRED ID" [hidden]="hiddenColumns['germplasmPeferredId']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmPeferredId">PREFERRED ID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="PREFERRED NAME" [hidden]="hiddenColumns['germplasmPeferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmPeferredName">PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="GERMPLASM DATE" [hidden]="hiddenColumns['germplasmDate']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmDate">GERMPLASM DATE</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="LOCATIONS" [hidden]="hiddenColumns['locationName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.locationName">LOCATION NAME</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="METHOD NAME" [hidden]="hiddenColumns['methodName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodName">METHOD NAME</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="METHOD ABBREV" [hidden]="hiddenColumns['methodCode']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodCode">METHOD CODE</span><span class="fa fa-sort"></span></th>
+				<th jhiSortBy="METHOD NUMBER" [hidden]="hiddenColumns['methodNumber']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodNumber">METHOD NUMBER</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="METHOD GROUP" [hidden]="hiddenColumns['methodGroup']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodGroup">METHOD GROUP</span> <span class="fa fa-sort"></span></th>
+				<th [hidden]="hiddenColumns['femaleParentGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.femaleParentGID">FEMALE PARENT PREFERRED ID</span></th>
+				<th [hidden]="hiddenColumns['femaleParentPreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.femaleParentPreferredName">FEMALE PARENT PREFERRED NAME</span></th>
+				<th [hidden]="hiddenColumns['maleParentGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.maleParentGID">MALE PARENT PREFERRED ID</span></th>
+				<th [hidden]="hiddenColumns['maleParentPreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.maleParentPreferredName">MALE PARENT PREFERRED NAME</span></th>
+				<th jhiSortBy="GROUP SOURCE GID" [hidden]="hiddenColumns['groupSourceGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupSourceGID">GROUP SOURCE ID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="GROUP SOURCE" [hidden]="hiddenColumns['groupSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.groupSourcePreferredName">GROUP SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="IMMEDIATE SOURCE GID" [hidden]="hiddenColumns['immediateSourceGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourceGID">IMMEDIATE SOURCE GID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="IMMEDIATE SOURCE" [hidden]="hiddenColumns['immediateSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourcePreferredName">IMMEDIATE SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
 				<ng-container *ngIf="germplasmList[0]">
 					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue"><span>{{entry.key}}</span></th>
 				</ng-container>
@@ -92,7 +93,6 @@
 				<td [hidden]="hiddenColumns['gid']">{{germplasm.gid}}</td>
 				<td [hidden]="hiddenColumns['groupId']">{{germplasm.groupId}}</td>
 				<td [hidden]="hiddenColumns['names']">{{germplasm.names}}</td>
-				<td [hidden]="hiddenColumns['stockIds']">{{germplasm.stockIds}}</td>
 				<td [hidden]="hiddenColumns['availableBalance']">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns['unit']">{{germplasm.unit}}</td>
 				<td [hidden]="hiddenColumns['lotCount']">{{germplasm.lotCount}}</td>
