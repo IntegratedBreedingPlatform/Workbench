@@ -133,5 +133,8 @@
         "custom": "{{ param }}"
     },
     "footer": "This is your footer",
-    "no.data": "No records found"
+    "no.data": "No records found",
+    "germplasm.details": {
+        "title": "Germplasm Details"
+    }
 }

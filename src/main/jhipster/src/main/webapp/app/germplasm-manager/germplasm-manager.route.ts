@@ -4,8 +4,10 @@ import { RouteAccessService } from '../shared';
 import { GermplasmManagerComponent } from './germplasm-manager.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
+import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
+    ...germplasmRoutes,
     {
         path: 'lot-creation-dialog',
         component: LotCreationDialogComponent,

@@ -33,6 +33,7 @@ import { ColumnFilterAttributesComponent } from './column-filter/column-filter-a
 import { ErrorComponent } from '../layouts';
 import { AttributesService } from './attributes/service/attributes.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
+import { PopupService } from './modal/popup.service';
 
 @NgModule({
     imports: [
@@ -72,7 +73,8 @@ import { KeyValuePipe } from './util/keyvalue.pipe';
         ParamContext,
         HelpService,
         GermplasmService,
-        AttributesService
+        AttributesService,
+        PopupService
     ],
     entryComponents: [
         ModalComponent,

@@ -90,9 +90,9 @@
 			<tbody>
 			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId">
 				<td *ngIf="!allItemsPerPages"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
-				<td [hidden]="hiddenColumns['gid']">{{germplasm.gid}}</td>
-				<td [hidden]="hiddenColumns['groupId']">{{germplasm.groupId}}</td>
-				<td [hidden]="hiddenColumns['names']">{{germplasm.names}}</td>
+				<td [hidden]="hiddenColumns['gid']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
+				<td [hidden]="hiddenColumns['groupId']"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
+				<td [hidden]="hiddenColumns['names']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
 				<td [hidden]="hiddenColumns['availableBalance']">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns['unit']">{{germplasm.unit}}</td>
 				<td [hidden]="hiddenColumns['lotCount']">{{germplasm.lotCount}}</td>
