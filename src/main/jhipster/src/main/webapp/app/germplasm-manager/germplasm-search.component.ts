@@ -284,7 +284,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     getSort() {
-        if (!this.predicate) {
+        if (!this.predicate || !this.request.addedColumnsPropertyIds.some(e => e === this.predicate)) {
             return '';
         }
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];

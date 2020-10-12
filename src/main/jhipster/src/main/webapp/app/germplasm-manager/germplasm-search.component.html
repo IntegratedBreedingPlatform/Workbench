@@ -20,7 +20,7 @@
 					<jhi-col-vis-button [colName]="'pedigreeString'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.pedigreeString"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'germplasmPeferredId'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['germplasmPeferredId'], 'PREFERRED ID')"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmPeferredId"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'germplasmPeferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['germplasmPeferredName'], 'PREFERRED NAME')"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmPeferredName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'germplasmDate'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmDate"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="'germplasmDate'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['germplasmDate'], 'GERMPLASM DATE')"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.germplasmDate"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'locationName'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.locationName"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'methodCode'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['methodCode'], 'METHOD ABBREV')"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodCode"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="'methodNumber'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['methodNumber'], 'METHOD NUMBER')"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.methodNumber"></span></jhi-col-vis-button>
@@ -83,7 +83,7 @@
 				<th jhiSortBy="IMMEDIATE SOURCE GID" [hidden]="hiddenColumns['immediateSourceGID']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourceGID">IMMEDIATE SOURCE GID</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="IMMEDIATE SOURCE" [hidden]="hiddenColumns['immediateSourcePreferredName']"><span jhiTranslate="bmsjHipsterApp.germplasmSearch.column.immediateSourcePreferredName">IMMEDIATE SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
 				<ng-container *ngIf="germplasmList[0]">
-					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue"><span>{{entry.key}}</span></th>
+					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue" jhiSortBy="{{entry.key}}"><span>{{entry.key}}</span><span class="fa fa-sort"></span></th>
 				</ng-container>
 			</tr>
 			</thead>

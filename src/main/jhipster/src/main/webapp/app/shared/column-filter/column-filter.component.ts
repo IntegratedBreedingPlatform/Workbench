@@ -364,7 +364,9 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     addAttributesColumn(attribute) {
-        this.request.addedColumnsPropertyIds.push(attribute.code);
+        if (!this.request.addedColumnsPropertyIds.some(e => e === attribute.code)) {
+            this.request.addedColumnsPropertyIds.push(attribute.code);
+        }
     }
 
     removeAttributesColumn(attribute) {
