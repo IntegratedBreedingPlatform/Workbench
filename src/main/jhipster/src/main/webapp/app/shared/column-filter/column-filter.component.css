@@ -8,6 +8,7 @@ button.calendar, button.calendar:active {
     background-position: center;
 }
 
+/* Filter attributes */
 .filter-wrapper,
 .keyword-wrapper {
     display: flex;
@@ -27,7 +28,6 @@ button.calendar, button.calendar:active {
 #keyword {
     border: 1px solid #ccc;
     padding: 10px;
-    font: 1.5em 'Arimo', sans-serif;
     width: 100%;
     outline: none;
     transition: border 0.5s ease-in-out
@@ -54,14 +54,6 @@ button.calendar, button.calendar:active {
     z-index: 100000;
 }
 
-.tags {
-    font-size: 12px;
-    font-style: italic;
-    color: #c6c6c6;
-    margin-right: 10px;
-    position: relative;
-    top: -10px;
-}
 .filter-select-list:hover .tags {
     color: #fff;
 }
@@ -71,24 +63,10 @@ button.calendar, button.calendar:active {
     padding: 5px 10px;
 }
 
-.artist-name {
-    display: inline-block;
-    position: absolute;
-}
-
 .filter-select-list:hover {
     background: 	#C0C0C0;
     color: #fff
 }
-
-.list-highlight,
-.list-highlight:hover {
-    background: rgb(55, 55, 55);
-    color: #fff
-}
-
-
-/*some simple responsive designs*/
 
 @media only screen and (max-width: 768px) {
     .filter-select,

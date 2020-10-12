@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 			<div class="form-check">
 				<input type="checkbox" class="form-check-input" [(ngModel)]="filter.value" name="{{filter.key}}">
 				<label class="form-check-label" for="{{filter.key}}">
-					{{filter.name}} {{filter.value}}
+					{{filter.name}}
 				</label>
 			</div>
 			<br/>

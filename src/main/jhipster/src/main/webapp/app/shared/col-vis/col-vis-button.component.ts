@@ -4,9 +4,14 @@ import { EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'jhi-col-vis-button',
+    styles: [`.text-wrap {
+        white-space:normal !important;
+        word-wrap: break-word;
+        word-break: normal;
+    }`],
     template: `
         <button (click)="toggle()"
-                class="btn btn-light"
+                class="btn btn-light text-wrap"
                 [class.active]="!hiddenColumns[colName]">
             <ng-content></ng-content>
         </button>
