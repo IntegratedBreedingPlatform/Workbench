@@ -26,7 +26,7 @@ import { AttributesService } from '../attributes/service/attributes.service';
 					<div class="input-group">
 						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.code}}">
 						<div class="input-group-append">
-							<button class="btn btn-danger float-right fa fa-minus" (click)="deleteAttribute(attribute)"></button>
+							<button class="btn btn-default float-right fa fa-minus" (click)="deleteAttribute(attribute)"></button>
 						</div>
 					</div>
 				</div>
