@@ -28,7 +28,9 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
         path: 'germplasm-manager',
         component: GermplasmManagerComponent,
-        data: {},
+        data: {
+            pageTitle: 'germplasm-manager.title'
+        },
         children: [
             {
                 path: '',
