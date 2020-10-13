@@ -27,8 +27,9 @@ export class LocationService {
     queryLocationsByType(locationTypes, favoriteLocation): Observable<LocationModel[]> {
         let params = new HttpParams()
             .set('locationTypes', locationTypes)
-            .set('favoriteLocations', favoriteLocation);
-        return this.http.get<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/locations`,
+            .set('favoriteLocations', favoriteLocation)
+            .set('programUUID', this.context.programUUID);
+        return this.http.get<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations`,
             { params, observe: 'response' }).pipe(map((res: HttpResponse<LocationModel[]>) => res.body));
     }
 }
