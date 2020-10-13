@@ -259,6 +259,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     ngOnInit() {
         this.registerChangeInGermplasm();
+        this.registerClearSort();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns['groupId'] = true;
@@ -287,18 +288,23 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     getSort() {
-        if (!this.predicate || !this.request.addedColumnsPropertyIds.some(e => e === this.predicate)) {
+        if (!this.predicate) {
             return '';
         }
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
-    clearSort($event) {
-        $event.preventDefault();
+    clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down')
         this.transition();
+    }
+
+
+    onClearSort($event) {
+        $event.preventDefault();
+        this.clearSort();
     }
 
     /**
@@ -320,6 +326,12 @@ export class GermplasmSearchComponent implements OnInit {
                 this.filterBy(event.content.filterBy);
             }
             this.resetTable();
+        });
+    }
+
+    registerClearSort() {
+        this.eventSubscriber = this.eventManager.subscribe('clearSort', (event) => {
+            this.clearSort();
         });
     }
 

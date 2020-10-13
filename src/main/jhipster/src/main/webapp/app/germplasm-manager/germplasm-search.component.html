@@ -47,7 +47,7 @@
 					</label>
 				</div>
 				<div style="margin-left: 10px;">
-					<a href (click)="clearSort($event)" jhiTranslate="global.clear-sort"></a>
+					<a href (click)="onClearSort($event)" jhiTranslate="global.clear-sort"></a>
 				</div>
 				<span *ngIf="isLoading" class="throbber throbber-2x"></span>
 			</div>
@@ -83,7 +83,7 @@
 				<th jhiSortBy="IMMEDIATE SOURCE GID" [hidden]="hiddenColumns['immediateSourceGID']"><span jhiTranslate="search-germplasm.column.immediateSourceGID">IMMEDIATE SOURCE GID</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="IMMEDIATE SOURCE" [hidden]="hiddenColumns['immediateSourcePreferredName']"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName">IMMEDIATE SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
 				<ng-container *ngIf="germplasmList[0]">
-					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue" jhiSortBy="entry.key"><span>{{entry.key}}</span><span class="fa fa-sort"></span></th>
+					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue" jhiSortBy="{{entry.key}}"><span>{{entry.key}}</span><span class="fa fa-sort"></span></th>
 				</ng-container>
 			</tr>
 			</thead>
