@@ -33,5 +33,11 @@
             "maleParentPreferredName": "MALE PARENT PREFERRED NAME",
             "pedigreeString": "CROSS"
         }
+    },
+    "breeding-method": {
+        "title": "Breeding Method"
+    },
+    "breeding-location": {
+        "title": "Breeding Location"
     }
 }

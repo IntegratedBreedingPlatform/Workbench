@@ -14,6 +14,8 @@ import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { PedigreeType } from '../shared/column-filter/column-filter-pedigree-options-component';
 import { SORT_PREDICATE_NONE } from './germplasm-search-resolve-paging-params';
+import { PopupService } from '../shared/modal/popup.service';
+import { BreedingMethodComponent } from '../entities/breeding-method/breeding-method.component';
 
 declare var $: any;
 
@@ -201,7 +203,8 @@ export class GermplasmSearchComponent implements OnInit {
                 private germplasmService: GermplasmService,
                 private router: Router,
                 private jhiAlertService: JhiAlertService,
-                private modal: NgbModal) {
+                private modal: NgbModal,
+                private popupService: PopupService) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {

@@ -100,8 +100,8 @@
 				<td [hidden]="hiddenColumns['germplasmPeferredId']">{{germplasm.germplasmPeferredId}}</td>
 				<td [hidden]="hiddenColumns['germplasmPeferredName']">{{germplasm.germplasmPeferredName}}</td>
 				<td [hidden]="hiddenColumns['germplasmDate']">{{germplasm.germplasmDate}}</td>
-				<td [hidden]="hiddenColumns['locationName']">{{germplasm.locationName}}</td>
-				<td [hidden]="hiddenColumns['methodName']">{{germplasm.methodName}}</td>
+				<td [hidden]="hiddenColumns['locationName']"><a [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]">{{germplasm.locationName}}</a></td>
+				<td [hidden]="hiddenColumns['methodName']"><a [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]">{{germplasm.methodName}}</a></td>
 				<td [hidden]="hiddenColumns['methodCode']">{{germplasm.methodCode}}</td>
 				<td [hidden]="hiddenColumns['methodNumber']">{{germplasm.methodNumber}}</td>
 				<td [hidden]="hiddenColumns['methodGroup']">{{germplasm.methodGroup}}</td>

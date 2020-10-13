@@ -24,7 +24,9 @@ export class Germplasm {
         public maleParentPreferredName?: string,
         public pedigreeString?: string,
         public attributeTypesValueMap?: any,
-        public nameTypesValueMap?: any
+        public nameTypesValueMap?: any,
+        public locationId?: number,
+        public breedingMethodId? : number
     ) {
     }
 }

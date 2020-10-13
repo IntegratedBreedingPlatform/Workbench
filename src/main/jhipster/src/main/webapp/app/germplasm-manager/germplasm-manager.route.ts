@@ -6,9 +6,11 @@ import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
 import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
 import { SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
+import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...germplasmRoutes,
+    ...breedingMethodRoutes,
     {
         path: 'lot-creation-dialog',
         component: LotCreationDialogComponent,
@@ -42,7 +44,7 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
                 path: 'germplasm-search',
                 component: GermplasmSearchComponent,
                 data: { authorities: SEARCH_GERMPLASM_PERMISSIONS },
-                canActivate: [RouteAccessService],
+                canActivate: [],
                 resolve: {
                     'pagingParams': GermplasmSearchResolvePagingParams
                 },

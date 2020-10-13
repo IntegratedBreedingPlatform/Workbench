@@ -30,10 +30,11 @@ import { ColumnFilterBooleanComponent } from './column-filter/column-filter-bool
 import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
-import { ErrorComponent } from '../layouts';
 import { AttributesService } from './attributes/service/attributes.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
+import { LocationService } from './location/service/location.service';
+import { BreedingMethodService } from './breeding-method/service/breeding-method.service';
 
 @NgModule({
     imports: [
@@ -74,6 +75,8 @@ import { PopupService } from './modal/popup.service';
         HelpService,
         GermplasmService,
         AttributesService,
+        BreedingMethodService,
+        LocationService,
         PopupService
     ],
     entryComponents: [

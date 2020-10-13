@@ -1,13 +1,18 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
 import { BmsjHipsterSampleModule } from './sample/sample.module';
 import { GermplasmModule } from './germplasm/germplasm.module';
+import { BreedingMethodModule } from './breeding-method/breeding-method.module';
+import { LocationModule } from './location/location.module';
+
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
     imports: [
         BmsjHipsterSampleModule,
-        GermplasmModule
+        GermplasmModule,
+        BreedingMethodModule,
+        LocationModule
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
@@ -15,4 +20,5 @@ import { GermplasmModule } from './germplasm/germplasm.module';
     providers: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class BmsjHipsterEntityModule {}
+export class BmsjHipsterEntityModule {
+}

@@ -1,0 +1,51 @@
+<div class="container">
+	<div class="modal-header">
+		<h4 class="modal-title font-weight-bold">
+			<span jhiTranslate="breeding-method.title"></span>
+		</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+				(click)="clear()">&times;
+		</button>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm" class="form-horizontal">
+			<div class="form-group row">
+				<label for="breedingMethodName" class="col-sm-4 control-label control-label-left">Breeding Method Name</label>
+				<input type="text" class="form-control col-sm-6" name="breedingMethodName" [(ngModel)]="breedingMethod.name" readonly/>
+			</div>
+			<div class="form-group row">
+				<label for="breedingMethodCode" class="col-sm-4 control-label control-label-left">Code</label>
+				<input type="text" class="form-control col-sm-6" name="breedingMethodCode" [(ngModel)]="breedingMethod.code" readonly/>
+			</div>
+			<div class="form-group row">
+				<label for="description" class="col-sm-4 control-label control-label-left">Description</label>
+				<textarea class="form-control col-sm-6" rows="3" name="description" [(ngModel)]="breedingMethod.description" readonly></textarea>
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-4 control-label control-label-left">Generation Advancement Type</label>
+				<select class="form-control col-sm-6" name="type" [(ngModel)]="breedingMethod.type" readonly>
+					<option *ngFor="let breedingMethodType of breedingMethodTypes" [value]="breedingMethodType.code">
+						<label>{{breedingMethodType.name}}</label>
+					</option>
+				</select>
+			</div>
+			<div class="form-group row">
+				<label for="system" class="col-sm-4 control-label control-label-left">Crop Reproductive System</label>
+				<select class="form-control col-sm-6" name="system" [(ngModel)]="breedingMethod.group" readonly>
+					<option *ngFor="let breedingMethodGroup of breedingMethodGroups" [value]="breedingMethodGroup.code">
+						<label>{{breedingMethodGroup.name}}</label>
+					</option>
+				</select>
+
+			</div>
+			<div class="form-group row">
+				<label for="system" class="col-sm-4 control-label control-label-left" readonly>Class</label>
+				<select class="form-control col-sm-6" name="system" [(ngModel)]="breedingMethod.methodClass" readonly>
+					<option *ngFor="let breedingMethodClass of breedingMethodClasses" [value]="breedingMethodClass.id">
+						<label>{{breedingMethodClass.name}}</label>
+					</option>
+				</select>
+			</div>
+		</form>
+	</div>
+</div>
