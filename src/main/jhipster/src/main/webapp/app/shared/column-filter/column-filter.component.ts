@@ -138,10 +138,23 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return Promise.resolve((isNumeric(filter.min) ? filter.min : '')
                     + ' - '
                     + (isNumeric(filter.max) ? filter.max : ''));
-            case FilterType.TEXT:
             case FilterType.TEXT_WITH_MATCH_OPTIONS:
+                if (filter.matchType && filter.value) {
+                    return Promise.resolve(`${filter.matchType} : ${filter.value}`);
+                }
+                return Promise.resolve();
             case FilterType.PEDIGREE_OPTIONS:
+                if (filter.value) {
+                    return Promise.resolve(`${filter.pedigreeType} (Level ${filter.value})`);
+                }
+                return Promise.resolve();
             case FilterType.ATTRIBUTES:
+                if (filter.attributes && filter.attributes.length) {
+                    return Promise.resolve(filter.attributes.map((attribute) => `${attribute.code} : ${attribute.value}`)
+                        .join(', '));
+                }
+                return Promise.resolve();
+            case FilterType.TEXT:
             case FilterType.LIST:
             case FilterType.BOOLEAN:
             case FilterType.MODAL:
