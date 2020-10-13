@@ -109,7 +109,7 @@ export class GermplasmSearchComponent implements OnInit {
                     });
                 }
             },
-            { key: 'stockID', name: 'Stock ID', placeholder: 'Starts with', type: FilterType.TEXT },
+            { key: 'stockId', name: 'Stock ID', placeholder: 'Starts with', type: FilterType.TEXT },
             { key: 'locationOfOrigin', name: 'Location of Origin', placeholder: 'Contains Text', type: FilterType.TEXT },
             { key: 'locationOfUse', name: 'Location of Use', placeholder: 'Contains Text', type: FilterType.TEXT },
             {
