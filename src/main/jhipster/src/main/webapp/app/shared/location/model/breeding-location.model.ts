@@ -8,7 +8,8 @@ export class BreedingLocationModel {
         public longitude?: number,
         public altitude?: number,
         public countryId?: number,
-        public provinceId?: number
+        public provinceId?: number,
+        public programUUID?: string
     ) {
     }
 }

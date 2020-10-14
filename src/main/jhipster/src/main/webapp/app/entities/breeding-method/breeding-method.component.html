@@ -11,19 +11,20 @@
 		<form name="form" #f="ngForm" class="form-horizontal">
 			<div class="form-group row">
 				<label for="breedingMethodName" class="col-sm-4 control-label control-label-left">Breeding Method Name</label>
-				<input type="text" class="form-control col-sm-6" name="breedingMethodName" [(ngModel)]="breedingMethod.name" readonly/>
+				<input type="text" class="form-control col-sm-6" name="breedingMethodName" [(ngModel)]="breedingMethod.name" [disabled]="!editable"/>
 			</div>
 			<div class="form-group row">
 				<label for="breedingMethodCode" class="col-sm-4 control-label control-label-left">Code</label>
-				<input type="text" class="form-control col-sm-6" name="breedingMethodCode" [(ngModel)]="breedingMethod.code" readonly/>
+				<input type="text" class="form-control col-sm-6" name="breedingMethodCode" [(ngModel)]="breedingMethod.code" [disabled]="!editable"/>
 			</div>
 			<div class="form-group row">
 				<label for="description" class="col-sm-4 control-label control-label-left">Description</label>
-				<textarea class="form-control col-sm-6" rows="3" name="description" [(ngModel)]="breedingMethod.description" readonly></textarea>
+				<textarea class="form-control col-sm-6" rows="3" name="description" [(ngModel)]="breedingMethod.description" [disabled]="!editable"></textarea>
 			</div>
 			<div class="form-group row">
 				<label for="type" class="col-sm-4 control-label control-label-left">Generation Advancement Type</label>
-				<select class="form-control col-sm-6" name="type" [(ngModel)]="breedingMethod.type" readonly>
+				<input *ngIf="!editable" type="text" class="form-control col-sm-6" name="type" [value]="selectedBreedingMethodType?.name" disabled/>
+				<select *ngIf="editable" class="form-control col-sm-6" name="type" [(ngModel)]="breedingMethod.type" readonly>
 					<option *ngFor="let breedingMethodType of breedingMethodTypes" [value]="breedingMethodType.code">
 						<label>{{breedingMethodType.name}}</label>
 					</option>
@@ -31,7 +32,8 @@
 			</div>
 			<div class="form-group row">
 				<label for="system" class="col-sm-4 control-label control-label-left">Crop Reproductive System</label>
-				<select class="form-control col-sm-6" name="system" [(ngModel)]="breedingMethod.group" readonly>
+				<input *ngIf="!editable" type="text" class="form-control col-sm-6" name="system" [value]="selectedBreedingMethodGroup?.name" disabled/>
+				<select *ngIf="editable" class="form-control col-sm-6" name="system" [(ngModel)]="breedingMethod.group" readonly>
 					<option *ngFor="let breedingMethodGroup of breedingMethodGroups" [value]="breedingMethodGroup.code">
 						<label>{{breedingMethodGroup.name}}</label>
 					</option>
@@ -39,8 +41,9 @@
 
 			</div>
 			<div class="form-group row">
-				<label for="system" class="col-sm-4 control-label control-label-left" readonly>Class</label>
-				<select class="form-control col-sm-6" name="system" [(ngModel)]="breedingMethod.methodClass" readonly>
+				<label for="class" class="col-sm-4 control-label control-label-left" readonly>Class</label>
+				<input *ngIf="!editable" type="text" class="form-control col-sm-6" name="class" [value]="selectedBreedingMethodClass?.name" disabled/>
+				<select *ngIf="editable" class="form-control col-sm-6" name="class" [(ngModel)]="breedingMethod.methodClass" readonly>
 					<option *ngFor="let breedingMethodClass of breedingMethodClasses" [value]="breedingMethodClass.id">
 						<label>{{breedingMethodClass.name}}</label>
 					</option>

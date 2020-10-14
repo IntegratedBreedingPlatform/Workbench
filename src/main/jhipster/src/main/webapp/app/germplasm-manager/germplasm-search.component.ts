@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Germplasm } from '../entities/germplasm/germplasm.model';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { GermplasmService } from '../shared/germplasm/service/germplasm.service'
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
@@ -15,7 +15,6 @@ import { MatchType } from '../shared/column-filter/column-filter-text-with-match
 import { PedigreeType } from '../shared/column-filter/column-filter-pedigree-options-component';
 import { SORT_PREDICATE_NONE } from './germplasm-search-resolve-paging-params';
 import { PopupService } from '../shared/modal/popup.service';
-import { BreedingMethodComponent } from '../entities/breeding-method/breeding-method.component';
 
 declare var $: any;
 
@@ -25,6 +24,7 @@ declare var $: any;
 })
 export class GermplasmSearchComponent implements OnInit {
 
+    @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
     eventSubscriber: Subscription;
     germplasmList: Germplasm[];
     error: any;
@@ -168,6 +168,7 @@ export class GermplasmSearchComponent implements OnInit {
             { key: 'withInventoryOnly', name: 'With Inventory Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withRawObservationsOnly', name: 'With Observations Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withSampleOnly', name: 'With Sample Only', type: FilterType.BOOLEAN, value: true },
+            { key: 'withAnalyzedDataOnly', name: 'With Analyzed Data Only', type: FilterType.BOOLEAN, value: true },
             { key: 'inProgramListOnly', name: 'In Program List Only', type: FilterType.BOOLEAN, value: true },
             { key: 'includeGroupMembers', name: 'Include Group Members', type: FilterType.BOOLEAN, value: true },
             {
@@ -344,6 +345,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
+        this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);
         } else {

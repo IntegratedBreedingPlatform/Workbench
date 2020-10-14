@@ -4,8 +4,6 @@ import { BreedingMethod } from '../../shared/breeding-method/model/breeding-meth
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
-import { DomSanitizer } from '@angular/platform-browser';
-import { ParamContext } from '../../shared/service/param.context';
 import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
 import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding-method-group.model';
 import { BreedingMethodType } from '../../shared/breeding-method/model/breeding-method-type.model';
@@ -21,6 +19,10 @@ export class BreedingMethodComponent implements OnInit {
     breedingMethodClasses: BreedingMethodClass[] = [];
     breedingMethodGroups: BreedingMethodGroup[] = [];
     breedingMethodTypes: BreedingMethodType[] = [];
+    selectedBreedingMethodType: BreedingMethodType;
+    selectedBreedingMethodClass: BreedingMethodClass;
+    selectedBreedingMethodGroup: BreedingMethodGroup;
+    editable: boolean = false;
 
 
     constructor(public activeModal: NgbActiveModal,
@@ -30,16 +32,21 @@ export class BreedingMethodComponent implements OnInit {
     ngOnInit(): void {
         this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise().then((breedingMethod) => {
             this.breedingMethod = breedingMethod;
+        }).then(() => {
+            this.breedingMethodService.queryBreedingMethodClasses().toPromise().then((breedingMethodClasses) => {
+                this.breedingMethodClasses = breedingMethodClasses;
+                this.selectedBreedingMethodClass = breedingMethodClasses.find((e) => e.id === this.breedingMethod.methodClass);
+            })
+            this.breedingMethodService.queryBreedingMethodGroups().toPromise().then((breedingMethodGroups) => {
+                this.breedingMethodGroups = breedingMethodGroups;
+                this.selectedBreedingMethodGroup = breedingMethodGroups.find((e) => e.code === this.breedingMethod.group);
+            })
+            this.breedingMethodService.queryBreedingMethodTypes().toPromise().then((breedingMethodTypes) => {
+                this.breedingMethodTypes = breedingMethodTypes;
+                this.selectedBreedingMethodType = breedingMethodTypes.find((e) => e.code === this.breedingMethod.type);
+            })
         })
-        this.breedingMethodService.queryBreedingMethodClasses().toPromise().then((breedingMethodClasses) => {
-            this.breedingMethodClasses = breedingMethodClasses;
-        })
-        this.breedingMethodService.queryBreedingMethodGroups().toPromise().then((breedingMethodGroups) => {
-            this.breedingMethodGroups = breedingMethodGroups;
-        })
-        this.breedingMethodService.queryBreedingMethodTypes().toPromise().then((breedingMethodTypes) => {
-            this.breedingMethodTypes = breedingMethodTypes;
-        })
+
     }
 
     clear() {

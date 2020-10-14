@@ -18,7 +18,11 @@ export class LocationComponent implements OnInit {
     locationTypes: LocationType[] = [];
     countries: LocationModel[] = [];
     provinces: LocationModel[] = [];
-    accessible: boolean = true;
+    selectedCountry: LocationModel;
+    selectedProvince: LocationModel;
+    selectedLocationType: LocationType;
+    accessible: boolean = false;
+    editable: boolean = false;
 
 
     constructor(public activeModal: NgbActiveModal,
@@ -28,16 +32,23 @@ export class LocationComponent implements OnInit {
     ngOnInit(): void {
         this.locationService.queryBreedingLocation(this.locationId).toPromise().then((breedingLocation) => {
             this.breedingLocation = breedingLocation;
+            this.accessible = breedingLocation.programUUID === '';
+        }).then(() => {
+            this.locationService.queryLocationsByType([LocationTypeEnum.COUNTRY], false).toPromise().then((locations) => {
+                this.countries = locations;
+                this.selectedCountry = locations.find((e) => e.id === this.breedingLocation.countryId);
+            })
+            this.locationService.queryLocationsByType([LocationTypeEnum.PROVINCE], false).toPromise().then((locations) => {
+                this.provinces = locations;
+                this.selectedProvince = locations.find((e) => e.id === this.breedingLocation.provinceId);
+            })
+            this.locationService.queryLocationTypes().toPromise().then((locationTypes) => {
+                this.locationTypes = locationTypes;
+                this.selectedLocationType = locationTypes.find((e) => e.id === this.breedingLocation.type);
+            })
         })
-        this.locationService.queryLocationTypes().toPromise().then((locationTypes) => {
-            this.locationTypes = locationTypes;
-        })
-        this.locationService.queryLocationsByType([LocationTypeEnum.COUNTRY], false).toPromise().then((locations) => {
-            this.countries = locations;
-        })
-        this.locationService.queryLocationsByType([LocationTypeEnum.PROVINCE], false).toPromise().then((locations) => {
-            this.provinces = locations;
-        })
+
+
     }
 
     clear() {
