@@ -113,8 +113,6 @@ public class GermplasmListTreeUtilTest {
 		when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
 		when(this.userService.getPersonNameForUserId(USER_ID)).thenReturn(USER_FULL_NAME);
 
-		this.setUpMessageSource();
-
 		when(this.contextUtil.getCurrentProgramUUID()).thenReturn(GermplasmListTreeUtilTest.PROGRAM_UUID);
 		when(this.source.getWindow()).thenReturn(this.window);
 
@@ -127,18 +125,6 @@ public class GermplasmListTreeUtilTest {
 		when(this.targetListSource.getItem(Matchers.anyString())).thenReturn(Mockito.mock(Item.class));
 
 		when(this.folderTextfield.getValue()).thenReturn(NEW_FOLDER_NAME);
-	}
-
-	private void setUpMessageSource() {
-		when(this.messageSource.getMessage(Message.ERROR_NO_SELECTION)).thenReturn(GermplasmListTreeUtilTest.ERROR_NO_SELECTION);
-		when(this.messageSource.getMessage(Message.ERROR_ITEM_DOES_NOT_EXISTS))
-				.thenReturn(GermplasmListTreeUtilTest.ERROR_ITEM_DOES_NOT_EXISTS);
-		when(this.messageSource.getMessage(Message.ERROR_UNABLE_TO_DELETE_LOCKED_LIST))
-				.thenReturn(GermplasmListTreeUtilTest.ERROR_UNABLE_TO_DELETE_LOCKED_LIST);
-		when(this.messageSource.getMessage(Message.ERROR_UNABLE_TO_DELETE_LIST_NON_OWNER))
-				.thenReturn(GermplasmListTreeUtilTest.ERROR_UNABLE_TO_DELETE_LIST_NON_OWNER);
-		when(this.messageSource.getMessage(Message.ERROR_HAS_CHILDREN)).thenReturn(GermplasmListTreeUtilTest.ERROR_HAS_CHILDREN);
-		this.germplasmListTreeUtil.setMessageSource(this.messageSource);
 	}
 
 	private void setUpTestGermplasmList(Integer itemId, boolean isExistingList, boolean isAFolder) {
@@ -201,6 +187,7 @@ public class GermplasmListTreeUtilTest {
 
 	@Test
 	public void testValidateItemToDeleteThrowsExceptionIfGermplasmListIDDoesNotExist() {
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_NO_SELECTION)).thenReturn(GermplasmListTreeUtilTest.ERROR_NO_SELECTION);
 		this.setUpTestGermplasmList(GermplasmListTreeUtilTest.GERMPLASM_LIST_ID, true, false);
 
 		try {
@@ -213,6 +200,8 @@ public class GermplasmListTreeUtilTest {
 
 	@Test
 	public void testValidateItemToDeleteThrowsExceptionIfGermplasmListDoesNotExist() {
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_ITEM_DOES_NOT_EXISTS))
+			.thenReturn(GermplasmListTreeUtilTest.ERROR_ITEM_DOES_NOT_EXISTS);
 		this.setUpTestGermplasmList(GermplasmListTreeUtilTest.GERMPLASM_LIST_ID, false, false);
 
 		try {
@@ -225,6 +214,8 @@ public class GermplasmListTreeUtilTest {
 
 	@Test
 	public void testValidateItemToDeleteThrowsExceptionIfGermplasmListIsLocked() {
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_UNABLE_TO_DELETE_LOCKED_LIST))
+			.thenReturn(GermplasmListTreeUtilTest.ERROR_UNABLE_TO_DELETE_LOCKED_LIST);
 		this.setUpTestGermplasmList(GermplasmListTreeUtilTest.GERMPLASM_LIST_ID, true, false);
 		this.germplasmList.setStatus(101);
 
@@ -251,6 +242,7 @@ public class GermplasmListTreeUtilTest {
 
 	@Test
 	public void testValidateItemToDeleteThrowsExceptionIfItemHasContent() {
+		Mockito.when(this.messageSource.getMessage(Message.ERROR_HAS_CHILDREN)).thenReturn(GermplasmListTreeUtilTest.ERROR_HAS_CHILDREN);
 		this.setUpTestGermplasmList(GermplasmListTreeUtilTest.GERMPLASM_LIST_ID_WITH_CHILDREN, true, true);
 
 		try {
