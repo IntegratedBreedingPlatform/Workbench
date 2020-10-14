@@ -416,7 +416,7 @@ export class GermplasmSearchComponent implements OnInit {
      * Going to the last page of a large table is expensive.
      */
     isFullPaginationEnabled() {
-        this.totalItems < 1000000;
+        return this.totalItems < 1000000;
     }
 
     private validateSelection() {
