@@ -21,9 +21,8 @@ export class LocationComponent implements OnInit {
     selectedCountry: LocationModel;
     selectedProvince: LocationModel;
     selectedLocationType: LocationType;
-    accessible: boolean = false;
-    editable: boolean = false;
-
+    accessible = false;
+    editable = false;
 
     constructor(public activeModal: NgbActiveModal,
                 public locationService: LocationService) {
@@ -47,8 +46,6 @@ export class LocationComponent implements OnInit {
                 this.selectedLocationType = locationTypes.find((e) => e.id === this.breedingLocation.type);
             })
         })
-
-
     }
 
     clear() {
@@ -76,5 +73,3 @@ export class LocationPopupComponent implements OnInit {
     }
 
 }
-
-

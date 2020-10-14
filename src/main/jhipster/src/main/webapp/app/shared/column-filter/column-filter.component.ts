@@ -77,8 +77,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     static transformAttributesFilter(filter, request) {
-        let attributes: any = {}
-        for (var attribute of filter.attributes) {
+        const attributes: any = {}
+        for (const attribute of filter.attributes) {
             attributes[attribute.code] = attribute.value;
         }
         request[filter.key] = attributes;
@@ -88,7 +88,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         request[filter.key] = undefined;
 
         // Remove all attributes column
-        for (var attribute of filter.attributes) {
+        for (const attribute of filter.attributes) {
             request.addedColumnsPropertyIds.pop(attribute.code);
         }
 
@@ -377,7 +377,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     addAttributesColumn(attribute) {
-        if (!this.request.addedColumnsPropertyIds.some(e => e === attribute.code)) {
+        if (!this.request.addedColumnsPropertyIds.some((e) => e === attribute.code)) {
             this.request.addedColumnsPropertyIds.push(attribute.code);
         }
     }

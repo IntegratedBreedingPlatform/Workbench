@@ -110,9 +110,9 @@ export class LabelPrintingComponent implements OnInit {
             const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
             const labelFieldsSelected = new Array();
 
-            presetSetting.selectedFields.forEach(function (idsSelected) {
+            presetSetting.selectedFields.forEach((idsSelected) => {
                 const fieldsSelected: LabelType[] = new Array();
-                labelTypeList.forEach(function (label: LabelType) {
+                labelTypeList.forEach((label: LabelType) => {
                     const labelType = new LabelType(label.title, label.key, []);
                     labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
                     fieldsSelected.push(labelType);
@@ -130,10 +130,10 @@ export class LabelPrintingComponent implements OnInit {
                 $('#rightSelectedFields').empty();
 
                 let listElem = '#leftSelectedFields';
-                labelFieldsSelected.forEach(function (fieldsList: LabelType[]) {
-                    fieldsList.forEach(function (labelsType: LabelType) {
+                labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
+                    fieldsList.forEach((labelsType: LabelType) => {
                         const key = labelsType.key;
-                        labelsType.fields.forEach(function (field) {
+                        labelsType.fields.forEach((field) => {
                             $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
                                 .attr('id', field.id).attr('data-label-type-key', key) //
                                 .text(field.name).appendTo(listElem);

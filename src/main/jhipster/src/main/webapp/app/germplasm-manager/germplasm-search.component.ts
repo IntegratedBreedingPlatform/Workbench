@@ -282,7 +282,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     addSortParam(params) {
-        let sort = this.predicate && this.predicate !== SORT_PREDICATE_NONE ? {
+        const sort = this.predicate && this.predicate !== SORT_PREDICATE_NONE ? {
             sort: [this.getSort()]
         } : {};
         return Object.assign(params, sort);
@@ -302,7 +302,6 @@ export class GermplasmSearchComponent implements OnInit {
         this.transition();
     }
 
-
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
@@ -315,7 +314,6 @@ export class GermplasmSearchComponent implements OnInit {
         this.page = 1;
         this.transition();
     }
-
 
     trackId(index: number, item: Germplasm) {
         return item.gid;

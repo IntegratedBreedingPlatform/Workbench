@@ -1,8 +1,8 @@
-import { Resolve } from "@angular/router";
-import { JhiPaginationUtil } from "ng-jhipster";
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot } from "@angular/router";
-import { RouterStateSnapshot } from "@angular/router";
+import { Resolve } from '@angular/router';
+import { JhiPaginationUtil } from 'ng-jhipster';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { RouterStateSnapshot } from '@angular/router';
 
 /**
  * Key used indicate NO sorting at all.

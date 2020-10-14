@@ -12,6 +12,6 @@ export class LocationModel {
 }
 
 export enum LocationTypeEnum {
-    COUNTRY= 405,
-    PROVINCE= 406
+    COUNTRY = 405,
+    PROVINCE = 406
 }

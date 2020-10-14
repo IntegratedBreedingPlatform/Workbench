@@ -1,12 +1,12 @@
-import { Pipe } from "@angular/core";
-import { PipeTransform } from "@angular/core";
+import { Pipe } from '@angular/core';
+import { PipeTransform } from '@angular/core';
 
-@Pipe({name: 'keyvalue'})
+@Pipe({ name: 'keyvalue' })
 export class KeyValuePipe implements PipeTransform {
-    transform(value, args:string[]) : any {
-        let keys = [];
-        for (let key in value) {
-            keys.push({key: key, value: value[key]});
+    transform(value, args: string[]): any {
+        const keys = [];
+        for (const key of Object.keys(value)) {
+            keys.push({ key, value: value[key] });
         }
         return keys;
     }

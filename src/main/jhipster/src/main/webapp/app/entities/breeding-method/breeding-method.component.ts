@@ -22,8 +22,7 @@ export class BreedingMethodComponent implements OnInit {
     selectedBreedingMethodType: BreedingMethodType;
     selectedBreedingMethodClass: BreedingMethodClass;
     selectedBreedingMethodGroup: BreedingMethodGroup;
-    editable: boolean = false;
-
+    editable = false;
 
     constructor(public activeModal: NgbActiveModal,
                 public breedingMethodService: BreedingMethodService) {

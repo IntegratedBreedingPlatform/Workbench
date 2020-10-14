@@ -59,7 +59,7 @@ export class ColumnFilterAttributesComponent implements OnInit {
             .debounceTime(500)
             .distinctUntilChanged()
             .switchMap((query) => this.attributesService.searchAttributes(query))
-            .subscribe(result => {
+            .subscribe((result) => {
                 if (result.status === 400) {
                     return;
                 } else {
@@ -72,14 +72,14 @@ export class ColumnFilterAttributesComponent implements OnInit {
         // Reset query field value
         this.queryField.setValue('');
         // Do not add attribute if it's already in the list
-        if (!this.filter.attributes.some(e => e.code === attribute.code)) {
+        if (!this.filter.attributes.some((e) => e.code === attribute.code)) {
             this.filter.attributes.push({ ...attribute, value: '' });
         }
         this.onAdd.emit(attribute);
     }
 
     deleteAttribute(attribute) {
-        this.filter.attributes = this.filter.attributes.filter(e => e.code !== attribute.code);
+        this.filter.attributes = this.filter.attributes.filter((e) => e.code !== attribute.code);
         this.onDelete.emit(attribute);
     }
 

@@ -25,7 +25,7 @@ export class LocationService {
     }
 
     queryLocationsByType(locationTypes, favoriteLocation): Observable<LocationModel[]> {
-        let params = new HttpParams()
+        const params = new HttpParams()
             .set('locationTypes', locationTypes)
             .set('favoriteLocations', favoriteLocation)
             .set('programUUID', this.context.programUUID);
