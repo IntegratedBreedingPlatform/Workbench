@@ -143,7 +143,9 @@
 					</div>
 					<div class="pagination-box">
 						<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage"
-										[maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+										[maxSize]="5" [rotate]="true" (pageChange)="loadPage(page)"
+										[boundaryLinks]="isFullPaginationEnabled()" [ellipses]="isFullPaginationEnabled()"
+						></ngb-pagination>
 					</div>
 					<div class="pagination-box pagination-box-right">
 					</div>

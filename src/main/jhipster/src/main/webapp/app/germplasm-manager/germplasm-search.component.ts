@@ -412,6 +412,13 @@ export class GermplasmSearchComponent implements OnInit {
         return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
     }
 
+    /**
+     * Going to the last page of a large table is expensive.
+     */
+    isFullPaginationEnabled() {
+        this.totalItems < 1000000;
+    }
+
     private validateSelection() {
         if (this.germplasmList.length === 0 || (!this.allItemsPerPages && this.selectedItems.length === 0)) {
             this.jhiAlertService.error('error.custom', {
