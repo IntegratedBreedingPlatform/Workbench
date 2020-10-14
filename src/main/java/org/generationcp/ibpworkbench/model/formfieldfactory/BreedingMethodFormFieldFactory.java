@@ -133,6 +133,10 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 				final List<MethodClass> methodClasses =
 					MethodClass.getByMethodType().get(MethodType.getMethodType(event.getProperty().getValue().toString()));
 
+				if (methodClasses == null) {
+					return;
+				}
+
 				for (final MethodClass methodClass : methodClasses) {
 					final Integer key = methodClass.getId();
 					final String value = classMap.get(key);
