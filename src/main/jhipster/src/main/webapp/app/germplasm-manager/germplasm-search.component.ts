@@ -264,7 +264,6 @@ export class GermplasmSearchComponent implements OnInit {
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns['groupId'] = true;
-        this.hiddenColumns['unit'] = true;
         this.hiddenColumns['germplasmDate'] = true;
         this.hiddenColumns['methodCode'] = true;
         this.hiddenColumns['methodNumber'] = true;
