@@ -15,6 +15,8 @@ import { MatchType } from '../shared/column-filter/column-filter-text-with-match
 import { PedigreeType } from '../shared/column-filter/column-filter-pedigree-options-component';
 import { SORT_PREDICATE_NONE } from './germplasm-search-resolve-paging-params';
 import { PopupService } from '../shared/modal/popup.service';
+import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var $: any;
 
@@ -205,6 +207,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private router: Router,
                 private jhiAlertService: JhiAlertService,
                 private modal: NgbModal,
+                private translateService: TranslateService,
                 private popupService: PopupService) {
 
         this.predicate = '';
@@ -320,11 +323,40 @@ export class GermplasmSearchComponent implements OnInit {
 
     registerChangeInGermplasm() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
-            if (event && event.content && event.content.filterBy) {
-                this.filterBy(event.content.filterBy);
+
+            if (this.isExpensiveFilter()) {
+                const confirmModalRef = this.modal.open(ModalConfirmComponent as Component);
+                confirmModalRef.componentInstance.title = this.translateService.instant('search-germplasm.performance-warning.title');
+                let message = this.translateService.instant('search-germplasm.performance-warning.text');
+                message += this.getExpensiveFilterWarningList();
+                confirmModalRef.componentInstance.message = message;
+                confirmModalRef.result.then(() => {
+                    this.resetTable();
+                }, () => confirmModalRef.dismiss());
+
+            } else {
+                this.resetTable();
             }
-            this.resetTable();
+
         });
+    }
+
+    isExpensiveFilter() {
+        return this.request && (
+            this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
+            || this.request.withInventoryOnly
+        );
+    }
+
+    getExpensiveFilterWarningList() {
+        let list = '';
+        if (this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS) {
+            list += '<li>Name contains</li>'
+        }
+        if (this.request.withInventoryOnly) {
+            list += '<li>With Inventory Only</li>'
+        }
+        return list;
     }
 
     registerClearSort() {

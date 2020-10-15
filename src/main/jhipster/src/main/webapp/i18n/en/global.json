@@ -136,5 +136,7 @@
     "no.data": "No records found",
     "germplasm.details": {
         "title": "Germplasm Details"
-    }
+    },
+    "confirm": "Confirm",
+    "cancel": "Cancel"
 }

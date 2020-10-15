@@ -10,7 +10,7 @@ import { Sample } from '../../../../../../main/webapp/app/entities/sample/sample
 import { SampleList } from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import { SampleListService } from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import { FileDownloadHelper } from '../../../../../../main/webapp/app/entities/sample/file-download.helper';
-import {ModalService} from '../../../../../../main/webapp/app/shared/modal/modal.service';
+import {AppModalService} from '../../../../../../main/webapp/app/shared/modal/app-modal.service';
 
 describe('Component Tests', () => {
 
@@ -20,7 +20,7 @@ describe('Component Tests', () => {
         let sampleService: SampleService;
         let sampleListService: SampleListService;
         let fileDownloadHelper: FileDownloadHelper;
-        let modalService: ModalService;
+        let modalService: AppModalService;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -30,7 +30,7 @@ describe('Component Tests', () => {
                     SampleService,
                     SampleListService,
                     FileDownloadHelper,
-                    ModalService
+                    AppModalService
                 ]
             })
             .overrideTemplate(SampleComponent, '')
@@ -43,7 +43,7 @@ describe('Component Tests', () => {
             sampleService = fixture.debugElement.injector.get(SampleService);
             sampleListService = fixture.debugElement.injector.get(SampleListService);
             fileDownloadHelper = fixture.debugElement.injector.get(FileDownloadHelper);
-            modalService = fixture.debugElement.injector.get(ModalService);
+            modalService = fixture.debugElement.injector.get(AppModalService);
         });
 
         describe('OnInit', () => {

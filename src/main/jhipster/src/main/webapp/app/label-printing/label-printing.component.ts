@@ -6,7 +6,7 @@ import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ModalService } from '../shared/modal/modal.service';
+import { AppModalService } from '../shared/modal/app-modal.service';
 
 declare const $: any;
 
@@ -40,7 +40,7 @@ export class LabelPrintingComponent implements OnInit {
                 private languageService: JhiLanguageService,
                 private fileDownloadHelper: FileDownloadHelper,
                 private alertService: JhiAlertService,
-                private modalService: ModalService) {
+                private modalService: AppModalService) {
     }
 
     proceed(): void {

@@ -1,5 +1,5 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import {ModalService} from '../../shared/modal/modal.service';
+import {AppModalService} from '../../shared/modal/app-modal.service';
 import {ExcelService} from './excel.service';
 import {JhiAlertService} from 'ng-jhipster';
 
@@ -22,7 +22,7 @@ export class SampleImportPlateComponent {
     wellMapping = '';
     importData = new Array<Array<any>>();
 
-    constructor(private modalService: ModalService,
+    constructor(private modalService: AppModalService,
                 private excelService: ExcelService,
                 private alertService: JhiAlertService) {
 

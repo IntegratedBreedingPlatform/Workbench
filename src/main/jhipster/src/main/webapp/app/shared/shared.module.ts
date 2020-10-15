@@ -2,9 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { AccountService, BmsjHipsterSharedCommonModule, BmsjHipsterSharedLibsModule, Principal } from './';
-import { ModalComponent } from './modal/modal.component';
-import { ModalConfirmComponent } from './modal/modal-confirm.component';
-import { ModalService } from './modal/modal.service';
+import { AppModalComponent } from './modal/app-modal.component';
+import { AppModalConfirmComponent } from './modal/app-modal-confirm.component';
+import { AppModalService } from './modal/app-modal.service';
 import { DragDropModule, TreeModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
 import { SharedModule } from 'primeng/shared';
@@ -36,6 +36,8 @@ import { PopupService } from './modal/popup.service';
 import { LocationService } from './location/service/location.service';
 import { BreedingMethodService } from './breeding-method/service/breeding-method.service';
 import { LoginService } from './login/login.service';
+import { ModalComponent } from './modal/modal.component';
+import { ModalConfirmComponent } from './modal/modal-confirm.component';
 
 @NgModule({
     imports: [
@@ -44,6 +46,8 @@ import { LoginService } from './login/login.service';
         ReactiveFormsModule
     ],
     declarations: [
+        AppModalComponent,
+        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -67,7 +71,7 @@ import { LoginService } from './login/login.service';
         LoginService,
         DatePipe,
         KeyValuePipe,
-        ModalService,
+        AppModalService,
         Principal,
         AccountService,
         InventoryService,
@@ -82,8 +86,10 @@ import { LoginService } from './login/login.service';
         PopupService
     ],
     entryComponents: [
+        AppModalComponent,
+        AppModalConfirmComponent,
         ModalComponent,
-        ModalConfirmComponent
+        ModalConfirmComponent,
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -93,6 +99,8 @@ import { LoginService } from './login/login.service';
         DragDropModule,
         DatePipe,
         KeyValuePipe,
+        AppModalComponent,
+        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,

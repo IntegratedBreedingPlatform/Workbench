@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { SampleList } from './sample-list.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalService } from '../../shared/modal/modal.service';
+import { AppModalService } from '../../shared/modal/app-modal.service';
 import { SampleContext } from './sample.context';
 import { HelpService } from '../../shared/service/help.service';
 
@@ -27,7 +27,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     lists: SampleList[] = [];
 
     constructor(private activatedRoute: ActivatedRoute,
-                private modalService: ModalService,
+                private modalService: AppModalService,
                 private router: Router,
                 private sampleContext: SampleContext,
                 private helpService: HelpService) {

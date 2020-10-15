@@ -1,50 +1,27 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
-import { ModalService } from './modal.service';
-
-/**
- * ModalComponent - This class represents the modal component.
- * @requires Component
- */
+import { Component, Input } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-    selector: 'jhi-app-modal',
-    templateUrl: './modal.component.html'
+    selector: 'jhi-modal',
+    template: `
+        <div class="container">
+            <div class="modal-header">
+                <h4 class="modal-title font-weight-bold">{{title}}</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                        (click)="dismiss()">&times;
+                </button>
+            </div>
+            <ng-content></ng-content>
+        </div>
+    `
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent {
+    @Input() title: string;
 
-    isOpen = false;
-    animate = false;
-
-    @Input() closebtn: boolean;
-    @Input() modalId: string;
-    @Input() modalTitle: string;
-    @Input() modalSize: string;
-    @Output() onClose = new EventEmitter();
-    @HostListener('document:keyup', ['$event'])
-    /**
-     * keyup - Checks keys entered for the 'esc' key, attached to hostlistener
-     */
-    keyup(event: KeyboardEvent): void {
-        if (event.keyCode === 27) {
-            this.modalService.close(this.modalId);
-        }
+    constructor(private modal: NgbActiveModal) {
     }
 
-    constructor(private modalService: ModalService) { }
-
-    /**
-     * ngOnInit - Initiated when component loads
-     */
-    ngOnInit() {
-        this.modalService.registerModal(this);
+    dismiss() {
+        this.modal.dismiss();
     }
-
-    /**
-     * close - Closes the selected modal
-     */
-    close(checkBlocking = false): void {
-        this.modalService.close(this.modalId);
-        this.onClose.emit();
-    }
-
 }

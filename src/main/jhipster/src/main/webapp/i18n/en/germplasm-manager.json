@@ -32,6 +32,10 @@
             "maleParentGID": "MALE PARENT GID",
             "maleParentPreferredName": "MALE PARENT PREFERRED NAME",
             "pedigreeString": "CROSS"
+        },
+        "performance-warning": {
+            "title": "Warning",
+            "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
         }
     },
     "breeding-method": {
