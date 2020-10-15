@@ -35,6 +35,7 @@ import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
 import { LocationService } from './location/service/location.service';
 import { BreedingMethodService } from './breeding-method/service/breeding-method.service';
+import { LoginService } from './login/login.service';
 
 @NgModule({
     imports: [
@@ -63,6 +64,7 @@ import { BreedingMethodService } from './breeding-method/service/breeding-method
         KeyValuePipe
     ],
     providers: [
+        LoginService,
         DatePipe,
         KeyValuePipe,
         ModalService,

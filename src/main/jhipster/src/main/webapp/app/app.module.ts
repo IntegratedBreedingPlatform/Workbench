@@ -22,6 +22,8 @@ import { GermplasmSearchComponent } from './germplasm-manager/germplasm-search.c
 import { GermplasmTreeTableComponent } from './shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from './shared/tree/study/study-tree.component';
 import { ModalConfirmComponent } from './shared/modal/modal-confirm.component';
+import { Injector } from '@angular/core';
+import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 
 @NgModule({
     imports: [
@@ -55,6 +57,14 @@ import { ModalConfirmComponent } from './shared/modal/modal-confirm.component';
             deps: [
                 LocalStorageService,
                 SessionStorageService
+            ]
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthExpiredInterceptor,
+            multi: true,
+            deps: [
+                Injector
             ]
         }
     ],
