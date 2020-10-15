@@ -36,7 +36,8 @@
         "performance-warning": {
             "title": "Warning",
             "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
-        }
+        },
+        "no.data": "(Note: when filtering, page count may not be accurate)"
     },
     "breeding-method": {
         "title": "Breeding Method"
