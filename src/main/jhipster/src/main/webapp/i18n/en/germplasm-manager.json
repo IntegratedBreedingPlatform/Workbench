@@ -10,7 +10,7 @@
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
-            "groupId": "MGID",
+            "groupId": "GROUPID",
             "names": "NAMES",
             "methodName": "BREEDING METHOD NAME",
             "locationName": "LOCATION",

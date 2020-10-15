@@ -91,7 +91,7 @@ export class GermplasmSearchComponent implements OnInit {
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT },
-            { key: 'groupId', name: 'MGID', placeholder: 'Match Text', type: FilterType.TEXT },
+            { key: 'groupId', name: 'Group ID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'sampleUID', name: 'Sample ID', placeholder: 'Match Text', type: FilterType.TEXT },
             {
                 key: 'germplasmListIds', name: 'Germplasm List', type: FilterType.MODAL,
