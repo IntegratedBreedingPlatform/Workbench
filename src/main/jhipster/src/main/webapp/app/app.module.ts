@@ -1,23 +1,22 @@
 import './vendor.ts';
 
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Ng2Webstorage, LocalStorageService, SessionStorageService  } from 'ngx-webstorage';
+import { LocalStorageService, Ng2Webstorage, SessionStorageService } from 'ngx-webstorage';
 
 import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { BmsjHipsterSharedModule, RouteAccessService } from './shared';
-import { BmsjHipsterAppRoutingModule} from './app-routing.module';
+import { BmsjHipsterAppRoutingModule } from './app-routing.module';
 import { BmsjHipsterEntityModule } from './entities/entity.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
-import {
-    ErrorComponent,
-    JhiMainComponent,
-    PageRibbonComponent
-} from './layouts';
+import { ErrorComponent, JhiMainComponent, PageRibbonComponent } from './layouts';
 import { LabelPrintingModule } from './label-printing/label-printing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.module';
+import { GermplasmTreeTableComponent } from './shared/tree/germplasm/germplasm-tree-table.component';
+import { StudyTreeComponent } from './shared/tree/study/study-tree.component';
+import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 
 @NgModule({
     imports: [
@@ -34,7 +33,13 @@ import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.mo
     declarations: [
         JhiMainComponent,
         PageRibbonComponent,
-        ErrorComponent
+        ErrorComponent,
+        GermplasmTreeTableComponent,
+        StudyTreeComponent
+    ],
+    entryComponents: [
+        GermplasmTreeTableComponent,
+        StudyTreeComponent
     ],
     providers: [
         RouteAccessService,
@@ -45,6 +50,14 @@ import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.mo
             deps: [
                 LocalStorageService,
                 SessionStorageService
+            ]
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthExpiredInterceptor,
+            multi: true,
+            deps: [
+                Injector
             ]
         }
     ],

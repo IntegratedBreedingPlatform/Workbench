@@ -12,7 +12,7 @@ import { ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
-import {ModalService} from '../../shared/modal/modal.service';
+import {AppModalService} from '../../shared/modal/app-modal.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -53,7 +53,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         private router: Router,
         private eventManager: JhiEventManager,
         private fileDownloadHelper: FileDownloadHelper,
-        private modalService: ModalService
+        private modalService: AppModalService
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 

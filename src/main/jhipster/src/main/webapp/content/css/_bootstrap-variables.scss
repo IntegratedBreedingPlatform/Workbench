@@ -1,0 +1,38 @@
+/*
+* Bootstrap overrides https://getbootstrap.com/docs/4.0/getting-started/theming/
+* All values defined in bootstrap source
+* https://github.com/twbs/bootstrap/blob/v4.0.0/scss/_variables.scss can be overwritten here
+* Make sure not to add !default to values here
+*/
+
+// TODO continue migration of Fiedlbook Bootstrap 3 styles
+
+//== Buttons
+//
+//## For each of Bootstrap's buttons, define text, background and border color.
+
+$primary: #ff8109; // FIXME set only btn-primary?
+$success: #36a636;
+$info: #1b95b2;
+$warning: #e57d03;
+$danger: #d63833;
+$btn-primary-color: #fff;
+$link-color: #337ab7;
+
+// Fonts
+$font-size-base: 0.8rem;
+$font-family-base: "Open Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
+// Tables
+$table-border-color: #c2c3c4;
+$table-cell-padding: .313rem; // 5 px default
+
+// Navs
+
+$nav-link-padding-y: 0.313rem;
+$nav-link-padding-x: 0.625rem;
+
+// Pagination
+$pagination-color: #337ab7;
+$pagination-active-bg: #337ab7;
+$pagination-disabled-bg: transparent;

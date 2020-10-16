@@ -1,0 +1,109 @@
+<div>
+    <label (click)="isCollapsed = !isCollapsed"
+           [attr.aria-expanded]="!isCollapsed" aria-controls="collapseSearchFilter">
+        <i [ngClass]="isCollapsed?'fa fa-caret-right fa-2':'fa fa-caret-down fa-2'" aria-hidden="true"> </i>
+        <strong class="d-inline-flex p-2">Filter table</strong>
+    </label>
+    <div id="collapseSearchFilter" [ngbCollapse]="isCollapsed">
+        <form class="form-inline mb-2">
+            <div class="form-row">
+                <label class="col-auto" for="dropdownFilters" >Search by</label>
+                <div class="col-auto form-group">
+                    <div class="input-group">
+                        <select class="form-control" id="dropdownFilters" name="dropdownFilters"
+                                [(ngModel)]="selectedFilter" [disabled]="!hasFiltersAvailable()">
+                            <option value="">Please Choose</option>
+                            <ng-container *ngFor="let filter of filters">
+                                <option [value]="filter.key" *ngIf="!filter.added && !filter.default">
+                                    <label>{{filter.name}}</label>
+                                </option>
+                            </ng-container>
+                        </select>
+                        <div class="input-group-append">
+                            <button class="btn btn-info float-right fa fa-plus" (click)="AddFilter()" [disabled]="!hasFiltersAvailable()" >
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="mb-2">
+            <div *ngFor="let filter of filtersAdded">
+                <div class="column-filter-badge">
+                    <ng-template #popover>
+                        <jhi-column-filter-number *ngIf="filter.type === FILTER_TYPES.NUMBER"
+                                               [filter]="filter"
+                                               (onApply)="updateFilter(filter)"
+                                               (onReset)="reset(filter)">
+                        </jhi-column-filter-number>
+                        <jhi-column-filter-date *ngIf="filter.type === FILTER_TYPES.DATE"
+                                             [filter]="filter"
+                                             (onApply)="updateFilter(filter)"
+                                             (onReset)="reset(filter)">
+                        </jhi-column-filter-date>
+                        <jhi-column-filter-checklist *ngIf="filter.type === FILTER_TYPES.CHECKLIST"
+                                                  [filter]="filter"
+                                                  (onApply)="updateCheckListFilter(filter, filter.key)"
+                                                  (onReset)="reset(filter)">
+                        </jhi-column-filter-checklist>
+                        <jhi-column-filter-text *ngIf="filter.type === FILTER_TYPES.TEXT"
+                                                [filter]="filter"
+                                                (onApply)="updateTextFilter(filter, filter.key)"
+                                                (onReset)="reset(filter)">
+                        </jhi-column-filter-text>
+                        <jhi-column-filter-radio *ngIf="filter.type === FILTER_TYPES.RADIOBUTTON"
+                                              [filter]="filter"
+                                              (onApply)="updateRadioFilter(filter, filter.key)"
+                                              (onReset)="reset(filter)">
+                        </jhi-column-filter-radio>
+                        <jhi-column-filter-boolean *ngIf="filter.type === FILTER_TYPES.BOOLEAN"
+                                                 [filter]="filter"
+                                                 (onApply)="updateBooleanFilter(filter, filter.key)"
+                                                 (onReset)="reset(filter)">
+                        </jhi-column-filter-boolean>
+                        <jhi-column-filter-list *ngIf="filter.type === FILTER_TYPES.LIST"
+                                             [filter]="filter"
+                                             (onApply)="updateListFilter(filter)"
+                                             (onReset)="reset(filter)">
+                        </jhi-column-filter-list>
+                        <jhi-column-filter-text-with-match-options *ngIf="filter.type === FILTER_TYPES.TEXT_WITH_MATCH_OPTIONS"
+                                                          [filter]="filter"
+                                                          (onApply)="updateTextFilter(filter, filter.key)"
+                                                          (onReset)="reset(filter)">
+                        </jhi-column-filter-text-with-match-options>
+                        <jhi-column-filter-pedigree-options *ngIf="filter.type === FILTER_TYPES.PEDIGREE_OPTIONS"
+                                                            [filter]="filter"
+                                                            (onApply)="updateFilter(filter)"
+                                                            (onReset)="reset(filter)">
+
+                        </jhi-column-filter-pedigree-options>
+                        <jhi-column-filter-attributes *ngIf="filter.type === FILTER_TYPES.ATTRIBUTES"
+                                                      [filter]="filter"
+                                                      (onApply)="updateFilter(filter)"
+                                                      (onReset)="reset(filter)" (onAdd)="addAttributesColumn($event)" (onDelete)="removeAttributesColumn($event)">
+                        </jhi-column-filter-attributes>
+                        <!-- TODO dynamic custom popover filter -->
+                    </ng-template>
+                    <button *ngIf="filter.type !== FILTER_TYPES.MODAL"
+                            type="button" class="btn btn-info" [ngbPopover]="popover" [placement]="['bottom', 'right', 'left']" [autoClose]="'outside'"
+                            title="{{filter.label}}">
+                        <i class="fa fa-times-circle" (click)="clear(filter)" *ngIf="!filter.default" style=""></i>
+                        <div>{{filter.label}}</div>
+                    </button>
+                    <button *ngIf="filter.type === FILTER_TYPES.MODAL"
+                            type="button" class="btn btn-info" (click)="openModal(filter)"
+                            title="{{filter.label}}">
+                        <i class="fa fa-times-circle" (click)="clear(filter)" *ngIf="!filter.default" style=""></i>
+                        <div>{{filter.label}}</div>
+                    </button>
+                </div>
+            </div>
+            <button class="btn btn-default" title="clear all non-default filters" style="float: left"
+                    (click)="clearAll()" *ngIf="hasClearableFilters()">
+                <i class="fa fa-close"></i>
+            </button>
+            <div class="clearfix"></div>
+            <div><a href (click)="resetAll($event)">reset all filters</a></div>
+        </div>
+    </div>
+</div>

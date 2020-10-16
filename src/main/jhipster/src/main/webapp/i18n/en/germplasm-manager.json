@@ -1,6 +1,48 @@
 {
+
+    "germplasm-manager": {
+        "title": "Germplasm Manager"
+    } ,
     "lot-creation": {
         "success": "{{param}} lots were created successfully",
         "confirm.transactions.checkbox.label": "Confirm transactions on saving"
+    },
+    "search-germplasm" : {
+        "column" : {
+            "gid" : "GID",
+            "groupId": "GROUPID",
+            "names": "NAMES",
+            "methodName": "BREEDING METHOD NAME",
+            "locationName": "LOCATION",
+            "availableBalance": "AVAILABLE",
+            "unit": "UNIT",
+            "lotCount": "LOTS",
+            "germplasmDate": "GERMPLASM DATE",
+            "methodCode": "METHOD CODE",
+            "methodNumber": "METHOD NUMBER",
+            "methodGroup": "METHOD GROUP",
+            "germplasmPeferredName": "PREFERRED NAME",
+            "germplasmPeferredId": "PREFERRED ID",
+            "groupSourceGID": "GROUP SOURCE GID",
+            "groupSourcePreferredName": "GROUP SOURCE PREFERRED NAME",
+            "immediateSourceGID": "IMMEDIATE SOURCE GID",
+            "immediateSourcePreferredName": "IMMEDIATE SOURCE PREFERRED NAME",
+            "femaleParentGID": "FEMALE PARENT GID",
+            "femaleParentPreferredName": "FEMALE PARENT PREFERRED NAME",
+            "maleParentGID": "MALE PARENT GID",
+            "maleParentPreferredName": "MALE PARENT PREFERRED NAME",
+            "pedigreeString": "CROSS"
+        },
+        "performance-warning": {
+            "title": "Warning",
+            "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
+        },
+        "no.data": "(Note: when filtering, page count may not be accurate)"
+    },
+    "breeding-method": {
+        "title": "Breeding Method"
+    },
+    "breeding-location": {
+        "title": "Breeding Location"
     }
 }
