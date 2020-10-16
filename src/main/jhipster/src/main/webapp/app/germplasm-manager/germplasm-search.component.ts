@@ -344,7 +344,6 @@ export class GermplasmSearchComponent implements OnInit {
     isExpensiveFilter() {
         return this.request && (
             this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
-            || this.request.withInventoryOnly
         );
     }
 
@@ -352,9 +351,6 @@ export class GermplasmSearchComponent implements OnInit {
         let list = '';
         if (this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS) {
             list += '<li>Name contains</li>'
-        }
-        if (this.request.withInventoryOnly) {
-            list += '<li>With Inventory Only</li>'
         }
         return list;
     }
