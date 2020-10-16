@@ -115,7 +115,7 @@ export class GermplasmSearchComponent implements OnInit {
             { key: 'locationOfOrigin', name: 'Location of Origin', placeholder: 'Contains Text', type: FilterType.TEXT },
             { key: 'locationOfUse', name: 'Location of Use', placeholder: 'Contains Text', type: FilterType.TEXT },
             {
-                key: 'plantingStudyIds', name: 'Study of use', type: FilterType.MODAL,
+                key: 'studyOfUseIds', name: 'Study of use', type: FilterType.MODAL,
                 open(modal, request) {
                     return new Promise((resolve) => {
                         modal.open(StudyTreeComponent as Component, { windowClass: 'modal-extra-small', backdrop: 'static' })
@@ -131,7 +131,39 @@ export class GermplasmSearchComponent implements OnInit {
                 }
             },
             {
-                key: 'harvestingStudyIds', name: 'Study of origin', type: FilterType.MODAL,
+                key: 'studyOfOriginIds', name: 'Study of origin', type: FilterType.MODAL,
+                open(modal, request) {
+                    return new Promise((resolve) => {
+                        modal.open(StudyTreeComponent as Component, { windowClass: 'modal-extra-small', backdrop: 'static' })
+                            .result.then((studyIds) => {
+                            if (studyIds) {
+                                this.value = studyIds.map((list) => list.name);
+                                request[this.key] = studyIds.map((list) => list.id);
+                            }
+                            resolve();
+                        }, () => {
+                        });
+                    });
+                }
+            },
+            {
+                key: 'plantingStudyIds', name: 'Study of lot use', type: FilterType.MODAL,
+                open(modal, request) {
+                    return new Promise((resolve) => {
+                        modal.open(StudyTreeComponent as Component, { windowClass: 'modal-extra-small', backdrop: 'static' })
+                            .result.then((studyIds) => {
+                            if (studyIds) {
+                                this.value = studyIds.map((list) => list.name);
+                                request[this.key] = studyIds.map((list) => list.id);
+                            }
+                            resolve();
+                        }, () => {
+                        });
+                    });
+                }
+            },
+            {
+                key: 'harvestingStudyIds', name: 'Study of lot origin', type: FilterType.MODAL,
                 open(modal, request) {
                     return new Promise((resolve) => {
                         modal.open(StudyTreeComponent as Component, { windowClass: 'modal-extra-small', backdrop: 'static' })
