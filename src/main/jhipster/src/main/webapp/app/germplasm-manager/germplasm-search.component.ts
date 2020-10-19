@@ -17,6 +17,7 @@ import { SORT_PREDICATE_NONE } from './germplasm-search-resolve-paging-params';
 import { PopupService } from '../shared/modal/popup.service';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { formatErrorList } from '../shared/alert/format-error-list';
 
 declare var $: any;
 
@@ -424,12 +425,11 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     private onError(response: HttpErrorResponse) {
-        if (response.error && response.error.errors) {
-            this.jhiAlertService.error('error.custom', {
-                param: response.error.errors.map((err) => err.message).join('<br/>')
-            }, null);
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.jhiAlertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error(response.message, null, null);
+            this.jhiAlertService.error('error.general', null, null);
         }
     }
 
