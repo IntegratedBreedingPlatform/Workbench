@@ -38,6 +38,7 @@ import { BreedingMethodService } from './breeding-method/service/breeding-method
 import { LoginService } from './login/login.service';
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
+import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equals-validator.directive';
 
 @NgModule({
     imports: [
@@ -53,6 +54,7 @@ import { ModalConfirmComponent } from './modal/modal-confirm.component';
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,
+        CustomMinEqualsValidatorDirective,
         ColumnFilterNumberComponent,
         ColumnFilterDateComponent,
         ColumnFilterChecklistComponent,
@@ -106,6 +108,7 @@ import { ModalConfirmComponent } from './modal/modal-confirm.component';
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,
+        CustomMinEqualsValidatorDirective,
         ColumnFilterNumberComponent,
         ColumnFilterDateComponent,
         ColumnFilterChecklistComponent,
