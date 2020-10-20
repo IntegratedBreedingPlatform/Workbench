@@ -37,7 +37,21 @@
             "title": "Warning",
             "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
         },
-        "no.data": "(Note: when filtering, page count may not be accurate)"
+        "no.data": "(Note: when filtering, page count may not be accurate)",
+        "actions": {
+            "add-to-list": "Add to list"
+        }
+    },
+    "germplasm-list-creation": {
+        "header": "Save list",
+        "folder-section-title": "List location",
+        "details-section-title": "List details",
+        "name": "List name",
+        "owner": "List owner",
+        "description": "Description",
+        "type": "List type",
+        "date": "List date",
+        "notes": "Notes"
     },
     "breeding-method": {
         "title": "Breeding Method"
