@@ -7,6 +7,7 @@ import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-p
 import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
 import { SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
 import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
+import {GermplasmSelectorComponent} from "./selector/germplasm-selector.component";
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...germplasmRoutes,
@@ -28,6 +29,13 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         },
         canActivate: [RouteAccessService]
     },
+    {
+        path: 'germplasm-selector',
+        component: GermplasmSelectorComponent,
+        data: { authorities: SEARCH_GERMPLASM_PERMISSIONS },
+        canActivate: [RouteAccessService]
+    },
+
     {
         path: 'germplasm-manager',
         component: GermplasmManagerComponent,
