@@ -11,6 +11,8 @@ import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm
 import { ParamContext } from '../../shared/service/param.context';
 import { map } from 'rxjs/operators';
 import { GermplasmList } from '../../shared/model/germplasm-list';
+import { GermplasmListType } from './germplasm-list-type.model';
+import { GermplasmListService } from './germplasm-list.service';
 
 declare var $: any;
 
@@ -20,19 +22,24 @@ declare var $: any;
     templateUrl: './germplasm-list-creation.component.html',
     // TODO migrate IBP-4093
     styleUrls: ['../../../content/css/global-bs4.scss'],
-    providers: [{ provide: TreeService, useClass: GermplasmTreeTableService }]
+    providers: [
+        { provide: TreeService, useClass: GermplasmTreeTableService },
+        { provide: GermplasmListService, useClass: GermplasmListService },
+    ]
 })
 export class GermplasmListCreationComponent implements OnInit {
 
     public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
     model = new GermplasmList();
+    germplasmListTypes: GermplasmListType[];
 
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
                 private translateService: TranslateService,
                 private paramContext: ParamContext,
-                public service: TreeService) {
+                public service: TreeService,
+                public germplasmListService: GermplasmListService) {
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
@@ -51,6 +58,10 @@ export class GermplasmListCreationComponent implements OnInit {
                     parent.expanded = true;
                 });
             });
+
+        this.germplasmListService.getGermplasmListTypes().toPromise().then((germplasmListTypes) => {
+            this.germplasmListTypes = germplasmListTypes;
+        });
     }
 
     private addNode(node: TreeNode) {
