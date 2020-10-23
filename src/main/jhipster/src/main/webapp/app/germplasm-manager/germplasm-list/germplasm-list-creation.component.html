@@ -45,8 +45,8 @@
 				<div class="form-group row">
 					<label for="type" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.type"></label>
 					<div class="col-sm-9">
-						<select class="form-control" name="dropdownTypes" id="dropdownTypes" [(ngModel)]="model.type" #dropdownTypes="ngModel">
-							<option *ngFor="let type of germplasmListTypes" [value]="type.id">
+						<select class="form-control" name="dropdownTypes" id="dropdownTypes" [(ngModel)]="model.type" #dropdownTypes="ngModel" required>
+							<option *ngFor="let type of germplasmListTypes" [value]="type.code">
 								<label>{{type.name}}</label>
 							</option>
 						</select>
@@ -54,8 +54,12 @@
 				</div>
 				<div class="form-group row">
 					<label for="type" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.date"></label>
-					<div class="col-sm-9">
-						<input type="text" class="form-control" id="type" name="date" [(ngModel)]="model.date" required/>
+					<div class="input-group col-sm-9">
+						<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="selectedDate"
+							   ngbDatepicker #date="ngbDatepicker" id="date" name="date" required />
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
+						</div>
 					</div>
 				</div>
 				<div class="form-group row">
@@ -73,7 +77,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
 		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
 	</button>
-	<button (click)="save()" [disabled]="!f.valid" class="btn btn-primary">
+	<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
 	</button>
 </div>

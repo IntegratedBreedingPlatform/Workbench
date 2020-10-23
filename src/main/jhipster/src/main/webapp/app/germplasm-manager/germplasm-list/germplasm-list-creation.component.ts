@@ -3,16 +3,20 @@ import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeNode } from '../../shared/tree';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm-tree-table.service';
 import { ParamContext } from '../../shared/service/param.context';
-import { map } from 'rxjs/operators';
-import { GermplasmList } from '../../shared/model/germplasm-list';
+import { GermplasmList, GermplasmListEntry } from '../../shared/model/germplasm-list';
 import { GermplasmListType } from './germplasm-list-type.model';
 import { GermplasmListService } from './germplasm-list.service';
+import { GermplasmManagerContext } from '../germplasm-manager.context';
+import { formatErrorList } from '../../shared/alert/format-error-list';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
 declare var $: any;
 
@@ -31,23 +35,28 @@ export class GermplasmListCreationComponent implements OnInit {
 
     public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
-    model = new GermplasmList();
     germplasmListTypes: GermplasmListType[];
+
+    model = new GermplasmList();
+    selectedDate: NgbDate;
 
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
                 private translateService: TranslateService,
+                private jhiAlertService: JhiAlertService,
                 private paramContext: ParamContext,
-                public service: TreeService,
-                public germplasmListService: GermplasmListService) {
+                public treeService: TreeService,
+                public germplasmListService: GermplasmListService,
+                private germplasmManagerContext: GermplasmManagerContext,
+                private calendar: NgbCalendar) {
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
+        this.selectedDate = calendar.getToday();
     }
 
     ngOnInit(): void {
-        this.service.expand('')
-            // .pipe(map((res: TreeNode[]) => res.filter((node) => node.isFolder)))
+        this.treeService.expand('')
             .subscribe((res: TreeNode[]) => {
                 res.forEach((node) => this.addNode(node));
                 this.redrawNodes();
@@ -61,6 +70,7 @@ export class GermplasmListCreationComponent implements OnInit {
 
         this.germplasmListService.getGermplasmListTypes().toPromise().then((germplasmListTypes) => {
             this.germplasmListTypes = germplasmListTypes;
+            this.model.type = 'LST';
         });
     }
 
@@ -82,15 +92,40 @@ export class GermplasmListCreationComponent implements OnInit {
         }
     }
 
+    isFormValid(f) {
+        return f.form.valid && this.selectedNode;
+    }
+
     save() {
-        // const selected = this.selectedNodes.filter((node: PrimeNgTreeNode) => node.leaf)
-        //     .map((node: PrimeNgTreeNode) => {
-        //         return {
-        //             id: node.data.id,
-        //             name: node.data.name
-        //         };
-        //     });
+        const germplasmList = <GermplasmList>({
+            name: this.model.name,
+            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
+            type: this.model.type,
+            description: this.model.description,
+            notes: this.model.notes,
+            parentFolderId: this.selectedNode.data.id,
+            entries: this.germplasmManagerContext.itemIds.map((itemId) => {
+                return <GermplasmListEntry>({ gid: itemId });
+            })
+        });
+        this.germplasmListService.save(germplasmList).subscribe(
+            (res: GermplasmList) => this.onSaveSuccess(res),
+            (res: HttpErrorResponse) => this.onError(res)
+        );
+    }
+
+    private onSaveSuccess(res: GermplasmList) {
+        this.jhiAlertService.success('germplasm-list-creation.success');
         this.modal.close();
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.jhiAlertService.error('error.custom', { param: msg });
+        } else {
+            this.jhiAlertService.error('error.general', null, null);
+        }
     }
 
     dismiss() {
@@ -101,8 +136,7 @@ export class GermplasmListCreationComponent implements OnInit {
         if (parent.leaf) {
             return;
         }
-        this.service.expand(parent.data.id)
-            // .pipe(map((res: TreeNode[]) => res.filter((node) => node.isFolder)))
+        this.treeService.expand(parent.data.id)
             .subscribe((res: TreeNode[]) => {
                 parent.children = [];
                 res.forEach((node) => {

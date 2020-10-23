@@ -51,7 +51,8 @@
         "description": "Description",
         "type": "List type",
         "date": "List date",
-        "notes": "Notes"
+        "notes": "Notes",
+        "success": "Germplasm list saved successfully!"
     },
     "breeding-method": {
         "title": "Breeding Method"

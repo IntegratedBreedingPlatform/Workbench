@@ -5,6 +5,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { ParamContext } from '../../shared/service/param.context';
 import { GermplasmListType } from './germplasm-list-type.model';
 import { map } from 'rxjs/operators';
+import { GermplasmList } from '../../shared/model/germplasm-list';
 
 @Injectable()
 export class GermplasmListService {
@@ -16,5 +17,10 @@ export class GermplasmListService {
     getGermplasmListTypes(): Observable<GermplasmListType[]> {
         return this.http.get<GermplasmListType[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-list-types?programUUID=` + this.context.programUUID,
             { observe: 'response' }).pipe(map((res: HttpResponse<GermplasmListType[]>) => res.body));
+    }
+
+    save(list: GermplasmList): Observable<GermplasmList> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
+        return this.http.post<GermplasmList>(url, list);
     }
 }
