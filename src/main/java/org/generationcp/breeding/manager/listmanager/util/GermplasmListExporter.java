@@ -346,6 +346,14 @@ public class GermplasmListExporter {
 
 		final Map<Integer, Variable> variableMap = new HashMap<>();
 		this.addVariableToMap(variableMap, TermId.SEED_AMOUNT_G.getId());
+		final Variable stockId = createMockStockId();
+		variableMap.put(stockId.getId(), stockId);
+		return variableMap;
+	}
+
+	//	TODO: This method was created to continue export the stockId after removing him FROM cvterm.
+	// 	IBP-4058 Remove StockID variable from the ontology
+	private Variable createMockStockId() {
 		final Variable variable = new Variable();
 		variable.setName(ColumnLabels.STOCKID.getName());
 		variable.setDefinition("ID of an inventory deposit");
@@ -362,9 +370,8 @@ public class GermplasmListExporter {
 		method.setDefinition("Term, name or id assigned");
 		variable.setMethod(method);
 		variable.addVariableType(VariableType.GERMPLASM_DESCRIPTOR);
-		variable.setId(-1);
-		variableMap.put(variable.getId(), variable);
-		return variableMap;
+		variable.setId(8269);
+		return variable;
 	}
 
 	protected Map<Integer, Variable> getVariateVariables() {
