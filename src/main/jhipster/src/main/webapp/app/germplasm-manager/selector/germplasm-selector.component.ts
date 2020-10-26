@@ -46,6 +46,7 @@ export class GermplasmSelectorComponent implements OnInit {
     reverse: any;
 
     isLoading: boolean;
+    selectMultiple : boolean = false;
 
     germplasmSearchRequest = new GermplasmSearchRequest();
     germplasmFilters: any;
@@ -254,6 +255,9 @@ export class GermplasmSelectorComponent implements OnInit {
             this.predicate = data.pagingParams.predicate;
         });
         this.paramContext.readParams();
+        const queryParams = this.activatedRoute.snapshot.queryParams;
+        const selectMultipleParamString = queryParams.selectMultiple;
+        this.selectMultiple = selectMultipleParamString == undefined || (selectMultipleParamString.toString().trim().toLowerCase() === 'true');
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
 
@@ -479,16 +483,6 @@ export class GermplasmSelectorComponent implements OnInit {
      */
     isFullPaginationEnabled() {
         return this.totalItems < 1000000;
-    }
-
-    private validateSelection() {
-        if (this.germplasmList.length === 0 || (!this.allItemsPerPages && this.selectedItems.length === 0)) {
-            this.jhiAlertService.error('error.custom', {
-                param: 'Please select at least one germplasm'
-            }, null);
-            return false;
-        }
-        return true;
     }
 
     /**
