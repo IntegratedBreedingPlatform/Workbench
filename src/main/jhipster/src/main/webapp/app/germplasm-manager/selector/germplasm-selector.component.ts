@@ -39,8 +39,8 @@ export class GermplasmSelectorComponent implements OnInit {
     links: any;
     totalItems: any;
     queryCount: any;
-    itemsPerPage: any = 20;
-    page: any;
+    itemsPerPage: any = 10;
+    page: any = 1;
     predicate: any;
     previousPage: any;
     reverse: any;
@@ -511,6 +511,14 @@ export class GermplasmSelectorComponent implements OnInit {
     private resetFilters() {
         this.filters = GermplasmSelectorComponent.getInitialFilters();
         this.request = new GermplasmSearchRequest();
+    }
+
+    selectGermplasm(){
+        (<any>window.parent).onGidsSelected(this.selectedItems);
+    }
+
+    cancel() {
+        (<any>window.parent).closeModal();
     }
 
 }

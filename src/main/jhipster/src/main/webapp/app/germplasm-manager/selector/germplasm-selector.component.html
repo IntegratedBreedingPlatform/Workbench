@@ -155,4 +155,13 @@
 			</div>
 		</div>
 	</div>
+	<div class="modal-footer">
+		<jhi-alert ></jhi-alert>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+            <span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+		<button (click)="selectGermplasm()" [disabled]="selectedItems.length == 0" class="btn btn-primary">
+			<span jhiTranslate="entity.action.select">Select</span>
+		</button>
+	</div>
 </div>
