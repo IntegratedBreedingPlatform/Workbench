@@ -220,7 +220,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		$uibModal.open({
 			templateUrl: 'pages/BrAPI-Graphical-Queries/selectGermplasmModal.html',
 			controller: 'SelectGermplasmController',
-			size: 'xl'
+			windowClass : 'modal-very-huge'
 		});
 	};
 
