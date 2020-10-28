@@ -138,5 +138,7 @@
         "title": "Germplasm Details"
     },
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "save": "Save",
+    "actions": "Actions"
 }

@@ -40,6 +40,7 @@ import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equals-validator.directive';
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
@@ -87,7 +88,12 @@ import { ItemCountCustomComponent } from './component/item-count-custom.componen
         AttributesService,
         BreedingMethodService,
         LocationService,
-        PopupService
+        PopupService,
+        /*
+         * Workaround to reuse modal content outside ngb modals
+         * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
+         */
+        NgbActiveModal,
     ],
     entryComponents: [
         AppModalComponent,

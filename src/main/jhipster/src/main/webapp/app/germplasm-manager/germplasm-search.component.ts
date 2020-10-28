@@ -18,6 +18,7 @@ import { PopupService } from '../shared/modal/popup.service';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
+import { GermplasmManagerContext } from './germplasm-manager.context';
 
 declare var $: any;
 
@@ -241,7 +242,8 @@ export class GermplasmSearchComponent implements OnInit {
                 private jhiAlertService: JhiAlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
-                private popupService: PopupService) {
+                private popupService: PopupService,
+                private germplasmManagerContext: GermplasmManagerContext) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -495,4 +497,15 @@ export class GermplasmSearchComponent implements OnInit {
         this.request = new GermplasmSearchRequest();
     }
 
+    openAddToList() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        this.germplasmManagerContext.itemIds = this.selectedItems;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
 }
