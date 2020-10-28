@@ -351,8 +351,8 @@ public class GermplasmListExporter {
 		// 	IBP-4058 Remove StockID variable from the ontology
 		final Variable variable = new Variable();
 		variable.setName(ColumnLabels.STOCKID.getName());
-		variable.setId(-8269);
-		variableMap.put(-8269, variable);
+		variable.setId(TermId.STOCKID.getId());
+		variableMap.put(TermId.STOCKID.getId(), variable);
 		return variableMap;
 	}
 
