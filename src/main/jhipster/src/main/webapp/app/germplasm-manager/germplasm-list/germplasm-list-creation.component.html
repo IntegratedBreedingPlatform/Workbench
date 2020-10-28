@@ -1,0 +1,83 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="germplasm-list-creation.header"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col">
+			<h5 jhiTranslate="germplasm-list-creation.folder-section-title"></h5>
+			<br/>
+			<div class="table-responsive">
+				<p-tree [value]="nodes"
+						(onNodeExpand)="onNodeExpand($event)"
+						autoLayout="true"
+						selectionMode="single"
+						[(selection)]="selectedNode"
+						(onNodeSelect)="onNodeSelect($event)"
+						styleClass="tree-table">
+					<ng-template pTemplate="default" let-node>
+						<span [ngClass]="{ 'folder': !node.leaf, 'file': node.leaf }"></span>
+						{{node.data.name}}
+					</ng-template>
+				</p-tree>
+			</div>
+		</div>
+		<div class="col">
+			<h5 jhiTranslate="germplasm-list-creation.details-section-title"></h5>
+			<br/>
+			<form name="form" #f="ngForm">
+				<div class="form-group row">
+					<label for="name" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.name"></label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" id="name" name="name" [(ngModel)]="model.name" required/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="description" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.description"></label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control" id="description" name="description" [(ngModel)]="model.description"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="type" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.type"></label>
+					<div class="col-sm-9">
+						<select class="form-control" name="dropdownTypes" id="dropdownTypes" [(ngModel)]="model.type" #dropdownTypes="ngModel" required>
+							<option *ngFor="let type of germplasmListTypes" [value]="type.code">
+								<label>{{type.name}}</label>
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="type" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.date"></label>
+					<div class="input-group col-sm-9">
+						<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="selectedDate"
+							   ngbDatepicker #date="ngbDatepicker" id="date" name="date" required />
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="notes" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.notes"></label>
+					<div class="col-sm-9">
+						<textarea type="text" class="form-control" id="notes" name="notes" [(ngModel)]="model.notes"
+							   rows="4" ></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+	</button>
+</div>
