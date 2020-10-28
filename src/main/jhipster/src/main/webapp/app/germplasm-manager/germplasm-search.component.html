@@ -35,9 +35,13 @@
 					<jhi-col-vis-button [colName]="'immediateSourcePreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['immediateSourcePreferredName'], 'IMMEDIATE SOURCE')"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span></jhi-col-vis-button>
 				</div>
 			</ng-template>
+			<div>
+				<span>Total Entries:</span>&nbsp;
+				<span class="font-weight-bold">{{totalItems}}</span>
+			</div>
 			<div class="form-group form-inline">
-				<span>Total Entries:</span>
-				<span style="padding-left: 5px;" class="font-weight-bold"> {{totalItems}}</span>
+				<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
+										   [limit]="5000"></jhi-item-count-custom>
 				<span style="margin-left: 20px;">Selected:</span>
 				<span style="padding-left: 5px;" class="font-weight-bold"> {{allItemsPerPages ? totalItems : selectedItems.length}}</span>
 				<!-- TODO Solution for the SELECT-ALL-PERFORMANCE-PROBLEM. Hide for the moment
@@ -140,14 +144,13 @@
 				<div class="pagination-container">
 					<div class="pagination-box pagination-box-left">
 						<div>
-							<jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+							<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
+													   [limit]="5000"></jhi-item-count-custom>
 						</div>
 					</div>
 					<div class="pagination-box">
-						<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
-										[maxSize]="5" [rotate]="true" (pageChange)="loadPage(page)"
-										[boundaryLinks]="isFullPaginationEnabled()" [ellipses]="isFullPaginationEnabled()"
-						></ngb-pagination>
+						<ngb-pagination [collectionSize]="filteredItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
+										[maxSize]="5" [rotate]="true" (pageChange)="loadPage(page)"></ngb-pagination>
 					</div>
 					<div class="pagination-box pagination-box-right">
 					</div>

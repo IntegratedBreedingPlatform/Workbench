@@ -39,6 +39,7 @@ import { LoginService } from './login/login.service';
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equals-validator.directive';
+import { ItemCountCustomComponent } from './component/item-count-custom.component';
 
 @NgModule({
     imports: [
@@ -67,7 +68,8 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
-        KeyValuePipe
+        KeyValuePipe,
+        ItemCountCustomComponent
     ],
     providers: [
         LoginService,
@@ -120,7 +122,8 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
-        ColumnFilterAttributesComponent
+        ColumnFilterAttributesComponent,
+        ItemCountCustomComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

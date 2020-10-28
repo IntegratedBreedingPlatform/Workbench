@@ -35,7 +35,7 @@ export class GermplasmSearchComponent implements OnInit {
     routeData: any;
     links: any;
     totalItems: any;
-    queryCount: any;
+    filteredItems: any;
     itemsPerPage: any = 20;
     page: any;
     predicate: any;
@@ -413,14 +413,8 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        // filtering or sorting will limit the response
-        if (headers.get('X-Filtered-Count') < 5000 || this.predicate !== SORT_PREDICATE_NONE) {
-            this.totalItems = headers.get('X-Filtered-Count');
-        } else {
-            this.totalItems = headers.get('X-Total-Count');
-        }
-        this.queryCount = this.totalItems;
-        // this.page = pagingParams.page;
+        this.totalItems = headers.get('X-Total-Count');
+        this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
     }
 
@@ -467,13 +461,6 @@ export class GermplasmSearchComponent implements OnInit {
 
     isAllPageSelected() {
         return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
-    }
-
-    /**
-     * Going to the last page of a large table is expensive.
-     */
-    isFullPaginationEnabled() {
-        return this.totalItems < 1000000;
     }
 
     private validateSelection() {
