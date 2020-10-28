@@ -346,33 +346,16 @@ public class GermplasmListExporter {
 
 		final Map<Integer, Variable> variableMap = new HashMap<>();
 		this.addVariableToMap(variableMap, TermId.SEED_AMOUNT_G.getId());
-		final Variable stockId = createMockStockId();
-		variableMap.put(stockId.getId(), stockId);
+
+		//	TODO: This variable was created to continue exporting the stockId after removing him FROM cvterm.
+		// 	IBP-4058 Remove StockID variable from the ontology
+		final Variable variable = new Variable();
+		variable.setName(ColumnLabels.STOCKID.getName());
+		variable.setId(-8269);
+		variableMap.put(-8269, variable);
 		return variableMap;
 	}
 
-	//	TODO: This method was created to continue export the stockId after removing him FROM cvterm.
-	// 	IBP-4058 Remove StockID variable from the ontology
-	private Variable createMockStockId() {
-		final Variable variable = new Variable();
-		variable.setName(ColumnLabels.STOCKID.getName());
-		variable.setDefinition("ID of an inventory deposit");
-		final Property property = new Property();
-		property.setName("GERMPLASM STOCK ID");
-		variable.setProperty(property);
-		final Scale scale = new Scale();
-		scale.setName("Germplasm id");
-		scale.setDefinition("Germplasm scale to hold Germplasm List data type");
-		scale.setDataType(DataType.GERMPLASM_LIST);
-		variable.setScale(scale);
-		final Method method = new Method();
-		method.setName("Assigned");
-		method.setDefinition("Term, name or id assigned");
-		variable.setMethod(method);
-		variable.addVariableType(VariableType.GERMPLASM_DESCRIPTOR);
-		variable.setId(8269);
-		return variable;
-	}
 
 	protected Map<Integer, Variable> getVariateVariables() {
 
