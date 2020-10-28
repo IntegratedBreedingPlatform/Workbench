@@ -6,7 +6,7 @@ import {BmsjHipsterSharedModule} from '../shared';
 import {GermplasmSearchComponent} from './germplasm-search.component';
 import {GermplasmSearchResolvePagingParams} from './germplasm-search-resolve-paging-params';
 import {GermplasmManagerComponent} from './germplasm-manager.component';
-import {GermplasmSelectorComponent} from "./selector/germplasm-selector.component";
+import {GermplasmSelectorComponent} from './selector/germplasm-selector.component';
 
 @NgModule({
     imports: [

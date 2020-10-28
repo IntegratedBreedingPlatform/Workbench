@@ -16,7 +16,7 @@ import { PedigreeType } from '../../shared/column-filter/column-filter-pedigree-
 import { SORT_PREDICATE_NONE } from '.././germplasm-search-resolve-paging-params';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import {ParamContext} from "../../shared/service/param.context";
+import {ParamContext} from '../../shared/service/param.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 
 declare var $: any;
@@ -28,8 +28,6 @@ declare var $: any;
     styleUrls: ['../../../content/css/global-bs4.scss']
 })
 export class GermplasmSelectorComponent implements OnInit {
-
-
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
     eventSubscriber: Subscription;
@@ -47,7 +45,7 @@ export class GermplasmSelectorComponent implements OnInit {
     reverse: any;
 
     isLoading: boolean;
-    selectMultiple : boolean = false;
+    selectMultiple: any = false;
 
     germplasmSearchRequest = new GermplasmSearchRequest();
     germplasmFilters: any;
@@ -258,7 +256,7 @@ export class GermplasmSelectorComponent implements OnInit {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         const selectMultipleParamString = queryParams.selectMultiple;
-        this.selectMultiple = selectMultipleParamString == undefined || (selectMultipleParamString.toString().trim().toLowerCase() === 'true');
+        this.selectMultiple = selectMultipleParamString === undefined || (selectMultipleParamString.toString().trim().toLowerCase() === 'true');
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
 
@@ -507,7 +505,7 @@ export class GermplasmSelectorComponent implements OnInit {
         this.request = new GermplasmSearchRequest();
     }
 
-    selectGermplasm(){
+    selectGermplasm() {
         (<any>window.parent).onGidsSelected(this.selectedItems);
     }
 
