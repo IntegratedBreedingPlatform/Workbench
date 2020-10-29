@@ -69,8 +69,6 @@ public class InventoryViewComponentTest {
 				.getTermById(ColumnLabels.LOT_STATUS.getTermId().getId());
 		Mockito.doReturn(new Term(TermId.COMMENT_INVENTORY.getId(), COMMENT_HEADER_NAME, "")).when(this.ontologyDataManager)
 				.getTermById(ColumnLabels.COMMENT.getTermId().getId());
-		Mockito.doReturn(new Term(TermId.STOCKID.getId(), STOCKID_HEADER_NAME, "")).when(this.ontologyDataManager)
-				.getTermById(ColumnLabels.STOCKID.getTermId().getId());
 		Mockito.doReturn(new Term(TermId.LOT_ID_INVENTORY.getId(), LOTID_HEADER_NAME, "")).when(this.ontologyDataManager)
 				.getTermById(ColumnLabels.LOT_ID.getTermId().getId());
 

@@ -159,8 +159,6 @@ public class ListBuilderComponentTest {
 				.thenReturn(new Term(1, ListBuilderComponentTest.CROSS, ""));
 		when(this.ontologyDataManager.getTermById(TermId.SEED_SOURCE.getId()))
 				.thenReturn(new Term(1, ListBuilderComponentTest.SEED_SOURCE, ""));
-		when(this.ontologyDataManager.getTermById(TermId.STOCKID.getId()))
-				.thenReturn(new Term(1, ListBuilderComponentTest.STOCKID, ""));
 		this.listBuilderComponent.setTableWithSelectAllLayout(this.tableWithSelectAllLayout);
 
 		this.listBuilderComponent.setToolsButtonContainer(Mockito.mock(AbsoluteLayout.class));
