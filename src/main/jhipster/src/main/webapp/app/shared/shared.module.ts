@@ -38,6 +38,7 @@ import { BreedingMethodService } from './breeding-method/service/breeding-method
 import { LoginService } from './login/login.service';
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     imports: [
@@ -83,7 +84,12 @@ import { ModalConfirmComponent } from './modal/modal-confirm.component';
         AttributesService,
         BreedingMethodService,
         LocationService,
-        PopupService
+        PopupService,
+        /*
+         * Workaround to reuse modal content outside ngb modals
+         * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
+         */
+        NgbActiveModal,
     ],
     entryComponents: [
         AppModalComponent,

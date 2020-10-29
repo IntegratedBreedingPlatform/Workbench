@@ -7,6 +7,11 @@ import {GermplasmSearchComponent} from './germplasm-search.component';
 import {GermplasmSearchResolvePagingParams} from './germplasm-search-resolve-paging-params';
 import {GermplasmManagerComponent} from './germplasm-manager.component';
 import {GermplasmSelectorComponent} from './selector/germplasm-selector.component';
+import {
+    GermplasmListCreationComponent,
+    GermplasmListCreationPopupComponent
+} from './germplasm-list/germplasm-list-creation.component';
+import {GermplasmManagerContext} from './germplasm-manager.context';
 
 @NgModule({
     imports: [
@@ -17,16 +22,21 @@ import {GermplasmSelectorComponent} from './selector/germplasm-selector.componen
         LotCreationDialogComponent,
         GermplasmManagerComponent,
         GermplasmSearchComponent,
+        GermplasmListCreationComponent,
+        GermplasmListCreationPopupComponent,
         GermplasmSelectorComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
         GermplasmManagerComponent,
         GermplasmSearchComponent,
+        GermplasmListCreationComponent,
+        GermplasmListCreationPopupComponent,
         GermplasmSelectorComponent
     ],
     providers: [
-        GermplasmSearchResolvePagingParams
+        GermplasmSearchResolvePagingParams,
+        GermplasmManagerContext
     ]
 })
 export class GermplasmManagerModule {
