@@ -34,7 +34,10 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         path: 'germplasm-selector',
         component: GermplasmSelectorComponent,
         data: { authorities: SEARCH_GERMPLASM_PERMISSIONS },
-        canActivate: [RouteAccessService]
+        canActivate: [RouteAccessService],
+        resolve: {
+            'pagingParams': GermplasmSearchResolvePagingParams
+        },
     },
     {
         path: 'germplasm-list-creation-dialog',

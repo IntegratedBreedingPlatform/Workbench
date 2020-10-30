@@ -552,9 +552,6 @@ public class ListComponentTest {
 		Mockito.when(this.ontologyDataManager.getTermById(TermId.SEED_SOURCE.getId()))
 			.thenReturn(this.createTerm(TermId.SEED_SOURCE.getId(), ListComponentTest.SEED_SOURCE));
 
-		Mockito.when(this.ontologyDataManager.getTermById(TermId.STOCKID.getId()))
-			.thenReturn(this.createTerm(TermId.STOCKID.getId(), ListComponentTest.STOCKID));
-
 	}
 
 	private void setUpWorkbenchDataManager() {
