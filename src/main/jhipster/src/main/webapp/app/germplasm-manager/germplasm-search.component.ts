@@ -19,6 +19,7 @@ import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
+import { SearchComposite } from '../shared/model/search-composite';
 
 declare var $: any;
 
@@ -75,7 +76,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     selectedItems: any[] = [];
-    allItemsPerPages = false;
+    isSelectAll = false;
 
     private static getInitialFilters() {
         return [
@@ -399,7 +400,7 @@ export class GermplasmSearchComponent implements OnInit {
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
-        this.allItemsPerPages = false;
+        this.isSelectAll = false;
         this.selectedItems = [];
         this.loadAll(this.request);
     }
@@ -433,22 +434,22 @@ export class GermplasmSearchComponent implements OnInit {
         return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
     }
 
-    onSelectAllPage() {
-        const allPageSelected = this.isAllPageSelected();
-        const lotCurrentPage = this.germplasmList.map((germplasm) => germplasm.gid);
-        if (allPageSelected) {
+    onSelectPage() {
+        const isPageSelected = this.isPageSelected();
+        const pageGids = this.germplasmList.map((germplasm) => germplasm.gid);
+        if (isPageSelected) {
             this.selectedItems = this.selectedItems.filter((item) =>
-                lotCurrentPage.indexOf(item) === -1);
+                pageGids.indexOf(item) === -1);
         } else {
-            this.selectedItems = lotCurrentPage.filter((item) =>
+            this.selectedItems = pageGids.filter((item) =>
                 this.selectedItems.indexOf(item) === -1
             ).concat(this.selectedItems);
         }
     }
 
-    onSelectAllPages(selectAllItems) {
-        this.allItemsPerPages = !selectAllItems;
-        if (this.allItemsPerPages) {
+    onSelectAll(isSelectAll) {
+        this.isSelectAll = !isSelectAll;
+        if (this.isSelectAll) {
             this.selectedItems = [];
         }
     }
@@ -461,12 +462,12 @@ export class GermplasmSearchComponent implements OnInit {
         }
     }
 
-    isAllPageSelected() {
+    isPageSelected() {
         return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
     }
 
     private validateSelection() {
-        if (this.germplasmList.length === 0 || (!this.allItemsPerPages && this.selectedItems.length === 0)) {
+        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
             this.jhiAlertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
             }, null);
@@ -501,7 +502,14 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
-        this.germplasmManagerContext.itemIds = this.selectedItems;
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.request;
+        } else {
+            searchComposite.itemIds = this.selectedItems;
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
 
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
             replaceUrl: true,

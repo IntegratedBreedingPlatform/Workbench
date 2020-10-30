@@ -1,3 +1,6 @@
+import { SearchComposite } from './search-composite';
+import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
+
 export class GermplasmList {
     constructor(
         public name?: string,
@@ -6,7 +9,8 @@ export class GermplasmList {
         public date?: any,
         public notes?: string,
         public parentFolderId?: string,
-        public entries?: GermplasmListEntry[]
+        public entries?: GermplasmListEntry[],
+        public searchComposite?: SearchComposite<GermplasmSearchRequest, number>
     ) {
     }
 }
