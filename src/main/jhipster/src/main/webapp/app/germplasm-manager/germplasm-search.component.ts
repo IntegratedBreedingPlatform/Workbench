@@ -82,17 +82,7 @@ export class GermplasmSearchComponent implements OnInit {
         return [
             {
                 key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
-                matchType: MatchType.STARTSWITH,
-                transform(req) {
-                    ColumnFilterComponent.transformTextWithMatchOptionsFilter(this, req);
-                },
-                options: Promise.resolve([{
-                    id: MatchType.STARTSWITH, name: 'Starts with'
-                }, {
-                    id: MatchType.EXACTMATCH, name: 'Exact Match'
-                }, {
-                    id: MatchType.CONTAINS, name: 'Contains'
-                }])
+                matchType: MatchType.STARTSWITH
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT },
@@ -198,10 +188,22 @@ export class GermplasmSearchComponent implements OnInit {
                     this.to = req[this.toKey];
                 }
             },
-            { key: 'femaleParentName', name: 'Cross-Female Parent Name', placeholder: 'Contains Text', type: FilterType.TEXT },
-            { key: 'maleParentName', name: 'Cross-Male Parent Name', placeholder: 'Contains Text', type: FilterType.TEXT },
-            { key: 'groupSourceName', name: 'Group Source Name', placeholder: 'Contains Text', type: FilterType.TEXT },
-            { key: 'immediateSourceName', name: 'Immediate Source Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            {
+                key: 'femaleParentName', name: 'Cross-Female Parent Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'maleParentName', name: 'Cross-Male Parent Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'groupSourceName', name: 'Group Source Name', placeholder: 'Contains Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'immediateSourceName', name: 'Immediate Source Name', placeholder: 'Contains Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
             { key: 'withInventoryOnly', name: 'With Inventory Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withRawObservationsOnly', name: 'With Observations Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withSampleOnly', name: 'With Sample Only', type: FilterType.BOOLEAN, value: true },

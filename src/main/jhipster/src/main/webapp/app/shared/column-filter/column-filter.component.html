@@ -68,7 +68,7 @@
                         </jhi-column-filter-list>
                         <jhi-column-filter-text-with-match-options *ngIf="filter.type === FILTER_TYPES.TEXT_WITH_MATCH_OPTIONS"
                                                           [filter]="filter"
-                                                          (onApply)="updateTextFilter(filter, filter.key)"
+                                                          (onApply)="updateTextWithMatchFilter(filter)"
                                                           (onReset)="reset(filter)">
                         </jhi-column-filter-text-with-match-options>
                         <jhi-column-filter-pedigree-options *ngIf="filter.type === FILTER_TYPES.PEDIGREE_OPTIONS"

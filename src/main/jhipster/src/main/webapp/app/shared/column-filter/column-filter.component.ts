@@ -62,13 +62,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
     }
 
-    static transformTextWithMatchOptionsFilter(filter, request) {
-        request[filter.key] = {
-            type: filter.matchType,
-            value: filter.value
-        }
-    }
-
     static transformPedigreeOptionsFilter(filter, request) {
         request[filter.key] = {
             type: filter.pedigreeType,
@@ -262,6 +255,15 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             filter.transform(this.request);
         } else {
             this.request[key] = filter.value;
+        }
+        this.resultSearch.searchResultDbId = '';
+        this.apply(filter);
+    }
+
+    updateTextWithMatchFilter(filter: any) {
+        this.request[filter.key] = {
+            type: filter.matchType,
+            value: filter.value
         }
         this.resultSearch.searchResultDbId = '';
         this.apply(filter);
