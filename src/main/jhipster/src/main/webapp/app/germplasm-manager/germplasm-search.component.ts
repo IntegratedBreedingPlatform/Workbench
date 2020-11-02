@@ -391,6 +391,13 @@ export class GermplasmSearchComponent implements OnInit {
         return list;
     }
 
+    hasIncludedGids() {
+        return this.request && (
+            this.request.includePedigree
+            || this.request.includeGroupMembers
+        );
+    }
+
     registerClearSort() {
         this.eventSubscriber = this.eventManager.subscribe('clearSort', (event) => {
             this.clearSort();

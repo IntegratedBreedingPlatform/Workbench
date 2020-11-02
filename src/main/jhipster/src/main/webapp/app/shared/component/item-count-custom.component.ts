@@ -10,7 +10,7 @@ import { Input } from '@angular/core';
 		<span class="info jhi-item-count">
             Showing {{((page - 1) * itemsPerPage) == 0 ? 1 : ((page - 1) * itemsPerPage + 1)}} -
 			{{(page * itemsPerPage) < total ? (page * itemsPerPage) : total}}
-			of {{total}}{{+total < limit ? '' : '+'}}
+			of <span class="font-weight-bold">{{total}}{{+total < limit ? '' : '+'}}</span>
             items.
         </span>`
 })

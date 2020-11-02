@@ -39,7 +39,9 @@
         },
         "actions": {
             "add-to-list": "Add to list"
-        }
+        },
+        "total-records": "Total germplasm records",
+        "included-gids": "(+ included germplasm)"
     },
     "germplasm-list-creation": {
         "header": "Save list",
