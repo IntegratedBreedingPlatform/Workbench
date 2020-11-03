@@ -86,7 +86,7 @@
                     </ng-template>
                     <button *ngIf="filter.type !== FILTER_TYPES.MODAL"
                             type="button" class="btn btn-info" [ngbPopover]="popover" [placement]="['bottom', 'right']" [autoClose]="'outside'"
-                            title="{{filter.label}}">
+                            title="{{filter.label}}" #popoverButton="ngbPopover">
                         <i class="fa fa-times-circle" (click)="clear(filter)" *ngIf="!filter.default" style=""></i>
                         <div>{{filter.label}}</div>
                     </button>
