@@ -380,17 +380,23 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     isExpensiveFilter() {
-        return this.request && (
-            this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
-        );
+        return this.request && this.hasNameContainsFilters();
     }
 
     getExpensiveFilterWarningList() {
         let list = '';
-        if (this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS) {
-            list += '<li>Name contains</li>'
+        if (this.hasNameContainsFilters()) {
+            list += '<li>name contains</li>'
         }
         return list;
+    }
+
+    private hasNameContainsFilters() {
+        return this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
+            || this.request.femaleParentName && this.request.femaleParentName.type === MatchType.CONTAINS
+            || this.request.maleParentName && this.request.maleParentName.type === MatchType.CONTAINS
+            || this.request.groupSourceName && this.request.groupSourceName.type === MatchType.CONTAINS
+            || this.request.immediateSourceName && this.request.immediateSourceName.type === MatchType.CONTAINS;
     }
 
     hasIncludedGids() {
