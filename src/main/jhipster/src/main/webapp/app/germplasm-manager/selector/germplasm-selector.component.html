@@ -35,23 +35,19 @@
 					<jhi-col-vis-button [colName]="'immediateSourcePreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['immediateSourcePreferredName'], 'IMMEDIATE SOURCE')"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span></jhi-col-vis-button>
 				</div>
 			</ng-template>
+			<div>
+				<span jhiTranslate="search-germplasm.total-records"></span>:&nbsp;
+				<span>{{totalItems}}</span>
+			</div>
 			<div class="form-group form-inline">
-				<span>Total Entries:</span>
-				<span style="padding-left: 5px;" class="font-weight-bold"> {{totalItems}}</span>
+				<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
+										   [limit]="5000"></jhi-item-count-custom>
 				<span style="margin-left: 20px;">Selected:</span>
-				<span style="padding-left: 5px;" class="font-weight-bold"> {{allItemsPerPages ? totalItems : selectedItems.length}}</span>
-				<!-- TODO Solution for the SELECT-ALL-PERFORMANCE-PROBLEM. Hide for the moment
-				<div class="form-check form-check-inline" style="margin-left: 20px;">
-					<input type="checkbox" tooltip="Select all pages" [checked]="allItemsPerPages" (click)="onSelectAllPages(allItemsPerPages)" id="check-select-all" name="check-select-all">
-					<label class="form-check-label" for="check-select-all" style="padding-left: 5px;">
-						Select all pages
-					</label>
-				</div>
-				-->
+				<span style="padding-left: 5px;" class="font-weight-bold"> {{selectedItems.length}}</span>
 				<div style="margin-left: 10px;">
 					<a href (click)="onClearSort($event)" jhiTranslate="global.clear-sort"></a>
 				</div>
-				<span *ngIf="isLoading" class="throbber throbber-2x"></span>
+				<span *ngIf="isLoading" style="margin-left: 10px;" class="throbber throbber-2x"></span>
 			</div>
 		</div>
 	</div>
@@ -60,8 +56,7 @@
 		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
-				<th *ngIf="!allItemsPerPages && selectMultiple"><input type="checkbox" tooltip="select current page" [checked]="isAllPageSelected()" (click)="onSelectAllPage()" [title]="'select current page'"></th>
-				<th *ngIf="!selectMultiple"></th>
+				<th><input *ngIf="selectMultiple" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
 				<th jhiSortBy="GID" [hidden]="hiddenColumns['gid']"><span jhiTranslate="search-germplasm.column.gid">GID</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="GROUP ID" [hidden]="hiddenColumns['groupId']"><span jhiTranslate="search-germplasm.column.groupId">GROUP ID</span> <span class="fa fa-sort"></span></th>
 				<th jhiSortBy="NAMES" [hidden]="hiddenColumns['names']"><span jhiTranslate="search-germplasm.column.names">NAMES</span> <span class="fa fa-sort"></span></th>
@@ -92,8 +87,10 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId">
-				<td *ngIf="!allItemsPerPages && selectMultiple"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
-				<td *ngIf="!selectMultiple"><input type="radio" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
+				<td>
+					<input *ngIf="selectMultiple" type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
+					<input *ngIf="!selectMultiple" type="radio" name="gid-option-group" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
+				</td>
 				<td [hidden]="hiddenColumns['gid']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
 				<td [hidden]="hiddenColumns['groupId']"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
 				<td [hidden]="hiddenColumns['names']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
@@ -130,7 +127,7 @@
 				</thead>
 				<tbody>
 				<tr>
-					<td><span jhiTranslate="no.data"></span>&nbsp;<span style="font-style: italic" jhiTranslate="search-germplasm.no.data"></span></td>
+					<td jhiTranslate="no.data"></td>
 				</tr>
 				</tbody>
 			</table>
@@ -142,14 +139,13 @@
 				<div class="pagination-container">
 					<div class="pagination-box pagination-box-left">
 						<div>
-							<jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+							<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
+													   [limit]="5000"></jhi-item-count-custom>
 						</div>
 					</div>
 					<div class="pagination-box">
-						<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
-										[maxSize]="5" [rotate]="true" (pageChange)="loadPage(page)"
-										[boundaryLinks]="isFullPaginationEnabled()" [ellipses]="isFullPaginationEnabled()"
-						></ngb-pagination>
+						<ngb-pagination [collectionSize]="filteredItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
+										[maxSize]="5" [rotate]="true" (pageChange)="loadPage(page)"></ngb-pagination>
 					</div>
 					<div class="pagination-box pagination-box-right">
 					</div>
