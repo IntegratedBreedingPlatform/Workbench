@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { TreeService } from '../../shared/tree/tree.service';
@@ -17,6 +17,9 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { TreeDragDropService, TreeNodeDragEvent } from 'primeng/api';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { Tree, UITreeNode } from 'primeng/primeng';
 
 declare var $: any;
 
@@ -28,10 +31,13 @@ declare var $: any;
     styleUrls: ['../../../content/css/global-bs4.scss'],
     providers: [
         { provide: TreeService, useClass: GermplasmTreeTableService },
+        { provide: TreeDragDropService, useClass: TreeDragDropService },
         { provide: GermplasmListService, useClass: GermplasmListService },
     ]
 })
 export class GermplasmListCreationComponent implements OnInit {
+
+    @ViewChild(Tree) tree: Tree;
 
     public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
@@ -40,15 +46,21 @@ export class GermplasmListCreationComponent implements OnInit {
     model = new GermplasmList();
     selectedDate: NgbDate;
 
+    public mode: Mode = Mode.None;
+    public Modes = Mode;
+    public name: string; // rename or add item
+
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
                 private translateService: TranslateService,
                 private jhiAlertService: JhiAlertService,
                 private paramContext: ParamContext,
                 public treeService: TreeService,
+                public treeDragDropService: TreeDragDropService,
                 public germplasmListService: GermplasmListService,
                 private germplasmManagerContext: GermplasmManagerContext,
-                private calendar: NgbCalendar) {
+                private calendar: NgbCalendar,
+                private modalService: NgbModal) {
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
@@ -72,10 +84,55 @@ export class GermplasmListCreationComponent implements OnInit {
             this.germplasmListTypes = germplasmListTypes;
             this.model.type = 'LST';
         });
+
+        // UITreeNode.prototype.onDropNodeDragOver = function (event) {
+        //     console.log("onDropNodeDragOver");
+        //     return;
+        // };
+        //
+        // Tree.prototype.allowDrop = (dragNode: any, dropNode: any, dragNodeScope: any): boolean => {
+        //     console.log('allowDrop');
+        //
+        //     return false;
+        // }
+
+        // this.treeDragDropService.dragStop$.subscribe((event: TreeNodeDragEvent) => {
+        //     if (1 == 1) {
+        //         // event.stopPropagation();
+        //         // event.preventDefault();
+        //     }
+        //
+        //     console.log('event' + event);
+        //     return false;
+        // });
     }
 
     private addNode(node: TreeNode) {
         return this.nodes.push(this.toPrimeNgNode(node));
+    }
+
+    onDrop(event, source: PrimeNgTreeNode, target: PrimeNgTreeNode) {
+        console.log('onDrop');
+        // event.accept();
+        // event.originalEvent.stopPropagation();
+        // event.originalEvent.preventDefault();
+        // return;
+
+        if (source.children && source.children.length !== 0) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
+                { folder: source.data.name });
+            return false;
+        }
+        // } else if (target.data.id === 'CROPLISTS' && !source.leaf) {
+        //     this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
+        //     return;
+        // } else if (target.leaf) {
+        //     this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
+        //     return;
+        // }
+        // this.treeService.move(source.data.id, target.data.id).subscribe((res) => {},
+        //     (res: HttpErrorResponse) =>
+        //         this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
     }
 
     onNodeExpand(event) {
@@ -94,6 +151,52 @@ export class GermplasmListCreationComponent implements OnInit {
 
     isFormValid(f) {
         return f.form.valid && this.selectedNode;
+    }
+
+    isRootFolder() {
+        return this.selectedNode.data.id === 'CROPLISTS' || this.selectedNode.data.id === 'LISTS';
+    }
+
+    setMode(mode: Mode, iconClickEvent) {
+        if (this.isDisabled(iconClickEvent)) {
+            return;
+        }
+        this.mode = mode;
+        if (this.mode === Mode.Delete) {
+            this.confirmDeleteFolderInTreeTable();
+        } else {
+            this.setName();
+        }
+    }
+
+    setName() {
+        if (this.mode === Mode.Add) {
+            this.name = '';
+        } else if (this.mode === Mode.Rename) {
+            this.name = this.selectedNode.data.name;
+        }
+    }
+
+    confirmDeleteFolderInTreeTable() {
+        let message = '';
+        if (this.selectedNode) {
+            message = this.translateService.instant('bmsjHipsterApp.tree-table.messages.folder.delete.question',
+                    {id: this.selectedNode.data.name});
+        } else {
+            return;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = message;
+        confirmModalRef.componentInstance.title = this.translateService.instant('bmsjHipsterApp.tree-table.action.folder.delete');
+
+        confirmModalRef.result.then(() => {
+            this.submitDeleteFolderInTreeTable();
+        }, () => confirmModalRef.dismiss());
+    }
+
+    isDisabled(iconClickEvent) {
+        return iconClickEvent.target.classList.contains('disable-image');
     }
 
     save() {
@@ -132,7 +235,7 @@ export class GermplasmListCreationComponent implements OnInit {
         this.modal.dismiss();
     }
 
-    private expand(parent) {
+    private expand(parent, selectedId?: any) {
         if (parent.leaf) {
             return;
         }
@@ -152,6 +255,7 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     private toPrimeNgNode(node: TreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {
+        console.log('toPrimeNgNode');
         return {
             label: node.name,
             data: {
@@ -162,12 +266,54 @@ export class GermplasmListCreationComponent implements OnInit {
                 type: node.type || '',
                 noOfEntries: node.noOfEntries || ''
             },
-            // draggable: node.isFolder,
-            // droppable: node.isFolder,
+            draggable: node.isFolder,
+            droppable: node.isFolder,
             selectable: node.isFolder,
             leaf: !node.isFolder,
             parent,
         };
+    }
+
+    private removeParent(node: PrimeNgTreeNode) {
+        if (!node || !node.parent || !node.parent.children) {
+            return;
+        }
+        const indexOf = node.parent.children.indexOf(node, 0);
+        if (indexOf > -1) {
+            node.parent.children.splice(indexOf, 1);
+        }
+    }
+
+    submitDeleteFolderInTreeTable() {
+        this.mode = this.Modes.None;
+        this.treeService.delete(this.selectedNode.data.id).subscribe(() => {
+                this.expand(this.selectedNode.parent);
+                this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
+            },
+            (res: HttpErrorResponse) =>
+                this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
+        );
+    }
+
+    submitAddOrRenameFolderInTreeTable() {
+        if (this.mode === Mode.Add) {
+            this.treeService.create(this.name, this.selectedNode.data.id).subscribe((res) => {
+                    this.mode = this.Modes.None;
+                    this.expand(this.selectedNode, res.id);
+                    this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
+                },
+                (res: HttpErrorResponse) =>
+                    this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+        } else if (this.mode === Mode.Rename) {
+            this.treeService.rename(this.name, this.selectedNode.data.id).subscribe(() => {
+                    this.mode = this.Modes.None;
+                    this.selectedNode.data.name = this.name;
+                    this.redrawNodes();
+                    this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.rename.successfully');
+                },
+                (res: HttpErrorResponse) =>
+                    this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+        }
     }
 }
 
@@ -184,4 +330,11 @@ export class GermplasmListCreationPopupComponent implements OnInit {
         const modal = this.popupService.open(GermplasmListCreationComponent as Component);
     }
 
+}
+
+enum Mode {
+    Add,
+    Rename,
+    Delete,
+    None
 }

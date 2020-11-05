@@ -1,21 +1,25 @@
 import { TreeService } from '../tree.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { TreeNode } from '../index';
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
+import { Observable } from 'rxjs';
 
 // TODO rename GermplasmTreeService
 @Injectable()
 export class GermplasmTreeTableService extends TreeService {
 
+    private readonly resourceUrl: string;
+
     constructor(private http: HttpClient,
                 private paramContext: ParamContext) {
         super();
+        this.resourceUrl = `/bmsapi/crops/${this.paramContext.cropName}`;
     }
 
     expand(parentKey: any): any {
-        const url = `/bmsapi/crops/${this.paramContext.cropName}/germplasm-lists/tree`;
+        const url = `${this.resourceUrl}/germplasm-lists/tree`;
         const params = {
             onlyFolders: '0'
         };
@@ -29,6 +33,50 @@ export class GermplasmTreeTableService extends TreeService {
             params,
             observe: 'response'
         }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, parentKey))));
+    }
+
+    move(source: string, target: string): Observable<HttpResponse<number>> {
+        const url = `${this.resourceUrl}/germplasm-list-folders/${source}/move`;
+        const params = {
+            newParentId: target,
+            isCropList: String(target === 'CROPLISTS')
+        };
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
+    }
+
+    delete(folderId: string): Observable<HttpResponse<void>> {
+        const url = `${this.resourceUrl}/germplasm-list-folders/${folderId}`;
+        const params = {};
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.delete<void>(url, { observe: 'response', params });
+    }
+
+    create(folderName: string, parentId: string): Observable<HttpResponse<number>> {
+        const url = `${this.resourceUrl}/germplasm-list-folders`;
+        const params = {
+            folderName,
+            parentId
+        };
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.post<HttpResponse<number>>(url, { observe: 'response' }, {params});
+    }
+
+    rename(newFolderName: string, folderId: string): Observable<HttpResponse<number>> {
+        const url = `${this.resourceUrl}/germplasm-list-folders/${folderId}`;
+        const params = {
+            newFolderName
+        };
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {

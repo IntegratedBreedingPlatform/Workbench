@@ -9,18 +9,53 @@
 <div class="modal-body">
 	<div class="row">
 		<div class="col">
-			<h5 jhiTranslate="germplasm-list-creation.folder-section-title"></h5>
-			<br/>
+			<div class="row">
+				<div class="col">
+					<h5 jhiTranslate="germplasm-list-creation.folder-section-title"></h5>
+				</div>
+				<div class="col">
+					<div class="pull-right">
+						<img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
+							 [ngClass]="{ 'disable-image': !selectedNode || selectedNode.data.id === 'CROPLISTS' || selectedNode && selectedNode.leaf }"/>
+						<img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
+							 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
+						<img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
+							 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
+					</div>
+				</div>
+			</div>
+
+			<div id="addFolderDiv" *ngIf="mode == Modes.Add || mode == Modes.Rename">
+				<div class="form-group row">
+					<label class="col-sm-5 col-form-label font-weight-bold">{{ Modes[mode] }} Folder<span class="required">*</span></label>
+					<div class="col-sm-7 input-group" style="height: 34px">
+						<input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="name"/>
+						<button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolderInTreeTable()">
+							<span class="fa fa-check"></span>
+						</button>
+						<button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
+							<span class="fa fa-close"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="clearfix"></div>
 			<div class="table-responsive">
 				<p-tree [value]="nodes"
+						[(selection)]="selectedNode"
+						[draggableNodes]="true"
+						[droppableNodes]="true"
+						(onNodeSelect)="onNodeSelect($event)"
+						(onNodeDrop)="onDrop($event, $event.dragNode, $event.dropNode)"
 						(onNodeExpand)="onNodeExpand($event)"
 						autoLayout="true"
 						selectionMode="single"
-						[(selection)]="selectedNode"
-						(onNodeSelect)="onNodeSelect($event)"
+						draggableScope="self"
+						droppableScope="self"
 						styleClass="tree-table">
 					<ng-template pTemplate="default" let-node>
-						<span [ngClass]="{ 'folder': !node.leaf, 'file': node.leaf }"></span>
+					<span [ngClass]="{ 'folder': !node.leaf, 'file': node.leaf }"></span>
 						{{node.data.name}}
 					</ng-template>
 				</p-tree>
