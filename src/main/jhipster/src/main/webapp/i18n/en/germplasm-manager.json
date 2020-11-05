@@ -37,10 +37,11 @@
             "title": "Warning",
             "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
         },
-        "no.data": "(Note: when filtering, page count may not be accurate)",
         "actions": {
             "add-to-list": "Add to list"
-        }
+        },
+        "total-records": "Total germplasm records",
+        "included-gids": "(+ included germplasm)"
     },
     "germplasm-list-creation": {
         "header": "Save list",

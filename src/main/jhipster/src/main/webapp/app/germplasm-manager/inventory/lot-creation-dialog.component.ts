@@ -95,7 +95,7 @@ export class LotCreationDialogComponent implements OnInit {
     save() {
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
         const lotGeneratorBatchRequest = {
-            searchComposite: <SearchComposite>({
+            searchComposite: <SearchComposite<any, string>>({
                 itemIds: null,
                 searchRequest: this.searchRequestId
             }),
@@ -112,7 +112,7 @@ export class LotCreationDialogComponent implements OnInit {
     private createDeposit(lotUUIDs: string[]) {
         if (this.initialDepositRequired) {
             const lotDepositRequest = {
-                selectedLots: <SearchComposite>({ searchRequest: null, itemIds: lotUUIDs }),
+                selectedLots: <SearchComposite<any, string>>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
                 depositsPerUnit: {},
                 sourceStudyId: this.studyId

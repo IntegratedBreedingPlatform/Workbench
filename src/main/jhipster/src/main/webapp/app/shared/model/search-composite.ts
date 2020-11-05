@@ -1,10 +1,10 @@
 /**
  * Search or apply actions over either a filter or some items
  */
-export class SearchComposite {
+export class SearchComposite<X, Y> {
     constructor(
-        public searchRequest?: any,
-        public itemIds?: any[]
+        public searchRequest?: X,
+        public itemIds?: Y[]
     ) {
 
     }

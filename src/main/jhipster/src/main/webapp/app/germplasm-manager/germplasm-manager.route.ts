@@ -64,7 +64,7 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
                 path: 'germplasm-search',
                 component: GermplasmSearchComponent,
                 data: { authorities: SEARCH_GERMPLASM_PERMISSIONS },
-                canActivate: [],
+                canActivate: [RouteAccessService],
                 resolve: {
                     'pagingParams': GermplasmSearchResolvePagingParams
                 },

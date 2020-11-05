@@ -12,7 +12,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 				</label>
 			</div>
 			<br/>
-            Level: <input type="number" class="form-control" [(ngModel)]="filter.value" name="{{filter.key}}">
+            Level: <input type="number" min="1" jhi-customMinEqualsValidator class="form-control" [(ngModel)]="filter.value" name="{{filter.key}}">
 			<br/>
 			<div class="footer text-center"><br>
 				<button type="submit" class="btn btn-primary btn-sm" [disabled]="!f.valid" (click)="apply(f)">Apply</button>

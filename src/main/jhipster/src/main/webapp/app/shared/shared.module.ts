@@ -38,6 +38,8 @@ import { BreedingMethodService } from './breeding-method/service/breeding-method
 import { LoginService } from './login/login.service';
 import { ModalComponent } from './modal/modal.component';
 import { ModalConfirmComponent } from './modal/modal-confirm.component';
+import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equals-validator.directive';
+import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
@@ -54,6 +56,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,
+        CustomMinEqualsValidatorDirective,
         ColumnFilterNumberComponent,
         ColumnFilterDateComponent,
         ColumnFilterChecklistComponent,
@@ -66,7 +69,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
-        KeyValuePipe
+        KeyValuePipe,
+        ItemCountCustomComponent
     ],
     providers: [
         LoginService,
@@ -112,6 +116,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,
+        CustomMinEqualsValidatorDirective,
         ColumnFilterNumberComponent,
         ColumnFilterDateComponent,
         ColumnFilterChecklistComponent,
@@ -123,7 +128,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
-        ColumnFilterAttributesComponent
+        ColumnFilterAttributesComponent,
+        ItemCountCustomComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

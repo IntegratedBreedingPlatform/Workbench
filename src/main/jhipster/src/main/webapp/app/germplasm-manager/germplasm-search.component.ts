@@ -17,7 +17,9 @@ import { SORT_PREDICATE_NONE } from './germplasm-search-resolve-paging-params';
 import { PopupService } from '../shared/modal/popup.service';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
+import { SearchComposite } from '../shared/model/search-composite';
 
 declare var $: any;
 
@@ -35,7 +37,7 @@ export class GermplasmSearchComponent implements OnInit {
     routeData: any;
     links: any;
     totalItems: any;
-    queryCount: any;
+    filteredItems: any;
     itemsPerPage: any = 20;
     page: any;
     predicate: any;
@@ -74,23 +76,13 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     selectedItems: any[] = [];
-    allItemsPerPages = false;
+    isSelectAll = false;
 
     private static getInitialFilters() {
         return [
             {
                 key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
-                matchType: MatchType.STARTSWITH,
-                transform(req) {
-                    ColumnFilterComponent.transformTextWithMatchOptionsFilter(this, req);
-                },
-                options: Promise.resolve([{
-                    id: MatchType.STARTSWITH, name: 'Starts with'
-                }, {
-                    id: MatchType.EXACTMATCH, name: 'Exact Match'
-                }, {
-                    id: MatchType.CONTAINS, name: 'Contains'
-                }])
+                matchType: MatchType.STARTSWITH
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT },
@@ -196,10 +188,22 @@ export class GermplasmSearchComponent implements OnInit {
                     this.to = req[this.toKey];
                 }
             },
-            { key: 'femaleParentName', name: 'Cross-Female Parent Name', placeholder: 'Contains Text', type: FilterType.TEXT },
-            { key: 'maleParentName', name: 'Cross-Male Parent Name', placeholder: 'Contains Text', type: FilterType.TEXT },
-            { key: 'groupSourceName', name: 'Group Source Name', placeholder: 'Contains Text', type: FilterType.TEXT },
-            { key: 'immediateSourceName', name: 'Immediate Source Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            {
+                key: 'femaleParentName', name: 'Cross-Female Parent Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'maleParentName', name: 'Cross-Male Parent Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'groupSourceName', name: 'Group Source Name', placeholder: 'Contains Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'immediateSourceName', name: 'Immediate Source Name', placeholder: 'Contains Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
             { key: 'withInventoryOnly', name: 'With Inventory Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withRawObservationsOnly', name: 'With Observations Only', type: FilterType.BOOLEAN, value: true },
             { key: 'withSampleOnly', name: 'With Sample Only', type: FilterType.BOOLEAN, value: true },
@@ -376,17 +380,30 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     isExpensiveFilter() {
-        return this.request && (
-            this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
-        );
+        return this.request && this.hasNameContainsFilters();
     }
 
     getExpensiveFilterWarningList() {
         let list = '';
-        if (this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS) {
-            list += '<li>Name contains</li>'
+        if (this.hasNameContainsFilters()) {
+            list += '<li>name contains</li>'
         }
         return list;
+    }
+
+    private hasNameContainsFilters() {
+        return this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
+            || this.request.femaleParentName && this.request.femaleParentName.type === MatchType.CONTAINS
+            || this.request.maleParentName && this.request.maleParentName.type === MatchType.CONTAINS
+            || this.request.groupSourceName && this.request.groupSourceName.type === MatchType.CONTAINS
+            || this.request.immediateSourceName && this.request.immediateSourceName.type === MatchType.CONTAINS;
+    }
+
+    hasIncludedGids() {
+        return this.request && (
+            this.request.includePedigree
+            || this.request.includeGroupMembers
+        );
     }
 
     registerClearSort() {
@@ -398,7 +415,7 @@ export class GermplasmSearchComponent implements OnInit {
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
-        this.allItemsPerPages = false;
+        this.isSelectAll = false;
         this.selectedItems = [];
         this.loadAll(this.request);
     }
@@ -414,24 +431,17 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        // filtering or sorting will limit the response
-        if (headers.get('X-Filtered-Count') < 5000 || this.predicate !== SORT_PREDICATE_NONE) {
-            this.totalItems = headers.get('X-Filtered-Count');
-        } else {
-            this.totalItems = headers.get('X-Total-Count');
-        }
-        this.queryCount = this.totalItems;
-        // this.page = pagingParams.page;
+        this.totalItems = headers.get('X-Total-Count');
+        this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
     }
 
     private onError(response: HttpErrorResponse) {
-        if (response.error && response.error.errors) {
-            this.jhiAlertService.error('error.custom', {
-                param: response.error.errors.map((err) => err.message).join('<br/>')
-            }, null);
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.jhiAlertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error(response.message, null, null);
+            this.jhiAlertService.error('error.general', null, null);
         }
     }
 
@@ -439,22 +449,22 @@ export class GermplasmSearchComponent implements OnInit {
         return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
     }
 
-    onSelectAllPage() {
-        const allPageSelected = this.isAllPageSelected();
-        const lotCurrentPage = this.germplasmList.map((germplasm) => germplasm.gid);
-        if (allPageSelected) {
+    onSelectPage() {
+        const isPageSelected = this.isPageSelected();
+        const pageGids = this.germplasmList.map((germplasm) => germplasm.gid);
+        if (isPageSelected) {
             this.selectedItems = this.selectedItems.filter((item) =>
-                lotCurrentPage.indexOf(item) === -1);
+                pageGids.indexOf(item) === -1);
         } else {
-            this.selectedItems = lotCurrentPage.filter((item) =>
+            this.selectedItems = pageGids.filter((item) =>
                 this.selectedItems.indexOf(item) === -1
             ).concat(this.selectedItems);
         }
     }
 
-    onSelectAllPages(selectAllItems) {
-        this.allItemsPerPages = !selectAllItems;
-        if (this.allItemsPerPages) {
+    onSelectAll(isSelectAll) {
+        this.isSelectAll = !isSelectAll;
+        if (this.isSelectAll) {
             this.selectedItems = [];
         }
     }
@@ -467,19 +477,12 @@ export class GermplasmSearchComponent implements OnInit {
         }
     }
 
-    isAllPageSelected() {
+    isPageSelected() {
         return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
     }
 
-    /**
-     * Going to the last page of a large table is expensive.
-     */
-    isFullPaginationEnabled() {
-        return this.totalItems < 1000000;
-    }
-
     private validateSelection() {
-        if (this.germplasmList.length === 0 || (!this.allItemsPerPages && this.selectedItems.length === 0)) {
+        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
             this.jhiAlertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
             }, null);
@@ -514,7 +517,14 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
-        this.germplasmManagerContext.itemIds = this.selectedItems;
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.request;
+        } else {
+            searchComposite.itemIds = this.selectedItems;
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
 
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
             replaceUrl: true,

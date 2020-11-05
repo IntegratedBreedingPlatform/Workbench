@@ -17,6 +17,7 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 declare var $: any;
 
@@ -39,6 +40,8 @@ export class GermplasmListCreationComponent implements OnInit {
 
     model = new GermplasmList();
     selectedDate: NgbDate;
+
+    isLoading: boolean;
 
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
@@ -93,7 +96,7 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     isFormValid(f) {
-        return f.form.valid && this.selectedNode;
+        return f.form.valid && this.selectedNode && !this.isLoading;
     }
 
     save() {
@@ -104,11 +107,13 @@ export class GermplasmListCreationComponent implements OnInit {
             description: this.model.description,
             notes: this.model.notes,
             parentFolderId: this.selectedNode.data.id,
-            entries: this.germplasmManagerContext.itemIds.map((itemId) => {
-                return <GermplasmListEntry>({ gid: itemId });
-            })
+            searchComposite: this.germplasmManagerContext.searchComposite
         });
-        this.germplasmListService.save(germplasmList).subscribe(
+        this.isLoading = true;
+        this.germplasmListService.save(germplasmList)
+            .pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
             (res: GermplasmList) => this.onSaveSuccess(res),
             (res: HttpErrorResponse) => this.onError(res)
         );
