@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,9 +17,8 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { TreeDragDropService, TreeNodeDragEvent } from 'primeng/api';
+import { TreeDragDropService } from 'primeng/api';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { Tree, UITreeNode } from 'primeng/primeng';
 
 declare var $: any;
 
@@ -36,8 +35,6 @@ declare var $: any;
     ]
 })
 export class GermplasmListCreationComponent implements OnInit {
-
-    @ViewChild(Tree) tree: Tree;
 
     public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
@@ -84,27 +81,6 @@ export class GermplasmListCreationComponent implements OnInit {
             this.germplasmListTypes = germplasmListTypes;
             this.model.type = 'LST';
         });
-
-        // UITreeNode.prototype.onDropNodeDragOver = function (event) {
-        //     console.log("onDropNodeDragOver");
-        //     return;
-        // };
-        //
-        // Tree.prototype.allowDrop = (dragNode: any, dropNode: any, dragNodeScope: any): boolean => {
-        //     console.log('allowDrop');
-        //
-        //     return false;
-        // }
-
-        // this.treeDragDropService.dragStop$.subscribe((event: TreeNodeDragEvent) => {
-        //     if (1 == 1) {
-        //         // event.stopPropagation();
-        //         // event.preventDefault();
-        //     }
-        //
-        //     console.log('event' + event);
-        //     return false;
-        // });
     }
 
     private addNode(node: TreeNode) {
@@ -112,27 +88,38 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     onDrop(event, source: PrimeNgTreeNode, target: PrimeNgTreeNode) {
-        console.log('onDrop');
-        // event.accept();
-        // event.originalEvent.stopPropagation();
-        // event.originalEvent.preventDefault();
-        // return;
+        // Prevent to move source on same parent folder
+        if (source.parent.data.id === target.data.id) {
+            return;
+        }
+
+        // Prevent to move source if parent has a child with same name as the source
+        if (event.dropNode.children.find((node) => node.data.name === source.data.name)) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
+            return;
+        }
 
         if (source.children && source.children.length !== 0) {
             this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
                 { folder: source.data.name });
-            return false;
+            return;
         }
-        // } else if (target.data.id === 'CROPLISTS' && !source.leaf) {
-        //     this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
-        //     return;
-        // } else if (target.leaf) {
-        //     this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
-        //     return;
-        // }
-        // this.treeService.move(source.data.id, target.data.id).subscribe((res) => {},
-        //     (res: HttpErrorResponse) =>
-        //         this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+
+        if (target.data.id === 'CROPLISTS' && !source.leaf) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.program.to.crop.list.not.allowed');
+            return;
+        }
+
+        if (target.leaf) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
+            return;
+        }
+
+        event.accept();
+
+        this.treeService.move(source.data.id, target.data.id).subscribe((res) => {},
+            (res: HttpErrorResponse) =>
+                this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
     }
 
     onNodeExpand(event) {
@@ -255,7 +242,6 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     private toPrimeNgNode(node: TreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {
-        console.log('toPrimeNgNode');
         return {
             label: node.name,
             data: {
@@ -272,16 +258,6 @@ export class GermplasmListCreationComponent implements OnInit {
             leaf: !node.isFolder,
             parent,
         };
-    }
-
-    private removeParent(node: PrimeNgTreeNode) {
-        if (!node || !node.parent || !node.parent.children) {
-            return;
-        }
-        const indexOf = node.parent.children.indexOf(node, 0);
-        if (indexOf > -1) {
-            node.parent.children.splice(indexOf, 1);
-        }
     }
 
     submitDeleteFolderInTreeTable() {

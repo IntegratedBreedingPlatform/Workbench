@@ -46,6 +46,7 @@
 						[(selection)]="selectedNode"
 						[draggableNodes]="true"
 						[droppableNodes]="true"
+						[validateDrop]="true"
 						(onNodeSelect)="onNodeSelect($event)"
 						(onNodeDrop)="onDrop($event, $event.dragNode, $event.dropNode)"
 						(onNodeExpand)="onNodeExpand($event)"

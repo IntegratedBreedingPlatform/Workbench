@@ -13,6 +13,8 @@
           "cannot.move.has.children": "Can not move, {{ folder }} has children",
           "move.not.allowed": "Movement not allowed",
           "move.to.crop.list.not.allowed": "Moving of a Sample list folder to Crop lists is not allowed",
+          "move.program.to.crop.list.not.allowed": "Moving of a Program list folder to Crop lists is not allowed",
+          "move.parent.duplicated.name": "Folder name should be unique within the same directory",
           "delete.question": "Are you sure you want to delete {{ id }} folder?"
         },
         "error": "{{ param }}"
