@@ -1,8 +1,8 @@
-import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { ActivatedRoute } from '@angular/router';
 import { isNumeric } from '../util/is-numeric';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-column-filter',
@@ -11,6 +11,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
     encapsulation: ViewEncapsulation.None
 })
 export class ColumnFilterComponent implements OnInit, OnDestroy {
+
+    @ViewChildren('popoverButton')
+    private popoverButtons: QueryList<NgbPopover>;
 
     public isCollapsed = false;
 
@@ -59,13 +62,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
         if (filter.to) {
             request[toProperty] = `${filter.to.year}-${filter.to.month}-${filter.to.day}`;
-        }
-    }
-
-    static transformTextWithMatchOptionsFilter(filter, request) {
-        request[filter.key] = {
-            type: filter.matchType,
-            value: filter.value
         }
     }
 
@@ -267,6 +263,15 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.apply(filter);
     }
 
+    updateTextWithMatchFilter(filter: any) {
+        this.request[filter.key] = {
+            type: filter.matchType,
+            value: filter.value
+        }
+        this.resultSearch.searchResultDbId = '';
+        this.apply(filter);
+    }
+
     updateBooleanFilter(filter: any, key: string) {
         this.request[key] = filter.value;
         this.apply(filter);
@@ -359,6 +364,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     apply(filter) {
         ColumnFilterComponent.updateBadgeLabel(filter);
+        this.popoverButtons.forEach((button) => button.close());
         this.transition();
     }
 
