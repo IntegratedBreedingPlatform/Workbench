@@ -181,7 +181,7 @@ export class GermplasmListCreationComponent implements OnInit {
         confirmModalRef.componentInstance.title = this.translateService.instant('bmsjHipsterApp.tree-table.action.folder.delete');
 
         confirmModalRef.result.then(() => {
-            this.submitDeleteFolderInTreeTable();
+            this.submitDeleteFolder();
         }, () => confirmModalRef.dismiss());
     }
 
@@ -265,7 +265,7 @@ export class GermplasmListCreationComponent implements OnInit {
         };
     }
 
-    submitDeleteFolderInTreeTable() {
+    submitDeleteFolder() {
         this.mode = this.Modes.None;
         this.treeService.delete(this.selectedNode.data.id).subscribe(() => {
                 this.expand(this.selectedNode.parent);
@@ -276,7 +276,7 @@ export class GermplasmListCreationComponent implements OnInit {
         );
     }
 
-    submitAddOrRenameFolderInTreeTable() {
+    submitAddOrRenameFolder() {
         if (this.mode === Mode.Add) {
             this.treeService.create(this.name, this.selectedNode.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
