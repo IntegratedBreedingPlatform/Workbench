@@ -118,9 +118,9 @@ export class GermplasmListCreationComponent implements OnInit {
             return;
         }
 
-        event.accept();
-
-        this.treeService.move(source.data.id, target.data.id).subscribe((res) => {},
+        this.treeService.move(source.data.id, target.data.id).subscribe((res) => {
+                event.accept();
+            },
             (res: HttpErrorResponse) =>
                 this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
     }
