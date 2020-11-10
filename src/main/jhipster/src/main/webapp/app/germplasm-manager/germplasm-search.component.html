@@ -54,6 +54,8 @@
 			<div class="form-group form-inline">
 				<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
 										   [limit]="5000"></jhi-item-count-custom>
+				<span style="padding-left: 5px;" class="font-italic" *ngIf="hasIncludedGids()"
+					  jhiTranslate="search-germplasm.included-gids"></span>
 				<span style="margin-left: 20px;">Selected:</span>
 				<span style="padding-left: 5px;" class="font-weight-bold">
 					<!-- includes gids not counted in filteredItems (e.g pedigree, group members)  -->
