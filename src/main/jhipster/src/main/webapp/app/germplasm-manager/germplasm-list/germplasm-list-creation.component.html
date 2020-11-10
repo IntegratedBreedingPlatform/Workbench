@@ -29,7 +29,7 @@
 				<div class="form-group row">
 					<label class="col-sm-5 col-form-label font-weight-bold">{{ Modes[mode] }} Folder<span class="required">*</span></label>
 					<div class="col-sm-7 input-group" style="height: 34px">
-						<input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="name"/>
+						<input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="name" maxlength="{{ NAME_MAX_LENGTH }}"/>
 						<button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolder()">
 							<span class="fa fa-check"></span>
 						</button>

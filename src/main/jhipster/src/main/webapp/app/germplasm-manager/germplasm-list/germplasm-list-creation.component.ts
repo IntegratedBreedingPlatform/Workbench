@@ -9,7 +9,7 @@ import { TreeNode } from '../../shared/tree';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm-tree-table.service';
 import { ParamContext } from '../../shared/service/param.context';
-import { GermplasmList, GermplasmListEntry } from '../../shared/model/germplasm-list';
+import { GermplasmList } from '../../shared/model/germplasm-list';
 import { GermplasmListType } from './germplasm-list-type.model';
 import { GermplasmListService } from './germplasm-list.service';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
@@ -36,6 +36,8 @@ declare var $: any;
     ]
 })
 export class GermplasmListCreationComponent implements OnInit {
+
+    readonly NAME_MAX_LENGTH: number = 50;
 
     public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
@@ -97,7 +99,7 @@ export class GermplasmListCreationComponent implements OnInit {
         }
 
         // Prevent to move source if parent has a child with same name as the source
-        if (event.dropNode.children.find((node) => node.data.name === source.data.name)) {
+        if (event.dropNode.children && event.dropNode.children.find((node) => node.data.name === source.data.name)) {
             this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
             return;
         }
@@ -118,11 +120,17 @@ export class GermplasmListCreationComponent implements OnInit {
             return;
         }
 
-        this.treeService.move(source.data.id, target.data.id).subscribe((res) => {
-                event.accept();
-            },
-            (res: HttpErrorResponse) =>
-                this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+        event.accept();
+
+        this.treeService.move(source.data.id, target.data.id).subscribe(
+            (res) => {},
+            (res: HttpErrorResponse) => {
+                // TODO: FIX ME! Due to primeng7 does not support accepting the event within subscribe, we are handling the re-render of the component by calling the expand method.
+                // Check issue reported: https://github.com/primefaces/primeng/issues/7386
+                this.expand(source.parent);
+                this.expand(target);
+                this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
+            });
     }
 
     onNodeExpand(event) {
@@ -277,6 +285,11 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     submitAddOrRenameFolder() {
+        if (this.name.length > this.NAME_MAX_LENGTH) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH })
+            return;
+        }
+
         if (this.mode === Mode.Add) {
             this.treeService.create(this.name, this.selectedNode.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
@@ -285,7 +298,9 @@ export class GermplasmListCreationComponent implements OnInit {
                 },
                 (res: HttpErrorResponse) =>
                     this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
-        } else if (this.mode === Mode.Rename) {
+        }
+
+        if (this.mode === Mode.Rename) {
             this.treeService.rename(this.name, this.selectedNode.data.id).subscribe(() => {
                     this.mode = this.Modes.None;
                     this.selectedNode.data.name = this.name;
