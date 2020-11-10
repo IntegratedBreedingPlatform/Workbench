@@ -85,6 +85,7 @@ export class GermplasmTreeTableService extends TreeService {
             key: item.key,
             parentId: parentKey,
             owner: item.owner,
+            ownerId: item.ownerId,
             description: item.description,
             type: item.type,
             noOfEntries: item.noOfEntries,

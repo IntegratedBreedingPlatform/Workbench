@@ -4,6 +4,7 @@ export class TreeNode {
         public parentId: string,
         public name?: string,
         public owner?: string,
+        public ownerId?: number,
         public description?: string,
         public type?: string,
         public isFolder?: boolean,

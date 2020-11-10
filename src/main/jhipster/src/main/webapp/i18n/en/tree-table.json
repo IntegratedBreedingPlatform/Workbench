@@ -16,7 +16,9 @@
           "move.program.to.crop.list.not.allowed": "Moving of a Program list folder to Crop lists is not allowed",
           "move.parent.duplicated.name": "Folder name should be unique within the same directory",
           "delete.question": "Are you sure you want to delete {{ id }} folder?",
-          "name.too.long": "The name exceeds the limit of {{ length }} characters"
+          "name.too.long": "The name exceeds the limit of {{ length }} characters",
+          "delete.not.owner": "You cannot delete a list that you do not own",
+          "cannot.delete.has.children": "Can not delete, {{ folder }} has children"
         },
         "error": "{{ param }}"
       },

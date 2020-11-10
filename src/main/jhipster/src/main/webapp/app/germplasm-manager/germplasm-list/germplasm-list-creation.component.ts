@@ -20,6 +20,7 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TreeDragDropService } from 'primeng/api';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { Principal } from '../../shared';
 
 declare var $: any;
 
@@ -52,6 +53,8 @@ export class GermplasmListCreationComponent implements OnInit {
 
     isLoading: boolean;
 
+    private loggedUserId: number;
+
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
                 private translateService: TranslateService,
@@ -62,7 +65,8 @@ export class GermplasmListCreationComponent implements OnInit {
                 public germplasmListService: GermplasmListService,
                 private germplasmManagerContext: GermplasmManagerContext,
                 private calendar: NgbCalendar,
-                private modalService: NgbModal) {
+                private modalService: NgbModal,
+                private principal: Principal) {
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
@@ -70,6 +74,10 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.principal.identity().then((account) => {
+            this.loggedUserId = account.userId;
+        });
+
         this.treeService.expand('')
             .subscribe((res: TreeNode[]) => {
                 res.forEach((node) => this.addNode(node));
@@ -161,7 +169,7 @@ export class GermplasmListCreationComponent implements OnInit {
         }
         this.mode = mode;
         if (this.mode === Mode.Delete) {
-            this.confirmDeleteFolderInTreeTable();
+            this.validateDeleteFolder();
         } else {
             this.setName();
         }
@@ -175,7 +183,22 @@ export class GermplasmListCreationComponent implements OnInit {
         }
     }
 
-    confirmDeleteFolderInTreeTable() {
+    validateDeleteFolder() {
+        if (this.selectedNode.children && this.selectedNode.children.length !== 0) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.delete.has.children',
+                { folder: this.selectedNode.data.name });
+            return;
+        }
+
+        if (this.loggedUserId && this.loggedUserId.toString() !== this.selectedNode.data.ownerId) {
+            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.delete.not.owner');
+            return;
+        }
+
+        this.confirmDeleteFolder();
+    }
+
+    confirmDeleteFolder() {
         let message = '';
         if (this.selectedNode) {
             message = this.translateService.instant('bmsjHipsterApp.tree-table.messages.folder.delete.question',
@@ -261,6 +284,7 @@ export class GermplasmListCreationComponent implements OnInit {
                 id: node.key,
                 name: node.name || '',
                 owner: node.owner || '',
+                ownerId: node.ownerId || '',
                 description: node.description || (parent && '-'), // omit for root folders
                 type: node.type || '',
                 noOfEntries: node.noOfEntries || ''
