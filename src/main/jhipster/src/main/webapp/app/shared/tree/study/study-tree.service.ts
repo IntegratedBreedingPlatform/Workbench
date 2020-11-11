@@ -28,7 +28,7 @@ export class StudyTreeService extends TreeService {
         }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, parentKey))));
     }
 
-    create(folderName: string, parentId: string) {
+    create(folderName: string, parentId: string, isParentCropList: boolean) {
         // TODO
     }
 
@@ -40,7 +40,7 @@ export class StudyTreeService extends TreeService {
         // TODO
     }
 
-    move(source: string, target: string) {
+    move(source: string, target: string, isParentCropList: boolean) {
         // TODO
     }
 

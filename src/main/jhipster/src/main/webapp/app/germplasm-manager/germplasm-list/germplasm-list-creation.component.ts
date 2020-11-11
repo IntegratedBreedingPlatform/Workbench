@@ -130,7 +130,8 @@ export class GermplasmListCreationComponent implements OnInit {
 
         event.accept();
 
-        this.treeService.move(source.data.id, target.data.id).subscribe(
+        const isParentCropList = this.isParentCropList(target);
+        this.treeService.move(source.data.id, target.data.id, isParentCropList).subscribe(
             (res) => {},
             (res: HttpErrorResponse) => {
                 // TODO: FIX ME! Due to primeng7 does not support accepting the event within subscribe, we are handling the re-render of the component by calling the expand method.
@@ -315,7 +316,8 @@ export class GermplasmListCreationComponent implements OnInit {
         }
 
         if (this.mode === Mode.Add) {
-            this.treeService.create(this.name, this.selectedNode.data.id).subscribe((res) => {
+            const isParentCropList = this.isParentCropList(this.selectedNode);
+            this.treeService.create(this.name, this.selectedNode.data.id, isParentCropList).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(this.selectedNode);
                     this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
@@ -334,6 +336,13 @@ export class GermplasmListCreationComponent implements OnInit {
                 (res: HttpErrorResponse) =>
                     this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
+    }
+
+    isParentCropList(node: PrimeNgTreeNode): boolean {
+        if (node.parent) {
+            return this.isParentCropList(node.parent);
+        }
+        return node.data.id === 'CROPLISTS';
     }
 }
 
