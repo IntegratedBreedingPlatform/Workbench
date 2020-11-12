@@ -18,4 +18,22 @@ export class GermplasmService {
         return this.http.post<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
             germplasmSearchRequest, { params: options, observe: 'response' });
     }
+
+    downloadGermplasmTemplate(): Observable<HttpResponse<Blob>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls?programUUID=` + this.context.programUUID;
+        return this.http.get(url, { observe: 'response', responseType: 'blob' });
+    }
+
+    getAttributes(codes: string[]) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
+            '?programUUID=' + this.context.programUUID + '&codes=' + codes;
+        return this.http.get(url, { observe: 'response' });
+    }
+
+    getGermplasmNameTypes(codes: string[]) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types` +
+            '?programUUID=' + this.context.programUUID + '&codes=' + codes;
+        return this.http.get(url, { observe: 'response' });
+    }
+
 }

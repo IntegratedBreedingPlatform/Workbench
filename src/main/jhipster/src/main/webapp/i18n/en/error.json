@@ -10,6 +10,10 @@
         "concurrencyFailure": "Another user modified this data at the same time as you. Your changes were rejected.",
         "validation": "Validation error on the server.",
         "custom": "{{ param }}",
-        "general":"Something went wrong, please try again."
+        "general":"Something went wrong, please try again.",
+        "import": {
+            "header.duplicated": "The column {{param}} is duplicated in the header",
+            "file.empty": "The file has no data to import. Please verify and try again"
+        }
     }
 }

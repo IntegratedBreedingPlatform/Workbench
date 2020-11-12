@@ -38,7 +38,8 @@
             "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
         },
         "actions": {
-            "add-to-list": "Add to list"
+            "add-to-list": "Add to list",
+            "import": "Import germplasm"
         },
         "total-records": "Total germplasm records",
         "included-gids": "(+ included germplasm)"
@@ -60,5 +61,26 @@
     },
     "breeding-location": {
         "title": "Breeding Location"
+    },
+    "germplasm": {
+        "details.title": "Germplasm Details",
+        "import": {
+            "header": "Import germplasm",
+            "file": {
+                "input.description": "Choose the file you would like to import with the format: Excel or CSV",
+                "validation": {
+                    "file.empty": "Wrong name for Observation sheet or the file has no data. Please verify and try again",
+                    "extensions": "Only the following file extensions are allowed: {{param}}",
+                    "entryNo": "The ENTRY_NO column is mandatory",
+                    "entryNo.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
+                    "entryNo.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
+                    "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
+                    "names": "No suitable column find for gemrplasm name. Please check the CODES sheet for NAMES"
+                }
+            },
+            "basicDetails": {
+                "header": "Basic details"
+            }
+        }
     }
 }

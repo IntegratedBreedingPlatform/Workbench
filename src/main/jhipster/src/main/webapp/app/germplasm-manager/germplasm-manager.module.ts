@@ -12,11 +12,13 @@ import {
     GermplasmListCreationPopupComponent
 } from './germplasm-list/germplasm-list-creation.component';
 import {GermplasmManagerContext} from './germplasm-manager.context';
+import { GermplasmImportModule } from './import/germplasm-import.module';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedModule,
-        RouterModule.forChild(GERMPLASM_MANAGER_ROUTES)
+        RouterModule.forChild(GERMPLASM_MANAGER_ROUTES),
+        GermplasmImportModule
     ],
     declarations: [
         LotCreationDialogComponent,
