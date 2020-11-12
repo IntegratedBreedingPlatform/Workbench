@@ -7490,9 +7490,10 @@ primeicons@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-1.0.0.tgz#90061f168ef6227f21f0a7db8204ffa85cd27aec"
 
-primeng@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-6.0.0.tgz#73a3523098f2b95da0f18d3705d86cf66f6f0d0e"
+primeng@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/primeng/-/primeng-7.0.0.tgz#3a189568069a31544c9ed952328e221daad9b9b1"
+  integrity sha512-PrEEnp0VPbzsUQdpB/4KtUdRxaWwpprHy+IpUi09C42OAI2zqdTVIC0AaW81gDAGQyW7XraCP9EFI8KT4nC9GA==
 
 printj@~1.1.0, printj@~1.1.2:
   version "1.1.2"
