@@ -11,17 +11,24 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 					Starts with
 				</label>
 			</div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="radio-1" name="option-group"
+                       [value]="MatchType.ENDSWITH" [(ngModel)]="filter.matchType">
+                <label class="form-check-label" for="radio-1">
+                    Ends with
+                </label>
+            </div>
 			<div class="form-check">
-				<input class="form-check-input" type="radio" id="radio-1" name="option-group"
+				<input class="form-check-input" type="radio" id="radio-2" name="option-group"
 					   [value]="MatchType.EXACTMATCH" [(ngModel)]="filter.matchType">
-				<label class="form-check-label" for="radio-1">
+				<label class="form-check-label" for="radio-2">
 					Exact Match
 				</label>
 			</div>
 			<div class="form-check">
-				<input class="form-check-input" type="radio" id="radio-2" name="option-group"
+				<input class="form-check-input" type="radio" id="radio-3" name="option-group"
 					   [value]="MatchType.CONTAINS" [(ngModel)]="filter.matchType">
-				<label class="form-check-label" for="radio-2">
+				<label class="form-check-label" for="radio-3">
 					Contains
 				</label>
 			</div>
@@ -61,5 +68,6 @@ export class ColumnFilterTextWithMatchOptionsComponent implements OnInit {
 export enum MatchType {
     STARTSWITH = 'STARTSWITH',
     EXACTMATCH = 'EXACTMATCH',
-    CONTAINS = 'CONTAINS'
+    CONTAINS = 'CONTAINS',
+    ENDSWITH = 'ENDSWITH'
 }
