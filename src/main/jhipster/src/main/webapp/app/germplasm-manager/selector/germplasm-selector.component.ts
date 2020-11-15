@@ -174,9 +174,9 @@ export class GermplasmSelectorComponent implements OnInit {
             { key: 'reference', name: 'Reference', placeholder: 'Contains Text', type: FilterType.TEXT },
             { key: 'breedingMethodName', name: 'Breeding Method Name', placeholder: 'Contains Text', type: FilterType.TEXT },
             {
-                key: 'harvestDate', name: 'Harvest Date', type: FilterType.DATE,
-                fromKey: 'harvestDateFrom',
-                toKey: 'harvestDateTo',
+                key: 'germplasmDate', name: 'Germplasm Date', type: FilterType.DATE,
+                fromKey: 'germplasmDateFrom',
+                toKey: 'germplasmDateTo',
                 transform(req) {
                     ColumnFilterComponent.transformDateFilter(this, req, this.fromKey, this.toKey);
                 },
