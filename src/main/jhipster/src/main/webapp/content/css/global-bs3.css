@@ -362,8 +362,35 @@ table > thead > tr > th[jhisortby] {
     color: #fff;
 }
 /* modal */
+.modal-autofit .modal-dialog {
+    width: 90%;
+    /* FIXME find jquery-ui media query that's setting max-width
+        and remove this workaround. Same with the others modal-extra-* */
+    max-width: 90%;
+}
+.modal-extra-large .modal-dialog {
+    width: 950px;
+    max-width: 950px;
+}
+.modal-large .modal-dialog {
+    width: 800px;
+    max-width: 800px;
+}
+.modal-extra-medium .modal-dialog {
+    width: 700px;
+    max-width: 700px;
+}
+.modal-medium .modal-dialog {
+    width: 650px;
+    max-width: 650px;
+}
+.modal-small .modal-dialog {
+    width: 500px;
+    max-width: 500px;
+}
 .modal-extra-small .modal-dialog {
     width: 400px;
+    max-width: 400px;
 }
 #columnVisibility {
     width: 180px;
