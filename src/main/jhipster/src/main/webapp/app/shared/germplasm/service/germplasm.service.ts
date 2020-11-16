@@ -5,6 +5,7 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { createRequestOption } from '../..';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
+import { ExtendedGermplasmImportRequest } from '../model/germplasm-import-request.model';
 
 @Injectable()
 export class GermplasmService {
@@ -34,6 +35,12 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types` +
             '?programUUID=' + this.context.programUUID + '&codes=' + codes;
         return this.http.get(url, { observe: 'response' });
+    }
+
+    validateImportGermplasmData(data: ExtendedGermplasmImportRequest[]) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/validation` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post(url, data);
     }
 
 }

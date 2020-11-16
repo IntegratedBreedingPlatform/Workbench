@@ -9,6 +9,7 @@ import { GermplasmService } from '../../shared/germplasm/service/germplasm.servi
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../shared/alert/alert.service';
+import { ExtendedGermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 
 @Component({
     selector: 'jhi-germplasm-import',
@@ -119,7 +120,7 @@ export class GermplasmImportComponent implements OnInit {
                 this.alertService.error('germplasm.import.file.validation.names');
                 return false;
             }
-            return true;
+            return this.validateServerSide();
         }, (res) => this.onError(res));
     }
 
@@ -169,6 +170,25 @@ export class GermplasmImportComponent implements OnInit {
         if (this.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
             errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo.duplicates'));
         }
+    }
+
+    validateServerSide() {
+        const extendedGermplasmImportRequest: ExtendedGermplasmImportRequest[] = this.data.map((row) => {
+            return <ExtendedGermplasmImportRequest>({
+                locationAbbr: row[HEADERS['LOCATION ABBR']],
+                storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
+                breedingMethodAbbr: row[HEADERS['BREEDING METHOD']],
+                creationDate: row[HEADERS['CREATION DATE']],
+                unit: row[HEADERS.UNITS],
+                stockId: row[HEADERS['STOCK ID']],
+                germplasmUUID: row[HEADERS.GUID]
+            });
+        });
+        return this.germplasmService.validateImportGermplasmData(extendedGermplasmImportRequest).toPromise()
+            .then(() => true, (error) => {
+                this.onError(error);
+                return false;
+            })
     }
 
     private onError(response: HttpErrorResponse) {
