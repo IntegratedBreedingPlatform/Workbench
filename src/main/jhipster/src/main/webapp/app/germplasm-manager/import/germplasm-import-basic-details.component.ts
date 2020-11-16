@@ -20,6 +20,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    next() {
+    }
+
     dismiss() {
         this.modal.dismiss();
     }
