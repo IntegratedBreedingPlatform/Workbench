@@ -12,6 +12,7 @@ export class AttributesService {
 
     }
 
+    // TODO move to shared/germplasm/service/germplasm.service.ts
     searchAttributes(query): Observable<HttpResponse<Attribute[]>> {
         return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes/search?query=` + query, { observe: 'response' });
     }

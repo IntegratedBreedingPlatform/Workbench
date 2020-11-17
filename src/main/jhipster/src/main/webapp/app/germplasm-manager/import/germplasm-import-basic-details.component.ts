@@ -2,13 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmImportComponent } from './germplasm-import.component';
+import { Attribute } from '../../shared/attributes/model/attribute.model';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
 
 @Component({
     selector: 'jhi-germplasm-import',
     templateUrl: './germplasm-import-basic-details.component.html'
 })
 export class GermplasmImportBasicDetailsComponent implements OnInit {
-    importData: any;
+
+    data: any;
+    nameTypes: NameType[];
+    attributes: Attribute[];
+    nameColumnsWithData = {};
 
     constructor(
         private translateService: TranslateService,
@@ -31,6 +37,5 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.modal.close();
         const backModalRef = this.modalService.open(GermplasmImportComponent as Component,
             { size: 'lg', backdrop: 'static' });
-        backModalRef.componentInstance.importData = this.importData;
     }
 }

@@ -5,6 +5,8 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { createRequestOption } from '../..';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
+import { Attribute } from '../../attributes/model/attribute.model';
+import { NameType } from '../model/name-type.model';
 import { ExtendedGermplasmImportRequest } from '../model/germplasm-import-request.model';
 
 @Injectable()
@@ -25,16 +27,16 @@ export class GermplasmService {
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
 
-    getAttributes(codes: string[]) {
+    getGermplasmAttributes(codes: string[]): Observable<Attribute[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
             '?programUUID=' + this.context.programUUID + '&codes=' + codes;
-        return this.http.get(url, { observe: 'response' });
+        return this.http.get<Attribute[]>(url);
     }
 
-    getGermplasmNameTypes(codes: string[]) {
+    getGermplasmNameTypes(codes: string[]): Observable<NameType[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types` +
             '?programUUID=' + this.context.programUUID + '&codes=' + codes;
-        return this.http.get(url, { observe: 'response' });
+        return this.http.get<NameType[]>(url);
     }
 
     validateImportGermplasmData(data: ExtendedGermplasmImportRequest[]) {

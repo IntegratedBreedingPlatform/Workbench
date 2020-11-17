@@ -74,8 +74,10 @@
                     "entryNo": "The ENTRY_NO column is mandatory",
                     "entryNo.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
                     "entryNo.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
+                    "guid.duplicates": "Some GUID values are duplicated. Please correct them and try again",
                     "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
-                    "names": "No suitable column find for gemrplasm name. Please check the CODES sheet for NAMES"
+                    "names.no.column": "No suitable column found for gemrplasm name. Please check the CODES sheet for NAMES",
+                    "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again"
                 }
             },
             "basicDetails": {

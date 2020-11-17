@@ -1,8 +1,7 @@
-// TODO move to shared/germplasm
-export class Attribute {
+export class NameType {
     constructor(
-        public  code?: string,
         private id?: number,
+        public code?: string,
         private name?: string,
     ) {
     }
