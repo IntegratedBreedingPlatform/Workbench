@@ -41,6 +41,7 @@ import { ModalConfirmComponent } from './modal/modal-confirm.component';
 import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equals-validator.directive';
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ExcelService } from './service/excel.service';
 
 @NgModule({
     imports: [
@@ -94,6 +95,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
         NgbActiveModal,
+        ExcelService
     ],
     entryComponents: [
         AppModalComponent,

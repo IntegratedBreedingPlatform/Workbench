@@ -8,6 +8,11 @@
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.add-to-list"
 							(click)="openAddToList()" >
 					</button>
+					<button class="dropdown-item" type="submit"
+							[routerLink]="['/', { outlets: { popup: 'germplasm-import-update-dialog'} }]"
+							replaceUrl="true"
+							queryParamsHandling="merge" jhiTranslate="germplasm-import-updates.title">
+					</button>
 				</div>
 			</div>
 		</div>
