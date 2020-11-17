@@ -5,17 +5,22 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { createRequestOption } from '../..';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
+import { GermplasmUpdateModel } from '../../../entities/germplasm/germplasm.update.model';
 
 @Injectable()
 export class GermplasmService {
     constructor(private http: HttpClient,
                 private context: ParamContext) {
-
     }
 
     searchGermplasm(germplasmSearchRequest, pageable): Observable<HttpResponse<Germplasm[]>> {
         const options = createRequestOption(pageable);
         return this.http.post<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
             germplasmSearchRequest, { params: options, observe: 'response' });
+    }
+
+    importGermplasmUpdates(germplasmUpdates: GermplasmUpdateModel[]): Observable<HttpResponse<Germplasm[]>> {
+        return this.http.patch<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm?programUUID=` + this.context.programUUID,
+            germplasmUpdates, { observe: 'response' });
     }
 }

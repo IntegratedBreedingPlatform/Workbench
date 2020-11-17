@@ -4,6 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupService } from '../shared/modal/popup.service';
+import { ExcelService } from '../shared/service/excel.service';
+import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { formatErrorList } from '../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -19,18 +23,17 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     importHeader = [];
 
     importFormats = [
-        { name: 'CSV', extension: '.csv' }, //
         { name: 'Excel', extension: '.xls,.xlsx' }
     ];
-
-    selectedFileType = this.importFormats[1].extension; // '.xls'; // Set the default file type to CSV.
 
     constructor(
         private alertService: JhiAlertService,
         public activeModal: NgbActiveModal,
         private modalService: NgbModal,
         private eventManager: JhiEventManager,
-        private translateService: TranslateService) {
+        private translateService: TranslateService,
+        private excelService: ExcelService,
+        private germplasmService: GermplasmService) {
 
     }
 
@@ -46,6 +49,10 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
     import() {
         if (this.validate()) {
+            this.germplasmService.importGermplasmUpdates(null).subscribe(
+                (res: HttpResponse<any>) => this.onSaveSuccess(null),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
         }
     }
 
@@ -57,22 +64,39 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         if (extension[1].toLowerCase() !== 'xls' && extension[1].toLowerCase() !== 'xlsx') {
             this.fileName = '';
             target.value = '';
-            this.alertService.error('error.custom', { param: 'The import lots is only available for Excel extension xls and xlsx' }, null);
+            this.alertService.error('error.custom', { param: 'The import germplasm updates is only available for Excel extension xls and xlsx' }, null);
             return;
         }
 
         this.fileUpload.nativeElement.innerText = target.files[0].name;
 
-        // TODO: parse file
-
+        this.excelService.parse(target, 'Observation').subscribe((value) => {
+            this.importData = value;
+        }, (error) => {
+            this.alertService.error('error.custom', { param: error }, null);
+        });
     }
 
     private validateHeader(fileHeader: string[], errorMessage: string[]) {
-        // TODO: Validate header
-    }
+        this.importHeader = [];
+        // TODO: Add Method Abbr once implemented in the backend.
+        const headers = ['GID', 'GUID', 'PREFERRED NAME', 'LOCATION ABBR', 'REFERENCE', 'CREATION DATE'];
+        headers.forEach((header) => {
+            const result = fileHeader.filter((column) =>
+                column.toLowerCase() === header.toLowerCase()
+            );
 
-    private validateData(importData: any[], errorMessage: string[]) {
-        // TODO: Validate data
+            if (result.length === 0) {
+                errorMessage.push(this.translateService.instant('error.import.header.mandatory', { param: headers.join(', ') }));
+            }
+
+            if (result.length > 1) {
+                errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: header }));
+            }
+
+            const idx = fileHeader.indexOf(result[0]);
+            this.importHeader.push(idx);
+        });
     }
 
     private validate() {
@@ -83,17 +107,12 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
         const errorMessage: string[] = [];
         this.validateHeader(this.importData[0], errorMessage);
-        this.validateData(this.importData.slice(1), errorMessage);
 
         if (errorMessage.length !== 0) {
-            this.alertService.error('error.custom', { param: [] });
+            this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
             return false;
         }
         return true;
-    }
-
-    private validateStockIDInput(importData: any[]) {
-        return importData.slice(1).some((column) => !column[4]);
     }
 
     private onSaveSuccess(result: any) {
