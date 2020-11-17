@@ -41,6 +41,11 @@
                                              (onApply)="updateFilter(filter)"
                                              (onReset)="reset(filter)">
                         </jhi-column-filter-date>
+                        <jhi-column-filter-number-range *ngIf="filter.type === FILTER_TYPES.NUMBER_RANGE"
+                                                    [filter]="filter"
+                                                    (onApply)="updateFilter(filter)"
+                                                    (onReset)="reset(filter)">
+                        </jhi-column-filter-number-range>
                         <jhi-column-filter-checklist *ngIf="filter.type === FILTER_TYPES.CHECKLIST"
                                                   [filter]="filter"
                                                   (onApply)="updateCheckListFilter(filter, filter.key)"

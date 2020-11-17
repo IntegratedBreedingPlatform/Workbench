@@ -86,6 +86,18 @@ export class GermplasmSearchComponent implements OnInit {
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT, default:true },
+            {
+                key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
+                fromKey: 'gidFrom',
+                toKey: 'gidTo',
+                transform(req) {
+                    ColumnFilterComponent.transformNumberRangeFilter(this, req, this.fromKey, this.toKey);
+                },
+                reload(req) {
+                    this.from = req[this.fromKey];
+                    this.to = req[this.toKey];
+                }
+            },
             { key: 'groupId', name: 'Group ID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'sampleUID', name: 'Sample ID', placeholder: 'Match Text', type: FilterType.TEXT },
             {

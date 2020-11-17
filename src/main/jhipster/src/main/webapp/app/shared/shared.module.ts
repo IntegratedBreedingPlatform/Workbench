@@ -19,6 +19,7 @@ import { HelpService } from './service/help.service';
 import { ColumnFilterComponent } from './column-filter/column-filter.component';
 import { ColVisButtonComponent } from './col-vis/col-vis-button.component';
 import { ColumnFilterNumberComponent } from './column-filter/column-filter-number-component';
+import { ColumnFilterNumberRangeComponent } from './column-filter/column-filter-number-range-component';
 import { ColumnFilterDateComponent } from './column-filter/column-filter-date-component';
 import { ColumnFilterChecklistComponent } from './column-filter/column-filter-checklist-component';
 import { ColumnFilterTextComponent } from './column-filter/column-filter-text-component';
@@ -58,6 +59,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         CustomMinGreaterThanValidatorDirective,
         CustomMinEqualsValidatorDirective,
         ColumnFilterNumberComponent,
+        ColumnFilterNumberRangeComponent,
         ColumnFilterDateComponent,
         ColumnFilterChecklistComponent,
         ColumnFilterTextComponent,

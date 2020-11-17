@@ -3,6 +3,8 @@ export class GermplasmSearchRequest {
         public nameFilter?: any,
         public germplasmUUID?: string,
         public gid?: number,
+        public gidFrom?: number,
+        public gidTo?: number,
         public groupId?: number,
         public sampleUID?: string,
         public germplasmListIds?: Array<number>,

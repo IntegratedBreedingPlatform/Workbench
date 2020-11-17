@@ -65,6 +65,15 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
     }
 
+    static transformNumberRangeFilter(filter, request, fromProperty, toProperty) {
+        if (filter.from) {
+            request[fromProperty] = filter.from;
+        }
+        if (filter.to) {
+            request[toProperty] = filter.to;
+        }
+    }
+
     static transformPedigreeOptionsFilter(filter, request) {
         request[filter.key] = {
             type: filter.pedigreeType,
@@ -405,5 +414,6 @@ export enum FilterType {
     BOOLEAN,
     TEXT_WITH_MATCH_OPTIONS,
     PEDIGREE_OPTIONS,
-    ATTRIBUTES
+    ATTRIBUTES,
+    NUMBER_RANGE
 }
