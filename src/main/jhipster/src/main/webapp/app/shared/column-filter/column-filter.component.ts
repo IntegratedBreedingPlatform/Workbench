@@ -100,12 +100,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         filter.attributes = [];
     }
 
-    static resetDateFilter(filter, request, fromProperty, toProperty) {
+    static resetRangeFilter(filter, request, fromProperty, toProperty) {
         request[fromProperty] = undefined;
         request[toProperty] = undefined;
         filter.from = undefined;
         filter.to = undefined;
     }
+
 
     static updateBadgeLabel(filter) {
         return ColumnFilterComponent.getBadgeLabelByType(filter).then((label) => {

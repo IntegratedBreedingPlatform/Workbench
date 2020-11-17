@@ -93,6 +93,9 @@ export class GermplasmSelectorComponent implements OnInit {
                 transform(req) {
                     ColumnFilterComponent.transformNumberRangeFilter(this, req, this.fromKey, this.toKey);
                 },
+                reset(req) {
+                    ColumnFilterComponent.resetRangeFilter(this, req, this.fromKey, this.toKey);
+                },
                 reload(req) {
                     this.from = req[this.fromKey];
                     this.to = req[this.toKey];
@@ -193,7 +196,7 @@ export class GermplasmSelectorComponent implements OnInit {
                     ColumnFilterComponent.transformDateFilter(this, req, this.fromKey, this.toKey);
                 },
                 reset(req) {
-                    ColumnFilterComponent.resetDateFilter(this, req, this.fromKey, this.toKey);
+                    ColumnFilterComponent.resetRangeFilter(this, req, this.fromKey, this.toKey);
                 },
                 reload(req) {
                     this.from = req[this.fromKey];
