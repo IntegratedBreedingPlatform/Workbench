@@ -6381,6 +6381,13 @@ ng-jhipster@0.5.4:
     "@ngx-translate/core" "^10.0.1"
     "@ngx-translate/http-loader" "^3.0.1"
 
+ng-select2@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/ng-select2/-/ng-select2-1.2.4.tgz#5bbe40180ac13b29cbf2408018f9f33490525595"
+  integrity sha512-zsNjHvvLUIJ3iHZ46pfqQP8JHLZTF3jLDNtbkRl2wMpYPd2XQ8eSyIufOPj4aHiDLiIkA90k44bheQDIBR2pzA==
+  dependencies:
+    tslib "^2.0.0"
+
 ngx-cookie@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-2.0.1.tgz#031d8938bf9026954356b3b3ae668e2e1964e584"
@@ -9403,6 +9410,11 @@ tsickle@^0.29.0:
 tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
+
+tslib@^2.0.0:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
+  integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
 
 tslint-config-prettier@1.9.0:
   version "1.9.0"
