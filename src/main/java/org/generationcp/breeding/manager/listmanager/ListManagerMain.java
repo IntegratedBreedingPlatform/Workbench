@@ -90,7 +90,7 @@ public class ListManagerMain extends VerticalLayout implements Internationalizab
 
 	private boolean isListBuilderShown = false;
 
-	@Value("${germplasm.search.old.available}")
+	@Value("${old.germplasm.search.enabled}")
 	private String isWorkbenchGermplasmSearchAvalable;
 
 
