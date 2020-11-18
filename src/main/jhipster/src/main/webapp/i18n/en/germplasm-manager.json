@@ -56,12 +56,6 @@
         "notes": "Notes",
         "success": "Germplasm list saved successfully!"
     },
-    "breeding-method": {
-        "title": "Breeding Method"
-    },
-    "breeding-location": {
-        "title": "Breeding Location"
-    },
     "germplasm": {
         "details.title": "Germplasm Details",
         "import": {
@@ -81,7 +75,11 @@
                 }
             },
             "basicDetails": {
-                "header": "Basic details"
+                "header": "Basic details",
+                "description": "The following mandatory basic details are not described for all or some of the germplasm records. Please define the value to assign to these records.",
+                "breeding.methods": "Breeding methods",
+                "breeding.methods.use.favorite": "Show only favorite methods",
+                "names.and.attributes.header": "Names and Attributes"
             }
         }
     }

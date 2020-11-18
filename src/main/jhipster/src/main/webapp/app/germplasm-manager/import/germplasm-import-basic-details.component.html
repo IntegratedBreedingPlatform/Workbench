@@ -1,13 +1,42 @@
 <div class="modal-header">
 	<h4 class="modal-title font-weight-bold">
-		<span jhiTranslate="germplasm.import.basicDetails.header"></span>
+		<span jhiTranslate="germplasm.import.header"></span>
 	</h4>
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
 			(click)="dismiss()">&times;
 	</button>
 </div>
 <div class="modal-body">
-	<!--TODO -->
+	<div>
+		<h3 jhiTranslate="germplasm.import.basicDetails.header"></h3>
+		<div jhiTranslate="germplasm.import.basicDetails.description"></div>
+	</div>
+	<br/>
+	<div>
+		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
+		<form name="detailsForm" #detailsForm="ngForm">
+			<div class="form-group row">
+				<label for="breedingMethod" class="col-sm-3 col-form-label" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
+				<div class="col-sm-6">
+					<ng-select2 *ngIf="!useFavoriteBreedingMethods" name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected"
+								[data]="breedingMethods | async | BreedingMethodSelect2Data">
+					</ng-select2>
+					<ng-select2 *ngIf="useFavoriteBreedingMethods" name="breedingMethodFavorite" id="breedingMethodFavorite" width="100%" [(ngModel)]="breedingMethodSelected"
+								[data]="favoriteBreedingMethods | async | BreedingMethodSelect2Data">
+					</ng-select2>
+					<a style="margin-left: 5px; float: right" jhiTranslate="breeding-method.browser.title"
+					   (click)="openBreedingMethodManager()"></a>
+					<div class="form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
+							   [(ngModel)]="useFavoriteBreedingMethods">
+						<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="germplasm.import.basicDetails.breeding.methods.use.favorite">
+						</label>
+					</div>
+				</div>
+			</div>
+			<!-- TODO -->
+		</form>
+	</div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()" >

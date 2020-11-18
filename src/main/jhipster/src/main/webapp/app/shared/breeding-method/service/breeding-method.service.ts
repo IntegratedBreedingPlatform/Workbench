@@ -34,4 +34,11 @@ export class BreedingMethodService {
         return this.http.get<BreedingMethodGroup[]>(SERVER_API_URL + `crops/${this.context.cropName}/breedingmethod-groups`,
             { observe: 'response' }).pipe(map((res: HttpResponse<BreedingMethodGroup[]>) => res.body));
     }
+
+    getBreedingMethods(isFavorite?: boolean) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods`
+            + '?favoriteMethods=' + Boolean(isFavorite)
+            + '&programUUID=' + this.context.programUUID;
+        return this.http.get<BreedingMethodGroup[]>(url) ;
+    }
 }

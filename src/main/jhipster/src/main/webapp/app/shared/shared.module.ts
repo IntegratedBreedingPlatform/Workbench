@@ -42,6 +42,7 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
+import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 
 @NgModule({
     imports: [
@@ -71,6 +72,7 @@ import { AlertService } from './alert/alert.service';
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
         KeyValuePipe,
+        BreedingMethodSelect2DataPipe,
         ItemCountCustomComponent
     ],
     providers: [
@@ -111,6 +113,7 @@ import { AlertService } from './alert/alert.service';
         DragDropModule,
         DatePipe,
         KeyValuePipe,
+        BreedingMethodSelect2DataPipe,
         AppModalComponent,
         AppModalConfirmComponent,
         ModalComponent,
