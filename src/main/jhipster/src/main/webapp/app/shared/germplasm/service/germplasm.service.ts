@@ -5,7 +5,8 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { createRequestOption } from '../..';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
-import { GermplasmUpdateModel } from '../../../entities/germplasm/germplasm.update.model';
+import { GermplasmNameTypeModel } from '../../../entities/germplasm/germplasm-name-type.model';
+import { GermplasmAttributeModel } from '../../../entities/germplasm/germplasm-attribute.model';
 
 @Injectable()
 export class GermplasmService {
@@ -19,8 +20,16 @@ export class GermplasmService {
             germplasmSearchRequest, { params: options, observe: 'response' });
     }
 
-    importGermplasmUpdates(germplasmUpdates: GermplasmUpdateModel[]): Observable<HttpResponse<Germplasm[]>> {
+    importGermplasmUpdates(germplasmUpdates: any): Observable<HttpResponse<Germplasm[]>> {
         return this.http.patch<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm?programUUID=` + this.context.programUUID,
             germplasmUpdates, { observe: 'response' });
+    }
+
+    getGermplasmNameTypes(codes: string[]): Observable<GermplasmNameTypeModel[]> {
+        return this.http.get<GermplasmNameTypeModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types?codes=` + codes.join(','));
+    }
+
+    getGermplasmAttributes(codes: string[]): Observable<GermplasmAttributeModel[]> {
+        return this.http.get<GermplasmAttributeModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes?codes=` + codes.join(','));
     }
 }
