@@ -18,4 +18,9 @@ export class GermplasmService {
         return this.http.post<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
             germplasmSearchRequest, { params: options, observe: 'response' });
     }
+
+    getGermplasmById(gid: number): Observable<HttpResponse<Germplasm[]> {
+        return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
+            germplasmSearchRequest, { params: options, observe: 'response' });
+    }
 }

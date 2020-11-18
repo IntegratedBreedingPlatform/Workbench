@@ -1,0 +1,61 @@
+<div class="modal-body">
+
+</div>
+<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="lot-tab">
+	<div class="table-responsive" *ngIf="lots">
+		<table class="table table-striped table-bordered table-curved" *ngIf="lots.length else nodata">
+			<thead>
+			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+				<th jhiSortBy="lotId"><span jhiTranslate="lot.lotId">Lot ID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="stockId"><span jhiTranslate="lot.stockId">Stock ID</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="locationName"><span jhiTranslate="lot.locationName">Storage Location</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="unitName"><span jhiTranslate="lot.unitName">Units</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="actualBalance"><span jhiTranslate="lot.actualBalance">Actual Balance</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="availableBalance"><span jhiTranslate="lot.availableBalance">Available</span> <span class="fa fa-sort"></span></th>
+				<th jhiSortBy="createdDate"><span jhiTranslate="lot.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let lot of lots ;trackBy: trackId">
+				<td>{{lot.lotId}}</td>
+				<td>{{lot.stockId}}</td>
+				<td>{{lot.locationName}}</td>
+				<td>{{lot.unitName}}</td>
+				<td>{{lot.availableBalance}}</td>
+				<td>{{lot.reservedTotal}}</td>
+				<td>{{lot.createdDate}}</td>
+				<td>
+					<i class="fa fa-list" aria-hidden="true" [title]="'filter by Lot Id '+lot.lotId+' in View Transaction'"
+					   [routerLink]="['transaction'+'']" [queryParams]="{lotId: lot.lotId, lotUUID: lot.lotUUID, filterBy: 'lots'}"></i>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<ng-template #nodata>
+			<table class="table table-striped table-bordered table-curved">
+				<thead><tr><th></th></tr></thead><tbody>
+			<tr><td jhiTranslate="no.data"></td></tr></tbody>
+			</table>
+		</ng-template>
+	</div>
+	<div *ngIf="lots && lots.length">
+		<div class="row">
+			<div class="col">
+				<div class="pagination-container">
+					<div class="pagination-box pagination-box-left">
+						<div>
+							<jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+						</div>
+					</div>
+					<div class="pagination-box">
+						<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
+										[maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+					</div>
+					<div class="pagination-box pagination-box-right">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
