@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -88,6 +89,10 @@ public class ListManagerMain extends VerticalLayout implements Internationalizab
 	private ContextUtil contextUtil;
 
 	private boolean isListBuilderShown = false;
+
+	@Value("${germplasm.search.old.available}")
+	private String isWorkbenchGermplasmSearchAvalable;
+
 
 	public ListManagerMain() {
 		super();
@@ -332,7 +337,7 @@ public class ListManagerMain extends VerticalLayout implements Internationalizab
 		
 		this.plantSelectionTabButton = new Button(this.messageSource.getMessage(Message.VIEW_GERMPLASM));
 		this.plantSelectionTabButton.setDebugId("plantSelectionTabButton");
-		this.plantSelectionTabButton.setDebugId("plantSelectionTabButton");
+		this.plantSelectionTabButton.setVisible(Boolean.parseBoolean(isWorkbenchGermplasmSearchAvalable));
 
 		this.listSelectionTabButton.addStyleName("tabHeaderSelectedStyle");
 		this.listSelectionTabButton.addStyleName("tabStyleButton");
