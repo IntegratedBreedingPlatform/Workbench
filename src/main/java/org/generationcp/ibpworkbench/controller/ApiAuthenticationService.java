@@ -38,7 +38,7 @@ public class ApiAuthenticationService {
 		LOG.debug("Trying to authenticate user {} with BMSAPI to obtain a token.", userName);
 		try {
 			final TokenRequest tokenRequest = new TokenRequest(userName, password);
-			final String bmsApiAuthURLFormat = this.apiUrl + "/brapi/v1/token";
+			final String bmsApiAuthURLFormat = this.apiUrl + "/token";
 			/**
 			 * We want to make sure we construct the URL based on the server/port the request was received on. We want to hit the same
 			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
