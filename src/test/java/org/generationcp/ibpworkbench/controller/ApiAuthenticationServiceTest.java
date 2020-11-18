@@ -45,8 +45,7 @@ public class ApiAuthenticationServiceTest {
 		final URI urlUsedForTokenResource = urlCaptor.getValue();
 		Assert.assertEquals(
 			"Token authentication request URL must use BMSAPI URL from property files",
-			API_URL + "authenticate?username=" + user + "&password=" + password,
-			urlUsedForTokenResource.toString());
+			API_URL + "token", urlUsedForTokenResource.toString());
 	}
 
 	@Test
@@ -63,8 +62,7 @@ public class ApiAuthenticationServiceTest {
 		final URI urlUsedForTokenResource = urlCaptor.getValue();
 		Assert.assertEquals(
 			"Token authentication request URL must use BMSAPI URL from property files", API_URL
-				+ "authenticate?username=" + this.apiAuthenticationService.encode(specialCharacters)
-				+ "&password=" + this.apiAuthenticationService.encode(specialCharacters),
+				+ "token",
 			urlUsedForTokenResource.toString());
 	}
 

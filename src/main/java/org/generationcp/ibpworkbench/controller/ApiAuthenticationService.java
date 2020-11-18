@@ -13,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.HashMap;
 
 /**
  * Service for Java clients e.g. {@link AuthenticationController} to authenticate and obtain an access token in exchange of valid user name
@@ -38,19 +37,19 @@ public class ApiAuthenticationService {
 	public Token authenticate(final String userName, final String password) {
 		LOG.debug("Trying to authenticate user {} with BMSAPI to obtain a token.", userName);
 		try {
-			final String bmsApiAuthURLFormat = this.apiUrl + "authenticate?username=%s&password=%s";
+			final TokenRequest tokenRequest = new TokenRequest(userName, password);
+			final String bmsApiAuthURLFormat = this.apiUrl + "/token";
 			/**
 			 * We want to make sure we construct the URL based on the server/port the request was received on. We want to hit the same
 			 * server's authentication end point to obtain token. For servers in networks behind proxies and different cross network access
 			 * rules etc, use of local loop back address and getLocalPort() ensures we always hit the correct server.
 			 */
-			final String bmsApiAuthURL = String.format(bmsApiAuthURLFormat, this.encode(userName), this.encode(password));
-
+			final String bmsApiAuthURL = String.format(bmsApiAuthURLFormat);
 			final UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(bmsApiAuthURL);
 			// Indicate that the components are already escaped
 			final URI uri = builder.build(true).toUri();
 
-			final Token apiAuthToken = this.restClient.postForObject(uri, new HashMap<String, String>(), Token.class);
+			final Token apiAuthToken = this.restClient.postForObject(uri, tokenRequest, Token.class);
 			if (apiAuthToken != null) {
 				LOG.debug("Successfully authenticated and obtained a token from BMSAPI for user {}.", userName);
 			}
