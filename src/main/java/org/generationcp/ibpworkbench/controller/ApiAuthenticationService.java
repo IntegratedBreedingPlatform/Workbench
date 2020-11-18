@@ -13,7 +13,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.HashMap;
 
 /**
  * Service for Java clients e.g. {@link AuthenticationController} to authenticate and obtain an access token in exchange of valid user name
