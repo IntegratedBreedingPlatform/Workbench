@@ -88,6 +88,8 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         this.excelService.parse(target, 'Observation').subscribe((value) => {
             this.importData = value;
         }, (error) => {
+            this.fileName = '';
+            target.value = '';
             this.alertService.error('error.custom', { param: error }, null);
         });
     }
@@ -192,9 +194,9 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         this.activeModal.close(result);
     }
 
-    private onError(error) {
-        if (error) {
-            this.alertService.error('error.custom', { param: error.message }, null);
+    private onError(res) {
+        if (res && res.error) {
+            this.alertService.error('error.custom', { param: formatErrorList(res.error.errors) }, null);
             return;
         }
         this.alertService.error('error.general', null, null);
