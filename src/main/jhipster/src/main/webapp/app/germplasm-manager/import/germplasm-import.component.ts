@@ -13,7 +13,6 @@ import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { ExtendedGermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { listPreview } from '../../shared/util/list-preview';
-import { HEADERS } from './headers';
 
 @Component({
     selector: 'jhi-germplasm-import',
@@ -255,4 +254,22 @@ export class GermplasmImportPopupComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.routeSub.unsubscribe();
     }
+}
+
+export enum HEADERS {
+    'ENTRY_NO' = 'ENTRY_NO',
+    'LNAME' = 'LNAME',
+    'DRVNM' = 'DRVNM',
+    'PREFERRED NAME' = 'PREFERRED NAME',
+    'ENTRY_CODE' = 'ENTRY_CODE',
+    'LOCATION ABBR' = 'LOCATION ABBR',
+    'REFERENCE' = 'REFERENCE',
+    'CREATION DATE' = 'CREATION DATE',
+    'BREEDING METHOD' = 'BREEDING METHOD',
+    'NOTES' = 'NOTES',
+    'STORAGE LOCATION ABBR' = 'STORAGE LOCATION ABBR',
+    'UNITS' = 'UNITS',
+    'AMOUNT' = 'AMOUNT',
+    'STOCK ID' = 'STOCK ID',
+    'GUID' = 'GUID'
 }
