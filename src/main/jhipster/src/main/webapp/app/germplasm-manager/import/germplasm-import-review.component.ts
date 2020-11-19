@@ -12,6 +12,8 @@ import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.
 export class GermplasmImportReviewComponent implements OnInit {
 
     data: any;
+    dataBackup: any;
+    dataBackupPrev: any;
 
     constructor(
         private translateService: TranslateService,
@@ -23,6 +25,7 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.dataBackup = this.data.map((row) => Object.assign({}, row));
     }
 
     next() {
@@ -34,7 +37,8 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     back() {
         this.modal.close();
-        const backModalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
+        const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
+        modalRef.componentInstance.data = this.dataBackupPrev;
     }
 }

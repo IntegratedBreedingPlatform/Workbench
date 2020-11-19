@@ -28,6 +28,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     detailsForm: ElementRef;
 
     data: any;
+    dataBackup: any;
     nameTypes: NameType[];
     attributes: Attribute[];
     nameColumnsWithData = {};
@@ -50,13 +51,16 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.dataBackup = this.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
     }
 
     next() {
         this.modal.close();
-        const backModalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
+        const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
+        modalRef.componentInstance.data = this.data
+        modalRef.componentInstance.dataBackupPrev = this.dataBackup
     }
 
     dismiss() {
@@ -65,7 +69,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     back() {
         this.modal.close();
-        const backModalRef = this.modalService.open(GermplasmImportComponent as Component,
+        const modalRef = this.modalService.open(GermplasmImportComponent as Component,
             { size: 'lg', backdrop: 'static' });
     }
 
