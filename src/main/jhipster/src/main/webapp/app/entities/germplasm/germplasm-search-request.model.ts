@@ -27,6 +27,7 @@ export class GermplasmSearchRequest {
         public withSampleOnly?: boolean,
         public inProgramListOnly?: boolean,
         public attributes?: any,
+        public nameTypes?: any,
         public includePedigree?: any,
         public includeGroupMembers?: boolean,
         public addedColumnsPropertyIds?: Array<string>

@@ -31,7 +31,9 @@ import { ColumnFilterBooleanComponent } from './column-filter/column-filter-bool
 import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
+import { ColumnFilterNameTypesComponent } from './column-filter/column-filter-name-types-component';
 import { AttributesService } from './attributes/service/attributes.service';
+import { NameTypeService } from './name-type/service/name-type.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
 import { LocationService } from './location/service/location.service';
@@ -71,6 +73,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
+        ColumnFilterNameTypesComponent,
         KeyValuePipe,
         ItemCountCustomComponent
     ],
@@ -88,6 +91,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         HelpService,
         GermplasmService,
         AttributesService,
+        NameTypeService,
         BreedingMethodService,
         LocationService,
         PopupService,
@@ -131,6 +135,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
+        ColumnFilterNameTypesComponent,
         ItemCountCustomComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

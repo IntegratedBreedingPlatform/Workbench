@@ -100,6 +100,25 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         filter.attributes = [];
     }
 
+    static transformNameTypesFilter(filter, request) {
+        const nameTypes: any = {}
+        for (const nameType of filter.nameTypes) {
+            nameTypes[nameType.code] = nameType.value;
+        }
+        request[filter.key] = nameTypes;
+    }
+
+    static resetNameTypesFilter(filter, request) {
+        request[filter.key] = undefined;
+
+        // Remove all name types column
+        for (const nameType of filter.nameTypes) {
+            request.addedColumnsPropertyIds.pop(nameType.code);
+        }
+
+        filter.nameTypes = [];
+    }
+
     static resetRangeFilter(filter, request, fromProperty, toProperty) {
         request[fromProperty] = undefined;
         request[toProperty] = undefined;
@@ -402,6 +421,18 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
         this.eventManager.broadcast({ name: 'clearSort', content: '' });
     }
+
+    addNameTypeColumn(nameType) {
+        if (!this.request.addedColumnsPropertyIds.some((e) => e === nameType.code)) {
+            this.request.addedColumnsPropertyIds.push(nameType.code);
+        }
+    }
+
+    removeNameTypeColumn(nameType) {
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.code);
+        this.eventManager.broadcast({ name: 'clearSort', content: '' });
+    }
+
 }
 
 export enum FilterType {
@@ -416,5 +447,6 @@ export enum FilterType {
     TEXT_WITH_MATCH_OPTIONS,
     PEDIGREE_OPTIONS,
     ATTRIBUTES,
-    NUMBER_RANGE
+    NUMBER_RANGE,
+    NAME_TYPES
 }

@@ -248,6 +248,15 @@ export class GermplasmSearchComponent implements OnInit {
                 reset(req) {
                     ColumnFilterComponent.resetAttributesFilter(this, req);
                 },
+            },
+            {
+                key: 'nameTypes', name: 'Name Types', type: FilterType.NAME_TYPES, nameTypes: [],
+                transform(req) {
+                    ColumnFilterComponent.transformNameTypesFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetNameTypesFilter(this, req);
+                },
             }
         ];
     }
@@ -504,28 +513,6 @@ export class GermplasmSearchComponent implements OnInit {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Filter by different fields.
-     * - Some filters may have a custom filtering logic
-     * - Will clear all existing filters
-     * @param filterBy map with key value filters
-     */
-    private filterBy(filterBy: { [p: string]: any }) {
-        if (!filterBy) {
-            return;
-        }
-        const entries = Object.entries(filterBy);
-        if (entries.length === 0) {
-            return;
-        }
-        this.resetFilters();
-    }
-
-    private resetFilters() {
-        this.filters = GermplasmSearchComponent.getInitialFilters();
-        this.request = new GermplasmSearchRequest();
     }
 
     openAddToList() {
