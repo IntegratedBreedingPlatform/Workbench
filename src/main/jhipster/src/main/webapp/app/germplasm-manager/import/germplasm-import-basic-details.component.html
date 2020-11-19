@@ -9,15 +9,11 @@
 <div class="modal-body">
 	<div>
 		<h3 jhiTranslate="germplasm.import.basicDetails.header"></h3>
-		<div jhiTranslate="germplasm.import.basicDetails.description"></div>
-	</div>
-	<br/>
-	<div>
-		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
 		<form name="detailsForm" #detailsForm="ngForm">
+			<div jhiTranslate="germplasm.import.basicDetails.description" *ngIf="!hasAllBasicDetails()"></div>
 			<div class="form-group row">
-				<label for="breedingMethod" class="col-sm-3 col-form-label" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
-				<div class="col-sm-6">
+				<label for="breedingMethod" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
+				<div class="col-sm-6" *ngIf="!hasAllBreedingMethods() else allGood">
 					<ng-select2 *ngIf="!useFavoriteBreedingMethods" name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected"
 								[data]="breedingMethods | async | BreedingMethodSelect2Data">
 					</ng-select2>
@@ -34,15 +30,24 @@
 					</div>
 				</div>
 			</div>
-			<!-- TODO -->
+			<!-- TODO finish basic details -->
 		</form>
+	</div>
+	<br/>
+	<div>
+		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()" >
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="next()" [disabled]="!isValid()" class="btn btn-primary">
+	<button (click)="next()" [disabled]="!canProceed()" class="btn btn-primary">
 		<span jhiTranslate="next"></span>
 	</button>
 </div>
+<ng-template #allGood>
+	<label class="col col-form-label">
+		Complete!&nbsp;<span class="fa fa-check text-success"></span>
+	</label>
+</ng-template>

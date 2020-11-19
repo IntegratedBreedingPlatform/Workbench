@@ -80,6 +80,12 @@
                 "breeding.methods": "Breeding methods",
                 "breeding.methods.use.favorite": "Show only favorite methods",
                 "names.and.attributes.header": "Names and Attributes"
+            },
+            "inventory": {
+                "header": "Inventory"
+            },
+            "review": {
+                "header": "Review"
             }
         }
     }

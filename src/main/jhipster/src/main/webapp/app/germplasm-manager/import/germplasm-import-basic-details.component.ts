@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmImportComponent } from './germplasm-import.component';
+import { GermplasmImportComponent, HEADERS } from './germplasm-import.component';
 import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
@@ -56,11 +56,19 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     next() {
+        this.fillData();
+
         this.modal.close();
         const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.data = this.data
         modalRef.componentInstance.dataBackupPrev = this.dataBackup
+    }
+
+    fillData() {
+        this.data.filter((row) => !row[HEADERS['BREEDING METHOD']])
+            .forEach((row) => row[HEADERS['BREEDING METHOD']] = this.breedingMethodSelected);
+        // TODO Complete
     }
 
     dismiss() {
@@ -90,8 +98,26 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         });
     }
 
-    isValid() {
-        // TODO
+    hasAllBreedingMethods() {
+        return this.data.every((row) => row[HEADERS['BREEDING METHOD']]);
+    }
+
+    hasAllBasicDetails() {
+        // TODO complete
+        return this.hasAllBreedingMethods();
+    }
+
+    hasAllNames() {
+        return true;
+    }
+
+    canProceed() {
+        return this.isFormValid() || (
+            this.hasAllBasicDetails() && this.hasAllNames()
+        );
+    }
+
+    private isFormValid() {
         return this.breedingMethodSelected;
     }
 }
