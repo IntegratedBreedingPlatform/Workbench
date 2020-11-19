@@ -29,9 +29,15 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     data: any;
     dataBackup: any;
+
+    // from previous screen
     nameTypes: NameType[];
     attributes: Attribute[];
     nameColumnsWithData = {};
+
+    // to reorder
+    names: NameType[];
+    hasEmptyPreferredName: boolean;
 
     breedingMethods: Promise<BreedingMethod[]>;
     favoriteBreedingMethods: Promise<BreedingMethod[]>;
@@ -53,6 +59,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     ngOnInit(): void {
         this.dataBackup = this.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
+
+        this.names = this.nameTypes.filter((name) => this.nameColumnsWithData[name.code]);
+        this.hasEmptyPreferredName = this.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
     }
 
     next() {
@@ -68,6 +77,20 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     fillData() {
         this.data.filter((row) => !row[HEADERS['BREEDING METHOD']])
             .forEach((row) => row[HEADERS['BREEDING METHOD']] = this.breedingMethodSelected);
+
+        dataLoop: for (const row of this.data) {
+            if (!row[HEADERS['PREFERRED NAME']]) {
+                // names already ordered by priority
+                for (const name of this.names) {
+                    if (row[name.code]) {
+                        row[HEADERS['PREFERRED NAME']] = row[name.code];
+                        continue dataLoop;
+                    }
+                }
+
+            }
+        }
+
         // TODO Complete
     }
 
@@ -107,13 +130,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         return this.hasAllBreedingMethods();
     }
 
-    hasAllNames() {
-        return true;
-    }
-
     canProceed() {
         return this.isFormValid() || (
-            this.hasAllBasicDetails() && this.hasAllNames()
+            this.hasAllBasicDetails()
         );
     }
 

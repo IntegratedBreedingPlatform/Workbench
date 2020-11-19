@@ -5,11 +5,13 @@ import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-d
 import { RouterModule } from '@angular/router';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedModule,
-        RouterModule
+        RouterModule,
+        TableModule
     ],
     declarations: [
         GermplasmImportComponent,

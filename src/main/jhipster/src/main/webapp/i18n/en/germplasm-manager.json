@@ -79,7 +79,8 @@
                 "description": "The following mandatory basic details are not described for all or some of the germplasm records. Please define the value to assign to these records.",
                 "breeding.methods": "Breeding methods",
                 "breeding.methods.use.favorite": "Show only favorite methods",
-                "names.and.attributes.header": "Names and Attributes"
+                "names.and.attributes.header": "Names and Attributes",
+                "names": "Names"
             },
             "inventory": {
                 "header": "Inventory"

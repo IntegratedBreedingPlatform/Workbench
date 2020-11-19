@@ -186,11 +186,8 @@ export class GermplasmImportComponent implements OnInit {
     private validateNameTypes(errorMessage: string[]) {
         const rowWithMissingNameData = [];
         for (const row of this.data) {
-            if (row[HEADERS['PREFERRED NAME']]) {
-                continue;
-            }
             const nameColumns = this.nameTypes.filter((nameType) => row[nameType.code]);
-            if (!nameColumns.length) {
+            if (!nameColumns.length && !row[HEADERS['PREFERRED NAME']]) {
                 rowWithMissingNameData.push(row);
             } else {
                 nameColumns.forEach((n) => this.nameColumnsWithData[n.code] = true);
