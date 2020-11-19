@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { InventoryDetailsComponent } from './inventory-details.component';
 import { LotComponent } from './lot.component';
 import { RouteAccessService } from '../../../shared';
+import { TransactionComponent } from './transaction.component';
 
 export const INVENTORY_DETAILS_ROUTES: Routes = [
     {
@@ -16,12 +17,11 @@ export const INVENTORY_DETAILS_ROUTES: Routes = [
             },
             {
                 path: 'lot',
-                component: LotComponent,
-                // data: { authorities: SEARCH_GERMPLASM_PERMISSIONS },
-                // canActivate: [RouteAccessService],
-                // resolve: {
-                //     'pagingParams': GermplasmSearchResolvePagingParams
-                // },
+                component: LotComponent
+            },
+            {
+                path: 'transaction',
+                component: TransactionComponent
             }
         ]
     }

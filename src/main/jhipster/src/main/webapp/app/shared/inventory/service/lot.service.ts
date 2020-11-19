@@ -19,9 +19,13 @@ export class LotService {
     }
 
     getLotsByGId(gid: number, request: any): Observable<HttpResponse<Lot[]>> {
+        if (this.context.programUUID) {
+            request['programUUID'] = this.context.programUUID;
+        }
+
         const url = SERVER_API_URL + `crops/${this.context.cropName}/lots/germplasm/${gid}`;
-        const options = createRequestOption(request);
-        return this.http.get<Lot[]>(url, { params: options, observe: 'response' });
+        const params = createRequestOption(request);
+        return this.http.get<Lot[]>(url, { params, observe: 'response' });
 
     }
 }

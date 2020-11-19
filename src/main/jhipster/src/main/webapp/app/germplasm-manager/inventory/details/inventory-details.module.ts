@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { BmsjHipsterSharedModule } from '../../../shared';
 import { RouterModule } from '@angular/router';
 import { INVENTORY_DETAILS_ROUTES } from './inventory-details.route';
-import { InventoryDetailsComponent } from './inventory-details.component';
+import { InventoryDetailsComponent, InventoryDetailsPopupComponent } from './inventory-details.component';
 import { LotComponent } from './lot.component';
+import { TransactionComponent } from './transaction.component';
 
 @NgModule({
     imports: [
@@ -12,11 +13,15 @@ import { LotComponent } from './lot.component';
     ],
     declarations: [
         InventoryDetailsComponent,
-        LotComponent
+        InventoryDetailsPopupComponent,
+        LotComponent,
+        TransactionComponent
     ],
     entryComponents: [
         InventoryDetailsComponent,
-        LotComponent
+        InventoryDetailsPopupComponent,
+        LotComponent,
+        TransactionComponent
     ],
     providers: [
     ]

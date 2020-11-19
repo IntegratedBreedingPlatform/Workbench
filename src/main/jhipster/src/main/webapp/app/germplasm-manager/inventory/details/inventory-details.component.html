@@ -1,26 +1,24 @@
-<section>
-    <header>
-        <div class="modal-header pl-0">
-            <h5 class="modal-title">Inventory details for {{preferredName}} ({{gid}})</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
-            </button>
-        </div>
-    </header>
-    <br/>
+<div class="modal-header">
+    <h5 class="modal-title" jhiTranslate="inventory-details.title"
+        translateValues="{germplasmPreferredName: '{{germplasmPreferredName}}', gid: '{{gid}}'}"></h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
+    </button>
+</div>
+<div class="modal-body">
     <nav>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link" [routerLink]="['lot']"
-                   [routerLinkActive]="['active']">View Lots</a>
+                <a class="nav-link" jhiTranslate="inventory-details.nav.lot"
+                   [routerLink]="['lot']" [routerLinkActive]="['active']" queryParamsHandling="merge"></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" [routerLink]="['transaction']"
-                   [routerLinkActive]="['active']">View Transactions</a>
+                <a class="nav-link" jhiTranslate="inventory-details.nav.transaction"
+                   [routerLink]="['transaction/']" [routerLinkActive]="['active']" [queryParams]="{lotId: null}" queryParamsHandling="merge"></a>
             </li>
         </ul>
     </nav>
     <div class="tab-content p-3">
         <router-outlet></router-outlet>
-		<jhi-alert></jhi-alert>
+        <jhi-alert></jhi-alert>
     </div>
-</section>
+</div>

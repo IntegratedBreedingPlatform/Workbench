@@ -1,22 +1,26 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LotService } from '../../../shared/inventory/service/lot.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../../shared/inventory/model/lot.model';
 import { finalize } from 'rxjs/operators';
+import { Transaction } from '../../../shared/inventory/model/transaction.model';
+import { TransactionService } from '../../../shared/inventory/service/transaction.service';
 
 @Component({
-    selector: 'jhi-lot',
-    templateUrl: './lot.component.html',
+    selector: 'jhi-transaction',
+    templateUrl: './transaction.component.html',
 })
-export class LotComponent implements OnInit {
+export class TransactionComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
     private gid: number;
-    private lots: Lot[];
+    private lotId: number;
+
+    private transactions: Transaction[];
+
     private page: number;
     private previousPage: number;
     private totalItems: number;
@@ -27,15 +31,16 @@ export class LotComponent implements OnInit {
     private isLoading: boolean;
 
     constructor(private activatedRoute: ActivatedRoute,
-                private lotService: LotService,
+                private transactionService: TransactionService,
                 private jhiAlertService: JhiAlertService,
                 private jhiLanguageService: JhiLanguageService,
-                private router: Router,
+                private router: Router
     ) {
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.gid = queryParams.gid;
+        this.lotId = queryParams.lotId;
         this.page = 1;
-        this.predicate = 'lotId';
+        this.predicate = 'transactionId';
         this.reverse = 'asc';
     }
 
@@ -45,14 +50,14 @@ export class LotComponent implements OnInit {
 
     private loadAll() {
         this.isLoading = true;
-        this.lotService.getLotsByGId(this.gid, {
+        this.transactionService.getTransactionsByGermplasmId(this.gid, this.lotId, {
             page: this.page - 1,
             size: this.itemsPerPage,
             sort: this.sort()
         }).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
-            (res: HttpResponse<Lot[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<Transaction[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
@@ -80,16 +85,16 @@ export class LotComponent implements OnInit {
 
     sort() {
         const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'lotId') {
-            result.push('lotId');
+        if (this.predicate !== 'transactionId') {
+            result.push('transactionId');
         }
         return result;
     }
 
-    private onSuccess(data: Lot[], headers) {
+    private onSuccess(data: Transaction[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
-        this.lots = data;
+        this.transactions = data;
     }
 
     private onError(response: HttpErrorResponse) {
