@@ -16,47 +16,33 @@ import { BreedingMethodManagerComponent } from '../../entities/breeding-method/b
 import { ParamContext } from '../../shared/service/param.context';
 import { PopupService } from '../../shared/modal/popup.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
+import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-details.component';
+import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
 
 @Component({
-    selector: 'jhi-germplasm-import-basic-details',
-    templateUrl: './germplasm-import-basic-details.component.html'
+    selector: 'jhi-germplasm-import-inventory',
+    templateUrl: './germplasm-import-inventory.component.html'
 })
-export class GermplasmImportBasicDetailsComponent implements OnInit {
-
-    @ViewChild('detailsForm')
-    detailsForm: ElementRef;
+export class GermplasmImportInventoryComponent implements OnInit {
 
     data: any;
-    nameTypes: NameType[];
-    attributes: Attribute[];
-    nameColumnsWithData = {};
-
-    breedingMethods: Promise<BreedingMethod[]>;
-    favoriteBreedingMethods: Promise<BreedingMethod[]>;
-    breedingMethodSelected: string;
-    useFavoriteBreedingMethods = true;
 
     constructor(
         private translateService: TranslateService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
-        private germplasmService: GermplasmService,
-        private breedingMethodService: BreedingMethodService,
-        private sanitizer: DomSanitizer,
         private paramContext: ParamContext,
         private popupService: PopupService
     ) {
     }
 
     ngOnInit(): void {
-        this.loadBreedingMethods();
     }
 
     next() {
         this.modal.close();
-        const backModalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
-            { size: 'lg', backdrop: 'static' });
+        const backModalRef = this.modalService.open(GermplasmImportReviewComponent as Component,
+            { windowClass: 'modal-autofit', backdrop: 'static' });
     }
 
     dismiss() {
@@ -65,29 +51,12 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     back() {
         this.modal.close();
-        const backModalRef = this.modalService.open(GermplasmImportComponent as Component,
+        const backModalRef = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
             { size: 'lg', backdrop: 'static' });
-    }
-
-    loadBreedingMethods() {
-        this.breedingMethods = this.breedingMethodService.getBreedingMethods().toPromise();
-        this.favoriteBreedingMethods = this.breedingMethodService.getBreedingMethods(true).toPromise();
-    }
-
-    openBreedingMethodManager() {
-
-        const params = '?programId=' + this.paramContext.selectedProjectId;
-
-        const modal = this.popupService.open(BreedingMethodManagerComponent as Component, { windowClass: 'modal-autofit' });
-        modal.then((modalRef) => {
-            modalRef.componentInstance.safeUrl =
-                this.sanitizer.bypassSecurityTrustResourceUrl(BREEDING_METHODS_BROWSER_DEFAULT_URL + params);
-            modalRef.result.then(() => this.loadBreedingMethods());
-        });
     }
 
     isValid() {
         // TODO
-        return this.breedingMethodSelected;
+        return true;
     }
 }

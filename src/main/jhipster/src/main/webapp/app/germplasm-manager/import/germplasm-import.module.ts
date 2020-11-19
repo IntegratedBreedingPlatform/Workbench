@@ -3,6 +3,8 @@ import { GermplasmImportComponent, GermplasmImportPopupComponent } from './germp
 import { BmsjHipsterSharedModule } from '../../shared';
 import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-details.component';
 import { RouterModule } from '@angular/router';
+import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
+import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
 
 @NgModule({
     imports: [
@@ -12,12 +14,16 @@ import { RouterModule } from '@angular/router';
     declarations: [
         GermplasmImportComponent,
         GermplasmImportPopupComponent,
-        GermplasmImportBasicDetailsComponent
+        GermplasmImportBasicDetailsComponent,
+        GermplasmImportInventoryComponent,
+        GermplasmImportReviewComponent
     ],
     entryComponents: [
         GermplasmImportComponent,
         GermplasmImportPopupComponent,
-        GermplasmImportBasicDetailsComponent
+        GermplasmImportBasicDetailsComponent,
+        GermplasmImportInventoryComponent,
+        GermplasmImportReviewComponent
     ]
 })
 export class GermplasmImportModule {

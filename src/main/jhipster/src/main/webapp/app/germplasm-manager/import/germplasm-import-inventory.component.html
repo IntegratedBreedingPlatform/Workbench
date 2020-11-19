@@ -1,0 +1,21 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="germplasm.import.header"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div>
+		<h3 jhiTranslate="germplasm.import.inventory.header"></h3>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()" >
+		<span jhiTranslate="back"></span>
+	</button>
+	<button (click)="next()" [disabled]="!isValid()" class="btn btn-primary">
+		<span jhiTranslate="next"></span>
+	</button>
+</div>
