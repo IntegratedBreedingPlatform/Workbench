@@ -113,7 +113,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
         // Remove all name types column
         for (const nameType of filter.nameTypes) {
-            request.addedColumnsPropertyIds.pop(nameType.code);
+            request.addedColumnsPropertyIds.pop(nameType.name);
         }
 
         filter.nameTypes = [];
@@ -423,13 +423,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     addNameTypeColumn(nameType) {
-        if (!this.request.addedColumnsPropertyIds.some((e) => e === nameType.code)) {
-            this.request.addedColumnsPropertyIds.push(nameType.code);
+        if (!this.request.addedColumnsPropertyIds.some((e) => e === nameType.name)) {
+            this.request.addedColumnsPropertyIds.push(nameType.name);
         }
     }
 
     removeNameTypeColumn(nameType) {
-        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.code);
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.name);
         this.eventManager.broadcast({ name: 'clearSort', content: '' });
     }
 
