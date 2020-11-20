@@ -4,7 +4,7 @@ import { LotComponent } from './lot.component';
 import { RouteAccessService } from '../../../shared';
 import { TransactionComponent } from './transaction.component';
 
-export const INVENTORY_DETAILS_ROUTES: Routes = [
+export const inventoryDetailsRoutes: Routes = [
     {
         path: 'inventory-details',
         component: InventoryDetailsComponent,

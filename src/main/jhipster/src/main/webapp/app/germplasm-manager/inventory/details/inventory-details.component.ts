@@ -6,12 +6,11 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
-import { PopupService } from '../../../shared/modal/popup.service';
 import { ParamContext } from '../../../shared/service/param.context';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
-    selector: 'jhi-inventory-manager',
+    selector: 'jhi-inventory-details',
     templateUrl: './inventory-details.component.html',
     styleUrls: ['../../../../content/css/global-bs4.scss']
 })
@@ -34,6 +33,8 @@ export class InventoryDetailsComponent implements OnInit {
     }
 
     ngOnInit() {
+        (<any>window).onCloseModal = this.cancel;
+
         this.germplasmService.getGermplasmById(this.gid).subscribe(
             (res: HttpResponse<Germplasm>) => this.onSuccess(res.body),
             (res: HttpErrorResponse) => this.onError(res)
@@ -55,20 +56,9 @@ export class InventoryDetailsComponent implements OnInit {
 
     cancel() {
         this.activeModal.dismiss();
-        (<any>window.parent).closeModal();
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
     }
 
-}
-
-@Component({
-    selector: 'jhi-inventory-details-popup',
-    template: ''
-})
-export class InventoryDetailsPopupComponent implements OnInit {
-    constructor(private route: ActivatedRoute,
-                private popupService: PopupService) {
-    }
-    ngOnInit(): void {
-        const modal = this.popupService.open(InventoryDetailsComponent as Component);
-    }
 }
