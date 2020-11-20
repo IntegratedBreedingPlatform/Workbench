@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { PopupService } from '../../../shared/modal/popup.service';
@@ -29,31 +29,10 @@ export class InventoryDetailsModalComponent implements OnInit {
     }
 
     ngOnInit() {
-        // (<any>window).closeModal = this.cancel;
+        (<any>window).closeModal = () => {
+            this.activeModal.close();
+        }
     }
-
-    // cancel() {
-    //     console.log('InventoryDetailsModalComponent cancel');
-    //     this.activeModal.dismiss();
-    //     (<any>window.parent).closeModal();
-    // }
-
-    onInit() {
-
-    }
-
-    cancel() {
-        // this.activeModal.dismiss();
-        (<any>window.parent).closeModal();
-    }
-
-    // window.closeModal = function() {
-    //     $uibModalInstance.close(null);
-    // };
-    //
-    // $scope.cancel = function() {
-    //     $uibModalInstance.close(null);
-    // };
 
 }
 
@@ -63,20 +42,11 @@ export class InventoryDetailsModalComponent implements OnInit {
 })
 export class InventoryDetailsPopupComponent implements OnInit {
 
-    constructor(private route: ActivatedRoute,
-                private popupService: PopupService,
-                public activeModal: NgbActiveModal) {
+    constructor(private popupService: PopupService) {
     }
 
     ngOnInit(): void {
         const modal = this.popupService.open(InventoryDetailsModalComponent as Component);
-        (<any>window).closeModal = this.cancel;
-    }
-
-    cancel() {
-        console.log('InventoryDetailsPopupComponent cancel');
-        this.activeModal.dismiss();
-        (<any>window.parent).closeModal();
     }
 
 }
