@@ -4,13 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupService } from '../shared/modal/popup.service';
-import { ExcelService } from '../shared/service/excel.service';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-type.model';
 import { GermplasmAttributeModel } from '../entities/germplasm/germplasm-attribute.model';
 import { forkJoin, Observable } from 'rxjs';
+import { parseFile } from '../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -22,18 +22,10 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     fileUpload: ElementRef;
 
     fileName = '';
-    importData = new Array<string[]>();
+    rawData: Array<Array<any>>;
+    data: Array<any>;
     names: GermplasmNameTypeModel[] = [];
     attributes: GermplasmAttributeModel[] = [];
-
-    private readonly GID_COLUMN = 'GID';
-    private readonly GUID_COLUMN = 'GUID';
-    private readonly PREFERRED_NAME_COLUMN = 'PREFERRED NAME';
-    private readonly LOCATION_ABBR_COLUMN = 'LOCATION ABBR';
-    private readonly REFERENCE_COLUMN = 'REFERENCE';
-    private readonly CREATION_DATE = 'CREATION DATE';
-    private readonly EXPECTED_HEADERS = [this.GID_COLUMN, this.GUID_COLUMN, this.PREFERRED_NAME_COLUMN, this.LOCATION_ABBR_COLUMN, this.REFERENCE_COLUMN, this.CREATION_DATE];
-
     importFormats = [
         { name: 'Excel', extension: '.xls,.xlsx' }
     ];
@@ -45,7 +37,6 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         private modalService: NgbModal,
         private eventManager: JhiEventManager,
         private translateService: TranslateService,
-        private excelService: ExcelService,
         private germplasmService: GermplasmService) {
 
     }
@@ -63,7 +54,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     import() {
         this.validate().subscribe((isValid) => {
             if (isValid) {
-                this.germplasmService.importGermplasmUpdates(this.transform(this.importData, this.names, this.attributes)).subscribe(
+                this.germplasmService.importGermplasmUpdates(this.transform(this.data, this.names, this.attributes)).subscribe(
                     (res: HttpResponse<any>) => this.onSaveSuccess(null),
                     (res: HttpErrorResponse) => this.onError(res)
                 );
@@ -85,8 +76,9 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
         this.fileUpload.nativeElement.innerText = target.files[0].name;
 
-        this.excelService.parse(target, 'Observation').subscribe((value) => {
-            this.importData = value;
+        // TODO: throw error when Observation sheet is not found.
+        parseFile(target.files[0], 'Observation').subscribe((value) => {
+            this.rawData = value;
         }, (error) => {
             this.fileName = '';
             target.value = '';
@@ -94,12 +86,89 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         });
     }
 
+    private transform(importData: Array<any>, names: GermplasmNameTypeModel[], attributes: GermplasmAttributeModel[]): any[] {
+        // Transform file data to JSON
+        const germplasmUpdates = importData.map((row) => {
+            const namesValuesMap = {};
+            const attributesValuesMap = {};
+
+            names.forEach((name) => {
+                namesValuesMap[name.code] = row[name.code];
+            });
+            attributes.forEach((attribute) => {
+                attributesValuesMap[attribute.code] = row[attribute.code];
+            });
+
+            return {
+                gid: row[HEADER['GID']],
+                germplasmUUID: row[HEADER['GUID']],
+                preferredName: row[HEADER['PREFERRED NAME']],
+                locationAbbreviation: row[HEADER['LOCATION ABBR']],
+                creationDate: row[HEADER['CREATION DATE']],
+                // TODO: Implement Breeding Method Update
+                breedingMethodAbbr: null,
+                reference: row[HEADER['REFERENCE']],
+                names: namesValuesMap,
+                attributes: attributesValuesMap
+            };
+        });
+
+        return germplasmUpdates;
+    }
+
+    private validate() {
+        return new Observable((observer) => {
+
+            // normalize headers
+            this.rawData[0] = this.rawData[0].map((header) => header.toUpperCase());
+            const headers = this.rawData[0];
+
+            // Convert rawData into map
+            this.data = this.rawData.slice(1).map((fileRow, rowIndex) => {
+                return fileRow.reduce((map, col, colIndex) => {
+                    map[headers[colIndex]] = col;
+                    return map;
+                }, {})
+            });
+
+            // Anything outside expected headers are considered codes.
+            const codes: string[] = headers.filter((column) =>
+                !(<any>Object).values(HEADER).includes(column)
+            );
+
+            // Determine which of the codes are names and attributes
+            forkJoin(this.germplasmService.getGermplasmAttributes(codes), this.germplasmService.getGermplasmNameTypes(codes))
+                .subscribe((values) => {
+                    this.attributes = values[0];
+                    this.names = values[1];
+
+                    if (!this.rawData || this.rawData.filter((row) => row.some((column) => Boolean(column.trim()))).length <= 1) {
+                        this.alertService.error('germplasm-import-updates.validation.file.empty');
+                        observer.next(false);
+                        return;
+                    }
+
+                    const errorMessage: string[] = [];
+                    this.validateHeader(headers, errorMessage, codes, this.names, this.attributes);
+
+                    if (errorMessage.length !== 0) {
+                        this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
+                        observer.next(false);
+                        return;
+                    }
+
+                    observer.next(true);
+                });
+        });
+    }
+
     private validateHeader(fileHeader: string[], errorMessage: string[], codes: string[], names: GermplasmNameTypeModel[], attributes: GermplasmAttributeModel[]) {
         // TODO: Add Method Abbr once implemented in the backend.
-        if (!this.EXPECTED_HEADERS.every((expectedHeader) => {
-            return fileHeader.find((header) => expectedHeader.toLowerCase() === header.toLowerCase()) !== undefined;
+
+        if (!(<any>Object).values(HEADER).every((header) => {
+            return fileHeader.includes(header);
         })) {
-            errorMessage.push(this.translateService.instant('error.import.header.mandatory', { param: this.EXPECTED_HEADERS.join(', ') }));
+            errorMessage.push(this.translateService.instant('error.import.header.mandatory', { param: (<any>Object).values(HEADER).join(', ') }));
         }
 
         const duplicateColumns = fileHeader.filter((header, i) => fileHeader.indexOf(header) !== i)
@@ -111,81 +180,6 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         if (invalidCodes && invalidCodes.length > 0) {
             errorMessage.push(this.translateService.instant('germplasm-import-updates.validation.invalid.codes', { param: invalidCodes.join(', ') }));
         }
-    }
-
-    private transform(importData: Array<string[]>, names: GermplasmNameTypeModel[], attributes: GermplasmAttributeModel[]): any[] {
-        const germplasmUpdateList: any[] = [];
-
-        const rowHeader = Object.assign([], importData[0]);
-        const gidIndex = rowHeader.indexOf(this.GID_COLUMN);
-        const guidIndex = rowHeader.indexOf(this.GUID_COLUMN);
-        const preferredNameIndex = rowHeader.indexOf(this.PREFERRED_NAME_COLUMN);
-        const locationAbbrIndex = rowHeader.indexOf(this.LOCATION_ABBR_COLUMN);
-        const referenceIndex = rowHeader.indexOf(this.REFERENCE_COLUMN);
-        const creationDateIndex = rowHeader.indexOf(this.CREATION_DATE);
-
-        // Skip header
-        importData.splice(0, 1);
-
-        // Transform file data to JSON
-        importData.forEach((rowData) => {
-            const namesValuesMap = {};
-            const attributesValuesMap = {};
-
-            names.forEach((name) => {
-                namesValuesMap[name.code] = rowData[rowHeader.indexOf(name.code)];
-            });
-            attributes.forEach((attribute) => {
-                attributesValuesMap[attribute.code] = rowData[rowHeader.indexOf(attribute.code)];
-            });
-
-            const germplasmUpdate = {
-                gid: rowData[gidIndex],
-                germplasmUUID: rowData[guidIndex],
-                preferredName: rowData[preferredNameIndex],
-                locationAbbreviation: rowData[locationAbbrIndex],
-                creationDate: rowData[creationDateIndex],
-                // TODO: Implement Breeding Method Update
-                breedingMethodAbbr: null,
-                reference: rowData[referenceIndex],
-                names: namesValuesMap,
-                attributes: attributesValuesMap
-            };
-            germplasmUpdateList.push(germplasmUpdate);
-        });
-
-        return germplasmUpdateList;
-    }
-
-    private validate() {
-        return new Observable((observer) => {
-            // Anything outside expected headers are considered codes.
-            const codes: string[] = this.importData[0].filter((column) =>
-                this.EXPECTED_HEADERS.indexOf(column.toUpperCase()) < 0
-            );
-            forkJoin(this.germplasmService.getGermplasmAttributes(codes), this.germplasmService.getGermplasmNameTypes(codes))
-                .subscribe((values) => {
-                    this.attributes = values[0];
-                    this.names = values[1];
-
-                    if (!this.importData || this.importData.filter((row) => row.some((column) => Boolean(column.trim()))).length <= 1) {
-                        this.alertService.error('germplasm-import-updates.validation.file.empty');
-                        observer.next(false);
-                        return;
-                    }
-
-                    const errorMessage: string[] = [];
-                    this.validateHeader(this.importData[0], errorMessage, codes, this.names, this.attributes);
-
-                    if (errorMessage.length !== 0) {
-                        this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
-                        observer.next(false);
-                        return;
-                    }
-
-                    observer.next(true);
-                });
-        });
     }
 
     private onSaveSuccess(result: any) {
@@ -233,4 +227,13 @@ export class GermplasmImportUpdatePopupComponent implements OnInit, OnDestroy {
         this.routeSub.unsubscribe();
     }
 
+}
+
+enum HEADER {
+    'GID' = 'GID',
+    'GUID' = 'GUID',
+    'PREFERRED NAME' = 'PREFERRED NAME',
+    'LOCATION ABBR' = 'LOCATION ABBR',
+    'REFERENCE' = 'REFERENCE',
+    'CREATION DATE' = 'CREATION DATE'
 }
