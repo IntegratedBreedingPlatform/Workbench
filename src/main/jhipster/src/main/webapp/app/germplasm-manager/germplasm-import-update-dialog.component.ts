@@ -55,7 +55,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         this.validate().subscribe((isValid) => {
             if (isValid) {
                 this.germplasmService.importGermplasmUpdates(this.transform(this.data, this.names, this.attributes)).subscribe(
-                    (res: HttpResponse<any>) => this.onSaveSuccess(null),
+                    (res: HttpResponse<any>) => this.onSaveSuccess(res.body),
                     (res: HttpErrorResponse) => this.onError(res)
                 );
             }
@@ -184,7 +184,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
     private onSaveSuccess(result: any) {
         this.alertService.success('germplasm-import-updates.import.success', null, null);
-        this.eventManager.broadcast({ name: 'columnFiltersChanged', content: 'OK' });
+        this.eventManager.broadcast({ name: 'germplasmUpdated', content: result });
         this.activeModal.close(result);
     }
 

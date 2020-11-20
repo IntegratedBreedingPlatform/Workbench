@@ -228,7 +228,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     AddFilter() {
         this._filters.forEach((filter) => {
-            if (filter.key === this.selectedFilter) {
+            if ((filter.key === this.selectedFilter && !this.filtersAdded.some((filter) => filter.key === this.selectedFilter))) {
                 filter.added = true;
                 this.filtersAdded.push(filter);
                 this.selectedFilter = '';
@@ -327,7 +327,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.reset(filter);
     }
 
-    clearAll() {
+    clearFilters() {
         for (let i = this.filtersAdded.length - 1; i >= 0; i--) {
             const filter = this.filtersAdded[i];
             if (!filter.default) {
@@ -336,6 +336,10 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 this._reset(filter);
             }
         }
+    }
+
+    clearAll() {
+        this.clearFilters();
         this.resultSearch.searchResultDbId = '';
         this.transition();
     }
