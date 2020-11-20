@@ -13,6 +13,7 @@ import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { ExtendedGermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { listPreview } from '../../shared/util/list-preview';
+import { GermplasmImportContext } from './germplasm-import.context';
 
 @Component({
     selector: 'jhi-germplasm-import',
@@ -26,11 +27,7 @@ export class GermplasmImportComponent implements OnInit {
     fileName = '';
 
     rawData = new Array<any>();
-    data = [];
     codes = {};
-    nameTypes: NameType[];
-    attributes: Attribute[];
-    nameColumnsWithData = {};
 
     extensions = ['.csv', '.xls', '.xlsx'];
     selectedFileType = this.extensions[1];
@@ -40,7 +37,8 @@ export class GermplasmImportComponent implements OnInit {
         private alertService: AlertService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
-        private germplasmService: GermplasmService
+        private germplasmService: GermplasmService,
+        public context: GermplasmImportContext
     ) {
     }
 
@@ -84,10 +82,6 @@ export class GermplasmImportComponent implements OnInit {
                 this.modal.close();
                 const nextModal = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
                     { size: 'lg', backdrop: 'static' });
-                nextModal.componentInstance.data = this.data;
-                nextModal.componentInstance.attributes = this.attributes;
-                nextModal.componentInstance.nameTypes = this.nameTypes;
-                nextModal.componentInstance.nameColumnsWithData = this.nameColumnsWithData;
             }
         }, (res) => this.onError(res));
     }
@@ -101,7 +95,7 @@ export class GermplasmImportComponent implements OnInit {
         // normalize headers
         this.rawData[0] = this.rawData[0].map((header) => header.toUpperCase());
         const headers = this.rawData[0];
-        this.data = this.rawData.slice(1).map((fileRow, rowIndex) => {
+        this.context.data = this.rawData.slice(1).map((fileRow, rowIndex) => {
             return fileRow.reduce((map, col, colIndex) => {
                 map[headers[colIndex]] = col;
                 return map;
@@ -120,9 +114,9 @@ export class GermplasmImportComponent implements OnInit {
             this.alertService.error('germplasm.import.file.validation.names.no.column');
             return false;
         }
-        this.nameTypes = await this.germplasmService.getGermplasmNameTypes(Object.keys(this.codes)).toPromise();
-        this.attributes = await this.germplasmService.getGermplasmAttributes(Object.keys(this.codes)).toPromise();
-        if (!this.nameTypes || !this.nameTypes.length) {
+        this.context.nameTypes = await this.germplasmService.getGermplasmNameTypes(Object.keys(this.codes)).toPromise();
+        this.context.attributes = await this.germplasmService.getGermplasmAttributes(Object.keys(this.codes)).toPromise();
+        if (!this.context.nameTypes || !this.context.nameTypes.length) {
             this.alertService.error('germplasm.import.file.validation.names.no.column');
             return false;
         }
@@ -158,7 +152,7 @@ export class GermplasmImportComponent implements OnInit {
 
     private validateData(errorMessage: string[]) {
         // row validations
-        for (const row of this.data) {
+        for (const row of this.context.data) {
             if (!row[HEADERS.ENTRY_NO]) {
                 errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo'));
                 break;
@@ -175,22 +169,22 @@ export class GermplasmImportComponent implements OnInit {
             }
         }
         // column validations
-        if (this.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
+        if (this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
             errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo.duplicates'));
         }
-        if (this.data.map((row) => row[HEADERS.GUID]).filter((cell) => cell).some((cell, i, col) => col.indexOf(cell) !== i)) {
+        if (this.context.data.map((row) => row[HEADERS.GUID]).filter((cell) => cell).some((cell, i, col) => col.indexOf(cell) !== i)) {
             errorMessage.push(this.translateService.instant('germplasm.import.file.validation.guid.duplicates'));
         }
     }
 
     private validateNameTypes(errorMessage: string[]) {
         const rowWithMissingNameData = [];
-        for (const row of this.data) {
-            const nameColumns = this.nameTypes.filter((nameType) => row[nameType.code]);
+        for (const row of this.context.data) {
+            const nameColumns = this.context.nameTypes.filter((nameType) => row[nameType.code]);
             if (!nameColumns.length && !row[HEADERS['PREFERRED NAME']]) {
                 rowWithMissingNameData.push(row);
             } else {
-                nameColumns.forEach((n) => this.nameColumnsWithData[n.code] = true);
+                nameColumns.forEach((n) => this.context.nameColumnsWithData[n.code] = true);
             }
         }
         if (rowWithMissingNameData.length) {
@@ -203,7 +197,7 @@ export class GermplasmImportComponent implements OnInit {
     }
 
     private validateServerSide() {
-        const extendedGermplasmImportRequest: ExtendedGermplasmImportRequest[] = this.data.map((row) => {
+        const extendedGermplasmImportRequest: ExtendedGermplasmImportRequest[] = this.context.data.map((row) => {
             return <ExtendedGermplasmImportRequest>({
                 locationAbbr: row[HEADERS['LOCATION ABBR']],
                 storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],

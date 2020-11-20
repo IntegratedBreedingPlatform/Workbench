@@ -17,6 +17,7 @@ import { ParamContext } from '../../shared/service/param.context';
 import { PopupService } from '../../shared/modal/popup.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
+import { GermplasmImportContext } from './germplasm-import.context';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -27,18 +28,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     @ViewChild('detailsForm')
     detailsForm: ElementRef;
 
-    data: any;
-    dataBackup: any;
-
-    // from previous screen
-    nameTypes: NameType[];
-    attributes: Attribute[];
-    nameColumnsWithData = {};
-
-    // to reorder/regroup
-    nametypesCopy: NameType[];
     hasEmptyPreferredName: boolean;
-    attributesCopy: Attribute[];
     // Codes that are both attributes
     unmapped = [];
     draggedCode: string;
@@ -56,27 +46,28 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         private breedingMethodService: BreedingMethodService,
         private sanitizer: DomSanitizer,
         private paramContext: ParamContext,
-        private popupService: PopupService
+        private popupService: PopupService,
+        public context: GermplasmImportContext
     ) {
     }
 
     ngOnInit(): void {
-        this.dataBackup = this.data.map((row) => Object.assign({}, row));
+        this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
 
-        this.hasEmptyPreferredName = this.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
+        this.hasEmptyPreferredName = this.context.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
 
-        for (const attribute of this.attributes) {
-            for (const nameType of this.nameTypes) {
+        for (const attribute of this.context.attributes) {
+            for (const nameType of this.context.nameTypes) {
                 if (attribute.code === nameType.code) {
                     this.unmapped.push(attribute.code);
                 }
             }
         }
-        this.nametypesCopy = this.nameTypes.filter((name) => {
-            return this.nameColumnsWithData[name.code] && this.unmapped.indexOf(name.code) === -1;
+        this.context.nametypesCopy = this.context.nameTypes.filter((name) => {
+            return this.context.nameColumnsWithData[name.code] && this.unmapped.indexOf(name.code) === -1;
         });
-        this.attributesCopy = this.attributes.filter((attribute) => {
+        this.context.attributesCopy = this.context.attributes.filter((attribute) => {
             return this.unmapped.indexOf(attribute.code) === -1;
         });
     }
@@ -85,20 +76,19 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.fillData();
 
         this.modal.close();
+        this.context.dataBackupPrev = this.context.dataBackup;
         const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
-        modalRef.componentInstance.data = this.data
-        modalRef.componentInstance.dataBackupPrev = this.dataBackup
     }
 
     fillData() {
-        this.data.filter((row) => !row[HEADERS['BREEDING METHOD']])
+        this.context.data.filter((row) => !row[HEADERS['BREEDING METHOD']])
             .forEach((row) => row[HEADERS['BREEDING METHOD']] = this.breedingMethodSelected);
 
-        dataLoop: for (const row of this.data) {
+        dataLoop: for (const row of this.context.data) {
             if (!row[HEADERS['PREFERRED NAME']]) {
                 // names already ordered by priority
-                for (const name of this.nametypesCopy) {
+                for (const name of this.context.nametypesCopy) {
                     if (row[name.code]) {
                         row[HEADERS['PREFERRED NAME']] = row[name.code];
                         continue dataLoop;
@@ -139,7 +129,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     hasAllBreedingMethods() {
-        return this.data.every((row) => row[HEADERS['BREEDING METHOD']]);
+        return this.context.data.every((row) => row[HEADERS['BREEDING METHOD']]);
     }
 
     hasAllBasicDetails() {
@@ -167,9 +157,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     drop($event, type: 'names' | 'attributes') {
         if (type === 'names') {
-            this.nametypesCopy.push(this.nameTypes.find((n) => n.code === this.draggedCode));
+            this.context.nametypesCopy.push(this.context.nameTypes.find((n) => n.code === this.draggedCode));
         } else {
-            this.attributesCopy.push(this.attributes.find((a) => a.code === this.draggedCode));
+            this.context.attributesCopy.push(this.context.attributes.find((a) => a.code === this.draggedCode));
         }
         this.unmapped = this.unmapped.filter((u) => u !== this.draggedCode);
     }

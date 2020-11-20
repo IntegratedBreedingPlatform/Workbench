@@ -7,6 +7,7 @@ import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.
 import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
 import { TableModule } from 'primeng/table';
 import { DragDropModule } from 'primeng/dragdrop';
+import { GermplasmImportContext } from './germplasm-import.context';
 
 @NgModule({
     imports: [
@@ -28,6 +29,9 @@ import { DragDropModule } from 'primeng/dragdrop';
         GermplasmImportBasicDetailsComponent,
         GermplasmImportInventoryComponent,
         GermplasmImportReviewComponent
+    ],
+    providers: [
+        GermplasmImportContext
     ]
 })
 export class GermplasmImportModule {

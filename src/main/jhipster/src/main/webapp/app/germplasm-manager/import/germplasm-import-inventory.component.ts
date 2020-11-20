@@ -18,6 +18,7 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-details.component';
 import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
+import { GermplasmImportContext } from './germplasm-import.context';
 
 @Component({
     selector: 'jhi-germplasm-import-inventory',
@@ -25,25 +26,23 @@ import { GermplasmImportReviewComponent } from './germplasm-import-review.compon
 })
 export class GermplasmImportInventoryComponent implements OnInit {
 
-    data: any;
-    dataBackup: any;
-    dataBackupPrev: any;
-
     constructor(
         private translateService: TranslateService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private paramContext: ParamContext,
-        private popupService: PopupService
+        private popupService: PopupService,
+        public context: GermplasmImportContext
     ) {
     }
 
     ngOnInit(): void {
-        this.dataBackup = this.data.map((row) => Object.assign({}, row));
+        this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
     }
 
     next() {
         this.modal.close();
+        this.context.dataBackupPrev = this.context.dataBackup;
         const modalRef = this.modalService.open(GermplasmImportReviewComponent as Component,
             { windowClass: 'modal-autofit', backdrop: 'static' });
     }
@@ -54,9 +53,9 @@ export class GermplasmImportInventoryComponent implements OnInit {
 
     back() {
         this.modal.close();
+        this.context.data = this.context.dataBackupPrev;
         const modalRef = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
             { size: 'lg', backdrop: 'static' });
-        modalRef.componentInstance.data = this.dataBackupPrev;
     }
 
     isValid() {
