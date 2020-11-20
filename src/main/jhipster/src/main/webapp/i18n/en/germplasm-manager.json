@@ -80,7 +80,9 @@
                 "breeding.methods": "Breeding methods",
                 "breeding.methods.use.favorite": "Show only favorite methods",
                 "names.and.attributes.header": "Names and Attributes",
-                "names": "Names"
+                "names": "Names",
+                "unmapped": "Unmapped",
+                "attributes": "Attributes"
             },
             "inventory": {
                 "header": "Inventory"

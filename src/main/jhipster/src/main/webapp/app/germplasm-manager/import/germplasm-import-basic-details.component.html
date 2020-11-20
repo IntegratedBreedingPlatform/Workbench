@@ -37,12 +37,31 @@
 	<div>
 		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
 		<form name="namesAndAttributesForm" #namesAndAttributesForm="ngForm">
+			<div class="form-group row" *ngIf="unmapped.length">
+				<label for="unmapped" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.unmapped"></label>
+				<div class="col-sm-8">
+					<p-table styleClass="table table-striped table-bordered table-curved"
+							 [autoLayout]="true"
+							 [value]="unmapped">
+						<ng-template pTemplate="header">
+							<tr>
+								<th>CODE</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData>
+							<tr pDraggable="dd" (onDragStart)="dragStart($event, rowData)" (onDragEnd)="dragEnd($event)">
+								<td>{{rowData}}</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</div>
 			<div class="form-group row">
 				<label for="names" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.names"></label>
 				<div class="col-sm-8">
 					<p-table styleClass="table table-striped table-bordered table-curved"
 							 [autoLayout]="true"
-							 [value]="names">
+							 [value]="nametypesCopy">
 
 						<ng-template pTemplate="header">
 							<tr>
@@ -53,7 +72,7 @@
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-rowData let-index="rowIndex">
-							<tr [pReorderableRow]="index">
+							<tr [pReorderableRow]="index" pDroppable="dd" (onDrop)="drop($event, 'names')">
 								<td *ngIf="hasEmptyPreferredName">
 									<i class="fa fa-bars" style="cursor: pointer" pReorderableRowHandle></i>
 								</td>
@@ -65,7 +84,28 @@
 					</p-table>
 				</div>
 			</div>
-			<!-- TODO finish basic details -->
+			<div class="form-group row">
+				<label for="attributes" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.attributes"></label>
+				<div class="col-sm-8">
+					<p-table styleClass="table table-striped table-bordered table-curved"
+							 [autoLayout]="true"
+							 [value]="attributesCopy">
+
+						<ng-template pTemplate="header">
+							<tr>
+								<th>VARIABLE</th>
+								<th>DESCRIPTION</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData>
+							<tr pDroppable="dd" (onDrop)="drop($event, 'attributes')">
+								<td>{{rowData.code}}</td>
+								<td>{{rowData.name}}</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>

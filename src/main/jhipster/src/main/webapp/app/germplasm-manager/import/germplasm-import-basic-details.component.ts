@@ -35,9 +35,13 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     attributes: Attribute[];
     nameColumnsWithData = {};
 
-    // to reorder
-    names: NameType[];
+    // to reorder/regroup
+    nametypesCopy: NameType[];
     hasEmptyPreferredName: boolean;
+    attributesCopy: Attribute[];
+    // Codes that are both attributes
+    unmapped = [];
+    draggedCode: string;
 
     breedingMethods: Promise<BreedingMethod[]>;
     favoriteBreedingMethods: Promise<BreedingMethod[]>;
@@ -60,8 +64,21 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.dataBackup = this.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
 
-        this.names = this.nameTypes.filter((name) => this.nameColumnsWithData[name.code]);
         this.hasEmptyPreferredName = this.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
+
+        for (const attribute of this.attributes) {
+            for (const nameType of this.nameTypes) {
+                if (attribute.code === nameType.code) {
+                    this.unmapped.push(attribute.code);
+                }
+            }
+        }
+        this.nametypesCopy = this.nameTypes.filter((name) => {
+            return this.nameColumnsWithData[name.code] && this.unmapped.indexOf(name.code) === -1;
+        });
+        this.attributesCopy = this.attributes.filter((attribute) => {
+            return this.unmapped.indexOf(attribute.code) === -1;
+        });
     }
 
     next() {
@@ -81,7 +98,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         dataLoop: for (const row of this.data) {
             if (!row[HEADERS['PREFERRED NAME']]) {
                 // names already ordered by priority
-                for (const name of this.names) {
+                for (const name of this.nametypesCopy) {
                     if (row[name.code]) {
                         row[HEADERS['PREFERRED NAME']] = row[name.code];
                         continue dataLoop;
@@ -139,4 +156,22 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     private isFormValid() {
         return this.breedingMethodSelected;
     }
+
+    dragStart($event, code) {
+        this.draggedCode = code;
+    }
+
+    dragEnd($event) {
+        this.draggedCode = null;
+    }
+
+    drop($event, type: 'names' | 'attributes') {
+        if (type === 'names') {
+            this.nametypesCopy.push(this.nameTypes.find((n) => n.code === this.draggedCode));
+        } else {
+            this.attributesCopy.push(this.attributes.find((a) => a.code === this.draggedCode));
+        }
+        this.unmapped = this.unmapped.filter((u) => u !== this.draggedCode);
+    }
+
 }

@@ -6,12 +6,14 @@ import { RouterModule } from '@angular/router';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
 import { TableModule } from 'primeng/table';
+import { DragDropModule } from 'primeng/dragdrop';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedModule,
         RouterModule,
-        TableModule
+        TableModule,
+        DragDropModule
     ],
     declarations: [
         GermplasmImportComponent,
