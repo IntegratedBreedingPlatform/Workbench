@@ -15,7 +15,8 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()" >
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="next()" class="btn btn-primary">
-		<span jhiTranslate="next"></span>
+	<button (click)="save()" class="btn btn-primary">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
 	</button>
 </div>
