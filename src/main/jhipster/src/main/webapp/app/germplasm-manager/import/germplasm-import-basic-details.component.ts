@@ -90,11 +90,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 // names already ordered by priority
                 for (const name of this.context.nametypesCopy) {
                     if (row[name.code]) {
-                        row[HEADERS['PREFERRED NAME']] = row[name.code];
+                        row[HEADERS['PREFERRED NAME']] = name.code;
                         continue dataLoop;
                     }
                 }
-
             }
         }
 

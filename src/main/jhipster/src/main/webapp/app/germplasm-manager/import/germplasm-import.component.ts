@@ -179,18 +179,30 @@ export class GermplasmImportComponent implements OnInit {
 
     private validateNameTypes(errorMessage: string[]) {
         const rowWithMissingNameData = [];
+        const preferredNameInvalid = {};
         for (const row of this.context.data) {
             const nameColumns = this.context.nameTypes.filter((nameType) => row[nameType.code]);
-            if (!nameColumns.length && !row[HEADERS['PREFERRED NAME']]) {
+            if (!nameColumns.length) {
                 rowWithMissingNameData.push(row);
-            } else {
-                nameColumns.forEach((n) => this.context.nameColumnsWithData[n.code] = true);
+                continue;
+            }
+            nameColumns.forEach((n) => this.context.nameColumnsWithData[n.code] = true);
+            const preferredName = row[HEADERS['PREFERRED NAME']];
+            if (preferredName && !nameColumns.some((col) => col.code === preferredName.toUpperCase())) {
+                preferredNameInvalid[preferredName] = true;
             }
         }
         if (rowWithMissingNameData.length) {
             const error = 'germplasm.import.file.validation.names.missing.data';
             const message = this.translateService.instant(error, {
                 param: listPreview(rowWithMissingNameData.map((r) => r[HEADERS.ENTRY_NO]))
+            });
+            errorMessage.push(message)
+        }
+        if (Object.keys(preferredNameInvalid).length) {
+            const error = 'germplasm.import.file.validation.names.preferred.invalid';
+            const message = this.translateService.instant(error, {
+                param: listPreview(Object.keys(preferredNameInvalid))
             });
             errorMessage.push(message)
         }
