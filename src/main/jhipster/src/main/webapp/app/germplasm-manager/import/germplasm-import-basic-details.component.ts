@@ -144,7 +144,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     private isFormValid() {
-        return this.breedingMethodSelected;
+        // TODO complete
+        return this.breedingMethodSelected
+            && this.unmapped.length === 0;
     }
 
     dragStart($event, code) {
