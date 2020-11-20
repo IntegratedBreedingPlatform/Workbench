@@ -5,19 +5,17 @@ import { JhiAlert } from 'ng-jhipster/src/service/alert.service';
 @Injectable()
 export class AlertService {
 
-    // workaround to avoid auto-close of error messages
-    private readonly PERSISTENT_ERROR_TIMEOUT = 1000 * 60 * 60 * 24;
-
     constructor(private jhiAlertService: JhiAlertService) {
     }
 
+    // wrapper so that error() won't close automatically
     error(msg: string, params?: any, timeout?: number): JhiAlert {
         this.jhiAlertService.clear();
         return this.jhiAlertService.addAlert({
             msg,
             params,
             type: 'danger',
-            timeout: timeout || this.PERSISTENT_ERROR_TIMEOUT,
+            timeout,
             toast: true
         }, null);
     }
@@ -28,7 +26,7 @@ export class AlertService {
             msg,
             params,
             type: 'success',
-            timeout,
+            timeout: timeout || 5000,
             toast: true
         }, null);
 
