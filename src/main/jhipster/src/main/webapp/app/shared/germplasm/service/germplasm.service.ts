@@ -20,6 +20,11 @@ export class GermplasmService {
             germplasmSearchRequest, { params: options, observe: 'response' });
     }
 
+    downloadGermplasmTemplate(updateFormat?: boolean): Observable<HttpResponse<Blob>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls?programUUID=` + this.context.programUUID + `&updateFormat=` + updateFormat;
+        return this.http.get(url, { observe: 'response', responseType: 'blob' });
+    }
+
     importGermplasmUpdates(germplasmUpdates: any): Observable<HttpResponse<Germplasm[]>> {
         return this.http.patch<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm?programUUID=` + this.context.programUUID,
             germplasmUpdates, { observe: 'response' });

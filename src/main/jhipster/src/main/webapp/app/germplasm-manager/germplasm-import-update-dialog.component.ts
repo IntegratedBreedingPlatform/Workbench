@@ -10,7 +10,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-type.model';
 import { GermplasmAttributeModel } from '../entities/germplasm/germplasm-attribute.model';
 import { forkJoin, Observable } from 'rxjs';
-import { parseFile } from '../shared/util/file-utils';
+import { parseFile, saveFile } from '../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -198,7 +198,9 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
     export($event) {
         $event.preventDefault();
-        // TODO: Download template.
+        this.germplasmService.downloadGermplasmTemplate(true).subscribe((response) => {
+            saveFile(response);
+        });
     }
 }
 
