@@ -484,3 +484,8 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 .disable-image {
     opacity: 0.5
 }
+
+.alert-overflow {
+    max-height: 400px;
+    overflow: auto;
+}

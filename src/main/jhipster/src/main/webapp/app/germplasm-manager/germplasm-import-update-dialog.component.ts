@@ -11,6 +11,7 @@ import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-typ
 import { GermplasmAttributeModel } from '../entities/germplasm/germplasm-attribute.model';
 import { forkJoin, Observable } from 'rxjs';
 import { parseFile, saveFile } from '../shared/util/file-utils';
+import { AlertService } from '../shared/alert/alert.service';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -32,7 +33,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     selectedFileType = this.importFormats[0].extension; // '.xls';
 
     constructor(
-        private alertService: JhiAlertService,
+        private alertService: AlertService,
         public activeModal: NgbActiveModal,
         private modalService: NgbModal,
         private eventManager: JhiEventManager,
