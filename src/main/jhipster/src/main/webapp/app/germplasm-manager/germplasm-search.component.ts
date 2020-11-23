@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
+import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -28,6 +29,8 @@ declare var $: any;
     templateUrl: './germplasm-search.component.html'
 })
 export class GermplasmSearchComponent implements OnInit {
+
+    IMPORT_GERMPLASM_UPDATES = [...IMPORT_GERMPLASM_UPDATES_PERMISSIONS];
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
     @ViewChild(ColumnFilterComponent) public columnFilterComponent: ColumnFilterComponent;

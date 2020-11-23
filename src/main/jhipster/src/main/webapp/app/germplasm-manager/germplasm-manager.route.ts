@@ -5,9 +5,9 @@ import { GermplasmManagerComponent } from './germplasm-manager.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
 import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
-import { SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
+import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS, SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
 import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
-import {GermplasmSelectorComponent} from './selector/germplasm-selector.component';
+import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
 import { GermplasmListCreationComponent, GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation.component';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 
@@ -48,6 +48,8 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
         path: 'germplasm-import-update-dialog',
         component: GermplasmImportUpdatePopupComponent,
+        data: { authorities: IMPORT_GERMPLASM_UPDATES_PERMISSIONS },
+        canActivate: [RouteAccessService],
         outlet: 'popup',
     },
     {
