@@ -248,6 +248,15 @@ export class GermplasmSelectorComponent implements OnInit {
                 reset(req) {
                     ColumnFilterComponent.resetAttributesFilter(this, req);
                 },
+            },
+            {
+                key: 'nameTypes', name: 'Name Types', type: FilterType.NAME_TYPES, nameTypes: [],
+                transform(req) {
+                    ColumnFilterComponent.transformNameTypesFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetNameTypesFilter(this, req);
+                },
             }
         ];
     }
