@@ -233,6 +233,10 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			d3.entries(observeUnit).forEach(function (entry) {
 				if (entry.key != "observations") {
 					newObj[entry.key] = entry.value;
+					if (!entry.value && entry.key == 'entryType') {
+						// If entryType is null set to empty string
+						newObj[entry.key] = '';
+					}
 				}
 			});
 			observeUnit.observations.forEach(function (obs) {
