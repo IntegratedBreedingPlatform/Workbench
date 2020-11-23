@@ -61,6 +61,8 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
                     (res: HttpResponse<any>) => this.onSaveSuccess(res.body),
                     (res: HttpErrorResponse) => this.onError(res)
                 );
+            } else {
+                this.isProcessing = false;
             }
         });
     }
@@ -79,7 +81,6 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
         this.fileUpload.nativeElement.innerText = target.files[0].name;
 
-        // TODO: throw error when Observation sheet is not found.
         parseFile(target.files[0], 'Observation').subscribe((value) => {
             this.rawData = value;
             target.value = '';
