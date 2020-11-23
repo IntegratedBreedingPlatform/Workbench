@@ -22,6 +22,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
 
+    isProcessing = false;
     fileName = '';
     rawData: Array<Array<any>>;
     data: Array<any>;
@@ -53,6 +54,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     }
 
     import() {
+        this.isProcessing = true;
         this.validate().subscribe((isValid) => {
             if (isValid) {
                 this.germplasmService.importGermplasmUpdates(this.transform(this.data, this.names, this.attributes)).subscribe(
@@ -80,6 +82,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         // TODO: throw error when Observation sheet is not found.
         parseFile(target.files[0], 'Observation').subscribe((value) => {
             this.rawData = value;
+            target.value = '';
         }, (error) => {
             this.fileName = '';
             target.value = '';
@@ -184,12 +187,14 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     }
 
     private onSaveSuccess(result: any) {
+        this.isProcessing = false;
         this.alertService.success('germplasm-import-updates.import.success', null, null);
         this.eventManager.broadcast({ name: 'germplasmUpdated', content: result });
         this.activeModal.close(result);
     }
 
     private onError(res) {
+        this.isProcessing = false;
         if (res && res.error) {
             this.alertService.error('error.custom', { param: formatErrorList(res.error.errors) }, null);
             return;

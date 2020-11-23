@@ -18,12 +18,13 @@
 			<input type="file" class="custom-file-input" multiple="false" id="importFile" (change)="onFileChange($event)" accept="{{selectedFileType}}">
 			<label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search"></i> Choose the file you would like to import with the format: Excel</label>
 		</div>
+		<span *ngIf="isProcessing" style="margin-left: 10px;" class="throbber throbber-2x"></span>
 	</div>
 	<div class="modal-footer">
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 		</button>
-		<button (click)="import()" class="btn btn-primary" [disabled]="fileName === '' ? 'disabled' : null">
+		<button (click)="import()" class="btn btn-primary" [disabled]="fileName === '' || isProcessing ? 'disabled' : null">
 			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.import">Import</span>
 		</button>
 	</div>
