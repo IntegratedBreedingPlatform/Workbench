@@ -16,10 +16,11 @@ export class TransactionComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
-    private gid: number;
-    private lotId: number;
+    transactions: Transaction[];
 
-    private transactions: Transaction[];
+    private gid: number;
+
+    private lotId: number;
 
     private page: number;
     private previousPage: number;

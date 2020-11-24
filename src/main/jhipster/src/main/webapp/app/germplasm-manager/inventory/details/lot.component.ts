@@ -15,8 +15,9 @@ export class LotComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
+    lots: Lot[];
+
     private gid: number;
-    private lots: Lot[];
     private page: number;
     private previousPage: number;
     private totalItems: number;

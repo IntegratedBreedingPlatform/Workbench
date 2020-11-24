@@ -16,8 +16,8 @@ import { ParamContext } from '../../../shared/service/param.context';
 })
 export class InventoryDetailsComponent implements OnInit {
 
-    private gid: number;
-    private germplasmPreferredName: String;
+    gid: number;
+    germplasmPreferredName: String;
 
     constructor(private activeModal: NgbActiveModal,
                 private route: ActivatedRoute,

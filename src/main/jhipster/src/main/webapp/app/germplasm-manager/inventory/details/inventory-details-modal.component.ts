@@ -12,7 +12,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class InventoryDetailsModalComponent implements OnInit {
 
-    private readonly url: SafeResourceUrl;
+    readonly url: SafeResourceUrl;
 
     constructor(private route: ActivatedRoute,
                 private sanitizer: DomSanitizer,
