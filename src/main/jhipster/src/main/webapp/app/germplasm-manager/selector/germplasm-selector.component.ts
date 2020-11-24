@@ -82,10 +82,10 @@ export class GermplasmSelectorComponent implements OnInit {
         return [
             {
                 key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
-                matchType: MatchType.STARTSWITH, default:true
+                matchType: MatchType.STARTSWITH, default: true
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
-            { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT, default:true },
+            { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT, default: true },
             {
                 key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
                 fromKey: 'gidFrom',

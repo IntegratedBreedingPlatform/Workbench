@@ -126,7 +126,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         filter.to = undefined;
     }
 
-
     static updateBadgeLabel(filter) {
         return ColumnFilterComponent.getBadgeLabelByType(filter).then((label) => {
             if (label) {
