@@ -5,8 +5,9 @@ import { GermplasmService } from '../../../shared/germplasm/service/germplasm.se
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { ParamContext } from '../../../shared/service/param.context';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
@@ -17,13 +18,15 @@ import { ParamContext } from '../../../shared/service/param.context';
 export class InventoryDetailsComponent implements OnInit {
 
     gid: number;
-    germplasmPreferredName: String;
+    title: String;
 
-    constructor(private activeModal: NgbActiveModal,
+    constructor(private jhiLanguageService: JhiLanguageService,
+                private activeModal: NgbActiveModal,
                 private route: ActivatedRoute,
                 private germplasmService: GermplasmService,
                 private jhiAlertService: JhiAlertService,
-                private paramContext: ParamContext
+                private paramContext: ParamContext,
+                private translateService: TranslateService,
     ) {
         this.paramContext.readParams();
 
@@ -42,7 +45,8 @@ export class InventoryDetailsComponent implements OnInit {
     }
 
     private onSuccess(data: Germplasm) {
-        this.germplasmPreferredName = data.germplasmPeferredName;
+        this.title = this.translateService.instant('inventory-details.title',
+            {germplasmPreferredName: data.germplasmPeferredName, gid: this.gid});
     }
 
     private onError(response: HttpErrorResponse) {
