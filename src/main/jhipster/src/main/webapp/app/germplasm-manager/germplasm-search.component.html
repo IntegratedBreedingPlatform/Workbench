@@ -119,7 +119,10 @@
 				<td [hidden]="hiddenColumns['names']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
 				<td [hidden]="hiddenColumns['availableBalance']">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns['unit']">{{germplasm.unit}}</td>
-				<td [hidden]="hiddenColumns['lotCount']">{{germplasm.lotCount}}</td>
+				<td [hidden]="hiddenColumns['lotCount']">
+					<a *ngIf="germplasm.lotCount" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}">{{germplasm.lotCount}}</a>
+					<span *ngIf="germplasm.lotCount === 0">-</span>
+				</td>
 				<td [hidden]="hiddenColumns['pedigreeString']">{{germplasm.pedigreeString}}</td>
 				<td [hidden]="hiddenColumns['germplasmPeferredId']">{{germplasm.germplasmPeferredId}}</td>
 				<td [hidden]="hiddenColumns['germplasmPeferredName']">{{germplasm.germplasmPeferredName}}</td>
