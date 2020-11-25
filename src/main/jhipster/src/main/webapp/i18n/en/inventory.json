@@ -1,6 +1,6 @@
 {
   "inventory-details": {
-    "title": "Inventory details for {{germplasmPreferredName}} ({{gid}})",
+    "title": "Inventory details for {{germplasmPreferredName}} (GID: {{gid}})",
     "nav": {
       "lot": "View Lots",
       "transaction": "View Transactions"
