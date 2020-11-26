@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{title}}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
+    </button>
+</div>
+<div class="modal-body">
+    <nav>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" jhiTranslate="inventory-details.nav.lot"
+                   [routerLink]="['lot']" [routerLinkActive]="['active']" queryParamsHandling="merge"></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" jhiTranslate="inventory-details.nav.transaction"
+                   [routerLink]="['transaction/']" [routerLinkActive]="['active']" [queryParams]="{lotId: null}" queryParamsHandling="merge"></a>
+            </li>
+        </ul>
+    </nav>
+    <div class="tab-content p-3">
+        <router-outlet></router-outlet>
+        <jhi-alert></jhi-alert>
+    </div>
+</div>
