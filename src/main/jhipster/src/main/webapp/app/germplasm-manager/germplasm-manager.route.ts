@@ -9,11 +9,14 @@ import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS, SEARCH_GERMPLASM_PERMISSIONS } fr
 import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
 import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
 import { GermplasmListCreationComponent, GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation.component';
+import { InventoryDetailsPopupComponent } from './inventory/details/inventory-details-modal.component';
+import { inventoryDetailsRoutes } from './inventory/details/inventory-details.route';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...germplasmRoutes,
     ...breedingMethodRoutes,
+    ...inventoryDetailsRoutes,
     {
         path: 'lot-creation-dialog',
         component: LotCreationDialogComponent,
@@ -55,6 +58,11 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
         path: 'germplasm-list-creation',
         component: GermplasmListCreationComponent,
+    },
+    {
+        path: 'inventory-details-dialog',
+        component: InventoryDetailsPopupComponent,
+        outlet: 'popup',
     },
     {
         path: 'germplasm-manager',

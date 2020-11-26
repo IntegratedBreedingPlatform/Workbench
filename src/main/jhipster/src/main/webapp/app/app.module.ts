@@ -17,6 +17,7 @@ import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.mo
 import { GermplasmTreeTableComponent } from './shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from './shared/tree/study/study-tree.component';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
+import { InventoryDetailsModule } from './germplasm-manager/inventory/details/inventory-details.module';
 
 @NgModule({
     imports: [
@@ -27,7 +28,8 @@ import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interc
         BmsjHipsterSharedModule,
         BmsjHipsterEntityModule,
         LabelPrintingModule,
-        GermplasmManagerModule
+        GermplasmManagerModule,
+        InventoryDetailsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

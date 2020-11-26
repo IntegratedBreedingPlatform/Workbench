@@ -37,4 +37,13 @@ export class GermplasmService {
     getGermplasmAttributes(codes: string[]): Observable<GermplasmAttributeModel[]> {
         return this.http.get<GermplasmAttributeModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes?codes=` + codes.join(','));
     }
+
+    getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
+        const params = {};
+        if (this.context.programUUID) {
+            params['programUUID'] = this.context.programUUID
+        }
+        return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
+            { params, observe: 'response' });
+    }
 }
