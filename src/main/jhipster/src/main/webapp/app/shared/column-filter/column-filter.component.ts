@@ -66,12 +66,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     static transformNumberRangeFilter(filter, request, fromProperty, toProperty) {
-        if (filter.from) {
             request[fromProperty] = filter.from;
-        }
-        if (filter.to) {
             request[toProperty] = filter.to;
-        }
     }
 
     static transformPedigreeOptionsFilter(filter, request) {
@@ -162,6 +158,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return Promise.resolve((isNumeric(filter.min) ? filter.min : '')
                     + ' - '
                     + (isNumeric(filter.max) ? filter.max : ''));
+            case FilterType.NUMBER_RANGE:
+                if (!isNumeric(filter.from) && !isNumeric(filter.to)) {
+                    return Promise.resolve();
+                }
+                return Promise.resolve((isNumeric(filter.from) ? filter.from : '')
+                    + ' - '
+                    + (isNumeric(filter.to) ? filter.to : ''));
             case FilterType.TEXT_WITH_MATCH_OPTIONS:
                 if (filter.matchType && filter.value) {
                     return Promise.resolve(`${filter.matchType} : ${filter.value}`);
@@ -175,6 +178,12 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             case FilterType.ATTRIBUTES:
                 if (filter.attributes && filter.attributes.length) {
                     return Promise.resolve(filter.attributes.map((attribute) => `${attribute.code} : ${attribute.value}`)
+                        .join(', '));
+                }
+                return Promise.resolve();
+            case FilterType.NAME_TYPES:
+                if (filter.nameTypes && filter.nameTypes.length) {
+                    return Promise.resolve(filter.nameTypes.map((nameType) => `${nameType.name} : ${nameType.value}`)
                         .join(', '));
                 }
                 return Promise.resolve();
