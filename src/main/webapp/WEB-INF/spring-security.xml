@@ -22,9 +22,9 @@
 		<!--<intercept-url pattern="/controller/pages/jhipster/#/sample-manager" access="hasAnyAuthority()"/>-->
 
 		<!--GERMPLASM-->
-		<!--MANAGE_GERMPLASM-->
-		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
-		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
+		<!--GERMPLASM_LISTS-->
+		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
+		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 
 
 		<!--STUDIES-->
