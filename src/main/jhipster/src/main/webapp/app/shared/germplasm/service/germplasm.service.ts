@@ -22,6 +22,15 @@ export class GermplasmService {
             germplasmSearchRequest, { params: options, observe: 'response' });
     }
 
+    getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
+        const params = {};
+        if (this.context.programUUID) {
+            params['programUUID'] = this.context.programUUID
+        }
+        return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
+            { params, observe: 'response' });
+    }
+
     downloadGermplasmTemplate(): Observable<HttpResponse<Blob>> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls?programUUID=` + this.context.programUUID;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });

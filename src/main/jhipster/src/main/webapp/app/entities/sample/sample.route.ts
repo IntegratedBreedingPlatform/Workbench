@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot, Routes } from '@angular/router';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { SampleComponent, SampleManagerComponent } from './';
@@ -30,7 +30,7 @@ export const sampleRoute: Routes = [
         },
         data: {
             pageTitle: 'bmsjHipsterApp.sample.home.title',
-            authorities: ['ADMIN', 'LISTS', 'SAMPLE_LISTS']
+            authorities: ['ADMIN', 'LISTS', 'SAMPLES_LISTS']
         },
         canActivate: [RouteAccessService]
     }, {
@@ -41,7 +41,7 @@ export const sampleRoute: Routes = [
         },
         data: {
             pageTitle: 'bmsjHipsterApp.sample.home.title',
-            authorities: ['ADMIN', 'LISTS', 'SAMPLE_LISTS']
+            authorities: ['ADMIN', 'LISTS', 'SAMPLES_LISTS']
         },
         canActivate: [RouteAccessService]
     }

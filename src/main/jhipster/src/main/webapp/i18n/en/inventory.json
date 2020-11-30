@@ -1,0 +1,23 @@
+{
+    "inventory-details": {
+        "title": "Inventory details for {{germplasmPreferredName}} (GID: {{gid}})",
+        "nav": {
+            "lot": "View Lots",
+            "transaction": "View Transactions"
+        }
+    },
+    "lot": {
+        "lotId": "Lot ID",
+        "stockId": "Stock ID",
+        "locationName": "Storage Location",
+        "unitName": "Units",
+        "actualBalance": "Actual Balance",
+        "availableBalance": "Available",
+        "createdDate": "Creation Date"
+    },
+    "transaction": {
+        "transactionType": "Type",
+        "transactionStatus": "Status",
+        "amount": "Amount"
+    }
+}
