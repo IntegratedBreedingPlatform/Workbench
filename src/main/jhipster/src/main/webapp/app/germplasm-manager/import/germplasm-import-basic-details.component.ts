@@ -2,15 +2,9 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmImportComponent, HEADERS } from './germplasm-import.component';
-import { Attribute } from '../../shared/attributes/model/attribute.model';
-import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { Crop } from '../../../../../../../web/src/appsNg2/admin/app/shared/models/crop.model';
-import { PipeTransform } from '@angular/core';
-import { Select2OptionData } from 'ng-select2';
-import { Pipe } from '@angular/core';
 import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
 import { BreedingMethodManagerComponent } from '../../entities/breeding-method/breeding-method-manager.component';
 import { ParamContext } from '../../shared/service/param.context';
@@ -18,6 +12,9 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportContext } from './germplasm-import.context';
+import { Location } from '../../shared/location/model/location';
+import { LocationService } from '../../shared/location/service/location.service';
+import { LocationTypeEnum } from '../../shared/location/model/location.model';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -38,12 +35,21 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     breedingMethodSelected: string;
     useFavoriteBreedingMethods = true;
 
+    breedingAndCountryLocations: Promise<Location[]>;
+    allLocations: Promise<Location[]>;
+    favoriteBreedingAndCountryLocations: Promise<Location[]>;
+    favoriteAllLocations: Promise<Location[]>;
+    locationSelected: string;
+    useFavoriteLocations = true;
+    radioSelected = true;
+
     constructor(
         private translateService: TranslateService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
         private breedingMethodService: BreedingMethodService,
+        private locationService: LocationService,
         private sanitizer: DomSanitizer,
         private paramContext: ParamContext,
         private popupService: PopupService,
@@ -54,6 +60,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     ngOnInit(): void {
         this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
+        this.loadLocations();
 
         this.hasEmptyPreferredName = this.context.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
 
@@ -85,6 +92,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.context.data.filter((row) => !row[HEADERS['BREEDING METHOD']])
             .forEach((row) => row[HEADERS['BREEDING METHOD']] = this.breedingMethodSelected);
 
+        this.context.data.filter((row) => !row[HEADERS['LOCATION ABBR']])
+            .forEach((row) => row[HEADERS['LOCATION ABBR']] = this.locationSelected);
+
         dataLoop: for (const row of this.context.data) {
             if (!row[HEADERS['PREFERRED NAME']]) {
                 // names already ordered by priority
@@ -115,6 +125,13 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.favoriteBreedingMethods = this.breedingMethodService.getBreedingMethods(true).toPromise();
     }
 
+    loadLocations() {
+        this.breedingAndCountryLocations = this.locationService.queryLocationsByType([LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY], false).toPromise();
+        this.favoriteBreedingAndCountryLocations = this.locationService.queryLocationsByType([LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY], true).toPromise();
+        this.allLocations = this.locationService.queryLocationsByType([], false).toPromise();
+        this.favoriteAllLocations = this.locationService.queryLocationsByType([], true).toPromise();
+    }
+
     openBreedingMethodManager() {
 
         const params = '?programId=' + this.paramContext.selectedProjectId;
@@ -131,9 +148,13 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         return this.context.data.every((row) => row[HEADERS['BREEDING METHOD']]);
     }
 
+    hasAllLocations() {
+        return this.context.data.every((row) => row[HEADERS['LOCATION ABBR']]);
+    }
+
     hasAllBasicDetails() {
         // TODO complete
-        return this.hasAllBreedingMethods();
+        return this.hasAllBreedingMethods() && this.hasAllLocations();
     }
 
     canProceed() {
@@ -145,7 +166,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     private isFormValid() {
         // TODO complete
-        return this.breedingMethodSelected;
+        return this.breedingMethodSelected && this.locationSelected;
     }
 
     dragStart($event, code) {

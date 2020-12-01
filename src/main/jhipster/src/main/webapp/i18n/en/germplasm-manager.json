@@ -83,7 +83,11 @@
                 "names.and.attributes.header": "Names and Attributes",
                 "names": "Names",
                 "unmapped": "Unmapped",
-                "attributes": "Attributes"
+                "attributes": "Attributes",
+                "locations": "Germplasm locations",
+                "breeding.and.country.locations": "Breeding and Country locations",
+                "all.locations": "All locations",
+                "locations.use.favorite": "Show only favorite locations"
             },
             "inventory": {
                 "header": "Inventory"
