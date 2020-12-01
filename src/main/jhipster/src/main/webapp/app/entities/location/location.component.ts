@@ -3,8 +3,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
 import { LocationService } from '../../shared/location/service/location.service';
-import { BreedingLocationModel } from '../../shared/location/model/breeding-location.model';
-import { LocationType } from '../../shared/location/model/location-type.model';
+import { Location } from '../../shared/location/model/location';
+import { LocationType } from '../../shared/location/model/location-type';
 import { LocationModel, LocationTypeEnum } from '../../shared/location/model/location.model';
 
 @Component({
@@ -14,7 +14,7 @@ import { LocationModel, LocationTypeEnum } from '../../shared/location/model/loc
 export class LocationComponent implements OnInit {
 
     @Input() public locationId: number;
-    breedingLocation: BreedingLocationModel = new BreedingLocationModel();
+    breedingLocation: Location = new Location();
     locationTypes: LocationType[] = [];
     countries: LocationModel[] = [];
     provinces: LocationModel[] = [];
