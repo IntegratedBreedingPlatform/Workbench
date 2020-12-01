@@ -43,6 +43,7 @@ import { ItemCountCustomComponent } from './component/item-count-custom.componen
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
+import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
 
 @NgModule({
     imports: [
@@ -73,7 +74,8 @@ import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-
         ColumnFilterAttributesComponent,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
-        ItemCountCustomComponent
+        ItemCountCustomComponent,
+        LocationSelect2DataPipe
     ],
     providers: [
         LoginService,
@@ -134,7 +136,8 @@ import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
-        ItemCountCustomComponent
+        ItemCountCustomComponent,
+        LocationSelect2DataPipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
