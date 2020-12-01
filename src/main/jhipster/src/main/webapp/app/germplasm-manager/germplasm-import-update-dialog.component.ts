@@ -107,7 +107,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
             return {
                 gid: row[HEADER['GID']],
                 germplasmUUID: row[HEADER['GUID']],
-                preferredName: row[HEADER['PREFERRED NAME']],
+                preferredNameType: row[HEADER['PREFERRED NAME']],
                 locationAbbreviation: row[HEADER['LOCATION ABBR']],
                 creationDate: row[HEADER['CREATION DATE']],
                 // TODO: Implement Breeding Method Update
