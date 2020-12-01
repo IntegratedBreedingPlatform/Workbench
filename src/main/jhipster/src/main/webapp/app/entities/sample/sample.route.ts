@@ -30,7 +30,7 @@ export const sampleRoute: Routes = [
         },
         data: {
             pageTitle: 'bmsjHipsterApp.sample.home.title',
-            authorities: ['ADMIN', 'LISTS', 'SAMPLE_LISTS']
+            authorities: ['ADMIN', 'LISTS', 'SAMPLES_LISTS']
         },
         canActivate: [RouteAccessService]
     }, {
@@ -41,7 +41,7 @@ export const sampleRoute: Routes = [
         },
         data: {
             pageTitle: 'bmsjHipsterApp.sample.home.title',
-            authorities: ['ADMIN', 'LISTS', 'SAMPLE_LISTS']
+            authorities: ['ADMIN', 'LISTS', 'SAMPLES_LISTS']
         },
         canActivate: [RouteAccessService]
     }
