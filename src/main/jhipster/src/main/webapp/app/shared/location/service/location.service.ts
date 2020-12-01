@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { map } from 'rxjs/operators';
-import { BreedingLocationModel } from '../model/breeding-location.model';
-import { LocationType } from '../model/location-type.model';
+import { Location } from '../model/location';
+import { LocationType } from '../model/location-type';
 import { LocationModel } from '../model/location.model';
 
 @Injectable()
@@ -14,9 +14,9 @@ export class LocationService {
                 private context: ParamContext) {
     }
 
-    queryBreedingLocation(locationId): Observable<BreedingLocationModel> {
-        return this.http.get<BreedingLocationModel>(SERVER_API_URL + `crops/${this.context.cropName}/locations/${locationId}`,
-            { observe: 'response' }).pipe(map((res: HttpResponse<BreedingLocationModel>) => res.body));
+    queryBreedingLocation(locationId): Observable<Location> {
+        return this.http.get<Location>(SERVER_API_URL + `crops/${this.context.cropName}/locations/${locationId}`,
+            { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
     }
 
     queryLocationTypes(): Observable<LocationType[]> {
