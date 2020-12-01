@@ -11,7 +11,8 @@ export class LocationSelect2DataPipe implements PipeTransform {
 
         return locations.map((location) => {
             return {
-                id: location.abbreviation ? location.abbreviation : location.name, //TODO Fix me: Case when the abbreviation is null.
+                // TODO Fix me: Case when the abbreviation is null.
+                id: location.abbreviation ? location.abbreviation : location.name,
                 text: location.abbreviation ?  location.name + ' - (' + location.abbreviation + ')' : location.name
             };
         });
