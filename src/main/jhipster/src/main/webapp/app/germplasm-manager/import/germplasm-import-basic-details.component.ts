@@ -158,15 +158,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     canProceed() {
-        return this.isFormValid() || (
-            this.hasAllBasicDetails()
-                && this.unmapped.length === 0
-        );
-    }
-
-    private isFormValid() {
         // TODO complete
-        return this.breedingMethodSelected && this.locationSelected;
+        return (this.breedingMethodSelected || this.hasAllBreedingMethods())
+            && (this.locationSelected || this.hasAllLocations())
+            && this.unmapped.length === 0
     }
 
     dragStart($event, code) {
