@@ -8,10 +8,10 @@ import { GermplasmService } from '../shared/germplasm/service/germplasm.service'
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-type.model';
-import { GermplasmAttributeModel } from '../entities/germplasm/germplasm-attribute.model';
 import { forkJoin, Observable } from 'rxjs';
 import { parseFile, saveFile } from '../shared/util/file-utils';
 import { AlertService } from '../shared/alert/alert.service';
+import { Attribute } from '../shared/attributes/model/attribute.model';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -27,7 +27,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     rawData: Array<Array<any>>;
     data: Array<any>;
     names: GermplasmNameTypeModel[] = [];
-    attributes: GermplasmAttributeModel[] = [];
+    attributes: Attribute[] = [];
     importFormats = [
         { name: 'Excel', extension: '.xls,.xlsx' }
     ];
