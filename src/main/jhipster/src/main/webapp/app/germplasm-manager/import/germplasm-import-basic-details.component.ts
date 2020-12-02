@@ -102,8 +102,8 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.context.data.filter((row) => !row[HEADERS['CREATION DATE']])
             .forEach((row) => row[HEADERS['CREATION DATE']] = ''
                 + this.creationDateSelected.year
-                + (this.creationDateSelected.month < 10 ? ('0' + this.creationDateSelected.month) : this.creationDateSelected.month)
-                + (this.creationDateSelected.day < 10 ? ('0' + this.creationDateSelected.day) : this.creationDateSelected.day));
+                + ('0' + this.creationDateSelected.month).slice(-2)
+                + ('0' + this.creationDateSelected.day).slice(-2));
 
         if (this.referenceSelected) {
             this.context.data.filter((row) => !row[HEADERS['REFERENCE']])
