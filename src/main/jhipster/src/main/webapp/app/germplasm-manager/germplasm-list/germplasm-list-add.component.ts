@@ -19,14 +19,14 @@ import { TranslateService } from '@ngx-translate/core';
 declare var $: any;
 
 @Component({
-    selector: 'jhi-germplasm-list-append',
-    templateUrl: './germplasm-list-append.component.html',
+    selector: 'jhi-germplasm-list-add',
+    templateUrl: './germplasm-list-add.component.html',
     providers: [
         { provide: TreeService, useClass: GermplasmTreeTableService },
         { provide: GermplasmListService, useClass: GermplasmListService }
     ]
 })
-export class GermplasmListAppendComponent implements OnInit {
+export class GermplasmListAddComponent implements OnInit {
 
     nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
@@ -184,16 +184,16 @@ export class GermplasmListAppendComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-germplasm-list-append-popup',
+    selector: 'jhi-germplasm-list-add-popup',
     template: ''
 })
-export class GermplasmListAppendPopupComponent implements OnInit {
+export class GermplasmListAddPopupComponent implements OnInit {
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService) {
     }
 
     ngOnInit(): void {
-        const modal = this.popupService.open(GermplasmListAppendComponent as Component);
+        const modal = this.popupService.open(GermplasmListAddComponent as Component);
     }
 
 }

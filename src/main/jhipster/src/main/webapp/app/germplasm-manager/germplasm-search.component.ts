@@ -535,7 +535,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.request = new GermplasmSearchRequest();
     }
 
-    openAddToList() {
+    openCreateList() {
         if (!this.validateSelection()) {
             return;
         }
@@ -554,7 +554,7 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
-    openAppendToList() {
+    openAddToList() {
         if (!this.validateSelection()) {
             return;
         }
@@ -567,7 +567,7 @@ export class GermplasmSearchComponent implements OnInit {
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
 
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-append-dialog' }, }], {
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });

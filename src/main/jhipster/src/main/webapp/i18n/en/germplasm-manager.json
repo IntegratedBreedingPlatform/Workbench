@@ -44,8 +44,8 @@
             "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
         },
         "actions": {
-            "add-to-list": "Add to list",
-            "append-to-list": "Append to list"
+            "create-list": "Create new list",
+            "add-to-list": "Add to existing list"
         },
         "total-records": "Total germplasm records",
         "included-gids": "(+ included germplasm)"
