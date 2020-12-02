@@ -13,13 +13,23 @@ import { ExtendedGermplasmImportRequest, GermplasmImportRequest } from '../model
 export class GermplasmService {
     constructor(private http: HttpClient,
                 private context: ParamContext) {
-
     }
 
     searchGermplasm(germplasmSearchRequest, pageable): Observable<HttpResponse<Germplasm[]>> {
         const options = createRequestOption(pageable);
         return this.http.post<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
             germplasmSearchRequest, { params: options, observe: 'response' });
+    }
+
+    downloadGermplasmTemplate(isGermplasmUpdateFormat: boolean): Observable<HttpResponse<Blob>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls/${isGermplasmUpdateFormat}`
+            + '?programUUID=' + this.context.programUUID;
+        return this.http.get(url, { observe: 'response', responseType: 'blob' });
+    }
+
+    importGermplasmUpdates(germplasmUpdates: any): Observable<HttpResponse<Germplasm[]>> {
+        return this.http.patch<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm?programUUID=` + this.context.programUUID,
+            germplasmUpdates, { observe: 'response' });
     }
 
     getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
@@ -29,11 +39,6 @@ export class GermplasmService {
         }
         return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
             { params, observe: 'response' });
-    }
-
-    downloadGermplasmTemplate(): Observable<HttpResponse<Blob>> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls?programUUID=` + this.context.programUUID;
-        return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
 
     getGermplasmAttributes(codes: string[]): Observable<Attribute[]> {

@@ -17,12 +17,15 @@ export function parseFile(file: File, sheetName): Observable<Array<Array<any>>> 
             const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
             /* grab sheet */
-            const wsname = sheetName ? sheetName : wb.SheetNames[0];
-            const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+            if (wb.SheetNames.includes(sheetName)) {
+                const ws: XLSX.WorkSheet = wb.Sheets[sheetName];
+                /* save data */
+                const data = <Array<Array<any>>>(XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', blankrows: false }));
+                observer.next(data);
+            } else {
+                observer.error('Cannot find the sheet with name: ' + sheetName);
+            }
 
-            /* save data */
-            const data = <Array<Array<any>>>(XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' }));
-            observer.next(data);
         };
         reader.readAsBinaryString(file);
 

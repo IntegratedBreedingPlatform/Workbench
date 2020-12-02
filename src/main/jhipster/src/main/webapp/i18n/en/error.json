@@ -12,6 +12,7 @@
         "custom": "{{ param }}",
         "general":"Something went wrong, please try again.",
         "import": {
+            "header.mandatory": "Mandatory columns should be specified in the imported file: {{param}}",
             "header.duplicated": "The column {{param}} is duplicated in the header",
             "file.empty": "The file has no data to import. Please verify and try again"
         }

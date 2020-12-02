@@ -1,6 +1,6 @@
 export class NameType {
     constructor(
-        private id?: number,
+        public id?: number,
         public code?: string,
         private name?: string,
     ) {

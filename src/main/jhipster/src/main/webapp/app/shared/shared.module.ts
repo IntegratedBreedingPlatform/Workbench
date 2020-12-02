@@ -99,7 +99,7 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal,
+        NgbActiveModal
     ],
     entryComponents: [
         AppModalComponent,

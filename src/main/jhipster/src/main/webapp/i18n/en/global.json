@@ -99,7 +99,8 @@
             "open": "Open",
             "save": "Save",
             "view": "View",
-            "select" : "Select"
+            "select" : "Select",
+            "import" : "Import"
         },
         "detail": {
             "field": "Field",

@@ -13,6 +13,11 @@
 							replaceUrl="true"
 							queryParamsHandling="merge">
 					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="IMPORT_GERMPLASM_UPDATES"
+							[routerLink]="['/', { outlets: { popup: 'germplasm-import-update-dialog'} }]"
+							replaceUrl="true"
+							queryParamsHandling="merge" jhiTranslate="germplasm-import-updates.title">
+					</button>
 				</div>
 			</div>
 		</div>
