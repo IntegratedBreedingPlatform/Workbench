@@ -43,7 +43,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     useFavoriteLocations = true;
     radioSelected = true;
 
-    creationDateSelected: NgbDate | null;
+    creationDateSelected: NgbDate | null
+
+    referenceSelected: string;
 
     constructor(
         private translateService: TranslateService,
@@ -102,6 +104,11 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 + this.creationDateSelected.year
                 + (this.creationDateSelected.month < 10 ? ('0' + this.creationDateSelected.month) : this.creationDateSelected.month)
                 + (this.creationDateSelected.day < 10 ? ('0' + this.creationDateSelected.day) : this.creationDateSelected.day));
+
+        if (this.referenceSelected) {
+            this.context.data.filter((row) => !row[HEADERS['REFERENCE']])
+                .forEach((row) => row[HEADERS['REFERENCE']] = this.referenceSelected);
+        }
 
         dataLoop: for (const row of this.context.data) {
             if (!row[HEADERS['PREFERRED NAME']]) {
@@ -162,6 +169,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     hasAllCreationDate() {
         return this.context.data.every((row) => row[HEADERS['CREATION DATE']]);
+    }
+
+    hasAllReference() {
+        return this.context.data.every((row) => row[HEADERS['REFERENCE']]);
     }
 
     hasAllBasicDetails() {
