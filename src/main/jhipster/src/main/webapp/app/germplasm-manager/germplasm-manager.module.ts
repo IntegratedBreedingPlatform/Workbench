@@ -12,6 +12,7 @@ import {
     GermplasmListCreationPopupComponent
 } from './germplasm-list/germplasm-list-creation.component';
 import {GermplasmManagerContext} from './germplasm-manager.context';
+import { GermplasmListAppendComponent, GermplasmListAppendPopupComponent } from './germplasm-list/germplasm-list-append.component';
 
 @NgModule({
     imports: [
@@ -24,7 +25,9 @@ import {GermplasmManagerContext} from './germplasm-manager.context';
         GermplasmSearchComponent,
         GermplasmListCreationComponent,
         GermplasmListCreationPopupComponent,
-        GermplasmSelectorComponent
+        GermplasmSelectorComponent,
+        GermplasmListAppendComponent,
+        GermplasmListAppendPopupComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -32,7 +35,9 @@ import {GermplasmManagerContext} from './germplasm-manager.context';
         GermplasmSearchComponent,
         GermplasmListCreationComponent,
         GermplasmListCreationPopupComponent,
-        GermplasmSelectorComponent
+        GermplasmSelectorComponent,
+        GermplasmListAppendComponent,
+        GermplasmListAppendPopupComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,

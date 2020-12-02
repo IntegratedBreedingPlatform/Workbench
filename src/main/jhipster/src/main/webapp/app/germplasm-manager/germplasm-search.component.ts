@@ -531,4 +531,23 @@ export class GermplasmSearchComponent implements OnInit {
             queryParamsHandling: 'merge'
         });
     }
+
+    openAppendToList() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.request;
+        } else {
+            searchComposite.itemIds = this.selectedItems;
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-append-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
 }
