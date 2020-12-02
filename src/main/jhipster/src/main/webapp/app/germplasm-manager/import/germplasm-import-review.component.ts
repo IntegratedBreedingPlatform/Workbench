@@ -13,6 +13,7 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { HEADERS } from './germplasm-import.component';
+import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -20,7 +21,19 @@ import { HEADERS } from './germplasm-import.component';
 })
 export class GermplasmImportReviewComponent implements OnInit {
 
+    HEADERS = HEADERS;
+    page = 0;
+    pageSize = 10;
+
     isLoading: boolean;
+    isSaving: boolean;
+
+    matches: GermplasmDto[];
+    showMatchesOption = SHOW_MATCHES_OPTIONS.ALL;
+    SHOW_MATCHES_OPTIONS = SHOW_MATCHES_OPTIONS;
+    dataMatches: any[] = [];
+    newRecords: any[] = [];
+    rows: any[] = [];
 
     constructor(
         private translateService: TranslateService,
@@ -36,10 +49,45 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     ngOnInit(): void {
         this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
+
+        const uuids = [];
+        const names = {};
+        this.context.data.forEach((row) => {
+            if (row[HEADERS['GUID']]) {
+                uuids.push(row[HEADERS['GUID']]);
+            }
+            this.context.nametypesCopy.forEach((nameType) => {
+                if (row[nameType.code]) {
+                    names[row[nameType.code]] = true;
+                }
+            })
+        });
+        this.isLoading = true;
+        this.germplasmService.getGermplasmMatches(uuids, Object.keys(names)).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe((matches) => {
+            this.matches = matches;
+            const guidMatch = {}
+                , nameMatch = {};
+            this.matches.forEach((match) => {
+                guidMatch[match.germplasmUUID] = true;
+                match.names.forEach((name) => nameMatch[name.name] = true);
+            });
+            this.context.data.forEach((row) => {
+                if (guidMatch[row[HEADERS.GUID]] || this.context.nametypesCopy.some((nameType) => {
+                    return nameMatch[row[nameType.code]];
+                })) {
+                    this.dataMatches.push(row);
+                } else {
+                    this.newRecords.push(row);
+                }
+            });
+            this.rows = [...this.dataMatches, ...this.newRecords];
+        })
     }
 
     save() {
-        this.isLoading = true;
+        this.isSaving = true;
         this.germplasmService.importGermplasm(this.context.data.map((row) => {
             return <GermplasmImportRequest>({
                 clientId: row[HEADERS.ENTRY_NO],
@@ -63,7 +111,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 }, {})
             });
         })).pipe(finalize(() => {
-            this.isLoading = false;
+            this.isSaving = false;
         })).subscribe(
             (res: GermplasmList) => this.onSaveSuccess(res),
             (res: HttpErrorResponse) => this.onError(res)
@@ -94,4 +142,28 @@ export class GermplasmImportReviewComponent implements OnInit {
         const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
     }
+
+    keys(obj) {
+        return Object.keys(obj);
+    }
+
+    onOptionChange() {
+        switch (this.showMatchesOption) {
+            case SHOW_MATCHES_OPTIONS.ALL:
+                this.rows = [...this.dataMatches, ...this.newRecords];
+                break;
+            case SHOW_MATCHES_OPTIONS.ONLY_MATCHES:
+                this.rows = this.dataMatches;
+                break;
+            case SHOW_MATCHES_OPTIONS.NEW_RECORDS:
+                this.rows = this.newRecords;
+                break;
+        }
+    }
+}
+
+enum SHOW_MATCHES_OPTIONS {
+    ALL = 'ALL',
+    ONLY_MATCHES = 'ONLY_MATCHES',
+    NEW_RECORDS = 'NEW_RECORDS'
 }

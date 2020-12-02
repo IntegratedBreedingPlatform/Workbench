@@ -8,6 +8,8 @@ import { Germplasm } from '../../../entities/germplasm/germplasm.model';
 import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { ExtendedGermplasmImportRequest, GermplasmImportRequest } from '../model/germplasm-import-request.model';
+import { getAllRecords } from '../../util/get-all-records';
+import { GermplasmDto } from '../model/germplasm.model';
 
 @Injectable()
 export class GermplasmService {
@@ -30,6 +32,20 @@ export class GermplasmService {
     importGermplasmUpdates(germplasmUpdates: any): Observable<HttpResponse<Germplasm[]>> {
         return this.http.patch<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm?programUUID=` + this.context.programUUID,
             germplasmUpdates, { observe: 'response' });
+    }
+
+    getGermplasmMatches(germplasmUUIDs: string[], names: string[]): Observable<GermplasmDto[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/matches` +
+            '?programUUID=' + this.context.programUUID
+
+        return getAllRecords<GermplasmDto>((page: number, pageSize: number) => {
+            return this.http.post<GermplasmDto[]>(url, {
+                germplasmUUIDs,
+                names
+            }, {
+                params: createRequestOption({page, size: pageSize})
+            })
+        });
     }
 
     getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {

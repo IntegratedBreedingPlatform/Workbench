@@ -1,4 +1,6 @@
-// TODO move to shared/germplasm
+// TODO
+//  - move to shared/germplasm
+//  - rename to AttributeType
 export class Attribute {
     constructor(
         public  code?: string,

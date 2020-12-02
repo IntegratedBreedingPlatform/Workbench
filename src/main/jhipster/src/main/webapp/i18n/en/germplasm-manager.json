@@ -101,7 +101,8 @@
                 "header": "Inventory"
             },
             "review": {
-                "header": "Review"
+                "header": "Review",
+                "show.matches": "Show matches"
             }
         }
     }
