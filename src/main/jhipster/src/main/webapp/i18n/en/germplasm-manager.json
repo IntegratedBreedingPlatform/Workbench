@@ -93,7 +93,9 @@
                 "locations": "Germplasm locations",
                 "breeding.and.country.locations": "Breeding and Country locations",
                 "all.locations": "All locations",
-                "locations.use.favorite": "Show only favorite locations"
+                "locations.use.favorite": "Show only favorite locations",
+                "creation.date": "Germplasm Date",
+                "reference": "Reference"
             },
             "inventory": {
                 "header": "Inventory"

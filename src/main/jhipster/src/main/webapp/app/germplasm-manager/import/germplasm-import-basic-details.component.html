@@ -10,7 +10,7 @@
 	<div>
 		<h3 jhiTranslate="germplasm.import.basicDetails.header"></h3>
 		<form name="detailsForm" #detailsForm="ngForm">
-			<div jhiTranslate="germplasm.import.basicDetails.description" *ngIf="!hasAllBasicDetails()"></div>
+		<div jhiTranslate="germplasm.import.basicDetails.description" *ngIf="!hasAllBasicDetails()"></div>
 			<div class="form-group row">
 				<label for="breedingMethod" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
 				<div class="col-sm-6" *ngIf="!hasAllBreedingMethods() else allGood">
@@ -71,6 +71,20 @@
 									   [(ngModel)]="useFavoriteLocations">
 								<label class="form-check-label" for="useFavoriteBreedingLocations" jhiTranslate="germplasm.import.basicDetails.locations.use.favorite">
 								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="creationDate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.creation.date"></label>
+				<div class="col-sm-6" *ngIf="!hasAllCreationDate() else allGood">
+					<div class="row">
+						<div class="input-group col-xs-12 col-md-12">
+							<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="creationDateSelected"
+								   ngbDatepicker #date="ngbDatepicker" id="creationDate" name="creationDate"/>
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
 							</div>
 						</div>
 					</div>
@@ -159,7 +173,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="next()" [disabled]="!canProceed()" class="btn btn-primary">
+	<button (click)="next()" [disabled]="!canProceed(detailsForm)" class="btn btn-primary">
 		<span jhiTranslate="next"></span>
 	</button>
 </div>

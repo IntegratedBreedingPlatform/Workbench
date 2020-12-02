@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmImportComponent, HEADERS } from './germplasm-import.component';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
@@ -42,6 +42,8 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     locationSelected: string;
     useFavoriteLocations = true;
     radioSelected = true;
+
+    creationDateSelected: NgbDate | null;
 
     constructor(
         private translateService: TranslateService,
@@ -94,6 +96,12 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
         this.context.data.filter((row) => !row[HEADERS['LOCATION ABBR']])
             .forEach((row) => row[HEADERS['LOCATION ABBR']] = this.locationSelected);
+
+        this.context.data.filter((row) => !row[HEADERS['CREATION DATE']])
+            .forEach((row) => row[HEADERS['CREATION DATE']] = ''
+                + this.creationDateSelected.year
+                + (this.creationDateSelected.month < 10 ? ('0' + this.creationDateSelected.month) : this.creationDateSelected.month)
+                + (this.creationDateSelected.day < 10 ? ('0' + this.creationDateSelected.day) : this.creationDateSelected.day));
 
         dataLoop: for (const row of this.context.data) {
             if (!row[HEADERS['PREFERRED NAME']]) {
@@ -152,15 +160,21 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         return this.context.data.every((row) => row[HEADERS['LOCATION ABBR']]);
     }
 
-    hasAllBasicDetails() {
-        // TODO complete
-        return this.hasAllBreedingMethods() && this.hasAllLocations();
+    hasAllCreationDate() {
+        return this.context.data.every((row) => row[HEADERS['CREATION DATE']]);
     }
 
-    canProceed() {
+    hasAllBasicDetails() {
         // TODO complete
-        return (this.breedingMethodSelected || this.hasAllBreedingMethods())
+        return this.hasAllBreedingMethods() && this.hasAllLocations() && this.hasAllCreationDate();
+    }
+
+    canProceed(f) {
+        // TODO complete
+        const form = f.form;
+        return form.valid && (this.breedingMethodSelected || this.hasAllBreedingMethods())
             && (this.locationSelected || this.hasAllLocations())
+            && (this.creationDateSelected || this.hasAllCreationDate())
             && this.unmapped.length === 0
     }
 
