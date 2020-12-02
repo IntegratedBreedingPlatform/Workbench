@@ -91,7 +91,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         });
     }
 
-    private transform(importData: Array<any>, names: GermplasmNameTypeModel[], attributes: GermplasmAttributeModel[]): any[] {
+    private transform(importData: Array<any>, names: GermplasmNameTypeModel[], attributes: Attribute[]): any[] {
         // Transform file data to JSON
         const germplasmUpdates = importData.map((row) => {
             const namesValuesMap = {};
@@ -167,7 +167,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         });
     }
 
-    private validateHeader(fileHeader: string[], errorMessage: string[], codes: string[], names: GermplasmNameTypeModel[], attributes: GermplasmAttributeModel[]) {
+    private validateHeader(fileHeader: string[], errorMessage: string[], codes: string[], names: GermplasmNameTypeModel[], attributes: Attribute[]) {
         // TODO: Add Method Abbr once implemented in the backend.
 
         if (!(<any>Object).values(HEADER).every((header) => {
