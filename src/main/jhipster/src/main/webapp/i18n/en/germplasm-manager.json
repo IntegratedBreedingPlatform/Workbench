@@ -7,6 +7,12 @@
         "success": "{{param}} lots were created successfully",
         "confirm.transactions.checkbox.label": "Confirm transactions on saving"
     },
+    "germplasm-import-updates": {
+        "title": "Import Germplasm Updates",
+        "validation.file.empty" : "The specified file is empty.",
+        "validation.invalid.codes": "The following codes are not defined in the system: {{param}}",
+        "import.success" : "Germplasm updates are saved successfully."
+    },
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
