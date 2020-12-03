@@ -27,7 +27,7 @@ export class GermplasmListService {
     }
 
     addGermplasmEntriesToList(germplasmListId: number, searchComposite: SearchComposite<GermplasmSearchRequest, number>): Observable<void> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-list/${germplasmListId}/entries?programUUID=` + this.context.programUUID;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries?programUUID=` + this.context.programUUID;
         return this.http.post<void>(url, searchComposite);
     }
 
