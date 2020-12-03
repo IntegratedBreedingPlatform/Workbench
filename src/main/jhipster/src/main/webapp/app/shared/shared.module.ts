@@ -19,6 +19,7 @@ import { HelpService } from './service/help.service';
 import { ColumnFilterComponent } from './column-filter/column-filter.component';
 import { ColVisButtonComponent } from './col-vis/col-vis-button.component';
 import { ColumnFilterNumberComponent } from './column-filter/column-filter-number-component';
+import { ColumnFilterNumberRangeComponent } from './column-filter/column-filter-number-range-component';
 import { ColumnFilterDateComponent } from './column-filter/column-filter-date-component';
 import { ColumnFilterChecklistComponent } from './column-filter/column-filter-checklist-component';
 import { ColumnFilterTextComponent } from './column-filter/column-filter-text-component';
@@ -30,7 +31,9 @@ import { ColumnFilterBooleanComponent } from './column-filter/column-filter-bool
 import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/column-filter-text-with-match-options-component';
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
+import { ColumnFilterNameTypesComponent } from './column-filter/column-filter-name-types-component';
 import { AttributesService } from './attributes/service/attributes.service';
+import { NameTypeService } from './name-type/service/name-type.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
 import { LocationService } from './location/service/location.service';
@@ -59,6 +62,7 @@ import { AlertService } from './alert/alert.service';
         CustomMinGreaterThanValidatorDirective,
         CustomMinEqualsValidatorDirective,
         ColumnFilterNumberComponent,
+        ColumnFilterNumberRangeComponent,
         ColumnFilterDateComponent,
         ColumnFilterChecklistComponent,
         ColumnFilterTextComponent,
@@ -70,6 +74,7 @@ import { AlertService } from './alert/alert.service';
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
+        ColumnFilterNameTypesComponent,
         KeyValuePipe,
         ItemCountCustomComponent
     ],
@@ -87,6 +92,7 @@ import { AlertService } from './alert/alert.service';
         HelpService,
         GermplasmService,
         AttributesService,
+        NameTypeService,
         BreedingMethodService,
         LocationService,
         PopupService,
@@ -131,6 +137,7 @@ import { AlertService } from './alert/alert.service';
         ColumnFilterTextWithMatchOptionsComponent,
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
+        ColumnFilterNameTypesComponent,
         ItemCountCustomComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

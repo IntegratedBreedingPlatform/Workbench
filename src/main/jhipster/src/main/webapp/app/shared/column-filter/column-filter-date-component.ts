@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-column-filter-date',
@@ -10,7 +11,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
                 <label for="from" class="col-form-label col-md-3">From</label>
                 <div class="input-group col-md-9">
                     <input class="form-control" placeholder="yyyy-mm-dd"
-                           name="from" [(ngModel)]="filter.from" [maxDate]="filter.to"
+                           name="from" [(ngModel)]="filter.from"  [minDate]="minDate" [maxDate]="filter.to"
                            ngbDatepicker [autoClose]="false" #from="ngbDatepicker" id="from">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary calendar" (click)="from.toggle()" type="button"></button>
@@ -21,7 +22,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
                 <label for="to" class="col-form-label col-md-3">To</label>
                 <div class="input-group col-md-9">
                     <input class="form-control" placeholder="yyyy-mm-dd"
-                           name="to" [(ngModel)]="filter.to" [minDate]="filter.from"
+                           name="to" [(ngModel)]="filter.to" [minDate]="minimumDate()"
                            ngbDatepicker [autoClose]="false" #to="ngbDatepicker" id="to">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary calendar" (click)="to.toggle()" type="button"></button>
@@ -41,6 +42,9 @@ export class ColumnFilterDateComponent implements OnInit {
     @Output() onApply = new EventEmitter();
     @Output() onReset = new EventEmitter();
 
+    // Allow to select as far back as year 1970
+    minDate = {year: 1970, month: 1, day: 1};
+
     ngOnInit(): void {
     }
 
@@ -54,5 +58,12 @@ export class ColumnFilterDateComponent implements OnInit {
     reset(form) {
         form.reset();
         this.onReset.emit();
+    }
+
+    minimumDate() {
+        if (this.filter.from != null) {
+            return this.filter.from;
+        }
+        return this.minDate;
     }
 }
