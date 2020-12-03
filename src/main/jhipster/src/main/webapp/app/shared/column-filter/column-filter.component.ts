@@ -65,6 +65,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         }
     }
 
+    static transformNumberRangeFilter(filter, request, fromProperty, toProperty) {
+            request[fromProperty] = filter.from;
+            request[toProperty] = filter.to;
+    }
+
     static transformPedigreeOptionsFilter(filter, request) {
         request[filter.key] = {
             type: filter.pedigreeType,
@@ -91,7 +96,26 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         filter.attributes = [];
     }
 
-    static resetDateFilter(filter, request, fromProperty, toProperty) {
+    static transformNameTypesFilter(filter, request) {
+        const nameTypes: any = {}
+        for (const nameType of filter.nameTypes) {
+            nameTypes[nameType.code] = nameType.value;
+        }
+        request[filter.key] = nameTypes;
+    }
+
+    static resetNameTypesFilter(filter, request) {
+        request[filter.key] = undefined;
+
+        // Remove all name types column
+        for (const nameType of filter.nameTypes) {
+            request.addedColumnsPropertyIds.pop(nameType.name);
+        }
+
+        filter.nameTypes = [];
+    }
+
+    static resetRangeFilter(filter, request, fromProperty, toProperty) {
         request[fromProperty] = undefined;
         request[toProperty] = undefined;
         filter.from = undefined;
@@ -134,6 +158,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return Promise.resolve((isNumeric(filter.min) ? filter.min : '')
                     + ' - '
                     + (isNumeric(filter.max) ? filter.max : ''));
+            case FilterType.NUMBER_RANGE:
+                if (!isNumeric(filter.from) && !isNumeric(filter.to)) {
+                    return Promise.resolve();
+                }
+                return Promise.resolve((isNumeric(filter.from) ? filter.from : '')
+                    + ' - '
+                    + (isNumeric(filter.to) ? filter.to : ''));
             case FilterType.TEXT_WITH_MATCH_OPTIONS:
                 if (filter.matchType && filter.value) {
                     return Promise.resolve(`${filter.matchType} : ${filter.value}`);
@@ -147,6 +178,12 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             case FilterType.ATTRIBUTES:
                 if (filter.attributes && filter.attributes.length) {
                     return Promise.resolve(filter.attributes.map((attribute) => `${attribute.code} : ${attribute.value}`)
+                        .join(', '));
+                }
+                return Promise.resolve();
+            case FilterType.NAME_TYPES:
+                if (filter.nameTypes && filter.nameTypes.length) {
+                    return Promise.resolve(filter.nameTypes.map((nameType) => `${nameType.name} : ${nameType.value}`)
                         .join(', '));
                 }
                 return Promise.resolve();
@@ -396,6 +433,18 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
         this.eventManager.broadcast({ name: 'clearSort', content: '' });
     }
+
+    addNameTypeColumn(nameType) {
+        if (!this.request.addedColumnsPropertyIds.some((e) => e === nameType.name)) {
+            this.request.addedColumnsPropertyIds.push(nameType.name);
+        }
+    }
+
+    removeNameTypeColumn(nameType) {
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.name);
+        this.eventManager.broadcast({ name: 'clearSort', content: '' });
+    }
+
 }
 
 export enum FilterType {
@@ -409,5 +458,7 @@ export enum FilterType {
     BOOLEAN,
     TEXT_WITH_MATCH_OPTIONS,
     PEDIGREE_OPTIONS,
-    ATTRIBUTES
+    ATTRIBUTES,
+    NUMBER_RANGE,
+    NAME_TYPES
 }
