@@ -537,7 +537,7 @@ export class GermplasmSearchComponent implements OnInit {
         return true;
     }
 
-    openAddToList() {
+    openCreateList() {
         if (!this.validateSelection()) {
             return;
         }

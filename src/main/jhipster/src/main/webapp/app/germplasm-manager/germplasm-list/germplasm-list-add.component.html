@@ -49,7 +49,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading">
 		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
 	</button>
-	<button (click)="validate()" class="btn btn-primary">
+	<button (click)="validate()" [disabled]="isLoading" class="btn btn-primary">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span class="fa fa-plus"></span>&nbsp;<span jhiTranslate="germplasm-list-add.add-action"></span>
 	</button>
