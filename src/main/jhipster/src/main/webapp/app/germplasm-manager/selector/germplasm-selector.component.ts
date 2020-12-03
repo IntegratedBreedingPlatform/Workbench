@@ -82,10 +82,25 @@ export class GermplasmSelectorComponent implements OnInit {
         return [
             {
                 key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
-                matchType: MatchType.STARTSWITH
+                matchType: MatchType.STARTSWITH, default: true
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
-            { key: 'gids', name: 'GID', type: FilterType.LIST },
+            { key: 'gids', name: 'GID', type: FilterType.LIST, default: true },
+            {
+                key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
+                fromKey: 'gidFrom',
+                toKey: 'gidTo',
+                transform(req) {
+                    ColumnFilterComponent.transformNumberRangeFilter(this, req, this.fromKey, this.toKey);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetRangeFilter(this, req, this.fromKey, this.toKey);
+                },
+                reload(req) {
+                    this.from = req[this.fromKey];
+                    this.to = req[this.toKey];
+                }
+            },
             { key: 'groupId', name: 'Group ID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'sampleUID', name: 'Sample ID', placeholder: 'Match Text', type: FilterType.TEXT },
             {
@@ -174,14 +189,14 @@ export class GermplasmSelectorComponent implements OnInit {
             { key: 'reference', name: 'Reference', placeholder: 'Contains Text', type: FilterType.TEXT },
             { key: 'breedingMethodName', name: 'Breeding Method Name', placeholder: 'Contains Text', type: FilterType.TEXT },
             {
-                key: 'harvestDate', name: 'Harvest Date', type: FilterType.DATE,
-                fromKey: 'harvestDateFrom',
-                toKey: 'harvestDateTo',
+                key: 'germplasmDate', name: 'Germplasm Date', type: FilterType.DATE,
+                fromKey: 'germplasmDateFrom',
+                toKey: 'germplasmDateTo',
                 transform(req) {
                     ColumnFilterComponent.transformDateFilter(this, req, this.fromKey, this.toKey);
                 },
                 reset(req) {
-                    ColumnFilterComponent.resetDateFilter(this, req, this.fromKey, this.toKey);
+                    ColumnFilterComponent.resetRangeFilter(this, req, this.fromKey, this.toKey);
                 },
                 reload(req) {
                     this.from = req[this.fromKey];
@@ -232,6 +247,15 @@ export class GermplasmSelectorComponent implements OnInit {
                 },
                 reset(req) {
                     ColumnFilterComponent.resetAttributesFilter(this, req);
+                },
+            },
+            {
+                key: 'nameTypes', name: 'Name Types', type: FilterType.NAME_TYPES, nameTypes: [],
+                transform(req) {
+                    ColumnFilterComponent.transformNameTypesFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetNameTypesFilter(this, req);
                 },
             }
         ];
