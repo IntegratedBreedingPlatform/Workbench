@@ -62,7 +62,7 @@ export class GermplasmPopupComponent implements OnInit {
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectedProjectId=' + this.paramContext.selectedProjectId;
 
-        const modal = this.popupService.open(GermplasmComponent as Component);
+        const modal = this.popupService.open(GermplasmComponent as Component, { windowClass: 'modal-extra-large', backdrop: 'static' });
         modal.then((modalRef) => {
             modalRef.componentInstance.safeUrl =
                 this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_BROWSER_DEFAULT_URL + gid + authParams);

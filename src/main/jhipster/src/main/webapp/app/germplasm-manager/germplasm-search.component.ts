@@ -20,6 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
+import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -29,7 +30,10 @@ declare var $: any;
 })
 export class GermplasmSearchComponent implements OnInit {
 
+    IMPORT_GERMPLASM_UPDATES = [...IMPORT_GERMPLASM_UPDATES_PERMISSIONS];
+
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
+    @ViewChild(ColumnFilterComponent) public columnFilterComponent: ColumnFilterComponent;
     eventSubscriber: Subscription;
     germplasmList: Germplasm[];
     error: any;
@@ -85,7 +89,7 @@ export class GermplasmSearchComponent implements OnInit {
                 matchType: MatchType.STARTSWITH, default: true
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
-            { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT, default: true },
+            { key: 'gids', name: 'GID', type: FilterType.LIST, default: true },
             {
                 key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
                 fromKey: 'gidFrom',
@@ -325,6 +329,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     ngOnInit() {
         this.registerChangeInGermplasm();
+        this.registerGermplasmUpdated();
         this.registerClearSort();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
@@ -400,6 +405,23 @@ export class GermplasmSearchComponent implements OnInit {
                 this.resetTable();
             }
 
+        });
+    }
+
+    registerGermplasmUpdated() {
+        // Load all germplasm that has been updated via import.
+        this.eventSubscriber = this.eventManager.subscribe('germplasmUpdated', (event) => {
+
+            this.columnFilterComponent.clearFilters();
+
+            // Get the existing gids filter
+            const gidsFilter = this.filters.find((filter) => filter.key === 'gids');
+            gidsFilter.value = event.content.join(',');
+
+            // Manually add it to the filters and apply.
+            this.columnFilterComponent.selectedFilter = gidsFilter.key;
+            this.columnFilterComponent.AddFilter();
+            this.columnFilterComponent.updateListFilter(gidsFilter);
         });
     }
 

@@ -85,7 +85,7 @@ export class GermplasmSelectorComponent implements OnInit {
                 matchType: MatchType.STARTSWITH, default: true
             },
             { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
-            { key: 'gid', name: 'GID', placeholder: 'Match Text', type: FilterType.TEXT, default: true },
+            { key: 'gids', name: 'GID', type: FilterType.LIST, default: true },
             {
                 key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
                 fromKey: 'gidFrom',

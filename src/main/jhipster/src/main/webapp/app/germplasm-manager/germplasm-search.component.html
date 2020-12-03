@@ -8,6 +8,11 @@
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.add-to-list"
 							(click)="openAddToList()" >
 					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="IMPORT_GERMPLASM_UPDATES"
+							[routerLink]="['/', { outlets: { popup: 'germplasm-import-update-dialog'} }]"
+							replaceUrl="true"
+							queryParamsHandling="merge" jhiTranslate="germplasm-import-updates.title">
+					</button>
 				</div>
 			</div>
 		</div>
@@ -122,7 +127,10 @@
 				<td [hidden]="hiddenColumns['names']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
 				<td [hidden]="hiddenColumns['availableBalance']">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns['unit']">{{germplasm.unit}}</td>
-				<td [hidden]="hiddenColumns['lotCount']">{{germplasm.lotCount}}</td>
+				<td [hidden]="hiddenColumns['lotCount']">
+					<a *ngIf="germplasm.lotCount" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}">{{germplasm.lotCount}}</a>
+					<span *ngIf="germplasm.lotCount === 0">-</span>
+				</td>
 				<td [hidden]="hiddenColumns['pedigreeString']">{{germplasm.pedigreeString}}</td>
 				<td [hidden]="hiddenColumns['germplasmPeferredId']">{{germplasm.germplasmPeferredId}}</td>
 				<td [hidden]="hiddenColumns['germplasmPeferredName']">{{germplasm.germplasmPeferredName}}</td>

@@ -2,6 +2,7 @@ export class GermplasmSearchRequest {
     constructor(
         public nameFilter?: any,
         public germplasmUUID?: string,
+        public gids?: Array<number>,
         public gid?: number,
         public gidFrom?: number,
         public gidTo?: number,

@@ -127,7 +127,7 @@ public class ListsForGermplasmQuery implements Query {
 		}
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_GERMPLASM','ROLE_GERMPLASM')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM_LISTS','ROLE_LISTS')")
 	private void availableLinkToManageGermplasm(final LinkButton linkListButton) {
 		linkListButton.setEnabled(true);
 	}
