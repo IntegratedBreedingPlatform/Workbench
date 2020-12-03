@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {isNumeric} from "../util/is-numeric";
+import {isNumeric} from '../util/is-numeric';
 
 @Component({
     selector: 'jhi-column-filter-number-range',
@@ -32,7 +32,6 @@ export class ColumnFilterNumberRangeComponent implements OnInit {
     @Output() onApply = new EventEmitter();
     @Output() onReset = new EventEmitter();
 
-
     ngOnInit(): void {
 
     }
@@ -53,7 +52,7 @@ export class ColumnFilterNumberRangeComponent implements OnInit {
         return f.form.valid && this.hasValidToAndFromValues();
     }
 
-    hasValidToAndFromValues(){
+    hasValidToAndFromValues() {
         if (this.filter.from || this.filter.to)   {
 
             if (!this.filter.from) {
