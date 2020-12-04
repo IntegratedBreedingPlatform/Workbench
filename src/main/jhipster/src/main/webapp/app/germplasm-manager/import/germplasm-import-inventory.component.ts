@@ -96,11 +96,12 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     haveSomeInventoryDetails() {
-        return this.context.data.filter((row) => row[HEADERS['STOCK ID']]).length > 0
-            || this.context.data.filter((row) => row[HEADERS['STORAGE LOCATION ABBR']]).length > 0
-            || this.context.data.filter((row) => row[HEADERS['UNITS']]).length > 0
-            || this.context.data.filter((row) => row[HEADERS['UNITS']]).length > 0
-
+        return this.context.data.some((row) => {
+            return row[HEADERS['STOCK ID']]
+                || row[HEADERS['STORAGE LOCATION ABBR']]
+                || row[HEADERS['UNITS']]
+                || row[HEADERS['AMOUNT']]
+        });
     }
 
     loadLocations() {
@@ -125,7 +126,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     hasAllAmounts() {
-        return this.context.data.every((row) => row[HEADERS['UNITS']]);
+        return this.context.data.every((row) => row[HEADERS['AMOUNT']]);
 
     }
 }
