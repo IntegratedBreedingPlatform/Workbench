@@ -1,24 +1,17 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmImportComponent } from './germplasm-import.component';
-import { Attribute } from '../../shared/attributes/model/attribute.model';
-import { NameType } from '../../shared/germplasm/model/name-type.model';
-import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
-import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
-import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { Crop } from '../../../../../../../web/src/appsNg2/admin/app/shared/models/crop.model';
-import { PipeTransform } from '@angular/core';
-import { Select2OptionData } from 'ng-select2';
-import { Pipe } from '@angular/core';
-import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
-import { BreedingMethodManagerComponent } from '../../entities/breeding-method/breeding-method-manager.component';
+import { HEADERS } from './germplasm-import.component';
 import { ParamContext } from '../../shared/service/param.context';
 import { PopupService } from '../../shared/modal/popup.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-details.component';
 import { GermplasmImportReviewComponent } from './germplasm-import-review.component';
 import { GermplasmImportContext } from './germplasm-import.context';
+import { LocationService } from '../../shared/location/service/location.service';
+import { InventoryService } from '../../shared/inventory/service/inventory.service';
+import { LocationTypeEnum } from '../../shared/location/model/location.model';
+import { Location } from '../../shared/location/model/location';
+import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
 
 @Component({
     selector: 'jhi-germplasm-import-inventory',
@@ -26,18 +19,42 @@ import { GermplasmImportContext } from './germplasm-import.context';
 })
 export class GermplasmImportInventoryComponent implements OnInit {
 
+    STOCK_ID_PREFIX_REGEX = '(^\\w*[a-zA-Z]$|^$)';
+
+    createInventoryLots = true;
+    stock_IdPrefix: string;
+
+    seedStorageLocations: Promise<Location[]>;
+    favoriteSeedStorageLocations: Promise<Location[]>;
+    locationSelected: string;
+    useFavoriteLocations = true;
+
+    units: Promise<InventoryUnit[]>
+    unitSelected: string;
+
+    deposit: any;
+    amountConfirmed = false;
+
+    completeInventoryData = true;
+
     constructor(
         private translateService: TranslateService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private paramContext: ParamContext,
         private popupService: PopupService,
-        public context: GermplasmImportContext
+        public context: GermplasmImportContext,
+        private locationService: LocationService,
+        private inventoryService: InventoryService,
     ) {
     }
 
     ngOnInit(): void {
         this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
+        this.loadLocations();
+        this.loadUnits();
+        this.deposit = { amount: null };
+        this.createInventoryLots = this.haveSomeInventoryDetails();
     }
 
     next() {
@@ -58,8 +75,57 @@ export class GermplasmImportInventoryComponent implements OnInit {
             { size: 'lg', backdrop: 'static' });
     }
 
-    isValid() {
-        // TODO
-        return true;
+    // TODO perform complete all entries or Complete entries with some data. Omit entries if check create Inventory is disable.
+    canProceed(f) {
+        const form = f.form;
+        return !this.createInventoryLots
+            ||  (form.valid
+                && (this.stock_IdPrefix || this.hasAllStockIds())
+                && (this.locationSelected || this.hasAllLocations())
+                && (this.locationSelected || this.hasAllUnits())
+                && (this.deposit.amount || this.hasAllAmounts())
+                )
+    }
+
+    hasAllInventoryDetails() {
+        return this.hasAllStockIds() && this.hasAllLocations() && this.hasAllUnits() && this.hasAllAmounts();
+    }
+
+    enableOptionsToComplete() {
+        return !this.hasAllInventoryDetails() && this.haveSomeInventoryDetails();
+    }
+
+    haveSomeInventoryDetails() {
+        return this.context.data.filter((row) => row[HEADERS['STOCK ID']]).length > 0
+            || this.context.data.filter((row) => row[HEADERS['STORAGE LOCATION ABBR']]).length > 0
+            || this.context.data.filter((row) => row[HEADERS['UNITS']]).length > 0
+            || this.context.data.filter((row) => row[HEADERS['UNITS']]).length > 0
+
+    }
+
+    loadLocations() {
+        this.seedStorageLocations = this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], false).toPromise();
+        this.favoriteSeedStorageLocations = this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], true).toPromise();
+    }
+
+    loadUnits() {
+        this.units = this.inventoryService.queryUnits().toPromise();
+    }
+
+    hasAllStockIds() {
+        return this.context.data.every((row) => row[HEADERS['STOCK ID']]);
+    }
+
+    hasAllLocations() {
+        return this.context.data.every((row) => row[HEADERS['STORAGE LOCATION ABBR']]);
+    }
+
+    hasAllUnits() {
+        return this.context.data.every((row) => row[HEADERS['UNITS']]);
+    }
+
+    hasAllAmounts() {
+        return this.context.data.every((row) => row[HEADERS['UNITS']]);
+
     }
 }

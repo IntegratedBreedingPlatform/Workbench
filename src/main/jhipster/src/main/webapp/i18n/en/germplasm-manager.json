@@ -98,7 +98,18 @@
                 "reference": "Reference"
             },
             "inventory": {
-                "header": "Inventory"
+                "header": "Inventory",
+                "description": "The following mandatory Inventory details are not described for all or some of the germplasm records. Please define the value to assign to these records.",
+                "create.lots": "Create inventory lots",
+                "lots": "Inventory lots",
+                "stock.id.prefix": "Stock ID Prefix",
+                "seed.storage.location": "Seed storage location",
+                "locations.use.favorite": "Show only favorite locations",
+                "units": "Units",
+                "amount": "Amount",
+                "transaction.confirm": "Confirm transaction on saving?",
+                "complete.all.data": "Complete all entries",
+                "complete.entries.with.some.data": "Complete entries with some data"
             },
             "review": {
                 "header": "Review",
