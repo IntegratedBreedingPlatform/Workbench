@@ -5,6 +5,9 @@
 			<div ngbDropdown class="float-right" placement="bottom-right">
 				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
+					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.create-list"
+							(click)="openCreateList()" >
+					</button>
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.add-to-list"
 							(click)="openAddToList()" >
 					</button>

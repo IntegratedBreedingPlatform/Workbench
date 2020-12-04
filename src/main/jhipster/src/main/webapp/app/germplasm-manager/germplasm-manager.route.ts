@@ -12,6 +12,7 @@ import { GermplasmListCreationComponent, GermplasmListCreationPopupComponent } f
 import { InventoryDetailsPopupComponent } from './inventory/details/inventory-details-modal.component';
 import { inventoryDetailsRoutes } from './inventory/details/inventory-details.route';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
+import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...germplasmRoutes,
@@ -63,6 +64,11 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
         path: 'inventory-details-dialog',
         component: InventoryDetailsPopupComponent,
+        outlet: 'popup',
+    },
+    {
+        path: 'germplasm-list-add-dialog',
+        component: GermplasmListAddPopupComponent,
         outlet: 'popup',
     },
     {

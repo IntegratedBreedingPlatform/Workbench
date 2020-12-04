@@ -537,7 +537,7 @@ export class GermplasmSearchComponent implements OnInit {
         return true;
     }
 
-    openAddToList() {
+    openCreateList() {
         if (!this.validateSelection()) {
             return;
         }
@@ -551,6 +551,25 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmManagerContext.searchComposite = searchComposite;
 
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
+    openAddToList() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.request;
+        } else {
+            searchComposite.itemIds = this.selectedItems;
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });
