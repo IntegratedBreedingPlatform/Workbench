@@ -6,9 +6,16 @@ TODO Move to jhipster folder
 (function () {
 	'use strict';
 
-	var fieldMapApp = angular.module('fieldMapApp', ['ui.bootstrap']);
+	var fieldMapApp = angular.module('fieldMapApp', ['ngToast', 'ui.bootstrap']);
 
-	fieldMapApp.controller('MainController', ['$scope', '$uibModal', '$http', function ($scope, $uibModal, $http) {
+	fieldMapApp.config(['ngToastProvider', function (ngToastProvider) {
+		ngToastProvider.configure({
+			horizontalPosition: 'right',
+			animation: 'fade'
+		});
+	}]);
+
+	fieldMapApp.controller('MainController', ['$scope', 'ngToast', '$uibModal', '$http', function ($scope, ngToast, $uibModal, $http) {
 
 		const instanceId = getUrlParameter('instanceId'),
 			cropName = getUrlParameter('cropName'),
@@ -44,19 +51,23 @@ TODO Move to jhipster folder
 				var modalInstance = $scope.openConfirmModal('You are going to override the existing layout');
 				modalInstance.result.then((isOK) => {
 					if (isOK) {
-						fieldMap.update().then(
-							// TODO toast
-							(resp) => alert(resp),
-							(resp) => alert(resp));
+						$scope._update();
 					}
 				});
 			} else {
-				fieldMap.update().then(
-					// TODO toast
-					(resp) => alert(resp),
-					(resp) => alert(resp));
+				$scope._update();
 			}
 		};
+
+		$scope._update = function () {
+			fieldMap.update().then(
+				(resp) => ngToast.success({
+					content: resp
+				}),
+				(resp) => ngToast.danger({
+					content: resp
+				}));
+		}
 
 		$scope.openConfirmModal = function (message) {
 			var modalInstance = $uibModal.open({

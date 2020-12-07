@@ -8,6 +8,8 @@
 	<link th:href="@{/controller/static/lib/leaflet/dist/leaflet.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/leaflet-search/dist/leaflet-search.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/ngToast/ngToast.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/ngToast/ngToast-animations.min.css}" rel="stylesheet"/>
 	<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}" charset="utf-8"></script>
@@ -18,11 +20,14 @@
 	<script th:src="@{/controller/static/js/lib/%40turf/turf/turf.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/%40solgenomics/brapijs/build/BrAPI.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-sanitize.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-animate.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/angular-1.4.7/ui-bootstrap-tpls-2.5.0.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/ngToast.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/%40solgenomics/brapi-fieldmap/dist/BrAPIFieldmap.js}" charset="utf-8"></script>
 </head>
 <body ng-app="fieldMapApp" ng-controller="MainController">
+<toast></toast>
 <div style="margin:1em" class="container-fluid">
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
