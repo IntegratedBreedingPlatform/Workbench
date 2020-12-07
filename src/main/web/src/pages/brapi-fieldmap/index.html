@@ -10,6 +10,48 @@
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/ngToast/ngToast.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/ngToast/ngToast-animations.min.css}" rel="stylesheet"/>
+	<style type="text/css">
+        /* ==========================================================================
+		Loading spinner
+		========================================================================== */
+        .throbber {
+            width: 18px;
+            width: 1.5rem;
+            height: 18px;
+            height: 1.5rem;
+            border-radius: .75rem;
+            box-sizing: border-box;
+            border: 2px solid rgba(27,149,178,.2);
+            border-top-color: #1b95b2;
+            -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
+            transition: visibility .5s ease-in,opacity .5s ease-in;
+            visibility: visible;
+            display: inline-block;
+        }
+
+        .throbber-2x {
+            width: 30px;
+            width: 2.5rem;
+            height: 30px;
+            height: 2.5rem;
+            border-radius: 1.25rem;
+        }
+
+        @-webkit-keyframes spin {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+	</style>
 	<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}" charset="utf-8"></script>
 	<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}" charset="utf-8"></script>
@@ -52,6 +94,7 @@
 	<form class="form-inline" style="padding:10px;">
 		<a class="btn btn-default" ng-click="load()" ng-show="flags.isEditMode">Load</a>
 		<a class="btn btn-default" ng-click="update()" ng-disabled="flags.isUpdating">Save</a>
+		<span class="throbber throbber-2x" ng-if="flags.isUpdating" style="vertical-align: middle;margin-left: 10px;"></span>
 	</form>
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
