@@ -41,7 +41,7 @@ TODO Move to jhipster folder
 
 		$scope.update = function () {
 			if (hasLayout) {
-				var modalInstance = $scope.openConfirmModal();
+				var modalInstance = $scope.openConfirmModal('You are going to override the existing layout');
 				modalInstance.result.then((isOK) => {
 					if (isOK) {
 						fieldMap.update().then(
@@ -62,29 +62,18 @@ TODO Move to jhipster folder
 			var modalInstance = $uibModal.open({
 				animation: true,
 				template: '<div class="modal-body">\n' +
-					'    <div class="row form-group">\n' +
-					'        <div class="col-xs-11 col-md-11">\n' +
-					'            <label class="modal-title fbk-modal-title">Confirmation</label>\n' +
-					'        </div>\n' +
-					'        <div class="col-xs-1 col-md-1">\n' +
-					'            <button class="close pull-right glyphicon glyphicon-remove" ng-click="cancel()"/>\n' +
-					'        </div>\n' +
-					'    </div>\n' +
 					'    <div class="row">\n' +
 					'        <div class="col-xs-12 col-md-12">\n' +
-					'            <label class="control-label" ng-bind-html="text"></label>\n' +
+					'            <label class="control-label">{{text}}</label>\n' +
 					'        </div>\n' +
 					'    </div>\n' +
 					'</div>\n' +
 					'<div class="modal-footer">\n' +
-					'    <button class="btn btn-default" ng-click="cancel()" ng-bind="cancelButtonLabel">Cancel</button>\n' +
-					'    <button class="btn btn-primary" ng-click="confirm()" ng-bind="confirmButtonLabel">OK</button>\n' +
+					'    <button class="btn btn-default" ng-click="cancel()">Cancel</button>\n' +
+					'    <button class="btn btn-primary" ng-click="confirm()">OK</button>\n' +
 					'</div>',
 				controller: function ($scope, $uibModalInstance) {
 					$scope.text = message;
-					$scope.confirmButtonLabel = confirmButtonLabel || okLabel;
-					$scope.cancelButtonLabel = cancelButtonLabel || cancelLabel;
-
 					$scope.confirm = function () {
 						$uibModalInstance.close(true);
 					};

@@ -28,23 +28,20 @@
 		<div class="col-md-12 col-xs-12">
 			Select an area over the field to load the layout. Plot size will be determined based on this area and the plot layout (x,y coordinates)
 		</div>
-		<div class="col-md-12 col-xs-12">
-			(Optional) override plot size (meters):
-		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-12 col-xs-12" ng-show="editMode">
 			(Optional) override plot size (meters):
 		</div>
 	</div>
-	<form class="form-inline" style="padding:10px;">
+	<form class="form-inline" style="padding:10px;" ng-show="editMode">
 		<div class="form-group">
 			<label for="width">width</label>
-			<input type="text" class="form-control" id="width" ng-model="width" ng-show="editMode">
+			<input type="text" class="form-control" id="width" ng-model="width">
 		</div>
 		<div class="form-group">
 			<label for="length">length</label>
-			<input type="text" class="form-control" id="length" ng-model="length" ng-show="editMode">
+			<input type="text" class="form-control" id="length" ng-model="length">
 		</div>
 	</form>
 	<form class="form-inline" style="padding:10px;">
