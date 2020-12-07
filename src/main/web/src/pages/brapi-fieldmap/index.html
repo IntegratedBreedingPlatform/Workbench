@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 	<title>BrAPI GeoJSON Editor</title>
 	<link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/leaflet/dist/leaflet.css}" rel="stylesheet"/>
@@ -35,11 +35,11 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12 col-xs-12" ng-show="editMode">
+		<div class="col-md-12 col-xs-12" ng-show="flags.isEditMode">
 			(Optional) override plot size (meters):
 		</div>
 	</div>
-	<form class="form-inline" style="padding:10px;" ng-show="editMode">
+	<form class="form-inline" style="padding:10px;" ng-show="flags.isEditMode">
 		<div class="form-group">
 			<label for="width">width</label>
 			<input type="text" class="form-control" id="width" ng-model="width">
@@ -50,8 +50,8 @@
 		</div>
 	</form>
 	<form class="form-inline" style="padding:10px;">
-		<a class="btn btn-default" ng-click="load()" ng-show="editMode">Load</a>
-		<a class="btn btn-default" ng-click="update()">Save</a>
+		<a class="btn btn-default" ng-click="load()" ng-show="flags.isEditMode">Load</a>
+		<a class="btn btn-default" ng-click="update()" ng-disabled="flags.isUpdating">Save</a>
 	</form>
 	<div class="row">
 		<div class="col-md-12 col-xs-12">

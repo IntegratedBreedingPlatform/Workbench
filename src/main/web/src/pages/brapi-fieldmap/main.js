@@ -15,7 +15,7 @@ TODO Move to jhipster folder
 		});
 	}]);
 
-	fieldMapApp.controller('MainController', ['$scope', 'ngToast', '$uibModal', '$http', function ($scope, ngToast, $uibModal, $http) {
+	fieldMapApp.controller('MainController', ['$scope', 'ngToast', '$uibModal', '$http', '$timeout' ,function ($scope, ngToast, $uibModal, $http, $timeout) {
 
 		const instanceId = getUrlParameter('instanceId'),
 			cropName = getUrlParameter('cropName'),
@@ -26,7 +26,10 @@ TODO Move to jhipster folder
 			brapi_auth: JSON.parse(localStorage['bms.xAuthToken']).token
 		});
 
-		$scope.editMode = false;
+		$scope.flags = {
+			isUpdating: false,
+			isEditMode: false
+		}
 		$scope.length = '';
 		$scope.width = '';
 
@@ -35,7 +38,7 @@ TODO Move to jhipster folder
 			if (hasLayout) {
 				$scope.load();
 			} else {
-				$scope.editMode = true;
+				$scope.flags.isEditMode = true;
 			}
 		};
 
@@ -60,13 +63,24 @@ TODO Move to jhipster folder
 		};
 
 		$scope._update = function () {
+			$scope.flags.isUpdating = true;
 			fieldMap.update().then(
-				(resp) => ngToast.success({
-					content: resp
-				}),
-				(resp) => ngToast.danger({
-					content: resp
-				}));
+				(resp) => {
+					$timeout(function (){
+						ngToast.success({
+							content: resp
+						});
+						$scope.flags.isUpdating = false;
+					});
+				},
+				(resp) => {
+					$timeout(function (){
+						ngToast.danger({
+							content: resp
+						});
+						$scope.flags.isUpdating = false;
+					});
+				});
 		}
 
 		$scope.openConfirmModal = function (message) {
