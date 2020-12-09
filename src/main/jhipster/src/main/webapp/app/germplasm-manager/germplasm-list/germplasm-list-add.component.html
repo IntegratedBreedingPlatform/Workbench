@@ -1,0 +1,56 @@
+<div class="modal-header">
+	<h4 class="modal-title">
+		<span jhiTranslate="germplasm-list-add.header"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="closeModal()" [disabled]="isLoading">&times;</button>
+</div>
+<div class="modal-body">
+	<div class="row form-group">
+		<div class="col-xs-12 col-md-12">
+			<div class="table-responsive" >
+				<p-treeTable [value]="nodes"
+							 (onNodeExpand)="onNodeExpand($event)"
+							 selectionMode="single"
+							 autoLayout="true"
+							 [(selection)]="selectedNode"
+							 (onNodeSelect)="onNodeSelect($event)"
+							 styleClass="tree-table">
+					<ng-template pTemplate="header">
+						<tr>
+							<th>Name</th>
+							<th>Owner</th>
+							<th>Description</th>
+							<th>Type</th>
+							<th># of entries</th>
+						</tr>
+					</ng-template>
+					<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
+						<tr [ttSelectableRow]="rowNode">
+							<td>
+								<p-treeTableToggler
+									[rowNode]="rowNode"
+								></p-treeTableToggler>
+								<span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
+								{{rowData.name}}
+							</td>
+							<td>{{rowData.owner}}</td>
+							<td>{{rowData.description}}</td>
+							<td>{{rowData.type}}</td>
+							<td>{{rowData.noOfEntries}}</td>
+						</tr>
+					</ng-template>
+				</p-treeTable>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading">
+		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="validate()" [disabled]="isLoading" class="btn btn-primary">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-plus"></span>&nbsp;<span jhiTranslate="germplasm-list-add.add-action"></span>
+	</button>
+</div>

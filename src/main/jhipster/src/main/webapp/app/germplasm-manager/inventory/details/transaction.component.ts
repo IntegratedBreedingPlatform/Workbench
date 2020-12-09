@@ -52,6 +52,7 @@ export class TransactionComponent implements OnInit {
     private loadAll() {
         this.isLoading = true;
         this.transactionService.getTransactionsByGermplasmId(this.gid, this.lotId, {
+            lotStatus: 'ACTIVE',
             page: this.page - 1,
             size: this.itemsPerPage,
             sort: this.sort()

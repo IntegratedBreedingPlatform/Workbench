@@ -44,7 +44,8 @@
             "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
         },
         "actions": {
-            "add-to-list": "Add to list",
+            "create-list": "Create new list",
+            "add-to-list": "Add to existing list",
             "import": "Import germplasm"
         },
         "total-records": "Total germplasm records",
@@ -62,6 +63,21 @@
         "notes": "Notes",
         "success": "Germplasm list saved successfully!"
     },
+    "germplasm-list-add": {
+        "header": "Add entries to list",
+        "add-action": "Add",
+        "add-question": "Are you sure you want to add entries to list {{ name }}?",
+        "success": "Germplasm entries added to list successfully!",
+        "error": {
+            "no-list-selected": "Please, select a list",
+            "folder-selected": "You cannot select a folder. Please, select a list"
+        }
+    },
+    "breeding-method": {
+        "title": "Breeding Method"
+    },
+    "breeding-location": {
+        "title": "Breeding Location"
     "germplasm": {
         "details.title": "Germplasm Details",
         "import": {

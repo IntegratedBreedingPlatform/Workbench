@@ -426,23 +426,23 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     isExpensiveFilter() {
-        return this.request && this.hasNameContainsFilters();
+        return this.request && this.hasNameExpensiveFilters();
     }
 
     getExpensiveFilterWarningList() {
         let list = '';
-        if (this.hasNameContainsFilters()) {
-            list += '<li>name contains</li>'
+        if (this.hasNameExpensiveFilters()) {
+            list += '<li>name contains or ends with</li>'
         }
         return list;
     }
 
-    private hasNameContainsFilters() {
-        return this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
-            || this.request.femaleParentName && this.request.femaleParentName.type === MatchType.CONTAINS
-            || this.request.maleParentName && this.request.maleParentName.type === MatchType.CONTAINS
-            || this.request.groupSourceName && this.request.groupSourceName.type === MatchType.CONTAINS
-            || this.request.immediateSourceName && this.request.immediateSourceName.type === MatchType.CONTAINS;
+    private hasNameExpensiveFilters() {
+        return this.request.nameFilter && (this.request.nameFilter.type === MatchType.CONTAINS || this.request.nameFilter.type === MatchType.ENDSWITH)
+            || this.request.femaleParentName && (this.request.femaleParentName.type === MatchType.CONTAINS || this.request.femaleParentName.type === MatchType.ENDSWITH)
+            || this.request.maleParentName && (this.request.maleParentName.type === MatchType.CONTAINS || this.request.maleParentName.type === MatchType.ENDSWITH)
+            || this.request.groupSourceName && (this.request.groupSourceName.type === MatchType.CONTAINS || this.request.groupSourceName.type === MatchType.ENDSWITH)
+            || this.request.immediateSourceName && (this.request.immediateSourceName.type === MatchType.CONTAINS || this.request.immediateSourceName.type === MatchType.ENDSWITH);
     }
 
     hasIncludedGids() {
@@ -537,7 +537,7 @@ export class GermplasmSearchComponent implements OnInit {
         return true;
     }
 
-    openAddToList() {
+    openCreateList() {
         if (!this.validateSelection()) {
             return;
         }
@@ -551,6 +551,25 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmManagerContext.searchComposite = searchComposite;
 
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
+    openAddToList() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.request;
+        } else {
+            searchComposite.itemIds = this.selectedItems;
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });
