@@ -28,17 +28,16 @@ TODO Move to jhipster folder
 
 		$scope.flags = {
 			isUpdating: false,
-			isEditMode: true
+			isEditMode: hasLayout
 		}
 		$scope.length = '';
 		$scope.width = '';
 
 		$scope.init = function () {
 			fieldMap.setLocation(instanceId);
-			if (hasLayout) {
+			if ($scope.flags.isEditMode) {
 				$scope.load();
 				fieldMap.removeControls();
-				$scope.flags.isEditMode = false;
 			}
 		};
 
