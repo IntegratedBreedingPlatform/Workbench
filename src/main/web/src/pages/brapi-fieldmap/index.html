@@ -72,8 +72,13 @@
 <toast></toast>
 <div style="margin:1em" class="container-fluid">
 	<div class="row">
-		<div class="col-md-12 col-xs-12">
-			Select an area over the field to load the layout. Plot size will be determined based on this area and the plot layout (x,y coordinates)
+		<div class="col-md-12 col-xs-12" ng-show="flags.isEditMode">
+			Click on the area to move and resize. Right-click on the individual plot area to edit its size.
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12" ng-hide="flags.isEditMode">
+			Select an area over the field to load the layout. You can use the polygon or rectangle tool to draw an area. Plot size will be determined based on this area and the plot layout (x,y coordinates)
 		</div>
 	</div>
 	<div class="row">
