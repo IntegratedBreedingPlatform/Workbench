@@ -28,7 +28,7 @@ TODO Move to jhipster folder
 
 		$scope.flags = {
 			isUpdating: false,
-			isEditMode: false
+			isEditMode: true
 		}
 		$scope.length = '';
 		$scope.width = '';
@@ -37,8 +37,8 @@ TODO Move to jhipster folder
 			fieldMap.setLocation(instanceId);
 			if (hasLayout) {
 				$scope.load();
-			} else {
-				$scope.flags.isEditMode = true;
+				fieldMap.removeControls();
+				$scope.flags.isEditMode = false;
 			}
 		};
 
@@ -71,6 +71,8 @@ TODO Move to jhipster folder
 							content: resp
 						});
 						$scope.flags.isUpdating = false;
+						$scope.flags.isEditMode = true;
+						fieldMap.removeControls();
 					});
 				},
 				(resp) => {
