@@ -50,7 +50,7 @@ TODO Move to jhipster folder
 
 		$scope.update = function () {
 			if (hasLayout) {
-				var modalInstance = $scope.openConfirmModal('You are going to override the existing layout');
+				var modalInstance = $scope.openConfirmModal('You are going to override the existing layout. Do you like to proceed?');
 				modalInstance.result.then((isOK) => {
 					if (isOK) {
 						$scope._update();
