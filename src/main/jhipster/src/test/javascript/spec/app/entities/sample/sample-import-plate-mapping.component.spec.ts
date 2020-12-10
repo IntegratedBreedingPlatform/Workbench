@@ -7,6 +7,7 @@ import { SampleListService } from '../../../../../../main/webapp/app/entities/sa
 import { SampleImportPlateMappingComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
 
 describe('Component Tests', () => {
 
@@ -15,7 +16,8 @@ describe('Component Tests', () => {
         let fixture: ComponentFixture<SampleImportPlateMappingComponent>;
         let sampleListService: SampleListService;
         let modalService: AppModalService;
-        let alertService: JhiAlertService;
+        let jhiAlertService: JhiAlertService;
+        let alertService: AlertService;
         let eventManager: JhiEventManager;
         let sampleContext: SampleContext;
 
@@ -42,7 +44,8 @@ describe('Component Tests', () => {
             comp = fixture.componentInstance;
             modalService = fixture.debugElement.injector.get(AppModalService);
             sampleContext = fixture.debugElement.injector.get(SampleContext);
-            alertService = fixture.debugElement.injector.get(JhiAlertService);
+            jhiAlertService = fixture.debugElement.injector.get(JhiAlertService);
+            alertService = fixture.debugElement.injector.get(AlertService);
             eventManager = fixture.debugElement.injector.get(JhiEventManager);
             sampleListService = fixture.debugElement.injector.get(SampleListService);
 
@@ -52,6 +55,8 @@ describe('Component Tests', () => {
             spyOn(modalService, 'open').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
             spyOn(alertService, 'success').and.callThrough();
+            spyOn(jhiAlertService, 'error').and.callThrough();
+            spyOn(jhiAlertService, 'success').and.callThrough();
         });
 
         it('should proceed with import', () => {

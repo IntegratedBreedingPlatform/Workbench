@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
+import { AlertService } from '../../shared/alert/alert.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -31,7 +32,7 @@ export class SampleSearchListComponent {
     constructor(private sampleListService: SampleListService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private languageservice: JhiLanguageService) {
 
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
@@ -60,7 +61,7 @@ export class SampleSearchListComponent {
         }
         this.sampleListService.search(params).subscribe(
             (res: HttpResponse<SampleList[]>) => { this.sampleListResults = res.body; } ,
-            (res: HttpErrorResponse) => this.jhiAlertService.error(res.message, null, null)
+            (res: HttpErrorResponse) => this.alertService.error(res.message)
         )
     }
 
