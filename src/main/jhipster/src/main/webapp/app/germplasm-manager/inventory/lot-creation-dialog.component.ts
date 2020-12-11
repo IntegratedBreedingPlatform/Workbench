@@ -12,6 +12,7 @@ import { Location } from '../../shared/model/location.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
@@ -99,14 +100,19 @@ export class LotCreationDialogComponent implements OnInit {
         const lotGeneratorBatchRequest = {
             searchComposite: <SearchComposite<any, string>>({
                 itemIds: null,
-                searchRequest: this.searchRequestId
+                searchRequest: this.searchRequestId,
+                studyId: this.studyId
             }),
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
             }, this.lot)
         };
-        this.lotService.createLots(lotGeneratorBatchRequest).subscribe(
+        this.lotService.createLots(lotGeneratorBatchRequest)
+            .pipe(finalize(()=>{
+                this.isLoading = false;
+            }))
+            .subscribe(
             (res) => this.createDeposit(res),
             (res) => this.onError(res));
     }
@@ -140,7 +146,6 @@ export class LotCreationDialogComponent implements OnInit {
     private onSaveSuccess(lotUUIDs: string[]) {
         this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
-        this.isLoading = false;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -150,6 +155,5 @@ export class LotCreationDialogComponent implements OnInit {
         } else {
             this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
         }
-        this.isLoading = false;
     }
 }
