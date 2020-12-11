@@ -101,12 +101,12 @@ export class LotCreationDialogComponent implements OnInit {
             searchComposite: <SearchComposite<any, string>>({
                 itemIds: null,
                 searchRequest: this.searchRequestId,
-                studyId: this.studyId
             }),
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
-            }, this.lot)
+            }, this.lot),
+            studyId: this.studyId
         };
         this.lotService.createLots(lotGeneratorBatchRequest)
             .pipe(finalize(()=>{
