@@ -109,9 +109,6 @@ export class LotCreationDialogComponent implements OnInit {
             studyId: this.studyId
         };
         this.lotService.createLots(lotGeneratorBatchRequest)
-            .pipe(finalize(()=>{
-                this.isLoading = false;
-            }))
             .subscribe(
             (res) => this.createDeposit(res),
             (res) => this.onError(res));
@@ -146,6 +143,7 @@ export class LotCreationDialogComponent implements OnInit {
     private onSaveSuccess(lotUUIDs: string[]) {
         this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
+        this.isLoading = false;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -155,5 +153,6 @@ export class LotCreationDialogComponent implements OnInit {
         } else {
             this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
         }
+        this.isLoading = false;
     }
 }
