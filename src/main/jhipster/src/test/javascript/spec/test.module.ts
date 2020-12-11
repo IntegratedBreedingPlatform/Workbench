@@ -1,16 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgModule, ElementRef, Renderer } from '@angular/core';
+import { ElementRef, NgModule, Renderer } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiLanguageService, JhiDataUtils, JhiDateUtils, JhiEventManager, JhiAlertService, JhiParseLinks } from 'ng-jhipster';
+import { JhiAlertService, JhiDataUtils, JhiDateUtils, JhiEventManager, JhiLanguageService, JhiParseLinks } from 'ng-jhipster';
 
-import { MockLanguageService, MockLanguageHelper } from './helpers/mock-language.service';
+import { MockLanguageHelper, MockLanguageService } from './helpers/mock-language.service';
 import { JhiLanguageHelper } from '../../../main/webapp/app/shared';
 import { MockActivatedRoute, MockRouter } from './helpers/mock-route.service';
 import { MockActiveModal } from './helpers/mock-active-modal.service';
 import { MockEventManager } from './helpers/mock-event-manager.service';
-import {MockAlertService} from './helpers/mock-alert.service';
+import { MockAlertService, MockJhiAlertService } from './helpers/mock-alert.service';
+import { AlertService } from '../../../main/webapp/app/shared/alert/alert.service';
 
 @NgModule({
     providers: [
@@ -52,6 +53,10 @@ import {MockAlertService} from './helpers/mock-alert.service';
         },
         {
             provide: JhiAlertService,
+            useValue: new MockJhiAlertService()
+        },
+        {
+            provide: AlertService,
             useValue: new MockAlertService()
         },
         {

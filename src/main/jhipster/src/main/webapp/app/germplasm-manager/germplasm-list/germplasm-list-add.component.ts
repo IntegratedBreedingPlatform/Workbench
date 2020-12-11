@@ -15,6 +15,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '../../shared/alert/alert.service';
 
 declare var $: any;
 
@@ -39,7 +40,7 @@ export class GermplasmListAddComponent implements OnInit {
                 private paramContext: ParamContext,
                 private germplasmManagerContext: GermplasmManagerContext,
                 public germplasmListService: GermplasmListService,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private translateService: TranslateService,
                 private modalService: NgbModal
     ) {
@@ -123,14 +124,14 @@ export class GermplasmListAddComponent implements OnInit {
 
     validate() {
         if (!this.selectedNode) {
-            this.jhiAlertService.error('germplasm-list-add.error.no-list-selected');
+            this.alertService.error('germplasm-list-add.error.no-list-selected');
             return;
         }
 
         if (this.selectedNode.data.id === 'CROPLISTS' ||
             this.selectedNode.data.id === 'LISTS' ||
             this.selectedNode.data.type === 'LIST FOLDER') {
-            this.jhiAlertService.error('germplasm-list-add.error.folder-selected');
+            this.alertService.error('germplasm-list-add.error.folder-selected');
             return;
         }
 
@@ -168,16 +169,16 @@ export class GermplasmListAddComponent implements OnInit {
     }
 
     private onSaveSuccess() {
-        this.jhiAlertService.success('germplasm-list-add.success');
+        this.alertService.success('germplasm-list-add.success');
         this.modal.close();
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 

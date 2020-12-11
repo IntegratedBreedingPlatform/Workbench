@@ -21,6 +21,7 @@ import { TreeDragDropService } from 'primeng/api';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { Principal } from '../../shared';
+import { AlertService } from '../../shared/alert/alert.service';
 
 declare var $: any;
 
@@ -58,7 +59,7 @@ export class GermplasmListCreationComponent implements OnInit {
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
                 private translateService: TranslateService,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private paramContext: ParamContext,
                 public treeService: TreeService,
                 public treeDragDropService: TreeDragDropService,
@@ -108,23 +109,23 @@ export class GermplasmListCreationComponent implements OnInit {
 
         // Prevent to move source if parent has a child with same name as the source
         if (event.dropNode.children && event.dropNode.children.find((node) => node.data.name === source.data.name)) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
             return;
         }
 
         if (source.children && source.children.length !== 0) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
                 { folder: source.data.name });
             return;
         }
 
         if (target.data.id === 'CROPLISTS' && !source.leaf) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.program.to.crop.list.not.allowed');
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.program.to.crop.list.not.allowed');
             return;
         }
 
         if (target.leaf) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
             return;
         }
 
@@ -138,7 +139,7 @@ export class GermplasmListCreationComponent implements OnInit {
                 // Check issue reported: https://github.com/primefaces/primeng/issues/7386
                 this.expand(source.parent);
                 this.expand(target);
-                this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
             });
     }
 
@@ -186,13 +187,13 @@ export class GermplasmListCreationComponent implements OnInit {
 
     validateDeleteFolder() {
         if (this.selectedNode.children && this.selectedNode.children.length !== 0) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.delete.has.children',
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.delete.has.children',
                 { folder: this.selectedNode.data.name });
             return;
         }
 
         if (this.loggedUserId && this.loggedUserId.toString() !== this.selectedNode.data.ownerId) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.delete.not.owner');
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.delete.not.owner');
             return;
         }
 
@@ -242,16 +243,16 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     private onSaveSuccess(res: GermplasmList) {
-        this.jhiAlertService.success('germplasm-list-creation.success');
+        this.alertService.success('germplasm-list-creation.success');
         this.modal.close();
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general', null, null);
         }
     }
 
@@ -302,16 +303,16 @@ export class GermplasmListCreationComponent implements OnInit {
         this.mode = this.Modes.None;
         this.treeService.delete(this.selectedNode.data.id).subscribe(() => {
                 this.expand(this.selectedNode.parent);
-                this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
+                this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
             },
             (res: HttpErrorResponse) =>
-                this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
         );
     }
 
     submitAddOrRenameFolder() {
         if (this.name.length > this.NAME_MAX_LENGTH) {
-            this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH })
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH })
             return;
         }
 
@@ -320,10 +321,10 @@ export class GermplasmListCreationComponent implements OnInit {
             this.treeService.create(this.name, this.selectedNode.data.id, isParentCropList).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(this.selectedNode);
-                    this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
+                    this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
                 },
                 (res: HttpErrorResponse) =>
-                    this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
 
         if (this.mode === Mode.Rename) {
@@ -331,10 +332,10 @@ export class GermplasmListCreationComponent implements OnInit {
                     this.mode = this.Modes.None;
                     this.selectedNode.data.name = this.name;
                     this.redrawNodes();
-                    this.jhiAlertService.success('bmsjHipsterApp.tree-table.messages.folder.rename.successfully');
+                    this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.rename.successfully');
                 },
                 (res: HttpErrorResponse) =>
-                    this.jhiAlertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
     }
 

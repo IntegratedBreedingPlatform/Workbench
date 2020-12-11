@@ -75,7 +75,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         if (extension[1].toLowerCase() !== 'xls' && extension[1].toLowerCase() !== 'xlsx') {
             this.fileName = '';
             target.value = '';
-            this.alertService.error('error.custom', { param: 'The import germplasm updates is only available for Excel extension xls and xlsx' }, null);
+            this.alertService.error('error.custom', { param: 'The import germplasm updates is only available for Excel extension xls and xlsx' });
             return;
         }
 
@@ -87,7 +87,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         }, (error) => {
             this.fileName = '';
             target.value = '';
-            this.alertService.error('error.custom', { param: error }, null);
+            this.alertService.error('error.custom', { param: error });
         });
     }
 
@@ -189,7 +189,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
     private onSaveSuccess(result: any) {
         this.isProcessing = false;
-        this.alertService.success('germplasm-import-updates.import.success', null, null);
+        this.alertService.success('germplasm-import-updates.import.success');
         this.eventManager.broadcast({ name: 'germplasmUpdated', content: result });
         this.activeModal.close(result);
     }
@@ -197,10 +197,10 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     private onError(res) {
         this.isProcessing = false;
         if (res && res.error) {
-            this.alertService.error('error.custom', { param: formatErrorList(res.error.errors) }, null);
+            this.alertService.error('error.custom', { param: formatErrorList(res.error.errors) });
             return;
         }
-        this.alertService.error('error.general', null, null);
+        this.alertService.error('error.general');
     }
 
     export($event) {
@@ -219,7 +219,7 @@ export class GermplasmImportUpdatePopupComponent implements OnInit, OnDestroy {
 
     routeSub: any;
 
-    constructor(private jhiAlertService: JhiAlertService,
+    constructor(private alertService: AlertService,
                 private route: ActivatedRoute,
                 private popupService: PopupService
     ) {

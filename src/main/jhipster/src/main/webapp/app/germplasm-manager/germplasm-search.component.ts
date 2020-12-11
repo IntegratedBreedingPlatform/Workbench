@@ -21,6 +21,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { AlertService } from '../shared/alert/alert.service';
 
 declare var $: any;
 
@@ -270,7 +271,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
                 private router: Router,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
@@ -485,9 +486,9 @@ export class GermplasmSearchComponent implements OnInit {
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 
@@ -529,9 +530,9 @@ export class GermplasmSearchComponent implements OnInit {
 
     private validateSelection() {
         if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
-            this.jhiAlertService.error('error.custom', {
+            this.alertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
-            }, null);
+            });
             return false;
         }
         return true;

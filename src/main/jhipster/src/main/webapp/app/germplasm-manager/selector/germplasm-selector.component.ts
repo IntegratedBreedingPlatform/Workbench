@@ -18,6 +18,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { TranslateService } from '@ngx-translate/core';
 import {ParamContext} from '../../shared/service/param.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
+import { AlertService } from '../../shared/alert/alert.service';
 
 declare var $: any;
 
@@ -266,7 +267,7 @@ export class GermplasmSelectorComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
                 private router: Router,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private paramContext: ParamContext) {
@@ -458,9 +459,9 @@ export class GermplasmSelectorComponent implements OnInit {
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 
