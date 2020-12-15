@@ -97,8 +97,12 @@
 	<!--<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 		<span jhiTranslate="entity.action.cancel">Cancel</span>
 	</button>-->
-	<button (click)="save()" [disabled]="f.form.invalid || isSuccess" class="btn btn-primary">
+	<button (click)="save()" [disabled]="f.form.invalid || isSuccess || isLoading" class="btn btn-primary">
 		<span jhiTranslate="entity.action.save">Save</span>
 	</button>
+	<div *ngIf="isLoading">
+		<br/>
+		<span class="throbber throbber-2x"></span>
+	</div>
 </div>
 

@@ -44,6 +44,7 @@ export class LotCreationDialogComponent implements OnInit {
     favoriteLocIdSelected;
 
     isConfirmDeposit = false;
+    isLoading = false;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
@@ -93,6 +94,7 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     save() {
+        this.isLoading = true;
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
         const lotGeneratorBatchRequest = {
             searchComposite: <SearchComposite<any, string>>({
@@ -102,9 +104,11 @@ export class LotCreationDialogComponent implements OnInit {
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
-            }, this.lot)
+            }, this.lot),
+            studyId: this.studyId
         };
-        this.lotService.createLots(lotGeneratorBatchRequest).subscribe(
+        this.lotService.createLots(lotGeneratorBatchRequest)
+            .subscribe(
             (res) => this.createDeposit(res),
             (res) => this.onError(res));
     }
@@ -133,12 +137,12 @@ export class LotCreationDialogComponent implements OnInit {
         } else {
             this.onSaveSuccess(lotUUIDs);
         }
-
     }
 
     private onSaveSuccess(lotUUIDs: string[]) {
         this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
+        this.isLoading = false;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -148,5 +152,6 @@ export class LotCreationDialogComponent implements OnInit {
         } else {
             this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
         }
+        this.isLoading = false;
     }
 }
