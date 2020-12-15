@@ -41,7 +41,6 @@ export class GermplasmSearchComponent implements OnInit {
     currentSearch: string;
     routeData: any;
     links: any;
-    totalItems: any;
     filteredItems: any;
     itemsPerPage: any = 20;
     page: any;
@@ -478,7 +477,6 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     private onSuccess(data, headers) {
-        this.totalItems = headers.get('X-Total-Count');
         this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
     }

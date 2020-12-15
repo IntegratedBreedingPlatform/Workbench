@@ -55,10 +55,6 @@
 					<jhi-col-vis-button [colName]="'immediateSourcePreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['immediateSourcePreferredName'], 'IMMEDIATE SOURCE')"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span></jhi-col-vis-button>
 				</div>
 			</ng-template>
-			<div>
-				<span jhiTranslate="search-germplasm.total-records"></span>:&nbsp;
-				<span>{{totalItems}}</span>
-			</div>
 			<div class="form-group form-inline">
 				<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
 										   [limit]="5000"></jhi-item-count-custom>
