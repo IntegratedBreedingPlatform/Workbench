@@ -6,6 +6,8 @@ import { ParamContext } from '../../shared/service/param.context';
 import { GermplasmListType } from './germplasm-list-type.model';
 import { map } from 'rxjs/operators';
 import { GermplasmList } from '../../shared/model/germplasm-list';
+import { SearchComposite } from '../../shared/model/search-composite';
+import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
 
 @Injectable()
 export class GermplasmListService {
@@ -23,4 +25,10 @@ export class GermplasmListService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
         return this.http.post<GermplasmList>(url, list);
     }
+
+    addGermplasmEntriesToList(germplasmListId: number, searchComposite: SearchComposite<GermplasmSearchRequest, number>): Observable<void> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries?programUUID=` + this.context.programUUID;
+        return this.http.post<void>(url, searchComposite);
+    }
+
 }

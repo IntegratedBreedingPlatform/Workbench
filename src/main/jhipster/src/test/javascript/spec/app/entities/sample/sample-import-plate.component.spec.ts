@@ -6,6 +6,7 @@ import {ExcelService} from '../../../../../../main/webapp/app/entities/sample/ex
 import {SampleImportPlateComponent} from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
 import {JhiAlertService} from 'ng-jhipster';
 import {ElementRef} from '@angular/core';
+import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
 
 describe('Component Tests', () => {
 
@@ -14,7 +15,8 @@ describe('Component Tests', () => {
         let fixture: ComponentFixture<SampleImportPlateComponent>;
         let excelService: ExcelService;
         let modalService: AppModalService;
-        let alertService: JhiAlertService;
+        let jhiAlertService: JhiAlertService;
+        let alertService: AlertService;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -38,11 +40,13 @@ describe('Component Tests', () => {
             comp = fixture.componentInstance;
             modalService = fixture.debugElement.injector.get(AppModalService);
             excelService = fixture.debugElement.injector.get(ExcelService);
-            alertService = fixture.debugElement.injector.get(JhiAlertService);
+            jhiAlertService = fixture.debugElement.injector.get(JhiAlertService);
+            alertService = fixture.debugElement.injector.get(AlertService);
 
             spyOn(modalService, 'open').and.callThrough();
             spyOn(modalService, 'close').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
+            spyOn(jhiAlertService, 'error').and.callThrough();
 
             comp.fileUpload = new ElementRef({ value : '', accept: '' });
         });

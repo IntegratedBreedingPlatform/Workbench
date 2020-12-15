@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { ActivatedRoute } from '@angular/router';
 import { isNumeric } from '../util/is-numeric';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from '../alert/alert.service';
 
 @Component({
     selector: 'jhi-column-filter',
@@ -253,7 +254,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
     }
 
-    constructor(private jhiAlertService: JhiAlertService,
+    constructor(private alertService: AlertService,
                 private activatedRoute: ActivatedRoute,
                 private modal: NgbModal,
                 private eventManager: JhiEventManager) {
@@ -414,7 +415,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+        this.alertService.error(error.message);
     }
 
     updateRadioFilter(filter: any, key: string) {

@@ -21,6 +21,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { AlertService } from '../shared/alert/alert.service';
 
 declare var $: any;
 
@@ -270,7 +271,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
                 private router: Router,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
@@ -426,23 +427,23 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     isExpensiveFilter() {
-        return this.request && this.hasNameContainsFilters();
+        return this.request && this.hasNameExpensiveFilters();
     }
 
     getExpensiveFilterWarningList() {
         let list = '';
-        if (this.hasNameContainsFilters()) {
-            list += '<li>name contains</li>'
+        if (this.hasNameExpensiveFilters()) {
+            list += '<li>name contains or ends with</li>'
         }
         return list;
     }
 
-    private hasNameContainsFilters() {
-        return this.request.nameFilter && this.request.nameFilter.type === MatchType.CONTAINS
-            || this.request.femaleParentName && this.request.femaleParentName.type === MatchType.CONTAINS
-            || this.request.maleParentName && this.request.maleParentName.type === MatchType.CONTAINS
-            || this.request.groupSourceName && this.request.groupSourceName.type === MatchType.CONTAINS
-            || this.request.immediateSourceName && this.request.immediateSourceName.type === MatchType.CONTAINS;
+    private hasNameExpensiveFilters() {
+        return this.request.nameFilter && (this.request.nameFilter.type === MatchType.CONTAINS || this.request.nameFilter.type === MatchType.ENDSWITH)
+            || this.request.femaleParentName && (this.request.femaleParentName.type === MatchType.CONTAINS || this.request.femaleParentName.type === MatchType.ENDSWITH)
+            || this.request.maleParentName && (this.request.maleParentName.type === MatchType.CONTAINS || this.request.maleParentName.type === MatchType.ENDSWITH)
+            || this.request.groupSourceName && (this.request.groupSourceName.type === MatchType.CONTAINS || this.request.groupSourceName.type === MatchType.ENDSWITH)
+            || this.request.immediateSourceName && (this.request.immediateSourceName.type === MatchType.CONTAINS || this.request.immediateSourceName.type === MatchType.ENDSWITH);
     }
 
     hasIncludedGids() {
@@ -485,9 +486,9 @@ export class GermplasmSearchComponent implements OnInit {
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 
@@ -529,12 +530,31 @@ export class GermplasmSearchComponent implements OnInit {
 
     private validateSelection() {
         if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
-            this.jhiAlertService.error('error.custom', {
+            this.alertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
-            }, null);
+            });
             return false;
         }
         return true;
+    }
+
+    openCreateList() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.request;
+        } else {
+            searchComposite.itemIds = this.selectedItems;
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
     }
 
     openAddToList() {
@@ -550,7 +570,7 @@ export class GermplasmSearchComponent implements OnInit {
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
 
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });
