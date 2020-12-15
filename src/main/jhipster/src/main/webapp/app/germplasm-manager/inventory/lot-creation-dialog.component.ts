@@ -12,7 +12,6 @@ import { Location } from '../../shared/model/location.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
-import { finalize } from 'rxjs/operators';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
