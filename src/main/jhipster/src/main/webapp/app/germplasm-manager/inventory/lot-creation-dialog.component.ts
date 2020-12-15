@@ -100,7 +100,7 @@ export class LotCreationDialogComponent implements OnInit {
         const lotGeneratorBatchRequest = {
             searchComposite: <SearchComposite<any, string>>({
                 itemIds: null,
-                searchRequest: this.searchRequestId,
+                searchRequest: this.searchRequestId
             }),
             lotGeneratorInput: Object.assign({
                 generateStock: true,
