@@ -1,14 +1,18 @@
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class HelpService {
+
+    private readonly HELP_BASE_URL: string;
+
     constructor(@Inject(HttpClient) private http: HttpClient) {
+        this.HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';
     }
 
-    getOnlinHelpLink(): Observable<any> {
-        return this.http.get(HELP_MANAGE_SAMPLES, {observe: 'response', responseType: 'text'});
+    getHelpLink(key: string): Observable<any> {
+        return this.http.get(this.HELP_BASE_URL + key, {observe: 'response', responseType: 'text'});
     }
+
 }

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppModalService } from '../../shared/modal/app-modal.service';
 import { SampleContext } from './sample.context';
 import { HelpService } from '../../shared/service/help.service';
+import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 
 declare const cropName: string;
 declare var $: any;
@@ -49,7 +50,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         });
 
         if (!this.helpLink || !this.helpLink.length) {
-            this.helpService.getOnlinHelpLink().toPromise().then((response) => {
+            this.helpService.getHelpLink(HELP_MANAGE_SAMPLES).toPromise().then((response) => {
                 if (response.body) {
                     this.helpLink = response.body;
                 }

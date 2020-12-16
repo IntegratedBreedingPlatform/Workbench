@@ -1,13 +1,15 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting } from './label-printing.model';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppModalService } from '../shared/modal/app-modal.service';
 import { AlertService } from '../shared/alert/alert.service';
+import { HelpService } from '../shared/service/help.service';
+import { HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 
 declare const $: any;
 
@@ -34,6 +36,7 @@ export class LabelPrintingComponent implements OnInit {
     presetSettings: PresetSetting[];
     modalTitle: string;
     modalMessage: string;
+    helpLink: string;
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -41,7 +44,8 @@ export class LabelPrintingComponent implements OnInit {
                 private languageService: JhiLanguageService,
                 private fileDownloadHelper: FileDownloadHelper,
                 private alertService: AlertService,
-                private modalService: AppModalService) {
+                private modalService: AppModalService,
+                private helpService: HelpService) {
     }
 
     proceed(): void {
@@ -90,6 +94,13 @@ export class LabelPrintingComponent implements OnInit {
 
         this.labelPrintingData.sizeOfLabelSheet = '1';
         this.labelPrintingData.numberOfRowsPerPage = 7;
+
+        // Get helplink url
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getHelpLink(HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS).toPromise().then((response) => {
+                this.helpLink = response.body;
+            }).catch((error) => {});
+        }
     }
 
     hasHeader() {
