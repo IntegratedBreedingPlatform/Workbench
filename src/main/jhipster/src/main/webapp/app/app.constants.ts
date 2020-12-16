@@ -9,5 +9,6 @@ export const BUILD_TIMESTAMP = process.env.BUILD_TIMESTAMP;
 export const GERMPLASM_BROWSER_DEFAULT_URL = '/ibpworkbench/maingpsb/germplasm-';
 
 // HELP
+export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';
 export const HELP_MANAGE_SAMPLES = 'MANAGE_SAMPLES';
 export const HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS = 'MANAGE_STUDIES_CREATE_PLANTING_LABELS';
