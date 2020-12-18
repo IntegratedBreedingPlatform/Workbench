@@ -45,6 +45,9 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     selectedFilter: any = '';
     cropName: string;
 
+    addedNameTypes = [];
+    addedAttributes = [];
+
     static transformMinMaxFilter(filter, request, minProperty, maxProperty) {
         request[minProperty] = filter.min;
         request[maxProperty] = filter.max;
@@ -360,11 +363,10 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     clear(filter) {
-        console.log(this.request.addedColumnsPropertyIds);
         if (filter.type === this.FILTER_TYPES.NAME_TYPES) {
-            this.removeNameTypeColumn(null);
+            this.removeAllNameTypesColumn();
         } else if (filter.type === this.FILTER_TYPES.ATTRIBUTES) {
-            this.removeAttributesColumn(null);
+            this.removeAllAttributesColumn();
         }
         filter.added = false;
         this.filtersAdded.splice(this.filtersAdded.indexOf(filter), 1);
@@ -433,31 +435,41 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     addAttributesColumn(attribute) {
         if (!this.request.addedColumnsPropertyIds.some((e) => e === attribute.code)) {
             this.request.addedColumnsPropertyIds.push(attribute.code);
+            this.addedAttributes.push(attribute);
         }
     }
 
     removeAttributesColumn(attribute) {
-        if (attribute == null) {
-            this.request.addedColumnsPropertyIds = [];
-        } else {
-            this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
-        }
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
         this.eventManager.broadcast({ name: 'clearSort', content: '' });
+        this.addedAttributes = this.addedAttributes.filter((a) => a.code != attribute.code);
+    }
+
+    removeAllAttributesColumn() {
+        var tempAddedAttributes = this.addedAttributes;
+        tempAddedAttributes.forEach((attr) => {
+           this.removeAttributesColumn(attr);
+        });
     }
 
     addNameTypeColumn(nameType) {
         if (!this.request.addedColumnsPropertyIds.some((e) => e === nameType.name)) {
             this.request.addedColumnsPropertyIds.push(nameType.name);
+            this.addedNameTypes.push(nameType);
         }
     }
 
     removeNameTypeColumn(nameType) {
-        if (nameType == null) {
-            this.request.addedColumnsPropertyIds = [];
-        } else {
-            this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.name);
-        }
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.name);
         this.eventManager.broadcast({ name: 'clearSort', content: '' });
+        this.addedNameTypes = this.addedNameTypes.filter((a) => a.name !== nameType.name);
+    }
+
+    removeAllNameTypesColumn() {
+        var tempAddedNameTypes = this.addedNameTypes;
+        tempAddedNameTypes.forEach((nameType) => {
+           this.removeNameTypeColumn(nameType);
+        });
     }
 
 }
