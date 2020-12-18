@@ -386,6 +386,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     clearAll() {
         this.clearFilters();
+        this.removeAllAttributesColumn();
+        this.removeAllNameTypesColumn();
         this.resultSearch.searchResultDbId = '';
         this.transition();
     }
@@ -441,7 +443,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     removeAttributesColumn(attribute) {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
-        this.eventManager.broadcast({ name: 'clearSort', content: '' });
         this.addedAttributes = this.addedAttributes.filter((a) => a.code !== attribute.code);
     }
 
@@ -461,7 +462,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     removeNameTypeColumn(nameType) {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.name);
-        this.eventManager.broadcast({ name: 'clearSort', content: '' });
         this.addedNameTypes = this.addedNameTypes.filter((a) => a.name !== nameType.name);
     }
 

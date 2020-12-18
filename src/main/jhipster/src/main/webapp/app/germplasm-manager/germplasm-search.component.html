@@ -30,29 +30,29 @@
 			</div>
 			<ng-template #columnvisibility>
 				<div id="columnVisibility">
-					<jhi-col-vis-button [colName]="'gid'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.gid"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'groupId'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.groupId"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'names'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.names"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'methodName'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.methodName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'availableBalance'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.availableBalance"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'unit'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.unit"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'lotCount'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.lotCount"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'pedigreeString'" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.pedigreeString"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'germplasmPeferredId'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['germplasmPeferredId'], 'PREFERRED ID')"><span jhiTranslate="search-germplasm.column.germplasmPeferredId"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'germplasmPeferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['germplasmPeferredName'], 'PREFERRED NAME')"><span jhiTranslate="search-germplasm.column.germplasmPeferredName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'germplasmDate'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['germplasmDate'], 'GERMPLASM DATE')"><span jhiTranslate="search-germplasm.column.germplasmDate"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'locationName'" [hiddenColumns]="hiddenColumns"><span jhiTranslate="search-germplasm.column.locationName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'methodCode'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['methodCode'], 'METHOD ABBREV')"><span jhiTranslate="search-germplasm.column.methodCode"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'methodNumber'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['methodNumber'], 'METHOD NUMBER')"><span jhiTranslate="search-germplasm.column.methodNumber"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'methodGroup'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['methodGroup'], 'METHOD GROUP')"><span jhiTranslate="search-germplasm.column.methodGroup"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'femaleParentGID'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['femaleParentGID'], 'FGID')"><span jhiTranslate="search-germplasm.column.femaleParentGID"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'femaleParentPreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['femaleParentPreferredName'], 'CROSS-FEMALE PREFERRED NAME')"><span jhiTranslate="search-germplasm.column.femaleParentPreferredName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'maleParentGID'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['maleParentGID'], 'MGID')"><span jhiTranslate="search-germplasm.column.maleParentGID"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'maleParentPreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['maleParentPreferredName'], 'CROSS-MALE PREFERRED NAME')"><span jhiTranslate="search-germplasm.column.maleParentPreferredName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'groupSourceGID'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['groupSourceGID'], 'GROUP SOURCE GID')"><span jhiTranslate="search-germplasm.column.groupSourceGID"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'groupSourcePreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['groupSourcePreferredName'], 'GROUP SOURCE')"><span jhiTranslate="search-germplasm.column.groupSourcePreferredName"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'immediateSourceGID'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['immediateSourceGID'], 'IMMEDIATE SOURCE GID')"><span jhiTranslate="search-germplasm.column.immediateSourceGID"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="'immediateSourcePreferredName'" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns['immediateSourcePreferredName'], 'IMMEDIATE SOURCE')"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.GID" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.gid"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['GROUP ID']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.groupId"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.NAMES" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.names"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['METHOD NAME']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.methodName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.AVAILABLE" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.availableBalance"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.LOT_UNITS" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.unit"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.LOTS" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.lotCount"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.CROSS" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.pedigreeString"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['PREFERRED ID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['PREFERRED ID']], ColumnLabels['PREFERRED ID'])"><span jhiTranslate="search-germplasm.column.germplasmPeferredId"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['PREFERRED NAME']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['PREFERRED NAME']], ColumnLabels['PREFERRED NAME'])"><span jhiTranslate="search-germplasm.column.germplasmPeferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['GERMPLASM DATE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['GERMPLASM DATE']], ColumnLabels['GERMPLASM DATE'])"><span jhiTranslate="search-germplasm.column.germplasmDate"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels.LOCATIONS" [hiddenColumns]="hiddenColumns"><span jhiTranslate="search-germplasm.column.locationName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['METHOD ABBREV']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['METHOD ABBREV']], ColumnLabels['METHOD ABBREV'])"><span jhiTranslate="search-germplasm.column.methodCode"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['METHOD NUMBER']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['METHOD NUMBER']], ColumnLabels['METHOD NUMBER'])"><span jhiTranslate="search-germplasm.column.methodNumber"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['METHOD GROUP']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['METHOD GROUP']], ColumnLabels['METHOD GROUP'])"><span jhiTranslate="search-germplasm.column.methodGroup"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['FGID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['FGID']], ColumnLabels['FGID'])"><span jhiTranslate="search-germplasm.column.femaleParentGID"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['CROSS-FEMALE PREFERRED NAME']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']], ColumnLabels['CROSS-FEMALE PREFERRED NAME'])"><span jhiTranslate="search-germplasm.column.femaleParentPreferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['MGID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['MGID']], ColumnLabels['MGID'])"><span jhiTranslate="search-germplasm.column.maleParentGID"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['CROSS-MALE PREFERRED NAME']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']], 'CROSS-MALE PREFERRED NAME')"><span jhiTranslate="search-germplasm.column.maleParentPreferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['GROUP SOURCE GID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['GROUP SOURCE GID']], ColumnLabels['GROUP SOURCE GID'])"><span jhiTranslate="search-germplasm.column.groupSourceGID"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['GROUP SOURCE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['GROUP SOURCE']], ColumnLabels['GROUP SOURCE'])"><span jhiTranslate="search-germplasm.column.groupSourcePreferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['IMMEDIATE SOURCE GID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']], ColumnLabels['IMMEDIATE SOURCE GID'])"><span jhiTranslate="search-germplasm.column.immediateSourceGID"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['IMMEDIATE SOURCE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']], ColumnLabels['IMMEDIATE SOURCE'])"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span></jhi-col-vis-button>
 				</div>
 			</ng-template>
 			<div class="form-group form-inline">
@@ -87,29 +87,29 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
 				<th *ngIf="!isSelectAll"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
-				<th jhiSortBy="GID" [hidden]="hiddenColumns['gid']"><span jhiTranslate="search-germplasm.column.gid">GID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="GROUP ID" [hidden]="hiddenColumns['groupId']"><span jhiTranslate="search-germplasm.column.groupId">GROUP ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="NAMES" [hidden]="hiddenColumns['names']"><span jhiTranslate="search-germplasm.column.names">NAMES</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="AVAILABLE" [hidden]="hiddenColumns['availableBalance']"><span jhiTranslate="search-germplasm.column.availableBalance">AVAILABLE BALANCE</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="LOT_UNITS" [hidden]="hiddenColumns['unit']"><span jhiTranslate="search-germplasm.column.unit">UNIT</span> <span class="fa fa-sort"></span></th>
-				<th [hidden]="hiddenColumns['lotCount']"><span jhiTranslate="search-germplasm.column.lotCount">LOTS</span></th>
-				<th [hidden]="hiddenColumns['pedigreeString']"><span jhiTranslate="search-germplasm.column.pedigreeString">CROSS</span></th>
-				<th jhiSortBy="PREFERRED ID" [hidden]="hiddenColumns['germplasmPeferredId']"><span jhiTranslate="search-germplasm.column.germplasmPeferredId">PREFERRED ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="PREFERRED NAME" [hidden]="hiddenColumns['germplasmPeferredName']"><span jhiTranslate="search-germplasm.column.germplasmPeferredName">PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="GERMPLASM DATE" [hidden]="hiddenColumns['germplasmDate']"><span jhiTranslate="search-germplasm.column.germplasmDate">GERMPLASM DATE</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="LOCATIONS" [hidden]="hiddenColumns['locationName']"><span jhiTranslate="search-germplasm.column.locationName">LOCATION NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="METHOD NAME" [hidden]="hiddenColumns['methodName']"><span jhiTranslate="search-germplasm.column.methodName">METHOD NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="METHOD ABBREV" [hidden]="hiddenColumns['methodCode']"><span jhiTranslate="search-germplasm.column.methodCode">METHOD CODE</span><span class="fa fa-sort"></span></th>
-				<th jhiSortBy="METHOD NUMBER" [hidden]="hiddenColumns['methodNumber']"><span jhiTranslate="search-germplasm.column.methodNumber">METHOD NUMBER</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="METHOD GROUP" [hidden]="hiddenColumns['methodGroup']"><span jhiTranslate="search-germplasm.column.methodGroup">METHOD GROUP</span> <span class="fa fa-sort"></span></th>
-				<th [hidden]="hiddenColumns['femaleParentGID']"><span jhiTranslate="search-germplasm.column.femaleParentGID">FEMALE PARENT PREFERRED ID</span></th>
-				<th [hidden]="hiddenColumns['femaleParentPreferredName']"><span jhiTranslate="search-germplasm.column.femaleParentPreferredName">FEMALE PARENT PREFERRED NAME</span></th>
-				<th [hidden]="hiddenColumns['maleParentGID']"><span jhiTranslate="search-germplasm.column.maleParentGID">MALE PARENT PREFERRED ID</span></th>
-				<th [hidden]="hiddenColumns['maleParentPreferredName']"><span jhiTranslate="search-germplasm.column.maleParentPreferredName">MALE PARENT PREFERRED NAME</span></th>
-				<th jhiSortBy="GROUP SOURCE GID" [hidden]="hiddenColumns['groupSourceGID']"><span jhiTranslate="search-germplasm.column.groupSourceGID">GROUP SOURCE ID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="GROUP SOURCE" [hidden]="hiddenColumns['groupSourcePreferredName']"><span jhiTranslate="search-germplasm.column.groupSourcePreferredName">GROUP SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="IMMEDIATE SOURCE GID" [hidden]="hiddenColumns['immediateSourceGID']"><span jhiTranslate="search-germplasm.column.immediateSourceGID">IMMEDIATE SOURCE GID</span> <span class="fa fa-sort"></span></th>
-				<th jhiSortBy="IMMEDIATE SOURCE" [hidden]="hiddenColumns['immediateSourcePreferredName']"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName">IMMEDIATE SOURCE PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns['gid']"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['GROUP ID']" [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="search-germplasm.column.groupId"></span><span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.NAMES" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="search-germplasm.column.names"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.AVAILABLE" [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]"><span jhiTranslate="search-germplasm.column.availableBalance"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.LOT_UNITS" [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]"><span jhiTranslate="search-germplasm.column.unit"></span> <span class="fa fa-sort"></span></th>
+				<th [hidden]="hiddenColumns[ColumnLabels.LOTS]"><span jhiTranslate="search-germplasm.column.lotCount"></span></th>
+				<th [hidden]="hiddenColumns[ColumnLabels.CROSS]"><span jhiTranslate="search-germplasm.column.pedigreeString">CROSS</span></th>
+				<th [jhiSortBy]="ColumnLabels['PREFERRED ID']" [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]"><span jhiTranslate="search-germplasm.column.germplasmPeferredId"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['PREFERRED NAME']" [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]"><span jhiTranslate="search-germplasm.column.germplasmPeferredName">PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['GERMPLASM DATE']" [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]"><span jhiTranslate="search-germplasm.column.germplasmDate"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.LOCATIONS" [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><span jhiTranslate="search-germplasm.column.locationName"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['METHOD NAME']" [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><span jhiTranslate="search-germplasm.column.methodName"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['METHOD ABBREV']" [hidden]="hiddenColumns[ColumnLabels['METHOD ABBREV']]"><span jhiTranslate="search-germplasm.column.methodCode"></span><span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['METHOD NUMBER']" [hidden]="hiddenColumns[ColumnLabels['METHOD NUMBER']]"><span jhiTranslate="search-germplasm.column.methodNumber"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['METHOD GROUP']" [hidden]="hiddenColumns[ColumnLabels['METHOD GROUP']]"><span jhiTranslate="search-germplasm.column.methodGroup"></span> <span class="fa fa-sort"></span></th>
+				<th [hidden]="hiddenColumns[ColumnLabels['FGID']]"><span jhiTranslate="search-germplasm.column.femaleParentGID"></span></th>
+				<th [hidden]="hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']]"><span jhiTranslate="search-germplasm.column.femaleParentPreferredName"></span></th>
+				<th [hidden]="hiddenColumns[ColumnLabels['MGID']]"><span jhiTranslate="search-germplasm.column.maleParentGID"></span></th>
+				<th [hidden]="hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']]"><span jhiTranslate="search-germplasm.column.maleParentPreferredName"></span></th>
+				<th [jhiSortBy]="ColumnLabels['GROUP SOURCE GID']" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]"><span jhiTranslate="search-germplasm.column.groupSourceGID"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['GROUP SOURCE']" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]"><span jhiTranslate="search-germplasm.column.groupSourcePreferredName"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['IMMEDIATE SOURCE GID']" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]"><span jhiTranslate="search-germplasm.column.immediateSourceGID"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['IMMEDIATE SOURCE']" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span> <span class="fa fa-sort"></span></th>
 				<ng-container *ngIf="germplasmList[0]">
 					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue" jhiSortBy="{{entry.key}}"><span>{{entry.key}}</span><span class="fa fa-sort"></span></th>
 				</ng-container>
@@ -121,32 +121,32 @@
 			<tbody>
 			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId">
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
-				<td [hidden]="hiddenColumns['gid']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
-				<td [hidden]="hiddenColumns['groupId']"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
-				<td [hidden]="hiddenColumns['names']"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
-				<td [hidden]="hiddenColumns['availableBalance']">{{germplasm.availableBalance}}</td>
-				<td [hidden]="hiddenColumns['unit']">{{germplasm.unit}}</td>
-				<td [hidden]="hiddenColumns['lotCount']">
+				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{germplasm.unit}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels.LOTS]">
 					<a *ngIf="germplasm.lotCount" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}">{{germplasm.lotCount}}</a>
 					<span *ngIf="germplasm.lotCount === 0">-</span>
 				</td>
-				<td [hidden]="hiddenColumns['pedigreeString']">{{germplasm.pedigreeString}}</td>
-				<td [hidden]="hiddenColumns['germplasmPeferredId']">{{germplasm.germplasmPeferredId}}</td>
-				<td [hidden]="hiddenColumns['germplasmPeferredName']">{{germplasm.germplasmPeferredName}}</td>
-				<td [hidden]="hiddenColumns['germplasmDate']">{{germplasm.germplasmDate}}</td>
-				<td [hidden]="hiddenColumns['locationName']"><a [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]">{{germplasm.locationName}}</a></td>
-				<td [hidden]="hiddenColumns['methodName']"><a [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]">{{germplasm.methodName}}</a></td>
-				<td [hidden]="hiddenColumns['methodCode']">{{germplasm.methodCode}}</td>
-				<td [hidden]="hiddenColumns['methodNumber']">{{germplasm.methodNumber}}</td>
-				<td [hidden]="hiddenColumns['methodGroup']">{{germplasm.methodGroup}}</td>
-				<td [hidden]="hiddenColumns['femaleParentGID']">{{germplasm.femaleParentGID}}</td>
-				<td [hidden]="hiddenColumns['femaleParentPreferredName']">{{germplasm.femaleParentPreferredName}}</td>
-				<td [hidden]="hiddenColumns['maleParentGID']">{{germplasm.maleParentGID}}</td>
-				<td [hidden]="hiddenColumns['maleParentPreferredName']">{{germplasm.maleParentPreferredName}}</td>
-				<td [hidden]="hiddenColumns['groupSourceGID']">{{germplasm.groupSourceGID}}</td>
-				<td [hidden]="hiddenColumns['groupSourcePreferredName']">{{germplasm.groupSourcePreferredName}}</td>
-				<td [hidden]="hiddenColumns['immediateSourceGID']">{{germplasm.immediateSourceGID}}</td>
-				<td [hidden]="hiddenColumns['immediateSourcePreferredName']">{{germplasm.immediateSourcePreferredName}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels.CROSS]">{{germplasm.pedigreeString}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]">{{germplasm.germplasmPeferredId}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]">{{germplasm.germplasmPeferredName}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]">{{germplasm.germplasmDate}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><a [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]">{{germplasm.locationName}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><a [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]">{{germplasm.methodName}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['METHOD ABBREV']]">{{germplasm.methodCode}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NUMBER']]">{{germplasm.methodNumber}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['METHOD GROUP']]">{{germplasm.methodGroup}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['FGID']]">{{germplasm.femaleParentGID}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']]">{{germplasm.femaleParentPreferredName}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['MGID']]">{{germplasm.maleParentGID}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']]">{{germplasm.maleParentPreferredName}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]">{{germplasm.groupSourceGID}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]">{{germplasm.groupSourcePreferredName}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]">{{germplasm.immediateSourceGID}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]">{{germplasm.immediateSourcePreferredName}}</td>
 				<td *ngFor="let entry of germplasm.attributeTypesValueMap | keyvalue">{{entry.value}}</td>
 				<td *ngFor="let entry of germplasm.nameTypesValueMap | keyvalue">{{entry.value}}</td>
 			</tr>
