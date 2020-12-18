@@ -446,7 +446,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     removeAllAttributesColumn() {
-        var tempAddedAttributes = this.addedAttributes;
+        const tempAddedAttributes = this.addedAttributes;
         tempAddedAttributes.forEach((attr) => {
            this.removeAttributesColumn(attr);
         });
@@ -466,7 +466,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     removeAllNameTypesColumn() {
-        var tempAddedNameTypes = this.addedNameTypes;
+        const tempAddedNameTypes = this.addedNameTypes;
         tempAddedNameTypes.forEach((nameType) => {
            this.removeNameTypeColumn(nameType);
         });
