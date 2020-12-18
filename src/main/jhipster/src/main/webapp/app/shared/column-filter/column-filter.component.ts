@@ -442,7 +442,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     removeAttributesColumn(attribute) {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
         this.eventManager.broadcast({ name: 'clearSort', content: '' });
-        this.addedAttributes = this.addedAttributes.filter((a) => a.code != attribute.code);
+        this.addedAttributes = this.addedAttributes.filter((a) => a.code !== attribute.code);
     }
 
     removeAllAttributesColumn() {
