@@ -87,7 +87,7 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
 				<th *ngIf="!isSelectAll"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
-				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns['gid']"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns[ColumnLabels.GID]"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GROUP ID']" [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="search-germplasm.column.groupId"></span><span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NAMES" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="search-germplasm.column.names"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.AVAILABLE" [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]"><span jhiTranslate="search-germplasm.column.availableBalance"></span> <span class="fa fa-sort"></span></th>
