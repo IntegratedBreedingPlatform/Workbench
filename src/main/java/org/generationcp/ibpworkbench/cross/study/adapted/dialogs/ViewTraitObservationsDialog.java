@@ -8,6 +8,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apache.commons.lang.StringUtils;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -161,20 +162,8 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 				currentGid = gid;
 			}
 
-			try {
-				Object[] itemObj = this.getTableRow(observationNo, lineNo, gid, gidName, location, traitVal);
-				this.locationTable.addItem(itemObj, observationNo);
-			} catch (NumberFormatException e) {
-				LOG.error(e.getMessage(), e);
-
-				this.locationTable.removeAllItems();
-
-				ViewTraitObservationsDialog.LOG.error("Invalid Numeric Data!", e);
-				MessageNotifier.showRequiredFieldError(this.getWindow(), traitVal + " is not a number.");
-
-				break;
-			}
-
+			Object[] itemObj = this.getTableRow(observationNo, lineNo, gid, gidName, location, traitVal);
+			this.locationTable.addItem(itemObj, observationNo);
 			observationNo++;
 		}
 
@@ -199,7 +188,7 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 
 		if ("Numeric Variate".equals(this.variateType)) {
 			String value = traitVal;
-			if (!"missing".equalsIgnoreCase(value)) {
+			if (!"missing".equalsIgnoreCase(value) || !StringUtils.isNumeric(traitVal)) {
 				value = String.valueOf(Double.parseDouble(traitVal));
 			}
 			row[4 + this.locationList.indexOf(location)] = value;

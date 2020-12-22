@@ -16,6 +16,7 @@ import com.vaadin.ui.Table.HeaderClickEvent;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.lang.StringUtils;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.SaveToListDialog;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CategoricalTraitEvaluator;
@@ -57,15 +58,15 @@ import java.util.TreeMap;
 /**
  * Results are displayed here. Main goal is to award points for traits that fall within a desired, specified range. Points are removed if
  * over many locations, the traits do not meet the desired range.
- * 
+ *
  * -- If the selected range covers all measurements for all locations, then the score will be 1.0 -- If there are more observations outside
  * the range than inside, the score will be negative -- Positive scores of any kind reflect more than 50% compliance in the range
- * 
+ *
  * FIXME : the numbers displayed here are not correct and must be reviewed FIXME : this is a long class and further guidance through the
  * code is required
- * 
+ *
  * @author rebecca
- * 
+ *
  */
 @Configurable
 public class TraitDisplayResults extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
@@ -97,7 +98,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
-	
+
 	private AbsoluteLayout resultsTable;
 	private PagedTable germplasmColTable;
 	private PagedTable traitsColTable;
@@ -131,7 +132,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	private SaveToListDialog saveGermplasmListDialog;
 	private Map<Integer, String> selectedGermplasmMap;
-	
+
 	private CheckBox tagAllCheckBoxOnCombinedScoreTagColTable;
 
 	public TraitDisplayResults(TraitDonorsQueryMain mainScreen) {
@@ -151,7 +152,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		resultsTable = new AbsoluteLayout();
 		resultsTable.setDebugId("resultTable");
 		resultsTable.setWidth("1000px");
-		
+
 		createGermplasmColTable();
 		createTraitsColTable();
 		createCombinedScoreTagColTable();
@@ -290,7 +291,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.germplasmIdNameMap = this.getGermplasm(this.traitIds, this.environmentIds);
 		this.germplasmNameIdMap = this.getSortedGermplasmList(this.germplasmIdNameMap);
 		this.selectedGermplasmMap = new HashMap<Integer, String>();
-		
+
 		this.resultsTable.removeAllComponents();
 		this.createGermplasmColTable();
 		this.germplasmColTable = this.createResultsTable(this.germplasmColTable);
@@ -462,7 +463,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public void populateRowsResultsTable(PagedTable resultTable, Integer noOfColumns) {
 		int lineNo = this.currentLineIndex + 1;
-		
+
 		for (TableResultRow row : this.tableRows) {
 			int gid = row.getGermplasmId();
 			String germplasmName = this.germplasmIdNameMap.get(gid);
@@ -762,8 +763,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public boolean testNumericTraitVal(NumericTraitFilter trait, Observation observation) {
-		// skip testing traits with "missing" value
-		if ("missing".equalsIgnoreCase(observation.getValue())) {
+		// skip testing traits with "missing" value and invalid value
+		if ("missing".equalsIgnoreCase(observation.getValue()) || !StringUtils.isNumeric(observation.getValue())) {
 			return true;
 		} else {
 			NumericTraitEvaluator eval =
@@ -911,7 +912,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	public void backButtonClickAction() {
 		this.mainScreen.selectSecondTab();
 	}
-	
+
 	public void saveButtonClickAction() {
 		this.openDialogSaveList();
 	}
@@ -1004,59 +1005,59 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.selectedGermplasmMap.clear();
 		this.toggleSaveButton();
 	}
-	
+
 	public void setTraitIds(final List<Integer> traitIds) {
 		this.traitIds = traitIds;
 	}
-	
+
 	public void setEnvironmentIds(final List<Integer> environmentIds) {
 		this.environmentIds = environmentIds;
 	}
-	
+
 	public void setCrossStudyDataManager(final CrossStudyDataManager crossStudyDataManager) {
 		this.crossStudyDataManager = crossStudyDataManager;
 	}
-	
+
 	public void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
 		this.germplasmDataManager = germplasmDataManager;
 	}
-	
+
 	public void setResultsTable(final AbsoluteLayout resultsTable) {
 		this.resultsTable = resultsTable;
 	}
-	
+
 	public AbsoluteLayout getResultsTable() {
 		return this.resultsTable;
 	}
-	
+
 	public PagedTable getCreateCombinedScoreTagColTable() {
 		return this.combinedScoreTagColTable;
 	}
-	
+
 	public PagedTable getGermplasmColTable() {
 		return this.germplasmColTable;
 	}
-	
+
 	public PagedTable getTraitsColTable() {
 		return this.traitsColTable;
 	}
-	
+
 	public void setTableRows(final List<TableResultRow> tableRows) {
 		this.tableRows = tableRows;
 	}
-	
+
 	public void setCurrentLineIndex(final Integer currentLineIndex) {
 		this.currentLineIndex = currentLineIndex;
 	}
-	
+
 	public void setGermplasmIdNameMap(final Map<Integer, String> germplasmIdNameMap) {
 		this.germplasmIdNameMap = germplasmIdNameMap;
 	}
-	
+
 	public void setSelectedGermplasmMap(final Map<Integer, String> selectedGermplasmMap) {
 		this.selectedGermplasmMap = selectedGermplasmMap;
 	}
-	
+
 	public Integer getCurrentLineIndex() {
 		return this.currentLineIndex;
 	}
