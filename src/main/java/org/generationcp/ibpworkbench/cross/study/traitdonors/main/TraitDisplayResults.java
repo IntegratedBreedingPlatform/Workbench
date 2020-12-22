@@ -763,8 +763,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	public boolean testNumericTraitVal(NumericTraitFilter trait, Observation observation) {
-		// skip testing traits with "missing" value and invalid value
-		if ("missing".equalsIgnoreCase(observation.getValue()) || !StringUtils.isNumeric(observation.getValue())) {
+		// skip testing traits invalid value
+		if (!StringUtils.isNumeric(observation.getValue())) {
 			return true;
 		} else {
 			NumericTraitEvaluator eval =

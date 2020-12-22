@@ -188,7 +188,7 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 
 		if ("Numeric Variate".equals(this.variateType)) {
 			String value = traitVal;
-			if (!"missing".equalsIgnoreCase(value) || !StringUtils.isNumeric(traitVal)) {
+			if (StringUtils.isNumeric(traitVal)) {
 				value = String.valueOf(Double.parseDouble(traitVal));
 			}
 			row[4 + this.locationList.indexOf(location)] = value;
