@@ -66,8 +66,9 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 
 	Map<Integer, String> gidLocMap;
 
-	public ViewTraitObservationsDialog(Component source, Window parentWindow, String variateType, int traitId, String traitName,
-			List<Integer> environmentIds) {
+	public ViewTraitObservationsDialog(
+		final Component source, final Window parentWindow, final String variateType, final int traitId, final String traitName,
+			final List<Integer> environmentIds) {
 		this.variateType = variateType;
 		this.traitId = traitId;
 		this.traitName = traitName;
@@ -98,7 +99,7 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		this.popUpLabel = new Label(this.messageSource.getMessage(Message.LINE_BY_LOCATION_FOR_TRAIT) + " " + this.traitName);
 		this.popUpLabel.setDebugId("popUpLabel");
 
-		AbsoluteLayout mainLayout = new AbsoluteLayout();
+		final AbsoluteLayout mainLayout = new AbsoluteLayout();
 		mainLayout.setDebugId("mainLayout");
 		mainLayout.setWidth("900px");
 		mainLayout.setHeight("420px");
@@ -135,8 +136,8 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		this.locationTable.setColumnHeader(ViewTraitObservationsDialog.LINE_DESIGNATION,
 				this.messageSource.getMessage(Message.LINE_DESIGNATION));
 
-		for (String locationName : this.locationList) {
-			String columnName = "ViewTraitObservationsDialog " + locationName;
+		for (final String locationName : this.locationList) {
+			final String columnName = "ViewTraitObservationsDialog " + locationName;
 			this.locationTable.addContainerProperty(columnName, String.class, null);
 			this.locationTable.setColumnHeader(columnName, locationName);
 		}
@@ -147,38 +148,38 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		this.gidList = this.getGIDs(this.traitObservations);
 		this.gidPreferredNameMap = this.germplasmDataManager.getPreferredNamesByGids(this.gidList);
 
-		Integer observationNo = 1;
-		Integer lineNo = 0;
+		int observationNo = 1;
+		int lineNo = 0;
 		int currentGid = 0;
-		for (TraitObservation traitObservation : this.traitObservations) {
+		for (final TraitObservation traitObservation : this.traitObservations) {
 
-			int gid = traitObservation.getGid();
-			String gidName = this.gidPreferredNameMap.get(gid);
-			String location = traitObservation.getLocationName();
-			String traitVal = traitObservation.getTraitValue();
+			final int gid = traitObservation.getGid();
+			final String gidName = this.gidPreferredNameMap.get(gid);
+			final String location = traitObservation.getLocationName();
+			final String traitVal = traitObservation.getTraitValue();
 
 			if (gid != currentGid) {
 				lineNo++;
 				currentGid = gid;
 			}
 
-			Object[] itemObj = this.getTableRow(observationNo, lineNo, gid, gidName, location, traitVal);
+			final Object[] itemObj = this.getTableRow(observationNo, lineNo, gid, gidName, location, traitVal);
 			this.locationTable.addItem(itemObj, observationNo);
 			observationNo++;
 		}
 
 	}
 
-	private Object[] getTableRow(int observationNo, int lineNo, int gid, String gidName, String location, String traitVal) {
-		int noOfCols = 4 + this.locationList.size();
-		Object[] row = new Object[noOfCols];
+	private Object[] getTableRow(final int observationNo, final int lineNo, final int gid, final String gidName, final String location, final String traitVal) {
+		final int noOfCols = 4 + this.locationList.size();
+		final Object[] row = new Object[noOfCols];
 
 		row[0] = observationNo;
 		row[1] = lineNo;
 
 		// make GID as link
-		String gidString = String.valueOf(gid);
-		Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
+		final String gidString = String.valueOf(gid);
+		final Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
 		gidButton.setDebugId("gidButton");
 		gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 		gidButton.setDescription("Click to view Germplasm information");
@@ -199,12 +200,12 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		return row;
 	}
 
-	private List<Integer> getGIDs(List<TraitObservation> result) {
-		List<Integer> gids = new ArrayList<Integer>();
+	private List<Integer> getGIDs(final List<TraitObservation> result) {
+		final List<Integer> gids = new ArrayList<Integer>();
 
-		for (TraitObservation trait : result) {
+		for (final TraitObservation trait : result) {
 
-			int id = trait.getGid();
+			final int id = trait.getGid();
 
 			if (!gids.contains(id)) {
 				gids.add(id);
@@ -214,11 +215,11 @@ public class ViewTraitObservationsDialog extends BaseSubWindow implements Initia
 		return gids;
 	}
 
-	private List<String> getLocations(List<TraitObservation> result) {
-		List<String> locList = new ArrayList<String>();
+	private List<String> getLocations(final List<TraitObservation> result) {
+		final List<String> locList = new ArrayList<String>();
 
-		for (TraitObservation trait : result) {
-			String location = trait.getLocationName();
+		for (final TraitObservation trait : result) {
+			final String location = trait.getLocationName();
 
 			if (!locList.contains(location)) {
 				locList.add(location);
