@@ -433,6 +433,7 @@ TODO use theming https://www.primefaces.org/primeng/#/theming
     border-radius: 6pt;
 }
 /* Fix Chrome highlight issue */
+button:focus,
 .ui-tree [tabindex] {
     outline: none;
 }
