@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.annotation.Resource;
 
 @Controller
-@RequestMapping("/jhipster")
 public class JHipsterController {
 
 	@Resource
@@ -27,8 +26,13 @@ public class JHipsterController {
 		return this.contextUtil.getProjectInContext().getUniqueID();
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/jhipster", method = RequestMethod.GET)
 	public String index(Model model) throws MiddlewareQueryException {
+		return "jhipster/index";
+	}
+
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String index2(Model model) throws MiddlewareQueryException {
 		return "jhipster/index";
 	}
 }

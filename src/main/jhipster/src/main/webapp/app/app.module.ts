@@ -18,6 +18,8 @@ import { GermplasmTreeTableComponent } from './shared/tree/germplasm/germplasm-t
 import { StudyTreeComponent } from './shared/tree/study/study-tree.component';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { InventoryDetailsModule } from './germplasm-manager/inventory/details/inventory-details.module';
+import { NavbarComponent } from './navbar/navbar.component';
+import { NavbarModule } from './navbar/navbar.module';
 
 @NgModule({
     imports: [
@@ -27,6 +29,7 @@ import { InventoryDetailsModule } from './germplasm-manager/inventory/details/in
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         BmsjHipsterSharedModule,
         BmsjHipsterEntityModule,
+        NavbarModule,
         LabelPrintingModule,
         GermplasmManagerModule,
         InventoryDetailsModule
