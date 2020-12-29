@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
 
@@ -34,5 +35,14 @@ public class JHipsterController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index2(Model model) throws MiddlewareQueryException {
 		return "jhipster/index";
+	}
+
+	// Workaround for base-href page reload
+	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	public RedirectView onRefreshPage() throws MiddlewareQueryException {
+		final RedirectView redirectView = new RedirectView("/app/");
+		redirectView.setContextRelative(true);
+		redirectView.setExposeModelAttributes(false);
+		return redirectView;
 	}
 }
