@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NavService } from './nav.service';
-import { GERMPLASM_BROWSER_DEFAULT_URL } from '../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 
 @Component({
     selector: 'jhi-navbar',
@@ -20,12 +21,62 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     @ViewChild('sideNav') sideNav: ElementRef;
 
+    treeControl = new FlatTreeControl<FlatNode>((node) => node.level, (node) => node.expandable);
+    treeFlattener = new MatTreeFlattener(
+        this._transformer,
+        (node) => node.level,
+        (node) => node.expandable, (node) => node.children
+    );
+    dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+    // TODO get from api
+    TREE_DATA: Node[] = [{
+        name: 'Germplasm',
+        children: [{
+            name: 'Manage Germplasm',
+            link: '/ibpworkbench/controller/jhipster#germplasm-manager'
+        }]
+    }, {
+        name: 'Studies',
+        children: [{
+            name: 'Single Site Analysis',
+            link: '/ibpworkbench/main/#/breeding_view'
+        }, {
+            name: 'Browse studies',
+            link: '/ibpworkbench/maingpsb/study/'
+        }]
+    }
+    /*, {
+        name: 'Sub',
+        children: [{
+            name: 'sub-sub'
+        }, {
+            name: 'sub-sub-sub',
+            children: [{
+                name: 'aaaa'
+            }]
+        }]
+    }*/
+    ];
+
     constructor(
         private navService: NavService,
         private sanitizer: DomSanitizer,
     ) {
         // TODO
         // this.version = VERSION ? 'v' + VERSION : '';
+        this.dataSource.data = this.TREE_DATA;
+    }
+
+    hasChild = (_: number, node: any) => node.expandable;
+
+    _transformer(node: Node, level: number) {
+        return {
+            expandable: !!node.children && node.children.length > 0,
+            name: node.name,
+            level,
+            link: node.link
+        };
     }
 
     ngOnInit() {
@@ -46,4 +97,17 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
     }
 
+}
+
+interface Node {
+    name: string;
+    children?: Node[];
+    link?: string
+}
+
+interface FlatNode {
+    expandable: boolean;
+    name: string;
+    level: number;
+    link?: string,
 }

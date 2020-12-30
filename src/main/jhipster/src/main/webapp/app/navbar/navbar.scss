@@ -13,6 +13,46 @@ body {
 
   .mat-sidenav {
     background-color: #e9e9e9;
+    min-width: 240px;
+
+    .mat-tree {
+      background: none;
+
+      .mat-tree-node {
+        font-weight: bold;
+        min-height: auto;
+        cursor: pointer;
+
+        &.leaf {
+          color: #428bca;
+          font-size: 13px;
+          padding: 5px 20px 5px 34px;
+
+          &:hover {
+            color: #fff;
+            background-color: #428bca;
+            border-color: #357ebd;
+          }
+        }
+
+        &:not(.leaf) {
+          color: #9e9e9e;
+          text-transform: uppercase;
+          font-size: 14px;
+        }
+      }
+
+      .node-hidden {
+        display: none;
+      }
+    }
+
+    ul, li {
+      margin-top: 0;
+      margin-bottom: 0;
+      list-style-type: none;
+      padding: 0;
+    }
   }
 
   .mat-sidenav-content {

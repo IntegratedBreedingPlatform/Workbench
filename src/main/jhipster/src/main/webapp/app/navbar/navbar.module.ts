@@ -1,5 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, ApplicationRef } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { NavbarComponent } from './navbar.component';
 import { BmsjHipsterSharedModule } from '../shared';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -7,7 +6,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NavService } from './nav.service';
-import { MatListModule } from '@angular/material/list';
+import { MatTreeModule } from '@angular/material/tree';
 
 @NgModule({
     imports: [
@@ -16,14 +15,11 @@ import { MatListModule } from '@angular/material/list';
         MatToolbarModule,
         MatIconModule,
         MatButtonModule,
-        MatListModule
+        MatTreeModule
     ],
     declarations: [NavbarComponent],
     providers: [NavService],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class NavbarModule {
-    // ngDoBootstrap(appRef: ApplicationRef) {
-    //     appRef.bootstrap(NavbarComponent);
-    // }
 }
