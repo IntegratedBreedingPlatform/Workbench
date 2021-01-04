@@ -50,7 +50,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	private static final String URL_GENOTYPING_DATASET = "/GDMS/main/?restartApplication&datasetId=";
 
 	private static final String GENOTYPING_DATA = "genotyping dataset";
-	private static final String PARENT_WINDOW = "_parent";
+	private static final String WORKBENCHMAINVIEW_IFRAME_NAME = "PID_Sbrowser";
 
 	private static final String URL_STUDY_TRIAL = "/Fieldbook/TrialManager/openTrial/%s#/trialSettings";
 
@@ -139,7 +139,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		for (final SampleDTO sample : sampleList) {
 
 			final ExternalResource urlToOpenStudy = getURLStudy(sample.getStudyId(), authParams);
-			final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy, sample.getStudyName(), PARENT_WINDOW);
+			final LinkButton linkStudyButton = new LinkButton(urlToOpenStudy, sample.getStudyName(), WORKBENCHMAINVIEW_IFRAME_NAME);
 
 			try {
 				availableLinkToStudy(linkStudyButton);
@@ -155,7 +155,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			for (final SampleDTO.Dataset dataset : sample.getDatasets()) {
 				final ExternalResource urlToOpenGenotypingData =
 					new ExternalResource(URL_GENOTYPING_DATASET + dataset.getDatasetId() + authParams);
-				final LinkButton linkGenotypingDataButton = new LinkButton(urlToOpenGenotypingData, dataset.getName(), PARENT_WINDOW);
+				final LinkButton linkGenotypingDataButton = new LinkButton(urlToOpenGenotypingData, dataset.getName(),
+					WORKBENCHMAINVIEW_IFRAME_NAME);
 				linkGenotypingDataButton.setDebugId("linkGenotypingDataButton");
 				linkGenotypingDataButton.addStyleName(BaseTheme.BUTTON_LINK);
 				horizontalLayoutForDatasetButton.addComponent(linkGenotypingDataButton);
@@ -173,7 +174,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		}
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_BREEDING_ACTIVITIES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_STUDIES')")
 	private void availableLinkToStudy(final LinkButton linkStudyButton) {
 		linkStudyButton.setEnabled(true);
 	}

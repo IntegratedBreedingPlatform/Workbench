@@ -85,7 +85,8 @@
         "ribbon": {
             "dev":"Development"
         },
-        "item-count": "Showing {{first}} - {{second}} of {{total}} items."
+        "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
+        "clear-sort": "Clear sort"
     },
     "entity": {
         "action": {
@@ -97,7 +98,9 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
-            "view": "View"
+            "view": "View",
+            "select" : "Select",
+            "import" : "Import"
         },
         "detail": {
             "field": "Field",
@@ -128,7 +131,16 @@
         "Size": "Field {{ fieldName }} does not meet min/max size requirements!",
         "userexists": "Login name already used!",
         "emailexists": "Email is already in use!",
-        "idexists": "A new {{ entityName }} cannot already have an ID"
+        "idexists": "A new {{ entityName }} cannot already have an ID",
+        "custom": "{{ param }}"
     },
-    "footer": "This is your footer"
+    "footer": "This is your footer",
+    "no.data": "No records found",
+    "germplasm.details": {
+        "title": "Germplasm Details"
+    },
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "actions": "Actions"
 }

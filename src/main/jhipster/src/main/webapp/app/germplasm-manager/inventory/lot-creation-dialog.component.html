@@ -80,6 +80,14 @@
 					<textarea class="form-control" rows="3" name="depositNotes" id="depositNotes" [disabled]="!initialDepositRequired" [(ngModel)]="deposit.notes" #depositNotes="ngModel"></textarea>
 				</div>
 			</div>
+			<div class="form-group checkbox">
+				<div class="col-sm-offset-4 col-sm-4">
+					<label>
+						<input type="checkbox" [(ngModel)]="isConfirmDeposit" name="isConfirmDeposit" [disabled]="!initialDepositRequired">
+						<span jhiTranslate="lot-creation.confirm.transactions.checkbox.label"></span>
+					</label>
+				</div>
+			</div>
 		</div>
 	</form>
 </div>
@@ -89,8 +97,12 @@
 	<!--<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 		<span jhiTranslate="entity.action.cancel">Cancel</span>
 	</button>-->
-	<button (click)="save()" [disabled]="f.form.invalid || isSuccess" class="btn btn-primary">
+	<button (click)="save()" [disabled]="f.form.invalid || isSuccess || isLoading" class="btn btn-primary">
 		<span jhiTranslate="entity.action.save">Save</span>
 	</button>
+	<div *ngIf="isLoading">
+		<br/>
+		<span class="throbber throbber-2x"></span>
+	</div>
 </div>
 

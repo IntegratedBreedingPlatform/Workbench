@@ -23,8 +23,8 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/crops/" + getUrlParameter("cropName") + "/programs/" + getUrlParameter("programUUID")
-		+ "/locations?favoriteLocations=false&locationTypes" ;
+	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
+		+ "/locations?programUUID=" + getUrlParameter("programUUID") + "&favoriteLocations=false&locationTypes";
 
 	return Promise.all([$.get({
 		dataType: "json",
@@ -216,6 +216,14 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		});
 	};
 
+	$scope.openGermplasmSelectorModal = function () {
+		$uibModal.open({
+			templateUrl: 'pages/BrAPI-Graphical-Queries/selectGermplasmModal.html',
+			controller: 'SelectGermplasmController',
+			windowClass : 'modal-very-huge'
+		});
+	};
+
 	// filters and modifies the response and then creates the root filter object
 	// and datatable
 	$scope.processGraphicalFilterBrAPIData = function (responseData, groupByAccession) {
@@ -225,6 +233,10 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			d3.entries(observeUnit).forEach(function (entry) {
 				if (entry.key != "observations") {
 					newObj[entry.key] = entry.value;
+					if (!entry.value && entry.key == 'entryType') {
+						// If entryType is null set to empty string
+						newObj[entry.key] = '';
+					}
 				}
 			});
 			observeUnit.observations.forEach(function (obs) {
@@ -340,6 +352,25 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 	}
 
 }]);
+
+mainApp.controller('SelectGermplasmController', ['$scope', '$q', '$uibModalInstance',
+	function ($scope, $q, $uibModalInstance) {
+
+		$scope.url = '/ibpworkbench/controller/jhipster#/germplasm-selector?restartApplication' +
+			'&cropName=' + getUrlParameter("cropName") +
+			'&programUUID=' + getUrlParameter("programUUID") +
+			'&selectMultiple=true';
+
+		window.onGidsSelected = function(gids) {
+			$("#germplasmDbIds").val(gids);
+			$uibModalInstance.close();
+		}
+
+		window.closeModal = function() {
+			$uibModalInstance.close(null);
+		}
+
+	}]);
 
 mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'filteredDataResult',
 	function ($scope, $q, $uibModalInstance, rCallService, filteredDataResult) {

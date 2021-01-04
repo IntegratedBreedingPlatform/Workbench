@@ -1,12 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BmsjHipsterTestModule } from '../../../test.module';
-import { ModalService } from '../../../../../../main/webapp/app/shared/modal/modal.service';
+import { AppModalService } from '../../../../../../main/webapp/app/shared/modal/app-modal.service';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { SampleContext } from '../../../../../../main/webapp/app/entities/sample/sample.context';
 import { SampleListService } from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import { SampleImportPlateMappingComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
 
 describe('Component Tests', () => {
 
@@ -14,8 +15,9 @@ describe('Component Tests', () => {
         let comp: SampleImportPlateMappingComponent;
         let fixture: ComponentFixture<SampleImportPlateMappingComponent>;
         let sampleListService: SampleListService;
-        let modalService: ModalService;
-        let alertService: JhiAlertService;
+        let modalService: AppModalService;
+        let jhiAlertService: JhiAlertService;
+        let alertService: AlertService;
         let eventManager: JhiEventManager;
         let sampleContext: SampleContext;
 
@@ -24,7 +26,7 @@ describe('Component Tests', () => {
                 imports: [BmsjHipsterTestModule],
                 declarations: [SampleImportPlateMappingComponent],
                 providers: [
-                    ModalService,
+                    AppModalService,
                     SampleContext,
                     SampleListService,
                     JhiEventManager
@@ -40,9 +42,10 @@ describe('Component Tests', () => {
         beforeEach(() => {
             fixture = TestBed.createComponent(SampleImportPlateMappingComponent);
             comp = fixture.componentInstance;
-            modalService = fixture.debugElement.injector.get(ModalService);
+            modalService = fixture.debugElement.injector.get(AppModalService);
             sampleContext = fixture.debugElement.injector.get(SampleContext);
-            alertService = fixture.debugElement.injector.get(JhiAlertService);
+            jhiAlertService = fixture.debugElement.injector.get(JhiAlertService);
+            alertService = fixture.debugElement.injector.get(AlertService);
             eventManager = fixture.debugElement.injector.get(JhiEventManager);
             sampleListService = fixture.debugElement.injector.get(SampleListService);
 
@@ -52,6 +55,8 @@ describe('Component Tests', () => {
             spyOn(modalService, 'open').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
             spyOn(alertService, 'success').and.callThrough();
+            spyOn(jhiAlertService, 'error').and.callThrough();
+            spyOn(jhiAlertService, 'success').and.callThrough();
         });
 
         it('should proceed with import', () => {

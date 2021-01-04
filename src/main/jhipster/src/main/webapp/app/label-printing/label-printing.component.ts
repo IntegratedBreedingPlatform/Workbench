@@ -1,19 +1,23 @@
-import { AfterViewInit, Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LabelsNeededSummary, LabelType, LabelPrintingData, PresetSetting, BarcodeSetting, FileConfiguration } from './label-printing.model';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting } from './label-printing.model';
+import { JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ModalService } from '../shared/modal/modal.service';
+import { AppModalService } from '../shared/modal/app-modal.service';
+import { AlertService } from '../shared/alert/alert.service';
+import { HelpService } from '../shared/service/help.service';
+import { HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 
 declare const $: any;
 
 @Component({
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
-    styleUrls: ['./label-printing.component.css']
+    // TODO migrate IBP-4093
+    styleUrls: ['../../content/css/global-bs3.css', './label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
     initComplete: boolean;
@@ -32,14 +36,16 @@ export class LabelPrintingComponent implements OnInit {
     presetSettings: PresetSetting[];
     modalTitle: string;
     modalMessage: string;
+    helpLink: string;
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
                 private service: LabelPrintingService,
                 private languageService: JhiLanguageService,
                 private fileDownloadHelper: FileDownloadHelper,
-                private alertService: JhiAlertService,
-                private modalService: ModalService) {
+                private alertService: AlertService,
+                private modalService: AppModalService,
+                private helpService: HelpService) {
     }
 
     proceed(): void {
@@ -88,6 +94,13 @@ export class LabelPrintingComponent implements OnInit {
 
         this.labelPrintingData.sizeOfLabelSheet = '1';
         this.labelPrintingData.numberOfRowsPerPage = 7;
+
+        // Get helplink url
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getHelpLink(HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS).toPromise().then((response) => {
+                this.helpLink = response.body;
+            }).catch((error) => {});
+        }
     }
 
     hasHeader() {
@@ -109,9 +122,9 @@ export class LabelPrintingComponent implements OnInit {
             const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
             const labelFieldsSelected = new Array();
 
-            presetSetting.selectedFields.forEach(function(idsSelected) {
+            presetSetting.selectedFields.forEach((idsSelected) => {
                 const fieldsSelected: LabelType[] = new Array();
-                labelTypeList.forEach(function(label: LabelType) {
+                labelTypeList.forEach((label: LabelType) => {
                     const labelType = new LabelType(label.title, label.key, []);
                     labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
                     fieldsSelected.push(labelType);
@@ -129,10 +142,10 @@ export class LabelPrintingComponent implements OnInit {
                 $('#rightSelectedFields').empty();
 
                 let listElem = '#leftSelectedFields';
-                labelFieldsSelected.forEach(function(fieldsList: LabelType[]) {
-                    fieldsList.forEach(function(labelsType: LabelType) {
+                labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
+                    fieldsList.forEach((labelsType: LabelType) => {
                         const key = labelsType.key;
-                        labelsType.fields.forEach(function(field) {
+                        labelsType.fields.forEach((field) => {
                             $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
                                 .attr('id', field.id).attr('data-label-type-key', key) //
                                 .text(field.name).appendTo(listElem);
@@ -269,7 +282,7 @@ export class LabelPrintingComponent implements OnInit {
         };
 
         this.proceed = function donwloadPrintingLabel(): void {
-            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any ) => {
+            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any) => {
                 const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
                 this.fileDownloadHelper.save(response.body, fileName);
 
@@ -403,7 +416,7 @@ export class LabelPrintingComponent implements OnInit {
     }
 }
 
-@Pipe({name: 'allLabels'})
+@Pipe({ name: 'allLabels' })
 export class AllLabelsPipe implements PipeTransform {
     transform(labelTypes: { fields: { id: number, name: string }[] }[]): any {
         if (!labelTypes) {

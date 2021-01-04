@@ -1,3 +1,80 @@
 {
-    "lot-creation.success": "{{param}} lots were created successfully"
+
+    "germplasm-manager": {
+        "title": "Germplasm Manager"
+    } ,
+    "lot-creation": {
+        "success": "{{param}} lots were created successfully",
+        "confirm.transactions.checkbox.label": "Confirm transactions on saving"
+    },
+    "germplasm-import-updates": {
+        "title": "Import germplasm updates",
+        "validation.file.empty" : "The specified file is empty.",
+        "validation.invalid.codes": "The following codes are not defined in the system: {{param}}",
+        "import.success" : "Germplasm updates are saved successfully."
+    },
+    "search-germplasm" : {
+        "column" : {
+            "gid" : "GID",
+            "groupId": "GROUPID",
+            "names": "NAMES",
+            "methodName": "BREEDING METHOD NAME",
+            "locationName": "LOCATION",
+            "availableBalance": "AVAILABLE",
+            "unit": "UNIT",
+            "lotCount": "LOTS",
+            "germplasmDate": "GERMPLASM DATE",
+            "methodCode": "METHOD CODE",
+            "methodNumber": "METHOD NUMBER",
+            "methodGroup": "METHOD GROUP",
+            "germplasmPeferredName": "PREFERRED NAME",
+            "germplasmPeferredId": "PREFERRED ID",
+            "groupSourceGID": "GROUP SOURCE GID",
+            "groupSourcePreferredName": "GROUP SOURCE PREFERRED NAME",
+            "immediateSourceGID": "IMMEDIATE SOURCE GID",
+            "immediateSourcePreferredName": "IMMEDIATE SOURCE PREFERRED NAME",
+            "femaleParentGID": "FEMALE PARENT GID",
+            "femaleParentPreferredName": "FEMALE PARENT PREFERRED NAME",
+            "maleParentGID": "MALE PARENT GID",
+            "maleParentPreferredName": "MALE PARENT PREFERRED NAME",
+            "pedigreeString": "CROSS"
+        },
+        "performance-warning": {
+            "title": "Warning",
+            "text": "Searching using the following filter(s) may take a long time. Do you want to proceed?"
+        },
+        "actions": {
+            "create-list": "Create new list",
+            "add-to-list": "Add to existing list"
+        },
+        "included-gids": "(+ included germplasm)"
+    },
+    "germplasm-list-creation": {
+        "header": "Save list",
+        "folder-section-title": "List location",
+        "details-section-title": "List details",
+        "name": "List name",
+        "owner": "List owner",
+        "description": "Description",
+        "type": "List type",
+        "date": "List date",
+        "notes": "Notes",
+        "success": "Germplasm list saved successfully!"
+    },
+    "germplasm-list-add": {
+        "header": "Add entries to list",
+        "add-action": "Add",
+        "add-question": "Are you sure you want to add entries to list {{ name }}?",
+        "success": "Germplasm entries added to list successfully!",
+        "error": {
+            "no-list-selected": "Please, select a list",
+            "folder-selected": "You cannot select a folder. Please, select a list"
+        }
+    },
+    "breeding-method": {
+        "title": "Breeding Method"
+    },
+    "breeding-location": {
+        "title": "Breeding Location"
+    }
 }

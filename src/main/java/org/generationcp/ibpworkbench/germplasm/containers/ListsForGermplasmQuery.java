@@ -48,7 +48,7 @@ public class ListsForGermplasmQuery implements Query {
 	public static final Object GERMPLASMLIST_DESCRIPTION = "description";
 
 	private static final String MANAGER_GERMPLASM = "/ibpworkbench/bm/list-manager?restartApplication&lists=";
-	private static final String PARENT_WINDOW = "_parent";
+	private static final String WORKBENCHMAINVIEW_IFRAME_NAME = "PID_Sbrowser";
 
 	private final GermplasmListManager dataManager;
 	private final Integer gid;
@@ -101,7 +101,7 @@ public class ListsForGermplasmQuery implements Query {
 				item.addItemProperty(ListsForGermplasmQuery.GERMPLASMLIST_ID, new ObjectProperty<String>(list.getId().toString()));
 
 				final ExternalResource urlToOpenGermplasmList = new ExternalResource(MANAGER_GERMPLASM + list.getId());
-				final LinkButton linkListButton = new LinkButton(urlToOpenGermplasmList, list.getName(), PARENT_WINDOW);
+				final LinkButton linkListButton = new LinkButton(urlToOpenGermplasmList, list.getName(), WORKBENCHMAINVIEW_IFRAME_NAME);
 				linkListButton.setDebugId("linkManageListButton");
 				linkListButton.addStyleName(BaseTheme.BUTTON_LINK);
 				try {
@@ -127,7 +127,7 @@ public class ListsForGermplasmQuery implements Query {
 		}
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_GERMPLASM','ROLE_BREEDING_ACTIVITIES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM_LISTS','ROLE_LISTS')")
 	private void availableLinkToManageGermplasm(final LinkButton linkListButton) {
 		linkListButton.setEnabled(true);
 	}

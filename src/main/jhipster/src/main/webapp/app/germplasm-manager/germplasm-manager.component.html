@@ -1,0 +1,19 @@
+<section>
+    <header>
+        <h1> Germplasm Manager <a target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a> </h1>
+        <label>
+        </label>
+    </header>
+    <nav>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" [routerLink]="['germplasm-search']"
+                   [routerLinkActive]="['active']">Germplasm Search</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="tab-content p-3">
+        <router-outlet></router-outlet>
+		<jhi-alert></jhi-alert>
+    </div>
+</section>

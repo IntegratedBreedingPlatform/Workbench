@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ModalService} from '../../shared/modal/modal.service';
+import {AppModalService} from '../../shared/modal/app-modal.service';
 import {SampleContext} from './sample.context';
 import {JhiAlertService, JhiEventManager} from 'ng-jhipster';
 import {SampleListService} from './sample-list.service';
+import { AlertService } from '../../shared/alert/alert.service';
 
 @Component({
     selector: 'jhi-sample-import-plate-mapping',
@@ -22,8 +23,8 @@ export class SampleImportPlateMappingComponent {
     @Output() onClose = new EventEmitter();
     @Output() onBack = new EventEmitter();
 
-    constructor(private modalService: ModalService,
-                private alertService: JhiAlertService,
+    constructor(private modalService: AppModalService,
+                private alertService: AlertService,
                 private sampleContext: SampleContext,
                 private sampleListService: SampleListService,
                 private eventManager: JhiEventManager) {

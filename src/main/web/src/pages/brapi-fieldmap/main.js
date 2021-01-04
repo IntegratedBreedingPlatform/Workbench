@@ -3,40 +3,122 @@ TODO Move to jhipster folder
  - use webpack gulp integration to copy libs (see gulp/tasks/lib.js)
  */
 
-const instanceId = getUrlParameter('instanceId'),
-	cropName = getUrlParameter('cropName'),
-	hasLayout = getUrlParameter('hasLayout') === "true",
-	brapi_endpoint = '/bmsapi/' + cropName + '/brapi/v2';
+(function () {
+	'use strict';
 
-const fieldMap = new BrAPIFieldmap("#map", brapi_endpoint, {
-	brapi_auth: JSON.parse(localStorage['bms.xAuthToken']).token
-});
+	var fieldMapApp = angular.module('fieldMapApp', ['ngToast', 'ui.bootstrap']);
 
-fieldMap.setLocation(instanceId);
+	fieldMapApp.config(['ngToastProvider', function (ngToastProvider) {
+		ngToastProvider.configure({
+			horizontalPosition: 'right',
+			animation: 'fade'
+		});
+	}]);
 
-if (hasLayout) {
-	load();
-} else {
-	$('#load').show();
-}
+	fieldMapApp.controller('MainController', ['$scope', 'ngToast', '$uibModal', '$http', '$timeout' ,function ($scope, ngToast, $uibModal, $http, $timeout) {
 
-// Functions
+		const instanceId = getUrlParameter('instanceId'),
+			cropName = getUrlParameter('cropName'),
+			hasLayout = getUrlParameter('hasLayout') === "true",
+			brapi_endpoint = '/bmsapi/' + cropName + '/brapi/v2';
 
-function load() {
-	fieldMap.opts.plotLength = d3.select('#length').node().value;
-	fieldMap.opts.plotWidth = d3.select('#width').node().value;
-	fieldMap.load(instanceId);
-}
+		const fieldMap = new BrAPIFieldmap("#map", brapi_endpoint, {
+			brapi_auth: JSON.parse(localStorage['bms.xAuthToken']).token
+		});
 
-function update() {
-	// TODO bootstrap modal
-	if (hasLayout) {
-		const proceed = confirm("You are going to override the existing layout");
-		if (!proceed) return;
-	}
+		$scope.flags = {
+			isUpdating: false,
+			isEditMode: hasLayout
+		}
+		$scope.length = '';
+		$scope.width = '';
 
-	fieldMap.update().then(
-		// TODO toast
-		(resp) => alert(resp),
-		(resp) => alert(resp));
-}
+		$scope.init = function () {
+			fieldMap.setLocation(instanceId);
+			if ($scope.flags.isEditMode) {
+				$scope.load();
+				fieldMap.removeControls();
+			}
+		};
+
+
+		$scope.load = function () {
+			fieldMap.opts.plotLength = $scope.length;
+			fieldMap.opts.plotWidth = $scope.width;
+			fieldMap.load(instanceId);
+		}
+
+		$scope.update = function () {
+			if (hasLayout) {
+				var modalInstance = $scope.openConfirmModal('You are going to override the existing layout. Do you like to proceed?');
+				modalInstance.result.then((isOK) => {
+					if (isOK) {
+						$scope._update();
+					}
+				});
+			} else {
+				$scope._update();
+			}
+		};
+
+		$scope._update = function () {
+			$scope.flags.isUpdating = true;
+			fieldMap.update().then(
+				(resp) => {
+					$timeout(function (){
+						ngToast.success({
+							content: resp
+						});
+						$scope.flags.isUpdating = false;
+						$scope.flags.isEditMode = true;
+						fieldMap.removeControls();
+					});
+				},
+				(resp) => {
+					$timeout(function (){
+						ngToast.danger({
+							content: resp
+						});
+						$scope.flags.isUpdating = false;
+					});
+				});
+		}
+
+		$scope.openConfirmModal = function (message) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				template: '<div class="modal-body">\n' +
+					'    <div class="row">\n' +
+					'        <div class="col-xs-12 col-md-12">\n' +
+					'            <label class="control-label">{{text}}</label>\n' +
+					'        </div>\n' +
+					'    </div>\n' +
+					'</div>\n' +
+					'<div class="modal-footer">\n' +
+					'    <button class="btn btn-default" ng-click="cancel()">Cancel</button>\n' +
+					'    <button class="btn btn-primary" ng-click="confirm()">OK</button>\n' +
+					'</div>',
+				controller: function ($scope, $uibModalInstance) {
+					$scope.text = message;
+					$scope.confirm = function () {
+						$uibModalInstance.close(true);
+					};
+
+					$scope.cancel = function () {
+						$uibModalInstance.close(false);
+					};
+				}
+			});
+
+			return modalInstance;
+		}
+
+
+		$scope.init();
+
+	}]);
+
+})();
+
+
+

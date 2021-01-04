@@ -1,11 +1,12 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {BmsjHipsterTestModule} from '../../../test.module';
-import {ModalService} from '../../../../../../main/webapp/app/shared/modal/modal.service';
+import {AppModalService} from '../../../../../../main/webapp/app/shared/modal/app-modal.service';
 import {FileDownloadHelper} from '../../../../../../main/webapp/app/entities/sample/file-download.helper';
 import {ExcelService} from '../../../../../../main/webapp/app/entities/sample/excel.service';
 import {SampleImportPlateComponent} from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
 import {JhiAlertService} from 'ng-jhipster';
 import {ElementRef} from '@angular/core';
+import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
 
 describe('Component Tests', () => {
 
@@ -13,8 +14,9 @@ describe('Component Tests', () => {
         let comp: SampleImportPlateComponent;
         let fixture: ComponentFixture<SampleImportPlateComponent>;
         let excelService: ExcelService;
-        let modalService: ModalService;
-        let alertService: JhiAlertService;
+        let modalService: AppModalService;
+        let jhiAlertService: JhiAlertService;
+        let alertService: AlertService;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -22,7 +24,7 @@ describe('Component Tests', () => {
                 declarations: [SampleImportPlateComponent],
                 providers: [
                     FileDownloadHelper,
-                    ModalService,
+                    AppModalService,
                     ExcelService
                 ]
             }).overrideComponent(SampleImportPlateComponent, {
@@ -36,13 +38,15 @@ describe('Component Tests', () => {
         beforeEach(() => {
             fixture = TestBed.createComponent(SampleImportPlateComponent);
             comp = fixture.componentInstance;
-            modalService = fixture.debugElement.injector.get(ModalService);
+            modalService = fixture.debugElement.injector.get(AppModalService);
             excelService = fixture.debugElement.injector.get(ExcelService);
-            alertService = fixture.debugElement.injector.get(JhiAlertService);
+            jhiAlertService = fixture.debugElement.injector.get(JhiAlertService);
+            alertService = fixture.debugElement.injector.get(AlertService);
 
             spyOn(modalService, 'open').and.callThrough();
             spyOn(modalService, 'close').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
+            spyOn(jhiAlertService, 'error').and.callThrough();
 
             comp.fileUpload = new ElementRef({ value : '', accept: '' });
         });

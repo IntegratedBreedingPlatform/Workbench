@@ -125,7 +125,7 @@ public class SaveListAsDialogTest {
 	@Test
 	public void testGetCurrentParsedListDateForInvalidDateFormat() {
 		final Calendar currentDate = DateUtil.getCalendarInstance();
-		final String currentDateString = String.valueOf(currentDate.get(Calendar.YEAR))
+		final String currentDateString = currentDate.get(Calendar.YEAR)
 				+ this.appendZeroForSingleDigitMonthOrDay(currentDate.get(Calendar.MONTH) + 1)
 				+ this.appendZeroForSingleDigitMonthOrDay(currentDate.get(Calendar.DAY_OF_MONTH));
 		final Long expectedDate = Long.parseLong(currentDateString);
@@ -137,7 +137,7 @@ public class SaveListAsDialogTest {
 	}
 
 	private String appendZeroForSingleDigitMonthOrDay(final int digit) {
-		return digit <= 9 ? String.valueOf("0" + digit) : String.valueOf(digit);
+		return digit <= 9 ? "0" + digit : String.valueOf(digit);
 	}
 
 	@Test
@@ -466,7 +466,6 @@ public class SaveListAsDialogTest {
 
 		final GermplasmList germplasmListToSave = this.dialog.getGermplasmListToSave();
 
-		Mockito.verify(this.source).setCurrentlySavedGermplasmList(germplasmListToSave);
 		Assert.assertEquals(selectedGermplasmListParent, germplasmListToSave.getParent());
 
 	}

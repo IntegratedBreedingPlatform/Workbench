@@ -1,0 +1,66 @@
+<div class="container">
+	<div class="modal-header">
+		<h4 class="modal-title font-weight-bold">
+			<span jhiTranslate="breeding-location.title"></span>
+		</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+				(click)="clear()">&times;
+		</button>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm" class="form-horizontal">
+			<div class="form-group row">
+				<label for="locationName" class="col-sm-4 control-label control-label-left">Location Name</label>
+				<input type="text" class="form-control col-sm-6" name="locationName" [(ngModel)]="breedingLocation.name" [disabled]="!editable"/>
+			</div>
+			<div class="form-group row">
+				<label for="abbreviation" class="col-sm-4 control-label control-label-left">Code</label>
+				<input type="text" class="form-control col-sm-6" name="abbreviation" [(ngModel)]="breedingLocation.abbreviation" [disabled]="!editable"/>
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-4 control-label control-label-left">Location Type</label>
+				<input *ngIf="!editable" type="text" class="form-control col-sm-6" name="type" [value]="selectedLocationType?.name" disabled/>
+				<select *ngIf="editable" class="form-control col-sm-6" name="type" [(ngModel)]="breedingLocation.type">
+					<option *ngFor="let locationType of locationTypes" [value]="locationType.id">
+						<label>{{locationType.name}}</label>
+					</option>
+				</select>
+			</div>
+			<div class="form-group row">
+				<label for="country" class="col-sm-4 control-label control-label-left">Country</label>
+				<input *ngIf="!editable" type="text" class="form-control col-sm-6" name="country" [value]="selectedCountry?.name" disabled/>
+				<select *ngIf="editable" class="form-control col-sm-6" name="country" [(ngModel)]="breedingLocation.countryId">
+					<option *ngFor="let country of countries" [value]="country.id">
+						<label>{{country.name}}</label>
+					</option>
+				</select>
+			</div>
+			<div class="form-group row">
+				<label for="province" class="col-sm-4 control-label control-label-left" readonly>Province</label>
+				<input *ngIf="!editable" type="text" class="form-control col-sm-6" name="province" [value]="selectedProvince?.name" disabled/>
+				<select *ngIf="editable" class="form-control col-sm-6" name="province" [(ngModel)]="breedingLocation.provinceId">
+					<option *ngFor="let province of provinces" [value]="province.id">
+						<label>{{province.name}}</label>
+					</option>
+				</select>
+			</div>
+			<div class="form-group row">
+				<label for="abbreviation" class="col-sm-4 control-label control-label-left">Geographical Details</label>
+				<input type="text" class="form-control col-sm-2 add_right_margin-10" name="latitude" [(ngModel)]="breedingLocation.latitude" [disabled]="!editable"/>
+				<input type="text" class="form-control col-sm-2 add_right_margin-10" name="longitude" [(ngModel)]="breedingLocation.longitude" [disabled]="!editable"/>
+				<input type="text" class="form-control col-sm-2 add_right_margin-10" name="altitude" [(ngModel)]="breedingLocation.altitude" [disabled]="!editable"/>
+			</div>
+			<div class="row">
+				<div class="col-sm-4"></div>
+				<div class="col-sm-2"><em>Latitude</em></div>
+				<div class="col-sm-2"><em>Longitude</em></div>
+				<div class="col-sm-2"><em>Altitude</em></div>
+			</div>
+			<br/>
+			<div class="row">
+				<div class="col-sm-4"></div>
+				<div class="col-sm-6"><input type="checkbox" [(ngModel)]="accessible" [checked]="accessible" disabled/> Accessible from all crop programs</div>
+			</div>
+		</form>
+	</div>
+</div>

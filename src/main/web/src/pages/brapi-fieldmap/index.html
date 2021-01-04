@@ -2,36 +2,104 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 	<title>BrAPI GeoJSON Editor</title>
 	<link th:href="@{/controller/static/lib/bootstrap-3.3.7.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/leaflet/dist/leaflet.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/leaflet-search/dist/leaflet-search.min.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/ngToast/ngToast.min.css}" rel="stylesheet"/>
+	<link th:href="@{/controller/static/lib/ngToast/ngToast-animations.min.css}" rel="stylesheet"/>
+	<style type="text/css">
+        /* ==========================================================================
+		Loading spinner
+		========================================================================== */
+        .throbber {
+            width: 18px;
+            width: 1.5rem;
+            height: 18px;
+            height: 1.5rem;
+            border-radius: .75rem;
+            box-sizing: border-box;
+            border: 2px solid rgba(27,149,178,.2);
+            border-top-color: #1b95b2;
+            -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
+            transition: visibility .5s ease-in,opacity .5s ease-in;
+            visibility: visible;
+            display: inline-block;
+        }
+
+        .throbber-2x {
+            width: 30px;
+            width: 2.5rem;
+            height: 30px;
+            height: 2.5rem;
+            border-radius: 1.25rem;
+        }
+
+        @-webkit-keyframes spin {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+	</style>
+	<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/leaflet/dist/leaflet.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/leaflet-path-transform/dist/L.Path.Transform.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/leaflet-search/dist/leaflet-search.src.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/%40turf/turf/turf.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/%40solgenomics/brapijs/build/BrAPI.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-sanitize.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/angular-1.4.7/angular-animate.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/angular-1.4.7/ui-bootstrap-tpls-2.5.0.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/ngToast.min.js}" charset="utf-8"></script>
+	<script th:src="@{/controller/static/js/lib/%40solgenomics/brapi-fieldmap/dist/BrAPIFieldmap.js}" charset="utf-8"></script>
 </head>
-<body>
+<body ng-app="fieldMapApp" ng-controller="MainController">
+<toast></toast>
 <div style="margin:1em" class="container-fluid">
 	<div class="row">
-		<div class="col-md-12 col-xs-12">
-			Select an area over the field to load the layout. Plot size will be determined based on this area and the plot layout (x,y coordinates)
+		<div class="col-md-12 col-xs-12" ng-show="flags.isEditMode">
+			Click on the area to move and resize. Right-click on the individual plot area to edit its size.
 		</div>
-		<div class="col-md-12 col-xs-12">
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12" ng-hide="flags.isEditMode">
+			Select an area over the field to load the layout. You can use the polygon or rectangle tool to draw an area. Plot size will be determined based on this area and the plot layout (x,y coordinates)
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12" ng-hide="flags.isEditMode">
 			(Optional) override plot size (meters):
 		</div>
 	</div>
-	<form class="form-inline" style="padding:10px;">
+	<form class="form-inline" style="padding:10px;" ng-hide="flags.isEditMode">
 		<div class="form-group">
 			<label for="width">width</label>
-			<input type="text" class="form-control" id="width" value="">
+			<input type="text" class="form-control" id="width" ng-model="width">
 		</div>
 		<div class="form-group">
 			<label for="length">length</label>
-			<input type="text" class="form-control" id="length" value="">
+			<input type="text" class="form-control" id="length" ng-model="length">
 		</div>
 	</form>
 	<form class="form-inline" style="padding:10px;">
-		<a id="load" style="display: none" class="btn btn-default" onclick="load()">Load</a>
-		<a class="btn btn-default" onclick="update()">Save</a>
+		<a class="btn btn-default" ng-click="load()" ng-hide="flags.isEditMode">Load</a>
+		<a class="btn btn-default" ng-click="update()" ng-disabled="flags.isUpdating">Save</a>
+		<span class="throbber throbber-2x" ng-if="flags.isUpdating" style="vertical-align: middle;margin-left: 10px;"></span>
 	</form>
 	<div class="row">
 		<div class="col-md-12 col-xs-12">
@@ -40,17 +108,6 @@
 		</div>
 	</div>
 </div>
-<script th:src="@{/controller/static/js/lib/jquery-3.2.1.min.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/d3-4.12.0.min.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/bootstrap-3.3.7.min.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/get-url-parameter.js}" charset="utf-8"></script>
-
-<script th:src="@{/controller/static/js/lib/leaflet/dist/leaflet.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/leaflet-path-transform/dist/L.Path.Transform.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/leaflet-search/dist/leaflet-search.src.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/%40turf/turf/turf.js}" charset="utf-8"></script>
-<script th:src="@{/controller/static/js/lib/%40solgenomics/brapijs/build/BrAPI.js}" charset="utf-8"></script>
-
-<script th:src="@{/controller/static/js/lib/%40solgenomics/brapi-fieldmap/dist/BrAPIFieldmap.js}" charset="utf-8"></script>
 <script th:src="@{/controller/pages/brapi-fieldmap/main.js}" charset="utf-8"></script>
 </body>
+

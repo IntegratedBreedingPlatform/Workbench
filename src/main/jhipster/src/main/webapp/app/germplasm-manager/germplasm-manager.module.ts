@@ -3,6 +3,14 @@ import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.comp
 import { RouterModule } from '@angular/router';
 import { GERMPLASM_MANAGER_ROUTES } from './germplasm-manager.route';
 import { BmsjHipsterSharedModule } from '../shared';
+import { GermplasmSearchComponent } from './germplasm-search.component';
+import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
+import { GermplasmManagerComponent } from './germplasm-manager.component';
+import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
+import { GermplasmListCreationComponent, GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation.component';
+import { GermplasmManagerContext } from './germplasm-manager.context';
+import { GermplasmImportUpdateDialogComponent, GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
+import { GermplasmListAddComponent, GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
 
 @NgModule({
     imports: [
@@ -10,10 +18,34 @@ import { BmsjHipsterSharedModule } from '../shared';
         RouterModule.forChild(GERMPLASM_MANAGER_ROUTES)
     ],
     declarations: [
-        LotCreationDialogComponent
+        LotCreationDialogComponent,
+        GermplasmManagerComponent,
+        GermplasmSearchComponent,
+        GermplasmListCreationComponent,
+        GermplasmListCreationPopupComponent,
+        GermplasmSelectorComponent,
+        GermplasmImportUpdateDialogComponent,
+        GermplasmImportUpdatePopupComponent,
+        GermplasmSelectorComponent,
+        GermplasmListAddComponent,
+        GermplasmListAddPopupComponent
     ],
     entryComponents: [
-        LotCreationDialogComponent
+        LotCreationDialogComponent,
+        GermplasmManagerComponent,
+        GermplasmSearchComponent,
+        GermplasmListCreationComponent,
+        GermplasmListCreationPopupComponent,
+        GermplasmSelectorComponent,
+        GermplasmImportUpdateDialogComponent,
+        GermplasmImportUpdatePopupComponent,
+        GermplasmSelectorComponent,
+        GermplasmListAddComponent,
+        GermplasmListAddPopupComponent
+    ],
+    providers: [
+        GermplasmSearchResolvePagingParams,
+        GermplasmManagerContext
     ]
 })
 export class GermplasmManagerModule {

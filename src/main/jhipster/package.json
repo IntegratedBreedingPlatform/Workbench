@@ -26,7 +26,7 @@
     "ngx-infinite-scroll": "6.0.0",
     "ngx-webstorage": "2.0.1",
     "primeicons": "1.0.0",
-    "primeng": "6.0.0",
+    "primeng": "7.0.0",
     "reflect-metadata": "0.1.10",
     "rxjs": "6.3.1",
     "rxjs-compat": "6.1.0",
@@ -91,6 +91,8 @@
     "tslint-config-prettier": "1.9.0",
     "tslint-loader": "3.6.0",
     "typescript": "2.7.2",
+    "sass-loader": "6.0.6",
+    "node-sass": "4.5.3",
     "postcss-loader": "2.1.1",
     "xml2js": "0.4.17",
     "uglifyjs-webpack-plugin": "1.1.5",
@@ -103,8 +105,7 @@
     "web-app-manifest-loader": "0.1.1",
     "workbox-webpack-plugin": "3.0.0-beta.1",
     "write-file-webpack-plugin": "4.1.0",
-    "puppeteer": "^1.20.0",
-    "xml2js": "0.4.17"
+    "puppeteer": "^1.20.0"
   },
   "engines": {
     "node": ">=8.11.3",

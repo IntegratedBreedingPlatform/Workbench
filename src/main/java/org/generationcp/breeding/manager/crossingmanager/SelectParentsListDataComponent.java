@@ -5,16 +5,11 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.Action;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
+import liquibase.util.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -28,14 +23,15 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.constant.ColumnLabels;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
-import org.generationcp.middleware.service.api.study.StudyGermplasmDto;
-import org.generationcp.middleware.service.api.study.StudyGermplasmService;
+import org.generationcp.middleware.service.api.study.StudyEntryDto;
+import org.generationcp.middleware.service.api.study.StudyEntryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -51,6 +47,7 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Configurable
 public class SelectParentsListDataComponent extends VerticalLayout
@@ -60,7 +57,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private PlatformTransactionManager transactionManager;
 
 	@Autowired
-	private StudyGermplasmService studyGermplasmListService;
+	private StudyEntryService studyEntryService;
 
 
 	private final class ListDataTableActionHandler implements Action.Handler {
@@ -321,7 +318,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		try {
 
 			if (this.studyId != null) {
-				this.count = this.studyGermplasmListService.countStudyGermplasm(this.studyId);
+				this.count = this.studyEntryService.countStudyEntries(this.studyId);
 			} else {
 				this.germplasmList = this.germplasmListManager.getGermplasmListById(this.germplasmListId);
 				this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
@@ -338,17 +335,19 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			// If Study is not empty, that means the germplasm list must be retrieved from Stock table.
 			if (this.studyId != null) {
-				final List<StudyGermplasmDto> studyGermplasmDtoList = this.studyGermplasmListService.getGermplasm(studyId);
-				for (StudyGermplasmDto entry : studyGermplasmDtoList) {
-					this.addGermplasmItem(entry.getGermplasmId(), entry.getDesignation(), entry.getEntryNumber(), entry.getCross(),
-						entry.getEntryCode(), entry.getSeedSource(), entry.getGroupId());
+				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(studyId);
+				for (final StudyEntryDto entry : studyEntryDtoList) {
+					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
+						entry.getEntryCode(), entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
-				for (GermplasmListData entry : listEntries) {
-					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(), entry.getGroupName(), entry.getEntryCode(),
-						entry.getSeedSource(), entry.getGroupId());
+				for (final GermplasmListData entry : listEntries) {
+					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(),
+							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), entry.getEntryCode(),
+							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
+							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}
 			}
 
@@ -359,8 +358,8 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		}
 	}
 
-	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
-		final String entryCode, final String seedSource, final Integer groupId) {
+	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final Optional<String> groupName,
+		final String entryCode, final Optional<String> seedSource, final Optional<String> groupId) {
 
 		final String gidString = String.format("%s", gid);
 		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
@@ -396,11 +395,11 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
 		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
 		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
-		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName);
+		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName.orElse(""));
 		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode);
 		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
-		newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(seedSource);
-		final String groupIdDisplayValue = groupId == null || groupId.intValue() == 0 ? "-" : groupId.toString();
+		newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(seedSource.orElse(""));
+		final String groupIdDisplayValue = groupId.orElse("-");
 		newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
 
 	}

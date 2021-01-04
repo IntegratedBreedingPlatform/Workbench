@@ -1,8 +1,9 @@
 <div>
 	<div class="row page-header">
 		<div class="col-xs-12 col-md-12">
-			<h1 jhiTranslate="label-printing.title">
-				EXPORT DATA / LABEL PRINTING <a class="bms-fa-question-circle fbk-help" data-help-link="MAKE_LABELS"></a>
+			<h1>
+				<span jhiTranslate="label-printing.title">EXPORT DATA / LABEL PRINTING</span>
+				<a href="{{helpLink}}" target="_blank" class="om-help-link bms-fa-question-circle"></a>
 			</h1>
 		</div>
 	</div>
@@ -428,9 +429,9 @@
 	</div>
 </div>
 <ng-template #loading>
-	<div style=" display: flex; justify-content: center; align-items: center; ">
+	<div style=" display: flex; justify-content: center; align-items: center; margin: 20px ">
 		<span class="throbber throbber-2x"></span>
 	</div>
 </ng-template>
 <jhi-alert></jhi-alert>
-<jhi-modal-confirm [modalTitle]="modalTitle" [modalMessage]="modalMessage" (onProceed)="proceed()"></jhi-modal-confirm>
+<jhi-app-modal-confirm [modalTitle]="modalTitle" [modalMessage]="modalMessage" (onProceed)="proceed()"></jhi-app-modal-confirm>

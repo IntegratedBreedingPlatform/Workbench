@@ -25,7 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public class StudyButtonRenderer {
 
 	protected static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
-	protected static final String PARENT_WINDOW = "_parent";
+	protected static final String WORKBENCHMAINVIEW_IFRAME_NAME = "PID_Sbrowser";
 	
 	@Autowired
 	private StudyPermissionValidator studyPermissionValidator;
@@ -45,7 +45,7 @@ public class StudyButtonRenderer {
 
 	public Button renderStudyButton() {
 		final ExternalResource urlToOpenStudy = getURLStudy();
-		Button studyButton = new LinkButton(urlToOpenStudy, study.getName(), PARENT_WINDOW);
+		Button studyButton = new LinkButton(urlToOpenStudy, study.getName(), WORKBENCHMAINVIEW_IFRAME_NAME);
 
 		try {
 			availableLinkToStudy(studyButton);
@@ -67,7 +67,7 @@ public class StudyButtonRenderer {
 		return studyButton;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_BREEDING_ACTIVITIES')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGE_STUDIES','ROLE_STUDIES')")
 	private void availableLinkToStudy(final Button studyButton) {
 		studyButton.setEnabled(true);
 	}

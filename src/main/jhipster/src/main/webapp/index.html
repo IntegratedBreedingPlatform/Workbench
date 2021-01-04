@@ -13,15 +13,47 @@
 	<link rel="manifest" href="manifest.webapp" />
 
 	<style type="text/css">
-		.throbber {
-			margin: 20px;
+
+        /* ==========================================================================
+		Loading spinner
+		========================================================================== */
+        .throbber {
+            width: 18px;
+            width: 1.5rem;
+            height: 18px;
+            height: 1.5rem;
+            border-radius: .75rem;
+            box-sizing: border-box;
+            border: 2px solid rgba(27, 149, 178, .2);
+            border-top-color: #1b95b2;
+            -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
+            transition: visibility .5s ease-in, opacity .5s ease-in;
+            visibility: visible;
+            display: inline-block;
+        }
+
+		.throbber-btn {
+            width: 1rem;
+            height: 1rem;
+            vertical-align: middle;
+            margin-right: 5px;
 		}
+
+        @-webkit-keyframes spin {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
 	</style>
-
-	<!-- TODO Remove Fieldbook dependencies -->
-	<link href="/Fieldbook/static/css/lib/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen"/>
-	<link href="/Fieldbook/static/css/fieldbook.css" rel="stylesheet"/>
-
 
 	<link th:href="@{/controller/static/css/access-denied.css}" rel="stylesheet"/>
 	<link th:href="@{/controller/static/lib/font-awesome-4.2.0/css/font-awesome.css}" rel="stylesheet"/>

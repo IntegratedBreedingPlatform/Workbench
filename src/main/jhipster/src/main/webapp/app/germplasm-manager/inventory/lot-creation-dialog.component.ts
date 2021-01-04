@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../shared/inventory/model/lot.model';
@@ -14,8 +14,11 @@ import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
 
 @Component({
+    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-lot-creation-dialog',
-    templateUrl: './lot-creation-dialog.component.html'
+    templateUrl: './lot-creation-dialog.component.html',
+    // TODO migrate IBP-4093
+    styleUrls: ['../../../content/css/global-bs3.css' ]
 })
 export class LotCreationDialogComponent implements OnInit {
 
@@ -39,6 +42,9 @@ export class LotCreationDialogComponent implements OnInit {
     initialDepositRequired = false;
     storageLocIdSelected;
     favoriteLocIdSelected;
+
+    isConfirmDeposit = false;
+    isLoading = false;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
@@ -88,18 +94,21 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     save() {
+        this.isLoading = true;
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
         const lotGeneratorBatchRequest = {
-            searchComposite: <SearchComposite>({
+            searchComposite: <SearchComposite<any, string>>({
                 itemIds: null,
                 searchRequest: this.searchRequestId
             }),
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
-            }, this.lot)
+            }, this.lot),
+            studyId: this.studyId
         };
-        this.lotService.createLots(lotGeneratorBatchRequest).subscribe(
+        this.lotService.createLots(lotGeneratorBatchRequest)
+            .subscribe(
             (res) => this.createDeposit(res),
             (res) => this.onError(res));
     }
@@ -107,7 +116,7 @@ export class LotCreationDialogComponent implements OnInit {
     private createDeposit(lotUUIDs: string[]) {
         if (this.initialDepositRequired) {
             const lotDepositRequest = {
-                selectedLots: <SearchComposite>({ searchRequest: null, itemIds: lotUUIDs }),
+                selectedLots: <SearchComposite<any, string>>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
                 depositsPerUnit: {},
                 sourceStudyId: this.studyId
@@ -115,27 +124,34 @@ export class LotCreationDialogComponent implements OnInit {
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
                 lotDepositRequest.depositsPerUnit[lotUnit[0].name] = this.deposit.amount;
-                this.transactionService.createConfirmedDeposits(lotDepositRequest).subscribe(
-                    (res) => this.onSaveSuccess(lotUUIDs),
-                    (res) => this.onError(res));
+                if (this.isConfirmDeposit) {
+                    this.transactionService.createConfirmedDeposits(lotDepositRequest).subscribe(
+                        (res) => this.onSaveSuccess(lotUUIDs),
+                        (res) => this.onError(res));
+                } else {
+                    this.transactionService.createPendingDeposits(lotDepositRequest).subscribe(
+                        (res) => this.onSaveSuccess(lotUUIDs),
+                        (res) => this.onError(res));
+                }
             });
         } else {
             this.onSaveSuccess(lotUUIDs);
         }
-
     }
 
     private onSaveSuccess(lotUUIDs: string[]) {
-        this.jhiAlertService.addAlert({msg: 'lot-creation.success', type: 'success', toast: false, params: {param: lotUUIDs.length}}, null);
+        this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
+        this.isLoading = false;
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: {param: msg} }, null);
+            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
         } else {
-            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false}, null);
+            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
         }
+        this.isLoading = false;
     }
 }

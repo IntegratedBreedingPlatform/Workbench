@@ -1,0 +1,101 @@
+/* Datepicker popup icon */
+
+button.calendar, button.calendar:active {
+    width: 2.75rem;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAcCAYAAAAEN20fAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEUSURBVEiJ7ZQxToVAEIY/YCHGxN6XGOIpnpaEsBSeQC9ArZbm9TZ6ADyBNzAhQGGl8Riv4BLAWAgmkpBYkH1b8FWT2WK/zJ8ZJ4qiI6XUI3ANnGKWBnht2/ZBDRK3hgVGNsCd7/ui+JkEIrKtqurLpEWaphd933+IyI3LEIdpCYCiKD6HcuOa/nwOa0ScJEnk0BJg0UTUWJRl6RxCYEzEmomsIlPU3IPW+grIAbquy+q6fluy/28RIBeRMwDXdXMgXLj/B2uimRXpui4D9sBeRLKl+1N+L+t6RwbWrZliTTTr1oxYtzVWiTQAcRxvTX+eJMnlUDaO1vpZRO5NS0x48sIwfPc87xg4B04MCzQi8hIEwe4bl1DnFMCN2zsAAAAASUVORK5CYII=') !important;
+    background-repeat: no-repeat;
+    background-size: 23px;
+    background-position: center;
+}
+
+/* Filter attributes */
+.filter-wrapper,
+.keyword-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.filter-wrapper {
+    min-height: 50px;
+    position: relative;
+}
+
+.keyword-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+#keyword {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    transition: border 0.5s ease-in-out
+}
+
+#keyword:focus {
+    border-color : rgba(81, 203, 238, 1);;
+}
+
+.filter-select {
+    width: 100%;
+    list-style: none;
+    color: rgb(105, 105, 105);
+    border: 1px solid #ccc;
+    border-top: none;
+    /*so things don't jump around*/
+    position: absolute;
+    top: 45px;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #fff;
+    padding:0;
+    margin:0;
+    z-index: 100000;
+}
+
+.filter-select-list:hover .tags {
+    color: #fff;
+}
+
+.filter-select-list {
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.filter-select-list:hover {
+    background: 	#C0C0C0;
+    color: #fff
+}
+
+@media only screen and (max-width: 768px) {
+    .filter-select,
+    #keyword {
+        width: 80%;
+    }
+    #keyword {
+        font-size: 1.3em
+    }
+    .filter-select {
+        font-size: 0.9em;
+        left: 10%;
+        top: calc(50% + 23px);
+    }
+    #keyword-button {
+        right: 11%
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .filter-select,
+    #keyword {
+        width: 95%;
+    }
+    .filter-select {
+        left: 2.5%;
+    }
+    #keyword-button {
+        right: 3.5%
+    }
+}
+

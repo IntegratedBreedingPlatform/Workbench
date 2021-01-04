@@ -1,18 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { SampleList } from './sample-list.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalService } from '../../shared/modal/modal.service';
+import { AppModalService } from '../../shared/modal/app-modal.service';
 import { SampleContext } from './sample.context';
 import { HelpService } from '../../shared/service/help.service';
+import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 
 declare const cropName: string;
 declare var $: any;
 
 @Component({
+    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-sample-manager',
     templateUrl: './sample-manager.component.html',
-    styles: []
+    // TODO migrate IBP-4093
+    styleUrls: ['../../../content/css/global-bs3.css' ]
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 
@@ -25,7 +28,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     lists: SampleList[] = [];
 
     constructor(private activatedRoute: ActivatedRoute,
-                private modalService: ModalService,
+                private modalService: AppModalService,
                 private router: Router,
                 private sampleContext: SampleContext,
                 private helpService: HelpService) {
@@ -47,11 +50,12 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         });
 
         if (!this.helpLink || !this.helpLink.length) {
-            this.helpService.getOnlinHelpLink().toPromise().then((response) => {
+            this.helpService.getHelpLink(HELP_MANAGE_SAMPLES).toPromise().then((response) => {
                 if (response.body) {
                     this.helpLink = response.body;
                 }
-            }).catch((error) => {});
+            }).catch((error) => {
+            });
         }
     }
 
@@ -88,7 +92,8 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
 
     private navigate(listId: any) {
         this.listId = listId;
-        this.router.navigate(['/sample-manager'], {queryParams: {
+        this.router.navigate(['/sample-manager'], {
+            queryParams: {
                 listId: this.listId
             }
         });
