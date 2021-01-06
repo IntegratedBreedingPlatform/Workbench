@@ -15,6 +15,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import org.junit.Assert;
 
+import static org.hamcrest.core.Is.is;
+
 @RunWith(MockitoJUnitRunner.class)
 public class CrossingManagerListTreeComponentTest {
 
@@ -54,7 +56,7 @@ public class CrossingManagerListTreeComponentTest {
 		crossingManagerListTreeComponent.instantiateComponents();
 
 		// The height of the component should always be 580 pixels
-		Assert.assertEquals(580.0f, crossingManagerListTreeComponent.getHeight());
+		Assert.assertThat(580.0f, is(crossingManagerListTreeComponent.getHeight()));
 		Assert.assertEquals(0, crossingManagerListTreeComponent.getHeightUnits());
 
 		// Make sure the buttons are initialized

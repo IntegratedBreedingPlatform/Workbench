@@ -20,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.hamcrest.core.Is.is;
+
 @RunWith(MockitoJUnitRunner.class)
 public class BreedingManagerWindowGeneratorTest {
 
@@ -109,8 +111,8 @@ public class BreedingManagerWindowGeneratorTest {
 		final Layout popupContent = new VerticalLayout();
 		final Window popupWindow = breedingManagerWindowGenerator.createPopupWindow(CAPTION, popupContent);
 
-		Assert.assertEquals(95.0f, popupWindow.getWidth());
-		Assert.assertEquals(97.0f, popupWindow.getHeight());
+		Assert.assertThat(95.0f, is(popupWindow.getWidth()));
+		Assert.assertThat(97.0f, is(popupWindow.getHeight()));
 		Assert.assertTrue(popupWindow.isModal());
 		Assert.assertFalse(popupWindow.isResizable());
 		Assert.assertEquals(CAPTION, popupWindow.getCaption());

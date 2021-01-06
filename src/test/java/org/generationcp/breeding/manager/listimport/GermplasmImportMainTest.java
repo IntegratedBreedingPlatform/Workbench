@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.hamcrest.core.Is.is;
+
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmImportMainTest {
 
@@ -39,7 +41,7 @@ public class GermplasmImportMainTest {
 		Component selectedTab = tabSheet.getSelectedTab();
 		Assert.assertTrue("Germplasm Import File Upload screen should be displayed",
 				this.germplasmImportMain.getWizardScreenOne().equals(selectedTab));
-		Assert.assertEquals("Page height is 300px", 300.0f, tabSheet.getHeight());
+		Assert.assertThat("Page height is 300px", 300.0f, is(tabSheet.getHeight()));
 		Assert.assertEquals(0, tabSheet.getHeightUnits());
 
 		this.germplasmImportMain.nextStep();
@@ -69,7 +71,7 @@ public class GermplasmImportMainTest {
 		selectedTab = tabSheet.getSelectedTab();
 		Assert.assertTrue("Germplasm Import File Upload screen should be displayed",
 				this.germplasmImportMain.getWizardScreenOne().equals(selectedTab));
-		Assert.assertEquals("Page height is 300px", 300.0f, tabSheet.getHeight());
+		Assert.assertThat("Page height is 300px", 300.0f, is(tabSheet.getHeight()));
 		Assert.assertEquals(0, tabSheet.getHeightUnits());
 	}
 	
