@@ -24,7 +24,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.vaadin.ui.Table;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class SpecifyGermplasmsComponentTest {

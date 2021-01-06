@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class UpdateProjectPanelTest {
 	

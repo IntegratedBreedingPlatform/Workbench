@@ -3,7 +3,7 @@ package org.generationcp.breeding.manager.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.middleware.pojos.Location;
 import org.junit.Test;

@@ -1,6 +1,7 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import junit.framework.Assert;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -19,6 +20,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.*;
 
 public class ProgramLocationsPresenterTest {
 
@@ -288,9 +291,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCATION_TYPE, locationViewModel.getLtypeStr());
 		Assert.assertEquals(CNTRYID, locationViewModel.getCntryid());
 		Assert.assertEquals(LTYPE, locationViewModel.getLtype());
-		Assert.assertEquals(LATITUDE, locationViewModel.getLatitude());
-		Assert.assertEquals(LONGITUDE, locationViewModel.getLongitude());
-		Assert.assertEquals(ALTITUDE, locationViewModel.getAltitude());
+		Assert.assertThat(LATITUDE, is(locationViewModel.getLatitude()));
+		Assert.assertThat(LONGITUDE, is(locationViewModel.getLongitude()));
+		Assert.assertThat(ALTITUDE, is(locationViewModel.getAltitude()));
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, locationViewModel.getProgramUUID());
 
 	}
@@ -309,9 +312,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLabbr());
 		Assert.assertEquals(LTYPE, result.getLtype());
 		Assert.assertEquals(CNTRYID, result.getCntryid());
-		Assert.assertEquals(LONGITUDE, result.getLongitude());
-		Assert.assertEquals(LATITUDE, result.getLatitude());
-		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertThat(LONGITUDE, is(result.getLongitude()));
+		Assert.assertThat(LATITUDE, is(result.getLatitude()));
+		Assert.assertThat(ALTITUDE, is(result.getAltitude()));
 		Assert.assertEquals((Integer) 0, result.getNllp());
 		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
@@ -334,9 +337,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLabbr());
 		Assert.assertEquals(LTYPE, result.getLtype());
 		Assert.assertEquals(CNTRYID, result.getCntryid());
-		Assert.assertEquals(LONGITUDE, result.getLongitude());
-		Assert.assertEquals(LATITUDE, result.getLatitude());
-		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertThat(LONGITUDE, is(result.getLongitude()));
+		Assert.assertThat(LATITUDE, is(result.getLatitude()));
+		Assert.assertThat(ALTITUDE, is(result.getAltitude()));
 		Assert.assertEquals((Integer) 0, result.getNllp());
 		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
@@ -355,9 +358,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLocationAbbreviation());
 		Assert.assertEquals(LTYPE, result.getLtype());
 		Assert.assertEquals(CNTRYID, result.getCntryid());
-		Assert.assertEquals(LONGITUDE, result.getLongitude());
-		Assert.assertEquals(LATITUDE, result.getLatitude());
-		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertThat(LONGITUDE, is(result.getLongitude()));
+		Assert.assertThat(LATITUDE, is(result.getLatitude()));
+		Assert.assertThat(ALTITUDE, is(result.getAltitude()));
 		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
 	}
@@ -373,9 +376,9 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals(LTYPE, result.getLtype());
 		Assert.assertEquals(CNTRYID, result.getCntryid());
 		Assert.assertEquals(COUNTRY_FULL_NAME, result.getCntryFullName());
-		Assert.assertEquals(LONGITUDE, result.getLongitude());
-		Assert.assertEquals(LATITUDE, result.getLatitude());
-		Assert.assertEquals(ALTITUDE, result.getAltitude());
+		Assert.assertThat(LONGITUDE, is(result.getLongitude()));
+		Assert.assertThat(LATITUDE, is(result.getLatitude()));
+		Assert.assertThat(ALTITUDE, is(result.getAltitude()));
 		Assert.assertEquals(PROVINCE_ID, result.getProvinceId());
 		Assert.assertEquals(PROVINCE_NAME, result.getProvinceName());
 		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());

@@ -11,7 +11,7 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.customfields.MandatoryMarkLabel;
 import org.generationcp.breeding.manager.listmanager.dialog.layout.AssignCodesNamingLayout;

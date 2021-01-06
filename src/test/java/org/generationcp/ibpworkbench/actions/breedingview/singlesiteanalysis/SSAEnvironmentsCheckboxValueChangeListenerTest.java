@@ -17,7 +17,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class SSAEnvironmentsCheckboxValueChangeListenerTest {
 	

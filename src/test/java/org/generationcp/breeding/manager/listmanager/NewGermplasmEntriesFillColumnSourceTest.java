@@ -17,7 +17,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Table;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class NewGermplasmEntriesFillColumnSourceTest {
 	

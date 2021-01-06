@@ -1,7 +1,7 @@
 
 package org.generationcp.ibpworkbench.util.awhere.json.test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.ibpworkbench.util.awhere.json.pojos.SeasonProfileResult;
 import org.junit.Test;
