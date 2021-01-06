@@ -38,6 +38,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.core.Is.is;
+
 public class AssignCodesDialogTest {
 
 	private static final String PREFIX = "AAA";
@@ -310,9 +312,9 @@ public class AssignCodesDialogTest {
 		Assert.assertNotNull(gridLayout.getComponent(0, 1));
 		Assert.assertNotNull(gridLayout.getComponent(1, 1));
 
-		Assert.assertEquals(0.3f, gridLayout.getColumnExpandRatio(0));
-		Assert.assertEquals(0.7f, gridLayout.getColumnExpandRatio(1));
-		Assert.assertEquals(100.0f, gridLayout.getWidth());
+		Assert.assertThat(0.3f, is(gridLayout.getColumnExpandRatio(0)));
+		Assert.assertThat(0.7f, is(gridLayout.getColumnExpandRatio(1)));
+		Assert.assertThat(100.0f, is(gridLayout.getWidth()));
 	}
 
 	@Test
@@ -351,8 +353,8 @@ public class AssignCodesDialogTest {
 		final VerticalLayout verticalLayout = this.assignCodesDialog.createManualCodeNamingLayout();
 		Assert.assertTrue(verticalLayout.isImmediate());
 		Assert.assertFalse(verticalLayout.isVisible());
-		Assert.assertEquals(270.0f, verticalLayout.getHeight());
-		Assert.assertEquals(100.0f, verticalLayout.getWidth());
+		Assert.assertThat(270.0f, is(verticalLayout.getHeight()));
+		Assert.assertThat(100.0f, is(verticalLayout.getWidth()));
 
 	}
 
