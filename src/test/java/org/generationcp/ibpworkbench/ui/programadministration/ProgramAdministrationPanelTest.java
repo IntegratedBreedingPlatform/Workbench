@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.ui.programadministration;
 
 import com.vaadin.ui.TabSheet;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;

@@ -3,7 +3,7 @@ package org.generationcp.breeding.manager.listimport;
 
 import com.google.common.collect.Lists;
 import com.vaadin.ui.ComboBox;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.junit.Before;
 import org.junit.Test;

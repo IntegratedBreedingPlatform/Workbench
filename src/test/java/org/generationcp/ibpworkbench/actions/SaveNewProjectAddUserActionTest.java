@@ -27,7 +27,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SaveNewProjectAddUserActionTest {

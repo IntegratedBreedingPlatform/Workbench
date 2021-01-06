@@ -43,7 +43,7 @@ import org.tmatesoft.svn.core.wc2.SvnTarget;
 
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @Ignore
 public class RestoreUtilTest {

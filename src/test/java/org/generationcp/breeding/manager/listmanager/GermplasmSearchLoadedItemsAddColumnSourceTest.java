@@ -23,7 +23,7 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class GermplasmSearchLoadedItemsAddColumnSourceTest {
 

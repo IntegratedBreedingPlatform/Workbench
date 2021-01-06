@@ -14,7 +14,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class PagedBreedingManagerTableControlsTest {
 

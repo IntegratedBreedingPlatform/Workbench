@@ -19,7 +19,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class AddProgramViewTest {
 	
