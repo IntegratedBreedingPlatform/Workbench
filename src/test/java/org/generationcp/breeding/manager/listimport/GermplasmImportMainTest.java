@@ -50,7 +50,7 @@ public class GermplasmImportMainTest {
 		selectedTab = tabSheet.getSelectedTab();
 		Assert.assertTrue("Specify Germplasm Details screen should be displayed",
 				this.germplasmImportMain.getWizardScreenTwo().equals(selectedTab));
-		Assert.assertEquals("Page height is 860px", 860.0f, tabSheet.getHeight());
+		Assert.assertThat("Page height is 860px", 860.0f, is(tabSheet.getHeight()));
 		Assert.assertEquals(0, tabSheet.getHeightUnits());
 	}
 
