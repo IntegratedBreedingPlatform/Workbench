@@ -45,6 +45,7 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
+import { ProgramService } from './program/service/program.service';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ import { AlertService } from './alert/alert.service';
         NameTypeService,
         BreedingMethodService,
         LocationService,
+        ProgramService,
         PopupService,
         /*
          * Workaround to reuse modal content outside ngb modals

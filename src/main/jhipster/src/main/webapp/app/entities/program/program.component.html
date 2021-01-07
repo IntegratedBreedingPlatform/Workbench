@@ -1,0 +1,5 @@
+<li *ngFor="let program of programs | async">
+	<a (click)="onProgramSelect(program)">
+		{{program.name}}
+	</a>
+</li>

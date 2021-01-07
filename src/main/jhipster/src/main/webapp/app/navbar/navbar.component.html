@@ -1,11 +1,11 @@
 <div class="navbar-container">
 	<mat-toolbar color="primary" class="mat-elevation-z1">
-		<button mat-icon-button id="menu" (click)="sideNav.toggle()">
+		<button mat-icon-button id="menu" (click)="sideNav.toggle()" *ngIf="isSideNavAvailable()">
 			<mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
 		</button>
 	</mat-toolbar>
 	<mat-sidenav-container>
-		<mat-sidenav #sideNav mode="side">
+		<mat-sidenav #sideNav mode="side" >
 			<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
 				<!-- This is the tree node template for leaf nodes -->
 				<mat-tree-node class="leaf" *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="34">
@@ -23,7 +23,8 @@
 			</mat-tree>
 		</mat-sidenav>
 		<mat-sidenav-content>
-			<iframe #viewport *ngIf="safeUrl" [src]="safeUrl" style="border: 0; width: 100%; height: 100%"></iframe>
+			<iframe #viewport *ngIf="toolUrl" [src]="toolUrl" style="border: 0; width: 100%; height: 100%"></iframe>
+			<iframe *ngIf="!toolUrl" src="/ibpworkbench/app/#programs" style="border: 0; width: 100%; height: 100%"></iframe>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
 </div>

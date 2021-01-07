@@ -3,6 +3,8 @@ import { NavService } from './nav.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { HostListener } from '@angular/core';
+import { Program } from '../shared/program/model/program';
 
 @Component({
     selector: 'jhi-navbar',
@@ -17,7 +19,7 @@ import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree'
 export class NavbarComponent implements OnInit, AfterViewInit {
     // TODO
     version: string;
-    safeUrl: any;
+    toolUrl: any;
 
     @ViewChild('sideNav') sideNav: ElementRef;
 
@@ -94,7 +96,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             + '&selectedProjectId=' + localStorage['selectedProjectId']
             + '&loggedInUserId=' + localStorage['loggedInUserId']
             + '&restartApplication';
-        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
+        this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
+    }
+
+    isSideNavAvailable() {
+        return Boolean(this.toolUrl);
+    }
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data && event.data.programSelected) {
+            let program: Program = event.data.programSelected;
+            localStorage['cropName'] = program.cropName;
+            localStorage['programUUID'] = program.programUUID;
+            this.openTool(this.TREE_DATA[0].children[0].link)
+        }
     }
 
 }
