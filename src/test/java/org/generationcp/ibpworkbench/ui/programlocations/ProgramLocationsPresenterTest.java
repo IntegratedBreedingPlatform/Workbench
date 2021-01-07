@@ -175,7 +175,7 @@ public class ProgramLocationsPresenterTest {
 			}
 
 			final Location location = locationList.get(ProgramLocationsPresenterTest.NO_OF_LOCATION_WITH_PROGRAM_UUID);
-			location.setUniqueID("9876543210");
+			location.setProgramUUID("9876543210");
 			final LocationDetails LocationDetails = locationDetailsList.get(ProgramLocationsPresenterTest.NO_OF_LOCATION_WITH_PROGRAM_UUID);
 			locationDetailsList.remove(LocationDetails);
 			Mockito.when(this.locationDataManager.getFilteredLocationsDetails(countryId, locationType, null, programUUID))
@@ -215,7 +215,7 @@ public class ProgramLocationsPresenterTest {
 		location.setLabbr(LOCATION_ABBREVIATION);
 		location.setLtype(locationType);
 		location.setCntryid(countryId);
-		location.setUniqueID(programUUID);
+		location.setProgramUUID(programUUID);
 		location.setSnl1id(PROVINCE_ID);
 		location.setAltitude(ALTITUDE);
 		location.setLatitude(LATITUDE);
@@ -316,7 +316,7 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
 		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
-		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getUniqueID());
+		Assert.assertEquals(DUMMY_PROGRAM_UUID, result.getProgramUUID());
 
 	}
 
@@ -341,7 +341,7 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertEquals((Integer) 0, result.getSnl3id());
 		Assert.assertEquals((Integer) 0, result.getSnl2id());
 		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
-		Assert.assertEquals(null, result.getUniqueID());
+		Assert.assertEquals(null, result.getProgramUUID());
 
 	}
 

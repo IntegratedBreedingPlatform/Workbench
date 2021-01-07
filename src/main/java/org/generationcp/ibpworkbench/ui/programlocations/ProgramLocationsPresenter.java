@@ -169,7 +169,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
-		viewModel.setProgramUUID(location.getUniqueID());
+		viewModel.setProgramUUID(location.getProgramUUID());
 		viewModel.setlDefault(location.getLdefault());
 
 		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
@@ -287,7 +287,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		}
 
 		if (!locationViewModel.getCropAccessible()) {
-			location.setUniqueID(this.project.getUniqueID());
+			location.setProgramUUID(this.project.getUniqueID());
 		}
 
 		location.setLdefault(locationViewModel.getlDefault());
