@@ -120,6 +120,7 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
           skipWaiting: true,
         })
     ],
+    // TODO continue IBP-3492
     performance: {
         //values expressed in bytes
         maxAssetSize: 4000000,
