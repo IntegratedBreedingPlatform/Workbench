@@ -1322,15 +1322,13 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 
 			final AbsoluteLayout layout = new AbsoluteLayout();
 			layout.setMargin(false);
-			layout.setWidth("100%");
-			layout.setHeight("100%");
 			layout.addStyleName("no-caption");
 			layout.addComponent(createInventoryLotsDialog);
 
 			final Window modal = new BaseSubWindow(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MODAL_TITLE));
 			modal.setContent(layout);
-			modal.setWidth("900px");
-			modal.setHeight("670px");
+			modal.setWidth("748px");
+			modal.setHeight("768px");
 			modal.center();
 			modal.setResizable(false);
 			modal.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
