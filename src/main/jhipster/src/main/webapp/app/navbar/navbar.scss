@@ -66,5 +66,17 @@ body {
   .mat-toolbar {
     height: 40px;
     padding: 0;
+
+    .toolbar-filler {
+      flex: 1 1 auto
+    }
+
+    .toolbar-right {
+      display: flex;
+    }
+
+    .btn {
+      background-color: var(--primary);
+    }
   }
 }

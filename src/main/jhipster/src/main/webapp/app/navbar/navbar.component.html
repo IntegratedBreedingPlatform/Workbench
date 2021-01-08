@@ -1,8 +1,32 @@
 <div class="navbar-container">
 	<mat-toolbar color="primary" class="mat-elevation-z1">
-		<button mat-icon-button id="menu" (click)="sideNav.toggle()" *ngIf="isSideNavAvailable()">
-			<mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
-		</button>
+		<div>
+			<button mat-icon-button id="menu" (click)="sideNav.toggle()" *ngIf="isSideNavAvailable()">
+				<mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
+			</button>
+		</div>
+		<div class="toolbar-filler"></div>
+		<div class="toolbar-right">
+			<button mat-button >Site Admin</button>
+			<button mat-button (click)="toolUrl = ''">My Programs</button>
+			<button mat-icon-button>
+				<!-- TODO -->
+				<mat-icon fontSet="fa" fontIcon="fa-info"></mat-icon>
+			</button>
+			<button mat-icon-button>
+				<!-- TODO -->
+				<mat-icon fontSet="fa" fontIcon="fa-question-circle"></mat-icon>
+			</button>
+			<button mat-icon-button>
+				<!-- TODO -->
+				<mat-icon fontSet="fa" fontIcon="fa-comments"></mat-icon>
+			</button>
+			<!-- TODO user -->
+			<button mat-button>
+				<mat-icon inline="true" fontSet="fa" fontIcon="fa-user"></mat-icon>
+				<span style="margin-left: 5px">admin</span>
+			</button>
+		</div>
 	</mat-toolbar>
 	<mat-sidenav-container>
 		<mat-sidenav #sideNav mode="side" >
