@@ -1,7 +1,7 @@
 
 package org.generationcp.ibpworkbench.cross.study.adapted.main;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CategoricalTraitFilter;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.NumericTraitFilter;

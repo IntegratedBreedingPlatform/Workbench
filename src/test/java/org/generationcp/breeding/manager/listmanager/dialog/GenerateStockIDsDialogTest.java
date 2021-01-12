@@ -4,7 +4,7 @@ package org.generationcp.breeding.manager.listmanager.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.breeding.manager.listimport.SpecifyGermplasmDetailsComponent;
 import org.generationcp.breeding.manager.pojos.ImportedGermplasm;

@@ -20,7 +20,7 @@ import org.vaadin.peter.contextmenu.ContextMenu.ClickEvent;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Table;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class FillWithTest {
 

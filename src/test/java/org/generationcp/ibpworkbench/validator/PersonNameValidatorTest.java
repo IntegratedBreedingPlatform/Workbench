@@ -13,7 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Field;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersonNameValidatorTest {

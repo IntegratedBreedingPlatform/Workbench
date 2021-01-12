@@ -10,7 +10,7 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.commons.service.GermplasmCodeGenerationService;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
