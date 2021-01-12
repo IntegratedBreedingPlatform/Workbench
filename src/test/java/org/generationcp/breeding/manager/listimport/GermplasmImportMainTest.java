@@ -3,7 +3,7 @@ package org.generationcp.breeding.manager.listimport;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.junit.Before;
@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.hamcrest.core.Is.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmImportMainTest {
@@ -39,7 +41,7 @@ public class GermplasmImportMainTest {
 		Component selectedTab = tabSheet.getSelectedTab();
 		Assert.assertTrue("Germplasm Import File Upload screen should be displayed",
 				this.germplasmImportMain.getWizardScreenOne().equals(selectedTab));
-		Assert.assertEquals("Page height is 300px", 300.0f, tabSheet.getHeight());
+		Assert.assertThat("Page height is 300px", 300.0f, is(tabSheet.getHeight()));
 		Assert.assertEquals(0, tabSheet.getHeightUnits());
 
 		this.germplasmImportMain.nextStep();
@@ -48,7 +50,7 @@ public class GermplasmImportMainTest {
 		selectedTab = tabSheet.getSelectedTab();
 		Assert.assertTrue("Specify Germplasm Details screen should be displayed",
 				this.germplasmImportMain.getWizardScreenTwo().equals(selectedTab));
-		Assert.assertEquals("Page height is 860px", 860.0f, tabSheet.getHeight());
+		Assert.assertThat("Page height is 860px", 860.0f, is(tabSheet.getHeight()));
 		Assert.assertEquals(0, tabSheet.getHeightUnits());
 	}
 
@@ -69,7 +71,7 @@ public class GermplasmImportMainTest {
 		selectedTab = tabSheet.getSelectedTab();
 		Assert.assertTrue("Germplasm Import File Upload screen should be displayed",
 				this.germplasmImportMain.getWizardScreenOne().equals(selectedTab));
-		Assert.assertEquals("Page height is 300px", 300.0f, tabSheet.getHeight());
+		Assert.assertThat("Page height is 300px", 300.0f, is(tabSheet.getHeight()));
 		Assert.assertEquals(0, tabSheet.getHeightUnits());
 	}
 	

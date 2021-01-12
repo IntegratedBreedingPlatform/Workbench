@@ -2,7 +2,7 @@ package org.generationcp.ibpworkbench.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;

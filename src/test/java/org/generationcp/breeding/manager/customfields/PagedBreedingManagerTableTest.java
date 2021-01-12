@@ -20,7 +20,7 @@ import org.vaadin.addons.lazyquerycontainer.LazyQueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryView;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PagedBreedingManagerTableTest {

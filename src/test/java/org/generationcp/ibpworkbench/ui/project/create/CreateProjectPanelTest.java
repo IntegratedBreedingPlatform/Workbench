@@ -3,7 +3,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;

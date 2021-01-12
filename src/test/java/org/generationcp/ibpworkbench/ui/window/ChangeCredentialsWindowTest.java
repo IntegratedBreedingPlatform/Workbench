@@ -1,7 +1,7 @@
 package org.generationcp.ibpworkbench.ui.window;
 
 import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;

@@ -4,7 +4,7 @@ package org.generationcp.breeding.manager.customfields;
 import java.text.ParseException;
 import java.util.Date;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.breeding.manager.service.BreedingManagerService;
 import org.generationcp.breeding.manager.validator.ListNameValidator;

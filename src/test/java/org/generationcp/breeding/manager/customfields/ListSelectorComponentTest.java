@@ -4,7 +4,7 @@ import com.vaadin.data.Item;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.terminal.ThemeResource;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.breeding.manager.constants.AppConstants;
 import org.generationcp.breeding.manager.customcomponent.GermplasmListSource;
 import org.generationcp.breeding.manager.customcomponent.GermplasmListTreeTable;

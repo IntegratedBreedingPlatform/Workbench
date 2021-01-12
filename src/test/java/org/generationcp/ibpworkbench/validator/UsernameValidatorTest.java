@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UsernameValidatorTest {

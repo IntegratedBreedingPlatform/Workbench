@@ -5,7 +5,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.ibpworkbench.cross.study.h2h.main.TraitsAvailableComponent;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.EnvironmentForComparison;

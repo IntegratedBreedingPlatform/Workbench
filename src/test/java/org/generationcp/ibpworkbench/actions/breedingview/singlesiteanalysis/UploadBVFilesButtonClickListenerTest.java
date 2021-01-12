@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.vaadin.ui.Component;
 

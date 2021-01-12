@@ -22,7 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FillWithGermplasmNameWindowTest {

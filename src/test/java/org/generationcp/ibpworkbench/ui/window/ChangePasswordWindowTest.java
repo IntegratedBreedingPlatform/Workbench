@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.ui.window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.actions.ChangePasswordAction;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
