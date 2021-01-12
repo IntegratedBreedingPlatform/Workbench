@@ -12,7 +12,7 @@ export class GermplasmSearchRequest {
         public stockId?: string,
         public locationOfOrigin?: string,
         public locationOfUse?: string,
-        public reference?: number,
+        public reference?: string,
         public harvestingStudyIds?: Array<number>,
         public plantingStudyIds?: Array<number>,
         public breedingMethodName?: string,
