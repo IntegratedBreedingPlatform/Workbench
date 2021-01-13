@@ -40,26 +40,16 @@
 			<div class="form-group row">
 				<label for="breedingAndCountryLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.locations"></label>
 				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
-					<ng-select2 *ngIf="!useFavoriteLocations && !radioSelected" name="breedingAndCountryLocation" id="breedingAndCountryLocation" width="100%" [(ngModel)]="locationSelected"
-								[data]="breedingAndCountryLocations | async | LocationSelect2Data">
-					</ng-select2>
-					<ng-select2 *ngIf="useFavoriteLocations && !radioSelected" name="breedingAndCountryFavorite" id="breedingAndCountryFavorite" width="100%" [(ngModel)]="locationSelected"
-								[data]="favoriteBreedingAndCountryLocations | async | LocationSelect2Data">
-					</ng-select2>
-					<ng-select2 *ngIf="!useFavoriteLocations && radioSelected" name="allLocation" id="allLocation" width="100%" [(ngModel)]="locationSelected"
-								[data]="allLocations | async | LocationSelect2Data">
-					</ng-select2>
-					<ng-select2 *ngIf="useFavoriteLocations && radioSelected" name="allLocationFavorite" id="allLocationFavorite" width="100%" [(ngModel)]="locationSelected"
-								[data]="favoriteAllLocations | async | LocationSelect2Data">
+					<ng-select2 name="locations" id="locations" width="100%" [(ngModel)]="locationSelected" [options]="locationsOptions">
 					</ng-select2>
 					<div class="row">
 						<div class="col-xs-12 col-md-12">
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="option-group" id="allFavoriteLocations" [value]="true" [(ngModel)]="radioSelected">
+								<input class="form-check-input" type="radio" name="option-group" id="allLocations" [value]="false" [(ngModel)]="isBreedingAndCountryLocationsOnly">
 								<label class="form-check-label" for="allFavoriteLocations" jhiTranslate="germplasm.import.basicDetails.all.locations"></label>
 							</div>
 							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="option-group" id="breedingAndCountryFavoriteLocations" [value]="false" [(ngModel)]="radioSelected">
+								<input class="form-check-input" type="radio" name="option-group" id="breedingAndCountryLocations" [value]="true" [(ngModel)]="isBreedingAndCountryLocationsOnly">
 								<label class="form-check-label" for="breedingAndCountryFavoriteLocations" jhiTranslate="germplasm.import.basicDetails.breeding.and.country.locations"></label>
 							</div>
 						</div>
