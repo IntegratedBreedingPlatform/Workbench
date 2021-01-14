@@ -25,7 +25,10 @@
 				<tbody>
 				<tr *ngFor="let program of programs" [class.selected]="isSelected(program)"
 					(click)="onProgramSelect(program)">
-					<td>{{program.name}}</td>
+					<td>
+						<i class="fa fa-caret-square-o-right" aria-hidden="true"></i>
+						{{program.name}}
+					</td>
 					<td class="text-capitalize">{{program.cropName}}</td>
 					<!--<td>
 						<a class="">

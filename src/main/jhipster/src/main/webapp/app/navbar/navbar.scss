@@ -87,5 +87,13 @@ body {
     .btn {
       background-color: var(--primary);
     }
+
+    .navbar-brand {
+      img {
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+      }
+    }
   }
 }

@@ -5,6 +5,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Program } from '../shared/program/model/program';
 import { Principal } from '../shared';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
     selector: 'jhi-navbar',
@@ -20,6 +21,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     // TODO
     version: string;
     toolUrl: any;
+    program: Program;
+    user: any;
 
     @ViewChild('sideNav') sideNav: ElementRef;
 
@@ -78,6 +81,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // TODO
         // this.version = VERSION ? 'v' + VERSION : '';
         this.dataSource.data = this.TREE_DATA;
+        this.principal.identity().then((identity) => {
+            this.user = identity;
+        });
     }
 
     hasChild = (_: number, node: any) => node.expandable;
@@ -114,20 +120,28 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.openTool('/ibpworkbench/workbenchtools/create_program');
     }
 
+    myPrograms() {
+        this.program = null;
+        this.toolUrl = '';
+    }
+
+    siteAdmin() {
+        this.openTool('/ibpworkbench/controller/admin');
+    }
+
     isSideNavAvailable() {
-        return Boolean(this.toolUrl);
+        return Boolean(this.program);
     }
 
     @HostListener('window:message', ['$event'])
-    async onMessage(event) {
-        const identity = await this.principal.identity();
+    onMessage(event) {
         if (event.data && event.data.programSelected) {
-            const program: Program = event.data.programSelected;
-            localStorage['selectedProjectId'] = program.id;
-            localStorage['loggedInUserId'] = identity.userId;
-            localStorage['cropName'] = program.cropName;
-            localStorage['programUUID'] = program.programUUID;
-            this.openTool(this.TREE_DATA[0].children[0].link)
+            this.program = event.data.programSelected;
+            localStorage['selectedProjectId'] = this.program.id;
+            localStorage['loggedInUserId'] = this.user.userId;
+            localStorage['cropName'] = this.program.cropName;
+            localStorage['programUUID'] = this.program.programUUID;
+            this.openTool(this.TREE_DATA[0].children[0].link);
         }
     }
 
