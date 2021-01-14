@@ -15,6 +15,8 @@ body {
     background-color: #e9e9e9;
     min-width: 240px;
 
+    $left-sidenav-padding: 34px;
+
     .mat-tree {
       background: none;
 
@@ -23,10 +25,12 @@ body {
         min-height: auto;
         cursor: pointer;
 
+        $right-tree-node-padding: 20px;
+
         &.leaf {
           color: #428bca;
           font-size: 13px;
-          padding: 5px 20px 5px 34px;
+          padding: 5px $right-tree-node-padding 5px $left-sidenav-padding;
 
           &:hover {
             color: #fff;
@@ -39,6 +43,11 @@ body {
           color: #9e9e9e;
           text-transform: uppercase;
           font-size: 14px;
+          padding-right: $right-tree-node-padding;
+        }
+
+        .mat-icon-button {
+          width: $left-sidenav-padding;
         }
       }
 
