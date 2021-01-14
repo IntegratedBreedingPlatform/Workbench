@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;

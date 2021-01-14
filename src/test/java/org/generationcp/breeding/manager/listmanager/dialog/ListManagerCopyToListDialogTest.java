@@ -35,7 +35,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class ListManagerCopyToListDialogTest {

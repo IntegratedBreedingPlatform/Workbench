@@ -13,7 +13,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class AskForSupportActionTest {
 	

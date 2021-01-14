@@ -2,7 +2,7 @@ package org.generationcp.ibpworkbench;
 
 import com.vaadin.terminal.gwt.server.WebBrowser;
 import com.vaadin.ui.Window;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.ibpworkbench.common.WebClientInfo;
 import org.junit.Before;
 import org.junit.Test;

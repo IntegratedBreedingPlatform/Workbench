@@ -7,7 +7,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.breeding.manager.listimport.GermplasmImportMain;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -19,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.hamcrest.core.Is.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BreedingManagerWindowGeneratorTest {
@@ -109,8 +111,8 @@ public class BreedingManagerWindowGeneratorTest {
 		final Layout popupContent = new VerticalLayout();
 		final Window popupWindow = breedingManagerWindowGenerator.createPopupWindow(CAPTION, popupContent);
 
-		Assert.assertEquals(95.0f, popupWindow.getWidth());
-		Assert.assertEquals(97.0f, popupWindow.getHeight());
+		Assert.assertThat(95.0f, is(popupWindow.getWidth()));
+		Assert.assertThat(97.0f, is(popupWindow.getHeight()));
 		Assert.assertTrue(popupWindow.isModal());
 		Assert.assertFalse(popupWindow.isResizable());
 		Assert.assertEquals(CAPTION, popupWindow.getCaption());
