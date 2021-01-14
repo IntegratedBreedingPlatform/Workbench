@@ -8,7 +8,8 @@
 		<div class="toolbar-filler"></div>
 		<div class="toolbar-right">
 			<button mat-button >Site Admin</button>
-			<button mat-button (click)="toolUrl = ''">My Programs</button>
+			<button mat-button *ngIf="toolUrl" (click)="toolUrl = ''">My Programs</button>
+			<button mat-button *ngIf="!toolUrl" (click)="addProgram()"><i class="fa fa-plus"></i> Add a Program</button>
 			<button mat-icon-button>
 				<!-- TODO -->
 				<mat-icon fontSet="fa" fontIcon="fa-info"></mat-icon>

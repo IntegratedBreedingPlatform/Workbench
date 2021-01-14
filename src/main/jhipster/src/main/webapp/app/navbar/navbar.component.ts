@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NavService } from './nav.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { HostListener } from '@angular/core';
 import { Program } from '../shared/program/model/program';
+import { Principal } from '../shared';
 
 @Component({
     selector: 'jhi-navbar',
@@ -42,10 +42,19 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         name: 'Studies',
         children: [{
             name: 'Single Site Analysis',
-            link: '/ibpworkbench/main/#/breeding_view'
+            link: '/ibpworkbench/workbenchtools/breeding_view'
+        }, {
+            name: 'Multi Site Analysis',
+            link: '/ibpworkbench/workbenchtools/breeding_gxe'
         }, {
             name: 'Browse studies',
             link: '/ibpworkbench/maingpsb/study/'
+        }]
+    }, {
+        name: 'Program Administration',
+        children: [{
+            name: 'Manage Program Settings',
+            link: '/ibpworkbench/workbenchtools/manage_program'
         }]
     }
     /*, {
@@ -63,6 +72,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     constructor(
         private navService: NavService,
+        private principal: Principal,
         private sanitizer: DomSanitizer,
     ) {
         // TODO
@@ -92,11 +102,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // TODO store params in localStorage in select program window
         const authParams = '?cropName=' + localStorage['cropName']
             + '&programUUID=' + localStorage['programUUID']
-            + '&authToken=' + localStorage['authToken']
+            // Deprecated, not needed
+            // + '&authToken=' + localStorage['authToken']
             + '&selectedProjectId=' + localStorage['selectedProjectId']
             + '&loggedInUserId=' + localStorage['loggedInUserId']
             + '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
+    }
+
+    addProgram() {
+        this.openTool('/ibpworkbench/workbenchtools/create_program');
     }
 
     isSideNavAvailable() {
@@ -104,9 +119,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     @HostListener('window:message', ['$event'])
-    onMessage(event) {
+    async onMessage(event) {
+        const identity = await this.principal.identity();
         if (event.data && event.data.programSelected) {
-            let program: Program = event.data.programSelected;
+            const program: Program = event.data.programSelected;
+            localStorage['selectedProjectId'] = program.id;
+            localStorage['loggedInUserId'] = identity.userId;
             localStorage['cropName'] = program.cropName;
             localStorage['programUUID'] = program.programUUID;
             this.openTool(this.TREE_DATA[0].children[0].link)
