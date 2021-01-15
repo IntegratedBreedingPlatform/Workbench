@@ -32,7 +32,7 @@ body {
           font-size: 13px;
           padding: 5px $right-tree-node-padding 5px $left-sidenav-padding;
 
-          &:hover {
+          &:hover, &.selected {
             color: #fff;
             background-color: #428bca;
             border-color: #357ebd;

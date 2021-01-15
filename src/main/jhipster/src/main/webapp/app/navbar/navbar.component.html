@@ -31,10 +31,6 @@
 	<mat-sidenav-container>
 		<mat-sidenav #sideNav mode="side" opened="true" *ngIf="isSideNavAvailable()" >
 			<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-				<!-- This is the tree node template for leaf nodes -->
-				<mat-tree-node class="leaf" *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="34">
-					<a (click)="openTool(node.link)">{{node.name}}</a>
-				</mat-tree-node>
 				<!-- This is the tree node template for expandable nodes -->
 				<mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle>
 					<button mat-icon-button [attr.aria-label]="'Toggle ' + node.name">
@@ -42,6 +38,12 @@
 								  [fontIcon]="treeControl.isExpanded(node) ? 'fa-caret-down' : 'fa-caret-right'">
 						</mat-icon>
 					</button>
+					{{node.name}}
+				</mat-tree-node>
+				<!-- This is the tree node template for leaf nodes -->
+				<mat-tree-node class="leaf" [class.selected]="node.link == toolLinkSelected"
+							   *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="34"
+							   (click)="openTool(node.link)">
 					{{node.name}}
 				</mat-tree-node>
 			</mat-tree>

@@ -23,6 +23,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     toolUrl: any;
     program: Program;
     user: any;
+    toolLinkSelected: string;
 
     @ViewChild('sideNav') sideNav: ElementRef;
 
@@ -105,7 +106,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     openTool(url) {
-        // TODO store params in localStorage in select program window
+        this.toolLinkSelected = url;
         const authParams = '?cropName=' + localStorage['cropName']
             + '&programUUID=' + localStorage['programUUID']
             // Deprecated, not needed
@@ -135,13 +136,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     @HostListener('window:message', ['$event'])
     onMessage(event) {
-        if (event.data && event.data.programSelected) {
+        if (!event.data) {
+            return;
+        }
+        if (event.data.programSelected) {
             this.program = event.data.programSelected;
             localStorage['selectedProjectId'] = this.program.id;
             localStorage['loggedInUserId'] = this.user.userId;
             localStorage['cropName'] = this.program.cropName;
             localStorage['programUUID'] = this.program.programUUID;
-            this.openTool(this.TREE_DATA[0].children[0].link);
+
+            const firstNode = this.treeControl.dataNodes[0];
+            this.treeControl.expand(firstNode);
+            this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
+        } else if (event.data.toolSelected) {
+            // TODO intra module navigation
         }
     }
 
