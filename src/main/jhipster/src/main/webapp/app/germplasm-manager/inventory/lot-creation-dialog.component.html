@@ -113,11 +113,8 @@
 		<span jhiTranslate="entity.action.cancel">Cancel</span>
 	</button>-->
 	<button (click)="save()" [disabled]="f.form.invalid || isSuccess || isLoading" class="btn btn-primary">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 	</button>
-	<div *ngIf="isLoading">
-		<br/>
-		<span class="throbber throbber-2x"></span>
-	</div>
 </div>
 
