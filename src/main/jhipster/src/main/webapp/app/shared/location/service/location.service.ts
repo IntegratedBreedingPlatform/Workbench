@@ -28,7 +28,9 @@ export class LocationService {
         const params = new HttpParams()
             .set('locationTypes', locationTypes)
             .set('favoriteLocations', favoriteLocation)
-            .set('programUUID', this.context.programUUID);
+            .set('programUUID', this.context.programUUID)
+            .set('page', '0')
+            .set('size', '10000');
         return this.http.get<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations`,
             { params, observe: 'response' }).pipe(map((res: HttpResponse<LocationModel[]>) => res.body));
     }

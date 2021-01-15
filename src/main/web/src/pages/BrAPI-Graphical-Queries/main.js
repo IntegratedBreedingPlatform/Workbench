@@ -24,7 +24,7 @@ $(document).ready(function () {
 
 function loadLocations() {
 	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
-		+ "/locations?programUUID=" + getUrlParameter("programUUID") + "&favoriteLocations=false&locationTypes";
+		+ "/locations?programUUID=" + getUrlParameter("programUUID") + "&favoriteLocations=false&page=0&size=10000&locationTypes";
 
 	return Promise.all([$.get({
 		dataType: "json",
