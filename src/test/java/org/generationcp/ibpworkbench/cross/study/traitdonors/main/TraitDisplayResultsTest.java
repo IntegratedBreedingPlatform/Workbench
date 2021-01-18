@@ -5,13 +5,21 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import com.vaadin.ui.ComboBox;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CategoricalTraitFilter;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CharacterTraitFilter;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.NumericTraitFilter;
+import org.generationcp.ibpworkbench.cross.study.constants.EnvironmentWeight;
+import org.generationcp.ibpworkbench.cross.study.constants.NumericTraitCriteria;
+import org.generationcp.ibpworkbench.cross.study.constants.TraitWeight;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.EnvironmentForComparison;
 import org.generationcp.ibpworkbench.data.initializer.TableResultRowTestDataInitializer;
 import org.generationcp.middleware.domain.h2h.Observation;
+import org.generationcp.middleware.domain.h2h.ObservationKey;
+import org.generationcp.middleware.domain.h2h.TraitInfo;
+import org.generationcp.middleware.domain.h2h.TraitType;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.junit.Before;
@@ -28,11 +36,9 @@ import org.slf4j.LoggerFactory;
 import com.jensjansson.pagedtable.PagedTable;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 import junit.framework.Assert;
+import org.thymeleaf.util.StringUtils;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class TraitDisplayResultsTest {
@@ -45,6 +51,9 @@ public class TraitDisplayResultsTest {
 
 	@Mock
 	private TraitDonorsQueryMain main;
+
+	@Mock
+	private ComboBox comboBox;
 
 	@InjectMocks
 	private TraitDisplayResults traitDisplayResults;
@@ -119,26 +128,118 @@ public class TraitDisplayResultsTest {
 		Assert.assertTrue(germplasmColTable.isColumnCollapsingAllowed());
 		Assert.assertFalse(germplasmColTable.isColumnReorderingAllowed());
 	}
-	
+
 	@Test
 	public void testNextAndPrevEntryButtonClickAction() {
 		this.traitDisplayResults.createGermplasmColTable();
 		this.traitDisplayResults.createTraitsColTable();
 		this.traitDisplayResults.createCombinedScoreTagColTable();
 		this.traitDisplayResults.setTableRows(TableResultRowTestDataInitializer.createTableResultRows(20));
-		
+
 		final PagedTable germplasmColTable = this.traitDisplayResults.getGermplasmColTable();
 		final PagedTable traitsColTable = this.traitDisplayResults.getTraitsColTable();
 		final PagedTable combinedScoreTagColTable = this.traitDisplayResults.getCreateCombinedScoreTagColTable();
-		
+
 		this.traitDisplayResults.populateRowsResultsTable(germplasmColTable, 10);
 		this.traitDisplayResults.populateRowsResultsTable(traitsColTable, 10);
 		this.traitDisplayResults.populateRowsResultsTable(combinedScoreTagColTable, 10);
-		
+
 		Assert.assertEquals(this.traitDisplayResults.getCurrentLineIndex().intValue(), 0 );
 		this.traitDisplayResults.nextEntryButtonClickAction();
 		Assert.assertEquals(this.traitDisplayResults.getCurrentLineIndex().intValue(), 15 );
 		this.traitDisplayResults.prevEntryButtonClickAction();
 		Assert.assertEquals(this.traitDisplayResults.getCurrentLineIndex().intValue(), 0);
+	}
+
+	@Test
+	public void testPopulateResultsTableNumericalInvalidTrait() {
+
+		final Observation observation = new Observation(new ObservationKey(1,1, 1), "6.*2");
+		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(Arrays.asList(observation));
+
+		final Map<Integer, String> germplasm = new HashMap<>();
+		germplasm.put(1, StringUtils.randomAlphanumeric(10));
+		Mockito.when(this.germplasmDataManager.getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(germplasm);
+
+		final TraitInfo info = new TraitInfo();
+		info.setId(1);
+		info.setType(TraitType.NUMERIC);
+		info.setName(StringUtils.randomAlphanumeric(3));
+		info.setDescription(StringUtils.randomAlphanumeric(10));
+		final NumericTraitFilter numericTraitFilter = new NumericTraitFilter(info, NumericTraitCriteria.KEEP_ALL, Arrays.asList("20"), TraitWeight.IGNORED);
+
+
+		Mockito.when(this.comboBox.getValue()).thenReturn(EnvironmentWeight.IGNORED);
+
+		final EnvironmentForComparison environment = new EnvironmentForComparison(1, StringUtils.randomAlphanumeric(10),
+			StringUtils.randomAlphanumeric(10), StringUtils.randomAlphanumeric(10), this.comboBox);
+		try {
+			this.traitDisplayResults.populateResultsTable(Arrays.asList(environment),
+				Arrays.asList(numericTraitFilter), new ArrayList<CharacterTraitFilter>(),
+				new ArrayList<CategoricalTraitFilter>());
+		} catch (final NumberFormatException e) {
+			e.printStackTrace();
+			Assert.fail("System should ignore invalid numeric value");
+		}
+
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
+		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
+			ArgumentMatchers.<List<Integer>>any());
+
+		final Iterator<Component> componentIterator = this.traitDisplayResults.getResultsTable().getComponentIterator();
+		final List<String> debugIds = new ArrayList<>(
+			Arrays.asList("germplasmColTable", "traitsColTable", "combinedScoreTagColTable"));
+		while (componentIterator.hasNext()) {
+			Assert.assertTrue(debugIds.contains(componentIterator.next().getDebugId()));
+		}
+
+	}
+
+	@Test
+	public void testPopulateResultsTableNumericalValidTrait() {
+
+		final Observation observation = new Observation(new ObservationKey(1,1, 1), "6.2");
+		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(Arrays.asList(observation));
+
+		final Map<Integer, String> germplasm = new HashMap<>();
+		germplasm.put(1, StringUtils.randomAlphanumeric(10));
+		Mockito.when(this.germplasmDataManager.getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(germplasm);
+
+		final TraitInfo info = new TraitInfo();
+		info.setId(1);
+		info.setType(TraitType.NUMERIC);
+		info.setName(StringUtils.randomAlphanumeric(3));
+		info.setDescription(StringUtils.randomAlphanumeric(10));
+		final NumericTraitFilter numericTraitFilter = new NumericTraitFilter(info, NumericTraitCriteria.KEEP_ALL, Arrays.asList("20"), TraitWeight.IGNORED);
+
+
+		Mockito.when(this.comboBox.getValue()).thenReturn(EnvironmentWeight.IGNORED);
+
+		final EnvironmentForComparison environment = new EnvironmentForComparison(1, StringUtils.randomAlphanumeric(10),
+			StringUtils.randomAlphanumeric(10), StringUtils.randomAlphanumeric(10), this.comboBox);
+		try {
+			this.traitDisplayResults.populateResultsTable(Arrays.asList(environment),
+				Arrays.asList(numericTraitFilter), new ArrayList<CharacterTraitFilter>(),
+				new ArrayList<CategoricalTraitFilter>());
+		} catch (final NumberFormatException e) {
+			e.printStackTrace();
+			Assert.fail("System should ignore invalid numeric value");
+		}
+
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
+		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
+			ArgumentMatchers.<List<Integer>>any());
+
+		final Iterator<Component> componentIterator = this.traitDisplayResults.getResultsTable().getComponentIterator();
+		final List<String> debugIds = new ArrayList<>(
+			Arrays.asList("germplasmColTable", "traitsColTable", "combinedScoreTagColTable"));
+		while (componentIterator.hasNext()) {
+			Assert.assertTrue(debugIds.contains(componentIterator.next().getDebugId()));
+		}
+
 	}
 }
