@@ -130,7 +130,7 @@ export class UserCard implements OnInit {
                     this.sendEmailToResetPassword(resp);
                 },
                 error => {
-                    this.errorUserMessage = this.mapErrorUser(error.json().ERROR.errors);
+                    this.errorUserMessage = this.mapErrorUser(error.json().errors);
                 });
     }
 
@@ -144,7 +144,7 @@ export class UserCard implements OnInit {
                     this.sendEmailToResetPassword(resp);
                 },
                 error => {
-                    this.errorUserMessage = this.mapErrorUser(error.json().ERROR.errors);
+                    this.errorUserMessage = this.mapErrorUser(error.json().errors);
                 });
     }
 
@@ -153,21 +153,12 @@ export class UserCard implements OnInit {
     }
 
     private mapErrorUser(response: any): string {
-        return response.map(this.toErrorUser);
-    }
-
-    // TODO set form.controls (See role-card)
-    private toErrorUser(r: any): string {
-        let msg = {
-            fieldNames: r.fieldNames,
-            message: r.message,
-        }
-        return ' ' + msg.fieldNames + ' ' + msg.message;
+        return response.map(e => e.message + ' ');
     }
 
     private sendEmailToResetPassword(respSaving: Response) {
         if (!this.isEditing) {
-            this.model.id = respSaving.json().id;
+            this.model.id = respSaving.text();
         }
         if (this.sendMail) {
             this.sendingEmail = true;

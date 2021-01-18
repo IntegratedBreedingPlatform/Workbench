@@ -13,6 +13,7 @@ import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
 import {AppModalService} from '../../shared/modal/app-modal.service';
+import { AlertService } from '../../shared/alert/alert.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -48,7 +49,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         private sampleListService: SampleListService,
         private languageservice: JhiLanguageService,
         // private parseLinks: JhiParseLinks,
-        private jhiAlertService: JhiAlertService,
+        private alertService: AlertService,
         private activatedRoute: ActivatedRoute,
         private router: Router,
         private eventManager: JhiEventManager,
@@ -181,6 +182,6 @@ export class SampleComponent implements OnInit, OnDestroy {
         }
     }
     private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+        this.alertService.error(error.message);
     }
 }

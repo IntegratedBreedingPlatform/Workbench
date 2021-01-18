@@ -48,7 +48,6 @@
             "add-to-list": "Add to existing list",
             "import": "Import germplasm"
         },
-        "total-records": "Total germplasm records",
         "included-gids": "(+ included germplasm)"
     },
     "germplasm-list-creation": {

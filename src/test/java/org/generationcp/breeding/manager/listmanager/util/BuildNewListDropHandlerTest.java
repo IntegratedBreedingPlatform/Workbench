@@ -41,7 +41,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableTransferable;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class BuildNewListDropHandlerTest {
 	

@@ -8,6 +8,7 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { ParamContext } from '../../../shared/service/param.context';
 import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '../../../shared/alert/alert.service';
 
 @Component({
     encapsulation: ViewEncapsulation.None,

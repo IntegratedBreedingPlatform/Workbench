@@ -20,7 +20,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class ListComponentAddColumnSourceTest {
 

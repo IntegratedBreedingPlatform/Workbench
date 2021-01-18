@@ -18,6 +18,8 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { TranslateService } from '@ngx-translate/core';
 import {ParamContext} from '../../shared/service/param.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
+import { AlertService } from '../../shared/alert/alert.service';
+import { ColumnLabels } from '../germplasm-search.component';
 
 declare var $: any;
 
@@ -29,6 +31,8 @@ declare var $: any;
 })
 export class GermplasmSelectorComponent implements OnInit {
 
+    ColumnLabels = ColumnLabels;
+
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
     eventSubscriber: Subscription;
     germplasmList: Germplasm[];
@@ -36,7 +40,6 @@ export class GermplasmSelectorComponent implements OnInit {
     currentSearch: string;
     routeData: any;
     links: any;
-    totalItems: any;
     filteredItems: any;
     itemsPerPage: any = 10;
     page: any = 1;
@@ -266,7 +269,7 @@ export class GermplasmSelectorComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
                 private router: Router,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private paramContext: ParamContext) {
@@ -328,24 +331,23 @@ export class GermplasmSelectorComponent implements OnInit {
 
     ngOnInit() {
         this.registerChangeInGermplasm();
-        this.registerClearSort();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
-        this.hiddenColumns['groupId'] = true;
-        this.hiddenColumns['germplasmDate'] = true;
-        this.hiddenColumns['methodCode'] = true;
-        this.hiddenColumns['methodNumber'] = true;
-        this.hiddenColumns['methodGroup'] = true;
-        this.hiddenColumns['germplasmPeferredName'] = true;
-        this.hiddenColumns['germplasmPeferredId'] = true;
-        this.hiddenColumns['groupSourceGID'] = true;
-        this.hiddenColumns['groupSourcePreferredName'] = true;
-        this.hiddenColumns['immediateSourceGID'] = true;
-        this.hiddenColumns['immediateSourcePreferredName'] = true;
-        this.hiddenColumns['femaleParentGID'] = true;
-        this.hiddenColumns['femaleParentPreferredName'] = true;
-        this.hiddenColumns['maleParentGID'] = true;
-        this.hiddenColumns['maleParentPreferredName'] = true;
+        this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
+        this.hiddenColumns[ColumnLabels['GERMPLASM DATE']] = true;
+        this.hiddenColumns[ColumnLabels['METHOD ABBREV']] = true;
+        this.hiddenColumns[ColumnLabels['METHOD NUMBER']] = true;
+        this.hiddenColumns[ColumnLabels['METHOD GROUP']] = true;
+        this.hiddenColumns[ColumnLabels['PREFERRED NAME']] = true;
+        this.hiddenColumns[ColumnLabels['PREFERRED ID']] = true;
+        this.hiddenColumns[ColumnLabels['GROUP SOURCE GID']] = true;
+        this.hiddenColumns[ColumnLabels['GROUP SOURCE']] = true;
+        this.hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']] = true;
+        this.hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']] = true;
+        this.hiddenColumns[ColumnLabels['FGID']] = true;
+        this.hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']] = true;
+        this.hiddenColumns[ColumnLabels['MGID']] = true;
+        this.hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']] = true;
     }
 
     addSortParam(params) {
@@ -362,16 +364,24 @@ export class GermplasmSelectorComponent implements OnInit {
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
+    preSortCheck() {
+        const isAddedColumn = this.request.addedColumnsPropertyIds.some((col) => col === this.predicate);
+        const isHidden = this.hiddenColumns[this.predicate];
+        if (isHidden || !ColumnLabels[this.predicate] && !isAddedColumn) {
+            this.clearSort();
+        }
+    }
+
     clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down')
-        this.transition();
     }
 
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
+        this.transition();
     }
 
     /**
@@ -388,6 +398,8 @@ export class GermplasmSelectorComponent implements OnInit {
 
     registerChangeInGermplasm() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
+
+            this.preSortCheck();
 
             if (this.isExpensiveFilter()) {
                 const confirmModalRef = this.modal.open(ModalConfirmComponent as Component);
@@ -426,12 +438,6 @@ export class GermplasmSelectorComponent implements OnInit {
             || this.request.immediateSourceName && this.request.immediateSourceName.type === MatchType.CONTAINS;
     }
 
-    registerClearSort() {
-        this.eventSubscriber = this.eventManager.subscribe('clearSort', (event) => {
-            this.clearSort();
-        });
-    }
-
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
@@ -446,11 +452,11 @@ export class GermplasmSelectorComponent implements OnInit {
         } else {
             this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== columnPropertyId);
         }
+        this.preSortCheck();
         this.resetTable();
     }
 
     private onSuccess(data, headers) {
-            this.totalItems = headers.get('X-Total-Count');
         this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
     }
@@ -458,9 +464,9 @@ export class GermplasmSelectorComponent implements OnInit {
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 

@@ -24,7 +24,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Table;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class AddColumnContextMenuTest {
 

@@ -4,7 +4,7 @@ package org.generationcp.ibpworkbench.cross.study.util.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.ibpworkbench.cross.study.util.TraitFilterUtil;
 import org.junit.Test;

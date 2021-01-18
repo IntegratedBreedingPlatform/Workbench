@@ -6,7 +6,7 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class BreedingManagerTransformationUtilTest {
 

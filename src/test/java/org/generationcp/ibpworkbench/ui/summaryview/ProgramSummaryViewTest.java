@@ -3,7 +3,7 @@ package org.generationcp.ibpworkbench.ui.summaryview;
 import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.domain.study.StudyTypeDto;

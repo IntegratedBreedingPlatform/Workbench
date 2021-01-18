@@ -21,6 +21,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { AlertService } from '../shared/alert/alert.service';
 
 declare var $: any;
 
@@ -32,15 +33,17 @@ export class GermplasmSearchComponent implements OnInit {
 
     IMPORT_GERMPLASM_UPDATES = [...IMPORT_GERMPLASM_UPDATES_PERMISSIONS];
 
+    ColumnLabels = ColumnLabels;
+
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
     @ViewChild(ColumnFilterComponent) public columnFilterComponent: ColumnFilterComponent;
+
     eventSubscriber: Subscription;
     germplasmList: Germplasm[];
     error: any;
     currentSearch: string;
     routeData: any;
     links: any;
-    totalItems: any;
     filteredItems: any;
     itemsPerPage: any = 20;
     page: any;
@@ -270,7 +273,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
                 private router: Router,
-                private jhiAlertService: JhiAlertService,
+                private alertService: AlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
@@ -330,24 +333,23 @@ export class GermplasmSearchComponent implements OnInit {
     ngOnInit() {
         this.registerChangeInGermplasm();
         this.registerGermplasmUpdated();
-        this.registerClearSort();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
-        this.hiddenColumns['groupId'] = true;
-        this.hiddenColumns['germplasmDate'] = true;
-        this.hiddenColumns['methodCode'] = true;
-        this.hiddenColumns['methodNumber'] = true;
-        this.hiddenColumns['methodGroup'] = true;
-        this.hiddenColumns['germplasmPeferredName'] = true;
-        this.hiddenColumns['germplasmPeferredId'] = true;
-        this.hiddenColumns['groupSourceGID'] = true;
-        this.hiddenColumns['groupSourcePreferredName'] = true;
-        this.hiddenColumns['immediateSourceGID'] = true;
-        this.hiddenColumns['immediateSourcePreferredName'] = true;
-        this.hiddenColumns['femaleParentGID'] = true;
-        this.hiddenColumns['femaleParentPreferredName'] = true;
-        this.hiddenColumns['maleParentGID'] = true;
-        this.hiddenColumns['maleParentPreferredName'] = true;
+        this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
+        this.hiddenColumns[ColumnLabels['GERMPLASM DATE']] = true;
+        this.hiddenColumns[ColumnLabels['METHOD ABBREV']] = true;
+        this.hiddenColumns[ColumnLabels['METHOD NUMBER']] = true;
+        this.hiddenColumns[ColumnLabels['METHOD GROUP']] = true;
+        this.hiddenColumns[ColumnLabels['PREFERRED NAME']] = true;
+        this.hiddenColumns[ColumnLabels['PREFERRED ID']] = true;
+        this.hiddenColumns[ColumnLabels['GROUP SOURCE GID']] = true;
+        this.hiddenColumns[ColumnLabels['GROUP SOURCE']] = true;
+        this.hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']] = true;
+        this.hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']] = true;
+        this.hiddenColumns[ColumnLabels['FGID']] = true;
+        this.hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']] = true;
+        this.hiddenColumns[ColumnLabels['MGID']] = true;
+        this.hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']] = true;
     }
 
     addSortParam(params) {
@@ -364,16 +366,24 @@ export class GermplasmSearchComponent implements OnInit {
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
+    preSortCheck() {
+        const isAddedColumn = this.request.addedColumnsPropertyIds.some((col) => col === this.predicate);
+        const isHidden = this.hiddenColumns[this.predicate];
+        if (isHidden || !ColumnLabels[this.predicate] && !isAddedColumn) {
+            this.clearSort();
+        }
+    }
+
     clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down')
-        this.transition();
     }
 
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
+        this.transition();
     }
 
     /**
@@ -390,6 +400,8 @@ export class GermplasmSearchComponent implements OnInit {
 
     registerChangeInGermplasm() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
+
+            this.preSortCheck();
 
             if (this.isExpensiveFilter()) {
                 const confirmModalRef = this.modal.open(ModalConfirmComponent as Component);
@@ -452,12 +464,6 @@ export class GermplasmSearchComponent implements OnInit {
         );
     }
 
-    registerClearSort() {
-        this.eventSubscriber = this.eventManager.subscribe('clearSort', (event) => {
-            this.clearSort();
-        });
-    }
-
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
@@ -473,11 +479,11 @@ export class GermplasmSearchComponent implements OnInit {
         } else {
             this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== columnPropertyId);
         }
+        this.preSortCheck();
         this.resetTable();
     }
 
     private onSuccess(data, headers) {
-        this.totalItems = headers.get('X-Total-Count');
         this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
     }
@@ -485,9 +491,9 @@ export class GermplasmSearchComponent implements OnInit {
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 
@@ -529,9 +535,9 @@ export class GermplasmSearchComponent implements OnInit {
 
     private validateSelection() {
         if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
-            this.jhiAlertService.error('error.custom', {
+            this.alertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
-            }, null);
+            });
             return false;
         }
         return true;
@@ -574,4 +580,30 @@ export class GermplasmSearchComponent implements OnInit {
             queryParamsHandling: 'merge'
         });
     }
+}
+
+export enum ColumnLabels {
+    'GID' = 'GID',
+    'GROUP ID' = 'GROUP ID',
+    'NAMES' = 'NAMES',
+    'AVAILABLE' = 'AVAILABLE',
+    'LOT_UNITS' = 'LOT_UNITS',
+    'LOTS' = 'LOTS',
+    'CROSS' = 'CROSS',
+    'PREFERRED ID' = 'PREFERRED ID',
+    'PREFERRED NAME' = 'PREFERRED NAME',
+    'GERMPLASM DATE' = 'GERMPLASM DATE',
+    'LOCATIONS' = 'LOCATIONS',
+    'METHOD NAME' = 'METHOD NAME',
+    'METHOD ABBREV' = 'METHOD ABBREV',
+    'METHOD NUMBER' = 'METHOD NUMBER',
+    'METHOD GROUP' = 'METHOD GROUP',
+    'FGID' = 'FGID',
+    'CROSS-FEMALE PREFERRED NAME' = 'CROSS-FEMALE PREFERRED NAME',
+    'MGID' = 'MGID',
+    'CROSS-MALE PREFERRED NAME' = 'CROSS-MALE PREFERRED NAME',
+    'GROUP SOURCE GID' = 'GROUP SOURCE GID',
+    'GROUP SOURCE' = 'GROUP SOURCE',
+    'IMMEDIATE SOURCE GID' = 'IMMEDIATE SOURCE GID',
+    'IMMEDIATE SOURCE' = 'IMMEDIATE SOURCE',
 }

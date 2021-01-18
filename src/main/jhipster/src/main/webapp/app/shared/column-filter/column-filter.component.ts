@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { ActivatedRoute } from '@angular/router';
 import { isNumeric } from '../util/is-numeric';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from '../alert/alert.service';
 
 @Component({
     selector: 'jhi-column-filter',
@@ -43,6 +44,9 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     selectedFilter: any = '';
     cropName: string;
+
+    addedNameTypes = [];
+    addedAttributes = [];
 
     static transformMinMaxFilter(filter, request, minProperty, maxProperty) {
         request[minProperty] = filter.min;
@@ -253,7 +257,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
     }
 
-    constructor(private jhiAlertService: JhiAlertService,
+    constructor(private alertService: AlertService,
                 private activatedRoute: ActivatedRoute,
                 private modal: NgbModal,
                 private eventManager: JhiEventManager) {
@@ -359,6 +363,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     clear(filter) {
+        if (filter.type === this.FILTER_TYPES.NAME_TYPES) {
+            this.removeAllNameTypesColumn();
+        } else if (filter.type === this.FILTER_TYPES.ATTRIBUTES) {
+            this.removeAllAttributesColumn();
+        }
         filter.added = false;
         this.filtersAdded.splice(this.filtersAdded.indexOf(filter), 1);
         this.reset(filter);
@@ -377,6 +386,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     clearAll() {
         this.clearFilters();
+        this.removeAllAttributesColumn();
+        this.removeAllNameTypesColumn();
         this.resultSearch.searchResultDbId = '';
         this.transition();
     }
@@ -414,7 +425,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+        this.alertService.error(error.message);
     }
 
     updateRadioFilter(filter: any, key: string) {
@@ -426,23 +437,39 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     addAttributesColumn(attribute) {
         if (!this.request.addedColumnsPropertyIds.some((e) => e === attribute.code)) {
             this.request.addedColumnsPropertyIds.push(attribute.code);
+            this.addedAttributes.push(attribute);
         }
     }
 
     removeAttributesColumn(attribute) {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
-        this.eventManager.broadcast({ name: 'clearSort', content: '' });
+        this.addedAttributes = this.addedAttributes.filter((a) => a.code !== attribute.code);
+    }
+
+    removeAllAttributesColumn() {
+        const tempAddedAttributes = this.addedAttributes;
+        tempAddedAttributes.forEach((attr) => {
+           this.removeAttributesColumn(attr);
+        });
     }
 
     addNameTypeColumn(nameType) {
         if (!this.request.addedColumnsPropertyIds.some((e) => e === nameType.name)) {
             this.request.addedColumnsPropertyIds.push(nameType.name);
+            this.addedNameTypes.push(nameType);
         }
     }
 
     removeNameTypeColumn(nameType) {
         this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== nameType.name);
-        this.eventManager.broadcast({ name: 'clearSort', content: '' });
+        this.addedNameTypes = this.addedNameTypes.filter((a) => a.name !== nameType.name);
+    }
+
+    removeAllNameTypesColumn() {
+        const tempAddedNameTypes = this.addedNameTypes;
+        tempAddedNameTypes.forEach((nameType) => {
+           this.removeNameTypeColumn(nameType);
+        });
     }
 
 }

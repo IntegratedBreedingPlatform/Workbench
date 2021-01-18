@@ -2,6 +2,7 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {AppModalService} from '../../shared/modal/app-modal.service';
 import {ExcelService} from './excel.service';
 import {JhiAlertService} from 'ng-jhipster';
+import { AlertService } from '../../shared/alert/alert.service';
 
 @Component({
     selector: 'jhi-sample-import-plate',
@@ -24,7 +25,7 @@ export class SampleImportPlateComponent {
 
     constructor(private modalService: AppModalService,
                 private excelService: ExcelService,
-                private alertService: JhiAlertService) {
+                private alertService: AlertService) {
 
     }
 

@@ -1,8 +1,12 @@
 package org.generationcp.breeding.manager.crossingmanager;
 
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.generationcp.breeding.manager.application.Message;
@@ -10,7 +14,6 @@ import org.generationcp.breeding.manager.crossingmanager.pojos.CrossParents;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.commons.parsing.pojo.ImportedCross;
-import org.generationcp.commons.parsing.pojo.ImportedGermplasmParent;
 import org.generationcp.commons.ruleengine.generator.SeedSourceGenerator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.constant.ColumnLabels;
@@ -30,18 +33,36 @@ import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitRow;
 import org.generationcp.middleware.service.api.dataset.ObservationUnitUtils;
 import org.generationcp.middleware.service.api.study.StudyEntryDto;
+import org.generationcp.middleware.service.api.study.StudyInstanceService;
+import org.generationcp.middleware.service.impl.study.StudyInstance;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.exceptions.verification.NeverWantedButInvoked;
 import org.mockito.exceptions.verification.TooLittleActualInvocations;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import static org.generationcp.breeding.manager.crossingmanager.ParentTabComponent.TAG_COLUMN_ID;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class MakeCrossesTableComponentTest {
 
@@ -86,6 +107,9 @@ public class MakeCrossesTableComponentTest {
 	@Mock
 	private GermplasmListManager germplasmListManager;
 
+	@Mock
+	private StudyInstanceService studyInstanceService;
+
 	private GermplasmListEntry femaleParent;
 	private GermplasmListEntry maleParent;
 	private CrossParents parents;
@@ -108,6 +132,8 @@ public class MakeCrossesTableComponentTest {
 		this.makeCrossesTableComponent.setCrossExpansionProperties(this.crossExpansionProps);
 		this.makeCrossesTableComponent.initializeTotalCrossesLabel();
 		this.makeCrossesTableComponent.setGermplasmListManager(this.germplasmListManager);
+		this.makeCrossesTableComponent.setStudyInstanceService(this.studyInstanceService);
+
 
 		this.femaleParent = new GermplasmListEntry(1, 1, 1);
 		this.femaleParent.setDesignation("female parent");
@@ -375,7 +401,10 @@ public class MakeCrossesTableComponentTest {
 
 		this.makeCrossesTableComponent.setPlotEntriesMap(this.createPlotEntriesMap(10, studyName));
 		final Map<String, String> locationMap = Collections.singletonMap("1", "Unknown Location");
+		final Map<Integer, StudyInstance> studyInstanceMap = Collections.singletonMap(1, new StudyInstance());
+
 		this.makeCrossesTableComponent.setStudyLocationMap(locationMap);
+		this.makeCrossesTableComponent.setStudyInstanceMap(studyInstanceMap);
 		final MeasurementVariable variable = new MeasurementVariable();
 		variable.setTermId(random.nextInt());
 		final List<MeasurementVariable> environmentVariableList = Collections.singletonList(variable);
@@ -390,7 +419,8 @@ public class MakeCrossesTableComponentTest {
 		final ObservationUnitRow environmentRow = ObservationUnitUtils.fromMeasurementRow(workbook.getTrialObservationByTrialInstanceNo(1));
 		Mockito.when(this.seedSourceGenerator.generateSeedSourceForCross(ArgumentMatchers.eq(Pair.of(
 			environmentRow, environmentRow)), ArgumentMatchers.eq(Pair.of(conditions, conditions)),
-			ArgumentMatchers.eq(Pair.of(locationMap, locationMap)), ArgumentMatchers.eq(Pair.of(environmentVariableList, environmentVariableList)),
+			ArgumentMatchers.eq(Pair.of(locationMap, locationMap)), ArgumentMatchers.eq(Pair.of(studyInstanceMap, studyInstanceMap)),
+			ArgumentMatchers.eq(Pair.of(environmentVariableList, environmentVariableList)),
 			crossCaptor.capture())).thenReturn(expectedSeedSource);
 		final String seedSource = this.makeCrossesTableComponent.generateSeedSource(femaleGid, maleEntries);
 		Assert.assertEquals(expectedSeedSource, seedSource);
@@ -422,7 +452,10 @@ public class MakeCrossesTableComponentTest {
 
 		this.makeCrossesTableComponent.setPlotEntriesMap(this.createPlotEntriesMap(10, studyName));
 		final Map<String, String> locationMap = Collections.singletonMap("1", "Unknown Location");
+		final Map<Integer, StudyInstance> studyInstanceMap = Collections.singletonMap(1, new StudyInstance());
+
 		this.makeCrossesTableComponent.setStudyLocationMap(locationMap);
+		this.makeCrossesTableComponent.setStudyInstanceMap(studyInstanceMap);
 		final MeasurementVariable variable = new MeasurementVariable();
 		variable.setTermId(random.nextInt());
 		final List<MeasurementVariable> environmentVariableList = Collections.singletonList(variable);
@@ -438,7 +471,8 @@ public class MakeCrossesTableComponentTest {
 		final ObservationUnitRow environmentRow = ObservationUnitUtils.fromMeasurementRow(workbook.getTrialObservationByTrialInstanceNo(1));
 		Mockito.when(this.seedSourceGenerator.generateSeedSourceForCross(ArgumentMatchers.eq(Pair.of(
 			environmentRow, environmentRow)), ArgumentMatchers.eq(Pair.of(conditions, conditions)),
-			ArgumentMatchers.eq(Pair.of(locationMap, locationMap)), ArgumentMatchers.eq(Pair.of(environmentVariableList, environmentVariableList)),
+			ArgumentMatchers.eq(Pair.of(locationMap, locationMap)), ArgumentMatchers.eq(Pair.of(studyInstanceMap, studyInstanceMap)),
+			ArgumentMatchers.eq(Pair.of(environmentVariableList, environmentVariableList)),
 			crossCaptor.capture())).thenReturn(expectedSeedSource);
 		final String seedSource = this.makeCrossesTableComponent.generateSeedSource(femaleGid, maleEntries);
 		Assert.assertEquals(expectedSeedSource, seedSource);
@@ -628,7 +662,10 @@ public class MakeCrossesTableComponentTest {
 
 		this.makeCrossesTableComponent.setPlotEntriesMap(this.createPlotEntriesMap(10, studyName));
 		final Map<String, String> locationMap = Collections.singletonMap("1", "Unknown Location");
+		final Map<Integer, StudyInstance> studyInstanceMap = Collections.singletonMap(1, new StudyInstance());
+
 		this.makeCrossesTableComponent.setStudyLocationMap(locationMap);
+		this.makeCrossesTableComponent.setStudyInstanceMap(studyInstanceMap);
 		final MeasurementVariable variable = new MeasurementVariable();
 		variable.setTermId(random.nextInt());
 		final List<MeasurementVariable> environmentVariableList = Collections.singletonList(variable);
@@ -639,7 +676,8 @@ public class MakeCrossesTableComponentTest {
 		final ObservationUnitRow environmentRow = ObservationUnitUtils.fromMeasurementRow(workbook.getTrialObservationByTrialInstanceNo(1));
 		Mockito.when(this.seedSourceGenerator.generateSeedSourceForCross(ArgumentMatchers.eq(Pair.of(
 			environmentRow, environmentRow)), ArgumentMatchers.eq(Pair.of(conditions, conditions)),
-			ArgumentMatchers.eq(Pair.of(locationMap, locationMap)), ArgumentMatchers.eq(Pair.of(environmentVariableList, environmentVariableList)),
+			ArgumentMatchers.eq(Pair.of(locationMap, locationMap)), ArgumentMatchers.eq(Pair.of(studyInstanceMap, studyInstanceMap)),
+			ArgumentMatchers.eq(Pair.of(environmentVariableList, environmentVariableList)),
 			crossCaptor.capture())).thenReturn(expectedSeedSource);
 		this.makeCrossesTableComponent.makeCrossesWithMultipleMaleParents(femaleEntries, maleEntries, FEMALE_LIST_NAME, MALE_LIST_NAME, false);
 
@@ -720,19 +758,4 @@ public class MakeCrossesTableComponentTest {
 		return tableWithSelectAllLayout;
 	}
 
-	private ImportedCross getCross(final List<String> malePlotNos, final String femalePlotNo, final String studyName) {
-		final ImportedCross crossInfo = new ImportedCross();
-		crossInfo.setFemaleParent(
-			new ImportedGermplasmParent(null, null, StringUtils.isEmpty(femalePlotNo) ? null : Integer.valueOf(femalePlotNo),
-				studyName));
-
-		final List<ImportedGermplasmParent> crossMaleParents = new ArrayList<>();
-		for (final String malePlotNo : malePlotNos) {
-			crossMaleParents.add(
-				new ImportedGermplasmParent(null, null, StringUtils.isEmpty(malePlotNo) ? null : Integer.valueOf(malePlotNo),
-					studyName));
-		}
-		crossInfo.setMaleParents(crossMaleParents);
-		return crossInfo;
-	}
 }

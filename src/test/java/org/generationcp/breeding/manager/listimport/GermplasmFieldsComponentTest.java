@@ -21,7 +21,9 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+
+import static org.hamcrest.core.Is.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GermplasmFieldsComponentTest {
@@ -143,7 +145,7 @@ public class GermplasmFieldsComponentTest {
 		this.germplasmFieldsComponent.refreshLayout(hasInventoryVariable, false);
 
 		// Check the height of the layout. Layout is longer when inventory variable is present
-		Assert.assertEquals("Layout height is 360px", 360.0f, this.germplasmFieldsComponent.getHeight());
+		Assert.assertThat("Layout height is 360px", 360.0f, is(this.germplasmFieldsComponent.getHeight()));
 		Assert.assertEquals(0, this.germplasmFieldsComponent.getHeightUnits());
 
 		// Check the # of components added in the layout
@@ -167,7 +169,7 @@ public class GermplasmFieldsComponentTest {
 		this.germplasmFieldsComponent.refreshLayout(hasInventoryVariable, false);
 
 		// Check the height of the layout. Layout is longer when inventory variable is present
-		Assert.assertEquals("Layout height is 300px", 300.0f, this.germplasmFieldsComponent.getHeight());
+		Assert.assertThat("Layout height is 300px", 300.0f, is(this.germplasmFieldsComponent.getHeight()));
 		Assert.assertEquals(0, this.germplasmFieldsComponent.getHeightUnits());
 
 		// Check the # of components added in the layout

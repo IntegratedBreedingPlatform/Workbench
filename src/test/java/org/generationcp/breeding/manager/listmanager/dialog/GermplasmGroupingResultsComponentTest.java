@@ -3,7 +3,7 @@ package org.generationcp.breeding.manager.listmanager.dialog;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;

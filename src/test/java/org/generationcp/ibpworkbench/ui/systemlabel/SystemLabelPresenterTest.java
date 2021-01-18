@@ -2,7 +2,7 @@ package org.generationcp.ibpworkbench.ui.systemlabel;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Table;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.OntologyDataManager;

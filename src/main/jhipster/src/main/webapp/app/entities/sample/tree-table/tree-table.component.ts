@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SampleTreeService } from './sample-tree.service';
 import { JhiAlertService } from 'ng-jhipster';
+import { AlertService } from '../../../shared/alert/alert.service';
 
 declare var authToken: string
     , selectedProjectId: string
@@ -64,7 +65,7 @@ export class TreeTableComponent implements OnInit {
     }
 
     // TODO make generic interface: TreeService
-    constructor(private alertService: JhiAlertService,
+    constructor(private alertService: AlertService,
                 private service: SampleTreeService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
