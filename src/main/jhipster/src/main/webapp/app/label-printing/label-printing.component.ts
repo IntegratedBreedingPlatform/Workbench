@@ -1,4 +1,4 @@
-import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting } from './label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
@@ -6,18 +6,20 @@ import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AppModalService } from '../shared/modal/app-modal.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 
 declare const $: any;
 
 @Component({
+    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
     // TODO migrate IBP-4093
-    styleUrls: ['../../content/css/global-bs3.css', './label-printing.component.css']
+    styleUrls: ['../../content/css/global-bs4.scss', './label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
     initComplete: boolean;
@@ -44,7 +46,8 @@ export class LabelPrintingComponent implements OnInit {
                 private languageService: JhiLanguageService,
                 private fileDownloadHelper: FileDownloadHelper,
                 private alertService: AlertService,
-                private modalService: AppModalService,
+                public activeModal: NgbActiveModal,
+                private modalService: NgbModal,
                 private helpService: HelpService) {
     }
 
@@ -191,8 +194,10 @@ export class LabelPrintingComponent implements OnInit {
         const presetSetting = this.presetSettings.filter((preset) => preset.id === Number(this.presetSettingId))[0];
         this.modalTitle = 'Delete preset?';
         this.modalMessage = 'Are you sure you want to delete ' + presetSetting.name + ' ?';
-        this.modalService.open('modal-confirm');
-        this.proceed = function deletePreset(): void {
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.title = this.modalTitle;
+        confirmModalRef.componentInstance.message = this.modalMessage;
+        confirmModalRef.result.then(() => {
             this.service.deletePreset(this.presetSettingId).subscribe(() => {
                 this.alertService.success('label-printing.delete.preset.success');
                 this.loadPresets();
@@ -203,7 +208,9 @@ export class LabelPrintingComponent implements OnInit {
                     this.alertService.error('error.general');
                 }
             });
-        }
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
+        return;
     }
 
     private loadPresets() {
@@ -295,7 +302,13 @@ export class LabelPrintingComponent implements OnInit {
         if (Number(this.presetSettingId) === 0) {
             this.modalTitle = 'Confirmation';
             this.modalMessage = 'Proceed export label without saving label printing setting?';
-            this.modalService.open('modal-confirm');
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.title = this.modalTitle;
+            confirmModalRef.componentInstance.message = this.modalMessage;
+            confirmModalRef.result.then(() => {
+                this.proceed();
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
         } else {
             this.proceed();
         }
@@ -401,9 +414,9 @@ export class LabelPrintingComponent implements OnInit {
         }
 
         const from = this.labelTypes.map((l) => `<strong>${l.title}</strong>`).join(' and ');
-        let to = '<strong>Selected Fields</strong>';
+        let to = '<strong> Selected Fields </strong>';
         if (this.fileType === FileType.PDF) {
-            to = '<strong>Left Side Fields</strong> and <strong>Right Side Fields</strong>';
+            to = `<strong> Left Side Fields </strong> and <strong> Right Side Fields </strong>`;
         }
 
         let description = `Drag fields from the ${from} into the ${to} to add them to your export file.`;
@@ -413,6 +426,10 @@ export class LabelPrintingComponent implements OnInit {
         }
 
         return description;
+    }
+
+    back() {
+        window.history.back();
     }
 }
 
