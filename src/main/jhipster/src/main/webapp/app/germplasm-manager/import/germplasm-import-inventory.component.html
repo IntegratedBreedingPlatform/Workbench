@@ -35,19 +35,20 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group row" style="margin-top: 15px;margin-bottom: 15px;">
+			<div class="form-group row" style="margin-top: 15px;margin-bottom: 15px;" [class.required]="createInventoryLots">
 				<label for="stockIdPrefix" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.stock.id.prefix">
 					<i class="fa fa-info-circle col-2" data-toggle="tooltip" data-placement="top" title="If no prefix is specified, the default SID prefix will be used"></i>
 				</label>
 				<div class="col-sm-6" *ngIf="!hasAllStockIds() else allGood">
 					<div class="row">
 						<div class="input-group col-xs-12 col-md-12">
-							<input class="form-control" [(ngModel)]="stock_IdPrefix" [pattern]="STOCK_ID_PREFIX_REGEX" [maxLength]="15" id="stockIdPrefix" name="stockIdPrefix" [disabled]="!createInventoryLots" required="{{createInventoryLots}}" #stockIdPrefix="ngModel"/>
+							<input class="form-control" [(ngModel)]="stock_IdPrefix" [pattern]="STOCK_ID_PREFIX_REGEX" [maxLength]="15" id="stockIdPrefix" name="stockIdPrefix"
+								   [disabled]="!createInventoryLots" [required]="createInventoryLots" #stockIdPrefix="ngModel"/>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group row" [class.required]="createInventoryLots">
 				<label for="seedStorageLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.seed.storage.location"></label>
 				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
 					<ng-select2 *ngIf="!useFavoriteLocations" name="seedStorageLocation" id="seedStorageLocation" width="100%" [(ngModel)]="locationSelected"
@@ -68,17 +69,17 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group row" [class.required]="createInventoryLots">
 				<label for="dropdownUnits" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.units"></label>
 				<div class="col-sm-6" *ngIf="!hasAllUnits() else allGood">
-					<select class="form-control" name="dropdownUnits" id="dropdownUnits" [(ngModel)]="unitSelected" required="{{createInventoryLots}}" #dropdownUnits="ngModel">
+					<select class="form-control" name="dropdownUnits" id="dropdownUnits" [(ngModel)]="unitSelected" [required]="createInventoryLots" #dropdownUnits="ngModel">
 						<option *ngFor="let unit of units | async" [value]="unit.name">
 							<label>{{unit.name}}</label>
 						</option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group row" [class.required]="createInventoryLots">
 				<label for="depositAmount" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.amount">
 				</label>
 				<div class="col-sm-6" *ngIf="!hasAllAmounts() else allGood">
@@ -86,7 +87,7 @@
 						<div class="input-group col-xs-12 col-md-12">
 							<input type="number" class="form-control" name="depositAmount" id="depositAmount" [disabled]="!createInventoryLots"
 								   [(ngModel)]="deposit.amount" jhi-customMinGreaterThanValidator min=0 #depositAmount="ngModel"
-								   [ngClass]="{ 'is-invalid': inventoryDetailsForm.submitted && depositAmount.invalid }" required="{{createInventoryLots}}"/>
+								   [ngClass]="{ 'is-invalid': inventoryDetailsForm.submitted && depositAmount.invalid }" [required]="createInventoryLots" />
 						</div>
 						<div class="form-group row" [hidden]="!(depositAmount.touched && depositAmount.invalid)">
 							<div class="col-4"></div>
@@ -118,7 +119,7 @@
 	</button>
 </div>
 <ng-template #allGood>
-	<label class="col col-form-label">
+	<label class="col form-control-plaintext">
 		Complete!&nbsp;<span class="fa fa-check text-success"></span>
 	</label>
 </ng-template>

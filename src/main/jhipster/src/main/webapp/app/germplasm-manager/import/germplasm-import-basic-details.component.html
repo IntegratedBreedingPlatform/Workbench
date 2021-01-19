@@ -11,7 +11,7 @@
 		<h3 jhiTranslate="germplasm.import.basicDetails.header"></h3>
 		<form name="detailsForm" #detailsForm="ngForm">
 		<div jhiTranslate="germplasm.import.basicDetails.description" *ngIf="!hasAllBasicDetails()"></div>
-			<div class="form-group row">
+			<div class="form-group row required">
 				<label for="breedingMethod" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
 				<div class="col-sm-6" *ngIf="!hasAllBreedingMethods() else allGood">
 					<ng-select2 *ngIf="!useFavoriteBreedingMethods" name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected"
@@ -37,7 +37,7 @@
 				</div>
 			</div>
 
-			<div class="form-group row">
+			<div class="form-group row required">
 				<label for="breedingAndCountryLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.locations"></label>
 				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
 					<ng-select2 *ngIf="!useFavoriteLocations && !radioSelected" name="breedingAndCountryLocation" id="breedingAndCountryLocation" width="100%" [(ngModel)]="locationSelected"
@@ -76,7 +76,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group row required">
 				<label for="creationDate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.creation.date"></label>
 				<div class="col-sm-6" *ngIf="!hasAllCreationDate() else allGood">
 					<div class="row">
@@ -188,7 +188,7 @@
 	</button>
 </div>
 <ng-template #allGood>
-	<label class="col col-form-label">
+	<label class="col form-control-plaintext">
 		Complete!&nbsp;<span class="fa fa-check text-success"></span>
 	</label>
 </ng-template>
