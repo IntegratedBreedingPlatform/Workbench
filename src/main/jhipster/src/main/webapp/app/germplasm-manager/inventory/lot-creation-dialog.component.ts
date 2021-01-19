@@ -70,8 +70,8 @@ export class LotCreationDialogComponent implements OnInit {
 
         this.units = this.inventoryService.queryUnits().toPromise();
 
-        this.storageLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoriteLocations: false }).toPromise();
-        this.favoriteLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoriteLocations: true }).toPromise();
+        this.storageLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: false }).toPromise();
+        this.favoriteLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: true }).toPromise();
 
         this.storageLocations.then((storageLocations) => {
             const defaultLocation = storageLocations.find((location) => location.defaultLocation);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
@@ -24,12 +24,14 @@ export class LocationService {
             { observe: 'response' }).pipe(map((res: HttpResponse<LocationType[]>) => res.body));
     }
 
-    queryLocationsByType(locationTypes, favoriteLocation): Observable<LocationModel[]> {
-        const params = new HttpParams()
-            .set('locationTypes', locationTypes)
-            .set('favoriteLocations', favoriteLocation)
-            .set('programUUID', this.context.programUUID);
-        return this.http.get<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations`,
-            { params, observe: 'response' }).pipe(map((res: HttpResponse<LocationModel[]>) => res.body));
+    queryLocationsByType(locationTypes, favoritesOnly): Observable<LocationModel[]> {
+
+        const locationSearchRequest = {
+            'locationTypes': locationTypes,
+            'favoritesOnly': favoritesOnly,
+            'programUUID': this.context.programUUID
+        }
+        return this.http.post<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations?page=0&size=10000`, locationSearchRequest,
+            { observe: 'response' }).pipe(map((res: HttpResponse<LocationModel[]>) => res.body));
     }
 }
