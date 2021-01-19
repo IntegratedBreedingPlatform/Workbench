@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmImportComponent, HEADERS } from './germplasm-import.component';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
@@ -57,8 +57,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         private sanitizer: DomSanitizer,
         private paramContext: ParamContext,
         private popupService: PopupService,
-        public context: GermplasmImportContext
+        public context: GermplasmImportContext,
+        private calendar: NgbCalendar
     ) {
+        this.creationDateSelected = calendar.getToday();
     }
 
     ngOnInit(): void {
