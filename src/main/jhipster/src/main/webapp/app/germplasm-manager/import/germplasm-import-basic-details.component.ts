@@ -22,6 +22,8 @@ import { LocationTypeEnum } from '../../shared/location/model/location.model';
 })
 export class GermplasmImportBasicDetailsComponent implements OnInit {
 
+    dataBackupPrev = [];
+
     @ViewChild('detailsForm')
     detailsForm: ElementRef;
 
@@ -64,7 +66,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
+        this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
         this.loadLocations();
 
@@ -89,7 +91,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.fillData();
 
         this.modal.close();
-        this.context.dataBackupPrev = this.context.dataBackup;
+        this.context.dataBackup.push(this.dataBackupPrev);
         const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
     }
@@ -132,6 +134,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     back() {
+        this.context.data = this.context.dataBackup.pop();
         this.modal.close();
         const modalRef = this.modalService.open(GermplasmImportComponent as Component,
             { size: 'lg', backdrop: 'static' });

@@ -7,8 +7,8 @@ export class GermplasmImportContext {
     // germplasm data
     data = [];
     // recover state when moving back from screens
-    dataBackup = [];
-    dataBackupPrev = [];
+    // [data[], data[], ...]
+    dataBackup: any[][] = [];
 
     // data recovered from the server
     nameTypes: NameType[] = [];

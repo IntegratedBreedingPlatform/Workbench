@@ -19,6 +19,8 @@ import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model
 })
 export class GermplasmImportInventoryComponent implements OnInit {
 
+    dataBackupPrev = [];
+
     STOCK_ID_PREFIX_REGEX = '(^\\w*[a-zA-Z]$|^$)';
 
     createInventoryLots = true;
@@ -50,7 +52,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
+        this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
         this.loadLocations();
         this.loadUnits();
         this.deposit = { amount: null };
@@ -59,7 +61,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
 
     next() {
         this.modal.close();
-        this.context.dataBackupPrev = this.context.dataBackup;
+        this.context.dataBackup.push(this.dataBackupPrev);
         const modalRef = this.modalService.open(GermplasmImportReviewComponent as Component,
             { windowClass: 'modal-autofit', backdrop: 'static' });
     }
@@ -70,7 +72,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
 
     back() {
         this.modal.close();
-        this.context.data = this.context.dataBackupPrev;
+        this.context.data = this.context.dataBackup.pop();
         const modalRef = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
             { size: 'lg', backdrop: 'static' });
     }

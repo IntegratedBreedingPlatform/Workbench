@@ -27,6 +27,8 @@ import { JhiEventManager } from 'ng-jhipster';
 })
 export class GermplasmImportReviewComponent implements OnInit {
 
+    dataBackupPrev = [];
+
     HEADERS = HEADERS;
     page = 0;
     pageSize = 10;
@@ -57,7 +59,7 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.context.dataBackup = this.context.data.map((row) => Object.assign({}, row));
+        this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
 
         const uuids = [];
         const names = {};
@@ -158,7 +160,7 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     back() {
         this.modal.close();
-        this.context.dataBackupPrev = this.context.dataBackup;
+        this.context.data = this.context.dataBackup.pop();
         const modalRef = this.modalService.open(GermplasmImportInventoryComponent as Component,
             { size: 'lg', backdrop: 'static' });
     }
