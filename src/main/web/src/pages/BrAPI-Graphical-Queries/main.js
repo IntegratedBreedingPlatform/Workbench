@@ -23,21 +23,32 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
-		+ "/locations?programUUID=" + getUrlParameter("programUUID") + "&favoriteLocations=false&page=0&size=10000&locationTypes";
 
-	return Promise.all([$.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
+	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
+		+ "/locations?page=0&size=10000";
+
+	return Promise.all([$.ajax({
+		type: "POST",
 		url: url,
 		beforeSend: beforeSend,
-		error: error
-	}), $.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
-		url: url + '=410,411,412',
+		error: error,
+		data: JSON.stringify({
+			locationTypes: [],
+			programUUID: getUrlParameter("programUUID")
+		}),
+		contentType: "application/json; charset=utf-8",
+		dataType: "json"
+	}), $.ajax({
+		type: "POST",
+		url: url,
 		beforeSend: beforeSend,
-		error: error
+		error: error,
+		data: JSON.stringify({
+			locationTypes: [410, 411, 412],
+			programUUID: getUrlParameter("programUUID")
+		}),
+		contentType: "application/json; charset=utf-8",
+		dataType: "json"
 	})]);
 }
 
