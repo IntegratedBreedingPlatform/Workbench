@@ -44,6 +44,14 @@ Generic styles
   border-left: 5px solid red;
 }
 
+// Highlighting labels (custom components, e.g ng-select2)
+.mandatory-asterisk:after,
+.form-group.required .col-form-label:after {
+    content:"*";
+    color:red;
+    margin-left: 2px;
+}
+
 /* other generic styles */
 
 .jh-card {
