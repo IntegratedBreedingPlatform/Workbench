@@ -31,7 +31,7 @@ export class LocationService {
             favourites: favoriteLocation,
             programUUID: this.context.programUUID
         }
-        return this.http.post<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations&page=0&size=10000`, locationSearchRequest,
+        return this.http.post<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations?page=0&size=10000`, locationSearchRequest,
             { observe: 'response' }).pipe(map((res: HttpResponse<LocationModel[]>) => res.body));
     }
 }
