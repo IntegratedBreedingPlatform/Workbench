@@ -331,8 +331,8 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerChangeInGermplasm();
-        this.registerGermplasmUpdated();
+        this.registerColumnFiltersChaged();
+        this.registerFilterBy();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
@@ -398,7 +398,7 @@ export class GermplasmSearchComponent implements OnInit {
         return item.gid;
     }
 
-    registerChangeInGermplasm() {
+    registerColumnFiltersChaged() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
 
             this.preSortCheck();
@@ -420,9 +420,9 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
-    registerGermplasmUpdated() {
-        // Load all germplasm that has been updated via import.
-        this.eventSubscriber = this.eventManager.subscribe('germplasmUpdated', (event) => {
+    registerFilterBy() {
+        // E.g germplasm changed via import.
+        this.eventSubscriber = this.eventManager.subscribe('filterByGid', (event) => {
 
             this.columnFilterComponent.clearFilters();
 

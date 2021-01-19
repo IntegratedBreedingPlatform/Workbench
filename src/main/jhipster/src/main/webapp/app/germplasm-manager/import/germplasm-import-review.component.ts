@@ -14,6 +14,12 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { HEADERS } from './germplasm-import.component';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
+import { GermplasmListCreationComponent } from '../germplasm-list/germplasm-list-creation.component';
+import { SearchComposite } from '../../shared/model/search-composite';
+import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
+import { GermplasmManagerContext } from '../germplasm-manager.context';
+import { Router } from '@angular/router';
+import { JhiEventManager } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -43,7 +49,10 @@ export class GermplasmImportReviewComponent implements OnInit {
         private popupService: PopupService,
         private alertService: AlertService,
         private germplasmService: GermplasmService,
-        public context: GermplasmImportContext
+        public context: GermplasmImportContext,
+        private germplasmManagerContext: GermplasmManagerContext,
+        private router: Router,
+        private eventManager: JhiEventManager
     ) {
     }
 
@@ -113,13 +122,24 @@ export class GermplasmImportReviewComponent implements OnInit {
         })).pipe(finalize(() => {
             this.isSaving = false;
         })).subscribe(
-            (res: GermplasmList) => this.onSaveSuccess(res),
+            (res: any) => this.onSaveSuccess(res),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
 
-    private onSaveSuccess(res: GermplasmList) {
+    private onSaveSuccess(res: {status: string, gids: number[]}[]) {
         this.alertService.success('germplasm-list-creation.success');
+        const gids = Object.values(res).map((r) => r.gids[0]);
+        this.eventManager.broadcast({ name: 'filterByGid', content: gids });
+
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        searchComposite.itemIds = gids;
+        this.germplasmManagerContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
         this.modal.close();
     }
 
