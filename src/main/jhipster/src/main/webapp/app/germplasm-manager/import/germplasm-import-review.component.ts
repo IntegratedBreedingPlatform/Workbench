@@ -7,19 +7,19 @@ import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.
 import { GermplasmImportContext } from './germplasm-import.context';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { GermplasmList } from '../../shared/model/germplasm-list';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { HEADERS } from './germplasm-import.component';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
-import { GermplasmListCreationComponent } from '../germplasm-list/germplasm-list-creation.component';
 import { SearchComposite } from '../../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
+import { LotService } from '../../shared/inventory/service/lot.service';
+import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -51,6 +51,7 @@ export class GermplasmImportReviewComponent implements OnInit {
         private popupService: PopupService,
         private alertService: AlertService,
         private germplasmService: GermplasmService,
+        private lotService: LotService,
         public context: GermplasmImportContext,
         private germplasmManagerContext: GermplasmManagerContext,
         private router: Router,
@@ -129,10 +130,43 @@ export class GermplasmImportReviewComponent implements OnInit {
         );
     }
 
-    private onSaveSuccess(res: {status: string, gids: number[]}[]) {
+    private onSaveSuccess(res: {[key: string]: {status: string, gids: number[]}}) {
         this.alertService.success('germplasm-list-creation.success');
         const gids = Object.values(res).map((r) => r.gids[0]);
         this.eventManager.broadcast({ name: 'filterByGid', content: gids });
+
+        const inventoryData = this.context.data.filter((row) => row[HEADERS['STOCK ID']]
+            || row[HEADERS['STORAGE LOCATION ABBR']]
+            || row[HEADERS['UNITS']]
+            || row[HEADERS['AMOUNT']]);
+
+        if (inventoryData.length) {
+            // create inventory in the background
+            // Option 1 TODO Pending?
+            this.lotService.importLotsWithInitialBalance(
+                <LotImportRequest>({
+                    lotList: inventoryData.map((row) => <LotImportRequestLotList>({
+                        gid: res[row[HEADERS.ENTRY_NO]].gids[0],
+                        initialBalance: row[HEADERS.AMOUNT],
+                        storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
+                        unitName: row[HEADERS.UNITS],
+                        stockId: row[HEADERS['STOCK ID']]
+                    })),
+                    stockIdPrefix: this.context.stockIdPrefix
+                })
+            ).subscribe(
+                () =>  {
+                    // TODO IBP-4293
+                    // this.alertService.success('germplasm.import.inventory.success', { param: inventoryData.length })
+                },
+                (error) => this.onError(error)
+            );
+            // Option 2
+            // importLotsWithInitialBalance + import pending/confirmed deposits
+        }
+
+
+        // TODO save entryNo
 
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         searchComposite.itemIds = gids;

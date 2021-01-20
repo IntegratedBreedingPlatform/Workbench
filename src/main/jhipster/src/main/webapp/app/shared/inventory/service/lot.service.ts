@@ -5,6 +5,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SERVER_API_URL } from '../../../app.constants';
 import { Lot } from '../model/lot.model';
 import { createRequestOption } from '../..';
+import { LotImportRequest } from '../model/lot-import-request';
 
 @Injectable()
 export class LotService {
@@ -27,5 +28,9 @@ export class LotService {
         const params = createRequestOption(request);
         return this.http.get<Lot[]>(url, { params, observe: 'response' });
 
+    }
+
+    importLotsWithInitialBalance(lotImportRequest: LotImportRequest): Observable<any> {
+        return this.http.post<Lot>(SERVER_API_URL + `crops/${this.context.cropName}/lot-lists?programUUID` + this.context.programUUID, lotImportRequest);
     }
 }

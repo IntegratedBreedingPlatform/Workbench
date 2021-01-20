@@ -37,7 +37,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
     deposit: any;
     amountConfirmed = false;
 
-    completeInventoryData = true;
+    completeAllEntries = true;
 
     constructor(
         private translateService: TranslateService,
@@ -56,14 +56,42 @@ export class GermplasmImportInventoryComponent implements OnInit {
         this.loadLocations();
         this.loadUnits();
         this.deposit = { amount: null };
-        this.createInventoryLots = this.haveSomeInventoryDetails();
+        this.createInventoryLots = this.hasSomeInventoryDetails();
     }
 
     next() {
+        this.fillData();
+
         this.modal.close();
         this.context.dataBackup.push(this.dataBackupPrev);
         const modalRef = this.modalService.open(GermplasmImportReviewComponent as Component,
             { windowClass: 'modal-autofit', backdrop: 'static' });
+    }
+
+    fillData() {
+        if (this.createInventoryLots) {
+            const rows = this.context.data.filter((row) => {
+                if (this.completeAllEntries) {
+                    return true;
+                }
+                return row[HEADERS['STOCK ID']]
+                    || row[HEADERS['STORAGE LOCATION ABBR']]
+                    || row[HEADERS['UNITS']]
+                    || row[HEADERS['AMOUNT']]
+            });
+
+            this.context.stockIdPrefix = this.stock_IdPrefix;
+
+            rows.filter((row) => !row[HEADERS['STORAGE LOCATION ABBR']])
+                .forEach((row) => row[HEADERS['STORAGE LOCATION ABBR']] = this.locationSelected);
+
+            rows.filter((row) => !row[HEADERS.UNITS])
+                .forEach((row) => row[HEADERS.UNITS] = this.unitSelected);
+
+            rows.filter((row) => !row[HEADERS.AMOUNT])
+                .forEach((row) => row[HEADERS.AMOUNT] = this.deposit.amount);
+
+        }
     }
 
     dismiss() {
@@ -94,10 +122,10 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     enableOptionsToComplete() {
-        return !this.hasAllInventoryDetails() && this.haveSomeInventoryDetails();
+        return !this.hasAllInventoryDetails() && this.hasSomeInventoryDetails();
     }
 
-    haveSomeInventoryDetails() {
+    hasSomeInventoryDetails() {
         return this.context.data.some((row) => {
             return row[HEADERS['STOCK ID']]
                 || row[HEADERS['STORAGE LOCATION ABBR']]

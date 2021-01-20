@@ -19,4 +19,6 @@ export class GermplasmImportContext {
     nametypesCopy: NameType[] = [];
     attributesCopy: Attribute[] = [];
 
+    // inventory
+    stockIdPrefix: string;
 }

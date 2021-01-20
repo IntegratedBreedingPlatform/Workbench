@@ -124,8 +124,9 @@
                 "units": "Units",
                 "amount": "Amount",
                 "transaction.confirm": "Confirm transaction on saving?",
-                "complete.all.data": "Complete all entries",
-                "complete.entries.with.some.data": "Complete entries with some data"
+                "complete.all.entries": "Complete all entries",
+                "complete.entries.with.some.data": "Complete entries with some data",
+                "success": "{{param}} lots were created successfully"
             },
             "review": {
                 "header": "Review",

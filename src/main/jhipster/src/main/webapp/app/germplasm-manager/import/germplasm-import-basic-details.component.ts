@@ -125,8 +125,6 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 }
             }
         }
-
-        // TODO Complete
     }
 
     dismiss() {
@@ -181,12 +179,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     hasAllBasicDetails() {
-        // TODO complete
         return this.hasAllBreedingMethods() && this.hasAllLocations() && this.hasAllCreationDate();
     }
 
     canProceed(f) {
-        // TODO complete
         const form = f.form;
         return form.valid && (this.breedingMethodSelected || this.hasAllBreedingMethods())
             && (this.locationSelected || this.hasAllLocations())
