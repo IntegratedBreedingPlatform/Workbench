@@ -27,6 +27,7 @@
 		<span jhiTranslate="cancel"></span>
 	</button>
 	<button (click)="next()" class="btn btn-primary">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span jhiTranslate="next"></span>
 	</button>
 </div>

@@ -32,6 +32,8 @@ export class GermplasmImportComponent implements OnInit {
     extensions = ['.csv', '.xls', '.xlsx'];
     selectedFileType = this.extensions[1];
 
+    isLoading: boolean;
+
     constructor(
         private translateService: TranslateService,
         private alertService: AlertService,
@@ -77,13 +79,18 @@ export class GermplasmImportComponent implements OnInit {
     }
 
     next() {
+        this.isLoading = true;
         this.validateFile().then((valid) => {
+            this.isLoading = false;
             if (valid) {
                 this.modal.close();
                 const nextModal = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
                     { size: 'lg', backdrop: 'static' });
             }
-        }, (res) => this.onError(res));
+        }, (res) => {
+            this.isLoading = false;
+            this.onError(res)
+        });
     }
 
     private async validateFile() {
@@ -276,5 +283,7 @@ export enum HEADERS {
     'STOCK ID' = 'STOCK ID',
     // Used internally - doesn't come in spreadsheet
     'STOCK ID PREFIX' = 'STOCK ID PREFIX',
-    'GUID' = 'GUID'
+    'GUID' = 'GUID',
+    // Used internally - doesn't come in spreadsheet
+    'GID MATCH' = 'GID MATCH'
 }
