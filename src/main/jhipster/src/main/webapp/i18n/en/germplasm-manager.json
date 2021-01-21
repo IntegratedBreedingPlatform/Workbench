@@ -128,9 +128,16 @@
                 "complete.entries.with.some.data": "Complete entries with some data",
                 "success": "{{param}} lots were created successfully"
             },
+            "matches": {
+                "header": "Select existing germplasm or add new entry"
+            },
             "review": {
                 "header": "Review",
-                "show.matches": "Show matches"
+                "show.matches": "Show matches",
+                "creation.options": "Creation options",
+                "select.existing": "Select existing germplasm whenever found",
+                "create.new": "Create new records",
+                "automatic.matches": "Automatically select existing matches"
             }
         }
     }

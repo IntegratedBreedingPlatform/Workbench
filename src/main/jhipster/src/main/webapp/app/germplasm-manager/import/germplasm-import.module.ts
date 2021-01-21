@@ -8,6 +8,7 @@ import { GermplasmImportReviewComponent } from './germplasm-import-review.compon
 import { TableModule } from 'primeng/table';
 import { DragDropModule } from 'primeng/dragdrop';
 import { GermplasmImportContext } from './germplasm-import.context';
+import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { GermplasmImportContext } from './germplasm-import.context';
         GermplasmImportPopupComponent,
         GermplasmImportBasicDetailsComponent,
         GermplasmImportInventoryComponent,
+        GermplasmImportMatchesComponent,
         GermplasmImportReviewComponent
     ],
     entryComponents: [
@@ -28,6 +30,7 @@ import { GermplasmImportContext } from './germplasm-import.context';
         GermplasmImportPopupComponent,
         GermplasmImportBasicDetailsComponent,
         GermplasmImportInventoryComponent,
+        GermplasmImportMatchesComponent,
         GermplasmImportReviewComponent
     ],
     providers: [

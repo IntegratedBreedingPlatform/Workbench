@@ -11,11 +11,13 @@
 		<h3 jhiTranslate="germplasm.import.review.header"></h3>
 	</div>
 	<form *ngIf="!isLoading else throbber">
-		<div class="form-group row">
-			<label for="showMatchesDropdown" class="col-sm-2 col-form-label" jhiTranslate="germplasm.import.review.show.matches"></label>
+		<div class="form-group row no-gutters">
+			<label for="showMatchesDropdown" class="col-sm-1 col-form-label">
+				<span jhiTranslate="germplasm.import.review.show.matches"></span>:
+			</label>
 			<div class="col-sm-3">
 				<select class="form-control" id="showMatchesDropdown" name="showMatchesDropdown"
-						(change)="onOptionChange()"
+						(change)="onShowMatchesOptionChange()"
 						[(ngModel)]="showMatchesOption" #showMatchesDropdown="ngModel">
 					<option [value]="SHOW_MATCHES_OPTIONS.ALL">All</option>
 					<option [value]="SHOW_MATCHES_OPTIONS.ONLY_MATCHES">With existing matches only</option>
@@ -33,7 +35,6 @@
 						</th>
 						</thead>
 						<tbody>
-						<!-- TODO fix preferred name -->
 						<tr *ngFor="let row of rows | slice: (page-1) * pageSize : page * pageSize">
 							<td *ngFor="let header of keys(HEADERS)">
 								{{row[header]}}
@@ -56,6 +57,33 @@
 							</div>
 							<div class="pagination-box pagination-box-right">
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group row no-gutters" *ngIf="matches.length">
+			<label for="creationOptionsDropdown" class="col-sm-1 col-form-label">
+				<span jhiTranslate="germplasm.import.review.creation.options"></span>:
+			</label>
+			<div class="col-sm-3">
+				<div class="row">
+					<div class="col">
+						<select class="form-control" id="creationOptionsDropdown" name="creationOptionsDropdown"
+								(change)="onShowMatchesOptionChange()"
+								[(ngModel)]="creationOption" #creationOptionsDropdown="ngModel">
+							<option [value]="CREATION_OPTIONS.SELECT_EXISTING"><span jhiTranslate="germplasm.import.review.select.existing"></span></option>
+							<option [value]="CREATION_OPTIONS.CREATE_NEW"><span jhiTranslate="germplasm.import.review.create.new"></span></option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div class="form-check form-check-inline">
+							<input type="checkbox" class="form-check-input" name="automaticMatchesCheckbox" id="automaticMatchesCheckbox"
+								   [(ngModel)]="isSelectMatchesAutomatically">
+							<label class="form-check-label" for="automaticMatchesCheckbox" jhiTranslate="germplasm.import.review.automatic.matches">
+							</label>
 						</div>
 					</div>
 				</div>

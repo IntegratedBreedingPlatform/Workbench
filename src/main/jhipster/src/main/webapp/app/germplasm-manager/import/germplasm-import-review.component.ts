@@ -20,6 +20,8 @@ import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
 import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -36,12 +38,30 @@ export class GermplasmImportReviewComponent implements OnInit {
     isLoading: boolean;
     isSaving: boolean;
 
-    matches: GermplasmDto[];
+    // show matches html section
     showMatchesOption = SHOW_MATCHES_OPTIONS.ALL;
     SHOW_MATCHES_OPTIONS = SHOW_MATCHES_OPTIONS;
+
+    // Review table html section
+
+    // rows from file/data that matches
     dataMatches: any[] = [];
+    // rows from file/data that doesn't match
     newRecords: any[] = [];
+    // table displayed in html
     rows: any[] = [];
+
+    // creation option html section
+    CREATION_OPTIONS = CREATION_OPTIONS;
+    creationOption = CREATION_OPTIONS.SELECT_EXISTING;
+    isSelectMatchesAutomatically = true;
+
+    // data loaded from server / utility maps
+
+    // matches from db
+    matches: GermplasmDto[];
+    matchesByGUID: { [key: string]: GermplasmDto; } = {};
+    matchesByName: { [key: string]: GermplasmDto; } = {};
 
     constructor(
         private translateService: TranslateService,
@@ -79,15 +99,19 @@ export class GermplasmImportReviewComponent implements OnInit {
             finalize(() => this.isLoading = false)
         ).subscribe((matches) => {
             this.matches = matches;
-            const guidMatch = {}
-                , nameMatch = {};
+            this.matchesByGUID = {};
+            this.matchesByName = {};
+
             this.matches.forEach((match) => {
-                guidMatch[match.germplasmUUID] = true;
-                match.names.forEach((name) => nameMatch[name.name] = true);
+                this.matchesByGUID[match.germplasmUUID] = match;
+                match.names.forEach((name) => this.matchesByName[name.name] = match);
             });
             this.context.data.forEach((row) => {
-                if (guidMatch[row[HEADERS.GUID]] || this.context.nametypesCopy.some((nameType) => {
-                    return nameMatch[row[nameType.code]];
+                if (this.matchesByGUID[row[HEADERS.GUID]]) {
+                    this.dataMatches.push(row);
+                    row[HEADERS['GID MATCH']] = this.matchesByGUID[row[HEADERS.GUID]].gid;
+                } else if (this.context.nametypesCopy.some((nameType) => {
+                    return Boolean(this.matchesByName[row[nameType.code]]);
                 })) {
                     this.dataMatches.push(row);
                 } else {
@@ -98,36 +122,49 @@ export class GermplasmImportReviewComponent implements OnInit {
         })
     }
 
-    save() {
-        this.isSaving = true;
-        this.germplasmService.importGermplasm(this.context.data.map((row) => {
-            return <GermplasmImportRequest>({
-                clientId: row[HEADERS.ENTRY_NO],
-                germplasmUUID: row[HEADERS.GUID],
-                locationAbbr: row[HEADERS['LOCATION ABBR']],
-                breedingMethodAbbr: row[HEADERS['BREEDING METHOD']],
-                reference: row[HEADERS['REFERENCE']],
-                preferredName: row[HEADERS['PREFERRED NAME']],
-                creationDate: row[HEADERS['CREATION DATE']],
-                names: this.context.nametypesCopy.reduce((map, name) => {
-                    if (row[name.code]) {
-                        map[name.code] = row[name.code];
-                    }
-                    return map;
-                }, {}),
-                attributes: this.context.attributesCopy.reduce((map, attribute) => {
-                    if (row[attribute.code]) {
-                        map[attribute.code] = row[attribute.code];
-                    }
-                    return map;
-                }, {})
-            });
-        })).pipe(finalize(() => {
-            this.isSaving = false;
-        })).subscribe(
-            (res: any) => this.onSaveSuccess(res),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+    async save() {
+        try {
+            const unassignedMatches = this.dataMatches.filter((row) => !row[HEADERS['GID MATCH']]);
+            if (unassignedMatches.length) {
+                const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
+                    { size: 'lg', backdrop: 'static' });
+                selectMatchesModalRef.componentInstance.unassignedMatches = unassignedMatches;
+                selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
+                try {
+                    const selectMatchesResult = await selectMatchesModalRef.result;
+                } catch (rejected) {
+                    return;
+                }
+            }
+            this.isSaving = true;
+            const resp: any = await this.germplasmService.importGermplasm(this.context.data.map((row) => {
+                return <GermplasmImportRequest>({
+                    clientId: row[HEADERS.ENTRY_NO],
+                    germplasmUUID: row[HEADERS.GUID],
+                    locationAbbr: row[HEADERS['LOCATION ABBR']],
+                    breedingMethodAbbr: row[HEADERS['BREEDING METHOD']],
+                    reference: row[HEADERS['REFERENCE']],
+                    preferredName: row[HEADERS['PREFERRED NAME']],
+                    creationDate: row[HEADERS['CREATION DATE']],
+                    names: this.context.nametypesCopy.reduce((map, name) => {
+                        if (row[name.code]) {
+                            map[name.code] = row[name.code];
+                        }
+                        return map;
+                    }, {}),
+                    attributes: this.context.attributesCopy.reduce((map, attribute) => {
+                        if (row[attribute.code]) {
+                            map[attribute.code] = row[attribute.code];
+                        }
+                        return map;
+                    }, {})
+                });
+            })).toPromise();
+            this.onSaveSuccess(resp);
+        } catch (error) {
+            this.onError(error);
+        }
+        this.isSaving = false;
     }
 
     private onSaveSuccess(res: {[key: string]: {status: string, gids: number[]}}) {
@@ -164,7 +201,6 @@ export class GermplasmImportReviewComponent implements OnInit {
             // Option 2
             // importLotsWithInitialBalance + import pending/confirmed deposits
         }
-
 
         // TODO save entryNo
 
@@ -203,7 +239,7 @@ export class GermplasmImportReviewComponent implements OnInit {
         return Object.keys(obj);
     }
 
-    onOptionChange() {
+    onShowMatchesOptionChange() {
         switch (this.showMatchesOption) {
             case SHOW_MATCHES_OPTIONS.ALL:
                 this.rows = [...this.dataMatches, ...this.newRecords];
@@ -222,4 +258,9 @@ enum SHOW_MATCHES_OPTIONS {
     ALL = 'ALL',
     ONLY_MATCHES = 'ONLY_MATCHES',
     NEW_RECORDS = 'NEW_RECORDS'
+}
+
+enum CREATION_OPTIONS {
+    SELECT_EXISTING = 'SELECT_EXISTING',
+    CREATE_NEW = 'CREATE_NEW'
 }
