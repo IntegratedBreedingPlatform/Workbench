@@ -274,5 +274,7 @@ export enum HEADERS {
     'UNITS' = 'UNITS',
     'AMOUNT' = 'AMOUNT',
     'STOCK ID' = 'STOCK ID',
+    // Used internally - doesn't come in spreadsheet
+    'STOCK ID PREFIX' = 'STOCK ID PREFIX',
     'GUID' = 'GUID'
 }

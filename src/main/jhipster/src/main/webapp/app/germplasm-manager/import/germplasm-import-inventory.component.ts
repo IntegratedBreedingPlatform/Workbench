@@ -24,7 +24,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
     STOCK_ID_PREFIX_REGEX = '(^\\w*[a-zA-Z]$|^$)';
 
     createInventoryLots = true;
-    stock_IdPrefix: string;
+    stockIdPrefix: string;
 
     seedStorageLocations: Promise<Location[]>;
     favoriteSeedStorageLocations: Promise<Location[]>;
@@ -69,6 +69,9 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     fillData() {
+        // clean up in case someone accidentally add column in spreadsheet
+        this.context.data.forEach((row) => row[HEADERS['STOCK ID PREFIX']] = '');
+
         if (this.createInventoryLots) {
             const rows = this.context.data.filter((row) => {
                 if (this.completeAllEntries) {
@@ -80,7 +83,9 @@ export class GermplasmImportInventoryComponent implements OnInit {
                     || row[HEADERS['AMOUNT']]
             });
 
-            this.context.stockIdPrefix = this.stock_IdPrefix;
+            rows.filter((row) => !row[HEADERS['STOCK ID']])
+                .forEach((row) => row[HEADERS['STOCK ID PREFIX']] = this.stockIdPrefix);
+            this.context.stockIdPrefix = this.stockIdPrefix;
 
             rows.filter((row) => !row[HEADERS['STORAGE LOCATION ABBR']])
                 .forEach((row) => row[HEADERS['STORAGE LOCATION ABBR']] = this.locationSelected);
@@ -110,7 +115,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
         const form = f.form;
         return !this.createInventoryLots
             ||  (form.valid
-                && (this.stock_IdPrefix || this.hasAllStockIds())
+                && (this.stockIdPrefix || this.hasAllStockIds())
                 && (this.locationSelected || this.hasAllLocations())
                 && (this.locationSelected || this.hasAllUnits())
                 && (this.deposit.amount || this.hasAllAmounts())
