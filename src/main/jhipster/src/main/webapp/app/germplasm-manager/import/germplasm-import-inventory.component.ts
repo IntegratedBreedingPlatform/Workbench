@@ -96,6 +96,13 @@ export class GermplasmImportInventoryComponent implements OnInit {
             rows.filter((row) => !row[HEADERS.AMOUNT])
                 .forEach((row) => row[HEADERS.AMOUNT] = this.deposit.amount);
 
+        } else {
+            this.context.data.forEach((row) => {
+                row[HEADERS['STOCK ID']] = '';
+                row[HEADERS['STORAGE LOCATION ABBR']] = '';
+                row[HEADERS['UNITS']] = '';
+                row[HEADERS['AMOUNT']] = '';
+            });
         }
     }
 
