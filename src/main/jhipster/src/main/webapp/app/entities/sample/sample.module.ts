@@ -41,6 +41,7 @@ const ENTITY_STATES = [
         SampleComponent,
         SampleManagerComponent,
         TreeTableComponent,
+        SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent
     ],
