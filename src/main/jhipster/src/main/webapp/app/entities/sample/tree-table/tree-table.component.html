@@ -1,138 +1,95 @@
-<div id="listTreeContext">
-	<div class="modal fade" id="listTreeModal" tabindex="-1" role="dialog" aria-labelledby="listTreeModal" aria-hidden="true">
-		<div class="modal-dialog modal-extra-medium">
-			<div class="modal-content">
-				<div class="modal-body">
-					<div class="row form-group">
-						<div class="col-xs-11 col-md-11">
-							<label class="modal-title fbk-modal-title" id="listTree-heading-modal" jhiTranslate="bmsjHipsterApp.tree-table.title">Open sample list</label>
+<div class="container" id="listTreeContext">
+	<div class="modal-header">
+		<h4 class="modal-title font-weight-bold" id="listTree-heading-modal" jhiTranslate="bmsjHipsterApp.tree-table.title">Open sample list</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+				(click)="closeModal()">x
+		</button>
+	</div>
+	<div class="modal-body">
+		<div class="row form-group modal-popover ">
+			<div class="col-md-7">
+			</div>
+			<div class="col-md-5">
+				<div class="pull-right">
+					<img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
+						 [ngClass]="{ 'disable-image': !selectedNode || selectedNode.data.id === 'CROPLISTS' || selectedNode && selectedNode.leaf }"/>
+					<img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
+						 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
+					<img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
+						 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-12">
+				<div class="form-horizontal form-group">
+					<div id="addFolderDiv" *ngIf="mode == Modes.Add || mode == Modes.Rename">
+						<div class="form-group row">
+							<label class="col-md-2 col-form-label font-weight-bold">{{ Modes[mode] }} Folder</label>
+							<input type="text" class="form-control col-md-6" placeholder="Folder Name" [(ngModel)]="name" [required]="true"  maxlength="{{ NAME_MAX_LENGTH }}"/>
+							<button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolder()">
+								<span class="fa fa-check"></span>
+							</button>
+							<button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
+								<span class="fa fa-times"></span>
+							</button>
 						</div>
-						<div class="col-xs-1 col-md-1">
-							<button type="button" class="close pull-right glyphicon glyphicon-remove" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
-						</div>
-					</div>
-					<div class="row form-group modal-popover ">
-						<div class="col-xs-7 col-md-7">
-						</div>
-						<div class="col-xs-5 col-md-5">
-							<div class="pull-right">
-								<img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
-									 [ngClass]="{ 'disable-image': !selected || selected.data.id === 'CROPLISTS' || selected && selected.leaf }"/>
-								<img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
-									 [ngClass]="{ 'disable-image': !selected ||  isRootFolder() || selected && selected.leaf }"/>
-								<img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
-									 [ngClass]="{ 'disable-image': !selected ||  isRootFolder() || selected && selected.leaf }"/>
-							</div>
-						</div>
-					</div>
-					<div class="row form-group">
-						<div class="col-xs-12 col-md-12">
-							<div class="form-horizontal form-group">
-								<div id="addFolderDiv" *ngIf="mode == Modes.Add || mode == Modes.Rename">
-									<div class="col-xs-4 col-md-4 nopadding">
-										<label class="control-label label-bold">{{ Modes[mode] }} Folder<span class="required">*</span></label>
-									</div>
-									<div class="col-xs-8 col-md-8 nopadding">
-										<div class="input-group">
-											<input type="text" class="form-control select2" placeholder="Folder Name" [(ngModel)]="name" style="height: 34px"/>
-											<div class="input-group-btn">
-												<button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolderInTreeTable()">
-													<span class="glyphicon glyphicon-ok"></span>
-												</button>
-												<button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
-													<span class="glyphicon glyphicon-remove"></span>
-												</button>
-											</div>
-										</div>
-									</div>
-									<div class="clearfix"></div>
-								</div>
-							</div>
-							<div class="clearfix"></div>
-							<div class="form-group">
-								<p-treeTable [value]="nodes"
-											 (onNodeExpand)="onNodeExpand($event)"
-											 (onRowDblclick)="onRowDblclick($event)"
-											 selectionMode="single"
-											 autoLayout="true"
-											 [(selection)]="selected"
-											 (onNodeSelect)="onNodeSelect($event)"
-											 styleClass="tree-table">
-									<ng-template pTemplate="header">
-										<tr>
-											<th jhiTranslate="bmsjHipsterApp.tree-table.name">Name</th>
-											<th jhiTranslate="bmsjHipsterApp.tree-table.owner">Owner</th>
-											<th jhiTranslate="bmsjHipsterApp.tree-table.description">Description</th>
-											<th jhiTranslate="bmsjHipsterApp.tree-table.type">Type</th>
-											<th jhiTranslate="bmsjHipsterApp.tree-table.entries"># of entries</th>
-										</tr>
-									</ng-template>
-									<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
-										<tr [ttSelectableRow]="rowNode">
-											<td>
-												<p-treeTableToggler
-													[rowNode]="rowNode"
-												></p-treeTableToggler>
-												<span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
-												<span
-													pDraggable="treedragdrop"
-													pDroppable="treedragdrop"
-													(onDragStart)="onDragStart($event, rowNode.node)"
-													(onDragEnd)="onDragEnd($event, rowNode.node)"
-													(onDrop)="onDrop($event, rowNode.node)"
-													(onDragEnter)="onDragEnter($event, rowNode.node)"
-													(onDragLeave)="onDragLeave($event, rowNode.node)"
-													type="text">
-												{{rowData.name}}
-											</span>
-											</td>
-											<td>{{rowData.owner}}</td>
-											<td>{{rowData.description}}</td>
-											<td>{{rowData.type}}</td>
-											<td>{{rowData.noOfEntries}}</td>
-										</tr>
-									</ng-template>
-								</p-treeTable>
-							</div>
-						</div>
+						<div class="clearfix"></div>
 					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal" jhiTranslate="common.form.cancel.text" (click)="closeModal()">Cancel</button>
-					<button type="button" class="btn btn-primary" aria-hidden="true" jhiTranslate="common.form.ok.text" [disabled]="mode != Modes.None || !selected || selected && !selected.leaf" (click)="selectList()">Ok</button>
+				<div class="clearfix"></div>
+				<div class="form-group">
+					<p-treeTable [value]="nodes"
+								 (onNodeExpand)="onNodeExpand($event)"
+								 (onRowDblclick)="onRowDblclick($event)"
+								 selectionMode="single"
+								 autoLayout="true"
+								 [(selection)]="selectedNode"
+								 (onNodeSelect)="onNodeSelect($event)"
+								 styleClass="tree-table">
+						<ng-template pTemplate="header">
+							<tr>
+								<th jhiTranslate="bmsjHipsterApp.tree-table.name">Name</th>
+								<th jhiTranslate="bmsjHipsterApp.tree-table.owner">Owner</th>
+								<th jhiTranslate="bmsjHipsterApp.tree-table.description">Description</th>
+								<th jhiTranslate="bmsjHipsterApp.tree-table.type">Type</th>
+								<th jhiTranslate="bmsjHipsterApp.tree-table.entries"># of entries</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
+							<tr [ttSelectableRow]="rowNode">
+								<td>
+									<p-treeTableToggler
+										[rowNode]="rowNode"
+									></p-treeTableToggler>
+									<span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
+									<span
+										pDraggable="treedragdrop"
+										pDroppable="treedragdrop"
+										(onDragStart)="onDragStart($event, rowNode.node)"
+										(onDragEnd)="onDragEnd($event, rowNode.node)"
+										(onDrop)="onDrop($event, rowNode.node)"
+										(onDragEnter)="onDragEnter($event, rowNode.node)"
+										(onDragLeave)="onDragLeave($event, rowNode.node)"
+										type="text">
+											{{rowData.name}}
+									</span>
+								</td>
+								<td>{{rowData.owner}}</td>
+								<td>{{rowData.description}}</td>
+								<td>{{rowData.type}}</td>
+								<td>{{rowData.noOfEntries}}</td>
+							</tr>
+						</ng-template>
+					</p-treeTable>
 				</div>
 			</div>
 		</div>
 	</div>
-
-	<div *ngIf="mode == Modes.Delete" style="display: block" [@ModalAnimation] class="modal fade in" id="deleteFolder" role="dialog" aria-labelledby="deleteFolder" aria-hidden="true">
-		<div class="modal-dialog modal-extra-small">
-			<div class="modal-content">
-				<div class="modal-body" id="manageCheckTypesModalBody">
-					<div class="row form-group">
-						<div class="col-xs-11 col-md-11">
-							<label class="modal-title fbk-modal-title" id="heading-modal" jhiTranslate="bmsjHipsterApp.tree-table.action.folder.delete">Delete Folder</label>
-						</div>
-						<div class="col-xs-1 col-md-1">
-							<button id="closeDeleteFolderModal" type="button" class="close  pull-right glyphicon glyphicon-remove" (click)="mode = Modes.None"></button>
-						</div>
-					</div>
-					<div class="row">
-						<div id="page-delete-message-modal" class="col-xs-12 col-md-12">
-						</div>
-					</div>
-					<div class="row form-group">
-						<div class="col-xs-12 col-md-12 add_top_padding text-center">
-							<label class="control-label" id="delete-folder-confirmation" jhiTranslate="bmsjHipsterApp.tree-table.messages.folder.delete.question" translateValues="{id: '{{selected.data.name}}'}">
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer addVariable-footer">
-					<button type="button" class="btn btn-default" (click)="mode = Modes.None" jhiTranslate="common.form.cancel.text">Cancel</button>
-					<button type="button" class="btn btn-primary" aria-hidden="true" jhiTranslate="common.form.ok.text" (click)="submitDeleteFolderInTreeTable();">Ok</button>
-				</div>
-			</div>
-		</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+		</button>
+		<button type="button" class="btn btn-primary" aria-hidden="true" jhiTranslate="common.form.ok.text" [disabled]="mode != Modes.None || !selectedNode || selectedNode && !selectedNode.leaf" (click)="selectList()">Ok</button>
 	</div>
 </div>

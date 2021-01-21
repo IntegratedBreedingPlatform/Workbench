@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
@@ -12,8 +11,9 @@ import { ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
-import {AppModalService} from '../../shared/modal/app-modal.service';
 import { AlertService } from '../../shared/alert/alert.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SampleImportPlateComponent } from './sample-import-plate.component';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -54,7 +54,8 @@ export class SampleComponent implements OnInit, OnDestroy {
         private router: Router,
         private eventManager: JhiEventManager,
         private fileDownloadHelper: FileDownloadHelper,
-        private modalService: AppModalService
+        private modalService: NgbModal,
+        public activeModal: NgbActiveModal,
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -136,14 +137,16 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
     export() {
         this.sampleListService.download(this.sampleList.id, this.sampleList.listName).subscribe((response) => {
-
             const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
             this.fileDownloadHelper.save(response.body, fileName);
 
         })
     }
     importPlate() {
-        this.modalService.open('import-plate-modal');
+        const confirmModalRef = this.modalService.open(SampleImportPlateComponent as Component, { size: 'lg', backdrop: 'static' });
+        confirmModalRef.result.then(() => {
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
     ngOnInit() {
         this.loadAll();
