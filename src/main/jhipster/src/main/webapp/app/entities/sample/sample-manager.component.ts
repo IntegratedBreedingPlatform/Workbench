@@ -2,10 +2,12 @@ import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { SampleList } from './sample-list.model';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppModalService } from '../../shared/modal/app-modal.service';
 import { SampleContext } from './sample.context';
 import { HelpService } from '../../shared/service/help.service';
 import { HELP_MANAGE_SAMPLES } from '../../app.constants';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SampleSearchListComponent } from './sample-search-list.component';
+import { TreeTableComponent } from './tree-table';
 
 declare const cropName: string;
 declare var $: any;
@@ -15,7 +17,7 @@ declare var $: any;
     selector: 'jhi-sample-manager',
     templateUrl: './sample-manager.component.html',
     // TODO migrate IBP-4093
-    styleUrls: ['../../../content/css/global-bs3.css' ]
+    styleUrls: ['../../../content/css/global-bs4.scss']
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 
@@ -24,14 +26,18 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
     helpLink: string;
+    predicate: any;
+    reverse: any;
 
     lists: SampleList[] = [];
 
     constructor(private activatedRoute: ActivatedRoute,
-                private modalService: AppModalService,
+                private modalService: NgbModal,
+                public activeModal: NgbActiveModal,
                 private router: Router,
                 private sampleContext: SampleContext,
-                private helpService: HelpService) {
+                private helpService: HelpService,
+                ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
 
@@ -72,8 +78,12 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         }
     }
 
-    openSearch() {
-        this.modalService.open('search-sample-modal');
+    openSearch($event) {
+        $event.preventDefault();
+        const confirmModalRef = this.modalService.open(SampleSearchListComponent as Component, { size: 'lg', backdrop: 'static' });
+        confirmModalRef.result.then(() => {
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 
     private setActive(listId: number) {
@@ -111,10 +121,11 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         this.queryParamSubscription.unsubscribe();
     }
 
-    browseList() {
-        $('#listTreeModal').one('shown.bs.modal', () => {
-            // FIXME tableStyleClass not working on primeng treetable 6?
-            $('.ui-treetable-table').addClass('table table-curved table-condensed treetable');
-        }).modal({ backdrop: 'static', keyboard: true });
+    browseList($event) {
+        $event.preventDefault();
+        const confirmModalRef = this.modalService.open(TreeTableComponent as Component, { size: 'lg', backdrop: 'static' });
+        confirmModalRef.result.then(() => {
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 }

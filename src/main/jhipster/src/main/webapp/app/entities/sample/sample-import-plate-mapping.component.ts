@@ -1,37 +1,53 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {AppModalService} from '../../shared/modal/app-modal.service';
-import {SampleContext} from './sample.context';
-import {JhiAlertService, JhiEventManager} from 'ng-jhipster';
-import {SampleListService} from './sample-list.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { SampleContext } from './sample.context';
+import { JhiEventManager } from 'ng-jhipster';
+import { SampleListService } from './sample-list.service';
 import { AlertService } from '../../shared/alert/alert.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SampleImportPlateComponent } from './sample-import-plate.component';
+import { TranslateService } from '@ngx-translate/core';
+import { formatErrorList } from '../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-sample-import-plate-mapping',
     templateUrl: './sample-import-plate-mapping.component.html'
 })
 
-export class SampleImportPlateMappingComponent {
-
-    modalId = 'import-plate-mapping-modal';
+export class SampleImportPlateMappingComponent implements OnInit  {
 
     @Input() importData: Array<Array<any>>;
-    @Input() header: Array<any>;
-    @Input() sampleIdMapping: string;
-    @Input() plateIdMapping: string;
-    @Input() wellMapping: string;
+    header: Array<any>;
+    sampleIdMapping;
+    plateIdMapping;
+    wellMapping;
 
-    @Output() onClose = new EventEmitter();
-    @Output() onBack = new EventEmitter();
-
-    constructor(private modalService: AppModalService,
-                private alertService: AlertService,
+    constructor(private alertService: AlertService,
                 private sampleContext: SampleContext,
                 private sampleListService: SampleListService,
-                private eventManager: JhiEventManager) {
+                private eventManager: JhiEventManager,
+                public activeModal: NgbActiveModal,
+                private modalService: NgbModal,
+                private translateService: TranslateService) {
+    }
+
+    ngOnInit(): void {
+        this.header = this.importData[0];
+        this.sampleIdMapping = this.mappingHeader(this.importData[0], 'SAMPLE_UID');
+        this.plateIdMapping = this.mappingHeader(this.importData[0], 'PLATE_ID');
+        this.wellMapping = this.mappingHeader(this.importData[0], 'WELL');
+
+    }
+
+    mappingHeader(header: Array<string>, mapping: string) {
+        for (const column of header) {
+            if (column.toLowerCase() === mapping.toLowerCase()) {
+                return column;
+            }
+        }
+        return '';
     }
 
     proceed() {
-
         const activeListId = this.sampleContext.activeList.id;
 
         if (this.validate()) {
@@ -60,27 +76,41 @@ export class SampleImportPlateMappingComponent {
     }
 
     close() {
-        this.modalService.close(this.modalId);
+        this.activeModal.dismiss('Close');
         this.reset();
-        this.onClose.emit();
     }
 
     back() {
-        this.modalService.close(this.modalId);
+        this.activeModal.dismiss('Back Import');
         this.reset();
-        this.modalService.open('import-plate-modal');
-        this.onBack.emit();
+        const confirmModalRef = this.modalService.open(SampleImportPlateComponent as Component, { size: 'lg', backdrop: 'static' });
+        confirmModalRef.result.then(() => {
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 
     validate() {
-        if (this.sampleIdMapping === '' || this.plateIdMapping === '' || this.wellMapping === '') {
-            this.alertService.error('bmsjHipsterApp.sample.importPlate.headersNotMapped');
-            return false;
-        } else if (this.columnHasEmptyData(this.sampleIdMapping)) {
-            this.alertService.error('bmsjHipsterApp.sample.importPlate.recordHasNoSampleId');
+        const errorMessage: string[] = [];
+        this.validateData(this.importData.slice(1), errorMessage);
+
+        if (errorMessage.length !== 0) {
+            this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
             return false;
         }
         return true;
+    }
+
+    private validateData(importData: any[], errorMessage: string[]) {
+        for (let i = 0; i < importData.length; i++) {
+            if (this.sampleIdMapping === '' || this.plateIdMapping === '' || this.wellMapping === '') {
+                errorMessage.push(this.translateService.instant('bmsjHipsterApp.sample.importPlate.headersNotMapped'));
+                break;
+            }
+            if (this.columnHasEmptyData(this.sampleIdMapping)) {
+                errorMessage.push(this.translateService.instant('bmsjHipsterApp.sample.importPlate.recordHasNoSampleId'));
+                return false;
+            }
+        }
     }
 
     columnHasEmptyData(headerName: string) {
@@ -114,4 +144,23 @@ export class SampleImportPlateMappingComponent {
         return sampleList;
     }
 
+    private getSampleIdColumnIndex() {
+        return this.header.indexOf(this.sampleIdMapping);
+    }
+
+    private getPlateColumnIndex() {
+        return this.header.indexOf(this.plateIdMapping);
+    }
+
+    private getWellColumnIndex() {
+        return this.header.indexOf(this.wellMapping);
+    }
+
+    isFormValid(f) {
+        const form = f.form;
+        if (Object.values(form.controls).filter((control: any) => !control.disabled).length === 1) {
+            return false;
+        }
+        return f.form.valid;
+    }
 }
