@@ -129,7 +129,13 @@
                 "success": "{{param}} lots were created successfully"
             },
             "matches": {
-                "header": "Select existing germplasm or add new entry"
+                "header": "Select existing germplasm or add new entry",
+                "with.guid.match": " with <b>GUID={{guid}}</b>",
+                "matches.were.found": "Match(es) were found for entry <b>{{entryNo}} of {{unassignedCount}}</b> ",
+                "click.on.an.entry": "Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry",
+                "ignore.match": "Ignore matches and add new entry",
+                "ignore.all.remaining": "Ignore remaining matches and add new entries for all",
+                "guid.matches.warning": "Remaining matches by GUID will <b>not</b> be ignored and selected automatically!"
             },
             "review": {
                 "header": "Review",
@@ -137,7 +143,14 @@
                 "creation.options": "Creation options",
                 "select.existing": "Select existing germplasm whenever found",
                 "create.new": "Create new records",
-                "automatic.matches": "Automatically select existing matches"
+                "automatic.matches": "Automatically select existing matches",
+                "summary": {
+                    "message": "<h4>Import summary:</h4><p>{{param}}</p>",
+                    "new": "{{param}} entries have no matches (new records will be created)",
+                    "ignored": "{{param}} entries with matches were ignored (new records will be created)",
+                    "match.by.name": "{{param}} entries with matches <b>by name</b> were selected",
+                    "match.by.guid": "{{param}} entries with matches <b>by GUID</b> were automatically selected"
+                }
             }
         }
     }

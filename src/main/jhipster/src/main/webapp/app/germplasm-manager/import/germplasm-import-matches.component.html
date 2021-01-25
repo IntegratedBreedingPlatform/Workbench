@@ -8,10 +8,11 @@
 </div>
 <div class="modal-body">
 	<div>
-		<div class="row">
+		<div class="row mb-sm-3">
 			<div class="col">
-				Match(es) were found for entry <b> {{entryNo}} of {{unassignedCount}} </b>, with the name <b> {{name}} </b>.
-				Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry.
+				<span jhiTranslate="germplasm.import.matches.matches.were.found" [translateValues]="{entryNo: entryNo, unassignedCount: unassignedCount}"></span>
+				<span *ngIf="!!guidMatch" jhiTranslate="germplasm.import.matches.with.guid.match" [translateValues]="{guid: guidMatch.germplasmUUID}"></span>.
+				<span jhiTranslate="germplasm.import.matches.click.on.an.entry"></span>.
 			</div>
 		</div>
 		<div class="row">
@@ -21,11 +22,20 @@
 						<thead>
 						<th>GID</th>
 						<th>PREFERRED NAME</th>
+						<th>NAMES</th>
+						<th>LOCATION</th>
+						<th>BREEDING METHOD</th>
 						</thead>
 						<tbody>
-						<tr *ngFor="let germplasm of matches | slice: (page-1) * pageSize : page * pageSize">
+						<tr *ngFor="let germplasm of matches | slice: (page-1) * pageSize : page * pageSize"
+							[class.selected]="matchProcessResult[dataRow[HEADERS.ENTRY_NO]] == germplasm.gid || guidMatch"
+							class="selectable"
+							(click)="onSelectMatch(germplasm)">
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
+							<td><span *ngFor="let name of germplasm.names; let last = last">{{name.name}}<span *ngIf="!last">, </span></span></td>
+							<td>{{germplasm.breedingLocation}}</td>
+							<td>{{germplasm.breedingMethod}}</td>
 						</tr>
 						</tbody>
 					</table>
@@ -49,13 +59,45 @@
 				</div>
 			</div>
 		</div>
+		<div class="row form-group">
+			<div class="col">
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" name="ignoreMatch" id="ignoreMatch"
+						   [(ngModel)]="isIgnoreMatch" [disabled]="isIgnoreAllRemaining || !!guidMatch"
+						   (change)="onIgnoreMatch()">
+					<label class="form-check-label" for="ignoreMatch" jhiTranslate="germplasm.import.matches.ignore.match">
+					</label>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col">
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" name="ignoreAllRemaining" id="ignoreAllRemaining"
+						   [(ngModel)]="isIgnoreAllRemaining" [disabled]="!!guidMatch"
+						   (change)="onIgnoreAllRemaining()">
+					<label class="form-check-label" for="ignoreAllRemaining" jhiTranslate="germplasm.import.matches.ignore.all.remaining">
+					</label>
+				</div>
+			</div>
+		</div>
+		<!--<div class="alert alert-warning" role="alert" *ngIf="size(matchesByGUID) && isIgnoreAllRemaining">
+			<i class="fa fa-warning"></i>
+			<span class="ml-3" jhiTranslate="germplasm.import.matches.guid.matches.warning"></span>
+		</div>-->
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+	<button *ngIf="matchNumber === 1" type="button" class="btn btn-secondary" data-dismiss="modal"
+			(click)="dismiss()">
 		<span jhiTranslate="cancel"></span>
 	</button>
-	<button (click)="next()" class="btn btn-primary">
-		<span jhiTranslate="next"></span>
+	<button *ngIf="matchNumber > 1" type="button" class="btn btn-secondary"
+			(click)="back()">
+		<span jhiTranslate="back"></span>
+	</button>
+	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreAllRemaining || isIgnoreMatch || guidMatch || matchProcessResult[dataRow[HEADERS.ENTRY_NO]])">
+		<span *ngIf="isFinish(); else nextButton" jhiTranslate="finish"></span>
+		<ng-template #nextButton><span jhiTranslate="next"></span></ng-template>
 	</button>
 </div>

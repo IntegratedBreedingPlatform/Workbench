@@ -22,6 +22,7 @@ import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -62,6 +63,8 @@ export class GermplasmImportReviewComponent implements OnInit {
     matches: GermplasmDto[];
     matchesByGUID: { [key: string]: GermplasmDto; } = {};
     matchesByName: { [key: string]: GermplasmDto; } = {};
+
+    selectMatchesResult: any = {};
 
     constructor(
         private translateService: TranslateService,
@@ -107,13 +110,20 @@ export class GermplasmImportReviewComponent implements OnInit {
                 match.names.forEach((name) => this.matchesByName[name.name] = match);
             });
             this.context.data.forEach((row) => {
-                if (this.matchesByGUID[row[HEADERS.GUID]]) {
-                    this.dataMatches.push(row);
-                    row[HEADERS['GID MATCH']] = this.matchesByGUID[row[HEADERS.GUID]].gid;
-                } else if (this.context.nametypesCopy.some((nameType) => {
+                const guidMatch = this.matchesByGUID[row[HEADERS.GUID]];
+                const nameMatches = this.context.nametypesCopy.filter((nameType) => {
                     return Boolean(this.matchesByName[row[nameType.code]]);
-                })) {
+                });
+                if (guidMatch) {
                     this.dataMatches.push(row);
+                    row[HEADERS['GID MATCHES']] = guidMatch.gid;
+                } else if (nameMatches.length) {
+                    this.dataMatches.push(row);
+                    row[HEADERS['GID MATCHES']] = nameMatches
+                        .map((nameType) => this.matchesByName[row[nameType.code]].gid)
+                        // dedup
+                        .filter((gid, i, array) => array.indexOf(gid) === i)
+                        .join(',');
                 } else {
                     this.newRecords.push(row);
                 }
@@ -124,20 +134,67 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     async save() {
         try {
-            const unassignedMatches = this.dataMatches.filter((row) => !row[HEADERS['GID MATCH']]);
-            if (unassignedMatches.length) {
+            // process matches
+            const unassignedMatches = this.dataMatches;
+
+            if (unassignedMatches.length
+                && this.creationOption === CREATION_OPTIONS.SELECT_EXISTING
+                && !this.isSelectMatchesAutomatically) {
+
                 const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
                     { size: 'lg', backdrop: 'static' });
                 selectMatchesModalRef.componentInstance.unassignedMatches = unassignedMatches;
                 selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
+                selectMatchesModalRef.componentInstance.matchesByGUID = this.matchesByGUID;
                 try {
-                    const selectMatchesResult = await selectMatchesModalRef.result;
+                    this.selectMatchesResult = await selectMatchesModalRef.result;
                 } catch (rejected) {
                     return;
                 }
+            } else if (this.isSelectMatchesAutomatically) {
+                // TODO
+            } else if (this.creationOption === CREATION_OPTIONS.CREATE_NEW) {
+                // TODO
             }
+
+            const newEntries = this.context.data.filter((row) => {
+                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByGUID[row[HEADERS.GUID]];
+            });
+
+            // final confirmation
+
+            const countMatchByGUID = this.context.data.filter((row) => this.matchesByGUID[row[HEADERS.GUID]]).length,
+                countMatchByName = this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]).length,
+                countNew = this.newRecords.length,
+                countIgnored = newEntries.length - countMatchByName - countMatchByGUID;
+            const messages = [];
+            if (countNew) {
+                messages.push(this.translateService.instant('germplasm.import.review.summary.new', { param: countNew }));
+            }
+            if (countIgnored) {
+                messages.push(this.translateService.instant('germplasm.import.review.summary.ignored', { param: countIgnored }));
+            }
+            if (countMatchByName) {
+                messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.name', { param: countMatchByName }));
+            }
+            if (countMatchByGUID) {
+                messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.guid', { param: countMatchByGUID }));
+            }
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
+                { windowClass: 'modal-medium', backdrop: 'static' });
+            confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.review.summary.message', {
+                param: messages.map((item) => '<li>' + item + '</li>').join('')
+            });
+            try {
+                const confirmModalResult = await confirmModalRef.result;
+            } catch (rejected) {
+                return;
+            }
+
+            // Proceed with save
+
             this.isSaving = true;
-            const resp: any = await this.germplasmService.importGermplasm(this.context.data.map((row) => {
+            const resp: any = await this.germplasmService.importGermplasm(newEntries.map((row) => {
                 return <GermplasmImportRequest>({
                     clientId: row[HEADERS.ENTRY_NO],
                     germplasmUUID: row[HEADERS.GUID],
@@ -167,7 +224,7 @@ export class GermplasmImportReviewComponent implements OnInit {
         this.isSaving = false;
     }
 
-    private onSaveSuccess(res: {[key: string]: {status: string, gids: number[]}}) {
+    private onSaveSuccess(res: { [key: string]: { status: string, gids: number[] } }) {
         this.alertService.success('germplasm-list-creation.success');
         const gids = Object.values(res).map((r) => r.gids[0]);
         this.eventManager.broadcast({ name: 'filterByGid', content: gids });
@@ -192,7 +249,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                     stockIdPrefix: this.context.stockIdPrefix
                 })
             ).subscribe(
-                () =>  {
+                () => {
                     // TODO IBP-4293
                     // this.alertService.success('germplasm.import.inventory.success', { param: inventoryData.length })
                 },
@@ -203,6 +260,7 @@ export class GermplasmImportReviewComponent implements OnInit {
         }
 
         // TODO save entryNo
+        // TODO use this.selectMatchesResult
 
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         searchComposite.itemIds = gids;
@@ -237,6 +295,10 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     keys(obj) {
         return Object.keys(obj);
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
     }
 
     onShowMatchesOptionChange() {

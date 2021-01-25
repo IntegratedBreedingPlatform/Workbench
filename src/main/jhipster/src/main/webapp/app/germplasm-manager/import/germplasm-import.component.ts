@@ -285,5 +285,5 @@ export enum HEADERS {
     'STOCK ID PREFIX' = 'STOCK ID PREFIX',
     'GUID' = 'GUID',
     // Used internally - doesn't come in spreadsheet
-    'GID MATCH' = 'GID MATCH'
+    'GID MATCHES' = 'GID MATCHES'
 }
