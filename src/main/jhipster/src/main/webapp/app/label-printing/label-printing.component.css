@@ -17,3 +17,40 @@
 .row {
     margin-bottom: 5px;
 }
+
+.availableFields,
+#leftSelectedFields,
+#rightSelectedFields,
+.non-pdf-selected-fields {
+    list-style-type: none;
+    min-height: 50px;
+    background: #eee;
+}
+
+#leftSelectedFields,
+#rightSelectedFields,
+.non-pdf-selected-fields {
+    margin: 0;
+    padding: 0;
+    float: left;
+    margin-right: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+#availableFields li,
+#leftSelectedFields li,
+#rightSelectedFields li,
+.non-pdf-selected-fields li {
+    margin: 5px;
+    padding: 5px;
+    font-size: 13px;
+}
+
+.field-group{
+    margin-bottom: 0px
+}
+.field-group .list-group-item{
+    padding: 5px 10px;
+    background-color: #c8c6c6;
+}

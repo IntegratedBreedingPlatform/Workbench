@@ -16,6 +16,7 @@ import com.vaadin.ui.Table.HeaderClickEvent;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
+import org.apache.commons.lang.StringUtils;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.SaveToListDialog;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CategoricalTraitEvaluator;
@@ -57,15 +58,15 @@ import java.util.TreeMap;
 /**
  * Results are displayed here. Main goal is to award points for traits that fall within a desired, specified range. Points are removed if
  * over many locations, the traits do not meet the desired range.
- * 
+ *
  * -- If the selected range covers all measurements for all locations, then the score will be 1.0 -- If there are more observations outside
  * the range than inside, the score will be negative -- Positive scores of any kind reflect more than 50% compliance in the range
- * 
+ *
  * FIXME : the numbers displayed here are not correct and must be reviewed FIXME : this is a long class and further guidance through the
  * code is required
- * 
+ *
  * @author rebecca
- * 
+ *
  */
 @Configurable
 public class TraitDisplayResults extends AbsoluteLayout implements InitializingBean, InternationalizableComponent {
@@ -97,7 +98,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
-	
+
 	private AbsoluteLayout resultsTable;
 	private PagedTable germplasmColTable;
 	private PagedTable traitsColTable;
@@ -131,10 +132,10 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	private SaveToListDialog saveGermplasmListDialog;
 	private Map<Integer, String> selectedGermplasmMap;
-	
+
 	private CheckBox tagAllCheckBoxOnCombinedScoreTagColTable;
 
-	public TraitDisplayResults(TraitDonorsQueryMain mainScreen) {
+	public TraitDisplayResults(final TraitDonorsQueryMain mainScreen) {
 		this.mainScreen = mainScreen;
 	}
 
@@ -148,22 +149,22 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.setHeight("550px");
 		this.setWidth("1000px");
 
-		resultsTable = new AbsoluteLayout();
-		resultsTable.setDebugId("resultTable");
-		resultsTable.setWidth("1000px");
-		
-		createGermplasmColTable();
-		createTraitsColTable();
-		createCombinedScoreTagColTable();
+		this.resultsTable = new AbsoluteLayout();
+		this.resultsTable.setDebugId("resultTable");
+		this.resultsTable.setWidth("1000px");
 
-		addTablesToResultsTable();
+		this.createGermplasmColTable();
+		this.createTraitsColTable();
+		this.createCombinedScoreTagColTable();
+
+		this.addTablesToResultsTable();
 
 		this.addComponent(new Label("<style> .v-table-column-selector { width:0; height:0; overflow:hidden; }"
 				+ ".v-table-row, .v-table-row-odd { height: 25px; } " + ".v-table-header { height: auto; background-color: #dcdee0;} "
 				+ ".v-table-header-wrap { height: auto; background-color: #dcdee0; } "
 				+ ".v-table-caption-container { height: auto; background-color: #dcdee0; } " + ".v-table { border-radius: 0px; } "
 				+ " </style>", Label.CONTENT_XHTML));
-		this.addComponent(resultsTable, "top:0px;left:0px");
+		this.addComponent(this.resultsTable, "top:0px;left:0px");
 
 		this.addTagAllCheckBoxToCombinedScoreTagColTable();
 
@@ -176,7 +177,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = 7083618946346280184L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				TraitDisplayResults.this.prevEntryButtonClickAction();
 			}
 		});
@@ -195,7 +196,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = -4837144379158727020L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				TraitDisplayResults.this.nextEntryButtonClickAction();
 			}
 		});
@@ -213,7 +214,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = -8767137627847480579L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				TraitDisplayResults.this.backButtonClickAction();
 			}
 		});
@@ -230,7 +231,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = -4170202465915624787L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				TraitDisplayResults.this.saveButtonClickAction();
 			}
 		});
@@ -242,9 +243,9 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	protected void addTablesToResultsTable() {
-		resultsTable.addComponent(this.germplasmColTable, "top:20px;left:20px");
-		resultsTable.addComponent(this.traitsColTable, "top:20px;left:345px");
-		resultsTable.addComponent(this.combinedScoreTagColTable, "top:20px;left:819px");
+		this.resultsTable.addComponent(this.germplasmColTable, "top:20px;left:20px");
+		this.resultsTable.addComponent(this.traitsColTable, "top:20px;left:345px");
+		this.resultsTable.addComponent(this.combinedScoreTagColTable, "top:20px;left:819px");
 	}
 
 	protected void createCombinedScoreTagColTable() {
@@ -277,8 +278,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.germplasmColTable.setColumnReorderingAllowed(false);
 	}
 
-	public void populateResultsTable(List<EnvironmentForComparison> environments, List<NumericTraitFilter> numericTraitFilter,
-			List<CharacterTraitFilter> characterTraitFilter, List<CategoricalTraitFilter> categoricalTraitFilter) {
+	public void populateResultsTable(final List<EnvironmentForComparison> environments, final List<NumericTraitFilter> numericTraitFilter,
+			final List<CharacterTraitFilter> characterTraitFilter, final List<CategoricalTraitFilter> categoricalTraitFilter) {
 		this.environments = environments;
 		this.environmentIds = this.getEnvironmentIds(environments);
 		this.numericTraitFilter = numericTraitFilter;
@@ -290,7 +291,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.germplasmIdNameMap = this.getGermplasm(this.traitIds, this.environmentIds);
 		this.germplasmNameIdMap = this.getSortedGermplasmList(this.germplasmIdNameMap);
 		this.selectedGermplasmMap = new HashMap<Integer, String>();
-		
+
 		this.resultsTable.removeAllComponents();
 		this.createGermplasmColTable();
 		this.germplasmColTable = this.createResultsTable(this.germplasmColTable);
@@ -298,8 +299,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.traitsColTable = this.createResultsTable(this.traitsColTable);
 		this.createCombinedScoreTagColTable();
 		this.combinedScoreTagColTable = this.createResultsTable(this.combinedScoreTagColTable);
-		addTablesToResultsTable();
-		for (Object propertyId : this.germplasmColTable.getContainerPropertyIds()) {
+		this.addTablesToResultsTable();
+		for (final Object propertyId : this.germplasmColTable.getContainerPropertyIds()) {
 			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO)|| propertyId.toString().equals(TraitDisplayResults.LINE_GID) || propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION)) {
 				this.germplasmColTable.setColumnCollapsed(propertyId, false);
 			} else {
@@ -307,7 +308,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			}
 		}
 
-		for (Object propertyId : this.traitsColTable.getContainerPropertyIds()) {
+		for (final Object propertyId : this.traitsColTable.getContainerPropertyIds()) {
 			if (propertyId.toString().equals(TraitDisplayResults.LINE_NO) || propertyId.toString().equals(TraitDisplayResults.LINE_GID) || propertyId.toString().equals(TraitDisplayResults.LINE_DESIGNATION) || propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID) || propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
 				this.traitsColTable.setColumnCollapsed(propertyId, true);
 			} else {
@@ -315,7 +316,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			}
 		}
 
-		for (Object propertyId : this.combinedScoreTagColTable.getContainerPropertyIds()) {
+		for (final Object propertyId : this.combinedScoreTagColTable.getContainerPropertyIds()) {
 			if (propertyId.toString().equals(TraitDisplayResults.TAG_COLUMN_ID) || propertyId.toString().equals(TraitDisplayResults.COMBINED_SCORE_COLUMN_ID)) {
 				this.combinedScoreTagColTable.setColumnCollapsed(propertyId, false);
 			} else {
@@ -329,7 +330,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = -9165077040691158639L;
 
 			@Override
-			public void headerClick(HeaderClickEvent event) {
+			public void headerClick(final HeaderClickEvent event) {
 				final Object property = event.getPropertyId();
 				final Object[] properties = new Object[] {property};
 
@@ -346,7 +347,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = -6923284105485115775L;
 
 			@Override
-			public void headerClick(HeaderClickEvent event) {
+			public void headerClick(final HeaderClickEvent event) {
 				final Object property = event.getPropertyId();
 				final Object[] properties = new Object[] {property};
 
@@ -363,7 +364,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = 9161532217269536655L;
 
 			@Override
-			public void headerClick(HeaderClickEvent event) {
+			public void headerClick(final HeaderClickEvent event) {
 				final Object property = event.getPropertyId();
 				final Object[] properties = new Object[] {property};
 
@@ -377,7 +378,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	}
 
-	public PagedTable createResultsTable(PagedTable resultTable) {
+	public PagedTable createResultsTable(final PagedTable resultTable) {
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_NO, Integer.class, null);
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_GID, Button.class, null);
 		resultTable.addContainerProperty(TraitDisplayResults.LINE_DESIGNATION, String.class, null);
@@ -386,12 +387,12 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		resultTable.setColumnHeader(TraitDisplayResults.LINE_GID, "Line<br/> GID");
 		resultTable.setColumnHeader(TraitDisplayResults.LINE_DESIGNATION, "Line<br/> Designation");
 
-		Integer noOfColumns = 3;
+		int noOfColumns = 3;
 		this.noOfTraitColumns = 0;
-		for (NumericTraitFilter trait : this.numericTraitFilter) {
-			String name = this.getNameLabel(trait.getTraitInfo().getName().trim());
-			String weight = this.getWeightLabel(trait.getPriority().getWeight());
-			Integer traitId = trait.getTraitInfo().getId();
+		for (final NumericTraitFilter trait : this.numericTraitFilter) {
+			final String name = this.getNameLabel(trait.getTraitInfo().getName().trim());
+			final String weight = this.getWeightLabel(trait.getPriority().getWeight());
+			final Integer traitId = trait.getTraitInfo().getId();
 
 			resultTable.addContainerProperty(this.getContainerPropertyName(name, traitId, TraitType.NUMERIC), Integer.class, null);
 			resultTable.addContainerProperty(this.getContainerPropertyName(weight, traitId, TraitType.NUMERIC), Double.class, null);
@@ -403,10 +404,10 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			this.noOfTraitColumns += 2;
 		}
 
-		for (CharacterTraitFilter trait : this.characterTraitFilter) {
-			String name = this.getNameLabel(trait.getTraitInfo().getName().trim());
-			String weight = this.getWeightLabel(trait.getPriority().getWeight());
-			Integer traitId = trait.getTraitInfo().getId();
+		for (final CharacterTraitFilter trait : this.characterTraitFilter) {
+			final String name = this.getNameLabel(trait.getTraitInfo().getName().trim());
+			final String weight = this.getWeightLabel(trait.getPriority().getWeight());
+			final Integer traitId = trait.getTraitInfo().getId();
 
 			resultTable.addContainerProperty(this.getContainerPropertyName(name, traitId, TraitType.CHARACTER), Integer.class, null);
 			resultTable.addContainerProperty(this.getContainerPropertyName(weight, traitId, TraitType.CHARACTER), Double.class, null);
@@ -418,10 +419,10 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			this.noOfTraitColumns += 2;
 		}
 
-		for (CategoricalTraitFilter trait : this.categoricalTraitFilter) {
-			String name = this.getNameLabel(trait.getTraitInfo().getName().trim());
-			String weight = this.getWeightLabel(trait.getPriority().getWeight());
-			Integer traitId = trait.getTraitInfo().getId();
+		for (final CategoricalTraitFilter trait : this.categoricalTraitFilter) {
+			final String name = this.getNameLabel(trait.getTraitInfo().getName().trim());
+			final String weight = this.getWeightLabel(trait.getPriority().getWeight());
+			final Integer traitId = trait.getTraitInfo().getId();
 
 			resultTable.addContainerProperty(this.getContainerPropertyName(name, traitId, TraitType.CATEGORICAL), Integer.class, null);
 			resultTable.addContainerProperty(this.getContainerPropertyName(weight, traitId, TraitType.CATEGORICAL), Double.class, null);
@@ -448,32 +449,32 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		return resultTable;
 	}
 
-	private String getNameLabel(String name) {
+	private String getNameLabel(final String name) {
 		return name + "<br/> No of Obs";
 	}
 
-	private String getWeightLabel(int weight) {
+	private String getWeightLabel(final int weight) {
 		return "Success Ratio";
 	}
 
-	private String getContainerPropertyName(String name, Integer traitId, TraitType traitType) {
+	private String getContainerPropertyName(final String name, final Integer traitId, final TraitType traitType) {
 		return "DisplayResults " + name + traitId + " " + traitType.toString().toLowerCase();
 	}
 
-	public void populateRowsResultsTable(PagedTable resultTable, Integer noOfColumns) {
+	public void populateRowsResultsTable(final PagedTable resultTable, final Integer noOfColumns) {
 		int lineNo = this.currentLineIndex + 1;
-		
-		for (TableResultRow row : this.tableRows) {
-			int gid = row.getGermplasmId();
-			String germplasmName = this.germplasmIdNameMap.get(gid);
 
-			Object[] itemObj = new Object[noOfColumns];
+		for (final TableResultRow row : this.tableRows) {
+			final int gid = row.getGermplasmId();
+			final String germplasmName = this.germplasmIdNameMap.get(gid);
+
+			final Object[] itemObj = new Object[noOfColumns];
 
 			itemObj[0] = lineNo;
 
 			// make GID as link
-			String gidString = String.valueOf(gid);
-			Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
+			final String gidString = String.valueOf(gid);
+			final Button gidButton = new Button(gidString, new GidLinkButtonClickListener(gidString));
 			gidButton.setDebugId("gidButton");
 			gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 			gidButton.setDescription("Click to view Germplasm information");
@@ -482,42 +483,42 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 			this.columnHeaders = this.getColumnProperties(resultTable.getContainerPropertyIds());
 
-			Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = row.getNumericTOSMap();
-			for (Map.Entry<NumericTraitFilter, TraitObservationScore> numericTOS : numericTOSMap.entrySet()) {
-				String traitName = numericTOS.getKey().getTraitInfo().getName().trim();
-				Integer traitId = numericTOS.getKey().getTraitInfo().getId();
+			final Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = row.getNumericTOSMap();
+			for (final Map.Entry<NumericTraitFilter, TraitObservationScore> numericTOS : numericTOSMap.entrySet()) {
+				final String traitName = numericTOS.getKey().getTraitInfo().getName().trim();
+				final Integer traitId = numericTOS.getKey().getTraitInfo().getId();
 
-				String name = this.getNameLabel(traitName);
+				final String name = this.getNameLabel(traitName);
 
-				int index = this.columnHeaders.indexOf(this.getContainerPropertyName(name, traitId, TraitType.NUMERIC));
+				final int index = this.columnHeaders.indexOf(this.getContainerPropertyName(name, traitId, TraitType.NUMERIC));
 
 				itemObj[index] = numericTOS.getValue().getNoOfObservation();
 				itemObj[index + 1] = numericTOS.getValue().getWtScore();
 
 			}
 
-			Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap = row.getCharacterTOSMap();
-			for (Map.Entry<CharacterTraitFilter, TraitObservationScore> characterTOS : characterTOSMap.entrySet()) {
-				String traitName = characterTOS.getKey().getTraitInfo().getName().trim();
-				Integer traitId = characterTOS.getKey().getTraitInfo().getId();
+			final Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap = row.getCharacterTOSMap();
+			for (final Map.Entry<CharacterTraitFilter, TraitObservationScore> characterTOS : characterTOSMap.entrySet()) {
+				final String traitName = characterTOS.getKey().getTraitInfo().getName().trim();
+				final Integer traitId = characterTOS.getKey().getTraitInfo().getId();
 
-				String name = this.getNameLabel(traitName);
+				final String name = this.getNameLabel(traitName);
 
-				int index = this.columnHeaders.indexOf(this.getContainerPropertyName(name, traitId, TraitType.CHARACTER));
+				final int index = this.columnHeaders.indexOf(this.getContainerPropertyName(name, traitId, TraitType.CHARACTER));
 
 				itemObj[index] = characterTOS.getValue().getNoOfObservation();
 				itemObj[index + 1] = characterTOS.getValue().getWtScore();
 
 			}
 
-			Map<CategoricalTraitFilter, TraitObservationScore> categoricalTOSMap = row.getCategoricalTOSMap();
-			for (Map.Entry<CategoricalTraitFilter, TraitObservationScore> categoricalTOS : categoricalTOSMap.entrySet()) {
-				String traitName = categoricalTOS.getKey().getTraitInfo().getName().trim();
-				Integer traitId = categoricalTOS.getKey().getTraitInfo().getId();
+			final Map<CategoricalTraitFilter, TraitObservationScore> categoricalTOSMap = row.getCategoricalTOSMap();
+			for (final Map.Entry<CategoricalTraitFilter, TraitObservationScore> categoricalTOS : categoricalTOSMap.entrySet()) {
+				final String traitName = categoricalTOS.getKey().getTraitInfo().getName().trim();
+				final Integer traitId = categoricalTOS.getKey().getTraitInfo().getId();
 
-				String name = this.getNameLabel(traitName);
+				final String name = this.getNameLabel(traitName);
 
-				int index = this.columnHeaders.indexOf(this.getContainerPropertyName(name, traitId, TraitType.CATEGORICAL));
+				final int index = this.columnHeaders.indexOf(this.getContainerPropertyName(name, traitId, TraitType.CATEGORICAL));
 
 				itemObj[index] = categoricalTOS.getValue().getNoOfObservation();
 				itemObj[index + 1] = categoricalTOS.getValue().getWtScore();
@@ -526,7 +527,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 			itemObj[noOfColumns - 2] = row.getCombinedScore();
 
-			CheckBox box = new CheckBox();
+			final CheckBox box = new CheckBox();
 			box.setDebugId("box");
 			box.setImmediate(true);
 			box.setData(row);
@@ -539,9 +540,9 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 				private static final long serialVersionUID = -3482228761993860979L;
 
 				@Override
-				public void buttonClick(ClickEvent event) {
-					CheckBox box = (CheckBox) event.getSource();
-					TableResultRow row = (TableResultRow) box.getData();
+				public void buttonClick(final ClickEvent event) {
+					final CheckBox box = (CheckBox) event.getSource();
+					final TableResultRow row = (TableResultRow) box.getData();
 
 					if (box.booleanValue()) {
 						box.setValue(true);
@@ -561,8 +562,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 	}
 
-	public List<String> getColumnHeaders(String[] headers) {
-		List<String> columns = new ArrayList<>();
+	public List<String> getColumnHeaders(final String[] headers) {
+		final List<String> columns = new ArrayList<>();
 
 		for (int i = 0; i < headers.length; i++) {
 			columns.add(headers[i].trim());
@@ -572,80 +573,80 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	@SuppressWarnings("rawtypes")
-	public List<String> getColumnProperties(Collection properties) {
-		List<String> columns = new ArrayList<>();
+	public List<String> getColumnProperties(final Collection properties) {
+		final List<String> columns = new ArrayList<>();
 
-		for (Object prop : properties) {
+		for (final Object prop : properties) {
 			columns.add(prop.toString());
 		}
 
 		return columns;
 	}
 
-	private Double getTotalEnvWeightForTrait(Integer traitId, Integer gid) {
-		Double totalEnvWeight = 0.0;
-		for (EnvironmentForComparison env : this.environments) {
-			ObservationKey key = new ObservationKey(traitId, gid, env.getEnvironmentNumber());
-			ObservationList obsList = this.observationsMap.get(key);
+	private Double getTotalEnvWeightForTrait(final Integer traitId, final Integer gid) {
+		double totalEnvWeight = 0.0;
+		for (final EnvironmentForComparison env : this.environments) {
+			final ObservationKey key = new ObservationKey(traitId, gid, env.getEnvironmentNumber());
+			final ObservationList obsList = this.observationsMap.get(key);
 
 			if (obsList != null) {
-				ComboBox weightComboBox = env.getWeightComboBox();
-				EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
+				final ComboBox weightComboBox = env.getWeightComboBox();
+				final EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
 				totalEnvWeight = totalEnvWeight + Double.valueOf(weight.getWeight());
 			}
 		}
 		return totalEnvWeight;
 	}
 
-	private Double roundOffDoubleToTwoDecimalPlaces(Double toRoundOff) {
-		double roundedOff = Math.round(toRoundOff.doubleValue() * 100.0) / 100.0;
+	private Double roundOffDoubleToTwoDecimalPlaces(final Double toRoundOff) {
+		final double roundedOff = Math.round(toRoundOff.doubleValue() * 100.0) / 100.0;
 		return Double.valueOf(roundedOff);
 	}
 
 	public List<TableResultRow> getTableRowsResults() {
-		List<TableResultRow> rows = new ArrayList<TableResultRow>();
+		final List<TableResultRow> rows = new ArrayList<TableResultRow>();
 
 		try {
 			// TODO must reuse the observations class Object and not have multiple calls of getObservationForTraits
 			this.observations = this.crossStudyDataManager.getObservationsForTraits(this.traitIds, this.environmentIds);
 			this.observationsMap = this.getObservationsMap(this.observations);
 
-			List<Integer> germplasmIds = new ArrayList<Integer>();
+			final List<Integer> germplasmIds = new ArrayList<Integer>();
 			germplasmIds.addAll(this.germplasmIdNameMap.keySet());
 
-			for (Map.Entry<String, Integer> germplasm : this.germplasmNameIdMap.entrySet()) {
-				int germplasmId = germplasm.getValue();
+			for (final Map.Entry<String, Integer> germplasm : this.germplasmNameIdMap.entrySet()) {
+				final int germplasmId = germplasm.getValue();
 
-				Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = new HashMap<NumericTraitFilter, TraitObservationScore>();
-				Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap =
+				final Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = new HashMap<NumericTraitFilter, TraitObservationScore>();
+				final Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap =
 						new HashMap<>();
-				Map<CategoricalTraitFilter, TraitObservationScore> categoricalTOSMap =
+				final Map<CategoricalTraitFilter, TraitObservationScore> categoricalTOSMap =
 						new HashMap<>();
 
 				// NUMERIC TRAIT
-				for (NumericTraitFilter trait : this.numericTraitFilter) {
-					Double envWt;
-					Integer noOfObservation = 0;
-					Integer noObsForAllEnvs = 0;
-					Double scorePerTrait = 0.0;
+				for (final NumericTraitFilter trait : this.numericTraitFilter) {
+					double envWt;
+					int noOfObservation = 0;
+					int noObsForAllEnvs = 0;
+					double scorePerTrait = 0.0;
 
-					Double totalEnvWeight = this.getTotalEnvWeightForTrait(trait.getTraitInfo().getId(), germplasmId);
+					final double totalEnvWeight = this.getTotalEnvWeightForTrait(trait.getTraitInfo().getId(), germplasmId);
 
-					for (EnvironmentForComparison env : this.environments) {
-						ObservationKey key = new ObservationKey(trait.getTraitInfo().getId(), germplasmId, env.getEnvironmentNumber());
-						ObservationList obsList = this.observationsMap.get(key);
+					for (final EnvironmentForComparison env : this.environments) {
+						final ObservationKey key = new ObservationKey(trait.getTraitInfo().getId(), germplasmId, env.getEnvironmentNumber());
+						final ObservationList obsList = this.observationsMap.get(key);
 
 						// if the observation exist
 						if (obsList != null) {
-							ComboBox weightComboBox = env.getWeightComboBox();
-							EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
+							final ComboBox weightComboBox = env.getWeightComboBox();
+							final EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
 							envWt = Double.valueOf(weight.getWeight()) / totalEnvWeight;
 
 							noOfObservation = obsList.getObservationList().size();
 							noObsForAllEnvs += noOfObservation;
 
-							Double scorePerEnv = 0.0;
-							for (Observation obs : obsList.getObservationList()) {
+							double scorePerEnv = 0.0;
+							for (final Observation obs : obsList.getObservationList()) {
 								if (this.testNumericTraitVal(trait, obs)) {
 									scorePerEnv = scorePerEnv + Double.valueOf(1);
 								} else {
@@ -661,34 +662,34 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 					// No Of Observation and Wt Score Per Trait
 					scorePerTrait = this.roundOffDoubleToTwoDecimalPlaces(scorePerTrait);
-					TraitObservationScore tos = new TraitObservationScore(germplasmId, noObsForAllEnvs, scorePerTrait);
+					final TraitObservationScore tos = new TraitObservationScore(germplasmId, noObsForAllEnvs, scorePerTrait);
 					numericTOSMap.put(trait, tos);
 				}
 
 				// CHARACTER TRAIT
-				for (CharacterTraitFilter trait : this.characterTraitFilter) {
-					Double envWt;
-					Integer noOfObservation = 0;
-					Integer noObsForAllEnvs = 0;
-					Double scorePerTrait = 0.0;
+				for (final CharacterTraitFilter trait : this.characterTraitFilter) {
+					double envWt;
+					int noOfObservation = 0;
+					int noObsForAllEnvs = 0;
+					double scorePerTrait = 0.0;
 
-					Double totalEnvWeight = this.getTotalEnvWeightForTrait(trait.getTraitInfo().getId(), germplasmId);
+					final Double totalEnvWeight = this.getTotalEnvWeightForTrait(trait.getTraitInfo().getId(), germplasmId);
 
-					for (EnvironmentForComparison env : this.environments) {
-						ObservationKey key = new ObservationKey(trait.getTraitInfo().getId(), germplasmId, env.getEnvironmentNumber());
-						ObservationList obsList = this.observationsMap.get(key);
+					for (final EnvironmentForComparison env : this.environments) {
+						final ObservationKey key = new ObservationKey(trait.getTraitInfo().getId(), germplasmId, env.getEnvironmentNumber());
+						final ObservationList obsList = this.observationsMap.get(key);
 
 						// if the observation exist
 						if (obsList != null) {
-							ComboBox weightComboBox = env.getWeightComboBox();
-							EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
+							final ComboBox weightComboBox = env.getWeightComboBox();
+							final EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
 							envWt = Double.valueOf(weight.getWeight()) / totalEnvWeight;
 
 							noOfObservation = obsList.getObservationList().size();
 							noObsForAllEnvs += noOfObservation;
 
-							Double scorePerEnv = 0.0;
-							for (Observation obs : obsList.getObservationList()) {
+							double scorePerEnv = 0.0;
+							for (final Observation obs : obsList.getObservationList()) {
 								if (this.testCharacterTraitVal(trait, obs)) {
 									scorePerEnv = scorePerEnv + Double.valueOf(1);
 								} else {
@@ -704,34 +705,34 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 					// No Of Observation and Wt Score Per Trait
 					scorePerTrait = this.roundOffDoubleToTwoDecimalPlaces(scorePerTrait);
-					TraitObservationScore tos = new TraitObservationScore(germplasmId, noObsForAllEnvs, scorePerTrait);
+					final TraitObservationScore tos = new TraitObservationScore(germplasmId, noObsForAllEnvs, scorePerTrait);
 					characterTOSMap.put(trait, tos);
 				}
 
 				// CATEGORICAL TRAIT
-				for (CategoricalTraitFilter trait : this.categoricalTraitFilter) {
-					Double envWt;
-					Integer noOfObservation = 0;
-					Integer noObsForAllEnvs = 0;
-					Double scorePerTrait = 0.0;
+				for (final CategoricalTraitFilter trait : this.categoricalTraitFilter) {
+					double envWt;
+					int noOfObservation = 0;
+					int noObsForAllEnvs = 0;
+					double scorePerTrait = 0.0;
 
-					Double totalEnvWeight = this.getTotalEnvWeightForTrait(trait.getTraitInfo().getId(), germplasmId);
+					final Double totalEnvWeight = this.getTotalEnvWeightForTrait(trait.getTraitInfo().getId(), germplasmId);
 
-					for (EnvironmentForComparison env : this.environments) {
-						ObservationKey key = new ObservationKey(trait.getTraitInfo().getId(), germplasmId, env.getEnvironmentNumber());
-						ObservationList obsList = this.observationsMap.get(key);
+					for (final EnvironmentForComparison env : this.environments) {
+						final ObservationKey key = new ObservationKey(trait.getTraitInfo().getId(), germplasmId, env.getEnvironmentNumber());
+						final ObservationList obsList = this.observationsMap.get(key);
 
 						// if the observation exist
 						if (obsList != null) {
-							ComboBox weightComboBox = env.getWeightComboBox();
-							EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
+							final ComboBox weightComboBox = env.getWeightComboBox();
+							final EnvironmentWeight weight = (EnvironmentWeight) weightComboBox.getValue();
 							envWt = Double.valueOf(weight.getWeight()) / totalEnvWeight;
 
 							noOfObservation = obsList.getObservationList().size();
 							noObsForAllEnvs += noOfObservation;
 
-							Double scorePerEnv = 0.0;
-							for (Observation obs : obsList.getObservationList()) {
+							double scorePerEnv = 0.0;
+							for (final Observation obs : obsList.getObservationList()) {
 								if (this.testCategoricalTraitVal(trait, obs)) {
 									scorePerEnv = scorePerEnv + Double.valueOf(1);
 								} else {
@@ -747,60 +748,60 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 					// No Of Observation and Wt Score Per Trait
 					scorePerTrait = this.roundOffDoubleToTwoDecimalPlaces(scorePerTrait);
-					TraitObservationScore tos = new TraitObservationScore(germplasmId, noObsForAllEnvs, scorePerTrait);
+					final TraitObservationScore tos = new TraitObservationScore(germplasmId, noObsForAllEnvs, scorePerTrait);
 					categoricalTOSMap.put(trait, tos);
 				}
 
 				rows.add(new TableResultRow(germplasmId, numericTOSMap, characterTOSMap, categoricalTOSMap));
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			LOG.error(e.getMessage(), e);
 		}
 
 		return rows;
 	}
 
-	public boolean testNumericTraitVal(NumericTraitFilter trait, Observation observation) {
-		// skip testing traits with "missing" value
-		if ("missing".equalsIgnoreCase(observation.getValue())) {
+	public boolean testNumericTraitVal(final NumericTraitFilter trait, final Observation observation) {
+		// skip testing traits invalid value
+		if (!StringUtils.isNumeric(observation.getValue())) {
 			return true;
 		} else {
-			NumericTraitEvaluator eval =
+			final NumericTraitEvaluator eval =
 					new NumericTraitEvaluator(trait.getCondition(), trait.getLimits(), Double.valueOf(observation.getValue()));
 			return eval.evaluate();
 		}
 	}
 
-	public boolean testCharacterTraitVal(CharacterTraitFilter trait, Observation observation) {
+	public boolean testCharacterTraitVal(final CharacterTraitFilter trait, final Observation observation) {
 		// skip testing traits with "missing" value
 		if ("missing".equalsIgnoreCase(observation.getValue())) {
 			return true;
 		} else {
-			CharacterTraitEvaluator eval = new CharacterTraitEvaluator(trait.getCondition(), trait.getLimits(), observation.getValue());
+			final CharacterTraitEvaluator eval = new CharacterTraitEvaluator(trait.getCondition(), trait.getLimits(), observation.getValue());
 			return eval.evaluate();
 		}
 	}
 
-	public boolean testCategoricalTraitVal(CategoricalTraitFilter trait, Observation observation) {
-		CategoricalTraitEvaluator eval = new CategoricalTraitEvaluator(trait.getCondition(), trait.getLimits(), observation.getValue());
+	public boolean testCategoricalTraitVal(final CategoricalTraitFilter trait, final Observation observation) {
+		final CategoricalTraitEvaluator eval = new CategoricalTraitEvaluator(trait.getCondition(), trait.getLimits(), observation.getValue());
 
 		return eval.evaluate();
 	}
 
-	public Map<ObservationKey, ObservationList> getObservationsMap(List<Observation> observations) {
-		Map<ObservationKey, ObservationList> keyObservationsMap = new HashMap<>();
+	public Map<ObservationKey, ObservationList> getObservationsMap(final List<Observation> observations) {
+		final Map<ObservationKey, ObservationList> keyObservationsMap = new HashMap<>();
 
-		for (Observation obs : observations) {
-			ObservationKey key = obs.getId();
+		for (final Observation obs : observations) {
+			final ObservationKey key = obs.getId();
 
 			if (!keyObservationsMap.containsKey(key)) {
-				ObservationList list = new ObservationList(key);
+				final ObservationList list = new ObservationList(key);
 				list.add(obs);
 				keyObservationsMap.put(key, list);
 			} else {
-				ObservationList obslist = keyObservationsMap.get(key);
-				List<Observation> list = obslist.getObservationList();
+				final ObservationList obslist = keyObservationsMap.get(key);
+				final List<Observation> list = obslist.getObservationList();
 				list.add(obs);
 				obslist.setObservationList(list);
 
@@ -811,57 +812,57 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		return keyObservationsMap;
 	}
 
-	public List<Integer> getTraitIds(List<NumericTraitFilter> numericTraitFilter, List<CharacterTraitFilter> characterTraitFilter,
-			List<CategoricalTraitFilter> categoricalTraitFilter) {
-		List<Integer> ids = new ArrayList<>();
+	public List<Integer> getTraitIds(final List<NumericTraitFilter> numericTraitFilter, final List<CharacterTraitFilter> characterTraitFilter,
+			final List<CategoricalTraitFilter> categoricalTraitFilter) {
+		final List<Integer> ids = new ArrayList<>();
 
-		for (NumericTraitFilter trait : numericTraitFilter) {
+		for (final NumericTraitFilter trait : numericTraitFilter) {
 			ids.add(trait.getTraitInfo().getId());
 		}
 
-		for (CharacterTraitFilter trait : characterTraitFilter) {
+		for (final CharacterTraitFilter trait : characterTraitFilter) {
 			ids.add(trait.getTraitInfo().getId());
 		}
 
-		for (CategoricalTraitFilter trait : categoricalTraitFilter) {
+		for (final CategoricalTraitFilter trait : categoricalTraitFilter) {
 			ids.add(trait.getTraitInfo().getId());
 		}
 
 		return ids;
 	}
 
-	public List<Integer> getEnvironmentIds(List<EnvironmentForComparison> environments) {
-		List<Integer> envIds = new ArrayList<>();
+	public List<Integer> getEnvironmentIds(final List<EnvironmentForComparison> environments) {
+		final List<Integer> envIds = new ArrayList<>();
 
-		for (EnvironmentForComparison env : environments) {
+		for (final EnvironmentForComparison env : environments) {
 			envIds.add(env.getEnvironmentNumber());
 		}
 
 		return envIds;
 	}
 
-	public Map<Integer, String> getGermplasm(List<Integer> traitIds, List<Integer> environmentIds) {
+	public Map<Integer, String> getGermplasm(final List<Integer> traitIds, final List<Integer> environmentIds) {
 		Map<Integer, String> gidNameMap = new HashMap<>();
 
-		List<Integer> germplasmIds = new ArrayList<>();
-		List<Integer> traitIdList = new ArrayList<>();
+		final List<Integer> germplasmIds = new ArrayList<>();
+		final List<Integer> traitIdList = new ArrayList<>();
 		traitIdList.addAll(traitIds);
 
 		try {
 			// TODO must reuse this observations Object and not have multiple calls of getObservationForTraits
 			this.observations = this.crossStudyDataManager.getObservationsForTraits(traitIdList, environmentIds);
 
-			Iterator<Observation> obsIter = this.observations.iterator();
+			final Iterator<Observation> obsIter = this.observations.iterator();
 			while (obsIter.hasNext()) {
-				Observation observation = obsIter.next();
-				int id = observation.getId().getGermplasmId();
+				final Observation observation = obsIter.next();
+				final int id = observation.getId().getGermplasmId();
 				if (!germplasmIds.contains(id)) {
 					germplasmIds.add(id);
 				}
 			}
 
 			gidNameMap = this.germplasmDataManager.getPreferredNamesByGids(germplasmIds);
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			TraitDisplayResults.LOG.error("Database error!", ex);
 			MessageNotifier.showError(this.getWindow(), "Database Error!", this.messageSource.getMessage(Message.ERROR_REPORT_TO));
 		}
@@ -869,16 +870,16 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		return gidNameMap;
 	}
 
-	public Map<String, Integer> getSortedGermplasmList(Map<Integer, String> germplasmList) {
-		Map<String, Integer> sorted = new TreeMap<>();
+	public Map<String, Integer> getSortedGermplasmList(final Map<Integer, String> germplasmList) {
+		final Map<String, Integer> sorted = new TreeMap<>();
 
-		for (Map.Entry<Integer, String> entry : germplasmList.entrySet()) {
+		for (final Map.Entry<Integer, String> entry : germplasmList.entrySet()) {
 			String name = entry.getValue();
 			if (name == null) {
 				name = "";
 			}
 
-			Integer id = entry.getKey();
+			final Integer id = entry.getKey();
 			sorted.put(name, id);
 		}
 
@@ -911,14 +912,14 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	public void backButtonClickAction() {
 		this.mainScreen.selectSecondTab();
 	}
-	
+
 	public void saveButtonClickAction() {
 		this.openDialogSaveList();
 	}
 
-	public void addItemForSelectedGermplasm(TableResultRow row) {
-		Integer gid = row.getGermplasmId();
-		String preferredName = this.germplasmIdNameMap.get(gid);
+	public void addItemForSelectedGermplasm(final TableResultRow row) {
+		final Integer gid = row.getGermplasmId();
+		final String preferredName = this.germplasmIdNameMap.get(gid);
 
 		if (this.selectedGermplasmMap.isEmpty()) {
 			this.selectedGermplasmMap.put(gid, preferredName);
@@ -943,7 +944,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	private void openDialogSaveList() {
-		Window parentWindow = this.getWindow();
+		final Window parentWindow = this.getWindow();
 
 		this.saveGermplasmListDialog = new SaveToListDialog(this.mainScreen, this, parentWindow, this.selectedGermplasmMap);
 		this.saveGermplasmListDialog.setDebugId("saveGermplasmListDialog");
@@ -966,7 +967,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 				if ((Boolean) TraitDisplayResults.this.tagAllCheckBoxOnCombinedScoreTagColTable.getValue()) {
 					TraitDisplayResults.this.tagAllEnvironmentsOnCombinedScoreTagColTable();
 				} else {
@@ -978,7 +979,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 	}
 
 	private void tagAllEnvironmentsOnCombinedScoreTagColTable() {
-		Object[] tableItemIds = this.combinedScoreTagColTable.getItemIds().toArray();
+		final Object[] tableItemIds = this.combinedScoreTagColTable.getItemIds().toArray();
 		for (int i = 0; i < tableItemIds.length; i++) {
 			if (this.combinedScoreTagColTable.getItem(tableItemIds[i]).getItemProperty(TraitDisplayResults.TAG_COLUMN_ID).getValue() instanceof CheckBox) {
 				((CheckBox) this.combinedScoreTagColTable.getItem(tableItemIds[i]).getItemProperty(TraitDisplayResults.TAG_COLUMN_ID)
@@ -987,14 +988,14 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 		this.selectedGermplasmMap.clear();
 		for (int i = 0; i < this.tableRows.size(); i++) {
-			String preferredName = this.germplasmIdNameMap.get(this.tableRows.get(i).getGermplasmId());
+			final String preferredName = this.germplasmIdNameMap.get(this.tableRows.get(i).getGermplasmId());
 			this.selectedGermplasmMap.put(this.tableRows.get(i).getGermplasmId(), preferredName);
 		}
 		this.toggleSaveButton();
 	}
 
 	private void untagAllEnvironmentsOnCombinedScoreTagColTable() {
-		Object[] tableItemIds = this.combinedScoreTagColTable.getItemIds().toArray();
+		final Object[] tableItemIds = this.combinedScoreTagColTable.getItemIds().toArray();
 		for (int i = 0; i < tableItemIds.length; i++) {
 			if (this.combinedScoreTagColTable.getItem(tableItemIds[i]).getItemProperty(TraitDisplayResults.TAG_COLUMN_ID).getValue() instanceof CheckBox) {
 				((CheckBox) this.combinedScoreTagColTable.getItem(tableItemIds[i]).getItemProperty(TraitDisplayResults.TAG_COLUMN_ID)
@@ -1004,59 +1005,59 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.selectedGermplasmMap.clear();
 		this.toggleSaveButton();
 	}
-	
+
 	public void setTraitIds(final List<Integer> traitIds) {
 		this.traitIds = traitIds;
 	}
-	
+
 	public void setEnvironmentIds(final List<Integer> environmentIds) {
 		this.environmentIds = environmentIds;
 	}
-	
+
 	public void setCrossStudyDataManager(final CrossStudyDataManager crossStudyDataManager) {
 		this.crossStudyDataManager = crossStudyDataManager;
 	}
-	
+
 	public void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
 		this.germplasmDataManager = germplasmDataManager;
 	}
-	
+
 	public void setResultsTable(final AbsoluteLayout resultsTable) {
 		this.resultsTable = resultsTable;
 	}
-	
+
 	public AbsoluteLayout getResultsTable() {
 		return this.resultsTable;
 	}
-	
+
 	public PagedTable getCreateCombinedScoreTagColTable() {
 		return this.combinedScoreTagColTable;
 	}
-	
+
 	public PagedTable getGermplasmColTable() {
 		return this.germplasmColTable;
 	}
-	
+
 	public PagedTable getTraitsColTable() {
 		return this.traitsColTable;
 	}
-	
+
 	public void setTableRows(final List<TableResultRow> tableRows) {
 		this.tableRows = tableRows;
 	}
-	
+
 	public void setCurrentLineIndex(final Integer currentLineIndex) {
 		this.currentLineIndex = currentLineIndex;
 	}
-	
+
 	public void setGermplasmIdNameMap(final Map<Integer, String> germplasmIdNameMap) {
 		this.germplasmIdNameMap = germplasmIdNameMap;
 	}
-	
+
 	public void setSelectedGermplasmMap(final Map<Integer, String> selectedGermplasmMap) {
 		this.selectedGermplasmMap = selectedGermplasmMap;
 	}
-	
+
 	public Integer getCurrentLineIndex() {
 		return this.currentLineIndex;
 	}

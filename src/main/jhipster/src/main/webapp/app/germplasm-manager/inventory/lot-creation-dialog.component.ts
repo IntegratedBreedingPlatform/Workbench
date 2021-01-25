@@ -17,8 +17,7 @@ import { SearchComposite } from '../../shared/model/search-composite';
     encapsulation: ViewEncapsulation.None,
     selector: 'jhi-lot-creation-dialog',
     templateUrl: './lot-creation-dialog.component.html',
-    // TODO migrate IBP-4093
-    styleUrls: ['../../../content/css/global-bs3.css' ]
+    styleUrls: ['../../../content/css/global-bs4.scss']
 })
 export class LotCreationDialogComponent implements OnInit {
 
@@ -71,8 +70,8 @@ export class LotCreationDialogComponent implements OnInit {
 
         this.units = this.inventoryService.queryUnits().toPromise();
 
-        this.storageLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoriteLocations: false }).toPromise();
-        this.favoriteLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoriteLocations: true }).toPromise();
+        this.storageLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: false }).toPromise();
+        this.favoriteLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: true }).toPromise();
 
         this.storageLocations.then((storageLocations) => {
             const defaultLocation = storageLocations.find((location) => location.defaultLocation);
