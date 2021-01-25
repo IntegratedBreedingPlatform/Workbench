@@ -141,6 +141,7 @@
     "back": "Back",
     "save": "Save",
     "next": "Next",
+    "finish": "Finish",
     "actions": "Actions",
     "template.download": {
         "description": "You can download a template",
