@@ -23,21 +23,24 @@ $(document).ready(function () {
 });
 
 function loadLocations() {
-	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
-		+ "/locations?programUUID=" + getUrlParameter("programUUID") + "&favoriteLocations=false&locationTypes";
 
-	return Promise.all([$.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
+	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
+		+ "/locations?page=0&size=10000&programUUID=" + getUrlParameter("programUUID") + "&favoritesOnly=false&locationTypes";
+
+	return Promise.all([$.ajax({
+		type: "GET",
 		url: url,
 		beforeSend: beforeSend,
-		error: error
-	}), $.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
+		error: error,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json"
+	}), $.ajax({
+		type: "GET",
 		url: url + '=410,411,412',
 		beforeSend: beforeSend,
-		error: error
+		error: error,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json"
 	})]);
 }
 

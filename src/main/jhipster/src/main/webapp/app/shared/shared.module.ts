@@ -2,9 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { AccountService, BmsjHipsterSharedCommonModule, BmsjHipsterSharedLibsModule, Principal } from './';
-import { AppModalComponent } from './modal/app-modal.component';
-import { AppModalConfirmComponent } from './modal/app-modal-confirm.component';
-import { AppModalService } from './modal/app-modal.service';
 import { DragDropModule, TreeModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
 import { SharedModule } from 'primeng/shared';
@@ -55,8 +52,6 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         ReactiveFormsModule
     ],
     declarations: [
-        AppModalComponent,
-        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -86,7 +81,6 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         LoginService,
         DatePipe,
         KeyValuePipe,
-        AppModalService,
         Principal,
         AccountService,
         InventoryService,
@@ -108,8 +102,6 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         NgbActiveModal
     ],
     entryComponents: [
-        AppModalComponent,
-        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
     ],
