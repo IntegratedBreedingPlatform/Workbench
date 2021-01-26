@@ -113,6 +113,7 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         DragDropModule,
         DatePipe,
         KeyValuePipe,
+        BreedingMethodSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
