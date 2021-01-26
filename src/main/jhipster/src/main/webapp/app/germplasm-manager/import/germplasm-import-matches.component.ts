@@ -23,11 +23,11 @@ export class GermplasmImportMatchesComponent implements OnInit {
     // internal usage
     matchNumber = 1
     unassignedCount: number;
-    matches: GermplasmDto[];
+    matches: GermplasmDto[] = [];
     dataRow: any = {};
     entryNo: string;
     name: string;
-    guidMatch: GermplasmDto;
+    guidMatch: GermplasmDto = null;
     isIgnoreAllRemaining: boolean;
     isIgnoreMatch: boolean;
 
@@ -103,7 +103,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
         return Object.keys(obj).length;
     }
 
-    private isFinish() {
+    isFinish() {
         return this.matchNumber === this.unassignedCount
             || this.isIgnoreAllRemaining;
     }
