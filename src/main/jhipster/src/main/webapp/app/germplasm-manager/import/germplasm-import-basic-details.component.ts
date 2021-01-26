@@ -144,6 +144,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     loadLocations() {
+        // TODO get all
         this.breedingAndCountryLocations = this.locationService.queryLocationsByType([LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY], false).toPromise();
         this.favoriteBreedingAndCountryLocations = this.locationService.queryLocationsByType([LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY], true).toPromise();
         this.allLocations = this.locationService.queryLocationsByType([], false).toPromise();

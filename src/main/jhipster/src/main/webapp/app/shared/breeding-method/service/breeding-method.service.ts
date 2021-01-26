@@ -37,7 +37,7 @@ export class BreedingMethodService {
 
     getBreedingMethods(isFavorite?: boolean) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods`
-            + '?favoriteMethods=' + Boolean(isFavorite)
+            + '?favoritesOnly=' + Boolean(isFavorite)
             + '&programUUID=' + this.context.programUUID;
         return this.http.get<BreedingMethodGroup[]>(url) ;
     }
