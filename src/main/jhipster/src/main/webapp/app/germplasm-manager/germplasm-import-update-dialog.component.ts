@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,11 +7,11 @@ import { PopupService } from '../shared/modal/popup.service';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
-import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-type.model';
 import { forkJoin, Observable } from 'rxjs';
 import { parseFile, saveFile } from '../shared/util/file-utils';
 import { AlertService } from '../shared/alert/alert.service';
 import { Attribute } from '../shared/attributes/model/attribute.model';
+import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-type.model';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -96,6 +96,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         const germplasmUpdates = importData.map((row) => {
             const namesValuesMap = {};
             const attributesValuesMap = {};
+            const progenitorsValuesMap = {};
 
             names.forEach((name) => {
                 namesValuesMap[name.code] = row[name.code];
@@ -110,8 +111,11 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
                 preferredNameType: row[HEADER['PREFERRED NAME']],
                 locationAbbreviation: row[HEADER['LOCATION ABBR']],
                 creationDate: row[HEADER['CREATION DATE']],
-                // TODO: Implement Breeding Method Update
-                breedingMethodAbbr: null,
+                breedingMethodAbbr: row[HEADER['BREEDING METHOD']],
+                progenitors: {
+                    'PROGENITOR 1': row[HEADER['PROGENITOR 1']],
+                    'PROGENITOR 2': row[HEADER['PROGENITOR 2']]
+                },
                 reference: row[HEADER['REFERENCE']],
                 names: namesValuesMap,
                 attributes: attributesValuesMap
@@ -190,7 +194,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     private onSaveSuccess(result: any) {
         this.isProcessing = false;
         this.alertService.success('germplasm-import-updates.import.success');
-        this.eventManager.broadcast({ name: 'germplasmUpdated', content: result });
+        this.eventManager.broadcast({ name: 'filterByGid', content: result });
         this.activeModal.close(result);
     }
 
@@ -244,5 +248,8 @@ enum HEADER {
     'PREFERRED NAME' = 'PREFERRED NAME',
     'LOCATION ABBR' = 'LOCATION ABBR',
     'REFERENCE' = 'REFERENCE',
-    'CREATION DATE' = 'CREATION DATE'
+    'CREATION DATE' = 'CREATION DATE',
+    'BREEDING METHOD' = 'BREEDING METHOD',
+    'PROGENITOR 1' = 'PROGENITOR 1',
+    'PROGENITOR 2' = 'PROGENITOR 2'
 }
