@@ -16,6 +16,7 @@ export class GermplasmImportContext {
 
     // processed column data
     nameColumnsWithData = {};
+    // data-bound to priority table -> sorted automatically by priority
     nametypesCopy: NameType[] = [];
     attributesCopy: Attribute[] = [];
 

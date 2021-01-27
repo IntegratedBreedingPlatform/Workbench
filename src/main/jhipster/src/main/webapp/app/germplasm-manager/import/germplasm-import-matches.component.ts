@@ -3,10 +3,19 @@ import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HEADERS } from './germplasm-import.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
     selector: 'jhi-germplasm-import-matches',
-    templateUrl: 'germplasm-import-matches.component.html'
+    templateUrl: 'germplasm-import-matches.component.html',
+    animations: [
+        trigger('tableAnimation', [
+            transition('void => *', [
+                style({ opacity: 0 }),
+                animate(500)
+            ]),
+        ])
+    ]
 })
 export class GermplasmImportMatchesComponent implements OnInit {
 
@@ -17,8 +26,10 @@ export class GermplasmImportMatchesComponent implements OnInit {
 
     // modal input
     unassignedMatches: any[] = [];
-    matchesByName: { [key: string]: GermplasmDto };
+    matchesByName: { [key: string]: GermplasmDto[] };
     matchesByGUID: { [key: string]: GermplasmDto };
+    // ENTRY_NO -> gid or null (new)
+    selectMatchesResult: { [key: string]: number };
 
     // internal usage
     matchNumber = 1
@@ -30,9 +41,6 @@ export class GermplasmImportMatchesComponent implements OnInit {
     guidMatch: GermplasmDto = null;
     isIgnoreAllRemaining: boolean;
     isIgnoreMatch: boolean;
-
-    // ENTRY_NO -> gid or null (new)
-    matchProcessResult: { [key: string]: number } = {};
 
     constructor(
         private context: GermplasmImportContext,
@@ -47,15 +55,23 @@ export class GermplasmImportMatchesComponent implements OnInit {
     }
 
     private processMatch(matchNumber) {
+        this.page = 0;
         this.isIgnoreMatch = false;
 
         this.dataRow = this.unassignedMatches[matchNumber - 1];
         this.guidMatch = this.matchesByGUID[this.dataRow[HEADERS.GUID]];
+        const gidMap = {};
         this.matches = this.context.nametypesCopy
             .filter((nameType) => Boolean(this.matchesByName[this.dataRow[nameType.code]]))
-            .map((nameType) => this.matchesByName[this.dataRow[nameType.code]])
+            .reduce((array, nameType) => array.concat(this.matchesByName[this.dataRow[nameType.code]]), [])
             // dedup
-            .filter((germplasm, i, array) => array.indexOf(germplasm) === i);
+            .filter((germplasm: GermplasmDto) => {
+                if (!gidMap[germplasm.gid]) {
+                    gidMap[germplasm.gid] = true;
+                    return true;
+                }
+                return false;
+            });
         if (this.guidMatch) {
             this.matches.unshift(this.guidMatch);
         }
@@ -63,14 +79,14 @@ export class GermplasmImportMatchesComponent implements OnInit {
     }
 
     onSelectMatch(germplasm: GermplasmDto) {
-        this.matchProcessResult[this.dataRow[HEADERS.ENTRY_NO]] = germplasm.gid;
+        this.selectMatchesResult[this.dataRow[HEADERS.ENTRY_NO]] = germplasm.gid;
         this.isIgnoreMatch = false;
         this.isIgnoreAllRemaining = false;
     }
 
     onIgnoreMatch() {
         if (this.isIgnoreMatch) {
-            this.matchProcessResult[this.dataRow[HEADERS.ENTRY_NO]] = null;
+            this.selectMatchesResult[this.dataRow[HEADERS.ENTRY_NO]] = null;
         }
     }
 
@@ -78,7 +94,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
         if (this.isIgnoreAllRemaining) {
             // we consider also this match as "remaining"
             this.isIgnoreMatch = true;
-            this.matchProcessResult[this.dataRow[HEADERS.ENTRY_NO]] = null;
+            this.selectMatchesResult[this.dataRow[HEADERS.ENTRY_NO]] = null;
         }
     }
 
@@ -96,7 +112,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
 
     next() {
         if (this.isFinish()) {
-            this.modal.close(this.matchProcessResult);
+            this.modal.close(this.selectMatchesResult);
             return;
         }
         this.processMatch(++this.matchNumber);
