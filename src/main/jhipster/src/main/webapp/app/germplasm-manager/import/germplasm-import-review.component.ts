@@ -261,7 +261,7 @@ export class GermplasmImportReviewComponent implements OnInit {
         return true;
     }
 
-    private onSaveSuccess(res: { [key: string]: { status: string, gids: number[] } }) {
+    private async onSaveSuccess(res: { [key: string]: { status: string, gids: number[] } }) {
         this.alertService.success('germplasm-list-creation.success');
         const gids = Object.values(res).map((r) => r.gids[0]);
         this.eventManager.broadcast({ name: 'filterByGid', content: gids });
@@ -273,16 +273,26 @@ export class GermplasmImportReviewComponent implements OnInit {
 
         if (inventoryData.length) {
             // create inventory in the background
-            // Option 1 TODO Pending?
+            // TODO Pending?
             this.lotService.importLotsWithInitialBalance(
                 <LotImportRequest>({
-                    lotList: inventoryData.map((row) => <LotImportRequestLotList>({
-                        gid: res[row[HEADERS.ENTRY_NO]].gids[0],
-                        initialBalance: row[HEADERS.AMOUNT],
-                        storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
-                        unitName: row[HEADERS.UNITS],
-                        stockId: row[HEADERS['STOCK ID']]
-                    })),
+                    lotList: inventoryData.map((row) => {
+                        let gid;
+                        if (res[row[HEADERS.ENTRY_NO]]) {
+                            gid = res[row[HEADERS.ENTRY_NO]].gids[0];
+                        } else if (this.matchesByGUID[row[HEADERS.GUID]]) {
+                            gid = this.matchesByGUID[row[HEADERS.GUID]].gid;
+                        } else {
+                            gid = this.selectMatchesResult[row[HEADERS.ENTRY_NO]];
+                        }
+                        return <LotImportRequestLotList>({
+                            gid,
+                            initialBalance: row[HEADERS.AMOUNT],
+                            storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
+                            unitName: row[HEADERS.UNITS],
+                            stockId: row[HEADERS['STOCK ID']]
+                        })
+                    }),
                     stockIdPrefix: this.context.stockIdPrefix
                 })
             ).subscribe(
@@ -292,8 +302,6 @@ export class GermplasmImportReviewComponent implements OnInit {
                 },
                 (error) => this.onError(error)
             );
-            // Option 2
-            // importLotsWithInitialBalance + import pending/confirmed deposits
         }
 
         // TODO save entryNo
