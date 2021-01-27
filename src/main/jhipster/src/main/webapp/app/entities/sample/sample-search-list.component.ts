@@ -1,11 +1,13 @@
-import {Component} from '@angular/core';
-import {SampleList} from './sample-list.model';
-import {SampleListService} from './sample-list.service';
-import {Subscription} from 'rxjs';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
-import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { SampleList } from './sample-list.model';
+import { SampleListService } from './sample-list.service';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../../shared/alert/alert.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PopupService } from '../../shared/modal/popup.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -17,14 +19,13 @@ declare const currentProgramId: string;
 })
 export class SampleSearchListComponent {
 
-    modalId = 'search-sample-modal';
     searchString: string;
     exactMatch = false;
     sampleListResults: SampleList[] = [];
     selectedListId = 0;
     displayHelpPopup = false;
-    predicate: any;
-    reverse: any;
+    predicate = 'id';
+    reverse = 'asc';
 
     private paramSubscription: Subscription;
     private crop: string;
@@ -33,15 +34,13 @@ export class SampleSearchListComponent {
                 private activatedRoute: ActivatedRoute,
                 private router: Router,
                 private alertService: AlertService,
-                private languageservice: JhiLanguageService) {
+                private languageservice: JhiLanguageService,
+                public activeModal: NgbActiveModal,
+                private modalService: NgbModal) {
 
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
             this.sampleListService.setCropAndProgram(this.crop, currentProgramId);
-        });
-        this.activatedRoute.data.subscribe((data) => {
-            this.reverse = data.pagingParams.ascending;
-            this.predicate = data.pagingParams.predicate;
         });
 
     }
@@ -78,6 +77,7 @@ export class SampleSearchListComponent {
         this.exactMatch = false;
         this.sampleListResults = [];
         this.selectedListId = 0;
+        this.dismiss();
     }
 
     hideHelpPopup() {
@@ -98,5 +98,13 @@ export class SampleSearchListComponent {
 
     setCrop(crop: string) {
         this.crop = crop;
+    }
+
+    confirm() {
+        this.activeModal.close('confirm');
+    }
+
+    dismiss() {
+        this.activeModal.dismiss('cancel');
     }
 }

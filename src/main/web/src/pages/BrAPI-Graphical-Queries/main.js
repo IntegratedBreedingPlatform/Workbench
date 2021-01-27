@@ -25,28 +25,20 @@ $(document).ready(function () {
 function loadLocations() {
 
 	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
-		+ "/locations?page=0&size=10000";
+		+ "/locations?page=0&size=10000&programUUID=" + getUrlParameter("programUUID") + "&favoritesOnly=false&locationTypes";
 
 	return Promise.all([$.ajax({
-		type: "POST",
+		type: "GET",
 		url: url,
 		beforeSend: beforeSend,
 		error: error,
-		data: JSON.stringify({
-			locationTypes: [],
-			programUUID: getUrlParameter("programUUID")
-		}),
 		contentType: "application/json; charset=utf-8",
 		dataType: "json"
 	}), $.ajax({
-		type: "POST",
-		url: url,
+		type: "GET",
+		url: url + '=410,411,412',
 		beforeSend: beforeSend,
 		error: error,
-		data: JSON.stringify({
-			locationTypes: [410, 411, 412],
-			programUUID: getUrlParameter("programUUID")
-		}),
 		contentType: "application/json; charset=utf-8",
 		dataType: "json"
 	})]);

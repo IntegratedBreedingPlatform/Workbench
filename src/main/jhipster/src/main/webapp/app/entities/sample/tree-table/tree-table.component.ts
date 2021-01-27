@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TreeNode } from './tree-node.model';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/api';
@@ -6,8 +6,11 @@ import { ModalAnimation } from '../../../shared/animations/modal.animation';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SampleTreeService } from './sample-tree.service';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../../../shared/alert/alert.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var authToken: string
     , selectedProjectId: string
@@ -33,13 +36,15 @@ const AUTH_PARAMS = {
 })
 export class TreeTableComponent implements OnInit {
 
+    readonly NAME_MAX_LENGTH: number = 50;
+
     private paramSubscription: Subscription;
 
     public mode: Mode = Mode.None;
     public Modes = Mode;
 
     public nodes: PrimeNgTreeNode[] = [];
-    public selected: PrimeNgTreeNode;
+    public selectedNode: PrimeNgTreeNode;
     public name: string; // rename or add item
 
     private draggedNode: PrimeNgTreeNode;
@@ -65,10 +70,14 @@ export class TreeTableComponent implements OnInit {
     }
 
     // TODO make generic interface: TreeService
-    constructor(private alertService: AlertService,
+    constructor(private modal: NgbActiveModal,
+                private languageservice: JhiLanguageService,
+                private translateService: TranslateService,
+                private alertService: AlertService,
                 private service: SampleTreeService,
                 private activatedRoute: ActivatedRoute,
-                private router: Router) {
+                private router: Router,
+                private modalService: NgbModal) {
         this.paramSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             service.setCropAndProgram(cropName, currentProgramId);
         });
@@ -82,6 +91,8 @@ export class TreeTableComponent implements OnInit {
         this.service.expand(null, AUTH_PARAMS).subscribe((res: HttpResponse<TreeNode[]>) => {
             res.body.forEach((node) => this.addNode(node));
             this.redrawNodes();
+            // FIXME tableStyleClass not working on primeng treetable 6?
+            $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
             this.nodes.forEach((parent) => {
                 this.expand(parent);
                 parent.expanded = true;
@@ -169,7 +180,7 @@ export class TreeTableComponent implements OnInit {
     }
 
     isRootFolder() {
-        return this.selected.data.id === 'CROPLISTS' || this.selected.data.id === 'LISTS';
+        return this.selectedNode.data.id === 'CROPLISTS' || this.selectedNode.data.id === 'LISTS';
     }
 
     setMode(mode: Mode, iconClickEvent) {
@@ -177,14 +188,45 @@ export class TreeTableComponent implements OnInit {
             return;
         }
         this.mode = mode;
-        this.setName();
+        if (this.mode === Mode.Delete) {
+            this.validateDeleteFolder();
+        } else {
+            this.setName();
+        }
+    }
+
+    validateDeleteFolder() {
+        if (this.selectedNode.children && this.selectedNode.children.length !== 0) {
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.delete.has.children',
+                { folder: this.selectedNode.data.name });
+            return;
+        }
+        this.confirmDeleteFolder();
+    }
+
+    confirmDeleteFolder() {
+        let message = '';
+        if (this.selectedNode) {
+            message = this.translateService.instant('bmsjHipsterApp.tree-table.messages.folder.delete.question',
+                {id: this.selectedNode.data.name});
+        } else {
+            return;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = message;
+        confirmModalRef.componentInstance.title = this.translateService.instant('bmsjHipsterApp.tree-table.action.folder.delete');
+
+        confirmModalRef.result.then(() => {
+            this.submitDeleteFolder();
+        }, () => confirmModalRef.dismiss());
     }
 
     private setName() {
         if (this.mode === Mode.Add) {
             this.name = '';
         } else if (this.mode === Mode.Rename) {
-            this.name = this.selected.data.name;
+            this.name = this.selectedNode.data.name;
         }
     }
 
@@ -201,8 +243,8 @@ export class TreeTableComponent implements OnInit {
                     const primeNgTreeNode = this.toPrimeNgNode(node, parent);
                     parent.children.push(primeNgTreeNode);
                     if (selectedId === primeNgTreeNode.data.id) {
-                        this.selected = primeNgTreeNode;
-                        this.selected.expanded = true;
+                        this.selectedNode = primeNgTreeNode;
+                        this.selectedNode.expanded = true;
                     }
                 });
                 this.redrawNodes();
@@ -241,13 +283,13 @@ export class TreeTableComponent implements OnInit {
         this.nodes = [];
         this.mode = this.Modes.None;
         this.loadTree();
-        $('#listTreeModal').modal('hide');
+        this.modal.dismiss();
     }
 
     openList() {
         return this.router.navigate(['/sample-manager'], {
             queryParams: {
-                listId: this.selected.data.id
+                listId: this.selectedNode.data.id
             },
             replaceUrl: true,
             queryParamsHandling: 'merge'
@@ -260,10 +302,10 @@ export class TreeTableComponent implements OnInit {
         });
     }
 
-    submitDeleteFolderInTreeTable() {
+    submitDeleteFolder() {
         this.mode = this.Modes.None;
-        this.service.delete(this.selected.data.id).subscribe(() => {
-                this.expand(this.selected.parent);
+        this.service.delete(this.selectedNode.data.id).subscribe(() => {
+                this.expand(this.selectedNode.parent);
                 this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
             },
             (res: HttpErrorResponse) =>
@@ -271,19 +313,19 @@ export class TreeTableComponent implements OnInit {
         );
     }
 
-    submitAddOrRenameFolderInTreeTable() {
+    submitAddOrRenameFolder() {
         if (this.mode === Mode.Add) {
-            this.service.create(this.name, this.selected.data.id).subscribe((res) => {
+            this.service.create(this.name, this.selectedNode.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
-                    this.expand(this.selected, res.id);
+                    this.expand(this.selectedNode, res.id);
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
                 },
                 (res: HttpErrorResponse) =>
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         } else if (this.mode === Mode.Rename) {
-            this.service.rename(this.name, this.selected.data.id).subscribe(() => {
+            this.service.rename(this.name, this.selectedNode.data.id).subscribe(() => {
                     this.mode = this.Modes.None;
-                    this.selected.data.name = this.name;
+                    this.selectedNode.data.name = this.name;
                     this.redrawNodes();
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.rename.successfully');
                 },
