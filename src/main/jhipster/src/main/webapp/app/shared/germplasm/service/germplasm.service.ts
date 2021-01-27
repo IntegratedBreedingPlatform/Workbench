@@ -75,10 +75,12 @@ export class GermplasmService {
         return this.http.post(url, data);
     }
 
-    importGermplasm(germplasmList: GermplasmImportRequest[]) {
+    importGermplasm(germplasmList: GermplasmImportRequest[]): Observable<ImportGermplasmResultType> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
             '?programUUID=' + this.context.programUUID;
-        return this.http.post(url, germplasmList);
+        return this.http.post<ImportGermplasmResultType>(url, germplasmList);
     }
 
 }
+
+export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };
