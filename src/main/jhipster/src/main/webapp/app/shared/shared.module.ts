@@ -2,9 +2,6 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { AccountService, BmsjHipsterSharedCommonModule, BmsjHipsterSharedLibsModule, Principal } from './';
-import { AppModalComponent } from './modal/app-modal.component';
-import { AppModalConfirmComponent } from './modal/app-modal-confirm.component';
-import { AppModalService } from './modal/app-modal.service';
 import { DragDropModule, TreeModule } from 'primeng/primeng';
 import { TreeTableModule } from 'primeng/treetable';
 import { SharedModule } from 'primeng/shared';
@@ -55,8 +52,6 @@ import { ToolService } from './tool/service/tool.service';
         ReactiveFormsModule
     ],
     declarations: [
-        AppModalComponent,
-        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -84,7 +79,6 @@ import { ToolService } from './tool/service/tool.service';
         LoginService,
         DatePipe,
         KeyValuePipe,
-        AppModalService,
         Principal,
         AccountService,
         InventoryService,
@@ -108,8 +102,6 @@ import { ToolService } from './tool/service/tool.service';
         ToolService
     ],
     entryComponents: [
-        AppModalComponent,
-        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
     ],
@@ -121,8 +113,6 @@ import { ToolService } from './tool/service/tool.service';
         DragDropModule,
         DatePipe,
         KeyValuePipe,
-        AppModalComponent,
-        AppModalConfirmComponent,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,

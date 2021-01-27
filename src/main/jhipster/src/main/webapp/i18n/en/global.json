@@ -100,7 +100,8 @@
             "save": "Save",
             "view": "View",
             "select" : "Select",
-            "import" : "Import"
+            "import" : "Import",
+            "proceed": "Proceed"
         },
         "detail": {
             "field": "Field",

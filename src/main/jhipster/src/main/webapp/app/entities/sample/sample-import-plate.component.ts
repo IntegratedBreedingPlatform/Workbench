@@ -1,8 +1,8 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {AppModalService} from '../../shared/modal/app-modal.service';
-import {ExcelService} from './excel.service';
-import {JhiAlertService} from 'ng-jhipster';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ExcelService } from './excel.service';
 import { AlertService } from '../../shared/alert/alert.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
 
 @Component({
     selector: 'jhi-sample-import-plate',
@@ -12,32 +12,41 @@ import { AlertService } from '../../shared/alert/alert.service';
 
 export class SampleImportPlateComponent {
 
-    modalId = 'import-plate-modal';
+    @ViewChild('fileUpload')
+    fileUpload: ElementRef;
 
-    @ViewChild('fileUpload') fileUpload: ElementRef;
-
-    selectedFileType = '.csv'; // Set the default file type to CSV.
     fileName = '';
-    sampleIdMapping = '';
-    plateIdMapping = '';
-    wellMapping = '';
+
+    importFormats = [
+        { name: 'CSV', extension: '.csv' }, //
+        { name: 'Excel', extension: '.xls,.xlsx' }
+    ];
+
+    selectedFileType = this.importFormats.map((formatExtension) => formatExtension.extension).join(',');
+
     importData = new Array<Array<any>>();
 
-    constructor(private modalService: AppModalService,
-                private excelService: ExcelService,
-                private alertService: AlertService) {
+    constructor(private excelService: ExcelService,
+                private alertService: AlertService,
+                public activeModal: NgbActiveModal,
+                private modalService: NgbModal) {
 
     }
 
     close() {
-        this.modalService.close(this.modalId);
+        this.activeModal.dismiss('cancel');
         this.clearSelectedFile();
     }
 
     import() {
         if (this.validate()) {
-            this.modalService.close(this.modalId);
-            this.modalService.open('import-plate-mapping-modal');
+            this.activeModal.dismiss('import');
+            const confirmModalRef = this.modalService.open(SampleImportPlateMappingComponent as Component, { size: 'lg', backdrop: 'static' });
+            confirmModalRef.componentInstance.importData = this.importData;
+
+            confirmModalRef.result.then(() => {
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
         }
     }
 
@@ -45,9 +54,6 @@ export class SampleImportPlateComponent {
         this.fileUpload.nativeElement.value = '';
         this.importData.length = 0;
         this.fileName = '';
-        this.sampleIdMapping = '';
-        this.plateIdMapping = '';
-        this.wellMapping = '';
     }
 
     onFileTypeChange() {
@@ -66,19 +72,7 @@ export class SampleImportPlateComponent {
         const target: DataTransfer = <DataTransfer>(evt.target);
         this.excelService.parse(target).subscribe((value) => {
             this.importData = value;
-            this.sampleIdMapping = this.mappingHeader(this.importData[0], 'SAMPLE_UID');
-            this.plateIdMapping = this.mappingHeader(this.importData[0], 'PLATE_ID');
-            this.wellMapping = this.mappingHeader(this.importData[0], 'WELL');
         });
-    }
-
-    mappingHeader(header: Array<any>, mapping: string) {
-        for (const column of header) {
-            if (column === mapping) {
-                return mapping;
-            }
-        }
-        return '';
     }
 
     validate() {

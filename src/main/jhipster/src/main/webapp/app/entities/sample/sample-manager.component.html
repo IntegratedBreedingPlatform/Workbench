@@ -1,46 +1,29 @@
-<div>
-	<div class="row">
-		<div class="col-xs-12 col-md-12">
-			<h1>Manage Samples <a href="{{helpLink}}" target="_blank" class="bms-helpicon"><i class="fa fa-question-circle" aria-hidden="true"></i></a> </h1>
-		</div>
-		<div class="col-xs-12 col-md-12">
-			<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
-		</div>
-		<div class="col-xs-12 col-md-12">
-			<div class="control-label"><a (click)="browseList()">Browse</a> or <a (click)="openSearch()" >search</a> for a list of samples to work with.</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-xs-12 col-md-12">
-			<div *ngIf="lists && lists.length" class="add_top_padding">
-				<div class="col-xs-12 col-md-12">
-					<!-- Nav tabs -->
-					<ul class="nav nav-tabs row fb-tabs-headers" role="tablist">
-						<li *ngFor="let list of lists" role="presentation" [class.active]="list.active">
-							<a href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
-								{{list.listName}}
-								<i class="glyphicon glyphicon-remove fbk-close-tab" (click)="closeTab(list)"></i>
-							</a>
-						</li>
-					</ul>
-
-					<div class="tab-content fb-tabs row">
-						<!-- Tab panes -->
-						<div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane" [class.active]="list.active" id="list-{{list.id}}">
-							<div class="col-xs-12 col-md-12">
-								<jhi-sample [sampleList]="list"></jhi-sample>
-							</div>
-						</div>
+<section>
+	<header>
+		<h1>Manage Samples <a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a></h1>
+	</header>
+	<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
+	<div class="form-control-label"><a href (click)="browseList($event)">Browse</a> or <a href (click)="openSearch($event)">search</a> for a list of samples to work with.</div>
+	<div *ngIf="lists && lists.length" style="padding-top: 10px;">
+		<nav>
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="nav-item" *ngFor="let list of lists" role="presentation">
+					<a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+						{{list.listName}}
+						<i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<!-- Tab panes -->
+				<div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="list.active" id="list-{{list.id}}">
+					<div class="col-xs-12 col-md-12">
+						<jhi-sample [sampleList]="list"></jhi-sample>
 					</div>
 				</div>
 			</div>
-		</div>
+		</nav>
 	</div>
-</div>
-
-<jhi-tree-table></jhi-tree-table>
-
-<jhi-sample-search-list></jhi-sample-search-list>
-<jhi-sample-import-plate></jhi-sample-import-plate>
+</section>
 <jhi-alert></jhi-alert>

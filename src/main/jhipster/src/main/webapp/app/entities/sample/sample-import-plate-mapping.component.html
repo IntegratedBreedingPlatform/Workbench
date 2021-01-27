@@ -1,56 +1,59 @@
-<jhi-app-modal modalId="{{modalId}}" modalTitle="Select Mapping" modalSize="medium" closebtn="true" (onClose)="close()">
-
-    <div class="row form-group clearfix">
-        <div class="col-xs-12 col-md-12">
-        </div>
-    </div>
-
-    <div class="row form-group">
-        <div class="col-xs-12 col-md-12">
-            <label class=""><em> <span class='required'>*</span> indicates a mandatory field</em></label>
-        </div>
-    </div>
-
-    <div class="row form-group">
-        <div class="col-xs-7 col-md-7">
-            <label class="control-label add_top_padding label-bold">Please specify the header for SAMPLE_UID:</label><span
-                class="required"> *</span>
-        </div>
-        <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="sampleIdMapping" [(ngModel)]="sampleIdMapping">
-                <option value="">Please Choose</option>
-                <option *ngFor="let item of header" [value]="item">{{item}}</option>
-            </select>
-        </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-xs-7 col-md-7">
-            <label class="control-label add_top_padding label-bold">Please specify the header for PLATE_ID:</label><span
-                class="required"> *</span>
-        </div>
-        <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="plateIdMapping" [(ngModel)]="plateIdMapping">
-                <option value="">Please Choose</option>
-                <option *ngFor="let item of header" [value]="item">{{item}}</option>
-            </select>
-        </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-xs-7 col-md-7">
-            <label class="control-label add_top_padding label-bold">Please specify the header for WELL:</label><span
-                class="required"> *</span>
-        </div>
-        <div class="col-xs-5 col-md-5">
-            <select class="form-control" style="width: 205px" id="wellMapping" [(ngModel)]="wellMapping">
-                <option value="">Please Choose</option>
-                <option *ngFor="let item of header" [value]="item">{{item}}</option>
-            </select>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" (click)="back()">Back
-        </button>
-        <button type="button" class="btn btn-primary" (click)="proceed()" aria-hidden="true">Proceed
-        </button>
-    </div>
-</jhi-app-modal>
+<div class="container">
+	<div class="modal-header">
+		<h4 class="modal-title font-weight-bold">Select Mapping</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+				(click)="close()">&times;
+		</button>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm">
+			<div class="form-group row">
+				<label class="col-6 col-form-label">
+					<label class="col-form-label">Please specify the header for SAMPLE_UID:</label>
+				</label>
+				<div class="col-4">
+					<div class="form-group row">
+						<select class="form-control" name="dropdownSampleUID" id="dropdownSampleUID" [(ngModel)]="sampleIdMapping" required #dropdownSampleUID="ngModel">
+							<option value="">Please Choose</option>
+							<option *ngFor="let item of header" [value]="item">{{item}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-6 col-form-label">
+					<label class="col-form-label">Please specify the header for PLATE_ID:</label>
+				</label>
+				<div class="col-4">
+					<div class="form-group row">
+						<select class="form-control" id="dropdownPlate" name="dropdownPlate" [(ngModel)]="plateIdMapping" required #dropdownPlate="ngModel">
+							<option value="">Please Choose</option>
+							<option *ngFor="let item of header" [value]="item">{{item}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-6 col-form-label">
+					<label class="col-form-label">Please specify the header for WELL:</label>
+				</label>
+				<div class="col-4">
+					<div class="form-group row">
+						<select class="form-control" id="dropdownWell" name="dropdownWell" [(ngModel)]="wellMapping" required #dropdownWell="ngModel">
+							<option value="">Please Choose</option>
+							<option *ngFor="let item of header" [value]="item">{{item}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+		</button>
+		<button type="button" (click)="proceed()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.proceed">Proceed</span>
+		</button>
+	</div>
+</div>
