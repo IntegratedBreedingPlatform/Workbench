@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2012, All Rights Reserved.
- * 
+ *
  * Generation Challenge Programme (GCP)
- * 
- * 
+ *
+ *
  * This software is licensed for use under the terms of the GNU General Public License (http://bit.ly/8Ztv8M) and the provisions of Part F
  * of the Generation Challenge Programme Amended Consortium Agreement (http://bit.ly/KQX1nL)
- * 
+ *
  *******************************************************************************/
 
 package org.generationcp.ibpworkbench.germplasm.pedigree;
@@ -27,6 +27,7 @@ import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmButtonClickLis
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -48,11 +49,16 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private GermplasmDataManager germplasmDataManager;
+
 	private TextField txtLevel;
 	private final int gid;
 	private Button btnDisplay;
 	private Component pedigreeLevelLabel;
 	private CheckBox pedigreeDerivativeCheckbox;
+	private CheckBox showBreedingMethodCheckbox;
 	private Panel panelPedigree;
 	private static final String BSLASH = "\\";
 	private static final String FSLASH = "/";
@@ -76,6 +82,7 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 		this.txtLevel.setValue(GermplasmPedigreeGraphComponent.DEFAULT_TREE_LEVEL);
 
 		this.pedigreeDerivativeCheckbox = new CheckBox();
+		this.showBreedingMethodCheckbox = new CheckBox();
 
 		this.btnDisplay = new Button("Display");
 		this.btnDisplay.setData(GermplasmPedigreeGraphComponent.UPDATE_PEDIGREE_GRAPH_BUTTON_ID);
@@ -86,6 +93,7 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 		hLayout.addComponent(this.pedigreeLevelLabel);
 		hLayout.addComponent(this.txtLevel);
 		hLayout.addComponent(this.pedigreeDerivativeCheckbox);
+		hLayout.addComponent(this.showBreedingMethodCheckbox);
 		hLayout.addComponent(this.btnDisplay);
 
 		this.addComponent(hLayout);
@@ -109,6 +117,7 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 	public void updateLabels() {
 		this.messageSource.setCaption(this.pedigreeLevelLabel, Message.PEDIGREE_LEVEL_LABEL);
 		this.messageSource.setCaption(this.pedigreeDerivativeCheckbox, Message.INCLUDE_DERIVATIVE_AND_MAINTENANCE_LINES);
+		this.messageSource.setCaption(this.showBreedingMethodCheckbox, Message.SHOW_BREEDING_METHODS);
 	}
 
 	public void updatePedigreeGraphButtonClickAction() {
@@ -151,8 +160,8 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 
 		final String graphName = randomUUID.toString() + "_tree";
 		final CreatePedigreeGraph pedigree =
-				new CreatePedigreeGraph(this.gid, treeLevel, (Boolean) this.pedigreeDerivativeCheckbox.getValue(), this.getWindow(),
-						this.qQuery);
+				new CreatePedigreeGraph(this.gid, treeLevel, (Boolean) this.pedigreeDerivativeCheckbox.getValue(),
+					(Boolean) this.showBreedingMethodCheckbox.getValue(), this.getWindow(), this.qQuery, this.germplasmDataManager);
 		pedigree.create(graphName);
 
 		final FileResource resource = new FileResource(new File(basepath + graphName + ".png"), this.getApplication());

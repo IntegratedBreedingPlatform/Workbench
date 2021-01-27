@@ -9,6 +9,7 @@ import java.util.Random;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.middleware.data.initializer.GermplasmPedigreeTreeTestDataInitializer;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
@@ -34,16 +35,19 @@ public class CreatePedigreeGraphTest {
 	private static final int GID = 1000;
 	@Mock
 	private GermplasmQueries qQuery;
-	
+
+	@Mock
+	private GermplasmDataManager germplasmDataManager;
+
 	@Mock
 	private GraphVizUtility graphVizUtility;
-	
+
 	@Mock
 	private Window window;
-	
+
 	@Mock
 	private Application application;
-	
+
 	@Mock
 	private ApplicationContext applicationContext;
 
@@ -56,7 +60,7 @@ public class CreatePedigreeGraphTest {
 	@Before
 	public void setUp() throws URISyntaxException {
 		MockitoAnnotations.initMocks(this);
-		this.createPedigreeGraph = new CreatePedigreeGraph(GID, LEVEL, this.window, this.qQuery);
+		this.createPedigreeGraph = new CreatePedigreeGraph(GID, LEVEL, this.window, this.qQuery, this.germplasmDataManager);
 		this.createPedigreeGraph.setGraphVizUtility(this.graphVizUtility);
 
 		Mockito.doReturn(this.window).when(this.window).getWindow();
@@ -76,13 +80,13 @@ public class CreatePedigreeGraphTest {
 		this.createPedigreeGraph.create(SAMPLE_GRAPH, this.graphVizUtility);
 		this.verifyIfEveryLinkedNodeHasBeenAdded(this.germplasmPedigreeTree.getRoot());
 	}
-	
+
 	@Test
 	public void testCreateNodeTextWithFormatting() {
 		final Integer id = new Random().nextInt();
 		final GermplasmPedigreeTreeNode node = getTreeNode(id);
 		final String result = this.createPedigreeGraph.createNodeTextWithFormatting(node);
-		
+
 		final String idString = id.toString();
 		Assert.assertEquals(idString, result);
 		final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
@@ -92,13 +96,13 @@ public class CreatePedigreeGraphTest {
 		final String display = node.getGermplasm().getPreferredName().getNval() + " \n GID: " + idString;
 		Assert.assertEquals(idString + " [label=\"" + display + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];", allValues.get(1));
 	}
-	
+
 	@Test
 	public void testCreateNodeTextWithFormattingWhenGidIsZero() {
 		final Integer id = 0;
 		final GermplasmPedigreeTreeNode node = getTreeNode(id);
 		final String result = this.createPedigreeGraph.createNodeTextWithFormatting(node);
-		
+
 		final String idString = id.toString();
 		Assert.assertEquals(idString, result);
 		final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
@@ -120,7 +124,7 @@ public class CreatePedigreeGraphTest {
 			}
 		}
 	}
-	
+
 	private GermplasmPedigreeTreeNode getTreeNode(int gid) {
 		final GermplasmPedigreeTreeNode node = new GermplasmPedigreeTreeNode();
 		final Germplasm germplasm = new Germplasm();
