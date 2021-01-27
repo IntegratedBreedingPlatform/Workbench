@@ -56,7 +56,7 @@ public class ResultsComponentTest {
 		MockitoAnnotations.initMocks(this);
 		// Need to spy to be able to set the window and application of class
 		this.resultsComponent = Mockito.spy(new ResultsComponent(this.mainScreen));
-		this.resultsComponent.setFinalEnvironmentForComparisonList(environments);
+		this.resultsComponent.setFinalEnvironmentForComparisonList(this.environments);
 		this.resultsComponent.setListExporter(this.listExporter);
 
 		Mockito.when(this.listExporter.exportHeadToHeadDataListExcel(Mockito.anyString(), Mockito.anyListOf(ResultsData.class), Mockito.anySetOf(TraitForComparison.class), Mockito.any(String[].class),

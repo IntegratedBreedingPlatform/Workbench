@@ -124,7 +124,7 @@ public class TableViewerComponentTest {
 		final TableViewerComponent spyComponent = Mockito.spy(this.tableViewer);
 		spyComponent.setTableViewerExporter(this.tableViewerExporter);
 		Mockito.doReturn(this.parentComponent).when(spyComponent).getParent();
-		Mockito.doReturn(this.window).when(parentComponent).getWindow();
+		Mockito.doReturn(this.window).when(this.parentComponent).getWindow();
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		return spyComponent;
 	}

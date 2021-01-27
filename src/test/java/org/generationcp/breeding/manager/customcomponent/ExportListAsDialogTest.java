@@ -141,7 +141,7 @@ public class ExportListAsDialogTest {
 		Mockito.doNothing().when(this.window).open(this.fileDownloadResource);
 		Mockito.doReturn(this.application).when(this.source).getApplication();
 
-		Mockito.when(contextUtil.getProjectInContext()).thenReturn(new Project());
+		Mockito.when(this.contextUtil.getProjectInContext()).thenReturn(new Project());
 
 		Mockito.when(this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(Mockito.anyString(),
 				Mockito.eq(ExportListAsDialog.CSV_EXT), Mockito.any(Project.class),
@@ -394,7 +394,7 @@ public class ExportListAsDialogTest {
 
 		// #2 Seed Reserved
 		// default value
-		String seedRes = "-";
+		final String seedRes = "-";
 		newItem.getItemProperty(ColumnLabels.SEED_RESERVATION.getName()).setValue(seedRes);
 	}
 
