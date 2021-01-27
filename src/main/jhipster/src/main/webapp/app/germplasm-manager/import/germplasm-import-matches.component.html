@@ -11,8 +11,8 @@
 		<div class="row mb-sm-3">
 			<div class="col">
 				<span jhiTranslate="germplasm.import.matches.matches.were.found" [translateValues]="{entryNo: entryNo, unassignedCount: unassignedCount}"></span>
-				<span *ngIf="!!guidMatch" jhiTranslate="germplasm.import.matches.with.guid.match" [translateValues]="{guid: guidMatch.germplasmUUID}"></span>.
-				<span jhiTranslate="germplasm.import.matches.click.on.an.entry"></span>.
+				<span *ngIf="!!guidMatch" jhiTranslate="germplasm.import.matches.with.guid.match" [translateValues]="{guid: guidMatch.germplasmUUID}"></span>
+				<span *ngIf="!guidMatch" jhiTranslate="germplasm.import.matches.click.on.an.entry"></span>
 			</div>
 		</div>
 		<div class="row">
@@ -28,9 +28,9 @@
 						</thead>
 						<tbody>
 						<tr *ngFor="let germplasm of matches | slice: (page-1) * pageSize : page * pageSize"
-							[class.selected]="matchProcessResult[dataRow[HEADERS.ENTRY_NO]] == germplasm.gid || guidMatch"
-							class="selectable"
-							(click)="onSelectMatch(germplasm)">
+							[class.selected]="matchProcessResult[dataRow[HEADERS.ENTRY_NO]] == germplasm.gid || guidMatch?.gid == germplasm.gid"
+							[class.selectable]="!guidMatch"
+							(click)="!guidMatch && onSelectMatch(germplasm)">
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
 							<td><span *ngFor="let name of germplasm.names; let last = last">{{name.name}}<span *ngIf="!last">, </span></span></td>

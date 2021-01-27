@@ -56,6 +56,9 @@ export class GermplasmImportMatchesComponent implements OnInit {
             .map((nameType) => this.matchesByName[this.dataRow[nameType.code]])
             // dedup
             .filter((germplasm, i, array) => array.indexOf(germplasm) === i);
+        if (this.guidMatch) {
+            this.matches.unshift(this.guidMatch);
+        }
         this.entryNo = this.dataRow[HEADERS.ENTRY_NO];
     }
 

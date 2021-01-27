@@ -130,9 +130,9 @@
             },
             "matches": {
                 "header": "Select existing germplasm or add new entry",
-                "with.guid.match": " with <b>GUID={{guid}}</b>",
-                "matches.were.found": "Match(es) were found for entry <b>{{entryNo}} of {{unassignedCount}}</b> ",
-                "click.on.an.entry": "Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry",
+                "with.guid.match": " (<b>GUID={{guid}}</b> <i>automatically selected</i>)",
+                "matches.were.found": "Match(es) were found for entry <b>{{entryNo}} of {{unassignedCount}}</b>",
+                "click.on.an.entry": ". Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry.",
                 "ignore.match": "Ignore matches and add new entry",
                 "ignore.all.remaining": "Ignore remaining matches and add new entries for all",
                 "guid.matches.warning": "Remaining matches by GUID will <b>not</b> be ignored and selected automatically!"
