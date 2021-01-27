@@ -24,9 +24,22 @@
 			<mat-icon fontSet="fa" fontIcon="fa-comments"></mat-icon>
 		</button>
 		<!-- TODO dropdown -->
-		<button mat-button>
+		<button mat-button [matMenuTriggerFor]="memberMenu">
 			<i class="fa fa-user"></i><span style="margin-left: 5px">{{user?.username}}</span>
 		</button>
+
+		<mat-menu #memberMenu="matMenu" yPosition="below" [overlapTrigger]="false">
+			<div class="container">
+				<div class="row">
+					<div class=col>{{user?.firstName}} {{user?.lastName}}</div>
+				</div>
+				<div class="row">
+					<div class=col>{{user?.email}}</div>
+				</div>
+			</div>
+			<button mat-menu-item (click)="logout()">Sign out</button>
+		</mat-menu>
+
 	</mat-toolbar>
 	<mat-sidenav-container>
 		<mat-sidenav #sideNav mode="side" opened="true" *ngIf="isSideNavAvailable()" >

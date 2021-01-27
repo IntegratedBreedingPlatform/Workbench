@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NavService } from './nav.service';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import { MatTreeModule } from '@angular/material/tree';
         MatToolbarModule,
         MatIconModule,
         MatButtonModule,
-        MatTreeModule
+        MatTreeModule,
+        MatMenuModule
     ],
     declarations: [NavbarComponent],
     providers: [NavService],

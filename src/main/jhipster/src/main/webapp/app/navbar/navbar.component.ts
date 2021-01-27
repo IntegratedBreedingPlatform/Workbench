@@ -10,7 +10,6 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { Tool, ToolLink } from '../shared/tool/model/tool.model';
-import { ParamContext } from '../shared/service/param.context';
 
 @Component({
     selector: 'jhi-navbar',
@@ -151,6 +150,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             name: tool.name,
             children
         };
+    }
+
+    private logout() {
+        window.top.location.href = '/ibpworkbench/logout';
     }
 
 }
