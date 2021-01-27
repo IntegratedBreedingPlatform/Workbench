@@ -318,12 +318,17 @@ export class GermplasmImportReviewComponent implements OnInit {
         this.modal.close();
     }
 
-    private onError(response: HttpErrorResponse) {
+    private onError(response: HttpErrorResponse | any) {
+        if (!response.error) {
+            this.alertService.error('error.general.client');
+            console.error(response);
+            return;
+        }
         const msg = formatErrorList(response.error.errors);
         if (msg) {
             this.alertService.error('error.custom', { param: msg });
         } else {
-            this.alertService.error('error.general', null, null);
+            this.alertService.error('error.general');
         }
     }
 
