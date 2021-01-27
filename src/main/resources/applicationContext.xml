@@ -494,6 +494,12 @@
 		<aop:scoped-proxy/>
 	</bean>
 
+	<bean id="workbenchService"
+			  class="org.generationcp.middleware.service.impl.workbench.WorkbenchServiceImpl"
+			  destroy-method="close">
+		<constructor-arg ref="workbenchHibernateSessionProvider" />
+	</bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 	
 </beans>

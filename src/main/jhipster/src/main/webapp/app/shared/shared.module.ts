@@ -46,6 +46,7 @@ import { ItemCountCustomComponent } from './component/item-count-custom.componen
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { ProgramService } from './program/service/program.service';
+import { ToolService } from './tool/service/tool.service';
 
 @NgModule({
     imports: [
@@ -103,7 +104,8 @@ import { ProgramService } from './program/service/program.service';
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
         NgbActiveModal,
-        AlertService
+        AlertService,
+        ToolService
     ],
     entryComponents: [
         AppModalComponent,

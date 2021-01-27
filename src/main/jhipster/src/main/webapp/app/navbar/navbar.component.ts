@@ -5,7 +5,12 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Program } from '../shared/program/model/program';
 import { Principal } from '../shared';
-import { MatSidenav } from '@angular/material/sidenav';
+import { ToolService } from '../shared/tool/service/tool.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { formatErrorList } from '../shared/alert/format-error-list';
+import { JhiAlertService } from 'ng-jhipster';
+import { Tool, ToolLink } from '../shared/tool/model/tool.model';
+import { ParamContext } from '../shared/service/param.context';
 
 @Component({
     selector: 'jhi-navbar',
@@ -35,53 +40,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     );
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
-    // TODO get from api
-    TREE_DATA: Node[] = [{
-        name: 'Germplasm',
-        children: [{
-            name: 'Manage Germplasm',
-            link: '/ibpworkbench/controller/jhipster#germplasm-manager'
-        }]
-    }, {
-        name: 'Studies',
-        children: [{
-            name: 'Single Site Analysis',
-            link: '/ibpworkbench/workbenchtools/breeding_view'
-        }, {
-            name: 'Multi Site Analysis',
-            link: '/ibpworkbench/workbenchtools/breeding_gxe'
-        }, {
-            name: 'Browse studies',
-            link: '/ibpworkbench/maingpsb/study/'
-        }]
-    }, {
-        name: 'Program Administration',
-        children: [{
-            name: 'Manage Program Settings',
-            link: '/ibpworkbench/workbenchtools/manage_program'
-        }]
-    }
-    /*, {
-        name: 'Sub',
-        children: [{
-            name: 'sub-sub'
-        }, {
-            name: 'sub-sub-sub',
-            children: [{
-                name: 'aaaa'
-            }]
-        }]
-    }*/
-    ];
-
     constructor(
         private navService: NavService,
         private principal: Principal,
         private sanitizer: DomSanitizer,
+        private toolService: ToolService,
+        private jhiAlertService: JhiAlertService
     ) {
         // TODO
         // this.version = VERSION ? 'v' + VERSION : '';
-        this.dataSource.data = this.TREE_DATA;
         this.principal.identity().then((identity) => {
             this.user = identity;
         });
@@ -146,12 +113,44 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             localStorage['cropName'] = this.program.cropName;
             localStorage['programUUID'] = this.program.programUUID;
 
-            const firstNode = this.treeControl.dataNodes[0];
-            this.treeControl.expand(firstNode);
-            this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
+            this.toolService.getTools(this.program.cropName, this.program.id)
+                .subscribe(
+                    (res: HttpResponse<Tool[]>) => {
+                        this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
+
+                        const firstNode = this.treeControl.dataNodes[0];
+                        this.treeControl.expand(firstNode);
+
+                        this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
+                    },
+                    (res: HttpErrorResponse) => this.onError(res)
+                );
         } else if (event.data.toolSelected) {
             // TODO intra module navigation
         }
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
+        } else {
+            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
+        }
+    }
+
+    private toNode(tool: Tool): Node {
+        const children: Node[] = tool.children.map((child: ToolLink) => {
+           return {
+               name: child.name,
+               link: child.link
+           }
+        });
+
+        return {
+            name: tool.name,
+            children
+        };
     }
 
 }
