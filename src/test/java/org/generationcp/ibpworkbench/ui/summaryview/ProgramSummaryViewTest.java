@@ -154,7 +154,6 @@ public class ProgramSummaryViewTest {
 		listener.doExport(excelExport, tableName);
 
 		verify(excelExport).setReportTitle(PROJECT_NAME + " - " + tableName);
-		verify(excelExport).setExportFileName(tableName + "_" + PROJECT_NAME + ".xls");
 		verify(excelExport).setDisplayTotals(false);
 		verify(excelExport).export();
 

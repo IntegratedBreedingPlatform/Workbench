@@ -2,6 +2,8 @@ package org.generationcp.ibpworkbench.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -69,6 +71,8 @@ public class RunMultiSiteActionTest {
 	private static final String STUDY_NAME = "TEST STUDY";
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
 
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -176,11 +180,21 @@ public class RunMultiSiteActionTest {
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
 
 		// Verify zip file is downloaded to the browser with proper filename
-		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
-		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
+		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		final String[] uSCount = downloadResource.getFilename().split("_");
+		try {
+			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
+		} catch (final ParseException ex) {
+			Assert.fail("TimeStamp must be included in the file name");
+		}
+		try {
+			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
+		} catch (final ParseException ex) {
+			Assert.fail("Date must be included in the file name");
+		}
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertEquals(STUDY_NAME + ".zip", downloadResource.getFilename());
+		Assert.assertTrue(uSCount.length >=3);
 	}
 
 	@Test

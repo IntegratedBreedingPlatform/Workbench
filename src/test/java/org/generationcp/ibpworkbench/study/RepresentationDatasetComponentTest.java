@@ -2,6 +2,8 @@
 package org.generationcp.ibpworkbench.study;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,23 +35,26 @@ import junit.framework.Assert;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 public class RepresentationDatasetComponentTest {
-	
+
 	private static final String XLS_FILEPATH = "/someDirectory/output/" + RepresentationDatasetComponent.TEMP_FILENAME + ".xls";
 
 	private static final int DATASET_ID = 2;
+
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private DatasetExporter datasetExporter;
 
 	@Mock
 	private StudyDataManager studyDataManager;
-	
+
 	@Mock
 	private Window window;
-	
+
 	@Mock
 	private Application application;
-	
+
 	private DataSet mockDataset;
 	private RepresentationDatasetComponent datasetComponent;
 
@@ -179,7 +184,7 @@ public class RepresentationDatasetComponentTest {
 		Table table = this.datasetComponent.generateLazyDatasetTable(false);
 		Assert.assertTrue("Table should only have 5 columns, excluding dataset variables", table.getColumnHeaders().length == 5);
 	}
-	
+
 	@Test
 	public void testExportToExcelAction() throws DatasetExporterException {
 		// Need to spy to be able to mock window to open file to
@@ -188,16 +193,28 @@ public class RepresentationDatasetComponentTest {
 		Mockito.doReturn(this.window).when(spyComponent).getWindow();
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		spyComponent.exportToExcelAction();
-		
+
 		// Verify file is downloaded to the browser with proper filename
 		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertEquals(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, downloadResource.getFilename());
+		Assert.assertTrue(uSCount.length >= 3);
+
+		try {
+			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
+		} catch (final ParseException ex) {
+			org.junit.Assert.fail("TimeStamp must be included in the file name");
+		}
+		try {
+			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
+		} catch (final ParseException ex) {
+			org.junit.Assert.fail("Date must be included in the file name");
+		}
 	}
-	
+
 	@Test
 	public void testExportToExcelActionDatasetExporterExceptionThrown() throws DatasetExporterException {
 		// Need to spy to be able to mock window to open file to
@@ -209,7 +226,7 @@ public class RepresentationDatasetComponentTest {
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		Mockito.doReturn(this.window).when(this.application).getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
 		spyComponent.exportToExcelAction();
-		
+
 		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 		Mockito.verify(this.window, Mockito.never()).open(ArgumentMatchers.any(VaadinFileDownloadResource.class), ArgumentMatchers.anyString(),
 				ArgumentMatchers.anyBoolean());

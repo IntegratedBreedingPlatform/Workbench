@@ -41,6 +41,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,8 @@ public class RunSingleSiteActionTest {
 	private static final String XML_FILEPATH = BMS_INPUT_FILES_DIR + BASE_FILENAME + ".xml";
 	private static final String XLS_FILEPATH = BMS_INPUT_FILES_DIR + BASE_FILENAME + ".xls";
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + DATA_SOURCE_NAME + ".zip";
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -82,7 +86,7 @@ public class RunSingleSiteActionTest {
 
 	@Mock
 	private Window window;
-	
+
 	@Mock
 	private Component component;
 
@@ -90,28 +94,28 @@ public class RunSingleSiteActionTest {
 	private SingleSiteAnalysisDetailsPanel source;
 
 	private BreedingViewInput breedingViewInput;
-	
+
 	@Mock
 	private ZipUtil zipUtil;
-	
+
 	@Mock
 	private ContextUtil contextUtil;
-	
+
 	@Mock
 	private Select envFactorSelectComponent;
-	
+
 	@Mock
 	private DatasetExporter datasetExporter;
-	
+
 	@Mock
 	private BreedingViewXMLWriter breedingViewXMLWriter;
-	
+
 	@Mock
 	private Application application;
-	
+
 	@InjectMocks
 	private final RunSingleSiteAction runSingleSiteAction = new RunSingleSiteAction(null);
-	
+
 	@Captor
 	private ArgumentCaptor<List<String>> filesInZipCaptor;
 
@@ -124,7 +128,7 @@ public class RunSingleSiteActionTest {
 		this.breedingViewInput.setDatasetId(DATASET_ID);
 		this.breedingViewInput.setSourceXLSFilePath(XLS_FILEPATH);
 		this.breedingViewInput.setDestXMLFilePath(XML_FILEPATH);
-		
+
 		final Project project = new Project();
 		project.setProjectId(PROJECT_ID);
 		project.setProjectName(RunSingleSiteActionTest.PROJECT_NAME);
@@ -141,7 +145,7 @@ public class RunSingleSiteActionTest {
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
 				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
 	}
-	
+
 	private void initializeStudyDataManagerMocks() {
 		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(DATASET_ID, TermId.ENTRY_NO.getId())).thenReturn(ENTRY_NO);
 		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(DATASET_ID, TermId.PLOT_NO.getId())).thenReturn(PLOT_NO);
@@ -215,7 +219,7 @@ public class RunSingleSiteActionTest {
 			this.runSingleSiteAction.validateDesignInput(this.window, this.breedingViewInput));
 
 	}
-	
+
 	@Test
 	public void testValidateDesignInputReplicatesFactorIsDisabledAndDesignTypeIsRCBD() {
 
@@ -305,7 +309,7 @@ public class RunSingleSiteActionTest {
 			this.runSingleSiteAction.validateDesignInput(this.window, this.breedingViewInput));
 
 	}
-	
+
 	@Test
 	public void testValidateDesignInputRowFactorIsBlankButColumnFactorHasValue() {
 
@@ -316,7 +320,7 @@ public class RunSingleSiteActionTest {
 			this.runSingleSiteAction.validateDesignInput(this.window, this.breedingViewInput));
 
 	}
-	
+
 	@Test
 	public void testValidateDesignInputRowAndColumnsFactorsAreBlankAndNotRequired() {
 
@@ -327,7 +331,7 @@ public class RunSingleSiteActionTest {
 			this.runSingleSiteAction.validateDesignInput(this.window, this.breedingViewInput));
 
 	}
-	
+
 	@Test
 	public void testCreateBlocks() {
 
@@ -360,7 +364,7 @@ public class RunSingleSiteActionTest {
 		Assert.assertEquals("Environment_Factor", environment.getName());
 
 	}
-	
+
 	@Test
 	public void testCreateGenotypes() {
 		final Genotypes genotypes = this.runSingleSiteAction.createGenotypes(DATASET_ID, GENOTYPES_FACTOR);
@@ -382,7 +386,7 @@ public class RunSingleSiteActionTest {
 	@Test
 	public void testCreatePlotPlotNoIsNull() {
 		Mockito.when(this.studyDataManager.getLocalNameByStandardVariableId(DATASET_ID, TermId.PLOT_NO.getId())).thenReturn(null);
-		
+
 		final Plot plot = this.runSingleSiteAction.createPlot(DATASET_ID);
 
 		Assert.assertNotNull(plot);
@@ -471,7 +475,7 @@ public class RunSingleSiteActionTest {
 		Assert.assertNull(this.breedingViewInput.getColumns());
 
 	}
-	
+
 	@Test
 	public void testButtonClickServerAppIsTrue() throws IOException {
 		final Project project = ProjectTestDataInitializer.createProject();
@@ -481,7 +485,7 @@ public class RunSingleSiteActionTest {
 		this.runSingleSiteAction.setSource(this.source);
 		this.runSingleSiteAction.setZipUtil(this.zipUtil);
 		this.runSingleSiteAction.buttonClick(this.event);
-		
+
 		// Make sure that the expected files are compressed in zip
 		final ArgumentCaptor<String> filenameCaptor = ArgumentCaptor.forClass(String.class);
 		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
@@ -495,13 +499,25 @@ public class RunSingleSiteActionTest {
 		Assert.assertTrue(filesInZip.contains(XML_FILEPATH));
 		Assert.assertTrue(filesInZip.contains(XLS_FILEPATH));
 		Assert.assertEquals(ToolName.BV_SSA, toolCaptor.getValue());
-		
+
 		// Verify zip file is downloaded to the browser with proper filename
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertEquals(DATA_SOURCE_NAME + ".zip", downloadResource.getFilename());
+		Assert.assertTrue(uSCount.length >= 3);
+
+		try {
+			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
+		} catch (final ParseException ex) {
+			Assert.fail("TimeStamp must be included in the file name");
+		}
+		try {
+			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
+		} catch (final ParseException ex) {
+			Assert.fail("Date must be included in the file name");
+		}
 	}
 
 }
