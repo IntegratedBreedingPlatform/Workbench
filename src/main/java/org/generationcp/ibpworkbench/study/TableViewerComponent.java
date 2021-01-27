@@ -146,7 +146,7 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 		try {
 			final String temporaryFileName = this.tableViewerExporter.exportToExcel(filename);
 
-			String downloadFilename;
+			final String downloadFilename;
 			if (this.studyName != null) {
 				downloadFilename = ExportFileName.getInstance().generateFileName(filename + "_" + this.studyName.replace(" ", "_").trim(), "xlsx");
 			} else {

@@ -495,9 +495,9 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			}
 
 			if (this.getComponentCount() > 2) {
-				ProgramSummaryView.this.replaceComponent(this.getComponent(2), table.createControls());
+				this.replaceComponent(this.getComponent(2), table.createControls());
 			} else if (this.getComponentCount() == 2) {
-				ProgramSummaryView.this.addComponent(table.createControls());
+				this.addComponent(table.createControls());
 			}
 
 		}
@@ -505,7 +505,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		table.setPageLength(10);
 	}
 
-	private class PagedTableWithUpdatedControls extends PagedTable {
+	private static class PagedTableWithUpdatedControls extends PagedTable {
 
 		/**
 		 *
@@ -590,7 +590,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		public void buttonClick(final Button.ClickEvent event) {
 
 			final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-			ExportButtonListener.this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
+			this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
 
 		}
 
