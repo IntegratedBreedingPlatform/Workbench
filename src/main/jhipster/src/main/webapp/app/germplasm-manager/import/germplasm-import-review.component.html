@@ -77,7 +77,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row" *ngIf="creationOption == CREATION_OPTIONS.SELECT_EXISTING">
 					<div class="col">
 						<div class="form-check form-check-inline">
 							<input type="checkbox" class="form-check-input" name="automaticMatchesCheckbox" id="automaticMatchesCheckbox"
