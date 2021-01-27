@@ -283,7 +283,9 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     dismiss() {
-        this.modal.dismiss();
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { backdrop: 'static' });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.cancel.confirm');
+        confirmModalRef.result.then(() => this.modal.dismiss());
     }
 
     back() {

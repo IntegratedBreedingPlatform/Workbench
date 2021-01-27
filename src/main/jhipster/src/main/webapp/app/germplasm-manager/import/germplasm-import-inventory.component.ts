@@ -12,6 +12,7 @@ import { InventoryService } from '../../shared/inventory/service/inventory.servi
 import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { Location } from '../../shared/location/model/location';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 
 @Component({
     selector: 'jhi-germplasm-import-inventory',
@@ -107,7 +108,9 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     dismiss() {
-        this.modal.dismiss();
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { backdrop: 'static' });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.cancel.confirm');
+        confirmModalRef.result.then(() => this.modal.dismiss());
     }
 
     back() {

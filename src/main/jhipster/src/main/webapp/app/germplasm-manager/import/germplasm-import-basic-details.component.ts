@@ -15,6 +15,7 @@ import { GermplasmImportContext } from './germplasm-import.context';
 import { Location } from '../../shared/location/model/location';
 import { LocationService } from '../../shared/location/service/location.service';
 import { LocationTypeEnum } from '../../shared/location/model/location.model';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -128,7 +129,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     dismiss() {
-        this.modal.dismiss();
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { backdrop: 'static' });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.cancel.confirm');
+        confirmModalRef.result.then(() => this.modal.dismiss());
     }
 
     back() {
