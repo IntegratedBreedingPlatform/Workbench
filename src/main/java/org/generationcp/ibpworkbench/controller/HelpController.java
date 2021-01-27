@@ -7,9 +7,11 @@ import javax.annotation.Resource;
 
 import org.generationcp.commons.help.document.HelpDocumentUtil;
 import org.generationcp.commons.help.document.HelpModule;
+import org.generationcp.commons.util.ExportFileName;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -36,6 +38,12 @@ public class HelpController {
 		final String helpUrl = this.helpProperties.getProperty(helpModule.getPropertyName());
 		return HelpDocumentUtil.getOnLineLink(helpUrl);
 
+	}
+
+	@RequestMapping(value = "/exportFileName/{fileType}")
+	@ResponseBody
+	public String getExportFileName(@PathVariable final String fileType, @RequestParam final String fileName) {
+		return ExportFileName.getInstance().generateFileName(fileName, fileType);
 	}
 
 }

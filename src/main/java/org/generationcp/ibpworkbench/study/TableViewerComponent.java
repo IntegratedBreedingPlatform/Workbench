@@ -13,6 +13,7 @@ package org.generationcp.ibpworkbench.study;
 
 import java.io.File;
 
+import org.generationcp.commons.util.ExportFileName;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -147,9 +148,9 @@ public class TableViewerComponent extends BaseSubWindow implements InitializingB
 
 			String downloadFilename;
 			if (this.studyName != null) {
-				downloadFilename = filename + "_" + this.studyName.replace(" ", "_").trim() + ".xlsx";
+				downloadFilename = ExportFileName.getInstance().generateFileName(filename + "_" + this.studyName.replace(" ", "_").trim(), "xlsx");
 			} else {
-				downloadFilename = filename + ".xlsx";
+				downloadFilename = ExportFileName.getInstance().generateFileName(filename, ".xlsx");
 			}
 
 			final VaadinFileDownloadResource fileDownloadResource =

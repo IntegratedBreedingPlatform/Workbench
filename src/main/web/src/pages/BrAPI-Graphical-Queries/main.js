@@ -139,6 +139,18 @@ function error(data) {
 	// TODO toast
 }
 
+function getExportFileName(fileName, fileType) {
+	var exportName = '';
+	$.get('/ibpworkbench/controller/help/exportFileName/' + fileType, {fileName: fileName}).success(function (exportFileName){
+		if (!exportFileName) {
+			exportName = exportFileName;
+		} else {
+			exportName = exportFileName;
+		}
+	});
+	return exportName;
+}
+
 
 // Angular ****************************
 
@@ -445,7 +457,7 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			var link = window.document.createElement('a');
 			var blob = new Blob([data]);
 			link.href = window.URL.createObjectURL(blob);
-			link.download = 'datafile.csv';
+			link.download = getExportFileName('datafile', 'csv');
 			link.click();
 		}
 

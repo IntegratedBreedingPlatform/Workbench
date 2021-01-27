@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.ExportFileName;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -137,9 +138,9 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 	public void exportToExcelAction() {
 		try {
 			final String temporaryFileName =
-					this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
+					this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(ExportFileName.getInstance().generateFileName(RepresentationDatasetComponent.TEMP_FILENAME));
 			final VaadinFileDownloadResource fileDownloadResource = new VaadinFileDownloadResource(new File(temporaryFileName),
-					RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, this.getApplication());
+					ExportFileName.getInstance().generateFileName(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME), this.getApplication());
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 
 		} catch (final DatasetExporterException e) {
