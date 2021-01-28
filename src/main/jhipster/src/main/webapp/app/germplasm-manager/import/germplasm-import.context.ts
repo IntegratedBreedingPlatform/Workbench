@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { Attribute } from '../../shared/attributes/model/attribute.model';
+import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 
 @Injectable()
 export class GermplasmImportContext {
@@ -22,4 +23,7 @@ export class GermplasmImportContext {
 
     // inventory
     stockIdPrefix: string;
+
+    // progenitors
+    pedigreeConnectionType: PedigreeConnectionType = PedigreeConnectionType.NONE;
 }

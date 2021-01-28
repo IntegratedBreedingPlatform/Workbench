@@ -174,6 +174,11 @@ export class GermplasmImportComponent implements OnInit {
                 errorMessage.push(this.translateService.instant('germplasm.import.file.validation.amount.format'));
                 break;
             }
+            // Progenitors
+            if (Boolean(row[HEADERS['PROGENITOR 1']]) !== Boolean(row[HEADERS['PROGENITOR 2']])) {
+                errorMessage.push(this.translateService.instant('germplasm.import.file.validation.progenitors.both'));
+                break;
+            }
         }
         // column validations
         if (this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
@@ -276,6 +281,8 @@ export enum HEADERS {
     'REFERENCE' = 'REFERENCE',
     'CREATION DATE' = 'CREATION DATE',
     'BREEDING METHOD' = 'BREEDING METHOD',
+    'PROGENITOR 1' = 'PROGENITOR 1',
+    'PROGENITOR 2' = 'PROGENITOR 2',
     'NOTES' = 'NOTES',
     'STORAGE LOCATION ABBR' = 'STORAGE LOCATION ABBR',
     'UNITS' = 'UNITS',
@@ -285,5 +292,5 @@ export enum HEADERS {
     'STOCK ID PREFIX' = 'STOCK ID PREFIX',
     'GUID' = 'GUID',
     // Used internally - doesn't come in spreadsheet
-    'GID MATCHES' = 'GID MATCHES'
+    'GID MATCHES' = 'GID MATCHES',
 }

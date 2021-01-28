@@ -172,6 +172,8 @@ export class GermplasmImportReviewComponent implements OnInit {
                         reference: row[HEADERS['REFERENCE']],
                         preferredName: row[HEADERS['PREFERRED NAME']],
                         creationDate: row[HEADERS['CREATION DATE']],
+                        progenitor1: row[HEADERS['PROGENITOR 1']],
+                        progenitor2: row[HEADERS['PROGENITOR 2']],
                         names: this.context.nametypesCopy.reduce((map, name) => {
                             if (row[name.code]) {
                                 map[name.code] = row[name.code];
@@ -185,8 +187,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                             return map;
                         }, {})
                     })),
-                    // TODO progenitors
-                    connectUsing: PedigreeConnectionType.NONE
+                    connectUsing: this.context.pedigreeConnectionType
                 })).toPromise();
             }
             this.saveInventory();
@@ -266,6 +267,12 @@ export class GermplasmImportReviewComponent implements OnInit {
         if (this.inventoryData.length) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.inventory', { param: this.inventoryData.length }));
         }
+        // TODO ...and is new record
+        // const hasProgenitorsCount = this.context.data.filter((row) => row[HEADERS['PROGENITOR 1'] || row[HEADERS['PROGENITOR 2']]]).length;
+        // if (hasProgenitorsCount) {
+        //     messages.push(this.translateService.instant('germplasm.import.review.summary.progenitors', { param: hasProgenitorsCount }));
+        // }
+
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
         confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.review.summary.message', {

@@ -17,6 +17,8 @@ export class GermplasmImportPayload {
         public names?: any,
         public attributes?: any,
         public creationDate?: string,
+        public progenitor1?: string,
+        public progenitor2?: string
     ) {
     }
 }

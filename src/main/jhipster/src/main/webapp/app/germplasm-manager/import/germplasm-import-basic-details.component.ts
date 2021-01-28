@@ -16,6 +16,8 @@ import { Location } from '../../shared/location/model/location';
 import { LocationService } from '../../shared/location/service/location.service';
 import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
+import { isNumeric } from '../../shared/util/is-numeric';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -49,6 +51,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     creationDateSelected: NgbDate | null
 
     referenceSelected: string;
+
+    // progenitors
+    PedigreeConnectionType = PedigreeConnectionType;
 
     constructor(
         private translateService: TranslateService,
@@ -86,6 +91,16 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.context.attributesCopy = this.context.attributes.filter((attribute) => {
             return this.unmapped.indexOf(attribute.code) === -1;
         });
+        if (this.context.data.some((row) => row[HEADERS['PROGENITOR 1']] || row[HEADERS['PROGENITOR 2']])) {
+            if (this.context.data.some((row) =>
+                row[HEADERS['PROGENITOR 1']] && !isNumeric(row[HEADERS['PROGENITOR 1']]) ||
+                row[HEADERS['PROGENITOR 2']] && !isNumeric(row[HEADERS['PROGENITOR 2']]))
+            ) {
+                this.context.pedigreeConnectionType = PedigreeConnectionType.GUID;
+            } else {
+                this.context.pedigreeConnectionType = PedigreeConnectionType.GID;
+            }
+        }
     }
 
     next() {
@@ -184,6 +199,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     hasAllBasicDetails() {
         return this.hasAllBreedingMethods() && this.hasAllLocations() && this.hasAllCreationDate();
+    }
+
+    hasProgenitors() {
+        return this.context.data.some((row) => row[HEADERS['PROGENITOR 1']] || row[HEADERS['PROGENITOR 2']]);
     }
 
     canProceed(f) {

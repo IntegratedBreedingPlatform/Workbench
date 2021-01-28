@@ -178,6 +178,20 @@
 			</div>
 		</form>
 	</div>
+	<div *ngIf="hasProgenitors()">
+		<h3 jhiTranslate="germplasm.import.basicDetails.progenitors.header"></h3>
+		<form name="progenitorsForm" #progenitorsForm="ngForm">
+			<div class="form-group row" >
+				<label for="progenitorsDropdown" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.progenitors.label"></label>
+				<div class="col-sm-6">
+					<select class="form-control" [(ngModel)]="context.pedigreeConnectionType" #progenitorsDropdown="ngModel" name="progenitorsDropdown">
+						<option [value]="PedigreeConnectionType.GID">GID</option>
+						<option [value]="PedigreeConnectionType.GUID">GUID</option>
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
