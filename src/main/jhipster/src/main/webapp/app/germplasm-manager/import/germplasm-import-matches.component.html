@@ -25,6 +25,7 @@
 						<th>NAMES</th>
 						<th>LOCATION</th>
 						<th>BREEDING METHOD</th>
+						<th>CREATION DATE</th>
 						</thead>
 						<tbody>
 						<tr [@tableAnimation] *ngFor="let germplasm of matches | slice: (page-1) * pageSize : page * pageSize"
@@ -36,6 +37,7 @@
 							<td><span *ngFor="let name of germplasm.names; let last = last">{{name.name}}<span *ngIf="!last">, </span></span></td>
 							<td>{{germplasm.breedingLocation}}</td>
 							<td>{{germplasm.breedingMethod}}</td>
+							<td>{{germplasm.creationDate}}</td>
 						</tr>
 						</tbody>
 					</table>
