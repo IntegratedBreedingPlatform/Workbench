@@ -12,6 +12,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
@@ -176,7 +177,7 @@ public class RunMultiSiteActionTest {
 		Assert.assertEquals(3, filesInZip.size());
 		Assert.assertTrue(filesInZip.contains(SUMMARY_DATA_FILEPATH));
 		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
-		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + this.getExpectedBVInputXmlFilename() + ".xml"));
+		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + FileNameGenerator.generateFileName(this.getExpectedBVInputXmlFilename(), "xml")));
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
 
 		// Verify zip file is downloaded to the browser with proper filename
@@ -208,7 +209,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
-		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS.xml", gxeInput.getDestXMLFilePath());
+		Assert.assertEquals(FileNameGenerator.generateFileName(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS.xml"), gxeInput.getDestXMLFilePath());
 
 	}
 
