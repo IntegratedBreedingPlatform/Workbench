@@ -63,8 +63,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	@Value("${web.api.url}")
-	private String webApiUrl;
+	@Value("${single.site.analysis.result.upload.url}")
+	private String singleSiteAnalysisResultUploadURL;
 
 	@Value("${workbench.is.server.app}")
 	private String isServerApp;
@@ -164,7 +164,7 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 
 	private SSAParameters createSSAParameters() {
 		final SSAParameters ssaParameters = new SSAParameters();
-		ssaParameters.setWebApiUrl(this.getWebApiUrl());
+		ssaParameters.setWebApiUrl(this.generateSingleSiteResultUploadURL());
 		ssaParameters.setStudyId(this.breedingViewInput.getStudyId());
 		ssaParameters.setInputDataSetId(this.breedingViewInput.getDatasetId());
 		ssaParameters.setOutputDataSetId(this.breedingViewInput.getOutputDatasetId());
@@ -190,8 +190,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		return this.contextUtil.getProjectInContext();
 	}
 
-	protected String getWebApiUrl() {
-		final String url = this.webApiUrl + "?restartApplication";
+	protected String generateSingleSiteResultUploadURL() {
+		final String url = this.singleSiteAnalysisResultUploadURL + "?";
 		final Project project = this.contextUtil.getProjectInContext();
 
 		final String contextParameterString = org.generationcp.commons.util.ContextUtil
@@ -200,19 +200,19 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
 			.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
 
-		String webApiUrlWithCropName = this.replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
+		String webApiUrlWithCropName = this.replaceCropNameInSingleSiteResultUploadURL(url, project.getCropType().getCropName());
 		webApiUrlWithCropName += contextParameterString + authenticationTokenString;
 		return webApiUrlWithCropName;
 	}
 
-	private String replaceCropNameInWebApiUrl(final String webApiUrl, final String cropNameValue) {
-		final StringBuilder containerWebApiUrl = new StringBuilder(webApiUrl);
+	private String replaceCropNameInSingleSiteResultUploadURL(final String singleSiteAnalysisResultUploadURL, final String cropNameValue) {
+		final StringBuilder builder = new StringBuilder(singleSiteAnalysisResultUploadURL);
 
-		final int startIndex = containerWebApiUrl.indexOf(BreedingViewXMLWriter.CROP_PLACEHOLDER);
+		final int startIndex = builder.indexOf(BreedingViewXMLWriter.CROP_PLACEHOLDER);
 		final int endIndex = startIndex + BreedingViewXMLWriter.CROP_PLACEHOLDER.length();
 
-		containerWebApiUrl.replace(startIndex, endIndex, cropNameValue);
-		return containerWebApiUrl.toString();
+		builder.replace(startIndex, endIndex, cropNameValue);
+		return builder.toString();
 	}
 
 	Environments createEnvironments() {
@@ -326,8 +326,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		// overridden method from interface
 	}
 
-	public void setWebApiUrl(final String webApiUrl) {
-		this.webApiUrl = webApiUrl;
+	public void setSingleSiteAnalysisResultUploadURL(final String singleSiteAnalysisResultUploadURL) {
+		this.singleSiteAnalysisResultUploadURL = singleSiteAnalysisResultUploadURL;
 	}
 
 	public void setContextUtil(final ContextUtil contextUtil) {
