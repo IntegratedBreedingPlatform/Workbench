@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 import org.generationcp.commons.help.document.HelpDocumentUtil;
 import org.generationcp.commons.help.document.HelpModule;
-import org.generationcp.commons.util.ExportFileName;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +43,7 @@ public class HelpController {
 	@RequestMapping(value = "/exportFileName/{fileType}")
 	@ResponseBody
 	public String getExportFileName(@PathVariable final String fileType, @RequestParam final String fileName) {
-		return ExportFileName.getInstance().generateFileName(fileName, fileType);
+		return FileNameGenerator.generateFileName(fileName, fileType);
 	}
 
 }

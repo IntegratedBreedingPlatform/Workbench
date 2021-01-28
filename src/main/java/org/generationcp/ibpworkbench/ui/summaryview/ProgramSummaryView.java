@@ -19,7 +19,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.commons.util.ExportFileName;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -598,7 +598,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
 
-			final String fileName = ExportFileName.getInstance().generateFileName(tableName + " " + programName, "xls").replaceAll(" ", "_");
+			final String fileName = FileNameGenerator
+				.generateFileName(tableName + " " + programName, "xls").replaceAll(" ", "_");
 			excelExport.setReportTitle(programName + " - " + tableName);
 			excelExport.setExportFileName(fileName);
 			excelExport.setDisplayTotals(false);

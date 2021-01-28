@@ -10,7 +10,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
-import org.generationcp.commons.util.ExportFileName;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
@@ -120,7 +120,7 @@ public class RunMultiSiteAction implements ClickListener {
 		try {
 			final String finalZipfileName =
 				this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
-			this.downloadInputFile(new File(finalZipfileName), ExportFileName.getInstance().generateFileName(outputFilename));
+			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename));
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
