@@ -193,7 +193,7 @@ public class ExportListAsDialogTest {
 						ExportListAsDialogTest.listDataTable);
 		verify(this.fileDownloaderUtility, Mockito.times(1))
 				.initiateFileDownload(TEMPORARY_FILE_PATH_XLS,  FileNameGenerator
-					.getInstance().generateFileName( ExportListAsDialogTest.germplasmList.getName(), ExportListAsDialog.XLS_EXT), this.source);
+					.generateFileName( ExportListAsDialogTest.germplasmList.getName(), ExportListAsDialog.XLS_EXT), this.source);
 
 	}
 
@@ -222,7 +222,7 @@ public class ExportListAsDialogTest {
 						ExportListAsDialogTest.germplasmList.getId());
 		verify(this.fileDownloaderUtility, Mockito.times(1))
 				.initiateFileDownload(TEMPORARY_FILE_PATH_CSV, FileNameGenerator
-					.getInstance().generateFileName( ExportListAsDialogTest.germplasmList.getName(), ExportListAsDialog.CSV_EXT), this.source);
+					.generateFileName( ExportListAsDialogTest.germplasmList.getName(), ExportListAsDialog.CSV_EXT), this.source);
 	}
 
 	@Test
