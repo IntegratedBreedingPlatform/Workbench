@@ -1,22 +1,20 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageService } from 'ng-jhipster';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeNode } from '../../shared/tree';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm-tree-table.service';
 import { ParamContext } from '../../shared/service/param.context';
-import { GermplasmList } from '../../shared/model/germplasm-list';
+import { GermplasmList, GermplasmListEntry } from '../../shared/model/germplasm-list';
 import { GermplasmListType } from './germplasm-list-type.model';
 import { GermplasmListService } from './germplasm-list.service';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { TreeDragDropService } from 'primeng/api';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { finalize } from 'rxjs/internal/operators/finalize';
@@ -53,6 +51,9 @@ export class GermplasmListCreationComponent implements OnInit {
     isLoading: boolean;
 
     private loggedUserId: number;
+
+    // for import process
+    entries: GermplasmListEntry[];
 
     constructor(private modal: NgbActiveModal,
                 private jhiLanguageService: JhiLanguageService,
@@ -227,9 +228,13 @@ export class GermplasmListCreationComponent implements OnInit {
             type: this.model.type,
             description: this.model.description,
             notes: this.model.notes,
-            parentFolderId: this.selectedNode.data.id,
-            searchComposite: this.germplasmManagerContext.searchComposite
+            parentFolderId: this.selectedNode.data.id
         });
+        if (this.entries && this.entries.length) {
+            germplasmList.entries = this.entries;
+        } else {
+            germplasmList.searchComposite = this.germplasmManagerContext.searchComposite;
+        }
         this.isLoading = true;
         this.germplasmListService.save(germplasmList)
             .pipe(finalize(() => {

@@ -22,6 +22,8 @@ import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
+import { GermplasmListCreationComponent } from '../germplasm-list/germplasm-list-creation.component';
+import { GermplasmListEntry } from '../../shared/model/germplasm-list';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -285,18 +287,17 @@ export class GermplasmImportReviewComponent implements OnInit {
 
         this.eventManager.broadcast({ name: 'filterByGid', content: gids });
 
-        // TODO save entryNo
-        // TODO use this.selectMatchesResult
-
-        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
-        searchComposite.itemIds = gids;
-        this.germplasmManagerContext.searchComposite = searchComposite;
-
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
         this.modal.close();
+        const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
+            { size: 'lg', backdrop: 'static' });
+        germplasmListCreationModalRef.componentInstance.entries = this.context.data.map((row) => {
+            return <GermplasmListEntry>({
+                gid: this.getSavedGid(row),
+                entryCode: row[HEADERS.ENTRY_CODE],
+                designation: row[row[HEADERS['PREFERRED NAME']]],
+                entryNo: Number(row[HEADERS.ENTRY_NO])
+            });
+        });
     }
 
     private saveInventory() {
@@ -306,16 +307,8 @@ export class GermplasmImportReviewComponent implements OnInit {
             this.lotService.importLotsWithInitialBalance(
                 <LotImportRequest>({
                     lotList: this.inventoryData.map((row) => {
-                        let gid;
-                        if (this.importResult[row[HEADERS.ENTRY_NO]]) {
-                            gid = this.importResult[row[HEADERS.ENTRY_NO]].gids[0];
-                        } else if (this.matchesByGUID[row[HEADERS.GUID]]) {
-                            gid = this.matchesByGUID[row[HEADERS.GUID]].gid;
-                        } else {
-                            gid = this.selectMatchesResult[row[HEADERS.ENTRY_NO]];
-                        }
                         return <LotImportRequestLotList>({
-                            gid,
+                            gid: this.getSavedGid(row),
                             initialBalance: row[HEADERS.AMOUNT],
                             storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
                             unitName: row[HEADERS.UNITS],
@@ -331,6 +324,16 @@ export class GermplasmImportReviewComponent implements OnInit {
                 },
                 (error) => this.onError(error)
             );
+        }
+    }
+
+    private getSavedGid(row) {
+        if (this.importResult[row[HEADERS.ENTRY_NO]]) {
+            return this.importResult[row[HEADERS.ENTRY_NO]].gids[0];
+        } else if (this.matchesByGUID[row[HEADERS.GUID]]) {
+            return this.matchesByGUID[row[HEADERS.GUID]].gid;
+        } else {
+            return this.selectMatchesResult[row[HEADERS.ENTRY_NO]];
         }
     }
 
