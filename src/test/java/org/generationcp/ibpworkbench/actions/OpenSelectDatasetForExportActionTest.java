@@ -231,7 +231,7 @@ public class OpenSelectDatasetForExportActionTest {
 
 	@Test
 	public void testButtonClick() {
-		this.openSelectDatasetForExportAction.buttonClick(clickEvent);
+		this.openSelectDatasetForExportAction.buttonClick(this.clickEvent);
 
 		Mockito.verify(this.workbenchDataManager).getToolWithName(ToolName.BREEDING_VIEW.getName());
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
@@ -273,12 +273,12 @@ public class OpenSelectDatasetForExportActionTest {
 	public void testValidateInputNoSelectedStudy() {
 
 		when(this.singleSiteAnalysisPanel.getCurrentStudy()).thenReturn(null);
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
 	}
 
 	@Test
 	public void testValidateInputNoSelectedDataset() {
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(clickEvent, STUDY_ID, null, null));
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID, null, null));
 	}
 
 	@Test
@@ -295,13 +295,13 @@ public class OpenSelectDatasetForExportActionTest {
 		variateList.add(trait);
 		variatesSelectionMap.put(trait.getName(), trait.getActive());
 
-		when(singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
-		when(singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
-		when(singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
+		when(this.singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
+		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
+		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
-		Mockito.verify(messageSource).getMessage(Message.INVALID_INPUT);
-		Mockito.verify(messageSource).getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR);
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Mockito.verify(this.messageSource).getMessage(Message.INVALID_INPUT);
+		Mockito.verify(this.messageSource).getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR);
 	}
 
 	@Test
@@ -318,13 +318,13 @@ public class OpenSelectDatasetForExportActionTest {
 		variateList.add(covariate);
 		covariatesSelectionMap.put(covariate.getName(), covariate.getActive());
 
-		when(singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
-		when(singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
-		when(singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(covariatesSelectionMap);
+		when(this.singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
+		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
+		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(covariatesSelectionMap);
 
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
-		Mockito.verify(messageSource).getMessage(Message.INVALID_INPUT);
-		Mockito.verify(messageSource).getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR);
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Mockito.verify(this.messageSource).getMessage(Message.INVALID_INPUT);
+		Mockito.verify(this.messageSource).getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR);
 	}
 
 	private void createVariateListWithStateTestData(final List<VariableTableItem> variateList,
@@ -354,13 +354,13 @@ public class OpenSelectDatasetForExportActionTest {
 		variateList.add(trait);
 		variatesSelectionMap.put(trait.getName(), trait.getActive());
 
-		when(singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
-		when(singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
-		when(singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
+		when(this.singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
+		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
+		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 
-		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
-		Mockito.verify(messageSource).getMessage(Message.WARNING);
-		Mockito.verify(messageSource).getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING);
+		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Mockito.verify(this.messageSource).getMessage(Message.WARNING);
+		Mockito.verify(this.messageSource).getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING);
 	}
 
 	@Test
@@ -378,11 +378,11 @@ public class OpenSelectDatasetForExportActionTest {
 		variateList.add(trait);
 		variatesSelectionMap.put(trait.getName(), trait.getActive());
 
-		when(singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
-		when(singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
-		when(singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
+		when(this.singleSiteAnalysisPanel.getVariateList()).thenReturn(variateList);
+		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
+		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 
-		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
 		Mockito.verifyZeroInteractions(this.messageSource);
 
 	}
