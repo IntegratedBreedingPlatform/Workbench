@@ -11,8 +11,13 @@ export class LoginService {
     ) {
     }
 
-    logout() {
+    forceLogout() {
         alert('Site Admin needs  to authenticate you again. Redirecting to login page.');
+        this.logout();
+    }
+
+    logout() {
         window.top.location.href = '/ibpworkbench/logout';
     }
+
 }

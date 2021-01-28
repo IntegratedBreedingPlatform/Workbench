@@ -10,6 +10,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { Tool, ToolLink } from '../shared/tool/model/tool.model';
+import { LoginService } from '../shared/login/login.service';
 
 @Component({
     selector: 'jhi-navbar',
@@ -44,7 +45,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private principal: Principal,
         private sanitizer: DomSanitizer,
         private toolService: ToolService,
-        private jhiAlertService: JhiAlertService
+        private jhiAlertService: JhiAlertService,
+        private loginService: LoginService
     ) {
         // TODO
         // this.version = VERSION ? 'v' + VERSION : '';
@@ -153,7 +155,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     private logout() {
-        window.top.location.href = '/ibpworkbench/logout';
+        this.loginService.logout();
     }
 
 }
