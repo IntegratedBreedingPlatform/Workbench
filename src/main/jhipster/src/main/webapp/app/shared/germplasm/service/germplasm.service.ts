@@ -7,7 +7,7 @@ import { createRequestOption } from '../..';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
 import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
-import { ExtendedGermplasmImportRequest, GermplasmImportRequest } from '../model/germplasm-import-request.model';
+import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
 import { GermplasmDto } from '../model/germplasm.model';
 
@@ -69,13 +69,13 @@ export class GermplasmService {
         return this.http.get<NameType[]>(url);
     }
 
-    validateImportGermplasmData(data: ExtendedGermplasmImportRequest[]) {
+    validateImportGermplasmData(data: GermplasmImportValidationPayload[]) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/validation` +
             '?programUUID=' + this.context.programUUID;
         return this.http.post(url, data);
     }
 
-    importGermplasm(germplasmList: GermplasmImportRequest[]): Observable<ImportGermplasmResultType> {
+    importGermplasm(germplasmList: GermplasmImportRequest): Observable<ImportGermplasmResultType> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
             '?programUUID=' + this.context.programUUID;
         return this.http.post<ImportGermplasmResultType>(url, germplasmList);

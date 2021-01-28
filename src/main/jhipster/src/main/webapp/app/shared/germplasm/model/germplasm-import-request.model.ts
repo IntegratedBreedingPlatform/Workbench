@@ -1,5 +1,13 @@
 export class GermplasmImportRequest {
     constructor(
+        public germplasmList: GermplasmImportPayload,
+        public connectUsing: PedigreeConnectionType
+    ) {
+    }
+}
+
+export class GermplasmImportPayload {
+    constructor(
         public clientId?: number,
         public germplasmUUID?: string,
         public locationAbbr?: string,
@@ -13,7 +21,7 @@ export class GermplasmImportRequest {
     }
 }
 
-export class ExtendedGermplasmImportRequest extends GermplasmImportRequest {
+export class GermplasmImportValidationPayload extends GermplasmImportPayload {
     constructor(
         public amount?: number,
         public stockId?: string,
@@ -22,4 +30,10 @@ export class ExtendedGermplasmImportRequest extends GermplasmImportRequest {
     ) {
         super();
     }
+}
+
+export enum PedigreeConnectionType {
+    NONE = 'NONE',
+    GID = 'GID',
+    GUID = 'GUID'
 }

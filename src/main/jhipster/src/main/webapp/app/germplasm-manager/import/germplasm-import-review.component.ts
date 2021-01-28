@@ -10,11 +10,9 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { GermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
+import { GermplasmImportPayload, GermplasmImportRequest, PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { HEADERS } from './germplasm-import.component';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
-import { SearchComposite } from '../../shared/model/search-composite';
-import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
@@ -165,8 +163,8 @@ export class GermplasmImportReviewComponent implements OnInit {
 
             if (newEntries.length) {
                 this.isSaving = true;
-                this.importResult = await this.germplasmService.importGermplasm(newEntries.map((row) => {
-                    return <GermplasmImportRequest>({
+                this.importResult = await this.germplasmService.importGermplasm(<GermplasmImportRequest>({
+                    germplasmList: newEntries.map((row) => <GermplasmImportPayload>({
                         clientId: row[HEADERS.ENTRY_NO],
                         germplasmUUID: row[HEADERS.GUID],
                         locationAbbr: row[HEADERS['LOCATION ABBR']],
@@ -186,7 +184,9 @@ export class GermplasmImportReviewComponent implements OnInit {
                             }
                             return map;
                         }, {})
-                    });
+                    })),
+                    // TODO progenitors
+                    connectUsing: PedigreeConnectionType.NONE
                 })).toPromise();
             }
             this.saveInventory();
@@ -220,6 +220,10 @@ export class GermplasmImportReviewComponent implements OnInit {
                 // -> open manual
                 if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
                     && !this.matchesByGUID[row[HEADERS.GUID]])) {
+
+                    if (this.isSelectMatchesAutomatically) {
+
+                    }
 
                     const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
                         { size: 'lg', backdrop: 'static' });

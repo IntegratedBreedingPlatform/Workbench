@@ -11,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../shared/alert/alert.service';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { Attribute } from '../../shared/attributes/model/attribute.model';
-import { ExtendedGermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
+import { GermplasmImportValidationPayload } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { listPreview } from '../../shared/util/list-preview';
 import { GermplasmImportContext } from './germplasm-import.context';
 
@@ -216,8 +216,8 @@ export class GermplasmImportComponent implements OnInit {
     }
 
     private validateServerSide() {
-        const extendedGermplasmImportRequest: ExtendedGermplasmImportRequest[] = this.context.data.map((row) => {
-            return <ExtendedGermplasmImportRequest>({
+        const extendedGermplasmImportRequest: GermplasmImportValidationPayload[] = this.context.data.map((row) => {
+            return <GermplasmImportValidationPayload>({
                 locationAbbr: row[HEADERS['LOCATION ABBR']],
                 storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
                 breedingMethodAbbr: row[HEADERS['BREEDING METHOD']],
