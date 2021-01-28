@@ -12,8 +12,8 @@
 		<gwt.version>2.5.1</gwt.version>
 		<gwt.plugin.version>2.5.1</gwt.plugin.version>
 		<ibpcommons.version>${project.version}</ibpcommons.version>
-		<spring.version>4.1.6.RELEASE</spring.version>
-		<spring.security.version>3.2.5.RELEASE</spring.security.version>
+		<spring.version>4.3.7.RELEASE</spring.version>
+		<spring.security.version>4.1.4.RELEASE</spring.security.version>
 		<modelmapper.version>0.7.3</modelmapper.version>
 		<node.version>v8.11.3</node.version>
 		<yarn.version>v1.21.1</yarn.version>
@@ -45,8 +45,25 @@
 					<groupId>javax.servlet</groupId>
 					<artifactId>javax.servlet-api</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-aspects</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-context-support</artifactId>
+    		<version>4.3.7.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+    		<version>4.3.7.RELEASE</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.vaadin.addons.lazyquerycontainer</groupId>
 			<artifactId>vaadin-lazyquerycontainer</artifactId>
@@ -141,7 +158,7 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>1.8.1</version>
+			<version>1.8.7</version>
 		</dependency>
 
 		<dependency>

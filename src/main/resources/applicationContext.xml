@@ -26,7 +26,7 @@
 		make this work, we need to set the -java.agent VM argument to the spring-instrument 
 		JAR file's path. In windows, you can use: -javaagent:${env_var:HOMEDRIVE}${env_var:HOMEPATH}\.m2\repository\org\springframework\spring-instrument\3.1.1.RELEASE\spring-instrument-3.1.1.RELEASE.jar 
 		Mac and Linux users, add your path here. -->
-	<context:load-time-weaver />
+	<context:load-time-weaver/>
 
 	<!-- The application class. -->
 	<bean id="workbenchMain" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
