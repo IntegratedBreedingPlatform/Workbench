@@ -7,6 +7,8 @@ import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
 import { NgSelect2Module } from 'ng-select2';
+import { GermplasmListService } from '../germplasm-manager/germplasm-list/germplasm-list.service';
+import { TreeDragDropService } from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -28,6 +30,9 @@ import { NgSelect2Module } from 'ng-select2';
         NgJhipsterModule,
         InfiniteScrollModule,
         NgSelect2Module
+    ],
+    providers: [
+        TreeDragDropService
     ]
 })
 export class BmsjHipsterSharedLibsModule {}

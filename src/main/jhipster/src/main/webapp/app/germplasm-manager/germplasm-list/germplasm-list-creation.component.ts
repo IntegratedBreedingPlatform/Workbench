@@ -32,9 +32,7 @@ declare var $: any;
     // TODO migrate IBP-4093
     styleUrls: ['../../../content/css/global-bs4.scss'],
     providers: [
-        { provide: TreeService, useClass: GermplasmTreeTableService },
-        { provide: TreeDragDropService, useClass: TreeDragDropService },
-        { provide: GermplasmListService, useClass: GermplasmListService },
+        { provide: TreeService, useClass: GermplasmTreeTableService }
     ]
 })
 export class GermplasmListCreationComponent implements OnInit {

@@ -23,8 +23,7 @@ declare var $: any;
     selector: 'jhi-germplasm-list-add',
     templateUrl: './germplasm-list-add.component.html',
     providers: [
-        { provide: TreeService, useClass: GermplasmTreeTableService },
-        { provide: GermplasmListService, useClass: GermplasmListService }
+        { provide: TreeService, useClass: GermplasmTreeTableService }
     ]
 })
 export class GermplasmListAddComponent implements OnInit {
