@@ -11,6 +11,8 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { Tool, ToolLink } from '../shared/tool/model/tool.model';
 import { LoginService } from '../shared/login/login.service';
+import { HELP_ABOUT_BMS, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { HelpService } from '../shared/service/help.service';
 
 @Component({
     selector: 'jhi-navbar',
@@ -30,6 +32,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     user: any;
     toolLinkSelected: string;
 
+    aboutBMSHelpLink: string;
+
     @ViewChild('sideNav') sideNav: ElementRef;
 
     treeControl = new FlatTreeControl<FlatNode>((node) => node.level, (node) => node.expandable);
@@ -46,13 +50,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private sanitizer: DomSanitizer,
         private toolService: ToolService,
         private jhiAlertService: JhiAlertService,
-        private loginService: LoginService
+        private loginService: LoginService,
+        private helpService: HelpService
     ) {
         // TODO
         // this.version = VERSION ? 'v' + VERSION : '';
         this.principal.identity().then((identity) => {
             this.user = identity;
         });
+
+        // Get aboutBMSHelpLink url
+        if (!this.aboutBMSHelpLink || !this.aboutBMSHelpLink.length) {
+            this.helpService.getHelpLink(HELP_ABOUT_BMS).toPromise().then((response) => {
+                this.aboutBMSHelpLink = response.body;
+            }).catch((error) => {});
+        }
     }
 
     hasChild = (_: number, node: any) => node.expandable;

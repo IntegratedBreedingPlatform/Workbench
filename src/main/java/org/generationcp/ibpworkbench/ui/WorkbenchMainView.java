@@ -107,6 +107,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Value("${ask.for.support.url}")
 	private String askForSupportURL;
 
+	// This property was moved to helplink.properties
+	@Deprecated
 	@Value("${about.bms.url}")
 	private String aboutBmsURL;
 

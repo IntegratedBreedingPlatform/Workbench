@@ -13,3 +13,4 @@ export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';
 export const HELP_MANAGE_SAMPLES = 'MANAGE_SAMPLES';
 export const HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS = 'MANAGE_STUDIES_CREATE_PLANTING_LABELS';
 export const HELP_MANAGE_GERMPLASM = 'MANAGE_GERMPLASM';
+export const HELP_ABOUT_BMS = 'ABOUT_BMS';
