@@ -151,18 +151,15 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	void populateProjectNameAndFilePaths(final BreedingViewInput breedingViewInput, final Project project, final String inputDirectory) {
 
-		String breedingViewProjectName = "";
-		String defaultFilePath = "";
-
-		breedingViewProjectName = project.getProjectName().trim() + "_" + this.dataSetId + "_" + this.datasetName.trim();
+		String breedingViewProjectName = project.getProjectName().trim() + "_" + this.dataSetId + "_" + this.datasetName.trim();
 
 		breedingViewProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewProjectName);
 
-		defaultFilePath = File.separator + breedingViewProjectName;
+		final String defaultFilePath = File.separator + breedingViewProjectName;
 
 		breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
 
-		String sourceCSVFile = "";
+		final String sourceCSVFile;
 		if (Boolean.parseBoolean(this.isServerApp)) {
 			sourceCSVFile = FileNameGenerator.generateFileName(breedingViewProjectName,"csv");
 		} else {
