@@ -11,7 +11,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { Tool, ToolLink } from '../shared/tool/model/tool.model';
 import { LoginService } from '../shared/login/login.service';
-import { HELP_ABOUT_BMS, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
 
 @Component({
@@ -33,6 +33,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     toolLinkSelected: string;
 
     aboutBMSHelpLink: string;
+    askForSupportHelpLink: string;
 
     @ViewChild('sideNav') sideNav: ElementRef;
 
@@ -59,12 +60,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             this.user = identity;
         });
 
-        // Get aboutBMSHelpLink url
-        if (!this.aboutBMSHelpLink || !this.aboutBMSHelpLink.length) {
-            this.helpService.getHelpLink(HELP_ABOUT_BMS).toPromise().then((response) => {
-                this.aboutBMSHelpLink = response.body;
-            }).catch((error) => {});
-        }
+        // Get about bms help link url
+        this.getHelpLink(this.aboutBMSHelpLink, HELP_NAVIGATION_BAR_ABOUT_BMS)
+            .then((response) => this.aboutBMSHelpLink = response);
+        // Get ask for support link url
+        this.getHelpLink(this.askForSupportHelpLink, HELP_NAVIGATION_ASK_FOR_SUPPORT)
+            .then((response) => this.askForSupportHelpLink = response);
     }
 
     hasChild = (_: number, node: any) => node.expandable;
@@ -108,6 +109,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     siteAdmin() {
         this.openTool('/ibpworkbench/controller/admin');
+    }
+
+    about() {
+        this.openTool('/ibpworkbench/controller/about/')
     }
 
     isSideNavAvailable() {
@@ -168,6 +173,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     private logout() {
         this.loginService.logout();
+    }
+
+    private async getHelpLink(helpLink: string, key: string): Promise<string> {
+        if (!helpLink || !helpLink.length) {
+            return await this.helpService.getHelpLink(key).toPromise().then((response) => {
+                return response.body;
+            }).catch((error) => {});
+        }
     }
 
 }

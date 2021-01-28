@@ -11,8 +11,8 @@
 		<button mat-button (click)="siteAdmin()">Site Admin</button>
 		<button mat-button *ngIf="toolUrl" (click)="myPrograms()">My Programs</button>
 		<button mat-button *ngIf="!toolUrl" (click)="addProgram()"><i class="fa fa-plus"></i> Add a Program</button>
-		<button mat-icon-button>
-			<!-- TODO -->
+
+		<button mat-icon-button (click)="about()">
 			<mat-icon fontSet="fa" fontIcon="fa-info"></mat-icon>
 		</button>
 
@@ -20,10 +20,9 @@
 			<mat-icon fontSet="fa" fontIcon="fa-question-circle"></mat-icon>
 		</a>
 
-		<button mat-icon-button>
-			<!-- TODO -->
+		<a mat-icon-button href="{{askForSupportHelpLink}}" target="_blank">
 			<mat-icon fontSet="fa" fontIcon="fa-comments"></mat-icon>
-		</button>
+		</a>
 
 		<button mat-button [matMenuTriggerFor]="memberMenu">
 			<i class="fa fa-user"></i><span style="margin-left: 5px">{{user?.username}}</span>

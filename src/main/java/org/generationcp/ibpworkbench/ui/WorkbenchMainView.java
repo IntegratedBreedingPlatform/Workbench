@@ -104,6 +104,8 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Value("${workbench.is.add.program.enabled}")
 	private String isAddProgramEnabled;
 
+	// This property was moved to helplink.properties
+	@Deprecated
 	@Value("${ask.for.support.url}")
 	private String askForSupportURL;
 
