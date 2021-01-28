@@ -16,6 +16,7 @@ import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -163,13 +164,13 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 		String sourceCSVFile = "";
 		if (Boolean.parseBoolean(this.isServerApp)) {
-			sourceCSVFile = breedingViewProjectName + ".csv";
+			sourceCSVFile = FileNameGenerator.generateFileName(breedingViewProjectName,"csv");
 		} else {
-			sourceCSVFile = inputDirectory + defaultFilePath + ".csv";
+			sourceCSVFile = inputDirectory + FileNameGenerator.generateFileName(defaultFilePath, "csv");
 		}
 		breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
 
-		final String destXMLFilePath = inputDirectory + defaultFilePath + ".xml";
+		final String destXMLFilePath = inputDirectory + FileNameGenerator.generateFileName(defaultFilePath, "xml");
 		breedingViewInput.setDestXMLFilePath(destXMLFilePath);
 
 	}
