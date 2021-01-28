@@ -104,8 +104,8 @@ public class RunSingleSiteAction implements ClickListener {
 			if (Boolean.parseBoolean(this.isServerApp)) {
 
 				final List<String> filenameList = new ArrayList<>();
-				filenameList.add(breedingViewInput.getDestXMLFilePath());
-				filenameList.add(breedingViewInput.getSourceXLSFilePath());
+				filenameList.add(FileNameGenerator.generateFileName(breedingViewInput.getDestXMLFilePath()));
+				filenameList.add(FileNameGenerator.generateFileName(breedingViewInput.getSourceXLSFilePath()));
 
 				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource());
 				try {

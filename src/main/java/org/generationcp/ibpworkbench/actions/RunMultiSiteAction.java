@@ -110,9 +110,9 @@ public class RunMultiSiteAction implements ClickListener {
 
 	protected void zipInputFilesAndDownload(final GxeInput gxeInput) {
 		final List<String> filenameList = new ArrayList<>();
-		filenameList.add(gxeInput.getDestXMLFilePath());
-		filenameList.add(gxeInput.getSourceCSVFilePath());
-		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
+		filenameList.add(FileNameGenerator.generateFileName(gxeInput.getDestXMLFilePath()));
+		filenameList.add(FileNameGenerator.generateFileName(gxeInput.getSourceCSVFilePath()));
+		filenameList.add(FileNameGenerator.generateFileName(gxeInput.getSourceCSVSummaryStatsFilePath()));
 
 		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
 		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName);
