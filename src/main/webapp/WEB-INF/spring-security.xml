@@ -15,10 +15,6 @@
 
 	<http auto-config="true" use-expressions="true">
 
-		<!--<headers>-->
-		<!--<frame-options policy="SAMEORIGIN"/>-->
-		<!--</headers>-->
-
 		<intercept-url pattern="/controller/auth/**" access="permitAll" />
 		<intercept-url pattern="/web_login_forward*" access="permitAll" />
 
