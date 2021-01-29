@@ -72,7 +72,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
                 }
                 return false;
             });
-        if (this.guidMatch) {
+        if (this.guidMatch && !gidMap[this.guidMatch.gid]) {
             this.matches.unshift(this.guidMatch);
         }
         this.entryNo = this.dataRow[HEADERS.ENTRY_NO];
