@@ -152,8 +152,8 @@
                 "automatic.not.possible": "Automatic match is not possible for some entries (> 1 name matches by preferred name). For those, manual selection will be needed.",
                 "summary": {
                     "message": "<h4>Import summary:</h4><p>{{param}}</p>",
-                    "new": "{{param}} entries have no matches (new records will be created)",
-                    "ignored": "{{param}} entries with matches were ignored (new records will be created)",
+                    "new": "{{param}} entries have no matches <strong>(new records will be created)</strong>",
+                    "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
                     "match.by.name": "{{param}} entries with matches <b>by name</b> were selected",
                     "match.by.guid": "{{param}} entries with matches <b>by GUID</b> were automatically selected",
                     "inventory": "{{param}} lots will be created",
