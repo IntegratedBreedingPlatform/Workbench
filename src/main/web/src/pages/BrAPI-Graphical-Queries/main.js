@@ -58,7 +58,7 @@ function buildLocationsCombo(response) {
 			+ location.name + ' - (' + location.abbreviation + ')'
 			+ '</option>';
 	}));
-	$('#allLocations select').select2({containerCss: {width: '100%'}});
+	$('#allLocations select').select2();
 
 	$('#breedingLocations').html('<select multiple ></select>');
 	$('#breedingLocations select').append(breedingLocations.map(function (location) {
@@ -66,7 +66,7 @@ function buildLocationsCombo(response) {
 			+ location.name + ' - (' + location.abbreviation + ')'
 			+ '</option>';
 	}));
-	$('#breedingLocations select').select2({containerCss: {width: '100%'}});
+	$('#breedingLocations select').select2();
 }
 
 
@@ -118,7 +118,7 @@ function loadTrials() {
 		$('#trials select').append(response.result.data.map(function (trial) {
 			return '<option value="' + trial.trialDbId + '">' + trial.trialName + '</option>';
 		}));
-		$('#trials select').select2({containerCss: {width: '100%'}});
+		$('#trials select').select2();
 	});
 }
 
