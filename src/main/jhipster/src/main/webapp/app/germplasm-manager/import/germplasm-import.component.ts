@@ -83,6 +83,7 @@ export class GermplasmImportComponent implements OnInit {
         this.validateFile().then((valid) => {
             this.isLoading = false;
             if (valid) {
+                this.sortNameTypes();
                 this.modal.close();
                 const nextModal = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
                     { size: 'lg', backdrop: 'static' });
@@ -218,6 +219,17 @@ export class GermplasmImportComponent implements OnInit {
             });
             errorMessage.push(message)
         }
+    }
+
+    sortNameTypes(): any {
+        // sort as in the file. TODO Different institutes may have name priorities
+        this.context.nameTypes.sort((a, b) => {
+            const header = this.rawData[0];
+            if (header.indexOf(a.code) > header.indexOf(b.code)) {
+                return 1;
+            }
+            return -1;
+        });
     }
 
     private validateServerSide() {
