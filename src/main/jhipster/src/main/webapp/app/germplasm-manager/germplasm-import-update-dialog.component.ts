@@ -159,6 +159,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
                     const errorMessage: string[] = [];
                     this.validateHeader(headers, errorMessage, codes, this.names, this.attributes);
+                    this.validateData(errorMessage);
 
                     if (errorMessage.length !== 0) {
                         this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
@@ -188,6 +189,23 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         const invalidCodes = codes.filter((code) => attributes.every((attribute) => attribute.code !== code) && names.every((name) => name.code !== code));
         if (invalidCodes && invalidCodes.length > 0) {
             errorMessage.push(this.translateService.instant('germplasm-import-updates.validation.invalid.codes', { param: invalidCodes.join(', ') }));
+        }
+    }
+
+    private validateData(errorMessage: string[]) {
+        // row validations
+        for (const row of this.data) {
+            // Progenitors
+            if ((row[HEADER['PROGENITOR 1']] && !Number.isInteger(Number(row[HEADER['PROGENITOR 1']])) || row[HEADER['PROGENITOR 1']] < 0) ||
+                (row[HEADER['PROGENITOR 2']] && !Number.isInteger(Number(row[HEADER['PROGENITOR 2']])) || row[HEADER['PROGENITOR 2']] < 0)
+            ) {
+                errorMessage.push(this.translateService.instant('germplasm-import-updates.validation.invalid.progenitors'));
+                break;
+            }
+            if (Boolean(row[HEADER['PROGENITOR 1']]) !== Boolean(row[HEADER['PROGENITOR 2']])) {
+                errorMessage.push(this.translateService.instant('germplasm-import-updates.validation.progenitors.must.be.both.defined'));
+                break;
+            }
         }
     }
 
