@@ -88,6 +88,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="col-sm-5 ml-sm-3">
+				<div class="alert alert-warning" role="alert" *ngIf="isSelectMatchesAutomatically && isFullAutomaticMatchNotPossible">
+					<i class="fa fa-warning"></i>
+					<span class="ml-3" jhiTranslate="germplasm.import.review.automatic.not.possible"></span>
+				</div>
+			</div>
 		</div>
 	</form>
 </div>

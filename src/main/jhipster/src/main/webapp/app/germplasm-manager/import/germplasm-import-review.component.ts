@@ -55,6 +55,7 @@ export class GermplasmImportReviewComponent implements OnInit {
     CREATION_OPTIONS = CREATION_OPTIONS;
     creationOption = CREATION_OPTIONS.SELECT_EXISTING;
     isSelectMatchesAutomatically = true;
+    isFullAutomaticMatchNotPossible: boolean;
 
     // data loaded from server / utility maps
 
@@ -135,6 +136,17 @@ export class GermplasmImportReviewComponent implements OnInit {
                 }
             });
             this.rows = [...this.dataMatches, ...this.newRecords];
+
+            this.isFullAutomaticMatchNotPossible = this.dataMatches.some((row) => {
+                const guidMatch = this.matchesByGUID[row[HEADERS.GUID]];
+                if (!guidMatch) {
+                    const matchesByPrefName = this.matchesByName[row[row[HEADERS['PREFERRED NAME']]]];
+                    if (matchesByPrefName && matchesByPrefName.length > 1) {
+                        return true;
+                    }
+                }
+                return false;
+            });
         });
 
         this.inventoryData = this.context.data.filter((row) => row[HEADERS['STOCK ID']]
@@ -221,10 +233,6 @@ export class GermplasmImportReviewComponent implements OnInit {
                 // -> open manual
                 if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
                     && !this.matchesByGUID[row[HEADERS.GUID]])) {
-
-                    if (this.isSelectMatchesAutomatically) {
-
-                    }
 
                     const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
                         { size: 'lg', backdrop: 'static' });

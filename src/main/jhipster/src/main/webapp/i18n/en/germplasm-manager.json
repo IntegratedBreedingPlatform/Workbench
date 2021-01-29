@@ -149,6 +149,7 @@
                 "select.existing": "Select existing germplasm whenever found",
                 "create.new": "Create new records",
                 "automatic.matches": "Automatically select existing matches",
+                "automatic.not.possible": "Automatic match is not possible for some entries (> 1 name matches by preferred name). For those, manual selection will be needed.",
                 "summary": {
                     "message": "<h4>Import summary:</h4><p>{{param}}</p>",
                     "new": "{{param}} entries have no matches (new records will be created)",
