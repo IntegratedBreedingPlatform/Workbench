@@ -132,13 +132,13 @@ function error(data) {
 }
 
 function getExportFileName(fileName, fileType) {
-	var exportName = '';
-	$.get('/ibpworkbench/controller/help/exportFileName/' + fileType, {fileName: fileName}).success(function (exportFileName){
-		if (!exportFileName) {
-			exportName = exportFileName;
-		} else {
+	var exportName = 'export';
+	$.get('/ibpworkbench/controller/help/exportFileName/' + fileType, {fileName: fileName}).then((function (exportFileName){
+		if (exportFileName) {
 			exportName = exportFileName;
 		}
+	}), function(response){
+		error(response);
 	});
 	return exportName;
 }
