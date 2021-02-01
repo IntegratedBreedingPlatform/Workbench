@@ -13,6 +13,7 @@ export class LotImportRequestLotList {
         public unitName: string,
         public initialBalance: string,
         public stockId: string,
+        public pendingStatus?: boolean,
         public notes?: string
     ) {
     }

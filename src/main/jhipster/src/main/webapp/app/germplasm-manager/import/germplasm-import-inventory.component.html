@@ -99,7 +99,7 @@
 			<div class="row" style="margin-top: 15px;margin-bottom: 15px;">
 				<div class="col-xs-12 col-md-12">
 					<div class="form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" name="confirmDeposit" id="confirmDeposit" [(ngModel)]="amountConfirmed" [disabled]="!createInventoryLots">
+						<input type="checkbox" class="form-check-input" name="confirmDeposit" id="confirmDeposit" [(ngModel)]="context.amountConfirmed" [disabled]="!createInventoryLots">
 						<label class="form-check-label" for="confirmDeposit" jhiTranslate="germplasm.import.inventory.transaction.confirm">
 						</label>
 					</div>

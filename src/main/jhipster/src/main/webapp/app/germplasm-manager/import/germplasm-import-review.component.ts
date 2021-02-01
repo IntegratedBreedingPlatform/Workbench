@@ -331,7 +331,8 @@ export class GermplasmImportReviewComponent implements OnInit {
                             initialBalance: row[HEADERS.AMOUNT],
                             storageLocationAbbr: row[HEADERS['STORAGE LOCATION ABBR']],
                             unitName: row[HEADERS.UNITS],
-                            stockId: row[HEADERS['STOCK ID']]
+                            stockId: row[HEADERS['STOCK ID']],
+                            pendingStatus: !this.context.amountConfirmed
                         })
                     }),
                     stockIdPrefix: this.context.stockIdPrefix

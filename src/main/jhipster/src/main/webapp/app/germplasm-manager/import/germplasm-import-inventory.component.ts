@@ -36,7 +36,6 @@ export class GermplasmImportInventoryComponent implements OnInit {
     unitSelected: string;
 
     deposit: any;
-    amountConfirmed = false;
 
     completeAllEntries = true;
 

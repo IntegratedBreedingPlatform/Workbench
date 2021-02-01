@@ -23,6 +23,7 @@ export class GermplasmImportContext {
 
     // inventory
     stockIdPrefix: string;
+    amountConfirmed = false;
 
     // progenitors
     pedigreeConnectionType: PedigreeConnectionType = PedigreeConnectionType.NONE;
