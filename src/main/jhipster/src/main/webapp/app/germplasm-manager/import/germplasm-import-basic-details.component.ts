@@ -5,7 +5,7 @@ import { GermplasmImportComponent, HEADERS } from './germplasm-import.component'
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
+import { BREEDING_METHODS_BROWSER_DEFAULT_URL, SERVER_API_URL } from '../../app.constants';
 import { BreedingMethodManagerComponent } from '../../entities/breeding-method/breeding-method-manager.component';
 import { ParamContext } from '../../shared/service/param.context';
 import { PopupService } from '../../shared/modal/popup.service';
@@ -38,15 +38,14 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     breedingMethods: Promise<BreedingMethod[]>;
     favoriteBreedingMethods: Promise<BreedingMethod[]>;
     breedingMethodSelected: string;
-    useFavoriteBreedingMethods = true;
 
-    breedingAndCountryLocations: Promise<Location[]>;
-    allLocations: Promise<Location[]>;
-    favoriteBreedingAndCountryLocations: Promise<Location[]>;
-    favoriteAllLocations: Promise<Location[]>;
+    useFavoriteBreedingMethods = true;
+    locationsOptions: any;
     locationSelected: string;
     useFavoriteLocations = true;
-    radioSelected = true;
+    isBreedingAndCountryLocationsOnly = false;
+
+    locationsFilteredItemsCount;
 
     creationDateSelected: NgbDate | null
 
@@ -74,7 +73,6 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     ngOnInit(): void {
         this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
         this.loadBreedingMethods();
-        this.loadLocations();
 
         this.hasEmptyPreferredName = this.context.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
 
@@ -101,6 +99,34 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 this.context.pedigreeConnectionType = PedigreeConnectionType.GID;
             }
         }
+
+        this.locationsOptions = {
+            ajax: {
+                delay: 500,
+                transport: function (params, success, failure) {
+                    let locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
+                    this.locationService.queryLocationsByType(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
+                        this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
+                        success(res.body);
+                    }, failure);
+                }.bind(this),
+                processResults: function (locations, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: locations.map((location) => {
+                            return {
+                                id: location.abbreviation ? location.abbreviation : location.name,
+                                text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name
+                            };
+                        }),
+                        pagination: {
+                            more: (params.page * 300) < this.locationsFilteredItemsCount
+                        }
+                    };
+                }.bind(this)
+            }
+        };
     }
 
     next() {
@@ -159,14 +185,6 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     loadBreedingMethods() {
         this.breedingMethods = this.breedingMethodService.getBreedingMethods().toPromise();
         this.favoriteBreedingMethods = this.breedingMethodService.getBreedingMethods(true).toPromise();
-    }
-
-    loadLocations() {
-        // TODO get all
-        this.breedingAndCountryLocations = this.locationService.queryLocationsByType([LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY], false).toPromise();
-        this.favoriteBreedingAndCountryLocations = this.locationService.queryLocationsByType([LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY], true).toPromise();
-        this.allLocations = this.locationService.queryLocationsByType([], false).toPromise();
-        this.favoriteAllLocations = this.locationService.queryLocationsByType([], true).toPromise();
     }
 
     openBreedingMethodManager() {

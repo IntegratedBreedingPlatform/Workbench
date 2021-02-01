@@ -24,12 +24,15 @@ export class LocationService {
             { observe: 'response' }).pipe(map((res: HttpResponse<LocationType[]>) => res.body));
     }
 
-    queryLocationsByType(locationTypes, favoriteLocation): Observable<LocationModel[]> {
+    queryLocationsByType(locationTypes, favoriteLocation, name?, page?, size?): Observable<HttpResponse<LocationModel[]>> {
         const params = new HttpParams()
+            .set('name', name || '')
             .set('locationTypes', locationTypes)
             .set('favoritesOnly', favoriteLocation)
-            .set('programUUID', this.context.programUUID);
+            .set('programUUID', this.context.programUUID)
+            .set('page', page)
+            .set('size', size);
         return this.http.get<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations`,
-            { params, observe: 'response' }).pipe(map((res: HttpResponse<LocationModel[]>) => res.body));
+            { params, observe: 'response' });
     }
 }
