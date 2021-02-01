@@ -167,7 +167,7 @@ public class CreatePedigreeGraph {
 	}
 
 
-	protected void setGraphVizUtility(GraphVizUtility graphVizUtility) {
+	protected void setGraphVizUtility(final GraphVizUtility graphVizUtility) {
 		this.graphVizUtility = graphVizUtility;
 	}
 

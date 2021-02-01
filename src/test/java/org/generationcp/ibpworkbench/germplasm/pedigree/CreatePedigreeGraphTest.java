@@ -84,7 +84,7 @@ public class CreatePedigreeGraphTest {
 	@Test
 	public void testCreateNodeTextWithFormatting() {
 		final Integer id = new Random().nextInt();
-		final GermplasmPedigreeTreeNode node = getTreeNode(id);
+		final GermplasmPedigreeTreeNode node = this.getTreeNode(id);
 		final String result = this.createPedigreeGraph.createNodeTextWithFormatting(node);
 
 		final String idString = id.toString();
@@ -100,7 +100,7 @@ public class CreatePedigreeGraphTest {
 	@Test
 	public void testCreateNodeTextWithFormattingWhenGidIsZero() {
 		final Integer id = 0;
-		final GermplasmPedigreeTreeNode node = getTreeNode(id);
+		final GermplasmPedigreeTreeNode node = this.getTreeNode(id);
 		final String result = this.createPedigreeGraph.createNodeTextWithFormatting(node);
 
 		final String idString = id.toString();
@@ -134,7 +134,7 @@ public class CreatePedigreeGraphTest {
 		}
 	}
 
-	private GermplasmPedigreeTreeNode getTreeNode(int gid) {
+	private GermplasmPedigreeTreeNode getTreeNode(final int gid) {
 		final GermplasmPedigreeTreeNode node = new GermplasmPedigreeTreeNode();
 		final Germplasm germplasm = new Germplasm();
 		germplasm.setGid(gid);

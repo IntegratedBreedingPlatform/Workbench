@@ -122,7 +122,7 @@ public class GermplasmPedigreeGraphComponent extends VerticalLayout implements I
 
 	public void updatePedigreeGraphButtonClickAction() {
 
-		int treeLevel;
+		final int treeLevel;
 		this.panelPedigree.removeAllComponents();
 		try {
 			Thread.sleep(350);
