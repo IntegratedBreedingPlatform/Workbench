@@ -212,7 +212,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     private onSaveSuccess(result: any) {
         this.isProcessing = false;
         this.alertService.success('germplasm-import-updates.import.success');
-        this.eventManager.broadcast({ name: 'filterByGid', content: result });
+        this.eventManager.broadcast({ name: 'germplasmUpdated', content: result });
         this.activeModal.close(result);
     }
 
