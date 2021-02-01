@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SERVER_API_URL } from '../../../app.constants';
+import { MAX_PAGE_SIZE, SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { map } from 'rxjs/operators';
 import { Location } from '../model/location';
@@ -24,13 +24,13 @@ export class LocationService {
             { observe: 'response' }).pipe(map((res: HttpResponse<LocationType[]>) => res.body));
     }
 
-    queryLocationsByType(locationTypes, favoriteLocation, name?, page?, size?): Observable<HttpResponse<LocationModel[]>> {
+    queryLocationsByType(locationTypes, favoriteLocation = false, name?, page = 0, size = MAX_PAGE_SIZE): Observable<HttpResponse<LocationModel[]>> {
         const params = new HttpParams()
             .set('name', name || '')
             .set('locationTypes', locationTypes)
-            .set('favoritesOnly', favoriteLocation)
+            .set('favoritesOnly', String(favoriteLocation))
             .set('programUUID', this.context.programUUID)
-            .set('page', page)
+            .set('page', String(page))
             .set('size', size);
         return this.http.get<LocationModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/locations`,
             { params, observe: 'response' });

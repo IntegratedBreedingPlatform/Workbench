@@ -3,8 +3,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const rxPaths = require('rxjs/_esm5/path-mapping');
 const MergeJsonWebpackPlugin = require("merge-jsons-webpack-plugin");
-
 const utils = require('./utils.js');
+
+const path = require('path');
+const _root = path.resolve(__dirname, '../../../../');
+const PropertiesReader = require('properties-reader');
+const appProperties = PropertiesReader(_root + '/target/classes/workbench.properties');
 
 module.exports = (options) => ({
     resolve: {
@@ -53,7 +57,8 @@ module.exports = (options) => ({
                 // If this URL is left empty (""), then it will be relative to the current context.
                 // If you use an API server, in `prod` mode, you will need to enable CORS
                 // (see the `jhipster.cors` common JHipster property in the `application-*.yml` configurations)
-                SERVER_API_URL: `'/bmsapi/'`
+                SERVER_API_URL: `'/bmsapi/'`,
+                MAX_PAGE_SIZE: `'${appProperties.get('pagedresult.max.page.size')}'`
             }
         }),
         new CopyWebpackPlugin([

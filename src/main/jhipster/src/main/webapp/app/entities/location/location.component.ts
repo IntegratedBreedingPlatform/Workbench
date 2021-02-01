@@ -33,11 +33,13 @@ export class LocationComponent implements OnInit {
             this.breedingLocation = breedingLocation;
             this.accessible = breedingLocation.programUUID === '';
         }).then(() => {
-            this.locationService.queryLocationsByType([LocationTypeEnum.COUNTRY], false).toPromise().then((locations) => {
+            this.locationService.queryLocationsByType([LocationTypeEnum.COUNTRY], false).toPromise().then((resp) => {
+                const locations = resp.body;
                 this.countries = locations;
                 this.selectedCountry = locations.find((e) => e.id === this.breedingLocation.countryId);
             })
-            this.locationService.queryLocationsByType([LocationTypeEnum.PROVINCE], false).toPromise().then((locations) => {
+            this.locationService.queryLocationsByType([LocationTypeEnum.PROVINCE], false).toPromise().then((resp) => {
+                const locations = resp.body;
                 this.provinces = locations;
                 this.selectedProvince = locations.find((e) => e.id === this.breedingLocation.provinceId);
             })

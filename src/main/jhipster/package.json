@@ -29,6 +29,7 @@
     "ngx-webstorage": "2.0.1",
     "primeicons": "1.0.0",
     "primeng": "7.0.4",
+    "properties-reader": "1.0.0",
     "reflect-metadata": "0.1.10",
     "rxjs": "6.3.1",
     "rxjs-compat": "6.1.0",

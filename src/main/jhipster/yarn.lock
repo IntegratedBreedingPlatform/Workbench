@@ -7688,6 +7688,13 @@ promise@^7.0.3:
   dependencies:
     asap "~2.0.3"
 
+properties-reader@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/properties-reader/-/properties-reader-1.0.0.tgz#b94f1898ff23a9e3252f90d86bdc04e4bf92c044"
+  integrity sha512-bTjPVya6wFErwwOP3CasaRoyZ7n6sAt/MMJnDxBp3As7h2J19vmjCZX+Iw7YV0TqBPcA8i/Df/rxiCNutzEXZQ==
+  dependencies:
+    mkdirp "~0.5.1"
+
 protractor-jasmine2-screenshot-reporter@0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/protractor-jasmine2-screenshot-reporter/-/protractor-jasmine2-screenshot-reporter-0.4.0.tgz#bb93936733ae33b0321cfe97ce8dc96d84b0418c"

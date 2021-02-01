@@ -50,10 +50,10 @@
 				<label for="seedStorageLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.seed.storage.location"></label>
 				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
 					<ng-select2 *ngIf="!useFavoriteLocations" name="seedStorageLocation" id="seedStorageLocation" width="100%" [(ngModel)]="locationSelected"
-								[data]="seedStorageLocations | async | LocationSelect2Data" [disabled]="!createInventoryLots">
+								[data]="seedStorageLocations | LocationSelect2Data" [disabled]="!createInventoryLots">
 					</ng-select2>
 					<ng-select2 *ngIf="useFavoriteLocations" name="seedStorageLocationFavorite" id="seedStorageLocationFavorite" width="100%" [(ngModel)]="locationSelected"
-								[data]="favoriteSeedStorageLocations | async | LocationSelect2Data" [disabled]="!createInventoryLots">
+								[data]="favoriteSeedStorageLocations | LocationSelect2Data" [disabled]="!createInventoryLots">
 					</ng-select2>
 					<div class="row">
 						<div class="col-xs-12 col-md-12">

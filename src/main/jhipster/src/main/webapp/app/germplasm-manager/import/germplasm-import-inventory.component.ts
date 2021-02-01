@@ -27,8 +27,8 @@ export class GermplasmImportInventoryComponent implements OnInit {
     createInventoryLots = true;
     stockIdPrefix: string;
 
-    seedStorageLocations: Promise<Location[]>;
-    favoriteSeedStorageLocations: Promise<Location[]>;
+    seedStorageLocations: Location[];
+    favoriteSeedStorageLocations: Location[];
     locationSelected: string;
     useFavoriteLocations = true;
 
@@ -149,8 +149,12 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     loadLocations() {
-        this.seedStorageLocations = this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], false).toPromise();
-        this.favoriteSeedStorageLocations = this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], true).toPromise();
+        this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], false).subscribe((resp) => {
+            this.seedStorageLocations = resp.body;
+        });
+        this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], true).subscribe((resp) => {
+            this.favoriteSeedStorageLocations = resp.body;
+        });
     }
 
     loadUnits() {
