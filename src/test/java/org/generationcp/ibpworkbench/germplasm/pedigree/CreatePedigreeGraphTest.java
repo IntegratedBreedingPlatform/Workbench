@@ -108,7 +108,7 @@ public class CreatePedigreeGraphTest {
 		final ArgumentCaptor<String> stringCaptor = ArgumentCaptor.forClass(String.class);
 		Mockito.verify(this.graphVizUtility, Mockito.times(2)).addln(stringCaptor.capture());
 		final List<String> allValues = stringCaptor.getAllValues();
-		Assert.assertEquals(idString + " [shape=box];", allValues.get(0));
+		Assert.assertEquals(idString + " [shape=box, style=dashed];", allValues.get(0));
 		final String display = node.getGermplasm().getPreferredName().getNval() + " \n ";
 		Assert.assertEquals(idString + " [label=\"" + display + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];", allValues.get(1));
 	}
@@ -118,8 +118,17 @@ public class CreatePedigreeGraphTest {
 			Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(node.getGermplasm().getGid() + ";");
 		} else {
 			for (final GermplasmPedigreeTreeNode parentNode : node.getLinkedNodes()) {
-				Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
+				if(node.getGermplasm().getGpid1().equals(node.getGermplasm().getGpid2())) {
+					Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
 						parentNode.getGermplasm().getGid() + "->" + node.getGermplasm().getGid() + ";");
+				} else if(node.getGermplasm().getGpid1().equals(parentNode.getGermplasm().getGid())) {
+					Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
+						parentNode.getGermplasm().getGid() + "->" + node.getGermplasm().getGid() + " [color=\"RED\", arrowhead=\"odottee\"];");
+				} else {
+					Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
+						parentNode.getGermplasm().getGid() + "->" + node.getGermplasm().getGid() + " [color=\"BLUE\", arrowhead=\"veeodot\"];");
+				}
+
 				this.verifyIfEveryLinkedNodeHasBeenAdded(parentNode);
 			}
 		}

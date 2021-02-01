@@ -158,9 +158,9 @@ public class CreatePedigreeGraph {
 
 	String getArrowStyleString(final boolean isFemaleParent, final boolean isDerivative) {
 		if(isFemaleParent && !isDerivative) {
-			return " [color=\"RED\", arrowhead=\"odottee\"]";
+			return " [color=\"RED\", arrowhead=\"odottee\"];";
 		} else if(!isDerivative) {
-			return " [color=\"BLUE\", arrowhead=\"veeodot\"]";
+			return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
 		} else {
 			return  ";";
 		}
