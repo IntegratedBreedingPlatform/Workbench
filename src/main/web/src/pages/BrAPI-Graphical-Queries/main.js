@@ -132,20 +132,11 @@ function error(data) {
 }
 
 function getExportFileName(fileName, fileType) {
-	var exportName = 'export';
-	$.get('/ibpworkbench/controller/help/exportFileName/' + fileType, {fileName: fileName}).then((function (exportFileName){
-		if (exportFileName) {
-			exportName = exportFileName;
-		}
-	}), function(response){
-		error(response);
-	});
-	return exportName;
+	return $.get('/ibpworkbench/controller/help/exportFileName/' + fileType, {fileName: fileName})
 }
 
 
 // Angular ****************************
-
 var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
 
 mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function ($scope, $uibModal, $http) {
@@ -446,11 +437,14 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 		}
 
 		function download(data) {
-			var link = window.document.createElement('a');
-			var blob = new Blob([data]);
-			link.href = window.URL.createObjectURL(blob);
-			link.download = getExportFileName('datafile', 'csv');
-			link.click();
+			getExportFileName('datafile', 'csv').then(function (response) {
+				var link = window.document.createElement('a');
+				var blob = new Blob([data]);
+				link.href = window.URL.createObjectURL(blob);
+				link.download = response;
+				link.click();
+			});
+
 		}
 
 	}]);
