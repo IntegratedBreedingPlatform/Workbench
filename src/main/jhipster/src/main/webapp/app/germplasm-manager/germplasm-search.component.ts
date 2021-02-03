@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 
 declare var $: any;
@@ -31,7 +31,8 @@ declare var $: any;
 })
 export class GermplasmSearchComponent implements OnInit {
 
-    IMPORT_GERMPLASM_UPDATES = [...IMPORT_GERMPLASM_UPDATES_PERMISSIONS];
+    IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
+    IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 

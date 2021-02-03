@@ -12,11 +12,12 @@
 							(click)="openAddToList()" >
 					</button>
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.import"
+							*jhiHasAnyAuthority="IMPORT_GERMPLASM_PERMISSIONS"
 							[routerLink]="['/', { outlets: { popup: 'germplasm-import'} }]"
 							replaceUrl="true"
 							queryParamsHandling="merge">
 					</button>
-					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="IMPORT_GERMPLASM_UPDATES"
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="IMPORT_GERMPLASM_UPDATES_PERMISSIONS"
 							[routerLink]="['/', { outlets: { popup: 'germplasm-import-update-dialog'} }]"
 							replaceUrl="true"
 							queryParamsHandling="merge" jhiTranslate="germplasm-import-updates.title">
