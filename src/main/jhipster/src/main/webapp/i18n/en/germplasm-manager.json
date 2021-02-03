@@ -11,6 +11,8 @@
         "title": "Import germplasm updates",
         "validation.file.empty" : "The specified file is empty.",
         "validation.invalid.codes": "The following codes are not defined in the system: {{param}}",
+        "validation.invalid.progenitors": "Some values in Progenitor 1 and/or Progenitor 2 columns are not numeric. Please correct them and try again." ,
+        "validation.progenitors.must.be.both.defined": "Both Progenitor 1 and Progenitor 2 have to be defined (0 for unknown gid).",
         "import.success" : "Germplasm updates are saved successfully."
     },
     "search-germplasm" : {
