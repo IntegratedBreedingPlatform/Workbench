@@ -4,16 +4,13 @@ package org.generationcp.ibpworkbench.germplasm.pedigree;
 import com.vaadin.ui.Window;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.generationcp.middleware.pojos.Method;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -30,7 +27,6 @@ public class CreatePedigreeGraph {
 	private boolean showBreedingMethod;
 	private Set<Integer> breedingMethodIds;
 	private Map<Integer, Method> breedingMethodMap;
-	private Map<Integer, Germplasm> immediateSourceMap;
 
 	public CreatePedigreeGraph(
 		final int gid, final int level, final Boolean includeDerivativeLines, final boolean showBreedingMethod, final Window window,
@@ -43,7 +39,6 @@ public class CreatePedigreeGraph {
 		this.includeDerivativeLines = includeDerivativeLines;
 		this.showBreedingMethod = showBreedingMethod;
 		this.breedingMethodIds = new HashSet<>();
-		immediateSourceMap = new HashMap<>();
 	}
 
 	public CreatePedigreeGraph(final int gid, final int level, final Window window, final GermplasmQueries qQuery,
@@ -92,7 +87,6 @@ public class CreatePedigreeGraph {
 	private void createDiGraphNode() {
 		final GermplasmPedigreeTree germplasmPedigreeTree =
 			this.qQuery.generatePedigreeTree(Integer.valueOf(this.gid), this.level, this.includeDerivativeLines);
-		this.populateImmediateSourceMap(germplasmPedigreeTree.getRoot());
 		if(this.showBreedingMethod) {
 			this.getBreedingMethodIds(germplasmPedigreeTree.getRoot());
 			this.breedingMethodMap = this.germplasmDataManager.getMethodsByIDs(new ArrayList<>(this.breedingMethodIds)).stream()
@@ -104,20 +98,6 @@ public class CreatePedigreeGraph {
 			this.graphVizUtility.addln(leafNodeGIDRoot + ";");
 		} else {
 			this.addNode(germplasmPedigreeTree.getRoot(), 1);
-		}
-	}
-
-	void populateImmediateSourceMap(GermplasmPedigreeTreeNode root) {
-		final List<Integer> immediateSourceGidList = new ArrayList<>();
-		this.getImmediateSourceGidList(root, immediateSourceGidList);
-		this.immediateSourceMap = this.germplasmDataManager.getGermplasms(immediateSourceGidList).stream()
-			.collect(Collectors.toMap(Germplasm::getGid, Function.identity()));
-	}
-
-	void getImmediateSourceGidList(final GermplasmPedigreeTreeNode node, final List<Integer> immediateSourceGidList) {
-		immediateSourceGidList.add(node.getGermplasm().getGpid2());
-		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			this.getImmediateSourceGidList(parent, immediateSourceGidList);
 		}
 	}
 
@@ -160,9 +140,9 @@ public class CreatePedigreeGraph {
 		}
 
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			final boolean isFemaleParent = parent.getGermplasm().getGid().equals(node.getGermplasm().getGpid1());
-			final boolean isDerivative = node.getGermplasm().getGpid1().equals(node.getGermplasm().getGpid2()) ||
-				node.getGermplasm().getGpid1().equals(this.immediateSourceMap.get(node.getGermplasm().getGpid2()).getGpid1());
+			final boolean isFemaleParent = parent.getGermplasm().getGid().equals(node.getGermplasm().getGpid1())
+				&& node.getGermplasm().getGnpgs() >= 2;
+			final boolean isDerivative = node.getGermplasm().getGnpgs().equals(-1);
 			final String leafNodeGID = this.createNodeTextWithFormatting(parent);
 			final String parentNodeGID = this.createNodeTextWithFormatting(node);
 
@@ -178,7 +158,7 @@ public class CreatePedigreeGraph {
 	}
 
 	String getArrowStyleString(final boolean isFemaleParent, final boolean isDerivative) {
-		if(isFemaleParent && !isDerivative) {
+		if(isFemaleParent) {
 			return " [color=\"RED\", arrowhead=\"odottee\"];";
 		} else if(!isDerivative) {
 			return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
