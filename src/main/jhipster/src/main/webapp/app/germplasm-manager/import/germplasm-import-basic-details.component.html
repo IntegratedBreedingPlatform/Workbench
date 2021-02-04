@@ -109,7 +109,8 @@
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-rowData>
-							<tr pDraggable="dd" (onDragStart)="dragStart($event, rowData)" (onDragEnd)="dragEnd($event)">
+							<tr pDraggable="dd" (onDragStart)="dragStart($event, rowData)" (onDragEnd)="dragEnd($event)"
+								style="cursor: move">
 								<td>{{rowData}}</td>
 							</tr>
 						</ng-template>
@@ -134,7 +135,7 @@
 						<ng-template pTemplate="body" let-rowData let-index="rowIndex">
 							<tr [pReorderableRow]="index" pDroppable="dd" (onDrop)="drop($event, 'names')">
 								<td *ngIf="hasEmptyPreferredName">
-									<i class="fa fa-bars" style="cursor: pointer" pReorderableRowHandle></i>
+									<i class="fa fa-bars" style="cursor: move" pReorderableRowHandle></i>
 								</td>
 								<td *ngIf="hasEmptyPreferredName">{{index+1}}</td>
 								<td>{{rowData.code}}</td>

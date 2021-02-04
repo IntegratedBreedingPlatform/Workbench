@@ -11,11 +11,11 @@
 		<h3 jhiTranslate="germplasm.import.review.header"></h3>
 	</div>
 	<form *ngIf="!isLoading else throbber">
-		<div class="form-group row no-gutters">
-			<label for="showMatchesDropdown" class="col-sm-1 col-form-label">
+		<div class="form-group row">
+			<label for="showMatchesDropdown" class="col-sm-auto col-form-label">
 				<span jhiTranslate="germplasm.import.review.show.matches"></span>:
 			</label>
-			<div class="col-sm-3">
+			<div class="col-sm-auto">
 				<select class="form-control" id="showMatchesDropdown" name="showMatchesDropdown"
 						(change)="onShowMatchesOptionChange()"
 						[(ngModel)]="showMatchesOption" #showMatchesDropdown="ngModel">
@@ -62,11 +62,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group row no-gutters" *ngIf="matches.length">
-			<label for="creationOptionsDropdown" class="col-sm-1 col-form-label">
+		<div class="form-group row" *ngIf="matches.length">
+			<label for="creationOptionsDropdown" class="col-sm-auto col-form-label">
 				<span jhiTranslate="germplasm.import.review.creation.options"></span>:
 			</label>
-			<div class="col-sm-3">
+			<div class="col-sm-auto">
 				<div class="row">
 					<div class="col">
 						<select class="form-control" id="creationOptionsDropdown" name="creationOptionsDropdown"
@@ -89,7 +89,7 @@
 				</div>
 			</div>
 			<div class="col-sm-5 ml-sm-3">
-				<div class="alert alert-warning" role="alert" *ngIf="isSelectMatchesAutomatically && isFullAutomaticMatchNotPossible">
+				<div class="alert alert-warning" role="alert" *ngIf="creationOption == CREATION_OPTIONS.SELECT_EXISTING && isSelectMatchesAutomatically && isFullAutomaticMatchNotPossible">
 					<i class="fa fa-warning"></i>
 					<span class="ml-3" jhiTranslate="germplasm.import.review.automatic.not.possible"></span>
 				</div>
