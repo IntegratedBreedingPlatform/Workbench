@@ -22,6 +22,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
 import { GermplasmListCreationComponent } from '../germplasm-list/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/model/germplasm-list';
+import { toUpper } from '../../shared/util/to-upper';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -108,18 +109,18 @@ export class GermplasmImportReviewComponent implements OnInit {
             this.matchesByName = {};
 
             this.matches.forEach((match) => {
-                this.matchesByGUID[match.germplasmUUID] = match;
+                this.matchesByGUID[toUpper(match.germplasmUUID)] = match;
                 match.names.forEach((name) => {
-                    if (!this.matchesByName[name.name]) {
-                        this.matchesByName[name.name] = [];
+                    if (!this.matchesByName[toUpper(name.name)]) {
+                        this.matchesByName[toUpper(name.name)] = [];
                     }
-                    this.matchesByName[name.name].push(match);
+                    this.matchesByName[toUpper(name.name)].push(match);
                 });
             });
             this.context.data.forEach((row) => {
-                const guidMatch = this.matchesByGUID[row[HEADERS.GUID]];
+                const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
                 const nameMatches = this.context.nametypesCopy.filter((nameType) => {
-                    return Boolean(this.matchesByName[row[nameType.code]]);
+                    return Boolean(this.matchesByName[toUpper(row[nameType.code])]);
                 });
                 if (guidMatch) {
                     this.dataMatches.push(row);
@@ -127,7 +128,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 } else if (nameMatches.length) {
                     this.dataMatches.push(row);
                     row[HEADERS['GID MATCHES']] = nameMatches
-                        .reduce((array, nameType) => array.concat(this.matchesByName[row[nameType.code]].map((m) => m.gid)), [])
+                        .reduce((array, nameType) => array.concat(this.matchesByName[toUpper(row[nameType.code])].map((m) => m.gid)), [])
                         // dedup
                         .filter((gid, i, array) => array.indexOf(gid) === i)
                         .join(', ');
@@ -138,9 +139,9 @@ export class GermplasmImportReviewComponent implements OnInit {
             this.rows = [...this.dataMatches, ...this.newRecords];
 
             this.isFullAutomaticMatchNotPossible = this.dataMatches.some((row) => {
-                const guidMatch = this.matchesByGUID[row[HEADERS.GUID]];
+                const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
                 if (!guidMatch) {
-                    const matchesByPrefName = this.matchesByName[row[row[HEADERS['PREFERRED NAME']]]];
+                    const matchesByPrefName = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
                     if (matchesByPrefName && matchesByPrefName.length > 1) {
                         return true;
                     }
@@ -170,7 +171,7 @@ export class GermplasmImportReviewComponent implements OnInit {
             // Proceed with save
 
             const newEntries = this.context.data.filter((row) => {
-                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByGUID[row[HEADERS.GUID]];
+                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByGUID[toUpper(row[HEADERS.GUID])];
             });
 
             if (newEntries.length) {
@@ -225,9 +226,9 @@ export class GermplasmImportReviewComponent implements OnInit {
             if (this.creationOption === CREATION_OPTIONS.SELECT_EXISTING) {
                 if (this.isSelectMatchesAutomatically) {
                     unassignedMatches.forEach((row) => {
-                        const guidMatch = this.matchesByGUID[row[HEADERS.GUID]];
+                        const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
                         if (!guidMatch) {
-                            const matches = this.matchesByName[row[row[HEADERS['PREFERRED NAME']]]];
+                            const matches = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
                             if (matches && matches.length === 1) {
                                 this.selectMatchesResult[row[HEADERS.ENTRY_NO]] = matches[0].gid;
                             }
@@ -238,7 +239,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 //    2) auto-matching unchecked
                 // -> open manual
                 if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
-                    && !this.matchesByGUID[row[HEADERS.GUID]])) {
+                    && !this.matchesByGUID[toUpper(row[HEADERS.GUID])])) {
 
                     const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
                         { size: 'lg', backdrop: 'static' });
@@ -261,7 +262,7 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     private async showSummaryConfirmation() {
-        const countMatchByGUID = this.context.data.filter((row) => this.matchesByGUID[row[HEADERS.GUID]]).length,
+        const countMatchByGUID = this.context.data.filter((row) => this.matchesByGUID[toUpper(row[HEADERS.GUID])]).length,
             countMatchByName = this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]).length,
             countNew = this.newRecords.length,
             countIgnored = this.dataMatches.length - countMatchByName - countMatchByGUID;
@@ -307,8 +308,8 @@ export class GermplasmImportReviewComponent implements OnInit {
         }
         gids.push(...this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]])
             .map((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]));
-        gids.push(...this.context.data.filter((row) => this.matchesByGUID[row[HEADERS.GUID]])
-            .map((row) => this.matchesByGUID[row[HEADERS.GUID]].gid));
+        gids.push(...this.context.data.filter((row) => this.matchesByGUID[toUpper(row[HEADERS.GUID])])
+            .map((row) => this.matchesByGUID[toUpper(row[HEADERS.GUID])].gid));
 
         this.eventManager.broadcast({ name: 'filterByGid', content: gids });
 
@@ -355,8 +356,8 @@ export class GermplasmImportReviewComponent implements OnInit {
     private getSavedGid(row) {
         if (this.importResult[row[HEADERS.ENTRY_NO]]) {
             return this.importResult[row[HEADERS.ENTRY_NO]].gids[0];
-        } else if (this.matchesByGUID[row[HEADERS.GUID]]) {
-            return this.matchesByGUID[row[HEADERS.GUID]].gid;
+        } else if (this.matchesByGUID[toUpper(row[HEADERS.GUID])]) {
+            return this.matchesByGUID[toUpper(row[HEADERS.GUID])].gid;
         } else {
             return this.selectMatchesResult[row[HEADERS.ENTRY_NO]];
         }

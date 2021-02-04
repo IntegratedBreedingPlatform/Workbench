@@ -4,6 +4,7 @@ import { GermplasmImportContext } from './germplasm-import.context';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HEADERS } from './germplasm-import.component';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { toUpper } from '../../shared/util/to-upper';
 
 @Component({
     selector: 'jhi-germplasm-import-matches',
@@ -59,11 +60,11 @@ export class GermplasmImportMatchesComponent implements OnInit {
         this.isIgnoreMatch = false;
 
         this.dataRow = this.unassignedMatches[matchNumber - 1];
-        this.guidMatch = this.matchesByGUID[this.dataRow[HEADERS.GUID]];
+        this.guidMatch = this.matchesByGUID[toUpper(this.dataRow[HEADERS.GUID])];
         const gidMap = {};
         this.matches = this.context.nametypesCopy
-            .filter((nameType) => Boolean(this.matchesByName[this.dataRow[nameType.code]]))
-            .reduce((array, nameType) => array.concat(this.matchesByName[this.dataRow[nameType.code]]), [])
+            .filter((nameType) => Boolean(this.matchesByName[toUpper(this.dataRow[nameType.code])]))
+            .reduce((array, nameType) => array.concat(this.matchesByName[toUpper(this.dataRow[nameType.code])]), [])
             // dedup
             .filter((germplasm: GermplasmDto) => {
                 if (!gidMap[germplasm.gid]) {
