@@ -202,7 +202,13 @@ export class GermplasmImportReviewComponent implements OnInit {
                     connectUsing: this.context.pedigreeConnectionType
                 })).toPromise();
             }
-            this.saveInventory();
+            try {
+                await this.saveInventory();
+            } catch (inventoryError) {
+                // save germplasm and inventory are two different services
+                // show error and continue
+                this.onError(inventoryError);
+            }
 
             this.onSaveSuccess();
         } catch (error) {
@@ -319,11 +325,10 @@ export class GermplasmImportReviewComponent implements OnInit {
         });
     }
 
-    private saveInventory() {
+    private async saveInventory() {
         if (this.inventoryData.length) {
-            // create inventory in the background
-            // TODO Pending?
-            this.lotService.importLotsWithInitialBalance(
+            this.isSaving = true;
+            return this.lotService.importLotsWithInitialBalance(
                 <LotImportRequest>({
                     lotList: this.inventoryData.map((row) => {
                         return <LotImportRequestLotList>({
@@ -337,14 +342,14 @@ export class GermplasmImportReviewComponent implements OnInit {
                     }),
                     stockIdPrefix: this.context.stockIdPrefix
                 })
-            ).subscribe(
+            ).toPromise().then(
                 () => {
                     // TODO IBP-4293
-                    // this.alertService.success('germplasm.import.inventory.success', { param: inventoryData.length })
-                },
-                (error) => this.onError(error)
+                    // this.alertService.success('germplasm.import.inventory.success', { param: this.inventoryData.length })
+                }
             );
         }
+        return true;
     }
 
     private getSavedGid(row) {
