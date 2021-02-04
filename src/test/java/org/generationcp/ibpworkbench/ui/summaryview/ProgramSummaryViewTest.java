@@ -98,15 +98,15 @@ public class ProgramSummaryViewTest {
 		Assert.assertEquals(ProgramSummaryViewTest.STUDIES_COUNT.intValue(), programStudies.size());
 
 		// Check the displayed table columns
-		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
-				Arrays.copyOf(programTrialsTable.getVisibleColumns(), programTrialsTable.getVisibleColumns().length, String[].class)));
-		Assert.assertTrue(Arrays.equals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
-				Arrays.copyOf(programNurseriesTable.getVisibleColumns(), programNurseriesTable.getVisibleColumns().length,
-						String[].class)));
-		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ACTIVITIES_COLUMNS,
-				Arrays.copyOf(programActivities.getVisibleColumns(), programActivities.getVisibleColumns().length, String[].class)));
-		Assert.assertTrue(Arrays.equals(ProgramSummaryView.ALL_STUDIES_COLUMNS,
-				Arrays.copyOf(programStudies.getVisibleColumns(), programStudies.getVisibleColumns().length, String[].class)));
+		Assert.assertArrayEquals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
+			Arrays.copyOf(programTrialsTable.getVisibleColumns(), programTrialsTable.getVisibleColumns().length, String[].class));
+		Assert.assertArrayEquals(ProgramSummaryView.TRIAL_NURSERY_COLUMNS,
+			Arrays.copyOf(programNurseriesTable.getVisibleColumns(), programNurseriesTable.getVisibleColumns().length,
+				String[].class));
+		Assert.assertArrayEquals(ProgramSummaryView.ACTIVITIES_COLUMNS,
+			Arrays.copyOf(programActivities.getVisibleColumns(), programActivities.getVisibleColumns().length, String[].class));
+		Assert.assertArrayEquals(ProgramSummaryView.ALL_STUDIES_COLUMNS,
+			Arrays.copyOf(programStudies.getVisibleColumns(), programStudies.getVisibleColumns().length, String[].class));
 	}
 
 	@Test
@@ -154,7 +154,6 @@ public class ProgramSummaryViewTest {
 		listener.doExport(excelExport, tableName);
 
 		verify(excelExport).setReportTitle(PROJECT_NAME + " - " + tableName);
-		verify(excelExport).setExportFileName(tableName + "_" + PROJECT_NAME + ".xls");
 		verify(excelExport).setDisplayTotals(false);
 		verify(excelExport).export();
 

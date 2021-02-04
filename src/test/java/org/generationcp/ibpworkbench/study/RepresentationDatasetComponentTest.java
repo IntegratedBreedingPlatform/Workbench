@@ -2,6 +2,8 @@
 package org.generationcp.ibpworkbench.study;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,23 +35,26 @@ import junit.framework.Assert;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
 public class RepresentationDatasetComponentTest {
-	
+
 	private static final String XLS_FILEPATH = "/someDirectory/output/" + RepresentationDatasetComponent.TEMP_FILENAME + ".xls";
 
 	private static final int DATASET_ID = 2;
+
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private DatasetExporter datasetExporter;
 
 	@Mock
 	private StudyDataManager studyDataManager;
-	
+
 	@Mock
 	private Window window;
-	
+
 	@Mock
 	private Application application;
-	
+
 	private DataSet mockDataset;
 	private RepresentationDatasetComponent datasetComponent;
 
@@ -65,9 +70,9 @@ public class RepresentationDatasetComponentTest {
 	}
 
 	private DataSet createMockDataset() {
-		DataSet dataSet = new DataSet();
-		VariableTypeList variables = new VariableTypeList();
-		for (DMSVariableType variable : RepresentationDatasetComponentTest.createTestFactors()) {
+		final DataSet dataSet = new DataSet();
+		final VariableTypeList variables = new VariableTypeList();
+		for (final DMSVariableType variable : RepresentationDatasetComponentTest.createTestFactors()) {
 			variables.add(variable);
 		}
 		dataSet.setVariableTypes(variables);
@@ -75,9 +80,9 @@ public class RepresentationDatasetComponentTest {
 	}
 
 	private static List<DMSVariableType> createTestFactors() {
-		List<DMSVariableType> factors = new ArrayList<>();
+		final List<DMSVariableType> factors = new ArrayList<>();
 
-		StandardVariable entryNoVariable = new StandardVariable();
+		final StandardVariable entryNoVariable = new StandardVariable();
 		entryNoVariable.setId(TermId.ENTRY_NO.getId());
 		entryNoVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		entryNoVariable.setProperty(new Term(1, "GERMPLASM ENTRY", "GERMPLASM ENTRY"));
@@ -85,7 +90,7 @@ public class RepresentationDatasetComponentTest {
 		varType.setLocalName("ENTRY_NO");
 		factors.add(varType);
 
-		StandardVariable gidVariable = new StandardVariable();
+		final StandardVariable gidVariable = new StandardVariable();
 		gidVariable.setId(TermId.GID.getId());
 		gidVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		gidVariable.setProperty(new Term(1, "GERMPLASM ID", "GERMPLASM ID"));
@@ -93,7 +98,7 @@ public class RepresentationDatasetComponentTest {
 		varType.setLocalName("GID");
 		factors.add(varType);
 
-		StandardVariable desigVariable = new StandardVariable();
+		final StandardVariable desigVariable = new StandardVariable();
 		desigVariable.setId(TermId.DESIG.getId());
 		desigVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		desigVariable.setProperty(new Term(1, "GERMPLASM ID", "GERMPLASM ID"));
@@ -101,7 +106,7 @@ public class RepresentationDatasetComponentTest {
 		varType.setLocalName("DESIG");
 		factors.add(varType);
 
-		StandardVariable entryTypeVariable = new StandardVariable();
+		final StandardVariable entryTypeVariable = new StandardVariable();
 		entryTypeVariable.setId(TermId.ENTRY_TYPE.getId());
 		entryTypeVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		entryTypeVariable.setProperty(new Term(1, "ENTRY TYPE", "ENTRY_TYPE"));
@@ -109,7 +114,7 @@ public class RepresentationDatasetComponentTest {
 		varType.setLocalName("ENTRY_TYPE");
 		factors.add(varType);
 
-		StandardVariable repVariable = new StandardVariable();
+		final StandardVariable repVariable = new StandardVariable();
 		repVariable.setId(TermId.REP_NO.getId());
 		repVariable.setPhenotypicType(PhenotypicType.TRIAL_DESIGN);
 		repVariable.setProperty(new Term(1, "REP_NO", "REP_NO"));
@@ -123,17 +128,16 @@ public class RepresentationDatasetComponentTest {
 	@Test
 	public void testValidateNoDuplicateColumns() throws MiddlewareException {
 		// duplicate GID variable
-		StandardVariable gidVariable = new StandardVariable();
-		gidVariable = new StandardVariable();
+		final StandardVariable gidVariable = new StandardVariable();
 		gidVariable.setId(TermId.GID.getId());
 		gidVariable.setPhenotypicType(PhenotypicType.GERMPLASM);
 		gidVariable.setProperty(new Term(1, "GERMPLASM ID", "GERMPLASM ID"));
-		DMSVariableType varType = new DMSVariableType("GID", "GID", gidVariable, 6);
+		final DMSVariableType varType = new DMSVariableType("GID", "GID", gidVariable, 6);
 		varType.setLocalName("GID");
-		mockDataset.getVariableTypes().add(varType);
+		this.mockDataset.getVariableTypes().add(varType);
 
-		Table table = this.datasetComponent.generateLazyDatasetTable(false);
-		Assert.assertTrue("Table should only have 5 columns, excluding duplicate variables", table.getColumnHeaders().length == 5);
+		final Table table = this.datasetComponent.generateLazyDatasetTable(false);
+		Assert.assertEquals("Table should only have 5 columns, excluding duplicate variables", 5, table.getColumnHeaders().length);
 	}
 
 	@Test
@@ -155,31 +159,30 @@ public class RepresentationDatasetComponentTest {
 	public void testValidateDatasetVariablesAreExcludedFromTable() throws MiddlewareException {
 		// add DatasetVariables
 		StandardVariable datasetVariable = new StandardVariable();
-		datasetVariable = new StandardVariable();
 		datasetVariable.setId(TermId.DATASET_NAME.getId());
 		datasetVariable.setPhenotypicType(PhenotypicType.DATASET);
 		DMSVariableType varType = new DMSVariableType("DATASET_NAME", "DATASET_NAME", datasetVariable, 6);
 		varType.setLocalName("DATASET_NAME");
-		mockDataset.getVariableTypes().add(varType);
+		this.mockDataset.getVariableTypes().add(varType);
 
 		datasetVariable = new StandardVariable();
 		datasetVariable.setId(TermId.DATASET_TITLE.getId());
 		datasetVariable.setPhenotypicType(PhenotypicType.DATASET);
 		varType = new DMSVariableType("DATASET_TITLE", "DATASET_TITLE", datasetVariable, 7);
 		varType.setLocalName("DATASET_TITLE");
-		mockDataset.getVariableTypes().add(varType);
+		this.mockDataset.getVariableTypes().add(varType);
 
 		datasetVariable = new StandardVariable();
 		datasetVariable.setId(TermId.DATASET_NAME.getId());
 		datasetVariable.setPhenotypicType(PhenotypicType.DATASET);
 		varType = new DMSVariableType("DATASET_TYPE", "DATASET_TYPE", datasetVariable, 6);
 		varType.setLocalName("DATASET_TYPE");
-		mockDataset.getVariableTypes().add(varType);
+		this.mockDataset.getVariableTypes().add(varType);
 
-		Table table = this.datasetComponent.generateLazyDatasetTable(false);
-		Assert.assertTrue("Table should only have 5 columns, excluding dataset variables", table.getColumnHeaders().length == 5);
+		final Table table = this.datasetComponent.generateLazyDatasetTable(false);
+		Assert.assertEquals("Table should only have 5 columns, excluding dataset variables", 5, table.getColumnHeaders().length);
 	}
-	
+
 	@Test
 	public void testExportToExcelAction() throws DatasetExporterException {
 		// Need to spy to be able to mock window to open file to
@@ -188,16 +191,28 @@ public class RepresentationDatasetComponentTest {
 		Mockito.doReturn(this.window).when(spyComponent).getWindow();
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		spyComponent.exportToExcelAction();
-		
+
 		// Verify file is downloaded to the browser with proper filename
 		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertEquals(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, downloadResource.getFilename());
+		Assert.assertTrue(uSCount.length >= 3);
+
+		try {
+			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
+		} catch (final ParseException ex) {
+			org.junit.Assert.fail("TimeStamp must be included in the file name");
+		}
+		try {
+			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
+		} catch (final ParseException ex) {
+			org.junit.Assert.fail("Date must be included in the file name");
+		}
 	}
-	
+
 	@Test
 	public void testExportToExcelActionDatasetExporterExceptionThrown() throws DatasetExporterException {
 		// Need to spy to be able to mock window to open file to
@@ -209,7 +224,7 @@ public class RepresentationDatasetComponentTest {
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		Mockito.doReturn(this.window).when(this.application).getWindow(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
 		spyComponent.exportToExcelAction();
-		
+
 		Mockito.verify(this.datasetExporter).exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 		Mockito.verify(this.window, Mockito.never()).open(ArgumentMatchers.any(VaadinFileDownloadResource.class), ArgumentMatchers.anyString(),
 				ArgumentMatchers.anyBoolean());
