@@ -295,7 +295,8 @@ export enum HEADERS {
     'BREEDING METHOD' = 'BREEDING METHOD',
     'PROGENITOR 1' = 'PROGENITOR 1',
     'PROGENITOR 2' = 'PROGENITOR 2',
-    'NOTES' = 'NOTES',
+    // Attribute
+    // 'NOTES' = 'NOTES',
     'STORAGE LOCATION ABBR' = 'STORAGE LOCATION ABBR',
     'UNITS' = 'UNITS',
     'AMOUNT' = 'AMOUNT',
