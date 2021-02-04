@@ -29,8 +29,8 @@ export class GermplasmImportComponent implements OnInit {
     rawData = new Array<any>();
     codes = {};
 
-    extensions = ['.csv', '.xls', '.xlsx'];
-    selectedFileType = this.extensions[1];
+    extensions = ['.xls', '.xlsx'];
+    selectedFileType = this.extensions[0];
 
     isLoading: boolean;
 

@@ -1,7 +1,8 @@
 {
 
     "germplasm-manager": {
-        "title": "Germplasm Manager"
+        "title": "Germplasm Manager",
+        "file.import.description": "Choose the file you would like to import with the format: Excel"
     } ,
     "lot-creation": {
         "success": "{{param}} lots were created successfully",
