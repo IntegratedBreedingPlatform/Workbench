@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -307,7 +308,7 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 				final String temporaryFileName = this.listExporter.exportHeadToHeadDataListExcel(tempFileName, this.resultsDataList,
 						traitsIterator, ResultsComponent.columnIdData, this.columnIdDataMsgMap);
 				final VaadinFileDownloadResource fileDownloadResource =
-						new VaadinFileDownloadResource(new File(temporaryFileName), tempFileName + ".xls", this.getApplication());
+						new VaadinFileDownloadResource(new File(temporaryFileName), FileNameGenerator.generateFileName(tempFileName,"xls"), this.getApplication());
 
 				this.getWindow().open(fileDownloadResource);
 				this.mainScreen.selectFirstTab();
