@@ -10,7 +10,7 @@
 	<div>
 		<div class="row mb-sm-3">
 			<div class="col">
-				<span jhiTranslate="germplasm.import.matches.matches.were.found" [translateValues]="{entryNo: entryNo, unassignedCount: unassignedCount}"></span>
+				<span jhiTranslate="germplasm.import.matches.matches.were.found" [translateValues]="{entryNo: entryNo, matchNumber: matchNumber, unassignedCount: unassignedCount}"></span>
 				<span *ngIf="!!guidMatch" jhiTranslate="germplasm.import.matches.with.guid.match" [translateValues]="{guid: guidMatch.germplasmUUID}"></span>
 				<span *ngIf="!guidMatch" jhiTranslate="germplasm.import.matches.click.on.an.entry"></span>
 			</div>

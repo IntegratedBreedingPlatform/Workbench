@@ -97,7 +97,7 @@
                     "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
                     "names.no.column": "No suitable column found for germplasm name. Please check the CODES sheet for NAMES",
                     "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again",
-                    "names.preferred.invalid": "The name type {{param}} does not exist as a column.",
+                    "names.preferred.invalid": "The name type {{param}} does not exist as a column or has an empty value.",
                     "progenitors.both": "You need to specify both progenitors"
                 }
             },
@@ -139,7 +139,7 @@
             "matches": {
                 "header": "Select existing germplasm or add new entry",
                 "with.guid.match": " (<b>GUID={{guid}}</b> <i>automatically selected</i>)",
-                "matches.were.found": "Match(es) were found for entry <b>{{entryNo}} of {{unassignedCount}}</b>",
+                "matches.were.found": "Match(es) were found for <b>ENTRY_NO: {{entryNo}}</b> ({{matchNumber}} of {{unassignedCount}})",
                 "click.on.an.entry": ". Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry.",
                 "ignore.match": "Ignore matches and add new entry",
                 "ignore.all.remaining": "Ignore remaining matches and add new entries for all",

@@ -85,7 +85,7 @@
 				<div class="col-sm-6" *ngIf="!hasAllReference() else allGood">
 					<div class="row">
 						<div class="input-group col-xs-12 col-md-12">
-							<input class="form-control" [(ngModel)]="referenceSelected" id="reference" name="reference"/>
+							<input class="form-control" [(ngModel)]="referenceSelected" id="reference" name="reference" maxlength="255"/>
 						</div>
 					</div>
 				</div>
@@ -97,7 +97,7 @@
 	<div>
 		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
 		<form name="namesAndAttributesForm" #namesAndAttributesForm="ngForm">
-			<div class="form-group row" *ngIf="unmapped.length">
+			<div class="form-group row required" *ngIf="unmapped.length">
 				<label for="unmapped" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.unmapped"></label>
 				<div class="col-sm-8">
 					<p-table styleClass="table table-striped table-bordered table-curved"
