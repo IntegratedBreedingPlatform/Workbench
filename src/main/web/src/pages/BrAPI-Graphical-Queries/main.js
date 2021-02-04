@@ -132,7 +132,7 @@ function error(data) {
 }
 
 function getExportFileName(fileName, fileType) {
-	return $.get('/ibpworkbench/controller/help/exportFileName/' + fileType, {fileName: fileName})
+	return $.get('/ibpworkbench/controller/help/generateFileName/' + fileType, {fileName: fileName})
 }
 
 

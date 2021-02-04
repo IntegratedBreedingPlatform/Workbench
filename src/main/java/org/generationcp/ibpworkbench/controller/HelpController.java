@@ -40,7 +40,7 @@ public class HelpController {
 
 	}
 
-	@RequestMapping(value = "/exportFileName/{fileType}")
+	@RequestMapping(value = "/generateFileName/{fileType}")
 	@ResponseBody
 	public String getExportFileName(@PathVariable final String fileType, @RequestParam final String fileName) {
 		return FileNameGenerator.generateFileName(fileName, fileType);
