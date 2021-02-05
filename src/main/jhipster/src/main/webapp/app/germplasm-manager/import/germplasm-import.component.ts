@@ -180,6 +180,11 @@ export class GermplasmImportComponent implements OnInit {
                 errorMessage.push(this.translateService.instant('germplasm.import.file.validation.progenitors.both'));
                 break;
             }
+            // Reference
+            if (row[HEADERS.REFERENCE].length > 255) {
+                errorMessage.push(this.translateService.instant('germplasm.import.file.validation.reference'));
+                break;
+            }
         }
         // column validations
         if (this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {

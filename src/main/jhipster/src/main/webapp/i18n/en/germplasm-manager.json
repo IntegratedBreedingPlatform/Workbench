@@ -98,7 +98,8 @@
                     "names.no.column": "No suitable column found for germplasm name. Please check the CODES sheet for NAMES",
                     "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again",
                     "names.preferred.invalid": "The name type {{param}} does not exist as a column or has an empty value.",
-                    "progenitors.both": "You need to specify both progenitors"
+                    "progenitors.both": "You need to specify both progenitors",
+                    "reference": "Reference length can not exceed 255 characters. Please check"
                 }
             },
             "basicDetails": {
