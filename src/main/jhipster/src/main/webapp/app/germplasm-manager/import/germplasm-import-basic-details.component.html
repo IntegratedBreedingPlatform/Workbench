@@ -122,7 +122,8 @@
 				<div class="col-sm-8">
 					<p-table styleClass="table table-striped table-bordered table-curved"
 							 [autoLayout]="true"
-							 [value]="context.nametypesCopy">
+							 [value]="context.nametypesCopy"
+							 pDroppable="dd" (onDrop)="drop($event, 'names')">
 
 						<ng-template pTemplate="header">
 							<tr>
@@ -133,7 +134,7 @@
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-rowData let-index="rowIndex">
-							<tr [pReorderableRow]="index" pDroppable="dd" (onDrop)="drop($event, 'names')">
+							<tr [pReorderableRow]="index">
 								<td *ngIf="hasEmptyPreferredName">
 									<i class="fa fa-bars" style="cursor: move" pReorderableRowHandle></i>
 								</td>
@@ -150,7 +151,8 @@
 				<div class="col-sm-8">
 					<p-table styleClass="table table-striped table-bordered table-curved"
 							 [autoLayout]="true"
-							 [value]="context.attributesCopy">
+							 [value]="context.attributesCopy"
+							 pDroppable="dd" (onDrop)="drop($event, 'attributes')">
 
 						<ng-template pTemplate="header">
 							<tr>
@@ -159,7 +161,7 @@
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-rowData>
-							<tr pDroppable="dd" (onDrop)="drop($event, 'attributes')">
+							<tr>
 								<td>{{rowData.code}}</td>
 								<td>{{rowData.name}}</td>
 							</tr>
