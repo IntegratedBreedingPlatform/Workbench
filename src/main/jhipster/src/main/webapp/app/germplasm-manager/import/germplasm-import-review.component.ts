@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../../shared/service/param.context';
@@ -23,6 +23,8 @@ import { GermplasmImportMatchesComponent } from './germplasm-import-matches.comp
 import { GermplasmListCreationComponent } from '../germplasm-list/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/model/germplasm-list';
 import { toUpper } from '../../shared/util/to-upper';
+import { Attribute } from '../../shared/attributes/model/attribute.model';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -422,4 +424,16 @@ enum SHOW_MATCHES_OPTIONS {
 enum CREATION_OPTIONS {
     SELECT_EXISTING = 'SELECT_EXISTING',
     CREATE_NEW = 'CREATE_NEW'
+}
+
+@Pipe({
+    name: 'NameAttributeColumnPipe'
+})
+export class NameAttributeColumnPipe implements PipeTransform {
+    transform(items: any[]): any {
+        // exclude common headers
+        return items.filter((item: NameType | Attribute) =>
+            [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(item.code) === -1);
+    }
+
 }
