@@ -246,7 +246,9 @@ export class GermplasmImportComponent implements OnInit {
                 creationDate: row[HEADERS['CREATION DATE']],
                 unit: row[HEADERS.UNITS],
                 stockId: row[HEADERS['STOCK ID']],
-                germplasmUUID: row[HEADERS.GUID]
+                germplasmUUID: row[HEADERS.GUID],
+                progenitor1: row[HEADERS['PROGENITOR 1']],
+                progenitor2: row[HEADERS['PROGENITOR 2']]
             });
         });
         return this.germplasmService.validateImportGermplasmData(extendedGermplasmImportRequest).toPromise()
