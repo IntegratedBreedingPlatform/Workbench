@@ -171,7 +171,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         };
     }
 
-    private logout() {
+    logout() {
         this.loginService.logout();
     }
 
