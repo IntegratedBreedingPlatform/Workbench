@@ -134,22 +134,27 @@ export class GermplasmImportReviewComponent implements OnInit {
                         // dedup
                         .filter((gid, i, array) => array.indexOf(gid) === i)
                         .join(', ');
+
+                    const matchesByPrefName = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
+                    if (matchesByPrefName && matchesByPrefName.length === 1) {
+                        // noop - full auto-match still posible
+                    } else if (matchesByPrefName && matchesByPrefName.length > 1) {
+                        // more than one match by pref name
+                        this.isFullAutomaticMatchNotPossible = true;
+                    } else if (nameMatches.length) {
+                        /*
+                         * Preferred name is new (no match), but other names have matches.
+                         * Even if it's only one match, the system will show the manual
+                         * selection process anyway, so that's it is clear we are not
+                         * using the preferred name.
+                         */
+                        this.isFullAutomaticMatchNotPossible = true;
+                    }
                 } else {
                     this.newRecords.push(row);
                 }
             });
             this.rows = [...this.dataMatches, ...this.newRecords];
-
-            this.isFullAutomaticMatchNotPossible = this.dataMatches.some((row) => {
-                const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
-                if (!guidMatch) {
-                    const matchesByPrefName = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
-                    if (matchesByPrefName && matchesByPrefName.length > 1) {
-                        return true;
-                    }
-                }
-                return false;
-            });
         });
 
         this.inventoryData = this.context.data.filter((row) => row[HEADERS['STOCK ID']]
@@ -237,9 +242,13 @@ export class GermplasmImportReviewComponent implements OnInit {
                         }
                     });
                 }
-                // if 1) auto-matching didn't worked (multiple gids for preferred name)
-                //    2) auto-matching unchecked
-                // -> open manual
+                /*
+                 * if 1) auto-matching didn't work:
+                 *      a) multiple gids for preferred name or..
+                 *      b) preferred name does not exist, but other names have matches
+                 *    2) auto-matching unchecked
+                 * -> open manual
+                 */
                 if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
                     && !this.matchesByGUID[toUpper(row[HEADERS.GUID])])) {
 
