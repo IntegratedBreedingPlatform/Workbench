@@ -70,7 +70,8 @@
 			<div class="form-group row" [class.required]="createInventoryLots">
 				<label for="dropdownUnits" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.units"></label>
 				<div class="col-sm-6" *ngIf="!hasAllUnits() else allGood">
-					<select class="form-control" name="dropdownUnits" id="dropdownUnits" [(ngModel)]="unitSelected" [required]="createInventoryLots" #dropdownUnits="ngModel">
+					<select class="form-control" name="dropdownUnits" id="dropdownUnits" [(ngModel)]="unitSelected"
+							[disabled]="!createInventoryLots" [required]="createInventoryLots" #dropdownUnits="ngModel">
 						<option *ngFor="let unit of units | async" [value]="unit.name">
 							<label>{{unit.name}}</label>
 						</option>
