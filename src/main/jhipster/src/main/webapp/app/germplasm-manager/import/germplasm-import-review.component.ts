@@ -315,7 +315,7 @@ export class GermplasmImportReviewComponent implements OnInit {
     private onSaveSuccess() {
         const gids = Object.values(this.importResult).map((r) => r.gids[0]);
         if (gids.length) {
-            this.alertService.success('germplasm-list-creation.success');
+            this.alertService.success('germplasm.import.success');
         }
         gids.push(...this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]])
             .map((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]));
