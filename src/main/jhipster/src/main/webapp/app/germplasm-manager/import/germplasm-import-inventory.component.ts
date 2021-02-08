@@ -119,14 +119,13 @@ export class GermplasmImportInventoryComponent implements OnInit {
             { size: 'lg', backdrop: 'static' });
     }
 
-    // TODO perform complete all entries or Complete entries with some data. Omit entries if check create Inventory is disable.
     canProceed(f) {
         const form = f.form;
         return !this.createInventoryLots
             ||  (form.valid
                 && (this.stockIdPrefix || this.hasAllStockIds())
                 && (this.locationSelected || this.hasAllLocations())
-                && (this.locationSelected || this.hasAllUnits())
+                && (this.unitSelected || this.hasAllUnits())
                 && (this.deposit.amount || this.hasAllAmounts())
                 )
     }
