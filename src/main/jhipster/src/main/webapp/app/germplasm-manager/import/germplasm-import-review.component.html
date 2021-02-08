@@ -1,0 +1,123 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="germplasm.import.header"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div>
+		<h3 jhiTranslate="germplasm.import.review.header"></h3>
+	</div>
+	<form *ngIf="!isLoading else throbber">
+		<div class="form-group row">
+			<label for="showMatchesDropdown" class="col-sm-auto col-form-label">
+				<span jhiTranslate="germplasm.import.review.show.matches"></span>:
+			</label>
+			<div class="col-sm-auto">
+				<select class="form-control" id="showMatchesDropdown" name="showMatchesDropdown"
+						(change)="onShowMatchesOptionChange()"
+						[(ngModel)]="showMatchesOption" #showMatchesDropdown="ngModel">
+					<option [value]="SHOW_MATCHES_OPTIONS.ALL">All</option>
+					<option [value]="SHOW_MATCHES_OPTIONS.ONLY_MATCHES">With existing matches only</option>
+					<option [value]="SHOW_MATCHES_OPTIONS.NEW_RECORDS">New records only</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="table-responsive">
+					<table class="table table-striped table-bordered table-curved">
+						<thead>
+						<th *ngFor="let header of keys(HEADERS)">
+							<span>{{header}}</span>
+						</th>
+						<th *ngFor="let nameType of context.nametypesCopy | NameAttributeColumnPipe">
+							<span>{{nameType.code}}</span>
+						</th>
+						<th *ngFor="let attributeType of context.attributesCopy | NameAttributeColumnPipe">
+							<span>{{attributeType.code}}</span>
+						</th>
+						</thead>
+						<tbody>
+						<tr *ngFor="let row of rows | slice: (page-1) * pageSize : page * pageSize">
+							<td *ngFor="let header of keys(HEADERS)">
+								{{row[header]}}
+							</td>
+							<td *ngFor="let nameType of context.nametypesCopy | NameAttributeColumnPipe">
+								<span>{{row[nameType.code]}}</span>
+							</td>
+							<td *ngFor="let attributeType of context.attributesCopy | NameAttributeColumnPipe">
+								<span>{{row[attributeType.code]}}</span>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div class="pagination-container">
+							<div class="pagination-box pagination-box-left">
+								<div>
+									<jhi-item-count [page]="page" [total]="rows.length" [itemsPerPage]="pageSize"></jhi-item-count>
+								</div>
+							</div>
+							<div class="pagination-box">
+								<ngb-pagination [collectionSize]="rows.length" [(page)]="page" [pageSize]="pageSize" [disabled]="isLoading"
+												[maxSize]="5" [rotate]="true" [boundaryLinks]="true"></ngb-pagination>
+							</div>
+							<div class="pagination-box pagination-box-right">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="form-group row" *ngIf="matches.length">
+			<label for="creationOptionsDropdown" class="col-sm-auto col-form-label">
+				<span jhiTranslate="germplasm.import.review.creation.options"></span>:
+			</label>
+			<div class="col-sm-auto">
+				<div class="row">
+					<div class="col">
+						<select class="form-control" id="creationOptionsDropdown" name="creationOptionsDropdown"
+								(change)="onShowMatchesOptionChange()"
+								[(ngModel)]="creationOption" #creationOptionsDropdown="ngModel">
+							<option [value]="CREATION_OPTIONS.SELECT_EXISTING"><span jhiTranslate="germplasm.import.review.select.existing"></span></option>
+							<option [value]="CREATION_OPTIONS.CREATE_NEW"><span jhiTranslate="germplasm.import.review.create.new"></span></option>
+						</select>
+					</div>
+				</div>
+				<div class="row" *ngIf="creationOption == CREATION_OPTIONS.SELECT_EXISTING">
+					<div class="col">
+						<div class="form-check form-check-inline">
+							<input type="checkbox" class="form-check-input" name="automaticMatchesCheckbox" id="automaticMatchesCheckbox"
+								   [(ngModel)]="isSelectMatchesAutomatically">
+							<label class="form-check-label" for="automaticMatchesCheckbox" jhiTranslate="germplasm.import.review.automatic.matches">
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-5 ml-sm-3">
+				<div class="alert alert-warning" role="alert" *ngIf="creationOption == CREATION_OPTIONS.SELECT_EXISTING && isSelectMatchesAutomatically && isFullAutomaticMatchNotPossible">
+					<i class="fa fa-warning"></i>
+					<span class="ml-3" jhiTranslate="germplasm.import.review.automatic.not.possible"></span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
+		<span jhiTranslate="back"></span>
+	</button>
+	<button (click)="save()" class="btn btn-primary" [disabled]="isSaving">
+		<span *ngIf="isSaving" class="throbber throbber-btn"></span>
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+	</button>
+</div>
+<ng-template #throbber>
+	<span class="throbber"></span>
+</ng-template>

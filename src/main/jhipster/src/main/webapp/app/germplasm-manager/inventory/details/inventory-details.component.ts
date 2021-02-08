@@ -47,7 +47,7 @@ export class InventoryDetailsComponent implements OnInit {
 
     private onSuccess(data: Germplasm) {
         this.title = this.translateService.instant('inventory-details.title',
-            {germplasmPreferredName: data.germplasmPeferredName, gid: this.gid});
+            { germplasmPreferredName: data.germplasmPeferredName, gid: this.gid });
     }
 
     private onError(response: HttpErrorResponse) {

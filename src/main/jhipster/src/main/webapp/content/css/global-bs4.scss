@@ -44,6 +44,14 @@ Generic styles
   border-left: 5px solid red;
 }
 
+// Highlighting labels (custom components, e.g ng-select2)
+.mandatory-asterisk:after,
+.form-group.required .col-form-label:after {
+    content:"*";
+    color:red;
+    margin-left: 2px;
+}
+
 /* other generic styles */
 
 .jh-card {
@@ -262,6 +270,15 @@ $tab-border: $border-width solid $nav-tabs-border-color;
     border-spacing: 0;
 }
 
+.table tr.selected {
+    color: olivedrab;
+    background-color: #bed6b2 !important;
+}
+
+.table tr.selectable {
+    cursor: pointer;
+}
+
 .table > thead {
     background-color: #c8c6c6;
 }
@@ -419,6 +436,7 @@ TODO use theming https://www.primefaces.org/primeng/#/theming
     border-radius: 6pt;
 }
 /* Fix Chrome highlight issue */
+button:focus,
 .ui-tree [tabindex] {
     outline: none;
 }

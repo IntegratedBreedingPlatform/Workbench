@@ -42,6 +42,8 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
+import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
+import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
 
 @NgModule({
     imports: [
@@ -71,7 +73,9 @@ import { AlertService } from './alert/alert.service';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
-        ItemCountCustomComponent
+        BreedingMethodSelect2DataPipe,
+        ItemCountCustomComponent,
+        LocationSelect2DataPipe
     ],
     providers: [
         LoginService,
@@ -90,12 +94,12 @@ import { AlertService } from './alert/alert.service';
         BreedingMethodService,
         LocationService,
         PopupService,
+        AlertService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal,
-        AlertService
+        NgbActiveModal
     ],
     entryComponents: [
         ModalComponent,
@@ -109,6 +113,7 @@ import { AlertService } from './alert/alert.service';
         DragDropModule,
         DatePipe,
         KeyValuePipe,
+        BreedingMethodSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -128,7 +133,8 @@ import { AlertService } from './alert/alert.service';
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
-        ItemCountCustomComponent
+        ItemCountCustomComponent,
+        LocationSelect2DataPipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -1,0 +1,201 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="germplasm.import.header"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div>
+		<h3 jhiTranslate="germplasm.import.basicDetails.header"></h3>
+		<form name="detailsForm" #detailsForm="ngForm">
+		<div jhiTranslate="germplasm.import.basicDetails.description" *ngIf="!hasAllBasicDetails()"></div>
+			<div class="form-group row required">
+				<label for="breedingMethod" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
+				<div class="col-sm-6" *ngIf="!hasAllBreedingMethods() else allGood">
+					<ng-select2 *ngIf="!useFavoriteBreedingMethods" name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected"
+								[data]="breedingMethods | async | BreedingMethodSelect2Data">
+					</ng-select2>
+					<ng-select2 *ngIf="useFavoriteBreedingMethods" name="breedingMethodFavorite" id="breedingMethodFavorite" width="100%" [(ngModel)]="breedingMethodSelected"
+								[data]="favoriteBreedingMethods | async | BreedingMethodSelect2Data">
+					</ng-select2>
+					<!-- TODO Permissions
+					<a style="margin-left: 5px; float: right" jhiTranslate="breeding-method.browser.title"
+					   (click)="openBreedingMethodManager()"></a>
+					   -->
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="form-check form-check-inline">
+								<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
+									   [(ngModel)]="useFavoriteBreedingMethods">
+								<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="germplasm.import.basicDetails.breeding.methods.use.favorite">
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group row required">
+				<label for="breedingAndCountryLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.locations"></label>
+				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
+					<ng-select2 name="locations" id="locations" width="100%" [(ngModel)]="locationSelected" [options]="locationsOptions">
+					</ng-select2>
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="option-group" id="allLocations" [value]="false" [(ngModel)]="isBreedingAndCountryLocationsOnly">
+								<label class="form-check-label" for="allLocations" jhiTranslate="germplasm.import.basicDetails.all.locations"></label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="option-group" id="breedingAndCountryLocations" [value]="true" [(ngModel)]="isBreedingAndCountryLocationsOnly">
+								<label class="form-check-label" for="breedingAndCountryLocations" jhiTranslate="germplasm.import.basicDetails.breeding.and.country.locations"></label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="form-check form-check-inline">
+								<input type="checkbox" class="form-check-input" name="useFavoriteBreedingLocations" id="useFavoriteBreedingLocations"
+									   [(ngModel)]="useFavoriteLocations">
+								<label class="form-check-label" for="useFavoriteBreedingLocations" jhiTranslate="germplasm.import.basicDetails.locations.use.favorite">
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="creationDate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.creation.date"></label>
+				<div class="col-sm-6" *ngIf="!hasAllCreationDate() else allGood">
+					<div class="row">
+						<div class="input-group col-xs-12 col-md-12">
+							<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="creationDateSelected"
+								   ngbDatepicker #date="ngbDatepicker" id="creationDate" name="creationDate"/>
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="reference" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.reference"></label>
+				<div class="col-sm-6" *ngIf="!hasAllReference() else allGood">
+					<div class="row">
+						<div class="input-group col-xs-12 col-md-12">
+							<input class="form-control" [(ngModel)]="referenceSelected" id="reference" name="reference" maxlength="255"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- TODO finish basic details -->
+		</form>
+	</div>
+	<br/>
+	<div>
+		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
+		<form name="namesAndAttributesForm" #namesAndAttributesForm="ngForm">
+			<div class="form-group row required" *ngIf="unmapped.length">
+				<label for="unmapped" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.unmapped"></label>
+				<div class="col-sm-8">
+					<p-table styleClass="table table-striped table-bordered table-curved"
+							 [autoLayout]="true"
+							 [value]="unmapped">
+						<ng-template pTemplate="header">
+							<tr>
+								<th>CODE</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData>
+							<tr pDraggable="dd" (onDragStart)="dragStart($event, rowData)" (onDragEnd)="dragEnd($event)"
+								style="cursor: move">
+								<td>{{rowData}}</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="names" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.names"></label>
+				<div class="col-sm-8">
+					<p-table styleClass="table table-striped table-bordered table-curved"
+							 [autoLayout]="true"
+							 [value]="context.nametypesCopy"
+							 pDroppable="dd" (onDrop)="drop($event, 'names')">
+
+						<ng-template pTemplate="header">
+							<tr>
+								<th *ngIf="hasEmptyPreferredName"></th>
+								<th *ngIf="hasEmptyPreferredName">PRIORITY</th>
+								<th>NAME TYPE</th>
+								<th>DESCRIPTION</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData let-index="rowIndex">
+							<tr [pReorderableRow]="index">
+								<td *ngIf="hasEmptyPreferredName">
+									<i class="fa fa-bars" style="cursor: move" pReorderableRowHandle></i>
+								</td>
+								<td *ngIf="hasEmptyPreferredName">{{index+1}}</td>
+								<td>{{rowData.code}}</td>
+								<td>{{rowData.name}}</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="attributes" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.attributes"></label>
+				<div class="col-sm-8">
+					<p-table styleClass="table table-striped table-bordered table-curved"
+							 [autoLayout]="true"
+							 [value]="context.attributesCopy"
+							 pDroppable="dd" (onDrop)="drop($event, 'attributes')">
+
+						<ng-template pTemplate="header">
+							<tr>
+								<th>VARIABLE</th>
+								<th>DESCRIPTION</th>
+							</tr>
+						</ng-template>
+						<ng-template pTemplate="body" let-rowData>
+							<tr>
+								<td>{{rowData.code}}</td>
+								<td>{{rowData.name}}</td>
+							</tr>
+						</ng-template>
+					</p-table>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div *ngIf="hasProgenitors()">
+		<h3 jhiTranslate="germplasm.import.basicDetails.progenitors.header"></h3>
+		<form name="progenitorsForm" #progenitorsForm="ngForm">
+			<div class="form-group row" >
+				<label for="progenitorsDropdown" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.progenitors.label"></label>
+				<div class="col-sm-6">
+					<select class="form-control" [(ngModel)]="context.pedigreeConnectionType" #progenitorsDropdown="ngModel" name="progenitorsDropdown">
+						<option [value]="PedigreeConnectionType.GID">GID</option>
+						<option [value]="PedigreeConnectionType.GUID">GUID</option>
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
+		<span jhiTranslate="back"></span>
+	</button>
+	<button (click)="next()" [disabled]="!canProceed(detailsForm)" class="btn btn-primary">
+		<span jhiTranslate="next"></span>
+	</button>
+</div>
+<ng-template #allGood>
+	<label class="col form-control-plaintext">
+		Complete!&nbsp;<span class="fa fa-check text-success"></span>
+	</label>
+</ng-template>

@@ -16,7 +16,7 @@
 		<div class="col-2"></div>
 		<div class="col-md-8">
 			<input type="file" class="custom-file-input" multiple="false" id="importFile" (change)="onFileChange($event)" accept="{{selectedFileType}}">
-			<label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search"></i> Choose the file you would like to import with the format: Excel</label>
+			<label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search"></i><span jhiTranslate="germplasm-manager.file.import.description"></span></label>
 		</div>
 		<span *ngIf="isProcessing" style="margin-left: 10px;" class="throbber throbber-2x"></span>
 	</div>

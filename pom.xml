@@ -733,7 +733,7 @@
 						<goals>
 							<goal>yarn</goal>
 						</goals>
-						<phase>generate-resources</phase>
+						<phase>process-resources</phase>
 						<configuration>
 							<skip>${skipFrontEndBuild}</skip>
 							<workingDirectory>src/main/jhipster</workingDirectory>

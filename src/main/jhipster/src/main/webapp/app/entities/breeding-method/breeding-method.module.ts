@@ -3,6 +3,7 @@ import { BmsjHipsterSharedModule } from '../../shared';
 import { BreedingMethodComponent, BreedingMethodPopupComponent } from './breeding-method.component';
 import { RouterModule } from '@angular/router';
 import { breedingMethodRoutes } from './breeding-method.route';
+import { BreedingMethodManagerComponent, BreedingMethodManagerPopupComponent } from './breeding-method-manager.component';
 
 @NgModule({
     imports: [
@@ -11,11 +12,15 @@ import { breedingMethodRoutes } from './breeding-method.route';
     ],
     declarations: [
         BreedingMethodComponent,
-        BreedingMethodPopupComponent
+        BreedingMethodPopupComponent,
+        BreedingMethodManagerComponent,
+        BreedingMethodManagerPopupComponent
     ],
     entryComponents: [
         BreedingMethodComponent,
-        BreedingMethodPopupComponent
+        BreedingMethodPopupComponent,
+        BreedingMethodManagerComponent,
+        BreedingMethodManagerPopupComponent
     ]
 })
 export class BreedingMethodModule {

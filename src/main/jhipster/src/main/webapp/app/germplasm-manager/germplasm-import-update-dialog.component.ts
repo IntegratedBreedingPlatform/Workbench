@@ -11,7 +11,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { parseFile, saveFile } from '../shared/util/file-utils';
 import { AlertService } from '../shared/alert/alert.service';
 import { Attribute } from '../shared/attributes/model/attribute.model';
-import { GermplasmNameTypeModel } from '../entities/germplasm/germplasm-name-type.model';
+import { NameType } from '../shared/germplasm/model/name-type.model';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -26,7 +26,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     fileName = '';
     rawData: Array<Array<any>>;
     data: Array<any>;
-    names: GermplasmNameTypeModel[] = [];
+    names: NameType[] = [];
     attributes: Attribute[] = [];
     importFormats = [
         { name: 'Excel', extension: '.xls,.xlsx' }
@@ -91,7 +91,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         });
     }
 
-    private transform(importData: Array<any>, names: GermplasmNameTypeModel[], attributes: Attribute[]): any[] {
+    private transform(importData: Array<any>, names: NameType[], attributes: Attribute[]): any[] {
         // Transform file data to JSON
         const germplasmUpdates = importData.map((row) => {
             const namesValuesMap = {};
@@ -172,7 +172,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         });
     }
 
-    private validateHeader(fileHeader: string[], errorMessage: string[], codes: string[], names: GermplasmNameTypeModel[], attributes: Attribute[]) {
+    private validateHeader(fileHeader: string[], errorMessage: string[], codes: string[], names: NameType[], attributes: Attribute[]) {
         // TODO: Add Method Abbr once implemented in the backend.
 
         if (!(<any>Object).values(HEADER).every((header) => {
@@ -212,7 +212,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     private onSaveSuccess(result: any) {
         this.isProcessing = false;
         this.alertService.success('germplasm-import-updates.import.success');
-        this.eventManager.broadcast({ name: 'germplasmUpdated', content: result });
+        this.eventManager.broadcast({ name: 'filterByGid', content: result });
         this.activeModal.close(result);
     }
 
