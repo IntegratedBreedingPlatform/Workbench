@@ -1,6 +1,8 @@
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.generationcp.commons.util.VaadinFileDownloadResource;
@@ -25,60 +27,73 @@ import com.vaadin.ui.Window.Notification;
 import org.junit.Assert;
 
 public class ResultsComponentTest {
-	
+
 	private static final String XLS_FILE_PATH = "/someDirectory/output/HeadtoHeadDataList.xls";
-	
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
+
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
-	
+
 	@Mock
 	private HeadToHeadDataListExport listExporter;
-	
+
 	@Mock
 	private HeadToHeadCrossStudyMain mainScreen;
-	
+
 	@Mock
 	private Application application;
-	
+
 	@Mock
 	private Window window;
-	
+
 	private ResultsComponent resultsComponent;
-	
+
 	private final List<EnvironmentForComparison> environments = MockCrossStudyDataUtil.getEqualEnvironmentForComparisons();
-	
+
 	@Before
 	public void setup() throws HeadToHeadDataListExportException {
 		MockitoAnnotations.initMocks(this);
 		// Need to spy to be able to set the window and application of class
 		this.resultsComponent = Mockito.spy(new ResultsComponent(this.mainScreen));
-		this.resultsComponent.setFinalEnvironmentForComparisonList(environments);
+		this.resultsComponent.setFinalEnvironmentForComparisonList(this.environments);
 		this.resultsComponent.setListExporter(this.listExporter);
-		
+
 		Mockito.when(this.listExporter.exportHeadToHeadDataListExcel(Mockito.anyString(), Mockito.anyListOf(ResultsData.class), Mockito.anySetOf(TraitForComparison.class), Mockito.any(String[].class),
 				Mockito.anyMapOf(String.class, String.class))).thenReturn(XLS_FILE_PATH);
 		Mockito.doReturn(this.application).when(this.resultsComponent).getApplication();
 		Mockito.doReturn(this.window).when(this.resultsComponent).getWindow();
 		Mockito.doReturn(this.window).when(this.application).getWindow(Mockito.anyString());
 	}
-	
+
 	@Test
 	public void testExportButtonClickAction() throws HeadToHeadDataListExportException {
 		this.resultsComponent.exportButtonClickAction();
-		
+
 		Mockito.verify(this.listExporter).exportHeadToHeadDataListExcel(Mockito.eq(ResultsComponent.HEAD_TO_HEAD_DATA_LIST), Mockito.anyListOf(ResultsData.class), Mockito.anySetOf(TraitForComparison.class), Mockito.any(String[].class),
 				Mockito.anyMapOf(String.class, String.class));
-		
+
 		// Verify file is downloaded to the browser with proper filename
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
+		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertEquals(ResultsComponent.HEAD_TO_HEAD_DATA_LIST + ".xls", downloadResource.getFilename());
+		Assert.assertTrue(uSCount.length >= 3);
 		Mockito.verify(this.window).open(downloadResource);
 		Mockito.verify(this.mainScreen).selectFirstTab();
+		try {
+			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
+		} catch (final ParseException ex) {
+			Assert.fail("TimeStamp must be included in the file name");
+		}
+		try {
+			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
+		} catch (final ParseException ex) {
+			Assert.fail("Date must be included in the file name");
+		}
 	}
-	
+
 	@Test
 	public void testExportButtonClickActionWhenExportExceptionIsThrown() throws HeadToHeadDataListExportException{
 		final String message = "Some H2H error.";
@@ -86,7 +101,7 @@ public class ResultsComponentTest {
 				Mockito.eq(ResultsComponent.HEAD_TO_HEAD_DATA_LIST), Mockito.anyListOf(ResultsData.class),
 				Mockito.anySetOf(TraitForComparison.class), Mockito.any(String[].class), Mockito.anyMapOf(String.class, String.class));
 		this.resultsComponent.exportButtonClickAction();
-		
+
 		Mockito.verify(this.listExporter).exportHeadToHeadDataListExcel(Mockito.eq(ResultsComponent.HEAD_TO_HEAD_DATA_LIST), Mockito.anyListOf(ResultsData.class), Mockito.anySetOf(TraitForComparison.class), Mockito.any(String[].class),
 				Mockito.anyMapOf(String.class, String.class));
 		Mockito.verify(this.window, Mockito.never()).open(Mockito.any(VaadinFileDownloadResource.class));
@@ -97,7 +112,7 @@ public class ResultsComponentTest {
 		Assert.assertEquals("Error with exporting list.", error.getCaption());
 		Assert.assertEquals("</br>" + message, error.getDescription());
 	}
-	
+
 	@Test
 	public void testBackButtonClickAction(){
 		this.resultsComponent.backButtonClickAction();

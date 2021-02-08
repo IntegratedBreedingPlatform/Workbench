@@ -37,5 +37,4 @@ public class HelpController {
 		return HelpDocumentUtil.getOnLineLink(helpUrl);
 
 	}
-
 }

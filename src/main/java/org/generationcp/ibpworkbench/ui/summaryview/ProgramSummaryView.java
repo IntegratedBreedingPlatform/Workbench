@@ -19,6 +19,7 @@ import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.browser.study.containers.StudyDetailsQueryFactory;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.Message;
@@ -494,9 +495,9 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 			}
 
 			if (this.getComponentCount() > 2) {
-				ProgramSummaryView.this.replaceComponent(this.getComponent(2), table.createControls());
+				this.replaceComponent(this.getComponent(2), table.createControls());
 			} else if (this.getComponentCount() == 2) {
-				ProgramSummaryView.this.addComponent(table.createControls());
+				this.addComponent(table.createControls());
 			}
 
 		}
@@ -504,7 +505,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		table.setPageLength(10);
 	}
 
-	private class PagedTableWithUpdatedControls extends PagedTable {
+	private static class PagedTableWithUpdatedControls extends PagedTable {
 
 		/**
 		 *
@@ -589,7 +590,7 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		public void buttonClick(final Button.ClickEvent event) {
 
 			final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-			ExportButtonListener.this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
+			this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
 
 		}
 
@@ -597,8 +598,10 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
 
+			final String fileName = FileNameGenerator
+				.generateFileName(tableName + " " + programName, "xls").replaceAll(" ", "_");
 			excelExport.setReportTitle(programName + " - " + tableName);
-			excelExport.setExportFileName((tableName + " " + programName + ".xls").replaceAll(" ", "_"));
+			excelExport.setExportFileName(fileName);
 			excelExport.setDisplayTotals(false);
 
 			ProgramSummaryView.LOG

@@ -16,6 +16,7 @@ import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -150,26 +151,23 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	void populateProjectNameAndFilePaths(final BreedingViewInput breedingViewInput, final Project project, final String inputDirectory) {
 
-		String breedingViewProjectName = "";
-		String defaultFilePath = "";
-
-		breedingViewProjectName = project.getProjectName().trim() + "_" + this.dataSetId + "_" + this.datasetName.trim();
+		String breedingViewProjectName = project.getProjectName().trim() + "_" + this.dataSetId + "_" + this.datasetName.trim();
 
 		breedingViewProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewProjectName);
 
-		defaultFilePath = File.separator + breedingViewProjectName;
+		final String defaultFilePath = File.separator + breedingViewProjectName;
 
 		breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
 
-		String sourceCSVFile = "";
+		final String sourceCSVFile;
 		if (Boolean.parseBoolean(this.isServerApp)) {
-			sourceCSVFile = breedingViewProjectName + ".csv";
+			sourceCSVFile = FileNameGenerator.generateFileName(breedingViewProjectName,"csv");
 		} else {
-			sourceCSVFile = inputDirectory + defaultFilePath + ".csv";
+			sourceCSVFile = inputDirectory + FileNameGenerator.generateFileName(defaultFilePath, "csv");
 		}
 		breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
 
-		final String destXMLFilePath = inputDirectory + defaultFilePath + ".xml";
+		final String destXMLFilePath = inputDirectory + FileNameGenerator.generateFileName(defaultFilePath, "xml");
 		breedingViewInput.setDestXMLFilePath(destXMLFilePath);
 
 	}

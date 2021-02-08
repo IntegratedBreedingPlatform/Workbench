@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -118,15 +119,13 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 	// Called by StudyButtonClickListener
 	public void exportToCSVAction() {
-		CsvExport csvExport;
+		final CsvExport csvExport;
 
 		this.reportTitle = new StringBuilder().append(this.messageSource.getMessage(Message.REPORT_TITLE1_TEXT)).append("[")
 				.append(this.studyIdHolder).append("]-").append(this.messageSource.getMessage(Message.REPORT_TITLE2_TEXT)).append("[")
 				.append(this.datasetId).append("]-");
 
-		StringBuilder fileName = new StringBuilder();
-
-		fileName = this.reportTitle.append(".csv");
+		final StringBuilder fileName = this.reportTitle.append(".csv");
 
 		csvExport = new CsvExport(this.datasetTable, this.reportName, this.reportTitle.toString(), fileName.toString(), false);
 		csvExport.excludeCollapsedColumns();
@@ -139,7 +138,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			final String temporaryFileName =
 					this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 			final VaadinFileDownloadResource fileDownloadResource = new VaadinFileDownloadResource(new File(temporaryFileName),
-					RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, this.getApplication());
+					FileNameGenerator.generateFileName(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME), this.getApplication());
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 
 		} catch (final DatasetExporterException e) {
@@ -186,7 +185,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		final Window mainWindow = this.getWindow();
 		final TableViewerDatasetTable tableViewerDataset =
 				new TableViewerDatasetTable(this.studyDataManager, this.studyIdHolder, this.datasetId);
-		String studyName;
+		final String studyName;
 		try {
 			studyName = this.studyDataManager.getStudy(this.studyIdHolder).getName();
 			final Window tableViewer = new TableViewerComponent(tableViewerDataset, studyName);
@@ -271,7 +270,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 		// create item container for dataset table
 		final RepresentationDatasetQueryFactory factory =
-				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, studyIdHolder);
+				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, this.studyIdHolder);
 		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
 		this.populateDatasetContainerProperties(fromUrl, columnIds, datasetContainer);
 

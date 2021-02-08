@@ -3,35 +3,51 @@ package org.generationcp.ibpworkbench.germplasm.pedigree;
 
 import com.vaadin.ui.Window;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
+import org.generationcp.middleware.pojos.Method;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CreatePedigreeGraph {
-
 	private final GermplasmQueries qQuery;
+	private final GermplasmDataManager germplasmDataManager;
 	private GraphVizUtility graphVizUtility;
 	private final int gid;
 	private final int level;
 	private final Window window;
 	private boolean includeDerivativeLines;
+	private boolean showBreedingMethod;
+	private Set<Integer> breedingMethodIds;
+	private Map<Integer, Method> breedingMethodMap;
 
 	public CreatePedigreeGraph(
-		final int gid, final int level, final Boolean includeDerivativeLines, final Window window,
-		final GermplasmQueries qQuery) {
+		final int gid, final int level, final Boolean includeDerivativeLines, final boolean showBreedingMethod, final Window window,
+		final GermplasmQueries qQuery, final GermplasmDataManager germplasmDataManager) {
 		this.qQuery = qQuery;
+		this.germplasmDataManager = germplasmDataManager;
 		this.gid = gid;
 		this.level = level;
 		this.window = window;
 		this.includeDerivativeLines = includeDerivativeLines;
+		this.showBreedingMethod = showBreedingMethod;
+		this.breedingMethodIds = new HashSet<>();
 	}
 
-	public CreatePedigreeGraph(final int gid, final int level, final Window window, final GermplasmQueries qQuery) {
+	public CreatePedigreeGraph(final int gid, final int level, final Window window, final GermplasmQueries qQuery,
+		final GermplasmDataManager germplasmDataManager) {
 		this.qQuery = qQuery;
 		this.gid = gid;
 		this.level = level;
 		this.window = window;
+		this.germplasmDataManager = germplasmDataManager;
 	}
 
 	/**
@@ -71,6 +87,11 @@ public class CreatePedigreeGraph {
 	private void createDiGraphNode() {
 		final GermplasmPedigreeTree germplasmPedigreeTree =
 			this.qQuery.generatePedigreeTree(Integer.valueOf(this.gid), this.level, this.includeDerivativeLines);
+		if(this.showBreedingMethod) {
+			this.getBreedingMethodIds(germplasmPedigreeTree.getRoot());
+			this.breedingMethodMap = this.germplasmDataManager.getMethodsByIDs(new ArrayList<>(this.breedingMethodIds)).stream()
+				.collect(Collectors.toMap(Method::getMid, Function.identity()));
+		}
 
 		if (this.level == 1) {
 			final String leafNodeGIDRoot = this.createNodeTextWithFormatting(germplasmPedigreeTree.getRoot());
@@ -80,6 +101,15 @@ public class CreatePedigreeGraph {
 		}
 	}
 
+	void getBreedingMethodIds(final GermplasmPedigreeTreeNode node) {
+		this.breedingMethodIds.add(node.getGermplasm().getMethodId());
+		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			this.getBreedingMethodIds(parent);
+		}
+	}
+
+
+
 	String createNodeTextWithFormatting(final GermplasmPedigreeTreeNode node) {
 		final Integer nodeGid = node.getGermplasm().getGid();
 		final String leafNodeGIDRoot = nodeGid.toString();
@@ -87,10 +117,17 @@ public class CreatePedigreeGraph {
 		final StringBuilder sb = new StringBuilder(preferredName);
 		// The breakline " \n" is needed otherwise the "UNKNOWN" text for GID = 0 becomes truncated at the bottom
 		sb.append(" \n ");
-		if (nodeGid != 0) {
+		if (nodeGid == 0) {
+			this.graphVizUtility.addln(leafNodeGIDRoot + " [shape=box, style=dashed];");
+		} else {
 			sb.append("GID: " + leafNodeGIDRoot);
+			if(this.showBreedingMethod) {
+				final Method method = this.breedingMethodMap.get(node.getGermplasm().getMethodId());
+				sb.append("\n\n" + method.getMcode() + ": " + method.getMname());
+			}
+			this.graphVizUtility.addln(leafNodeGIDRoot + " [shape=box];");
 		}
-		this.graphVizUtility.addln(leafNodeGIDRoot + " [shape=box];");
+
 		this.graphVizUtility.addln(leafNodeGIDRoot + " [label=\"" + sb.toString() + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];");
 		return leafNodeGIDRoot;
 	}
@@ -103,22 +140,35 @@ public class CreatePedigreeGraph {
 		}
 
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			final boolean isFemaleParent = parent.getGermplasm().getGid().equals(node.getGermplasm().getGpid1())
+				&& node.getGermplasm().getGnpgs() >= 2;
+			final boolean isDerivative = node.getGermplasm().getGnpgs().equals(-1);
 			final String leafNodeGID = this.createNodeTextWithFormatting(parent);
 			final String parentNodeGID = this.createNodeTextWithFormatting(node);
 
 			if (level == 1) {
 				final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
-				this.graphVizUtility.addln(leafNodeGID + "->" + leafNodeGIDRoot + ";");
+				this.graphVizUtility.addln(leafNodeGID + "->" + leafNodeGIDRoot + this.getArrowStyleString(isFemaleParent, isDerivative));
 			} else {
-				this.graphVizUtility.addln(leafNodeGID + "->" + parentNodeGID + ";");
+				this.graphVizUtility.addln(leafNodeGID + "->" + parentNodeGID + this.getArrowStyleString(isFemaleParent, isDerivative));
 			}
 
 			this.addNode(parent, level + 1);
 		}
 	}
 
-	
-	protected void setGraphVizUtility(GraphVizUtility graphVizUtility) {
+	String getArrowStyleString(final boolean isFemaleParent, final boolean isDerivative) {
+		if(isFemaleParent) {
+			return " [color=\"RED\", arrowhead=\"odottee\"];";
+		} else if(!isDerivative) {
+			return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
+		} else {
+			return  ";";
+		}
+	}
+
+
+	protected void setGraphVizUtility(final GraphVizUtility graphVizUtility) {
 		this.graphVizUtility = graphVizUtility;
 	}
 
