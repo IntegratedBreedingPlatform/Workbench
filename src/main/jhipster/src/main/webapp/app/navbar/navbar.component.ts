@@ -11,7 +11,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { Tool, ToolLink } from '../shared/tool/model/tool.model';
 import { LoginService } from '../shared/login/login.service';
-import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS } from '../app.constants';
+import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
 
 @Component({
@@ -25,7 +25,7 @@ import { HelpService } from '../shared/service/help.service';
     encapsulation: ViewEncapsulation.None
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
-    // TODO
+
     version: string;
     toolUrl: any;
     program: Program;
@@ -54,8 +54,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private loginService: LoginService,
         private helpService: HelpService
     ) {
-        // TODO
-        // this.version = VERSION ? 'v' + VERSION : '';
+        this.version = VERSION ? `BMS ${VERSION}` : '';
         this.principal.identity().then((identity) => {
             this.user = identity;
         });
