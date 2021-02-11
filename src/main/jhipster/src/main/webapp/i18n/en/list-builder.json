@@ -1,0 +1,10 @@
+{
+    "list-builder": {
+        "header": "Build a new list",
+        "description": "Build your list by dragging in entries from the left.",
+        "entries": "List entries",
+        "show": "Show list builder",
+        "hide": "Hide list builder",
+        "no.data": "Drag items here"
+    }
+}

@@ -22,6 +22,9 @@ import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
+import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
+import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
+import { BaseEntity } from '../shared';
 
 declare var $: any;
 
@@ -278,7 +281,9 @@ export class GermplasmSearchComponent implements OnInit {
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
-                private germplasmManagerContext: GermplasmManagerContext) {
+                private germplasmManagerContext: GermplasmManagerContext,
+                private listBuilderContext: ListBuilderContext
+    ) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -542,6 +547,41 @@ export class GermplasmSearchComponent implements OnInit {
             return false;
         }
         return true;
+    }
+
+    dragStart($event, germplasm: Germplasm) {
+        const row: BaseEntity = {};
+        row.id = germplasm.gid;
+        row[ColumnLabels.GID] = germplasm.gid;
+        row[ColumnLabels['GROUP ID']] = germplasm.groupId;
+        row[ColumnLabels.NAMES] = germplasm.names;
+        row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
+        row[ColumnLabels.LOT_UNITS] = germplasm.unit;
+        row[ColumnLabels.CROSS] = germplasm.pedigreeString;
+        row[ColumnLabels['PREFERRED ID']] = germplasm.germplasmPeferredId;
+        row[ColumnLabels['PREFERRED NAME']] = germplasm.germplasmPeferredName;
+        row[ColumnLabels['GERMPLASM DATE']] = germplasm.germplasmDate;
+        row[ColumnLabels.LOCATIONS] = germplasm.locationName;
+        row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
+        row[ColumnLabels['METHOD ABBREV']] = germplasm.methodCode;
+        row[ColumnLabels['METHOD NUMBER']] = germplasm.methodNumber;
+        row[ColumnLabels['METHOD GROUP']] = germplasm.methodGroup;
+        row[ColumnLabels['FGID']] = germplasm.femaleParentGID;
+        row[ColumnLabels['CROSS-FEMALE PREFERRED NAME']] = germplasm.femaleParentPreferredName;
+        row[ColumnLabels['MGID']] = germplasm.maleParentGID;
+        row[ColumnLabels['CROSS-MALE PREFERRED NAME']] = germplasm.maleParentPreferredName;
+        row[ColumnLabels['GROUP SOURCE GID']] = germplasm.groupSourceGID;
+        row[ColumnLabels['GROUP SOURCE']] = germplasm.groupSourcePreferredName;
+        row[ColumnLabels['IMMEDIATE SOURCE GID']] = germplasm.immediateSourceGID;
+        row[ColumnLabels['IMMEDIATE SOURCE']] = germplasm.immediateSourcePreferredName;
+        this.listBuilderContext.data = [row];
+    }
+
+    dragEnd($event) {
+    }
+
+    toggleListBuilder() {
+        this.listBuilderContext.isListBuilderVisible = !this.listBuilderContext.isListBuilderVisible;
     }
 
     openCreateList() {

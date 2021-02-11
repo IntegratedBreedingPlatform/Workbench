@@ -3,6 +3,7 @@ import { ParamContext } from '../shared/service/param.context';
 import { ViewEncapsulation } from '@angular/core';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_MANAGE_GERMPLASM } from '../app.constants';
+import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
@@ -17,7 +18,10 @@ export class GermplasmManagerComponent implements OnInit {
 
     helpLink: string;
 
-    constructor(private paramContext: ParamContext, private helpService: HelpService) {
+    constructor(private paramContext: ParamContext,
+                private helpService: HelpService,
+                private listBuilderContext: ListBuilderContext
+    ) {
         this.paramContext.readParams();
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_MANAGE_GERMPLASM).toPromise().then((response) => {
@@ -31,5 +35,4 @@ export class GermplasmManagerComponent implements OnInit {
 
     ngOnInit() {
     }
-
 }

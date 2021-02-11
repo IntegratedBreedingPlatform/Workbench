@@ -1,5 +1,13 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="germplasm-search-tab">
-	<jhi-column-filter [request]="request" [resultSearch]="resultSearch" [filters]="filters"></jhi-column-filter>
+	<div class="d-flex">
+		<jhi-column-filter [request]="request" [resultSearch]="resultSearch" [filters]="filters"
+						   class="flex-sm-grow-1"></jhi-column-filter>
+		<button class="btn btn-outline-info ml-auto align-self-start" (click)="toggleListBuilder()">
+			<i class="fa mr-3" [ngClass]="listBuilderContext.isListBuilderVisible ? 'fa-angle-right': 'fa-angle-left'"></i>
+			<span *ngIf="listBuilderContext.isListBuilderVisible" jhiTranslate="list-builder.hide"></span>
+			<span *ngIf="!listBuilderContext.isListBuilderVisible" jhiTranslate="list-builder.show"></span>
+		</button>
+	</div>
 	<div class="row">
 		<div class="col">
 			<div ngbDropdown class="float-right" placement="bottom-right">
@@ -125,7 +133,9 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId">
+			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId"
+				pDraggable="dd" (onDragStart)="dragStart($event, germplasm)" (onDragEnd)="dragEnd($event)">
+
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>

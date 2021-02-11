@@ -258,6 +258,7 @@ $tab-active-color: #f6f6f6;
 }
 
 $tab-border: $border-width solid $nav-tabs-border-color;
+.card,
 .tab-content {
     background: $tab-active-color;
     border-bottom: $tab-border;

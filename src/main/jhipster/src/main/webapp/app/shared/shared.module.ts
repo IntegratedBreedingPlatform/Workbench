@@ -44,12 +44,17 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
+import { ListBuilderComponent } from './list-builder/list-builder.component';
+import { ListBuilderContext } from './list-builder/list-builder.context';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedLibsModule,
         BmsjHipsterSharedCommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TableModule,
+        DragDropModule
     ],
     declarations: [
         ModalComponent,
@@ -75,7 +80,8 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent
     ],
     providers: [
         LoginService,
@@ -87,6 +93,7 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         LotService,
         TransactionService,
         ParamContext,
+        ListBuilderContext,
         HelpService,
         GermplasmService,
         AttributesService,
@@ -111,6 +118,7 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         TreeTableModule,
         TreeModule,
         DragDropModule,
+        TableModule,
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
@@ -134,7 +142,8 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
