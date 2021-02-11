@@ -36,7 +36,7 @@ public class JHipsterController {
 	}
 
 	// Workaround for base-href page reload
-	@RequestMapping(value = "/app", method = RequestMethod.GET)
+	@RequestMapping(value = {"/app", "/main"}, method = RequestMethod.GET)
 	public RedirectView onRefreshPage() throws MiddlewareQueryException {
 		final RedirectView redirectView = new RedirectView("/main/");
 		redirectView.setContextRelative(true);
