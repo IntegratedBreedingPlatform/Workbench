@@ -28,7 +28,7 @@
 	<mvc:resources mapping="/pages/brapi-fieldmap/**" location="/WEB-INF/pages/brapi-fieldmap/"/>
 
 	<!-- Linked to base-href of angular app -->
-	<mvc:resources mapping="/main/**" location="/WEB-INF/pages/jhipster/"/>
+	<mvc:resources mapping="/app/**" location="/WEB-INF/pages/jhipster/"/>
 
 	<!-- **************************************************************** -->
 	<!--  SPRING ANNOTATION PROCESSING                                    -->

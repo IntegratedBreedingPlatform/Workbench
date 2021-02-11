@@ -121,12 +121,12 @@
 
 	<servlet-mapping>
 		<servlet-name>mvcdispatcher</servlet-name>
-		<url-pattern>/app/*</url-pattern>
+		<url-pattern>/main/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>ibpworkbench</servlet-name>
-		<url-pattern>/main/*</url-pattern>
+		<url-pattern>/old/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
