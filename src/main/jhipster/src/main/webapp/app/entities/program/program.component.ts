@@ -1,9 +1,9 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ProgramService } from '../../shared/program/service/program.service';
-import { Observable } from 'rxjs';
 import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
+import { Principal } from '../../shared';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
@@ -15,7 +15,9 @@ import { finalize } from 'rxjs/operators';
         './program.scss'
     ]
 })
-export class ProgramComponent {
+export class ProgramComponent implements OnInit {
+
+    user?: any;
 
     programs: Program[];
     itemCount: any;
@@ -24,8 +26,18 @@ export class ProgramComponent {
     isLoading = false;
 
     constructor(
-        private programService: ProgramService
+        private programService: ProgramService,
+        private principal: Principal
     ) {
+    }
+
+    async ngOnInit() {
+        // We get user last opened project ff programUUID is not present in the local storage
+        if (!localStorage['programUUID']) {
+            const identity = await this.principal.identity();
+            this.user = identity;
+        }
+
         this.loadPage();
     }
 
@@ -34,7 +46,8 @@ export class ProgramComponent {
     }
 
     isSelected(program: Program) {
-        return program.programUUID === localStorage['programUUID']
+        return program.programUUID ===
+            (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
     }
 
     loadPage() {
@@ -49,4 +62,5 @@ export class ProgramComponent {
             this.itemCount = resp.headers.get('X-Total-Count');
         });
     }
+
 }
