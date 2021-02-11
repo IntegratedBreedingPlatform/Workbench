@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 
 declare var $: any;
@@ -31,7 +31,8 @@ declare var $: any;
 })
 export class GermplasmSearchComponent implements OnInit {
 
-    IMPORT_GERMPLASM_UPDATES = [...IMPORT_GERMPLASM_UPDATES_PERMISSIONS];
+    IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
+    IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
@@ -331,8 +332,8 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerChangeInGermplasm();
-        this.registerGermplasmUpdated();
+        this.registerColumnFiltersChaged();
+        this.registerFilterBy();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
@@ -398,7 +399,7 @@ export class GermplasmSearchComponent implements OnInit {
         return item.gid;
     }
 
-    registerChangeInGermplasm() {
+    registerColumnFiltersChaged() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
 
             this.preSortCheck();
@@ -420,9 +421,9 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
-    registerGermplasmUpdated() {
-        // Load all germplasm that has been updated via import.
-        this.eventSubscriber = this.eventManager.subscribe('germplasmUpdated', (event) => {
+    registerFilterBy() {
+        // E.g germplasm changed via import.
+        this.eventSubscriber = this.eventManager.subscribe('filterByGid', (event) => {
 
             this.columnFilterComponent.clearFilters();
 

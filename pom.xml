@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>17.0</version>
+        <version>17.1</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -733,7 +733,7 @@
 						<goals>
 							<goal>yarn</goal>
 						</goals>
-						<phase>generate-resources</phase>
+						<phase>process-resources</phase>
 						<configuration>
 							<skip>${skipFrontEndBuild}</skip>
 							<workingDirectory>src/main/jhipster</workingDirectory>

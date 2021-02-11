@@ -137,11 +137,22 @@
     },
     "footer": "This is your footer",
     "no.data": "No records found",
-    "germplasm.details": {
-        "title": "Germplasm Details"
-    },
     "confirm": "Confirm",
     "cancel": "Cancel",
+    "back": "Back",
     "save": "Save",
-    "actions": "Actions"
+    "next": "Next",
+    "finish": "Finish",
+    "actions": "Actions",
+    "template.download": {
+        "description": "You can download a template",
+        "here": "here"
+    },
+    "breeding-location": {
+        "title": "Breeding Location"
+    },
+    "breeding-method": {
+        "title": "Breeding Method",
+        "browser.title": "Manage Methods"
+    }
 }

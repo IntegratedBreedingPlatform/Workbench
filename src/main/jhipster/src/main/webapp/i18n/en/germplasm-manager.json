@@ -1,7 +1,8 @@
 {
 
     "germplasm-manager": {
-        "title": "Germplasm Manager"
+        "title": "Germplasm Manager",
+        "file.import.description": "Choose the file you would like to import with the format: Excel"
     } ,
     "lot-creation": {
         "success": "{{param}} lots were created successfully",
@@ -47,7 +48,8 @@
         },
         "actions": {
             "create-list": "Create new list",
-            "add-to-list": "Add to existing list"
+            "add-to-list": "Add to existing list",
+            "import": "Import germplasm"
         },
         "included-gids": "(+ included germplasm)"
     },
@@ -78,5 +80,92 @@
     },
     "breeding-location": {
         "title": "Breeding Location"
+    },
+    "germplasm": {
+        "details.title": "Germplasm Details",
+        "import": {
+            "header": "Import germplasm",
+            "file": {
+                "input.description": "Choose the file you would like to import with the format: Excel or CSV",
+                "validation": {
+                    "file.empty": "Wrong name for Observation sheet or the file has no data. Please verify and try again",
+                    "extensions": "Only the following file extensions are allowed: {{param}}",
+                    "entryNo": "The ENTRY_NO column is mandatory",
+                    "entryNo.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
+                    "entryNo.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
+                    "guid.duplicates": "Some GUID values are duplicated. Please correct them and try again",
+                    "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
+                    "names.no.column": "No suitable column found for germplasm name. Please check the CODES sheet for NAMES",
+                    "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again",
+                    "names.preferred.invalid": "The name type {{param}} does not exist as a column or has an empty value.",
+                    "progenitors.both": "You need to specify both progenitors",
+                    "reference": "Reference length can not exceed 255 characters. Please check"
+                }
+            },
+            "basicDetails": {
+                "header": "Basic details",
+                "description": "The following mandatory basic details are not described for all or some of the germplasm records. Please define the value to assign to these records.",
+                "breeding.methods": "Breeding methods",
+                "breeding.methods.use.favorite": "Show only favorite methods",
+                "names.and.attributes.header": "Names and Attributes",
+                "names": "Names",
+                "unmapped": "Unmapped",
+                "attributes": "Attributes",
+                "locations": "Germplasm locations",
+                "breeding.and.country.locations": "Breeding and Country locations",
+                "all.locations": "All locations",
+                "locations.use.favorite": "Show only favorite locations",
+                "creation.date": "Germplasm Date",
+                "reference": "Reference",
+                "progenitors": {
+                    "header": "Progenitors",
+                    "label": "Connect with"
+                }
+            },
+            "inventory": {
+                "header": "Inventory",
+                "description": "The following mandatory Inventory details are not described for all or some of the germplasm records. Please define the value to assign to these records.",
+                "create.lots": "Create inventory lots",
+                "lots": "Inventory lots",
+                "stock.id.prefix": "Stock ID Prefix",
+                "seed.storage.location": "Seed storage location",
+                "locations.use.favorite": "Show only favorite locations",
+                "units": "Units",
+                "amount": "Amount",
+                "transaction.confirm": "Confirm transaction on saving?",
+                "complete.all.entries": "Complete all entries",
+                "complete.entries.with.some.data": "Complete entries with some data",
+                "success": "{{param}} lots were created successfully"
+            },
+            "matches": {
+                "header": "Select existing germplasm or add new entry",
+                "with.guid.match": " (<b>GUID={{guid}}</b> <i>automatically selected</i>)",
+                "matches.were.found": "Match(es) were found for <b>ENTRY_NO: {{entryNo}}</b> ({{matchNumber}} of {{unassignedCount}})",
+                "click.on.an.entry": ". Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry.",
+                "ignore.match": "Ignore matches and add new entry",
+                "ignore.all.remaining": "Ignore remaining matches and add new entries for all",
+                "guid.matches.warning": "Remaining matches by GUID will <b>not</b> be ignored and selected automatically!"
+            },
+            "review": {
+                "header": "Review",
+                "show.matches": "Show matches",
+                "creation.options": "Creation options",
+                "select.existing": "Select existing germplasm whenever found",
+                "create.new": "Create new records",
+                "automatic.matches": "Automatically select existing matches",
+                "automatic.not.possible": "Automatic match is not possible for some entries (> 1 name matches by preferred name). For those, manual selection will be needed.",
+                "summary": {
+                    "message": "<h4>Import summary:</h4><p>{{param}}</p>",
+                    "new": "{{param}} entries have no matches <strong>(new records will be created)</strong>",
+                    "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
+                    "match.by.name": "{{param}} entries with matches <b>by name</b> were selected (no records will be created)",
+                    "match.by.guid": "{{param}} entries with matches <b>by GUID</b> were automatically selected (no records will be created)",
+                    "inventory": "{{param}} lots will be created",
+                    "progenitors": "{{param}} entries will be connected with progenitors"
+                }
+            },
+            "cancel.confirm": "Are you sure you want to quit the import process?",
+            "success": "Germplasm imported successfully!"
+        }
     }
 }

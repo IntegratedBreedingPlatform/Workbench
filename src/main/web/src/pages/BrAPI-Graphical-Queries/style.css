@@ -260,3 +260,7 @@
 .modal-very-huge .modal-dialog {
     width: 90%;
 }
+
+.select2-container {
+    width: 100% !important;
+}

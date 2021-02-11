@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LotService } from '../../../shared/inventory/service/lot.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';

@@ -49,6 +49,14 @@ Generic styles
   border-left: 5px solid red;
 }
 
+// Highlighting labels (custom components, e.g ng-select2)
+.mandatory-asterisk:after,
+.form-group.required .col-form-label:after {
+    content:"*";
+    color:red;
+    margin-left: 2px;
+}
+
 /* other generic styles */
 
 .jh-card {
@@ -265,6 +273,15 @@ $tab-border: $border-width solid $nav-tabs-border-color;
 .table {
     white-space: nowrap;
     border-spacing: 0;
+}
+
+.table tr.selected {
+    color: olivedrab;
+    background-color: #bed6b2 !important;
+}
+
+.table tr.selectable {
+    cursor: pointer;
 }
 
 .table > thead {

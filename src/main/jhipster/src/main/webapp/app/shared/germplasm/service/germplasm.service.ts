@@ -5,8 +5,11 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { createRequestOption } from '../..';
 import { Germplasm } from '../../../entities/germplasm/germplasm.model';
-import { GermplasmNameTypeModel } from '../../../entities/germplasm/germplasm-name-type.model';
 import { Attribute } from '../../attributes/model/attribute.model';
+import { NameType } from '../model/name-type.model';
+import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
+import { getAllRecords } from '../../util/get-all-records';
+import { GermplasmDto } from '../model/germplasm.model';
 
 @Injectable()
 export class GermplasmService {
@@ -21,7 +24,8 @@ export class GermplasmService {
     }
 
     downloadGermplasmTemplate(isGermplasmUpdateFormat: boolean): Observable<HttpResponse<Blob>> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls/${isGermplasmUpdateFormat}?programUUID=` + this.context.programUUID;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/templates/xls/${isGermplasmUpdateFormat}`
+            + '?programUUID=' + this.context.programUUID;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
 
@@ -30,12 +34,18 @@ export class GermplasmService {
             germplasmUpdates, { observe: 'response' });
     }
 
-    getGermplasmNameTypes(codes: string[]): Observable<GermplasmNameTypeModel[]> {
-        return this.http.get<GermplasmNameTypeModel[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types?codes=` + codes.join(','));
-    }
+    getGermplasmMatches(germplasmUUIDs: string[], names: string[]): Observable<GermplasmDto[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/matches` +
+            '?programUUID=' + this.context.programUUID
 
-    getGermplasmAttributes(codes: string[]): Observable<Attribute[]> {
-        return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes?codes=` + codes.join(','));
+        return getAllRecords<GermplasmDto>((page: number, pageSize: number) => {
+            return this.http.post<GermplasmDto[]>(url, {
+                germplasmUUIDs,
+                names
+            }, {
+                params: createRequestOption({page, size: pageSize})
+            })
+        });
     }
 
     getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
@@ -46,4 +56,31 @@ export class GermplasmService {
         return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
             { params, observe: 'response' });
     }
+
+    getGermplasmAttributes(codes: string[]): Observable<Attribute[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
+            '?programUUID=' + this.context.programUUID + '&codes=' + codes;
+        return this.http.get<Attribute[]>(url);
+    }
+
+    getGermplasmNameTypes(codes: string[]): Observable<NameType[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types` +
+            '?programUUID=' + this.context.programUUID + '&codes=' + codes;
+        return this.http.get<NameType[]>(url);
+    }
+
+    validateImportGermplasmData(data: GermplasmImportValidationPayload[]) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/validation` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post(url, data);
+    }
+
+    importGermplasm(germplasmList: GermplasmImportRequest): Observable<ImportGermplasmResultType> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<ImportGermplasmResultType>(url, germplasmList);
+    }
+
 }
+
+export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };

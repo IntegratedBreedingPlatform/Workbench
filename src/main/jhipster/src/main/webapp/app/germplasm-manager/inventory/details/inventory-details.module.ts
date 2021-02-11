@@ -26,8 +26,7 @@ import { InventoryDetailsModalComponent, InventoryDetailsPopupComponent } from '
         LotComponent,
         TransactionComponent
     ],
-    providers: [
-    ]
+    providers: []
 })
 export class InventoryDetailsModule {
 

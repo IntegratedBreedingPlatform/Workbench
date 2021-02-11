@@ -1,3 +1,5 @@
+// TODO rename to GermplasmSearchResponse
+//  for a simplified entity see shared/germplasm/model/germplasm.model.ts
 export class Germplasm {
     constructor(
         public gid: number,

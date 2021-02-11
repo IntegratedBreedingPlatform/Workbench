@@ -21,10 +21,10 @@ export class InventoryDetailsModalComponent implements OnInit {
     ) {
         const gid = this.route.snapshot.queryParams.gid;
         const url = '/ibpworkbench/controller/jhipster#/inventory-details?restartApplication'
-        +
-        '&cropName=' + context.cropName +
-        '&programUUID=' + context.programUUID +
-        '&gid=' + gid;
+            +
+            '&cropName=' + context.cropName +
+            '&programUUID=' + context.programUUID +
+            '&gid=' + gid;
         this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
