@@ -512,3 +512,11 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 .close-nav-tab {
     padding-left: 10px;
 }
+
+/* ==========================================================================
+Angular cdk
+========================================================================== */
+tr.cdk-drag-preview {
+    display: table;
+}
+

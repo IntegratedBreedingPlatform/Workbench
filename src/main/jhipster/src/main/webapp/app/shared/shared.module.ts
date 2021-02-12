@@ -47,6 +47,7 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
 import { ListBuilderComponent } from './list-builder/list-builder.component';
 import { ListBuilderContext } from './list-builder/list-builder.context';
 import { TableModule } from 'primeng/table';
+import { DragDropModule as CdkDragDropModule } from '@angular/cdk/drag-drop'
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import { TableModule } from 'primeng/table';
         BmsjHipsterSharedCommonModule,
         ReactiveFormsModule,
         TableModule,
-        DragDropModule
+        DragDropModule,
+        CdkDragDropModule
     ],
     declarations: [
         ModalComponent,
@@ -118,6 +120,7 @@ import { TableModule } from 'primeng/table';
         TreeTableModule,
         TreeModule,
         DragDropModule,
+        CdkDragDropModule,
         TableModule,
         DatePipe,
         KeyValuePipe,

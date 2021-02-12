@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ListBuilderContext } from './list-builder.context';
 import { BaseEntity } from '..';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'jhi-list-builder',
@@ -17,6 +18,8 @@ export class ListBuilderComponent {
 
     selectedItems = {};
     isSelectAllPages = false;
+
+    templateColumnCount = 1;
 
     constructor(
         public context: ListBuilderContext
@@ -79,7 +82,7 @@ export class ListBuilderComponent {
         return Object.keys(obj).length;
     }
 
-    drop($event) {
+    drop($event: CdkDragDrop<any>) {
         if (this.data.length > 0) {
             this.data.push(...this.context.data);
         } else {
