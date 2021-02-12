@@ -16,6 +16,7 @@ export class ListBuilderComponent {
     page = 1;
     pageSize = 20;
 
+    // { <data-index>: boolean }
     selectedItems = {};
     isSelectAllPages = false;
 
@@ -26,15 +27,15 @@ export class ListBuilderComponent {
     ) {
     }
 
-    isSelected(row: BaseEntity) {
-        return row && this.selectedItems[row.id];
+    isSelected(index) {
+        return this.selectedItems[index];
     }
 
-    toggleSelect(row: BaseEntity) {
-        if (this.selectedItems[row.id]) {
-            delete this.selectedItems[row.id];
+    toggleSelect(index) {
+        if (this.selectedItems[index]) {
+            delete this.selectedItems[index];
         } else {
-            this.selectedItems[row.id] = true;
+            this.selectedItems[index] = true;
         }
     }
 
@@ -58,14 +59,18 @@ export class ListBuilderComponent {
         if (!(this.data && this.data.length)) {
             return [];
         }
-        return this.data.slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
-            .map((row) => row.id);
+        return this.data.slice(this.pageOffset(), this.page * this.pageSize)
+            .map((row, i) => this.pageOffset() + i);
+    }
+
+    pageOffset() {
+        return (this.page - 1) * this.pageSize;
     }
 
     onSelectAllPages() {
         this.isSelectAllPages = !this.isSelectAllPages;
         if (this.isSelectAllPages) {
-            this.data.forEach((row) => this.selectedItems[row.id] = true);
+            this.data.forEach((row, i) => this.selectedItems[i] = true);
         } else {
             this.selectedItems = {};
         }

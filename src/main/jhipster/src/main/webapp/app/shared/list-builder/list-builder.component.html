@@ -28,13 +28,15 @@
 						<th *ngIf="data.length">
 							<input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" />
 						</th>
+						<th *ngIf="data.length">#</th>
 						<th *ngFor="let header of headers()">
 							<span>{{header}}</span>
 						</th>
 					</thead>
 					<tbody cdkDropList id="listBuilderDrop" (cdkDropListDropped)="drop($event)">
-						<tr *ngFor="let row of data | slice: (page-1) * pageSize : page * pageSize">
-							<td><input type="checkbox" [checked]="isSelected(row)" (click)="toggleSelect(row)"></td>
+						<tr *ngFor="let row of data | slice: (page-1) * pageSize : page * pageSize; let index = index">
+							<td><input type="checkbox" [checked]="isSelected(pageOffset() + index)" (click)="toggleSelect(pageOffset() + index)"></td>
+							<td>{{pageOffset() + index + 1}}</td>
 							<td *ngFor="let header of headers()">
 								{{row[header]}}
 							</td>
