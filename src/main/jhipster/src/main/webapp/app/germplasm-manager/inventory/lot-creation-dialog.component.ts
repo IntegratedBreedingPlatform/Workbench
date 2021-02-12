@@ -14,10 +14,8 @@ import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-lot-creation-dialog',
-    templateUrl: './lot-creation-dialog.component.html',
-    styleUrls: ['../../../content/css/global-bs4.scss']
+    templateUrl: './lot-creation-dialog.component.html'
 })
 export class LotCreationDialogComponent implements OnInit {
 

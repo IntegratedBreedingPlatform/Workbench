@@ -15,11 +15,9 @@ import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 declare const $: any;
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
-    // TODO migrate IBP-4093
-    styleUrls: ['../../content/css/global-bs4.scss', './label-printing.component.css']
+    styleUrls: ['./label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
     initComplete: boolean;

@@ -24,10 +24,8 @@ import { ColumnLabels } from '../germplasm-search.component';
 declare var $: any;
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-germplasm-selector',
-    templateUrl: './germplasm-selector.component.html',
-    styleUrls: ['../../../content/css/global-bs4.scss']
+    templateUrl: './germplasm-selector.component.html'
 })
 export class GermplasmSelectorComponent implements OnInit {
 

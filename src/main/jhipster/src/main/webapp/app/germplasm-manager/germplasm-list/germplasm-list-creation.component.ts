@@ -24,11 +24,8 @@ import { AlertService } from '../../shared/alert/alert.service';
 declare var $: any;
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-germplasm-list-creation',
     templateUrl: './germplasm-list-creation.component.html',
-    // TODO migrate IBP-4093
-    styleUrls: ['../../../content/css/global-bs4.scss'],
     providers: [
         { provide: TreeService, useClass: GermplasmTreeTableService }
     ]
