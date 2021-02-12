@@ -12,10 +12,15 @@
 				<span jhiTranslate="list-builder.entries"></span>
 			</h5>
 			<div jhiTranslate="list-builder.description"></div>
-			<div class="row">
-				<div class="col">
-					<div class="form-group form-inline">
-						<!--TODO select controls-->
+			<div class="row my-2">
+				<div class="col form-inline">
+					<span class="mr-1 font-weight-bold" jhiTranslate="global.total.entries"></span>
+					<span>{{data.length}}</span>
+					<span class="ml-3 mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+					<span>{{isSelectAllPages ? data.length : size(selectedItems)}}</span>
+					<div class="form-check form-check-inline ml-3">
+						<input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages(isSelectAllPages)" id="list-builder-select-all">
+						<label class="form-check-label ml-1" for="list-builder-select-all" jhiTranslate="global.select.all"></label>
 					</div>
 				</div>
 			</div>
@@ -25,7 +30,7 @@
 						<tr *ngIf="!data.length">
 							<th></th>
 						</tr>
-						<th *ngIf="data.length">
+						<th *ngIf="data.length && !isSelectAllPages">
 							<input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" />
 						</th>
 						<th *ngIf="data.length">#</th>
@@ -35,7 +40,9 @@
 					</thead>
 					<tbody cdkDropList id="listBuilderDrop" (cdkDropListDropped)="drop($event)">
 						<tr *ngFor="let row of data | slice: (page-1) * pageSize : page * pageSize; let index = index">
-							<td><input type="checkbox" [checked]="isSelected(pageOffset() + index)" (click)="toggleSelect(pageOffset() + index)"></td>
+							<td *ngIf="!isSelectAllPages">
+								<input type="checkbox" [checked]="isSelected(pageOffset() + index)" (click)="toggleSelect(pageOffset() + index)">
+							</td>
 							<td>{{pageOffset() + index + 1}}</td>
 							<td *ngFor="let header of headers()">
 								{{row[header]}}

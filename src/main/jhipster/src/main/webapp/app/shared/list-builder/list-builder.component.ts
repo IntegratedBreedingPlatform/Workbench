@@ -69,11 +69,7 @@ export class ListBuilderComponent {
 
     onSelectAllPages() {
         this.isSelectAllPages = !this.isSelectAllPages;
-        if (this.isSelectAllPages) {
-            this.data.forEach((row, i) => this.selectedItems[i] = true);
-        } else {
-            this.selectedItems = {};
-        }
+        this.selectedItems = {};
     }
 
     headers() {
