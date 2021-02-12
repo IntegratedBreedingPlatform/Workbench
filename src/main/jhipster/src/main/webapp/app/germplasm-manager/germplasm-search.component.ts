@@ -553,27 +553,12 @@ export class GermplasmSearchComponent implements OnInit {
         const row: BaseEntity = {};
         row.id = germplasm.gid;
         row[ColumnLabels.GID] = germplasm.gid;
-        row[ColumnLabels['GROUP ID']] = germplasm.groupId;
         row[ColumnLabels.NAMES] = germplasm.names;
         row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
         row[ColumnLabels.LOT_UNITS] = germplasm.unit;
         row[ColumnLabels.CROSS] = germplasm.pedigreeString;
-        row[ColumnLabels['PREFERRED ID']] = germplasm.germplasmPeferredId;
-        row[ColumnLabels['PREFERRED NAME']] = germplasm.germplasmPeferredName;
-        row[ColumnLabels['GERMPLASM DATE']] = germplasm.germplasmDate;
         row[ColumnLabels.LOCATIONS] = germplasm.locationName;
         row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
-        row[ColumnLabels['METHOD ABBREV']] = germplasm.methodCode;
-        row[ColumnLabels['METHOD NUMBER']] = germplasm.methodNumber;
-        row[ColumnLabels['METHOD GROUP']] = germplasm.methodGroup;
-        row[ColumnLabels['FGID']] = germplasm.femaleParentGID;
-        row[ColumnLabels['CROSS-FEMALE PREFERRED NAME']] = germplasm.femaleParentPreferredName;
-        row[ColumnLabels['MGID']] = germplasm.maleParentGID;
-        row[ColumnLabels['CROSS-MALE PREFERRED NAME']] = germplasm.maleParentPreferredName;
-        row[ColumnLabels['GROUP SOURCE GID']] = germplasm.groupSourceGID;
-        row[ColumnLabels['GROUP SOURCE']] = germplasm.groupSourcePreferredName;
-        row[ColumnLabels['IMMEDIATE SOURCE GID']] = germplasm.immediateSourceGID;
-        row[ColumnLabels['IMMEDIATE SOURCE']] = germplasm.immediateSourcePreferredName;
         this.listBuilderContext.data = [row];
     }
 
