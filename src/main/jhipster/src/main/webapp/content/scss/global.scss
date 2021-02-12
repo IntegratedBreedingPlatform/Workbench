@@ -1,7 +1,6 @@
-@import "vendor-bs4.scss";
-// TODO migrate IBP-4093
-//@import 'bootstrap-variables';
-@import "fonts.css";
+@import 'vendor.scss';
+@import 'bootstrap-variables';
+@import 'fonts.css';
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 
