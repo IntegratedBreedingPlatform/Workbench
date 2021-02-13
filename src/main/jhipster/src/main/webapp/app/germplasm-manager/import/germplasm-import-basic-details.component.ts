@@ -47,7 +47,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     locationsFilteredItemsCount;
 
-    creationDateSelected: NgbDate | null
+    creationDateSelected: NgbDate | null;
 
     referenceSelected: string;
 
@@ -228,7 +228,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         return form.valid && (this.breedingMethodSelected || this.hasAllBreedingMethods())
             && (this.locationSelected || this.hasAllLocations())
             && (this.creationDateSelected || this.hasAllCreationDate())
-            && this.unmapped.length === 0
+            && this.unmapped.length === 0;
     }
 
     dragStart($event, code) {

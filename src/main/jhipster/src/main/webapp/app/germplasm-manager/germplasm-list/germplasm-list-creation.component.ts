@@ -135,7 +135,7 @@ export class GermplasmListCreationComponent implements OnInit {
                 // Check issue reported: https://github.com/primefaces/primeng/issues/7386
                 this.expand(source.parent);
                 this.expand(target);
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message });
             });
     }
 
@@ -312,7 +312,7 @@ export class GermplasmListCreationComponent implements OnInit {
 
     submitAddOrRenameFolder() {
         if (this.name.length > this.NAME_MAX_LENGTH) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH })
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH });
             return;
         }
 

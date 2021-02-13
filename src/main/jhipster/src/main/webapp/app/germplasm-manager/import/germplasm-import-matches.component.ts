@@ -33,7 +33,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
     selectMatchesResult: { [key: string]: number };
 
     // internal usage
-    matchNumber = 1
+    matchNumber = 1;
     unassignedCount: number;
     matches: GermplasmDto[] = [];
     dataRow: any = {};

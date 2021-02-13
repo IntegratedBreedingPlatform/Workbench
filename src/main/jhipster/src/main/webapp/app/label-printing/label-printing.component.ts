@@ -62,7 +62,7 @@ export class LabelPrintingComponent implements OnInit {
 
         let labelsNeededPromise = Promise.resolve({});
         if (this.hasHeader()) {
-            labelsNeededPromise = this.service.getLabelsNeededSummary().toPromise()
+            labelsNeededPromise = this.service.getLabelsNeededSummary().toPromise();
             labelsNeededPromise.then((summary: any) => {
                 this.labelsNeededSummary = summary;
             });
@@ -89,7 +89,7 @@ export class LabelPrintingComponent implements OnInit {
             fieldsPromise,
             presetPromise
         ]).then(() => {
-            this.initDragAndDrop()
+            this.initDragAndDrop();
             this.initComplete = true;
         });
 
@@ -295,7 +295,7 @@ export class LabelPrintingComponent implements OnInit {
                 this.handleError(error);
 
             });
-        }
+        };
 
         if (Number(this.presetSettingId) === 0) {
             this.modalTitle = 'Confirmation';
@@ -420,7 +420,7 @@ export class LabelPrintingComponent implements OnInit {
         let description = `Drag fields from the ${from} into the ${to} to add them to your export file.`;
 
         if (this.fileType === FileType.PDF) {
-            description += ' For PDF you can only add 5 fields per side'
+            description += ' For PDF you can only add 5 fields per side';
         }
 
         return description;
@@ -459,4 +459,4 @@ export enum LabelPrintingType {
 
 const typesWithHeaderDetails: LabelPrintingType[] = [
     LabelPrintingType.OBSERVATION_DATASET, LabelPrintingType.SUBOBSERVATION_DATASET
-]
+];

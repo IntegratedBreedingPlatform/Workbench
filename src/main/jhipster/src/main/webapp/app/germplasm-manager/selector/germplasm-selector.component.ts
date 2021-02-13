@@ -373,7 +373,7 @@ export class GermplasmSelectorComponent implements OnInit {
     clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
-        $('.fa-sort').removeClass('fa-sort-up fa-sort-down')
+        $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
     onClearSort($event) {
@@ -423,7 +423,7 @@ export class GermplasmSelectorComponent implements OnInit {
     getExpensiveFilterWarningList() {
         let list = '';
         if (this.hasNameContainsFilters()) {
-            list += '<li>name contains</li>'
+            list += '<li>name contains</li>';
         }
         return list;
     }
