@@ -147,7 +147,7 @@ public class HeadToHeadDataListExport {
 		for (final TraitForComparison traitForCompare : traitsIterator) {
 			if (traitForCompare.isDisplay()) {
 				final int startCol = cellIndex;
-				int endCol;
+				final int endCol;
 				final Cell cellHeader = headerColSpan.createCell(cellIndex);
 				cellHeader.setCellValue(traitForCompare.getTraitInfo().getName());
 				cellHeader.setCellStyle(sheetStyles.get(HeadToHeadDataListExport.HEADING_MERGED_STYLE));
