@@ -121,7 +121,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	private List<Integer> traitIds;
 	private Map<Integer, String> germplasmIdNameMap;
-	private Map<String, Integer> germplasmNameIdMap;
 
 	private List<NumericTraitFilter> numericTraitFilter;
 	private List<CharacterTraitFilter> characterTraitFilter;
@@ -289,7 +288,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		this.traitIds = this.getTraitIds(numericTraitFilter, characterTraitFilter, categoricalTraitFilter);
 
 		this.germplasmIdNameMap = this.getGermplasm(this.traitIds, this.environmentIds);
-		this.germplasmNameIdMap = this.getSortedGermplasmList(this.germplasmIdNameMap);
 		this.selectedGermplasmMap = new HashMap<Integer, String>();
 
 		this.resultsTable.removeAllComponents();
@@ -614,8 +612,8 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 			final List<Integer> germplasmIds = new ArrayList<Integer>();
 			germplasmIds.addAll(this.germplasmIdNameMap.keySet());
 
-			for (final Map.Entry<String, Integer> germplasm : this.germplasmNameIdMap.entrySet()) {
-				final int germplasmId = germplasm.getValue();
+			for (final Map.Entry<Integer, String> germplasm : this.germplasmIdNameMap.entrySet()) {
+				final int germplasmId = germplasm.getKey();
 
 				final Map<NumericTraitFilter, TraitObservationScore> numericTOSMap = new HashMap<NumericTraitFilter, TraitObservationScore>();
 				final Map<CharacterTraitFilter, TraitObservationScore> characterTOSMap =
@@ -868,22 +866,6 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 		}
 
 		return gidNameMap;
-	}
-
-	public Map<String, Integer> getSortedGermplasmList(final Map<Integer, String> germplasmList) {
-		final Map<String, Integer> sorted = new TreeMap<>();
-
-		for (final Map.Entry<Integer, String> entry : germplasmList.entrySet()) {
-			String name = entry.getValue();
-			if (name == null) {
-				name = "";
-			}
-
-			final Integer id = entry.getKey();
-			sorted.put(name, id);
-		}
-
-		return sorted;
 	}
 
 	public void nextEntryButtonClickAction() {
