@@ -120,7 +120,7 @@ public class RunMultiSiteAction implements ClickListener {
 		try {
 			final String finalZipfileName =
 				this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
-			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename));
+			this.downloadInputFile(new File(finalZipfileName), outputFilename);
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
@@ -151,8 +151,19 @@ public class RunMultiSiteAction implements ClickListener {
 		final String inputDir =
 			this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(multiSiteParameters.getProject(), ToolName.BREEDING_VIEW);
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
+		final String[] inputFileNames = inputFileName.split("_");
+		final String fileName;
+		if (inputFileNames.length >= 3) {
+			fileName = FileNameGenerator.generateFileName(inputDir, "xml", inputFileNames[0],
+					"_",
+					inputFileNames[1],
+					"_",
+					inputFileNames[2]);
+		} else {
+			fileName = FileNameGenerator.generateFileName(inputDir, "xml", inputFileName);
+		}
 
-		gxeInput.setDestXMLFilePath(inputDir + File.separator + FileNameGenerator.generateFileName(inputFileName, "xml"));
+		gxeInput.setDestXMLFilePath(inputDir + File.separator + fileName);
 
 		this.multiSiteDataExporter.generateXmlFieldBook(gxeInput);
 
@@ -176,13 +187,13 @@ public class RunMultiSiteAction implements ClickListener {
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		final String meansDataFilePath = this.multiSiteDataExporter
-			.exportMeansDatasetToCsv(FileNameGenerator.generateFileName(inputFileName, "csv", false), multiSiteParameters, this.gxeTable.getExperiments(),
+			.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getExperiments(),
 				this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits, this.workbenchApplication);
 
 		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(studyId);
 
 		final String summaryStatsDataFilePath = this.multiSiteDataExporter
-			.exportTrialDatasetToSummaryStatsCsv(studyId, FileNameGenerator.generateFileName(inputFileName, "csv", false), this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
+			.exportTrialDatasetToSummaryStatsCsv(studyId, inputFileName, this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
 				this.gxeTable.getEnvironmentName(), selectedTraits, multiSiteParameters.getProject());
 
 		gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsDataFilePath);

@@ -598,8 +598,13 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 
 			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
 
-			final String fileName = FileNameGenerator
-				.generateFileName(tableName + " " + programName, "xls").replaceAll(" ", "_");
+			final String fileName = FileNameGenerator.generateFileName(
+					null,
+					"xls",
+					tableName,
+					"_",
+					programName
+			);
 			excelExport.setReportTitle(programName + " - " + tableName);
 			excelExport.setExportFileName(fileName);
 			excelExport.setDisplayTotals(false);

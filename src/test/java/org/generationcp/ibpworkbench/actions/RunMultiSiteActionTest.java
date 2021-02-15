@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -174,28 +176,16 @@ public class RunMultiSiteActionTest {
 		Assert.assertEquals(STUDY_NAME, filenameCaptor.getValue());
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
+		final List<String> expectedFile = filesInZip.stream().filter(s -> {return s.contains(this.getExpectedBVInputXmlFilename()); }).collect(Collectors.toList());
 		Assert.assertEquals(3, filesInZip.size());
 		Assert.assertTrue(filesInZip.contains(SUMMARY_DATA_FILEPATH));
 		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
-		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + FileNameGenerator.generateFileName(this.getExpectedBVInputXmlFilename(), "xml")));
+		Assert.assertEquals(1, expectedFile.size());
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
 
 		// Verify zip file is downloaded to the browser with proper filename
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		final String[] uSCount = downloadResource.getFilename().split("_");
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			Assert.fail("Date must be included in the file name");
-		}
-		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >=3);
 	}
 
 	@Test
@@ -209,7 +199,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
-		Assert.assertEquals(FileNameGenerator.generateFileName(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS.xml"), gxeInput.getDestXMLFilePath());
+		Assert.assertEquals(BMS_INPUT_FILES_DIR + File.separator + FileNameGenerator.generateFileName(BMS_INPUT_FILES_DIR, "xml", PROJECT_NAME, "_0_TEST STUDY-MEANS"), gxeInput.getDestXMLFilePath());
 
 	}
 

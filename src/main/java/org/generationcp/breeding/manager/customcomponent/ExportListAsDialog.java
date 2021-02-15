@@ -242,12 +242,16 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 	protected void exportListAsCSV(final Table table) {
 		try {
 
-			final String visibleFileName = this.germplasmList.getName() + ExportListAsDialog.CSV_EXT;
 			final String temporaryFilePath = this.installationDirectoryUtil
 					.getTempFileInOutputDirectoryForProjectAndTool(this.germplasmList.getName(),  ExportListAsDialog.CSV_EXT,
 						this.contextUtil.getProjectInContext(),
 							ToolName.BM_LIST_MANAGER_MAIN);
 			this.germplasmListExporter.exportGermplasmListCSV(temporaryFilePath, table, this.germplasmList.getId());
+			final String visibleFileName = FileNameGenerator.generateFileName(
+					temporaryFilePath,
+					ExportListAsDialog.CSV_EXT,
+					this.germplasmList.getName()
+			);
 
 			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
 
@@ -282,8 +286,12 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 					.getTempFileInOutputDirectoryForProjectAndTool(this.germplasmList.getName(), ExportListAsDialog.XLS_EXT, this.contextUtil.getProjectInContext(),
 							ToolName.BM_LIST_MANAGER_MAIN);
 			this.germplasmListExporter.exportGermplasmListXLS(this.germplasmList.getId(), temporaryFilePath, table);
-			final String visibleFileName = this.germplasmList.getName() + ExportListAsDialog.XLS_EXT;
-
+			final String visibleFileName =
+					FileNameGenerator.generateFileName(
+							temporaryFilePath,
+							ExportListAsDialog.XLS_EXT,
+							this.germplasmList.getName()
+					);
 			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
 			// must figure out other way to clean-up file because deleting it here makes it unavailable for download
 		} catch (final GermplasmListExporterException | IOException e) {
@@ -302,7 +310,12 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 			this.germplasmListExporter
 				.exportKBioScienceGenotypingOrderXLS(this.germplasmList.getId(), temporaryFilePath, DEFAULT_PLATE_SIZE);
 
-			final String visibleFileName = this.germplasmList.getName().replace(" ", "_") + "ForGenotyping.xls";
+			final String visibleFileName = FileNameGenerator.generateFileName(
+					temporaryFilePath,
+					"xls",
+					this.germplasmList.getName().replace(" ", "_"),
+					"ForGenotyping"
+			);
 			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
 
 		} catch (final GermplasmListExporterException | IOException e) {

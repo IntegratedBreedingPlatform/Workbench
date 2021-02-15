@@ -77,21 +77,9 @@ public class ResultsComponentTest {
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >= 3);
 		Mockito.verify(this.window).open(downloadResource);
 		Mockito.verify(this.mainScreen).selectFirstTab();
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			Assert.fail("Date must be included in the file name");
-		}
 	}
 
 	@Test

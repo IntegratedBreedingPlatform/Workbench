@@ -307,8 +307,9 @@ public class ResultsComponent extends AbsoluteLayout implements InitializingBean
 
 				final String temporaryFileName = this.listExporter.exportHeadToHeadDataListExcel(tempFileName, this.resultsDataList,
 						traitsIterator, ResultsComponent.columnIdData, this.columnIdDataMsgMap);
+				final File file = new File(temporaryFileName);
 				final VaadinFileDownloadResource fileDownloadResource =
-						new VaadinFileDownloadResource(new File(temporaryFileName), FileNameGenerator.generateFileName(tempFileName,"xls"), this.getApplication());
+						new VaadinFileDownloadResource(file, file.getName(), this.getApplication());
 
 				this.getWindow().open(fileDownloadResource);
 				this.mainScreen.selectFirstTab();

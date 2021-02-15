@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.study.TableViewerDatasetTable;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -125,8 +126,10 @@ public class TableViewerExporter {
 	String writeExcelFile(final String filename, final Workbook workbook) throws DatasetExporterException {
 		try {
 			// write the excel file
+			final String directory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
+			final String file = FileNameGenerator.generateFileName(directory, "", filename);
 			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
-					filename, ".xlsx", this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
+					file, ".xlsx", this.contextUtil.getProjectInContext(), ToolName.STUDY_BROWSER);
 			final FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
 			workbook.write(fileOutputStream);
 			fileOutputStream.close();

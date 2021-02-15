@@ -27,6 +27,7 @@ import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.FileNameGenerator;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -80,6 +81,7 @@ public class RunSingleSiteAction implements ClickListener {
 	private ZipUtil zipUtil = new ZipUtil();
 	private DatasetExporter datasetExporter = new DatasetExporter();
 	private BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
+	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
@@ -108,11 +110,13 @@ public class RunSingleSiteAction implements ClickListener {
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
 				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource());
+				final String directory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
+				final String fileName = FileNameGenerator.generateFileName(directory, "", outputFilename);
+
 				try {
 					final String finalZipfileName =
 							this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
-					this.downloadInputFile(new File(finalZipfileName), FileNameGenerator
-						.generateFileName(outputFilename, ZipUtil.ZIP_EXTENSION, false));
+					this.downloadInputFile(new File(finalZipfileName), fileName);
 				} catch (final IOException e) {
 					RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 					this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");

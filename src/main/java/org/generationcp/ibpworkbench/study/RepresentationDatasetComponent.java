@@ -137,8 +137,14 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		try {
 			final String temporaryFileName =
 					this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
-			final VaadinFileDownloadResource fileDownloadResource = new VaadinFileDownloadResource(new File(temporaryFileName),
-					FileNameGenerator.generateFileName(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME), this.getApplication());
+			final File file = new File(temporaryFileName);
+			final String fileName = FileNameGenerator.generateFileName(
+					file.getParent(),
+					"",
+					RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME
+			);
+			final VaadinFileDownloadResource fileDownloadResource = new VaadinFileDownloadResource(file,
+					fileName, this.getApplication());
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 
 		} catch (final DatasetExporterException e) {

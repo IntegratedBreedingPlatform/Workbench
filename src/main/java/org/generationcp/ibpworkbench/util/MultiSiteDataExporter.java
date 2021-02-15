@@ -13,6 +13,7 @@ import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
@@ -256,13 +257,16 @@ public class MultiSiteDataExporter {
 
 		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(currentProject);
 		final String directory = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(currentProject, ToolName.BREEDING_VIEW);
-		final StringBuilder sb = new StringBuilder(inputFileName);
+		final String fileName;
 		if (isSummaryStatsFile) {
-			sb.append(MultiSiteDataExporter.SUMMARY_STATS);
+			// Removing suffix to append summary stats before formatting
+			final String file = FileNameGenerator.removeSuffixIfApplicable(inputFileName);
+			fileName = FileNameGenerator.generateFileName(directory, "csv", file, MultiSiteDataExporter.SUMMARY_STATS);
+		} else {
+			fileName = FileNameGenerator.generateFileName(directory, "csv", inputFileName);
 		}
-		sb.append(".csv");
 
-		return new File(directory + File.separator + sb.toString());
+		return new File(directory + File.separator + fileName);
 	}
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {

@@ -16,6 +16,6 @@ public class GenerateFileNameController {
 	@RequestMapping(value = "/generateFileName/{fileType}")
 	@ResponseBody
 	public String getExportFileName(@PathVariable final String fileType, @RequestParam final String fileName) {
-		return FileNameGenerator.generateFileName(fileName, fileType);
+		return FileNameGenerator.generateFileName(fileName  + "." +fileType);
 	}
 }

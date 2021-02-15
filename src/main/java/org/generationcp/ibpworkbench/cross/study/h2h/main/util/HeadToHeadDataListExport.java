@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.ResultsComponent;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.ResultsData;
@@ -96,8 +97,10 @@ public class HeadToHeadDataListExport {
 		final HSSFWorkbook wb = this.createExcelWorkbookContents(resultDataList, traitsIterator, columnIdData, columnIdDataMsgMap);
 
 		try {
+			final String directory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
+			final String fileName = FileNameGenerator.generateFileName(directory, "" , filenameWithoutExtension);
 			final String fileNameUnderWorkspaceDirectory = this.installationDirectoryUtil.getTempFileInOutputDirectoryForProjectAndTool(
-					filenameWithoutExtension, ".xls", this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
+					fileName, ".xls", this.contextUtil.getProjectInContext(), ToolName.MAIN_HEAD_TO_HEAD_BROWSER);
 
 			// write the excel file
 			final FileOutputStream fileOutputStream = new FileOutputStream(fileNameUnderWorkspaceDirectory);
