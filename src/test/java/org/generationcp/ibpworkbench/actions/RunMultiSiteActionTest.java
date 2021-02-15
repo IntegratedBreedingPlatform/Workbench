@@ -173,7 +173,8 @@ public class RunMultiSiteActionTest {
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
 		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
-		Assert.assertEquals(STUDY_NAME, filenameCaptor.getValue());
+		Assert.assertTrue(filenameCaptor.getValue().contains(STUDY_NAME));
+		Assert.assertTrue(FileNameGenerator.hasDate(filenameCaptor.getValue()).isPresent());
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		final List<String> expectedFile = filesInZip.stream().filter(s -> {return s.contains(this.getExpectedBVInputXmlFilename()); }).collect(Collectors.toList());

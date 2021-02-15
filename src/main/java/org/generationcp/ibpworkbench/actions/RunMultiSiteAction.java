@@ -114,8 +114,11 @@ public class RunMultiSiteAction implements ClickListener {
 		filenameList.add(gxeInput.getSourceCSVFilePath());
 		filenameList.add(gxeInput.getSourceCSVSummaryStatsFilePath());
 
+		final String directory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(
+				this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
 		final String studyName = HtmlEscape.unescapeHtml(this.multiSiteParameters.getStudy().getName());
-		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(studyName);
+		final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(
+				FileNameGenerator.generateFileName(directory, "", studyName));
 
 		try {
 			final String finalZipfileName =
