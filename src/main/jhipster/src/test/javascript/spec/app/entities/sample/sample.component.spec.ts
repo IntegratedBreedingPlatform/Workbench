@@ -10,10 +10,12 @@ import { Sample } from '../../../../../../main/webapp/app/entities/sample/sample
 import { SampleList } from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import { SampleListService } from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import { FileDownloadHelper } from '../../../../../../main/webapp/app/entities/sample/file-download.helper';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
+import { Component } from '@angular/core';
+import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
 
-xdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('Sample Management Component', () => {
         let comp: SampleComponent;
@@ -31,7 +33,6 @@ xdescribe('Component Tests', () => {
                     SampleService,
                     SampleListService,
                     FileDownloadHelper,
-                    NgbModal,
                     SampleImportPlateComponent
                 ]
             })
@@ -63,7 +64,7 @@ xdescribe('Component Tests', () => {
 
                 // THEN
                 expect(sampleService.query).toHaveBeenCalled();
-                expect(comp.sampleList.samples[0]).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.sampleList.samples[0]).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
 
@@ -105,11 +106,10 @@ xdescribe('Component Tests', () => {
         describe('When importing plate information', () => {
 
             it('The import plate modal should be shown.', () => {
-                spyOn(modalService, 'open').and.callThrough();
-
+                spyOn(modalService, 'open').and.returnValue(new MockNgbModalRef());
                 comp.importPlate();
+                expect(modalService.open).toHaveBeenCalledWith(SampleImportPlateComponent as Component, { size: 'lg', backdrop: 'static' });
 
-                expect(modalService.open).toHaveBeenCalledWith('import-plate-modal');
             });
 
         });
