@@ -4,11 +4,16 @@ import { ViewEncapsulation } from '@angular/core';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_MANAGE_GERMPLASM } from '../app.constants';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
+import { ListBuilderService } from '../shared/list-builder/list-builder.service';
+import { GerplasmListBuilderService } from '../shared/list-builder/gerplasm-list-builder.service';
 
 @Component({
     encapsulation: ViewEncapsulation.None,
     selector: 'jhi-germplasm-manager',
     templateUrl: './germplasm-manager.component.html',
+    providers: [
+        {provide: ListBuilderService, useClass: GerplasmListBuilderService}
+    ],
     // Use Bootstrap 4 css file for this component to match with ng-bootstrap widgets.
     // Updating the bootstrap version globally will break other modules (sample manager, lot creation, etc)
     // TODO migrate IBP-4093
