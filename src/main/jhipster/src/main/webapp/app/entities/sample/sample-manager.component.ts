@@ -8,6 +8,10 @@ import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { TreeTableComponent } from './tree-table';
+import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
+import { ListBuilderService } from '../../shared/list-builder/list-builder.service';
+import { GerplasmListBuilderService } from '../../shared/list-builder/gerplasm-list-builder.service';
+import { SampleListBuilderService } from '../../shared/list-builder/sample-list-builder.service';
 
 declare const cropName: string;
 declare var $: any;
@@ -16,6 +20,9 @@ declare var $: any;
     encapsulation: ViewEncapsulation.None,
     selector: 'jhi-sample-manager',
     templateUrl: './sample-manager.component.html',
+    providers: [
+        { provide: ListBuilderService, useClass: SampleListBuilderService }
+    ],
     // TODO migrate IBP-4093
     styleUrls: ['../../../content/css/global-bs4.scss']
 })
@@ -34,6 +41,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     constructor(private activatedRoute: ActivatedRoute,
                 private modalService: NgbModal,
                 public activeModal: NgbActiveModal,
+                public listBuilderContext: ListBuilderContext,
                 private router: Router,
                 private sampleContext: SampleContext,
                 private helpService: HelpService,

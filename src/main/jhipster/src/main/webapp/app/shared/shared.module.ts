@@ -49,6 +49,7 @@ import { ListBuilderContext } from './list-builder/list-builder.context';
 import { TableModule } from 'primeng/table';
 import { DragDropModule as CdkDragDropModule } from '@angular/cdk/drag-drop'
 import { GerplasmListBuilderService } from './list-builder/gerplasm-list-builder.service';
+import { SampleListBuilderService } from './list-builder/sample-list-builder.service';
 
 @NgModule({
     imports: [
@@ -98,6 +99,7 @@ import { GerplasmListBuilderService } from './list-builder/gerplasm-list-builder
         ParamContext,
         ListBuilderContext,
         GerplasmListBuilderService,
+        SampleListBuilderService,
         HelpService,
         GermplasmService,
         AttributesService,

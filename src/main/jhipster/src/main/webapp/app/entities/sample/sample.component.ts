@@ -7,13 +7,14 @@ import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { ITEMS_PER_PAGE } from '../../shared';
+import { BaseEntity, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
 import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
+import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -56,6 +57,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         private fileDownloadHelper: FileDownloadHelper,
         private modalService: NgbModal,
         public activeModal: NgbActiveModal,
+        public listBuilderContext: ListBuilderContext
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -171,6 +173,21 @@ export class SampleComponent implements OnInit, OnDestroy {
             result.push('id');
         }
         return result;
+    }
+
+    toggleListBuilder() {
+        this.listBuilderContext.visible = !this.listBuilderContext.visible;
+    }
+
+    dragStart($event, sample: Sample) {
+        const row: BaseEntity = {};
+        row['DESIGNATION'] = sample.sampleName;
+        row['GID'] = sample.gid;
+        row['SAMPLE_NAME'] = sample.sampleName;
+        row['TAKEN_BY'] = sample.takenBy;
+        row['SAMPLING_DATE'] = sample.samplingDate;
+        row['SAMPLE_UID'] = sample.sampleBusinessKey;
+        this.listBuilderContext.data = [row];
     }
 
     private onSuccess(data, headers) {

@@ -28,9 +28,15 @@
 	</div>
 	-->
 	<br/>
-	<div>
+	<div class="row mb-3">
+		<div class="col">
+			<button class="btn btn-outline-info float-right" (click)="toggleListBuilder()">
+				<i class="fa mr-3" [ngClass]="listBuilderContext.visible ? 'fa-angle-right': 'fa-angle-left'"></i>
+				<span *ngIf="listBuilderContext.visible" jhiTranslate="list-builder.hide"></span>
+				<span *ngIf="!listBuilderContext.visible" jhiTranslate="list-builder.show"></span>
+			</button>
+		</div>
 	</div>
-	<br/>
 	<div class="row">
 		<div class="col-xs-1 col-md-12">
 			<div ngbDropdown class="float-right" placement="bottom-right">
@@ -66,8 +72,9 @@
 				<!--<th></th>-->
 			</tr>
 			</thead>
-			<tbody>
-			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId;">
+			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop">
+			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId;"
+				cdkDrag (cdkDragEntered)="dragStart($event, sample)">
 				<td>
 					<!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
 					{{sample.entryNo}}
