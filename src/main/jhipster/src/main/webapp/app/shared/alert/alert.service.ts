@@ -31,4 +31,15 @@ export class AlertService {
         }, null);
 
     }
+
+    warning(msg: string, params?: any, timeout?: number): JhiAlert {
+        this.jhiAlertService.clear();
+        return this.jhiAlertService.addAlert({
+            msg,
+            params,
+            type: 'warning',
+            timeout,
+            toast: true
+        }, null);
+    }
 }

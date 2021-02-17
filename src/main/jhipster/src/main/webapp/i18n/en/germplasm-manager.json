@@ -16,6 +16,11 @@
         "validation.progenitors.must.be.both.defined": "Both Progenitor 1 and Progenitor 2 have to be defined (0 for unknown gid).",
         "import.success" : "Germplasm updates are saved successfully."
     },
+    "germplasm-delete": {
+        "success": "Germplasm are deleted successfully.",
+        "warning": "Some germplasm can not be deleted due to internal validations (has inventory, is fixed, has descendants, present in one or more list, or it is associated with a study). For further information please contact support.",
+        "too-many-selected-germplasm": "You can only delete 500 germplasm records at a time."
+    },
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
@@ -49,7 +54,8 @@
         "actions": {
             "create-list": "Create new list",
             "add-to-list": "Add to existing list",
-            "import": "Import germplasm"
+            "import": "Import germplasm",
+            "delete-germplasm": "Delete Germplasm"
         },
         "included-gids": "(+ included germplasm)"
     },

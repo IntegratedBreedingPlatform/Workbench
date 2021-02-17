@@ -6,7 +6,7 @@ import { ColumnFilterComponent, FilterType } from '../shared/column-filter/colum
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
@@ -498,6 +498,12 @@ export class GermplasmSearchComponent implements OnInit {
         }
     }
 
+    private resetFilters() {
+        this.filters = GermplasmSearchComponent.getInitialFilters();
+        this.request = new GermplasmSearchRequest();
+        this.request.addedColumnsPropertyIds = [];
+    }
+
     isSelected(germplasm: Germplasm) {
         return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
     }
@@ -580,6 +586,32 @@ export class GermplasmSearchComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });
+    }
+
+    deleteGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        if (this.selectedItems.length > 500) {
+            this.alertService.error('germplasm-delete.too-many-selected-germplasm');
+            return;
+        }
+
+        this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
+
+            if (response.deletedGermplasm) {
+                this.alertService.success('germplasm-delete.success');
+            }
+            if (response.germplasmWithErrors) {
+                this.alertService.warning('germplasm-delete.warning');
+                this.resetFilters();
+                // Show the germplasm that were not deleted because of validation
+                this.request.gids = response.germplasmWithErrors;
+                ColumnFilterComponent.reloadFilters(this.filters, this.request);
+            }
+            this.resetTable();
+        });
+
     }
 }
 
