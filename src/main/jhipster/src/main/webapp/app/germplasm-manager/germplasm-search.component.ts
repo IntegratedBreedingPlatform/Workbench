@@ -282,7 +282,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private translateService: TranslateService,
                 private popupService: PopupService,
                 private germplasmManagerContext: GermplasmManagerContext,
-                private listBuilderContext: ListBuilderContext
+                public listBuilderContext: ListBuilderContext
     ) {
 
         this.predicate = '';

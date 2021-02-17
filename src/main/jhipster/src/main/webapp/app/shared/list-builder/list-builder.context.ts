@@ -3,6 +3,6 @@ import { BaseEntity } from '..';
 
 @Injectable()
 export class ListBuilderContext {
-    visible = true;
+    visible = false;
     data: BaseEntity[] = [];
 }

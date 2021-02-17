@@ -2,8 +2,8 @@
     <header>
         <h1> Germplasm Manager <a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a> </h1>
     </header>
-	<div class="d-flex">
-        <section class="flex-sm-grow-1">
+	<div class="row">
+        <section [ngClass]="listBuilderContext.visible ? 'col-7' : 'col'">
             <nav>
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -17,7 +17,7 @@
                 <jhi-alert></jhi-alert>
             </div>
         </section>
-        <section *ngIf="listBuilderContext.visible" class="ml-3 mb-3" style="width: 45%; min-width: 45%;">
+        <section *ngIf="listBuilderContext.visible" class="col-5 mb-3">
             <jhi-list-builder></jhi-list-builder>
         </section>
     </div>
