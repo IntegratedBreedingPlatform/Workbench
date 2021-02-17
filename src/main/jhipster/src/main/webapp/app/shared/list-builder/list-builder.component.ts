@@ -8,10 +8,6 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
     templateUrl: './list-builder.component.html'
 })
 export class ListBuilderComponent {
-
-    @Input()
-    visible: boolean;
-
     data: BaseEntity[] = [];
     page = 1;
     pageSize = 20;

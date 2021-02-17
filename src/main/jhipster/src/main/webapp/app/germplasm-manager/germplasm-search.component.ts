@@ -566,7 +566,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     toggleListBuilder() {
-        this.listBuilderContext.isListBuilderVisible = !this.listBuilderContext.isListBuilderVisible;
+        this.listBuilderContext.visible = !this.listBuilderContext.visible;
     }
 
     openCreateList() {

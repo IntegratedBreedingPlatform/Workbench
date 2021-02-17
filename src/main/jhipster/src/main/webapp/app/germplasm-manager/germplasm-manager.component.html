@@ -17,8 +17,8 @@
                 <jhi-alert></jhi-alert>
             </div>
         </section>
-        <section *ngIf="listBuilderContext.isListBuilderVisible" class="ml-3 mb-3" style="width: 45%; min-width: 45%;">
-            <jhi-list-builder visible="true"></jhi-list-builder>
+        <section *ngIf="listBuilderContext.visible" class="ml-3 mb-3" style="width: 45%; min-width: 45%;">
+            <jhi-list-builder></jhi-list-builder>
         </section>
     </div>
 </section>
