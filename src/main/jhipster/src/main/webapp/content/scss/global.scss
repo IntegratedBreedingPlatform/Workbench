@@ -1,4 +1,3 @@
-@import 'vendor.scss';
 @import 'bootstrap-variables';
 @import 'fonts.css';
 @import '~bootstrap/scss/functions';
@@ -437,7 +436,7 @@ TODO use theming https://www.primefaces.org/primeng/#/theming
 /* Fix Chrome highlight issue */
 button:focus,
 .ui-tree [tabindex] {
-    outline: none;
+    outline: none !important;
 }
 
 /* ==========================================================================
