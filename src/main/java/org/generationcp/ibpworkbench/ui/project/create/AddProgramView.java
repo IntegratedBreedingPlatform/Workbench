@@ -10,6 +10,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -17,24 +18,28 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Configurable
 public class AddProgramView extends Panel implements InitializingBean {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AddProgramView.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -161,7 +166,15 @@ public class AddProgramView extends Panel implements InitializingBean {
 			@Override
 			public void buttonClick(final Button.ClickEvent clickEvent) {
 				final Project newlyCreatedProgram = AddProgramView.this.contextUtil.getProjectInContext();
-				new LaunchProgramAction(newlyCreatedProgram).buttonClick(clickEvent);
+				final ObjectMapper objectMapper = new ObjectMapper();
+				try {
+					final String redirectToMainModel = objectMapper.writeValueAsString(
+						new RedirectToMainModel(newlyCreatedProgram.getProjectId(), newlyCreatedProgram.getCropType().getCropName(),
+							newlyCreatedProgram.getUniqueID()));
+					clickEvent.getComponent().getWindow().executeJavaScript("window.top.postMessage({ programSelected: " + redirectToMainModel + "}, '*');");
+				} catch (IOException e) {
+					LOG.error(e.getMessage(), e);
+				}
 			}
 		});
 
@@ -382,5 +395,29 @@ public class AddProgramView extends Panel implements InitializingBean {
 	
 	public void setContextUtil(ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	private static class RedirectToMainModel {
+		private final Long id;
+		private final String cropName;
+		private final String programUUID;
+
+		public RedirectToMainModel(final Long id, final String cropName, final String programUUID) {
+			this.id = id;
+			this.cropName = cropName;
+			this.programUUID = programUUID;
+		}
+
+		public Long getId() {
+			return id;
+		}
+
+		public String getCropName() {
+			return cropName;
+		}
+
+		public String getProgramUUID() {
+			return programUUID;
+		}
 	}
 }
