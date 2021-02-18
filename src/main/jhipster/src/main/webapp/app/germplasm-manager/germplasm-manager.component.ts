@@ -8,16 +8,11 @@ import { ListBuilderService } from '../shared/list-builder/list-builder.service'
 import { GerplasmListBuilderService } from '../shared/list-builder/gerplasm-list-builder.service';
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-germplasm-manager',
     templateUrl: './germplasm-manager.component.html',
     providers: [
         { provide: ListBuilderService, useClass: GerplasmListBuilderService }
     ],
-    // Use Bootstrap 4 css file for this component to match with ng-bootstrap widgets.
-    // Updating the bootstrap version globally will break other modules (sample manager, lot creation, etc)
-    // TODO migrate IBP-4093
-    styleUrls: ['../../content/css/global-bs4.scss']
 })
 export class GermplasmManagerComponent implements OnInit {
 

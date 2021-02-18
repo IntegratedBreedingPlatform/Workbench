@@ -17,14 +17,11 @@ declare const cropName: string;
 declare var $: any;
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-sample-manager',
     templateUrl: './sample-manager.component.html',
     providers: [
         { provide: ListBuilderService, useClass: SampleListBuilderService }
     ],
-    // TODO migrate IBP-4093
-    styleUrls: ['../../../content/css/global-bs4.scss']
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 

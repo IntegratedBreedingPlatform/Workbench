@@ -11,10 +11,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../../../shared/alert/alert.service';
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-inventory-details',
-    templateUrl: './inventory-details.component.html',
-    styleUrls: ['../../../../content/css/global-bs4.scss']
+    templateUrl: './inventory-details.component.html'
 })
 export class InventoryDetailsComponent implements OnInit {
 

@@ -1,7 +1,5 @@
-@import "vendor-bs4.scss";
-// TODO migrate IBP-4093
-//@import 'bootstrap-variables';
-@import "fonts.css";
+@import 'bootstrap-variables';
+@import 'fonts.css';
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
 
@@ -10,7 +8,7 @@ Bootstrap tweaks
 ===============================================================*/
 
 body, h1, h2, h3, h4 {
-    font-weight: 400;
+    font-weight: 300;
 }
 
 .fa-sort {
@@ -439,7 +437,7 @@ TODO use theming https://www.primefaces.org/primeng/#/theming
 /* Fix Chrome highlight issue */
 button:focus,
 .ui-tree [tabindex] {
-    outline: none;
+    outline: none !important;
 }
 
 /* ==========================================================================

@@ -61,7 +61,7 @@ export class ColumnFilterNumberRangeComponent implements OnInit {
             } else if (!this.filter.to) {
                 return isNumeric(this.filter.from);
             }
-            return isNumeric(this.filter.from) && isNumeric(this.filter.to) && this.filter.from <= this.filter.to
+            return isNumeric(this.filter.from) && isNumeric(this.filter.to) && this.filter.from <= this.filter.to;
         }
         return true;
     }

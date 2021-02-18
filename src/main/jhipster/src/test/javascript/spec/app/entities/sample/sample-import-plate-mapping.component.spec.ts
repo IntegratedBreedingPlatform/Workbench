@@ -1,3 +1,4 @@
+/* tslint:disable max-line-length */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BmsjHipsterTestModule } from '../../../test.module';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
@@ -7,36 +8,40 @@ import { SampleImportPlateMappingComponent } from '../../../../../../main/webapp
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
+import { SampleImportPlateComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
+import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
-xdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('Sample Import Plate Mapping Component', () => {
         let comp: SampleImportPlateMappingComponent;
         let fixture: ComponentFixture<SampleImportPlateMappingComponent>;
         let sampleListService: SampleListService;
         let modalService: NgbModal;
-        let jhiAlertService: JhiAlertService;
         let alertService: AlertService;
         let eventManager: JhiEventManager;
         let sampleContext: SampleContext;
-
+        let mockActiveModal: any;
+        let translateService: TranslateService;
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [BmsjHipsterTestModule],
+                imports: [BmsjHipsterTestModule, TranslateModule.forRoot()],
                 declarations: [SampleImportPlateMappingComponent],
                 providers: [
-                    NgbModal,
                     SampleContext,
                     SampleListService,
-                    JhiEventManager
+                    JhiEventManager,
+                    SampleImportPlateComponent
                 ]
             }).overrideComponent(SampleImportPlateMappingComponent, {
                 set: {
                     styleUrls: []
                 }
-            }).overrideTemplate(SampleImportPlateMappingComponent, '').compileComponents();
-
+            }).overrideTemplate(SampleImportPlateMappingComponent, '')
+                .compileComponents();
         }));
 
         beforeEach(() => {
@@ -44,19 +49,15 @@ xdescribe('Component Tests', () => {
             comp = fixture.componentInstance;
             modalService = fixture.debugElement.injector.get(NgbModal);
             sampleContext = fixture.debugElement.injector.get(SampleContext);
-            jhiAlertService = fixture.debugElement.injector.get(JhiAlertService);
             alertService = fixture.debugElement.injector.get(AlertService);
             eventManager = fixture.debugElement.injector.get(JhiEventManager);
             sampleListService = fixture.debugElement.injector.get(SampleListService);
-
+            mockActiveModal = fixture.debugElement.injector.get(NgbActiveModal);
+            translateService = fixture.debugElement.injector.get(TranslateService);
             sampleContext.activeList = { id: 1 };
 
-            // spyOn(modalService, 'close').and.callThrough();
-            spyOn(modalService, 'open').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
             spyOn(alertService, 'success').and.callThrough();
-            spyOn(jhiAlertService, 'error').and.callThrough();
-            spyOn(jhiAlertService, 'success').and.callThrough();
         });
 
         it('should proceed with import', () => {
@@ -74,7 +75,7 @@ xdescribe('Component Tests', () => {
 
             comp.proceed();
 
-            expect(eventManager.broadcast).toHaveBeenCalledWith({name: 'sampleListModification', content: ''});
+            expect(eventManager.broadcast).toHaveBeenCalledWith({ name: 'sampleListModification', content: '' });
             expect(alertService.success).toHaveBeenCalledWith('bmsjHipsterApp.sample.importPlate.success');
             expect(comp.close).toHaveBeenCalled();
 
@@ -121,7 +122,7 @@ xdescribe('Component Tests', () => {
 
             comp.proceed();
 
-            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.error', { param : errorResponse.error.errors[0].message});
+            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.error', { param: errorResponse.error.errors[0].message });
             expect(comp.close).toHaveBeenCalledTimes(0);
             expect(eventManager.broadcast).toHaveBeenCalledTimes(0);
 
@@ -153,7 +154,7 @@ xdescribe('Component Tests', () => {
 
             comp.proceed();
 
-            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.error', { param : errorResponse.error.errors[0].message});
+            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.error', { param: errorResponse.error.errors[0].message });
             expect(comp.close).toHaveBeenCalledTimes(0);
             expect(eventManager.broadcast).toHaveBeenCalledTimes(0);
 
@@ -162,13 +163,11 @@ xdescribe('Component Tests', () => {
         it('should close the modal window', () => {
 
             spyOn(comp, 'reset').and.callThrough();
-          //  spyOn(comp.onClose, 'emit').and.callThrough();
 
             comp.close();
 
-          //  expect(modalService.close).toHaveBeenCalledWith(comp.modalId);
+            expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
             expect(comp.reset).toHaveBeenCalled();
-           // expect(comp.onClose.emit).toHaveBeenCalled();
 
         });
 
@@ -200,7 +199,7 @@ xdescribe('Component Tests', () => {
             expect(comp.validate()).toBe(false);
 
             expect(alertService.error).toHaveBeenCalledTimes(4);
-            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.importPlate.headersNotMapped');
+            expect(alertService.error).toHaveBeenCalledWith('error.custom', Object({ param: 'bmsjHipsterApp.sample.importPlate.headersNotMapped' }));
 
         });
 
@@ -215,7 +214,20 @@ xdescribe('Component Tests', () => {
 
             expect(comp.validate()).toBe(false);
 
-            expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.importPlate.recordHasNoSampleId');
+            expect(alertService.error).toHaveBeenCalledWith('error.custom', Object({ param: 'bmsjHipsterApp.sample.importPlate.recordHasNoSampleId' }));
+
+        });
+
+        it('should back the previous modal window', () => {
+
+            spyOn(comp, 'reset').and.callThrough();
+            const mockNgbModalRef = new MockNgbModalRef();
+            spyOn(modalService, 'open').and.returnValue(new MockNgbModalRef());
+            comp.back();
+
+            expect(mockActiveModal.dismissSpy).toHaveBeenCalledWith('Back Import');
+            expect(modalService.open).toHaveBeenCalledWith(SampleImportPlateComponent as Component, { size: 'lg', backdrop: 'static' });
+            expect(comp.reset).toHaveBeenCalled();
 
         });
 
@@ -226,21 +238,6 @@ xdescribe('Component Tests', () => {
             data.push(new Array<string>('gdgjad', 'jdggfk', 'dsdddk'));
             return data;
         }
-
-        it('should back the previous modal window', () => {
-
-            spyOn(comp, 'reset').and.callThrough();
-         //   spyOn(comp.onBack, 'emit').and.callThrough();
-
-            comp.back();
-
-          //  expect(modalService.close).toHaveBeenCalledWith(comp.modalId);
-            expect(modalService.open).toHaveBeenCalledWith('import-plate-modal');
-
-            expect(comp.reset).toHaveBeenCalled();
-          //  expect(comp.onBack.emit).toHaveBeenCalled();
-
-        });
     });
 
 });

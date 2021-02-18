@@ -242,4 +242,51 @@ public class TraitDisplayResultsTest {
 		}
 
 	}
+
+	@Test
+	public void testPopulateResultsTableNumericalValidTraitDuplicateName() {
+
+		final Observation observation = new Observation(new ObservationKey(1,1, 1), "6.2");
+		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(Arrays.asList(observation));
+
+		final Map<Integer, String> germplasm = new HashMap<>();
+		germplasm.put(1, "Germplasm");
+		germplasm.put(2, "Germplasm");
+		Mockito.when(this.germplasmDataManager.getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(germplasm);
+
+		final TraitInfo info = new TraitInfo();
+		info.setId(1);
+		info.setType(TraitType.NUMERIC);
+		info.setName(StringUtils.randomAlphanumeric(3));
+		info.setDescription(StringUtils.randomAlphanumeric(10));
+		final NumericTraitFilter numericTraitFilter = new NumericTraitFilter(info, NumericTraitCriteria.KEEP_ALL, Arrays.asList("20"), TraitWeight.IGNORED);
+
+
+		Mockito.when(this.comboBox.getValue()).thenReturn(EnvironmentWeight.IGNORED);
+
+		final EnvironmentForComparison environment = new EnvironmentForComparison(1, StringUtils.randomAlphanumeric(10),
+			StringUtils.randomAlphanumeric(10), StringUtils.randomAlphanumeric(10), this.comboBox);
+		try {
+			this.traitDisplayResults.populateResultsTable(Arrays.asList(environment),
+				Arrays.asList(numericTraitFilter), new ArrayList<CharacterTraitFilter>(),
+				new ArrayList<CategoricalTraitFilter>());
+		} catch (final NumberFormatException e) {
+			e.printStackTrace();
+			Assert.fail("System should ignore invalid numeric value");
+		}
+
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
+		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
+			ArgumentMatchers.<List<Integer>>any());
+
+		final Iterator<Component> componentIterator = this.traitDisplayResults.getResultsTable().getComponentIterator();
+		final List<String> debugIds = new ArrayList<>(
+			Arrays.asList("germplasmColTable", "traitsColTable", "combinedScoreTagColTable"));
+		while (componentIterator.hasNext()) {
+			Assert.assertTrue(debugIds.contains(componentIterator.next().getDebugId()));
+		}
+		Assert.assertEquals(germplasm.size(), this.traitDisplayResults.tableRows.size());
+	}
 }

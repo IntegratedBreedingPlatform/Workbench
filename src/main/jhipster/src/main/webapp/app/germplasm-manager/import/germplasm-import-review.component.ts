@@ -100,7 +100,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 if (row[nameType.code]) {
                     names[row[nameType.code]] = true;
                 }
-            })
+            });
         });
         this.isLoading = true;
         this.germplasmService.getGermplasmMatches(uuids, Object.keys(names)).pipe(
@@ -350,7 +350,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                             unitName: row[HEADERS.UNITS],
                             stockId: row[HEADERS['STOCK ID']],
                             pendingStatus: !this.context.amountConfirmed
-                        })
+                        });
                     }),
                     stockIdPrefix: this.context.stockIdPrefix
                 })

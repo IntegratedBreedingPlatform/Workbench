@@ -20,5 +20,5 @@ export function getAllRecords<T>(f: (page: number, pageSize: number) => Observab
             }
         }),
         reduce((accumulator, resp) => accumulator.concat(resp), [])
-    )
+    );
 }
