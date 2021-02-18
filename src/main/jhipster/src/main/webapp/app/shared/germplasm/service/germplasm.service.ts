@@ -90,6 +90,5 @@ export class GermplasmService {
     }
 }
 
-
 export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };
 export type DeleteGermplasmResultType = { deletedGermplasm: number[], germplasmWithErrors: number[] };

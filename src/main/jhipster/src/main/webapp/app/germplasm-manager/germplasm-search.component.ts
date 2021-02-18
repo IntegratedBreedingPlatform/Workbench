@@ -7,7 +7,7 @@ import { GermplasmService } from '../shared/germplasm/service/germplasm.service'
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
@@ -278,7 +278,9 @@ export class GermplasmSearchComponent implements OnInit {
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
-                private germplasmManagerContext: GermplasmManagerContext) {
+                private germplasmManagerContext: GermplasmManagerContext,
+                private modalService: NgbModal,
+                private activeModal: NgbActiveModal) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -597,21 +599,24 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
-
-            if (response.deletedGermplasm) {
-                this.alertService.success('germplasm-delete.success');
-            }
-            if (response.germplasmWithErrors) {
-                this.alertService.warning('germplasm-delete.warning');
-                this.resetFilters();
-                // Show the germplasm that were not deleted because of validation
-                this.request.gids = response.germplasmWithErrors;
-                ColumnFilterComponent.reloadFilters(this.filters, this.request);
-            }
-            this.resetTable();
-        });
-
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.title = 'Delete Germplasm';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
+        confirmModalRef.result.then(() => {
+            this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
+                if (response.germplasmWithErrors) {
+                    this.alertService.warning('germplasm-delete.warning');
+                    this.resetFilters();
+                    // Show the germplasm that were not deleted because of validation
+                    this.request.gids = response.germplasmWithErrors;
+                    ColumnFilterComponent.reloadFilters(this.filters, this.request);
+                } else {
+                    this.alertService.success('germplasm-delete.success');
+                }
+                this.resetTable();
+            });
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 }
 
