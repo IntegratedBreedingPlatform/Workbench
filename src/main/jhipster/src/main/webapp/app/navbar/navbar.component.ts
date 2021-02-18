@@ -74,7 +74,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             expandable: !!node.children && node.children.length > 0,
             name: node.name,
             level,
-            link: node.link
+            link: node.link,
+            parent: node.parent
         };
     }
 
@@ -143,7 +144,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                     (res: HttpErrorResponse) => this.onError(res)
                 );
         } else if (event.data.toolSelected) {
-            // TODO intra module navigation
+            this.toolLinkSelected = event.data.toolSelected;
+            this.expandParent();
         }
     }
 
@@ -157,17 +159,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     private toNode(tool: Tool): Node {
-        const children: Node[] = tool.children.map((child: ToolLink) => {
-           return {
-               name: child.name,
-               link: child.link
-           }
+        const node: Node = {
+            name: tool.name
+        };
+        node['children'] = tool.children.map((child: ToolLink) => {
+            return {
+                name: child.name,
+                link: child.link,
+                parent: node
+            }
         });
 
-        return {
-            name: tool.name,
-            children
-        };
+        return node;
     }
 
     logout() {
@@ -182,17 +185,28 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
     }
 
+    private expandParent() {
+        // Find node by selected tool name
+        const selectedNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => node.link === this.toolLinkSelected);
+        if (selectedNode.length === 1) {
+            const parentNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => node.name === selectedNode[0].parent.name);
+            this.treeControl.expand(parentNode[0]);
+        }
+    }
+
 }
 
 interface Node {
     name: string;
     children?: Node[];
-    link?: string
+    link?: string;
+    parent?: Node;
 }
 
 interface FlatNode {
     expandable: boolean;
     name: string;
     level: number;
-    link?: string,
+    link?: string;
+    parent?: Node;
 }

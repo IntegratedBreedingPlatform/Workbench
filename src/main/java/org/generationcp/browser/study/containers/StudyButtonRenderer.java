@@ -24,7 +24,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @Configurable
 public class StudyButtonRenderer {
 
-	protected static final String[] URL_STUDY_TRIAL = {"/Fieldbook/TrialManager/openTrial/", "#/trialSettings"};
+	private static final String MANAGE_STUDY_URL = "/Fieldbook/TrialManager";
+
+	protected static final String[] URL_STUDY_TRIAL = {MANAGE_STUDY_URL + "/openTrial/", "#/trialSettings"};
 	protected static final String WORKBENCHMAINVIEW_IFRAME_NAME = "PID_Sbrowser";
 	
 	@Autowired
@@ -46,6 +48,9 @@ public class StudyButtonRenderer {
 	public Button renderStudyButton() {
 		final ExternalResource urlToOpenStudy = getURLStudy();
 		Button studyButton = new LinkButton(urlToOpenStudy, study.getName(), WORKBENCHMAINVIEW_IFRAME_NAME);
+		studyButton.addListener((ClickListener) event -> {
+			event.getComponent().getWindow().executeJavaScript("window.top.postMessage({ toolSelected: '" + MANAGE_STUDY_URL + "'}, '*');");
+		});
 
 		try {
 			availableLinkToStudy(studyButton);
