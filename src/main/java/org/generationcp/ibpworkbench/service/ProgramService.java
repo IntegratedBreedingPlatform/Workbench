@@ -113,6 +113,9 @@ public class ProgramService {
 		//Addition of new members
 		for (final WorkbenchUser u : userList) {
 			if (u.isEnabled()) {
+				u.getRoles().stream().filter(ur -> ur.getId() == null && ur.getCreatedBy() == null)
+					.forEach(ur -> ur.setCreatedBy(this.contextUtil.getCurrentWorkbenchUser()));
+
 				final UserDto userDto = new UserDto(u);
 				this.userService.updateUser(userDto);
 			}
