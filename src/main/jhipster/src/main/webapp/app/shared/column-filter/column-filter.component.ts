@@ -78,11 +78,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         request[filter.key] = {
             type: filter.pedigreeType,
             generationLevel: filter.value
-        }
+        };
     }
 
     static transformAttributesFilter(filter, request) {
-        const attributes: any = {}
+        const attributes: any = {};
         for (const attribute of filter.attributes) {
             attributes[attribute.code] = attribute.value;
         }
@@ -101,7 +101,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     static transformNameTypesFilter(filter, request) {
-        const nameTypes: any = {}
+        const nameTypes: any = {};
         for (const nameType of filter.nameTypes) {
             nameTypes[nameType.code] = nameType.value;
         }
@@ -308,7 +308,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.request[filter.key] = {
             type: filter.matchType,
             value: filter.value
-        }
+        };
         this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }

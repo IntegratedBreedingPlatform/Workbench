@@ -119,15 +119,15 @@ export class TreeTableComponent implements OnInit {
             if (this.draggedNode.children && this.draggedNode.children.length !== 0) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
                 this.draggedNode = null;
-                return
+                return;
             } else if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
                 this.draggedNode = null;
-                return
+                return;
             } else if (node.leaf) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
                 this.draggedNode = null;
-                return
+                return;
             }
             this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
                     if (!node.children) {

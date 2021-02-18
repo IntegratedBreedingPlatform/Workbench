@@ -10,8 +10,8 @@ const utils = require('./utils.js');
 const commonConfig = require('./webpack.common.js');
 
 const ENV = 'production';
-const extractSASS = new ExtractTextPlugin(`[name]-sass.[hash].css`);
-const extractCSS = new ExtractTextPlugin(`[name].[hash].css`);
+const extractSASS = new ExtractTextPlugin(`content/[name]-sass.[hash].css`);
+const extractCSS = new ExtractTextPlugin(`content/[name].[hash].css`);
 
 module.exports = webpackMerge(commonConfig({ env: ENV }), {
     // Enable source maps. Please note that this will slow down the build.
@@ -19,8 +19,7 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
     // devtool: 'source-map',
     entry: {
         polyfills: './src/main/webapp/app/polyfills',
-        // TODO migrate IBP-4093
-        // global: './src/main/webapp/content/css/global.scss',
+        global: './src/main/webapp/content/scss/global.scss',
         main: './src/main/webapp/app/app.main'
     },
     output: {
@@ -62,16 +61,15 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
     },
     optimization: {
         runtimeChunk: false,
-        // FIXME migrate IBP-4093
-        // splitChunks: {
-        //     cacheGroups: {
-        //         commons: {
-        //             test: /[\\/]node_modules[\\/]/,
-        //             name: 'vendors',
-        //             chunks: 'all'
-        //         }
-        //     }
-        // },
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                }
+            }
+        },
         minimizer: [
             new TerserPlugin({
             parallel: true,
