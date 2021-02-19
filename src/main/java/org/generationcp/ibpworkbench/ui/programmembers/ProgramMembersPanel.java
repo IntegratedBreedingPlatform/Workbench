@@ -61,7 +61,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -285,11 +284,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 							final Set<Object> sourceItemIds = (Set<Object>) source.getValue();
 							for (final Object itemId : sourceItemIds) {
 								final UserRole userRole = ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId);
-								if (((WorkbenchUser) itemId).getRoles() != null) {
-									((WorkbenchUser) itemId).getRoles().add(userRole);
-								} else {
-									((WorkbenchUser) itemId).setRoles(Arrays.asList(userRole));
-								}
+								((WorkbenchUser) itemId).getRoles().add(userRole);
 								if (((WorkbenchUser) itemId).isEnabled()) {
 									source.removeItem(itemId);
 									target.addItem(itemId);
@@ -307,11 +302,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 								if (((WorkbenchUser) itemIdOver).isEnabled()) {
 									final UserRole newUserRole =
 										ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemIdOver);
-									if (((WorkbenchUser) itemIdOver).getRoles() != null) {
-										((WorkbenchUser) itemIdOver).getRoles().add(newUserRole);
-									} else {
-										((WorkbenchUser) itemIdOver).setRoles(Arrays.asList(newUserRole));
-									}
+									((WorkbenchUser) itemIdOver).getRoles().add(newUserRole);
 									source.removeItem(itemIdOver);
 									target.addItem(itemIdOver);
 								}
