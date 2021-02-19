@@ -6,12 +6,9 @@ import { finalize } from 'rxjs/operators';
 import { Principal } from '../../shared';
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-program',
     templateUrl: './program.component.html',
-    // TODO migrate IBP-4093
     styleUrls: [
-        '../../../content/css/global-bs4.scss',
         './program.scss'
     ]
 })

@@ -17,12 +17,9 @@ import { HelpService } from '../shared/service/help.service';
 @Component({
     selector: 'jhi-navbar',
     templateUrl: './navbar.component.html',
-    // TODO migrate IBP-4093
     styleUrls: [
-        '../../content/css/global-bs4.scss',
         'navbar.scss'
     ],
-    encapsulation: ViewEncapsulation.None
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
 
@@ -143,6 +140,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                     },
                     (res: HttpErrorResponse) => this.onError(res)
                 );
+        } else if (event.data.programUpdated && this.program) {
+            this.program.name = event.data.programUpdated.name;
         } else if (event.data.toolSelected) {
             this.toolLinkSelected = event.data.toolSelected;
             this.expandParent();
@@ -189,8 +188,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // Find node by selected tool name
         const selectedNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => node.link === this.toolLinkSelected);
         if (selectedNode.length === 1) {
+            // Find parent node
             const parentNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => node.name === selectedNode[0].parent.name);
-            this.treeControl.expand(parentNode[0]);
+            if (parentNode.length === 1) {
+                this.treeControl.expand(parentNode[0]);
+            }
         }
     }
 
