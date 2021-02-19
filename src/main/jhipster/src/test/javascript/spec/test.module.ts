@@ -58,11 +58,7 @@ import { AlertService } from '../../../main/webapp/app/shared/alert/alert.servic
         {
             provide: AlertService,
             useValue: new MockAlertService()
-        },
-        {
-            provide: NgbModal,
-            useValue: null
-        },
+        }
     ],
     imports: [HttpClientTestingModule]
 })

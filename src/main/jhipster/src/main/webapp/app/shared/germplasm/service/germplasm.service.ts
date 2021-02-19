@@ -36,7 +36,7 @@ export class GermplasmService {
 
     getGermplasmMatches(germplasmUUIDs: string[], names: string[]): Observable<GermplasmDto[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/matches` +
-            '?programUUID=' + this.context.programUUID
+            '?programUUID=' + this.context.programUUID;
 
         return getAllRecords<GermplasmDto>((page: number, pageSize: number) => {
             return this.http.post<GermplasmDto[]>(url, {
@@ -44,14 +44,14 @@ export class GermplasmService {
                 names
             }, {
                 params: createRequestOption({page, size: pageSize})
-            })
+            });
         });
     }
 
     getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
         const params = {};
         if (this.context.programUUID) {
-            params['programUUID'] = this.context.programUUID
+            params['programUUID'] = this.context.programUUID;
         }
         return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
             { params, observe: 'response' });

@@ -137,7 +137,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
                 return fileRow.reduce((map, col, colIndex) => {
                     map[headers[colIndex]] = col;
                     return map;
-                }, {})
+                }, {});
             });
 
             // Anything outside expected headers are considered codes.
@@ -181,7 +181,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
             errorMessage.push(this.translateService.instant('error.import.header.mandatory', { param: (<any>Object).values(HEADER).join(', ') }));
         }
 
-        const duplicateColumns = fileHeader.filter((header, i) => fileHeader.indexOf(header) !== i)
+        const duplicateColumns = fileHeader.filter((header, i) => fileHeader.indexOf(header) !== i);
         if (duplicateColumns.length > 1) {
             errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: duplicateColumns.join(', ') }));
         }

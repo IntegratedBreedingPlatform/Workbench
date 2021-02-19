@@ -140,7 +140,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
             this.fileDownloadHelper.save(response.body, fileName);
 
-        })
+        });
     }
     importPlate() {
         const confirmModalRef = this.modalService.open(SampleImportPlateComponent as Component, { size: 'lg', backdrop: 'static' });

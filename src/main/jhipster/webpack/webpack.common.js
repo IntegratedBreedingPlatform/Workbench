@@ -62,6 +62,7 @@ module.exports = (options) => ({
             }
         }),
         new CopyWebpackPlugin([
+            { from: './src/main/webapp/content/', to: 'content' },
             { from: './src/main/webapp/favicon.ico', to: 'favicon.ico' },
             { from: './src/main/webapp/manifest.webapp', to: 'manifest.webapp' },
             // jhipster-needle-add-assets-to-webpack - JHipster will add/remove third-party resources in this array
@@ -83,11 +84,7 @@ module.exports = (options) => ({
         }),
         new HtmlWebpackPlugin({
             template: './src/main/webapp/index.html',
-            // TODO migrate IBP-4093
-            //  - discard global-bs3.
-            //  - rename global-bs4 and vendor-bs4
-            // chunks: ['vendors', 'polyfills', 'global', 'main'],
-            chunks: ['polyfills', 'main'],
+            chunks: ['vendors', 'polyfills', 'global', 'main'],
             chunksSortMode: 'manual',
             inject: 'body'
         })

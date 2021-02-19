@@ -35,16 +35,16 @@ export class BreedingMethodComponent implements OnInit {
             this.breedingMethodService.queryBreedingMethodClasses().toPromise().then((breedingMethodClasses) => {
                 this.breedingMethodClasses = breedingMethodClasses;
                 this.selectedBreedingMethodClass = breedingMethodClasses.find((e) => e.id === this.breedingMethod.methodClass);
-            })
+            });
             this.breedingMethodService.queryBreedingMethodGroups().toPromise().then((breedingMethodGroups) => {
                 this.breedingMethodGroups = breedingMethodGroups;
                 this.selectedBreedingMethodGroup = breedingMethodGroups.find((e) => e.code === this.breedingMethod.group);
-            })
+            });
             this.breedingMethodService.queryBreedingMethodTypes().toPromise().then((breedingMethodTypes) => {
                 this.breedingMethodTypes = breedingMethodTypes;
                 this.selectedBreedingMethodType = breedingMethodTypes.find((e) => e.code === this.breedingMethod.type);
-            })
-        })
+            });
+        });
 
     }
 

@@ -32,7 +32,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
     locationSelected: string;
     useFavoriteLocations = true;
 
-    units: Promise<InventoryUnit[]>
+    units: Promise<InventoryUnit[]>;
     unitSelected: string;
 
     deposit: any;
@@ -80,7 +80,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
                 return row[HEADERS['STOCK ID']]
                     || row[HEADERS['STORAGE LOCATION ABBR']]
                     || row[HEADERS['UNITS']]
-                    || row[HEADERS['AMOUNT']]
+                    || row[HEADERS['AMOUNT']];
             });
 
             rows.filter((row) => !row[HEADERS['STOCK ID']])
@@ -127,7 +127,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
                 && (this.locationSelected || this.hasAllLocations())
                 && (this.unitSelected || this.hasAllUnits())
                 && (this.deposit.amount || this.hasAllAmounts())
-                )
+                );
     }
 
     hasAllInventoryDetails() {
@@ -143,7 +143,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
             return row[HEADERS['STOCK ID']]
                 || row[HEADERS['STORAGE LOCATION ABBR']]
                 || row[HEADERS['UNITS']]
-                || row[HEADERS['AMOUNT']]
+                || row[HEADERS['AMOUNT']];
         });
     }
 
