@@ -169,8 +169,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 				final ObjectMapper objectMapper = new ObjectMapper();
 				try {
 					final String redirectToMainModel = objectMapper.writeValueAsString(
-						new RedirectToMainModel(newlyCreatedProgram.getProjectId(), newlyCreatedProgram.getCropType().getCropName(),
-							newlyCreatedProgram.getUniqueID()));
+						new RedirectToMainModel(newlyCreatedProgram.getProjectId(), newlyCreatedProgram.getProjectName(),
+							newlyCreatedProgram.getCropType().getCropName(), newlyCreatedProgram.getUniqueID()));
 					clickEvent.getComponent().getWindow().executeJavaScript("window.top.postMessage({ programSelected: " + redirectToMainModel + "}, '*');");
 				} catch (IOException e) {
 					LOG.error(e.getMessage(), e);
@@ -398,18 +398,25 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 
 	private static class RedirectToMainModel {
+
 		private final Long id;
+		private final String name;
 		private final String cropName;
 		private final String programUUID;
 
-		public RedirectToMainModel(final Long id, final String cropName, final String programUUID) {
+		public RedirectToMainModel(final Long id, final String name, final String cropName, final String programUUID) {
 			this.id = id;
+			this.name = name;
 			this.cropName = cropName;
 			this.programUUID = programUUID;
 		}
 
 		public Long getId() {
 			return id;
+		}
+
+		public String getName() {
+			return name;
 		}
 
 		public String getCropName() {
