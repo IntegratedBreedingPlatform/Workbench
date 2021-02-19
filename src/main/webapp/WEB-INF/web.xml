@@ -31,7 +31,7 @@
 
 	<session-config>
 		<!-- TODO: investigate vaadin redirect -->
-		<session-timeout>0</session-timeout>
+		<session-timeout>-1</session-timeout>
 	</session-config>
 
 	<filter>
