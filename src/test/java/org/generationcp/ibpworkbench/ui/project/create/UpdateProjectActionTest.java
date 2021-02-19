@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.ui.project.create;
 
 import java.util.Date;
 
+import com.vaadin.ui.ComponentContainer;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.util.ToolUtil;
@@ -84,6 +85,11 @@ public class UpdateProjectActionTest {
 
 	@Test
 	public void testButtonClick() {
+
+		final ComponentContainer componentContainer = Mockito.mock(ComponentContainer.class);
+		Mockito.when(componentContainer.getWindow()).thenReturn(Mockito.mock(Window.class));
+		Mockito.when(this.projectPanel.getContent()).thenReturn(componentContainer);
+
 		try {
 			this.updateProjectAction.buttonClick(this.clickEvent);
 
