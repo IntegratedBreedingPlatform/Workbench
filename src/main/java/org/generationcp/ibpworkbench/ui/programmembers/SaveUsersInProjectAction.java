@@ -75,12 +75,11 @@ public class SaveUsersInProjectAction implements ClickListener {
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
 					SaveUsersInProjectAction.this.programService.updateMembersProjectUserInfo(userList, project);
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
-					if (event.getComponent().getParent().getParent().getParent() instanceof ProgramMembersPanel) {
-						((ProgramMembersPanel) event.getComponent().getParent().getParent().getParent()).assemble();
-					}
 				}
 			});
-
+			if (event.getComponent().getParent().getParent().getParent() instanceof ProgramMembersPanel) {
+				((ProgramMembersPanel) event.getComponent().getParent().getParent().getParent()).assemble();
+			}
 		} catch (MiddlewareQueryException ex) {
 			SaveUsersInProjectAction.LOG.error(ex.getMessage(), ex);
 			// do nothing because getting the User will not fail
