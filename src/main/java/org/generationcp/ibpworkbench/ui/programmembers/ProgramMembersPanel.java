@@ -564,6 +564,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeUsers() {
+		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
+		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
+
 		final Container container = this.tblMembers.getContainerDataSource();
 		final List<Integer> userIDs =
 			this.userService.getActiveUserIDsWithAccessToTheProgram(this.project.getProjectId());
@@ -571,6 +574,11 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final Integer userID : userIDs) {
 			final WorkbenchUser userTemp = this.userService.getUserById(userID);
+			if (userTemp.getUserid().equals(currentUserId)
+				|| userTemp.getUserid().equals(this.project.getUserId()) || userTemp.hasInstanceRole() || (userTemp.hasCropRole(cropName)
+				&& !userTemp.hasProgramRoles(cropName))) {
+				userTemp.setEnabled(false);
+			}
 
 			selectedItems.add(userTemp);
 			container.removeItem(userTemp);
