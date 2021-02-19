@@ -42,7 +42,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 	private final TwinTableSelect<WorkbenchUser> select;
 
 	private final Project project;
-	
+
 	@Autowired
 	private ProgramService programService;
 
@@ -73,10 +73,11 @@ public class SaveUsersInProjectAction implements ClickListener {
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					
 					SaveUsersInProjectAction.this.programService.updateMembersProjectUserInfo(userList, project);
-
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
+					if (event.getComponent().getParent().getParent().getParent() instanceof ProgramMembersPanel) {
+						((ProgramMembersPanel) event.getComponent().getParent().getParent().getParent()).assemble();
+					}
 				}
 			});
 
