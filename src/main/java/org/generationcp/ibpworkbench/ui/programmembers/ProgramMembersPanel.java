@@ -564,8 +564,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeUsers() {
-		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
-		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
 
 		final Container container = this.tblMembers.getContainerDataSource();
 		final List<Integer> userIDs =
@@ -574,11 +572,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 		for (final Integer userID : userIDs) {
 			final WorkbenchUser userTemp = this.userService.getUserById(userID);
-			if (userTemp.getUserid().equals(currentUserId)
-				|| userTemp.getUserid().equals(this.project.getUserId()) || userTemp.hasInstanceRole() || (userTemp.hasCropRole(cropName)
-				&& !userTemp.hasProgramRoles(cropName))) {
-				userTemp.setEnabled(false);
-			}
+			final boolean enabled = this.isUserEnabled(userTemp);
+			userTemp.setEnabled(enabled);
 
 			selectedItems.add(userTemp);
 			container.removeItem(userTemp);
@@ -625,20 +620,12 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected Container createUsersContainer() {
 		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
-
 		final List<WorkbenchUser> userList = this.userService.getUsersByCrop(cropName);
-
 		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
-		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
 		for (final WorkbenchUser user : userList) {
-			if (user.getUserid().equals(currentUserId)
-				|| user.getUserid().equals(this.project.getUserId()) || user.hasInstanceRole() || (user.hasCropRole(cropName)
-				&& !user.hasProgramRoles(cropName))) {
-				user.setEnabled(false);
-			}
-
+			final boolean enabled = this.isUserEnabled(user);
+			user.setEnabled(enabled);
 			beanItemContainer.addBean(user);
-
 		}
 		return beanItemContainer;
 	}
@@ -710,4 +697,16 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
+
+	private boolean isUserEnabled(final WorkbenchUser user) {
+		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
+		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
+		if (user.getUserid().equals(currentUserId)
+			|| user.getUserid().equals(this.project.getUserId()) || user.hasInstanceRole() || (user.hasCropRole(cropName)
+			&& !user.hasProgramRoles(cropName))) {
+			return false;
+		}
+		return true;
+	}
+
 }
