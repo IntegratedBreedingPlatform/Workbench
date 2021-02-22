@@ -173,5 +173,18 @@
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"
         }
+    },
+    "key-sequence-register": {
+        "title": "CLEAR PREFIX CACHED SEQUENCES",
+        "description": "Please specify the prefixes for which you want to clear the cached sequences.",
+        "enter.prefix": "Enter Prefix:",
+        "add.prefix": "Add",
+        "prefix": "PREFIX",
+        "remove": "REMOVE",
+        "delete": "Delete",
+        "no.prefix.added": "No prefix added.",
+        "no.existing.name.with.prefix": "The deleted germplasm has no names with the specified prefix(es).",
+        "prefix.delete.success":"The cache was cleared for all prefixes.",
+        "prefix.delete.warning": "Cache for {0} prefixes was successfully cleared and the cache for following prefixes: {1} cannot be cleared because they are not used by the names of the deleted germplasm."
     }
 }

@@ -44,6 +44,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
+import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         LocationService,
         PopupService,
         AlertService,
+        KeySequenceRegisterService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034

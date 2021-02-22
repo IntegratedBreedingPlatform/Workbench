@@ -22,6 +22,7 @@ import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
+import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
 
 declare var $: any;
 
@@ -275,7 +276,6 @@ export class GermplasmSearchComponent implements OnInit {
                 private germplasmService: GermplasmService,
                 private router: Router,
                 private alertService: AlertService,
-                private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
                 private germplasmManagerContext: GermplasmManagerContext,
@@ -407,7 +407,7 @@ export class GermplasmSearchComponent implements OnInit {
             this.preSortCheck();
 
             if (this.isExpensiveFilter()) {
-                const confirmModalRef = this.modal.open(ModalConfirmComponent as Component);
+                const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
                 confirmModalRef.componentInstance.title = this.translateService.instant('search-germplasm.performance-warning.title');
                 let message = this.translateService.instant('search-germplasm.performance-warning.text');
                 message += this.getExpensiveFilterWarningList();
@@ -604,7 +604,7 @@ export class GermplasmSearchComponent implements OnInit {
         confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
-                if (response.germplasmWithErrors) {
+                if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
                     this.alertService.warning('germplasm-delete.warning');
                     this.resetFilters();
                     // Show the germplasm that were not deleted because of validation
@@ -614,9 +614,20 @@ export class GermplasmSearchComponent implements OnInit {
                     this.alertService.success('germplasm-delete.success');
                 }
                 this.resetTable();
+
+                // If there are deleted germplasm, show the Clear Prefix Key Cache Sequence Dialog
+                if (response.deletedGermplasm && response.deletedGermplasm.length) {
+                    this.openKeySequenceDeletionDialog(response.deletedGermplasm);
+                }
+
             });
             this.activeModal.close();
         }, () => this.activeModal.dismiss());
+    }
+
+    openKeySequenceDeletionDialog(gids: number[]) {
+        const confirmModalRef = this.modalService.open(KeySequenceRegisterDeletionDialogComponent as Component);
+        confirmModalRef.componentInstance.gids = gids;
     }
 }
 
