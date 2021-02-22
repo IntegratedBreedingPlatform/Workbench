@@ -587,7 +587,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeActions() {
-		this.saveButton.addListener(new SaveUsersInProjectAction(this.project, this.getSelect()));
+		this.saveButton.addListener(new SaveUsersInProjectAction(this));
 		this.cancelButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 8879824681692031501L;

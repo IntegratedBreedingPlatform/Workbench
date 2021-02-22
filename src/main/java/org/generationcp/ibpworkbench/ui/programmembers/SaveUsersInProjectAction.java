@@ -43,6 +43,8 @@ public class SaveUsersInProjectAction implements ClickListener {
 
 	private final Project project;
 
+	private final ProgramMembersPanel programMembersPanel;
+
 	@Autowired
 	private ProgramService programService;
 
@@ -52,9 +54,10 @@ public class SaveUsersInProjectAction implements ClickListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public SaveUsersInProjectAction(Project project, TwinTableSelect<WorkbenchUser> select) {
-		this.project = project;
-		this.select = select;
+	public SaveUsersInProjectAction(final ProgramMembersPanel programMembersPanel) {
+		this.programMembersPanel = programMembersPanel;
+		this.project = programMembersPanel.getProject();
+		this.select = programMembersPanel.getSelect();
 	}
 
 	public boolean validate() {
@@ -77,9 +80,7 @@ public class SaveUsersInProjectAction implements ClickListener {
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
-			if (event.getComponent().getParent().getParent().getParent() instanceof ProgramMembersPanel) {
-				((ProgramMembersPanel) event.getComponent().getParent().getParent().getParent()).assemble();
-			}
+			programMembersPanel.assemble();
 		} catch (MiddlewareQueryException ex) {
 			SaveUsersInProjectAction.LOG.error(ex.getMessage(), ex);
 			// do nothing because getting the User will not fail
