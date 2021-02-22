@@ -46,6 +46,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.program.ProgramSearchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -208,7 +209,9 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 		try {
 			final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
-			this.programs = this.workbenchDataManager.getProjectsByUser(currentUser, null);
+			final ProgramSearchRequest programSearchRequest = new ProgramSearchRequest();
+			programSearchRequest.setLoggedInUserId(currentUser.getUserid());
+			this.programs = this.workbenchDataManager.getProjects(null, programSearchRequest);
 			lastOpenedProgram = this.workbenchDataManager.getLastOpenedProject(currentUser.getUserid());
 		} catch (final MiddlewareQueryException e) {
 			WorkbenchDashboard.LOG.error("Exception", e);
