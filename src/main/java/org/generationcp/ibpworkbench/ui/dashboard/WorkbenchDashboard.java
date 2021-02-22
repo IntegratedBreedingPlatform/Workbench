@@ -208,7 +208,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 		Project lastOpenedProgram = null;
 
 		try {
-			final WorkbenchUser currentUser = contextUtil.getCurrentWorkbenchUser();
+			final WorkbenchUser currentUser = this.contextUtil.getCurrentWorkbenchUser();
 			final ProgramSearchRequest programSearchRequest = new ProgramSearchRequest();
 			programSearchRequest.setLoggedInUserId(currentUser.getUserid());
 			this.programs = this.workbenchDataManager.getProjects(null, programSearchRequest);
@@ -244,7 +244,7 @@ public class WorkbenchDashboard extends VerticalLayout implements InitializingBe
 
 			// If there's a last opened project (program), then set it to the current project in context.
 			org.generationcp.commons.util.ContextUtil
-					.setContextInfo(httpServletRequest, contextUtil.getCurrentWorkbenchUserId(), lastOpenedProgram.getProjectId(), null);
+					.setContextInfo(this.httpServletRequest, this.contextUtil.getCurrentWorkbenchUserId(), lastOpenedProgram.getProjectId(), null);
 		}
 
 	}
