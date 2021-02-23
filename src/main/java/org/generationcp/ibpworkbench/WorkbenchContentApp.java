@@ -11,6 +11,8 @@ import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import javax.annotation.Resource;
@@ -18,6 +20,7 @@ import javax.annotation.Resource;
 public class WorkbenchContentApp extends SpringContextApplication {
 
 	private static final long serialVersionUID = -3098125752010885259L;
+	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchContentApp.class);
 
 	@Resource
 	private ContextUtil contextUtil;
@@ -74,6 +77,12 @@ public class WorkbenchContentApp extends SpringContextApplication {
 
 		return w;
 	}
+
+	@Override
+	public void terminalError(final com.vaadin.terminal.Terminal.ErrorEvent event) {
+		LOG.error("Encountered error", event.getThrowable());
+	}
+
 
 }
 
