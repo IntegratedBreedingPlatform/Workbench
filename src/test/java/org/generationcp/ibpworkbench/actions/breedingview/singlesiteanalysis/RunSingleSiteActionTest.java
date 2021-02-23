@@ -13,6 +13,7 @@ import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -492,7 +493,9 @@ public class RunSingleSiteActionTest {
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
 		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
-		Assert.assertEquals(DATA_SOURCE_NAME, filenameCaptor.getValue());
+		Assert.assertTrue(filenameCaptor.getValue().contains(DATA_SOURCE_NAME));
+		Assert.assertTrue(FileNameGenerator.hasDate(filenameCaptor.getValue()).isPresent());
+		Assert.assertTrue(FileNameGenerator.hasTimeStamp(filenameCaptor.getValue()).isPresent());
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(2, filesInZip.size());
@@ -504,20 +507,9 @@ public class RunSingleSiteActionTest {
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >= 3);
-
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			Assert.fail("Date must be included in the file name");
-		}
+		Assert.assertTrue(FileNameGenerator.hasDate(downloadResource.getFilename()).isPresent());
+		Assert.assertTrue(FileNameGenerator.hasTimeStamp(downloadResource.getFilename()).isPresent());
 	}
 
 }
