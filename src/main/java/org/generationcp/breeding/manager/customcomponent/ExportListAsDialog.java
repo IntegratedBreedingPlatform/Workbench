@@ -253,7 +253,7 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 					this.germplasmList.getName()
 			);
 
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
+			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, visibleFileName, this.source);
 
 		} catch (final GermplasmListExporterException | IOException e) {
 			ExportListAsDialog.LOG.error(this.messageSource.getMessage(Message.ERROR_EXPORTING_LIST), e);
@@ -292,7 +292,7 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 							ExportListAsDialog.XLS_EXT,
 							this.germplasmList.getName()
 					);
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
+			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, visibleFileName, this.source);
 			// must figure out other way to clean-up file because deleting it here makes it unavailable for download
 		} catch (final GermplasmListExporterException | IOException e) {
 			ExportListAsDialog.LOG.error(this.messageSource.getMessage(Message.ERROR_EXPORTING_LIST), e);
@@ -316,7 +316,7 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 					this.germplasmList.getName().replace(" ", "_"),
 					"ForGenotyping"
 			);
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
+			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, visibleFileName, this.source);
 
 		} catch (final GermplasmListExporterException | IOException e) {
 			ExportListAsDialog.LOG.error(e.getMessage(), e);
