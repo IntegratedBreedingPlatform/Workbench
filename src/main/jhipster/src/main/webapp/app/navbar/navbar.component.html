@@ -8,7 +8,7 @@
 		</button>
 		<span>{{program?.name}}</span>
 		<div class="toolbar-filler"></div>
-		<button mat-button (click)="siteAdmin()">Site Admin</button>
+		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS">Site Admin</button>
 		<button mat-button *ngIf="toolUrl" (click)="myPrograms()">My Programs</button>
 		<button mat-button *ngIf="!toolUrl" (click)="addProgram()"><i class="fa fa-plus"></i> Add a Program</button>
 

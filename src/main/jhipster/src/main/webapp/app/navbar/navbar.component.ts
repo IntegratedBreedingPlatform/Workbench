@@ -13,6 +13,7 @@ import { Tool, ToolLink } from '../shared/tool/model/tool.model';
 import { LoginService } from '../shared/login/login.service';
 import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
+import { SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-navbar',
@@ -22,6 +23,8 @@ import { HelpService } from '../shared/service/help.service';
     ],
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
+
+    SITE_ADMIN_PERMISSIONS = SITE_ADMIN_PERMISSIONS;
 
     version: string;
     toolUrl: any;
