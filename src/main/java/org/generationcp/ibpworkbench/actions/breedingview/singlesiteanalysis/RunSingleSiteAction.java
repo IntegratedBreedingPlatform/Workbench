@@ -109,16 +109,15 @@ public class RunSingleSiteAction implements ClickListener {
 				filenameList.add(breedingViewInput.getDestXMLFilePath());
 				filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource());
-				final String directory = this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
-				final String fileName = FileNameGenerator.generateFileName(directory, "", outputFilename);
+				final String fileName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(FileNameGenerator
+						.generateFileName(this.contextUtil.getProjectInContext(), ToolName.BV_SSA, "", breedingViewInput.getDatasetSource()));
 
 				try {
 					final String finalZipfileName =
-							this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
+							this.zipUtil.zipIt(fileName, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 					this.downloadInputFile(new File(finalZipfileName), fileName);
 				} catch (final IOException e) {
-					RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
+					RunSingleSiteAction.LOG.error("Error creating zip file " + fileName + ZipUtil.ZIP_EXTENSION, e);
 					this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");
 				}
 
