@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamContext } from '../shared/service/param.context';
-import { ViewEncapsulation } from '@angular/core';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_MANAGE_GERMPLASM } from '../app.constants';
 
