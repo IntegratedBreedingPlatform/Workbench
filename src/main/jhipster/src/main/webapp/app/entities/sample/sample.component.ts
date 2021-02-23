@@ -185,12 +185,15 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     dragStart($event, sample: Sample) {
         const row: BaseEntity = {};
-        row['DESIGNATION'] = sample.sampleName;
+        row['SAMPLE_ID'] = sample.sampleId;
+        row['DESIGNATION'] = sample.designation;
         row['GID'] = sample.gid;
         row['SAMPLE_NAME'] = sample.sampleName;
         row['TAKEN_BY'] = sample.takenBy;
         row['SAMPLING_DATE'] = sample.samplingDate;
         row['SAMPLE_UID'] = sample.sampleBusinessKey;
+        row['PLATE'] = sample.plateId;
+        row['WELL'] = sample.well;
         this.listBuilderContext.data = [row];
     }
 
