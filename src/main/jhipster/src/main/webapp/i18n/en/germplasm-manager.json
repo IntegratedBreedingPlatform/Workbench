@@ -180,11 +180,11 @@
         "enter.prefix": "Enter Prefix:",
         "add.prefix": "Add",
         "prefix": "PREFIX",
-        "remove": "REMOVE",
+        "remove": "Remove",
         "delete": "Delete",
         "no.prefix.added": "No prefix added.",
         "no.existing.name.with.prefix": "The deleted germplasm has no names with the specified prefix(es).",
         "prefix.delete.success":"The cache was cleared for all prefixes.",
-        "prefix.delete.warning": "Cache for {0} prefixes was successfully cleared and the cache for following prefixes: {1} cannot be cleared because they are not used by the names of the deleted germplasm."
+        "prefix.delete.warning": "Cache for {{param1}} prefixes was successfully cleared and the cache for following prefixes: {{param2}} cannot be cleared because they are not used by the names of the deleted germplasm."
     }
 }

@@ -18,7 +18,9 @@
 			<input type="text" class="form-control" autocomplete="off" name="prefix" id="prefix" [maxLength]="20" [(ngModel)]="prefixValue"/>
 		</div>
 		<div class="col-sm-2">
-			<button type="button" class="btn btn-primary" (click)="add(prefixValue)"><span jhiTranslate="key-sequence-register.add.prefix"></span></button>
+			<button type="button" class="btn btn-primary" (click)="add(prefixValue)">
+				<span class="fa fa-plus"></span>&nbsp;
+				<span jhiTranslate="key-sequence-register.add.prefix"></span></button>
 		</div>
 	</div>
 	<div class="row">
@@ -27,14 +29,16 @@
 				<thead>
 				<tr>
 					<th><span jhiTranslate="key-sequence-register.prefix"></span></th>
-					<th><span jhiTranslate="key-sequence-register.remove"></span></th>
+					<th></th>
 				</tr>
 				</thead>
 				<tbody>
 				<tr *ngFor="let prefix of prefixes; let i = index;">
 					<td><span>{{prefix}}</span></td>
-					<td>
-						<button type="button" class="btn btn-danger" (click)="remove(i)"><span jhiTranslate="key-sequence-register.remove"></span></button>
+					<td class="pull-right">
+						<button type="button" class="btn btn-secondary" (click)="remove(i)">
+							<span class="fa fa-minus"></span>&nbsp;
+							<span jhiTranslate="key-sequence-register.remove"></span></button>
 					</td>
 				</tr>
 				<tr>
@@ -60,10 +64,11 @@
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+		<span class="fa fa-ban"></span>&nbsp;
 		<span jhiTranslate="cancel"></span>
 	</button>
 	<button (click)="delete()" class="btn btn-primary" [disabled]="prefixes.length <= 0">
-		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-trash"></span>&nbsp;
 		<span jhiTranslate="key-sequence-register.delete"></span>
 	</button>
 </div>

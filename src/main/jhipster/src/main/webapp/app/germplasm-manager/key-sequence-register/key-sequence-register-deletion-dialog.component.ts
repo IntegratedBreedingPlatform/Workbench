@@ -1,14 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Input } from '@angular/core';
 import { AlertService } from '../../shared/alert/alert.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { KeySequenceRegisterService } from '../../shared/key-sequence-register/service/key-sequence-register.service';
 
 @Component({
     selector: 'jhi-key-sequence-register-deletion-dialog',
     templateUrl: './key-sequence-register-deletion-dialog.component.html',
 })
-export class KeySequenceRegisterDeletionDialogComponent implements OnInit {
+export class KeySequenceRegisterDeletionDialogComponent {
 
     @Input()
     gids: number[];
@@ -18,26 +17,25 @@ export class KeySequenceRegisterDeletionDialogComponent implements OnInit {
     prefixes: Array<string> = [];
 
     constructor(
-        private translateService: TranslateService,
         private alertService: AlertService,
         private modal: NgbActiveModal,
-        private modalService: NgbModal,
         private keySequenceRegisterService: KeySequenceRegisterService
     ) {
-    }
-
-    ngOnInit(): void {
     }
 
     delete() {
 
         this.keySequenceRegisterService.deleteKeySequencePrefixes(this.gids, this.prefixes).subscribe((response) => {
             if (response.deletedPrefixes.length === this.prefixes.length) {
+                // All specified prefixes are deleted.
                 this.alertService.success('key-sequence-register.prefix.delete.success');
             } else if (response.deletedPrefixes && response.deletedPrefixes.length === 0) {
+                // No names found that match the prefixes specified.
                 this.alertService.warning('key-sequence-register.no.existing.name.with.prefix');
             } else {
-                this.alertService.warning('key-sequence-register.prefix.delete.warning');
+                // Some prefixes are deleted, and some are not found.
+                this.alertService.warning('key-sequence-register.prefix.delete.warning',
+                    { param1: response.deletedPrefixes.join(','), param2: response.undeletedPrefixes.join(',') });
             }
             this.dismiss();
         });
