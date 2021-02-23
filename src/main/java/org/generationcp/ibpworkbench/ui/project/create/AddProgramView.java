@@ -178,7 +178,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 			}
 		});
 
-		this.cancelButton.addListener(new HomeAction());
+		this.cancelButton.addListener((Button.ClickListener) event ->
+			event.getComponent().getWindow().executeJavaScript("window.top.location.href='/ibpworkbench/main/'"));
 	}
 
 	protected void initializeLayout() {
