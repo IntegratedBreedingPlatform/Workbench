@@ -99,6 +99,7 @@ export class ListBuilderComponent {
 
     reset() {
         this.data = [];
+        this.selectedItems = {};
     }
 
     save() {
