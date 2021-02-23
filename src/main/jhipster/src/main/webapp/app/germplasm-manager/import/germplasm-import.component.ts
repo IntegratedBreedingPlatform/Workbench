@@ -90,7 +90,7 @@ export class GermplasmImportComponent implements OnInit {
             }
         }, (res) => {
             this.isLoading = false;
-            this.onError(res)
+            this.onError(res);
         });
     }
 
@@ -107,8 +107,8 @@ export class GermplasmImportComponent implements OnInit {
             return fileRow.reduce((map, col, colIndex) => {
                 map[headers[colIndex]] = col;
                 return map;
-            }, {})
-        })
+            }, {});
+        });
 
         const errorMessage: string[] = [];
         this.validateHeader(this.rawData[0], errorMessage);
@@ -154,7 +154,7 @@ export class GermplasmImportComponent implements OnInit {
             .forEach((header) => this.codes[header] = 1);
         // Known name types
         fileHeader.filter((header) => {
-            return [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(header.toUpperCase()) !== -1
+            return [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(header.toUpperCase()) !== -1;
         }).forEach((header) => this.codes[header] = 1);
     }
 
@@ -215,14 +215,14 @@ export class GermplasmImportComponent implements OnInit {
             const message = this.translateService.instant(error, {
                 param: listPreview(rowWithMissingNameData.map((r) => r[HEADERS.ENTRY_NO]))
             });
-            errorMessage.push(message)
+            errorMessage.push(message);
         }
         if (Object.keys(preferredNameInvalid).length) {
             const error = 'germplasm.import.file.validation.names.preferred.invalid';
             const message = this.translateService.instant(error, {
                 param: listPreview(Object.keys(preferredNameInvalid))
             });
-            errorMessage.push(message)
+            errorMessage.push(message);
         }
     }
 

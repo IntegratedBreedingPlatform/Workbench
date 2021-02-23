@@ -57,11 +57,11 @@ export class SampleSearchListComponent {
             exactMatch: this.exactMatch,
             programUUID : currentProgramId,
             sort: this.sort()
-        }
+        };
         this.sampleListService.search(params).subscribe(
             (res: HttpResponse<SampleList[]>) => { this.sampleListResults = res.body; } ,
             (res: HttpErrorResponse) => this.alertService.error(res.message)
-        )
+        );
     }
 
     selectList(selectedSampleList: SampleList) {

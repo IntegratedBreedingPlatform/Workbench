@@ -100,4 +100,4 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         component: GermplasmImportPopupComponent,
         outlet: 'popup'
     }
-]
+];

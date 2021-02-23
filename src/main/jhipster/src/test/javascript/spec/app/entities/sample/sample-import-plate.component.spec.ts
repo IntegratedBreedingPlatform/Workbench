@@ -1,23 +1,23 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {BmsjHipsterTestModule} from '../../../test.module';
-import {FileDownloadHelper} from '../../../../../../main/webapp/app/entities/sample/file-download.helper';
-import {ExcelService} from '../../../../../../main/webapp/app/entities/sample/excel.service';
-import {SampleImportPlateComponent} from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
-import {JhiAlertService} from 'ng-jhipster';
-import {ElementRef} from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BmsjHipsterTestModule } from '../../../test.module';
+import { FileDownloadHelper } from '../../../../../../main/webapp/app/entities/sample/file-download.helper';
+import { ExcelService } from '../../../../../../main/webapp/app/entities/sample/excel.service';
+import { SampleImportPlateComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
+import { Component, ElementRef } from '@angular/core';
 import { AlertService } from '../../../../../../main/webapp/app/shared/alert/alert.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateMappingComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
+import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
 
-xdescribe('Component Tests', () => {
+describe('Component Tests', () => {
 
     describe('Sample Import Plate Component', () => {
         let comp: SampleImportPlateComponent;
         let fixture: ComponentFixture<SampleImportPlateComponent>;
         let excelService: ExcelService;
         let modalService: NgbModal;
-        let jhiAlertService: JhiAlertService;
         let alertService: AlertService;
+        let mockActiveModal: any;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
@@ -25,7 +25,6 @@ xdescribe('Component Tests', () => {
                 declarations: [SampleImportPlateComponent],
                 providers: [
                     FileDownloadHelper,
-                    NgbModal,
                     ExcelService,
                     SampleImportPlateMappingComponent
                 ]
@@ -42,52 +41,43 @@ xdescribe('Component Tests', () => {
             comp = fixture.componentInstance;
             modalService = fixture.debugElement.injector.get(NgbModal);
             excelService = fixture.debugElement.injector.get(ExcelService);
-            jhiAlertService = fixture.debugElement.injector.get(JhiAlertService);
             alertService = fixture.debugElement.injector.get(AlertService);
+            mockActiveModal = fixture.debugElement.injector.get(NgbActiveModal);
 
-            spyOn(modalService, 'open').and.callThrough();
-           // spyOn(modalService, 'close').and.callThrough();
             spyOn(alertService, 'error').and.callThrough();
-            spyOn(jhiAlertService, 'error').and.callThrough();
 
-            comp.fileUpload = new ElementRef({ value : '', accept: '' });
+            comp.fileUpload = new ElementRef({ value: '', accept: '' });
         });
 
         it('should close the modal window.', () => {
-
             spyOn(comp, 'clearSelectedFile').and.callThrough();
 
             comp.close();
+            expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
 
-         //   expect(modalService.close).toHaveBeenCalledWith(comp.modalId);
             expect(comp.clearSelectedFile).toHaveBeenCalled();
 
         });
 
-        it('should open the import plate mapping modal', () => {
-
-            spyOn(comp, 'validate').and.returnValue(true);
-
-            comp.import();
-
-         //   expect(modalService.close).toHaveBeenCalledWith(comp.modalId);
-            expect(modalService.open).toHaveBeenCalledWith('import-plate-mapping-modal');
-
-        });
-
         it('should not open the import plate mapping modal if file is not valid', () => {
-
+            spyOn(modalService, 'open').and.callThrough();
             spyOn(comp, 'validate').and.returnValue(false);
-
             comp.import();
-
-         //   expect(modalService.close).toHaveBeenCalledTimes(0);
             expect(modalService.open).toHaveBeenCalledTimes(0);
 
         });
 
-        it('should clear the select file', () => {
+        it('should open the import plate mapping modal', () => {
+            spyOn(comp, 'validate').and.returnValue(true);
+            const mockNgbModalRef = new MockNgbModalRef();
+            mockNgbModalRef['importData'] = undefined;
+            spyOn(modalService, 'open').and.returnValue(mockNgbModalRef);
 
+            comp.import();
+            expect(modalService.open).toHaveBeenCalledWith(SampleImportPlateMappingComponent as Component, { size: 'lg', backdrop: 'static' });
+        });
+
+        it('should clear the select file', () => {
             comp.fileUpload.nativeElement.value = 'fileName.csv';
             comp.fileName = 'fileName.csv';
             comp.importData = new Array<Array<string>>();
@@ -102,7 +92,6 @@ xdescribe('Component Tests', () => {
         });
 
         it('should change the file upload accept type', () => {
-
             spyOn(comp, 'clearSelectedFile').and.callThrough();
             comp.selectedFileType = '.csv';
 
@@ -114,7 +103,6 @@ xdescribe('Component Tests', () => {
         });
 
         it('should clear file upload if no selected file type', () => {
-
             spyOn(comp, 'clearSelectedFile').and.callThrough();
             comp.selectedFileType = '';
 
@@ -125,7 +113,6 @@ xdescribe('Component Tests', () => {
         });
 
         it('should display error if no selected file format', () => {
-
             comp.selectedFileType = '';
             expect(comp.validate()).toEqual(false);
             expect(alertService.error).toHaveBeenCalledWith('bmsjHipsterApp.sample.importPlate.noSelectedFormat');
@@ -133,7 +120,6 @@ xdescribe('Component Tests', () => {
         });
 
         it('should display error if no file selected', () => {
-
             comp.selectedFileType = '.csv';
             comp.fileUpload.nativeElement.value = '';
             expect(comp.validate()).toEqual(false);
@@ -142,7 +128,6 @@ xdescribe('Component Tests', () => {
         });
 
         it('should display error if no file content', () => {
-
             comp.selectedFileType = '.csv';
             comp.fileUpload.nativeElement.value = 'fileName.csv';
             comp.importData.length = 0;
@@ -152,7 +137,6 @@ xdescribe('Component Tests', () => {
         });
 
         it('should not display error if valid', () => {
-
             comp.selectedFileType = '.csv';
             comp.fileUpload.nativeElement.value = 'fileName.csv';
             comp.importData.push(new Array<string>(''));

@@ -378,7 +378,7 @@ export class GermplasmSearchComponent implements OnInit {
     clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
-        $('.fa-sort').removeClass('fa-sort-up fa-sort-down')
+        $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
     onClearSort($event) {
@@ -445,7 +445,7 @@ export class GermplasmSearchComponent implements OnInit {
     getExpensiveFilterWarningList() {
         let list = '';
         if (this.hasNameExpensiveFilters()) {
-            list += '<li>name contains or ends with</li>'
+            list += '<li>name contains or ends with</li>';
         }
         return list;
     }

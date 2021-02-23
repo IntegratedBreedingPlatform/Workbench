@@ -37,17 +37,17 @@ export class LocationComponent implements OnInit {
                 const locations = resp.body;
                 this.countries = locations;
                 this.selectedCountry = locations.find((e) => e.id === this.breedingLocation.countryId);
-            })
+            });
             this.locationService.queryLocationsByType([LocationTypeEnum.PROVINCE], false).toPromise().then((resp) => {
                 const locations = resp.body;
                 this.provinces = locations;
                 this.selectedProvince = locations.find((e) => e.id === this.breedingLocation.provinceId);
-            })
+            });
             this.locationService.queryLocationTypes().toPromise().then((locationTypes) => {
                 this.locationTypes = locationTypes;
                 this.selectedLocationType = locationTypes.find((e) => e.id === this.breedingLocation.type);
-            })
-        })
+            });
+        });
     }
 
     clear() {

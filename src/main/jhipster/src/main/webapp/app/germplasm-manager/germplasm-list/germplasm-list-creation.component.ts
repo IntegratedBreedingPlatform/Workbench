@@ -24,11 +24,8 @@ import { AlertService } from '../../shared/alert/alert.service';
 declare var $: any;
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-germplasm-list-creation',
     templateUrl: './germplasm-list-creation.component.html',
-    // TODO migrate IBP-4093
-    styleUrls: ['../../../content/css/global-bs4.scss'],
     providers: [
         { provide: TreeService, useClass: GermplasmTreeTableService }
     ]
@@ -138,7 +135,7 @@ export class GermplasmListCreationComponent implements OnInit {
                 // Check issue reported: https://github.com/primefaces/primeng/issues/7386
                 this.expand(source.parent);
                 this.expand(target);
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message });
             });
     }
 
@@ -315,7 +312,7 @@ export class GermplasmListCreationComponent implements OnInit {
 
     submitAddOrRenameFolder() {
         if (this.name.length > this.NAME_MAX_LENGTH) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH })
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH });
             return;
         }
 
