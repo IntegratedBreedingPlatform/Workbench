@@ -47,7 +47,7 @@ export class LotCreationDialogComponent implements OnInit {
     isConfirmDeposit = false;
     isLoading = false;
 
-    showHeader: boolean;
+    openedFromWorkbench: boolean;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
@@ -58,12 +58,13 @@ export class LotCreationDialogComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private paramContext: ParamContext,
                 private germplasmManagerContext: GermplasmManagerContext,
-                private activeModal: NgbActiveModal
+                private activeModal: NgbActiveModal,
+                private alertService: AlertService
     ) {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
-        this.showHeader = (queryParams.showHeader === 'true') ? true : false;
+        this.openedFromWorkbench = (queryParams.openedFromWorkbench === 'true') ? true : false;
 
         if (queryParams.studyId) {
             // studyId has value if this Lot Creation page is called from Study Manager.
@@ -152,9 +153,16 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private onSaveSuccess(lotUUIDs: string[]) {
-        this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
         this.isLoading = false;
+
+        if (this.openedFromWorkbench) {
+            this.alertService.success('lot-creation.success', { param: lotUUIDs.length }, null);
+            this.eventManager.broadcast({ name: 'columnFiltersChanged', content: '' });
+            this.activeModal.close();
+        } else {
+            this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
+        }
     }
 
     private onError(response: HttpErrorResponse) {

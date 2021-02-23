@@ -333,7 +333,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerColumnFiltersChaged();
+        this.registerColumnFiltersChanged();
         this.registerFilterBy();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
@@ -400,7 +400,7 @@ export class GermplasmSearchComponent implements OnInit {
         return item.gid;
     }
 
-    registerColumnFiltersChaged() {
+    registerColumnFiltersChanged() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
 
             this.preSortCheck();
@@ -582,7 +582,7 @@ export class GermplasmSearchComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge',
             queryParams: {
-                showHeader: true
+                openedFromWorkbench: true
             }
         });
     }
