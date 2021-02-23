@@ -6,7 +6,7 @@ import { ColumnFilterComponent, FilterType } from '../shared/column-filter/colum
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
@@ -22,7 +22,6 @@ import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
-import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { BaseEntity } from '../shared';
 

@@ -19,7 +19,7 @@
 					<span class="ml-3 mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
 					<span>{{isSelectAllPages ? data.length : size(selectedItems)}}</span>
 					<div class="form-check form-check-inline ml-3">
-						<input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages(isSelectAllPages)" id="list-builder-select-all">
+						<input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages()" id="list-builder-select-all">
 						<label class="form-check-label ml-1" for="list-builder-select-all" jhiTranslate="global.select.all"></label>
 					</div>
 				</div>

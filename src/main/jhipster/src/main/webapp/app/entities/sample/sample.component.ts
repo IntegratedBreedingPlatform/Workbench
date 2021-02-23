@@ -15,6 +15,10 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
+import { ListBuilderService } from '../../shared/list-creation/service/list-builder.service';
+import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
+import { TreeService } from '../../shared/tree/tree.service';
+import { SampleTreeService } from './tree-table';
 
 declare const cropName: string;
 declare const currentProgramId: string;

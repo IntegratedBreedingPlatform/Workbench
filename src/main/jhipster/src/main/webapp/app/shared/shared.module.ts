@@ -48,8 +48,10 @@ import { ListBuilderComponent } from './list-builder/list-builder.component';
 import { ListBuilderContext } from './list-builder/list-builder.context';
 import { TableModule } from 'primeng/table';
 import { DragDropModule as CdkDragDropModule } from '@angular/cdk/drag-drop'
-import { GerplasmListBuilderService } from './list-builder/gerplasm-list-builder.service';
-import { SampleListBuilderService } from './list-builder/sample-list-builder.service';
+import { GermplasmListCreationComponent } from './list-creation/germplasm-list-creation.component';
+import { SampleListBuilderService } from './list-creation/service/sample-list-builder.service';
+import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
+import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
 
 @NgModule({
     imports: [
@@ -57,6 +59,7 @@ import { SampleListBuilderService } from './list-builder/sample-list-builder.ser
         BmsjHipsterSharedCommonModule,
         ReactiveFormsModule,
         TableModule,
+        TreeModule,
         DragDropModule,
         CdkDragDropModule
     ],
@@ -85,7 +88,9 @@ import { SampleListBuilderService } from './list-builder/sample-list-builder.ser
         BreedingMethodSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
-        ListBuilderComponent
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     providers: [
         LoginService,
@@ -98,7 +103,7 @@ import { SampleListBuilderService } from './list-builder/sample-list-builder.ser
         TransactionService,
         ParamContext,
         ListBuilderContext,
-        GerplasmListBuilderService,
+        GermplasmListBuilderService,
         SampleListBuilderService,
         HelpService,
         GermplasmService,
@@ -117,6 +122,8 @@ import { SampleListBuilderService } from './list-builder/sample-list-builder.ser
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -150,7 +157,9 @@ import { SampleListBuilderService } from './list-builder/sample-list-builder.ser
         ColumnFilterNameTypesComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
-        ListBuilderComponent
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

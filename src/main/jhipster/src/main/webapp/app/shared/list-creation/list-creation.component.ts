@@ -1,48 +1,36 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../../shared/modal/popup.service';
+import { Component, OnInit } from '@angular/core';
+import { TreeService } from '../tree/tree.service';
+import { TreeDragDropService, TreeNode as PrimeNgTreeNode } from 'primeng/api';
 import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
 import { JhiLanguageService } from 'ng-jhipster';
-import { TreeService } from '../../shared/tree/tree.service';
-import { TreeNode } from '../../shared/tree';
-import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
-import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm-tree-table.service';
-import { ParamContext } from '../../shared/service/param.context';
-import { GermplasmList, GermplasmListEntry } from '../../shared/model/germplasm-list';
-import { GermplasmListType } from './germplasm-list-type.model';
-import { GermplasmListService } from './germplasm-list.service';
-import { GermplasmManagerContext } from '../germplasm-manager.context';
-import { formatErrorList } from '../../shared/alert/format-error-list';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '../alert/alert.service';
+import { ParamContext } from '../service/param.context';
+import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
+import { Principal } from '../index';
+import { TreeNode } from '../tree';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TreeDragDropService } from 'primeng/api';
-import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { finalize } from 'rxjs/internal/operators/finalize';
-import { Principal } from '../../shared';
-import { AlertService } from '../../shared/alert/alert.service';
+import { ModalConfirmComponent } from '../modal/modal-confirm.component';
+import { formatErrorList } from '../alert/format-error-list';
+import { ListEntry, ListModel } from '../list-builder/model/list.model';
+import { ListType } from '../list-builder/model/list-type.model';
+import { ListService } from './service/list.service';
 
 declare var $: any;
 
-@Component({
-    selector: 'jhi-germplasm-list-creation',
-    templateUrl: './germplasm-list-creation.component.html',
-    providers: [
-        { provide: TreeService, useClass: GermplasmTreeTableService }
-    ]
-})
-export class GermplasmListCreationComponent implements OnInit {
+export abstract class ListCreationComponent implements OnInit {
 
     readonly NAME_MAX_LENGTH: number = 50;
 
     public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
-    germplasmListTypes: GermplasmListType[];
+    listTypes: ListType[];
 
-    model = new GermplasmList();
+    model = new ListModel();
     selectedDate: NgbDate;
 
-    public mode: Mode = Mode.None;
-    public Modes = Mode;
+    public mode: FolderMode = FolderMode.None;
+    public FolderModes = FolderMode;
     public name: string; // rename or add item
 
     isLoading: boolean;
@@ -50,25 +38,27 @@ export class GermplasmListCreationComponent implements OnInit {
     private loggedUserId: number;
 
     // for import process
-    entries: GermplasmListEntry[];
+    entries: ListEntry[];
 
-    constructor(private modal: NgbActiveModal,
-                private jhiLanguageService: JhiLanguageService,
-                private translateService: TranslateService,
-                private alertService: AlertService,
-                private paramContext: ParamContext,
+    constructor(public modal: NgbActiveModal,
+                public jhiLanguageService: JhiLanguageService,
+                public translateService: TranslateService,
+                public alertService: AlertService,
+                public paramContext: ParamContext,
                 public treeService: TreeService,
                 public treeDragDropService: TreeDragDropService,
-                public germplasmListService: GermplasmListService,
-                private germplasmManagerContext: GermplasmManagerContext,
-                private calendar: NgbCalendar,
-                private modalService: NgbModal,
-                private principal: Principal) {
+                public listService: ListService,
+                public germplasmManagerContext: GermplasmManagerContext,
+                public calendar: NgbCalendar,
+                public modalService: NgbModal,
+                public principal: Principal) {
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
         this.selectedDate = calendar.getToday();
     }
+
+    abstract save();
 
     ngOnInit(): void {
         this.principal.identity().then((account) => {
@@ -87,10 +77,8 @@ export class GermplasmListCreationComponent implements OnInit {
                 });
             });
 
-        this.germplasmListService.getGermplasmListTypes().toPromise().then((germplasmListTypes) => {
-            this.germplasmListTypes = germplasmListTypes;
-            this.model.type = 'LST';
-        });
+        this.listService.getListTypes().subscribe((listTypes) => this.listTypes = listTypes);
+        this.listService.getListType().subscribe((listType) => this.model.type = listType);
     }
 
     private addNode(node: TreeNode) {
@@ -135,7 +123,7 @@ export class GermplasmListCreationComponent implements OnInit {
                 // Check issue reported: https://github.com/primefaces/primeng/issues/7386
                 this.expand(source.parent);
                 this.expand(target);
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message });
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
             });
     }
 
@@ -161,12 +149,12 @@ export class GermplasmListCreationComponent implements OnInit {
         return this.selectedNode.data.id === 'CROPLISTS' || this.selectedNode.data.id === 'LISTS';
     }
 
-    setMode(mode: Mode, iconClickEvent) {
+    setMode(mode: FolderMode, iconClickEvent) {
         if (this.isDisabled(iconClickEvent)) {
             return;
         }
         this.mode = mode;
-        if (this.mode === Mode.Delete) {
+        if (this.mode === FolderMode.Delete) {
             this.validateDeleteFolder();
         } else {
             this.setName();
@@ -174,9 +162,9 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     setName() {
-        if (this.mode === Mode.Add) {
+        if (this.mode === FolderMode.Add) {
             this.name = '';
-        } else if (this.mode === Mode.Rename) {
+        } else if (this.mode === FolderMode.Rename) {
             this.name = this.selectedNode.data.name;
         }
     }
@@ -200,7 +188,7 @@ export class GermplasmListCreationComponent implements OnInit {
         let message = '';
         if (this.selectedNode) {
             message = this.translateService.instant('bmsjHipsterApp.tree-table.messages.folder.delete.question',
-                    {id: this.selectedNode.data.name});
+                { id: this.selectedNode.data.name });
         } else {
             return;
         }
@@ -218,36 +206,12 @@ export class GermplasmListCreationComponent implements OnInit {
         return iconClickEvent.target.classList.contains('disable-image');
     }
 
-    save() {
-        const germplasmList = <GermplasmList>({
-            name: this.model.name,
-            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
-            type: this.model.type,
-            description: this.model.description,
-            notes: this.model.notes,
-            parentFolderId: this.selectedNode.data.id
-        });
-        if (this.entries && this.entries.length) {
-            germplasmList.entries = this.entries;
-        } else {
-            germplasmList.searchComposite = this.germplasmManagerContext.searchComposite;
-        }
-        this.isLoading = true;
-        this.germplasmListService.save(germplasmList)
-            .pipe(finalize(() => {
-                this.isLoading = false;
-            })).subscribe(
-            (res: GermplasmList) => this.onSaveSuccess(res),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
-    }
-
-    private onSaveSuccess(res: GermplasmList) {
+    onSaveSuccess() {
         this.alertService.success('germplasm-list-creation.success');
         this.modal.close();
     }
 
-    private onError(response: HttpErrorResponse) {
+    onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
             this.alertService.error('error.custom', { param: msg });
@@ -300,7 +264,7 @@ export class GermplasmListCreationComponent implements OnInit {
     }
 
     submitDeleteFolder() {
-        this.mode = this.Modes.None;
+        this.mode = this.FolderModes.None;
         this.treeService.delete(this.selectedNode.data.id).subscribe(() => {
                 this.expand(this.selectedNode.parent);
                 this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
@@ -312,14 +276,14 @@ export class GermplasmListCreationComponent implements OnInit {
 
     submitAddOrRenameFolder() {
         if (this.name.length > this.NAME_MAX_LENGTH) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH });
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.name.too.long', { length: this.NAME_MAX_LENGTH })
             return;
         }
 
-        if (this.mode === Mode.Add) {
+        if (this.mode === FolderMode.Add) {
             const isParentCropList = this.isParentCropList(this.selectedNode);
             this.treeService.create(this.name, this.selectedNode.data.id, isParentCropList).subscribe((res) => {
-                    this.mode = this.Modes.None;
+                    this.mode = this.FolderModes.None;
                     this.expand(this.selectedNode);
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
                 },
@@ -327,9 +291,9 @@ export class GermplasmListCreationComponent implements OnInit {
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
 
-        if (this.mode === Mode.Rename) {
+        if (this.mode === FolderMode.Rename) {
             this.treeService.rename(this.name, this.selectedNode.data.id).subscribe(() => {
-                    this.mode = this.Modes.None;
+                    this.mode = this.FolderModes.None;
                     this.selectedNode.data.name = this.name;
                     this.redrawNodes();
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.rename.successfully');
@@ -345,24 +309,10 @@ export class GermplasmListCreationComponent implements OnInit {
         }
         return node.data.id === 'CROPLISTS';
     }
-}
-
-@Component({
-    selector: 'jhi-germplasm-list-creation-popup',
-    template: ''
-})
-export class GermplasmListCreationPopupComponent implements OnInit {
-    constructor(private route: ActivatedRoute,
-                private popupService: PopupService) {
-    }
-
-    ngOnInit(): void {
-        const modal = this.popupService.open(GermplasmListCreationComponent as Component);
-    }
 
 }
 
-enum Mode {
+enum FolderMode {
     Add,
     Rename,
     Delete,

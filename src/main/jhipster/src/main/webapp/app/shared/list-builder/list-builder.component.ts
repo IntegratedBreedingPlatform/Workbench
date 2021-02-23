@@ -2,13 +2,13 @@ import { Component, Input } from '@angular/core';
 import { ListBuilderContext } from './list-builder.context';
 import { BaseEntity } from '..';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { GermplasmListCreationComponent } from '../../germplasm-manager/germplasm-list/germplasm-list-creation.component';
 import { GermplasmList, GermplasmListEntry } from '../model/germplasm-list';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ListBuilderService } from './list-builder.service';
+import { ListBuilderService } from '../list-creation/service/list-builder.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../alert/format-error-list';
 import { AlertService } from '../alert/alert.service';
+import { ListCreationComponent } from '../list-creation/list-creation.component';
 
 @Component({
     selector: 'jhi-list-builder',
@@ -102,7 +102,7 @@ export class ListBuilderComponent {
     }
 
     save() {
-        this.listBuilderService.save(this.data)
+        this.listBuilderService.openSaveModal(this.data)
             .then(() => this.onSuccess(),
                 () => {
                     // on reject - noop
