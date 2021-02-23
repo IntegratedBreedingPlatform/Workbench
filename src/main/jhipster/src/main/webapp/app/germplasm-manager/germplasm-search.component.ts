@@ -548,17 +548,20 @@ export class GermplasmSearchComponent implements OnInit {
         return true;
     }
 
-    dragStart($event, germplasm: Germplasm) {
-        const row: BaseEntity = {};
-        row.id = germplasm.gid;
-        row[ColumnLabels.GID] = germplasm.gid;
-        row[ColumnLabels.NAMES] = germplasm.names;
-        row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
-        row[ColumnLabels.LOT_UNITS] = germplasm.unit;
-        row[ColumnLabels.CROSS] = germplasm.pedigreeString;
-        row[ColumnLabels.LOCATIONS] = germplasm.locationName;
-        row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
-        this.listBuilderContext.data = [row];
+    dragStart($event) {
+        const selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+        this.listBuilderContext.data = selected.map((germplasm) => {
+            const row: BaseEntity = {};
+            row.id = germplasm.gid;
+            row[ColumnLabels.GID] = germplasm.gid;
+            row[ColumnLabels.NAMES] = germplasm.names;
+            row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
+            row[ColumnLabels.LOT_UNITS] = germplasm.unit;
+            row[ColumnLabels.CROSS] = germplasm.pedigreeString;
+            row[ColumnLabels.LOCATIONS] = germplasm.locationName;
+            row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
+            return row;
+        });
     }
 
     dragEnd($event) {

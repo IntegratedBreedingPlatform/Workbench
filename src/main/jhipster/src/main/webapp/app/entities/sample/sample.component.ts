@@ -49,6 +49,10 @@ export class SampleComponent implements OnInit, OnDestroy {
     crop: string;
     private paramSubscription: Subscription;
 
+    // { <data-index>: boolean }
+    selectedItems = {};
+    isSelectAllPages = false;
+
     constructor(
         private sampleService: SampleService,
         private sampleListService: SampleListService,
@@ -183,18 +187,62 @@ export class SampleComponent implements OnInit, OnDestroy {
         this.listBuilderContext.visible = !this.listBuilderContext.visible;
     }
 
-    dragStart($event, sample: Sample) {
-        const row: BaseEntity = {};
-        row['SAMPLE_ID'] = sample.sampleId;
-        row['DESIGNATION'] = sample.designation;
-        row['GID'] = sample.gid;
-        row['SAMPLE_NAME'] = sample.sampleName;
-        row['TAKEN_BY'] = sample.takenBy;
-        row['SAMPLING_DATE'] = sample.samplingDate;
-        row['SAMPLE_UID'] = sample.sampleBusinessKey;
-        row['PLATE'] = sample.plateId;
-        row['WELL'] = sample.well;
-        this.listBuilderContext.data = [row];
+    isSelected(sample: Sample) {
+        return this.selectedItems[sample.sampleId];
+    }
+
+    toggleSelect(sample: Sample) {
+        if (this.selectedItems[sample.sampleId]) {
+            delete this.selectedItems[sample.sampleId];
+        } else {
+            this.selectedItems[sample.sampleId] = true;
+        }
+    }
+
+    isPageSelected() {
+        const pageItemIds = this.getPageItemIds();
+        return this.size(this.selectedItems) && pageItemIds.every((itemId) => this.selectedItems[itemId]);
+    }
+
+    onSelectPage() {
+        const pageItemIds = this.getPageItemIds();
+        if (this.isPageSelected()) {
+            // remove all items
+            pageItemIds.forEach((itemId) => delete this.selectedItems[itemId]);
+        } else {
+            // check remaining items
+            pageItemIds.forEach((itemId) => this.selectedItems[itemId] = true);
+        }
+    }
+
+    getPageItemIds() {
+        return this.sampleList.samples.map((sample) => sample.sampleId);
+    }
+
+    onSelectAllPages() {
+        this.isSelectAllPages = !this.isSelectAllPages;
+        this.selectedItems = {};
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
+    }
+
+    dragStart($event) {
+        const selected = this.sampleList.samples.filter((sample) => this.selectedItems[sample.sampleId]);
+        this.listBuilderContext.data = selected.map((sample) => {
+            const row: BaseEntity = {};
+            row['SAMPLE_ID'] = sample.sampleId;
+            row['DESIGNATION'] = sample.designation;
+            row['GID'] = sample.gid;
+            row['SAMPLE_NAME'] = sample.sampleName;
+            row['TAKEN_BY'] = sample.takenBy;
+            row['SAMPLING_DATE'] = sample.samplingDate;
+            row['SAMPLE_UID'] = sample.sampleBusinessKey;
+            row['PLATE'] = sample.plateId;
+            row['WELL'] = sample.well;
+            return row;
+        });
     }
 
     private onSuccess(data, headers) {

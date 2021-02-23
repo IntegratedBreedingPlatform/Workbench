@@ -88,7 +88,9 @@
 			</thead>
 			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop">
 			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId;"
-				cdkDrag (cdkDragEntered)="dragStart($event, sample)">
+				[class.selected]="isSelected(sample)"
+				cdkDrag (cdkDragEntered)="dragStart($event)">
+				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect(sample)"></td>
 				<td>
 					<!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
 					{{sample.entryNo}}
