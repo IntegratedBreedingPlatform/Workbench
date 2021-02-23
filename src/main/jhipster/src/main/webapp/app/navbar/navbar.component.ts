@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavService } from './nav.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FlatTreeControl } from '@angular/cdk/tree';
