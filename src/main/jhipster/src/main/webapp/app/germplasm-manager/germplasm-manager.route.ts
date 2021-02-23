@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.component';
+import { LotCreationDialogComponent, LotCreationPopupComponent } from './inventory/lot-creation-dialog.component';
 import { RouteAccessService } from '../shared';
 import { GermplasmManagerComponent } from './germplasm-manager.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
@@ -99,5 +99,10 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         path: 'germplasm-import',
         component: GermplasmImportPopupComponent,
         outlet: 'popup'
+    },
+    {
+        path: 'lot-creation',
+        component: LotCreationPopupComponent,
+        outlet: 'popup',
     }
 ];

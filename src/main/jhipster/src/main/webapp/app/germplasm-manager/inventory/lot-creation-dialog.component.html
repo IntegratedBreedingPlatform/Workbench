@@ -1,3 +1,8 @@
+<div class="modal-header" *ngIf="showHeader">
+	<h5 class="modal-title"><span jhiTranslate="lot-creation.title"></span></h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">&times;
+	</button>
+</div>
 <div class="modal-body">
 	<form name="form" #f="ngForm" class="form-horizontal">
 		<div class="form-group row" [class.has-error]="!stockIdPrefix.valid">

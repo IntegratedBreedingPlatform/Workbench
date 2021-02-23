@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../shared/inventory/model/lot.model';
@@ -12,6 +12,10 @@ import { Location } from '../../shared/model/location.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
+import { AlertService } from '../../shared/alert/alert.service';
+import { PopupService } from '../../shared/modal/popup.service';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmManagerContext } from '../germplasm-manager.context';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -43,6 +47,8 @@ export class LotCreationDialogComponent implements OnInit {
     isConfirmDeposit = false;
     isLoading = false;
 
+    showHeader: boolean;
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private transactionService: TransactionService,
@@ -50,11 +56,14 @@ export class LotCreationDialogComponent implements OnInit {
                 private jhiAlertService: JhiAlertService,
                 private lotService: LotService,
                 private eventManager: JhiEventManager,
-                private paramContext: ParamContext
+                private paramContext: ParamContext,
+                private germplasmManagerContext: GermplasmManagerContext,
+                private activeModal: NgbActiveModal
     ) {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
+        this.showHeader = (queryParams.showHeader === 'true') ? true : false;
 
         if (queryParams.studyId) {
             // studyId has value if this Lot Creation page is called from Study Manager.
@@ -80,7 +89,6 @@ export class LotCreationDialogComponent implements OnInit {
             const defaultFavoriteLocation = favoriteLocations.find((location) => location.defaultLocation);
             this.favoriteLocIdSelected = defaultFavoriteLocation ? defaultFavoriteLocation.id : favoriteLocations[0] && favoriteLocations[0].id;
         });
-
     }
 
     ngOnInit() {
@@ -94,10 +102,7 @@ export class LotCreationDialogComponent implements OnInit {
         this.isLoading = true;
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
         const lotGeneratorBatchRequest = {
-            searchComposite: <SearchComposite<any, string>>({
-                itemIds: null,
-                searchRequest: this.searchRequestId
-            }),
+            searchComposite: this.getSearchComposite(),
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
@@ -108,6 +113,16 @@ export class LotCreationDialogComponent implements OnInit {
             .subscribe(
             (res) => this.createDeposit(res),
             (res) => this.onError(res));
+    }
+
+    private getSearchComposite(): SearchComposite<any, number> {
+        if (this.germplasmManagerContext.searchComposite) {
+            return this.germplasmManagerContext.searchComposite;
+        }
+        return {
+                itemIds: null,
+                searchRequest: this.searchRequestId
+            };
     }
 
     private createDeposit(lotUUIDs: string[]) {
@@ -151,4 +166,37 @@ export class LotCreationDialogComponent implements OnInit {
         }
         this.isLoading = false;
     }
+
+    close() {
+        this.activeModal.dismiss();
+    }
+
+}
+
+@Component({
+    selector: 'jhi-lot-creation-popup',
+    template: ''
+})
+
+export class LotCreationPopupComponent implements OnInit, OnDestroy {
+
+    routeSub: any;
+
+    constructor(private alertService: AlertService,
+                private route: ActivatedRoute,
+                private popupService: PopupService
+    ) {
+    }
+
+    ngOnInit() {
+        this.routeSub = this.route.params.subscribe((params) => {
+            this.popupService
+                .open(LotCreationDialogComponent as Component);
+        });
+    }
+
+    ngOnDestroy() {
+        this.routeSub.unsubscribe();
+    }
+
 }

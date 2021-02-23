@@ -22,6 +22,10 @@
 							replaceUrl="true"
 							queryParamsHandling="merge" jhiTranslate="germplasm-import-updates.title">
 					</button>
+					<button class="dropdown-item" type="submit" jhiTranslate="search-germplasm.actions.create-inventory-lots"
+							*jhiHasAnyAuthority="CREATE_INVENTORY_LOT_PERMISSIONS"
+							(click)="openCreateLots()">
+					</button>
 				</div>
 			</div>
 		</div>

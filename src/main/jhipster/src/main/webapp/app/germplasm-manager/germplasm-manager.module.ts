@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.component';
+import { LotCreationDialogComponent, LotCreationPopupComponent } from './inventory/lot-creation-dialog.component';
 import { RouterModule } from '@angular/router';
 import { GERMPLASM_MANAGER_ROUTES } from './germplasm-manager.route';
 import { BmsjHipsterSharedModule } from '../shared';
@@ -13,7 +13,6 @@ import { GermplasmImportModule } from './import/germplasm-import.module';
 import { GermplasmImportUpdateDialogComponent, GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddComponent, GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
 import { GermplasmListService } from './germplasm-list/germplasm-list.service';
-import { TreeDragDropService } from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -23,6 +22,7 @@ import { TreeDragDropService } from 'primeng/api';
     ],
     declarations: [
         LotCreationDialogComponent,
+        LotCreationPopupComponent,
         GermplasmManagerComponent,
         GermplasmSearchComponent,
         GermplasmListCreationComponent,
@@ -36,6 +36,7 @@ import { TreeDragDropService } from 'primeng/api';
     ],
     entryComponents: [
         LotCreationDialogComponent,
+        LotCreationPopupComponent,
         GermplasmManagerComponent,
         GermplasmSearchComponent,
         GermplasmListCreationComponent,

@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 
 declare var $: any;
@@ -33,6 +33,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
+    CREATE_INVENTORY_LOT_PERMISSIONS = CREATE_INVENTORY_LOT_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
@@ -549,13 +550,7 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
-        if (this.isSelectAll) {
-            searchComposite.searchRequest = this.request;
-        } else {
-            searchComposite.itemIds = this.selectedItems;
-        }
-        this.germplasmManagerContext.searchComposite = searchComposite;
+        this.addSearchCompositeToContext();
 
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
             replaceUrl: true,
@@ -568,6 +563,31 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
+        this.addSearchCompositeToContext();
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
+    openCreateLots() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        this.addSearchCompositeToContext();
+
+        this.router.navigate(['/', { outlets: { popup: 'lot-creation' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge',
+            queryParams: {
+                showHeader: true
+            }
+        });
+    }
+
+    private addSearchCompositeToContext() {
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         if (this.isSelectAll) {
             searchComposite.searchRequest = this.request;
@@ -575,12 +595,8 @@ export class GermplasmSearchComponent implements OnInit {
             searchComposite.itemIds = this.selectedItems;
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
-
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
     }
+
 }
 
 export enum ColumnLabels {

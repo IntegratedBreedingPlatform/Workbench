@@ -5,6 +5,7 @@
         "file.import.description": "Choose the file you would like to import with the format: Excel"
     } ,
     "lot-creation": {
+        "title": "Create Lots",
         "success": "{{param}} lots were created successfully",
         "confirm.transactions.checkbox.label": "Confirm transactions on saving"
     },
@@ -49,7 +50,8 @@
         "actions": {
             "create-list": "Create new list",
             "add-to-list": "Add to existing list",
-            "import": "Import germplasm"
+            "import": "Import germplasm",
+            "create-inventory-lots": "Create inventory lots"
         },
         "included-gids": "(+ included germplasm)"
     },
