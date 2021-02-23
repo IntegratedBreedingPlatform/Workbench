@@ -342,7 +342,10 @@ $table-curved-border-radius: 0.625rem; // 10 px default
         }
     }
 }
-
+tr.selected {
+    color: olivedrab;
+    background-color: #bed6b2 !important;
+}
 
 // FIXME github.com/twbs/bootstrap/issues/23499#issuecomment-346845362
 .btn-primary {
