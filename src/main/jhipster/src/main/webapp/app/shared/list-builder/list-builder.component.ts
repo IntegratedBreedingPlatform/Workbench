@@ -5,6 +5,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ListBuilderService } from '../list-creation/service/list-builder.service';
 import { AlertService } from '../alert/alert.service';
 import { ListEntry } from './model/list.model';
+import { ModalConfirmComponent } from '../modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-list-builder',
@@ -27,7 +29,8 @@ export class ListBuilderComponent {
         public context: ListBuilderContext,
         private modalService: NgbModal,
         private listBuilderService: ListBuilderService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private translateService: TranslateService,
     ) {
     }
 
@@ -101,7 +104,14 @@ export class ListBuilderComponent {
         }
     }
 
-    deleteSelected() {
+    async deleteSelected() {
+        const modalRef = this.modalService.open(ModalConfirmComponent);
+        modalRef.componentInstance.message = this.translateService.instant('list-builder.delete.confirm');
+        try {
+            await modalRef.result;
+        } catch (e) {
+            return;
+        }
         if (this.isSelectAllPages) {
             this.data = [];
         } else {
@@ -110,7 +120,14 @@ export class ListBuilderComponent {
         this.selectedItems = {};
     }
 
-    reset() {
+    async reset() {
+        const modalRef = this.modalService.open(ModalConfirmComponent);
+        modalRef.componentInstance.message = this.translateService.instant('list-builder.reset.confirm');
+        try {
+            await modalRef.result;
+        } catch (e) {
+            return;
+        }
         this.data = [];
         this.selectedItems = {};
     }

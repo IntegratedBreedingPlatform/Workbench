@@ -23,7 +23,7 @@
 						<label class="form-check-label ml-1" for="list-builder-select-all" jhiTranslate="global.select.all"></label>
 					</div>
 					<div ngbDropdown class="ml-auto" placement="bottom-right">
-						<button class="btn btn-info" id="actionMenu" ngbDropdownToggle>
+						<button class="btn btn-info" id="actionMenu" ngbDropdownToggle [disabled]="!data.length">
 							<span>Actions</span>
 						</button>
 						<div ngbDropdownMenu aria-labelledby="actionMenu">
@@ -84,7 +84,7 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" (click)="reset()">
+			<button type="button" class="btn btn-secondary" (click)="reset()" [disabled]="!data.length">
 				<span jhiTranslate="reset"></span>
 			</button>
 			<button (click)="save()" class="btn btn-primary" [disabled]="!data.length">

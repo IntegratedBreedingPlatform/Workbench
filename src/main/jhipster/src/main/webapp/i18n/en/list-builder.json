@@ -6,6 +6,8 @@
         "show": "Show list builder",
         "hide": "Hide list builder",
         "no.data": "Drag items here",
-        "delete.selected.items": "Remove selected entries from list"
+        "delete.selected.items": "Remove selected entries from list",
+        "delete.confirm": "Do you want to remove the <strong>selected</strong> items from the list builder?",
+        "reset.confirm": "Do you want to remove <strong>all</strong> items from the list builder?"
     }
 }
