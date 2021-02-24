@@ -78,9 +78,6 @@ export class TreeTableComponent implements OnInit {
                 private activatedRoute: ActivatedRoute,
                 private router: Router,
                 private modalService: NgbModal) {
-        this.paramSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            service.setCropAndProgram(cropName, currentProgramId);
-        });
     }
 
     ngOnInit(): void {
