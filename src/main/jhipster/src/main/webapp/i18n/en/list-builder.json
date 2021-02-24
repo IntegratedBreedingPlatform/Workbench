@@ -5,6 +5,7 @@
         "entries": "List entries",
         "show": "Show list builder",
         "hide": "Hide list builder",
-        "no.data": "Drag items here"
+        "no.data": "Drag items here",
+        "delete.selected.items": "Remove selected entries from list"
     }
 }

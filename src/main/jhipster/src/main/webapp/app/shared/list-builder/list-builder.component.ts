@@ -101,6 +101,15 @@ export class ListBuilderComponent {
         }
     }
 
+    deleteSelected() {
+        if (this.isSelectAllPages) {
+            this.data = [];
+        } else {
+            this.data = this.data.filter((row) => !this.selectedItems[row.internal_id]);
+        }
+        this.selectedItems = {};
+    }
+
     reset() {
         this.data = [];
         this.selectedItems = {};

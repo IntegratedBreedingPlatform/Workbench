@@ -22,6 +22,15 @@
 						<input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages()" id="list-builder-select-all">
 						<label class="form-check-label ml-1" for="list-builder-select-all" jhiTranslate="global.select.all"></label>
 					</div>
+					<div ngbDropdown class="ml-auto" placement="bottom-right">
+						<button class="btn btn-info" id="actionMenu" ngbDropdownToggle>
+							<span>Actions</span>
+						</button>
+						<div ngbDropdownMenu aria-labelledby="actionMenu">
+							<button class="dropdown-item" type="submit" (click)="deleteSelected()" jhiTranslate="list-builder.delete.selected.items">
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="table-responsive">
