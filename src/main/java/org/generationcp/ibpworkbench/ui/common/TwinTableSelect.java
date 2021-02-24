@@ -1,13 +1,6 @@
 
 package org.generationcp.ibpworkbench.ui.common;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.middleware.pojos.BeanFormState;
-
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -27,6 +20,12 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.middleware.pojos.BeanFormState;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
@@ -531,17 +530,19 @@ public class TwinTableSelect<T extends BeanFormState> extends GridLayout {
 
 	}
 
-	public void removeCheckedSelectedItems() {
+	public Integer removeCheckedSelectedItems() {
 
+		Integer removedItemsCount = 0;
 		for (Object itemId : (Set<Object>) this.getTableRight().getValue()) {
 			if (((T) itemId).isActive() && ((T) itemId).isEnabled()) {
 				((T) itemId).setActive(false);
 				this.getTableLeft().addItem(itemId);
 				this.getTableRight().removeItem(itemId);
-
+				removedItemsCount++;
 			}
 		}
 		this.getChkSelectAllRight().setValue(false);
+		return removedItemsCount;
 	}
 
 	public void addCheckedSelectedItems() {
