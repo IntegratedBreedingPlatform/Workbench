@@ -37,7 +37,6 @@ import java.util.Set;
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {
 
-	private static final String SUPERADMIN_USERNAME = "superadmin";
 	private static final int USER_ID = 123;
 	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
 
@@ -71,12 +70,8 @@ public class ProgramServiceTest {
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
 
-	private Person loggedInPerson;
-	private Person memberPerson;
-	private Person superAdminPerson;
 	private WorkbenchUser loggedInUser;
 	private WorkbenchUser memberUser;
-	private WorkbenchUser superAdminUser;
 	private WorkbenchUser cropUser;
 
 	@Before
@@ -94,13 +89,9 @@ public class ProgramServiceTest {
 
 	private void initializeTestPersonsAndUsers() {
 		// Setup test users and persons
-		this.loggedInPerson = this.createPerson(1, "Jan", "Erik");
-		this.memberPerson = this.createPerson(2, "John", "Doe");
-		this.superAdminPerson = this.createPerson(3, "Default", "SuperAdmin");
 
 		this.loggedInUser = this.createUser(1, "mrbreeder", 1);
 		this.memberUser = this.createUser(2, "mrbreederfriend", 2);
-		this.superAdminUser = this.createUser(3, ProgramServiceTest.SUPERADMIN_USERNAME, 3);
 		this.cropUser = this.loggedInUser;
 		this.cropUser.setUserid(1);
 
@@ -161,7 +152,7 @@ public class ProgramServiceTest {
 		final List<Integer> activeUserIds = new ArrayList<>();
 		activeUserIds.addAll(Arrays.asList(1, 2));
 		final Collection<WorkbenchUser> userList = Arrays.asList(new WorkbenchUser(1));
-		Mockito.when(this.userService.getActiveUserIDsWithProgramRoleByProjectId(ArgumentMatchers.anyLong()))
+		Mockito.when(this.userService.getActiveUserIDsWithAccessToTheProgram(ArgumentMatchers.anyLong()))
 			.thenReturn(activeUserIds);
 		final List<Integer> removedUserIds = this.programService.getUsersNotAssociatedToSpecificProgram(1, userList);
 		Assert.assertEquals(1, removedUserIds.size());
@@ -192,14 +183,6 @@ public class ProgramServiceTest {
 		project.setCropType(cropType);
 
 		return project;
-	}
-
-	private Person createPerson(final Integer personId, final String firstName, final String lastName) {
-		final Person person = new Person();
-		person.setId(personId);
-		person.setFirstName(firstName);
-		person.setLastName(lastName);
-		return person;
 	}
 
 	private WorkbenchUser createUser(final Integer userId, final String username, final Integer personId) {
