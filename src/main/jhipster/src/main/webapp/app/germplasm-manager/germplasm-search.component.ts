@@ -85,6 +85,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmHiddenColumns = hiddenColumns;
     }
 
+    // TODO rewrite as map (see sample.component)
     selectedItems: any[] = [];
     isSelectAll = false;
 
@@ -548,8 +549,13 @@ export class GermplasmSearchComponent implements OnInit {
         return true;
     }
 
-    dragStart($event) {
-        const selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+    dragStart($event, dragged: Germplasm) {
+        let selected;
+        if (this.selectedItems.indexOf(dragged.gid) !== -1) {
+            selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+        } else {
+            selected = [dragged];
+        }
         this.listBuilderContext.data = selected.map((germplasm) => {
             const row: BaseEntity = {};
             row.id = germplasm.gid;

@@ -228,8 +228,13 @@ export class SampleComponent implements OnInit, OnDestroy {
         return Object.keys(obj).length;
     }
 
-    dragStart($event) {
-        const selected = this.sampleList.samples.filter((sample) => this.selectedItems[sample.sampleId]);
+    dragStart($event, dragged: Sample) {
+        let selected;
+        if (this.selectedItems[dragged.sampleId]) {
+            selected = this.sampleList.samples.filter((sample) => this.selectedItems[sample.sampleId]);
+        } else {
+            selected = [dragged];
+        }
         this.listBuilderContext.data = selected.map((sample) => {
             const row: BaseEntity = {};
             row['SAMPLE_ID'] = sample.sampleId;

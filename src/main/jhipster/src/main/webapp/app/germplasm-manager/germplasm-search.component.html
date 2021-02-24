@@ -135,7 +135,7 @@
 			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop" >
 			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId"
 				[class.selected]="isSelected(germplasm)"
-				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event)">
+				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, germplasm)">
 
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
