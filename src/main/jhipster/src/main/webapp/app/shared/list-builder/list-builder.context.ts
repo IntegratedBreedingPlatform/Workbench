@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BaseEntity } from '..';
+import { ListEntry } from './model/list.model';
 
 @Injectable()
 export class ListBuilderContext {
     visible = false;
-    data: BaseEntity[] = [];
+    data: ListEntry[] = [];
 }

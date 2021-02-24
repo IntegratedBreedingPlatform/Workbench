@@ -10,7 +10,8 @@ export class SampleList extends ListModel {
 
 export class SampleListEntry extends ListEntry {
     constructor(
-        public sampleId: number
+        public sampleId?: number,
+        public sampleNumber?: number
     ) {
         super();
     }

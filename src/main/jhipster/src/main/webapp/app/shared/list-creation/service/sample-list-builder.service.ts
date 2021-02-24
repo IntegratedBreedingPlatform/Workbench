@@ -17,12 +17,11 @@ export class SampleListBuilderService implements ListBuilderService {
         const modalRef = this.modalService.open(SampleListCreationComponent as Component,
             { size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.entries = param.map((row, i) => {
-            return <SampleListEntry>({
-                sampleId: row['SAMPLE_ID'],
-                // TODO IBP-4375 list_data / set new entry_no
-                sampleNumber: i + 1
-            });
-
+            const entry = new SampleListEntry();
+            entry.sampleId = row['SAMPLE_ID'];
+            // TODO IBP-4375 list_data / set new entry_no
+            entry.sampleNumber = i + 1;
+            return entry;
         });
         return modalRef.result;
     }

@@ -1,21 +1,19 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { ListBuilderContext } from './list-builder.context';
-import { BaseEntity } from '..';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { GermplasmList, GermplasmListEntry } from '../model/germplasm-list';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ListBuilderService } from '../list-creation/service/list-builder.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { formatErrorList } from '../alert/format-error-list';
 import { AlertService } from '../alert/alert.service';
-import { ListCreationComponent } from '../list-creation/list-creation.component';
+import { ListEntry } from './model/list.model';
 
 @Component({
     selector: 'jhi-list-builder',
     templateUrl: './list-builder.component.html'
 })
 export class ListBuilderComponent {
-    data: BaseEntity[] = [];
+
+    HIDDEN_COLUMNS = ['_internal_id', 'entryNo'];
+    data: ListEntry[] = [];
     page = 1;
     pageSize = 20;
 
@@ -66,7 +64,7 @@ export class ListBuilderComponent {
             return [];
         }
         return this.data.slice(this.pageOffset(), this.page * this.pageSize)
-            .map((row, i) => this.pageOffset() + i);
+            .map((row) => row.internal_id);
     }
 
     pageOffset() {
@@ -82,15 +80,21 @@ export class ListBuilderComponent {
         if (!(this.data && this.data.length)) {
             return [];
         }
-        return Object.keys(this.data[0]);
+        return Object.keys(this.data[0]).filter((header) => this.HIDDEN_COLUMNS.indexOf(header) === -1);
     }
 
     size(obj) {
         return Object.keys(obj).length;
     }
 
-    drop($event: CdkDragDrop<any>) {
-        if (this.data.length > 0) {
+    drop(event: CdkDragDrop<any>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(this.data, event.previousIndex, event.currentIndex);
+            // if (this.selectedItems[event.previousIndex]) {
+            //     this.selectedItems[event.currentIndex] = true;
+            //     // delete this.selectedItems[event.previousIndex];
+            // }
+        } else if (this.data.length > 0) {
             this.data.push(...this.context.data);
         } else {
             this.data = this.context.data;

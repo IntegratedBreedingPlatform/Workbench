@@ -24,6 +24,7 @@ import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } fr
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { BaseEntity } from '../shared';
+import { ListEntry } from '../shared/list-builder/model/list.model';
 
 declare var $: any;
 
@@ -557,8 +558,7 @@ export class GermplasmSearchComponent implements OnInit {
             selected = [dragged];
         }
         this.listBuilderContext.data = selected.map((germplasm) => {
-            const row: BaseEntity = {};
-            row.id = germplasm.gid;
+            const row: ListEntry = new ListEntry();
             row[ColumnLabels.GID] = germplasm.gid;
             row[ColumnLabels.NAMES] = germplasm.names;
             row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;

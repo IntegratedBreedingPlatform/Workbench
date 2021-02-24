@@ -39,10 +39,11 @@
 						</th>
 					</thead>
 					<tbody cdkDropList id="listBuilderDrop" (cdkDropListDropped)="drop($event)">
-						<tr *ngFor="let row of data | slice: (page-1) * pageSize : page * pageSize; let index = index"
-							[class.selected]="isSelected(pageOffset() + index)">
+						<tr *ngFor="let row of data | slice: pageOffset() : page * pageSize; let index = index"
+							[class.selected]="isSelected(row.internal_id)"
+							cdkDrag >
 							<td *ngIf="!isSelectAllPages">
-								<input type="checkbox" [checked]="isSelected(pageOffset() + index)" (click)="toggleSelect(pageOffset() + index)">
+								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect(row.internal_id)">
 							</td>
 							<td>{{pageOffset() + index + 1}}</td>
 							<td *ngFor="let header of headers()">

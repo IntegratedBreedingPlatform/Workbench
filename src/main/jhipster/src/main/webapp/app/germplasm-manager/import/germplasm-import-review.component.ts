@@ -328,12 +328,11 @@ export class GermplasmImportReviewComponent implements OnInit {
         const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
             { size: 'lg', backdrop: 'static' });
         germplasmListCreationModalRef.componentInstance.entries = this.context.data.map((row) => {
-            return <GermplasmListEntry>({
-                gid: this.getSavedGid(row),
-                entryCode: row[HEADERS.ENTRY_CODE],
-                designation: row[row[HEADERS['PREFERRED NAME']]],
-                entryNo: Number(row[HEADERS.ENTRY_NO])
-            });
+            const entry = new GermplasmListEntry();
+            entry.gid = this.getSavedGid(row);
+            entry.entryCode = row[HEADERS.ENTRY_CODE];
+            entry.entryNo = Number(row[HEADERS.ENTRY_NO]);
+            return entry
         });
     }
 

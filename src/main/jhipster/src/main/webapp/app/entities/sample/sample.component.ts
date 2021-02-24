@@ -19,6 +19,7 @@ import { ListBuilderService } from '../../shared/list-creation/service/list-buil
 import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
 import { TreeService } from '../../shared/tree/tree.service';
 import { SampleTreeService } from './tree-table';
+import { ListEntry } from '../../shared/list-builder/model/list.model';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -236,7 +237,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             selected = [dragged];
         }
         this.listBuilderContext.data = selected.map((sample) => {
-            const row: BaseEntity = {};
+            const row = new ListEntry();
             row['SAMPLE_ID'] = sample.sampleId;
             row['DESIGNATION'] = sample.designation;
             row['GID'] = sample.gid;
