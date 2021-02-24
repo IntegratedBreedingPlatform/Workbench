@@ -8,8 +8,10 @@ import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { TreeTableComponent } from './tree-table';
+import {SampleListService} from "./sample-list.service";
 
 declare const cropName: string;
+declare const currentProgramId: string;
 declare var $: any;
 
 @Component({
@@ -28,7 +30,9 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
 
     lists: SampleList[] = [];
 
-    constructor(private activatedRoute: ActivatedRoute,
+    constructor(
+                private sampleListService: SampleListService,
+                private activatedRoute: ActivatedRoute,
                 private modalService: NgbModal,
                 public activeModal: NgbActiveModal,
                 private router: Router,
@@ -50,6 +54,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
+            this.sampleListService.setCropAndProgram(this.crop, currentProgramId);
         });
 
         if (!this.helpLink || !this.helpLink.length) {
