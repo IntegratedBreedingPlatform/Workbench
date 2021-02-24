@@ -8,7 +8,7 @@ import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { TreeTableComponent } from './tree-table';
-import {SampleListService} from "./sample-list.service";
+import {SampleListService} from './sample-list.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
