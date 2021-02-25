@@ -17,7 +17,7 @@
                 <jhi-alert></jhi-alert>
             </div>
         </section>
-        <section *ngIf="listBuilderContext.visible" class="col-5 mb-3">
+        <section [hidden]="!listBuilderContext.visible" class="col-5 mb-3">
             <jhi-list-builder></jhi-list-builder>
         </section>
     </div>
