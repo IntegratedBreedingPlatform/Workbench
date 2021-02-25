@@ -38,6 +38,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.Objects;
 
 @Configurable
 public class DeleteProjectAction implements ClickListener, ActionListener {
@@ -100,16 +101,15 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
-		final Application app = window.getApplication();
 		final Project currentProject = this.contextUtil.getProjectInContext();
 
-		if (app.getMainWindow() != null) {
+		if (!Objects.isNull(window)) {
 			if (currentProject == null) {
 				MessageNotifier.showError(window, this.messageSource.getMessage(Message.INVALID_OPERATION),
 						this.messageSource.getMessage(Message.INVALID_NO_PROGRAM_SELECTED));
 
 			}
-			ConfirmDialog.show(app.getMainWindow(), this.messageSource.getMessage(Message.DELETE_PROJECT_LINK),
+			ConfirmDialog.show(window, this.messageSource.getMessage(Message.DELETE_PROJECT_LINK),
 					this.messageSource.getMessage(Message.DELETE_PROGRAM_CONFIRM, currentProject.getProjectName()),
 					this.messageSource.getMessage(Message.YES), this.messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
 
@@ -127,7 +127,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 									DeleteProjectAction.LOG.error(e.getMessage(), e);
 								}
 								// go back to dashboard
-								new HomeAction().doAction(window, "/Home", true);
+								window.executeJavaScript("window.top.location.href='/ibpworkbench/main/'");
 							}
 						}
 					});
