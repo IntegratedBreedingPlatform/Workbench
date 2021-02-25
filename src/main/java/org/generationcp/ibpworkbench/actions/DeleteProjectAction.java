@@ -10,7 +10,6 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.Application;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
@@ -20,7 +19,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -37,6 +35,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,8 +68,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@Autowired
 	private GermplasmListManager germplasmListManager;
 
-	@Autowired
-	private ProgramService programService;
+	@Resource
+	private HttpServletRequest request;
 
 	public DeleteProjectAction() {
 		// does nothing here
@@ -123,11 +123,15 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 							if (dialog.isConfirmed()) {
 								try {
 									DeleteProjectAction.this.deleteProgram(currentProject);
+
+									org.generationcp.commons.util.ContextUtil
+										.setContextInfo(DeleteProjectAction.this.request, DeleteProjectAction.this.contextUtil.getCurrentWorkbenchUserId(), null, null);
+
 								} catch (final MiddlewareQueryException e) {
 									DeleteProjectAction.LOG.error(e.getMessage(), e);
 								}
 								// go back to dashboard
-								window.executeJavaScript("window.top.location.href='/ibpworkbench/main/'");
+								window.executeJavaScript("window.top.postMessage({ programDeleted: 'true'}, '*');");
 							}
 						}
 					});
