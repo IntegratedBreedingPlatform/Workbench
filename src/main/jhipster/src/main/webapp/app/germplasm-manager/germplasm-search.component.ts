@@ -38,7 +38,6 @@ export class GermplasmSearchComponent implements OnInit {
     ColumnLabels = ColumnLabels;
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
-    @ViewChild(ColumnFilterComponent) public columnFilterComponent: ColumnFilterComponent;
 
     eventSubscriber: Subscription;
     germplasmList: Germplasm[];
@@ -426,17 +425,10 @@ export class GermplasmSearchComponent implements OnInit {
     registerFilterBy() {
         // E.g germplasm changed via import.
         this.eventSubscriber = this.eventManager.subscribe('filterByGid', (event) => {
-
-            this.columnFilterComponent.clearFilters();
-
-            // Get the existing gids filter
-            const gidsFilter = this.filters.find((filter) => filter.key === 'gids');
-            gidsFilter.value = event.content.join(',');
-
-            // Manually add it to the filters and apply.
-            this.columnFilterComponent.selectedFilter = gidsFilter.key;
-            this.columnFilterComponent.AddFilter();
-            this.columnFilterComponent.updateListFilter(gidsFilter);
+            this.resetFilters();
+            this.request.gids = event.content;
+            ColumnFilterComponent.reloadFilters(this.filters, this.request);
+            this.resetTable();
         });
     }
 
