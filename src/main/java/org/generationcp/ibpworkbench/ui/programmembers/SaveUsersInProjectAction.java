@@ -19,9 +19,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.ibpworkbench.ui.common.TwinTableSelect;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +30,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @SuppressWarnings("LocalCanBeFinal")
 @Configurable
@@ -46,12 +42,11 @@ public class SaveUsersInProjectAction implements ClickListener {
 	private final TwinTableSelect<WorkbenchUser> select;
 
 	private final Project project;
-	
-	@Autowired
-	private ProgramService programService;
+
+	private final ProgramMembersPanel programMembersPanel;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ProgramService programService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -59,9 +54,10 @@ public class SaveUsersInProjectAction implements ClickListener {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-	public SaveUsersInProjectAction(Project project, TwinTableSelect<WorkbenchUser> select) {
-		this.project = project;
-		this.select = select;
+	public SaveUsersInProjectAction(final ProgramMembersPanel programMembersPanel) {
+		this.programMembersPanel = programMembersPanel;
+		this.project = programMembersPanel.getProject();
+		this.select = programMembersPanel.getSelect();
 	}
 
 	public boolean validate() {
@@ -75,55 +71,30 @@ public class SaveUsersInProjectAction implements ClickListener {
 		}
 		
 		final Collection<WorkbenchUser> userList = this.select.getValue();
-		final Role role = new Role();
 		try {
 			final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				@Override
 				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					
 					SaveUsersInProjectAction.this.programService.updateMembersProjectUserInfo(userList, project);
-
 					MessageNotifier.showMessage(event.getComponent().getWindow(), "Success", "Successfully updated this project's members list.");
 				}
 			});
-
+			programMembersPanel.assemble();
 		} catch (MiddlewareQueryException ex) {
 			SaveUsersInProjectAction.LOG.error(ex.getMessage(), ex);
 			// do nothing because getting the User will not fail
 			event.getComponent().getWindow().showNotification("");
 			MessageNotifier.showError(event.getComponent().getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					"A database problem occured while updating this project's members list. Please see error logs.");
+				"A database problem occurred while updating this project's members list. Please see error logs.");
 		} catch (Exception e) {
 			SaveUsersInProjectAction.LOG.error(e.getMessage(), e);
 		}
 	}
 
-	
-	public List<Integer> getRemovedUserIds(List<Integer> activeUserIds, Collection<WorkbenchUser> userList) {
-		List<Integer> removedUserIds = new ArrayList<>();
-		for(Integer activeUserId: activeUserIds) {
-			boolean isProgramMember = false;
-			for(WorkbenchUser user: userList) {
-				if(user.getUserid().equals(activeUserId)) {
-					isProgramMember = true;
-					break;
-				}
-			}
-			if(!isProgramMember) removedUserIds.add(activeUserId);
-		}
-		return removedUserIds;
-	}
-
 	public void setTransactionManager(PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
 	}
-
-	
-	public void setWorkbenchDataManager(WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
-	}
-
 	
 	public void setProgramService(ProgramService programService) {
 		this.programService = programService;

@@ -27,7 +27,7 @@ export class TransactionService {
 
     getTransactionsByGermplasmId(gid: number, lotId: number, request: any): Observable<HttpResponse<Transaction[]>> {
         if (this.context.programUUID) {
-            request['programUUID'] = this.context.programUUID
+            request['programUUID'] = this.context.programUUID;
         }
         if (lotId) {
             request['lotId'] = lotId;

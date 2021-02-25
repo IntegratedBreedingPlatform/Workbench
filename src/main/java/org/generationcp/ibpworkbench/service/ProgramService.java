@@ -12,8 +12,8 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.user.UserDto;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -113,8 +112,12 @@ public class ProgramService {
 	public void updateMembersProjectUserInfo(final Collection<WorkbenchUser> userList, final Project project) {
 		//Addition of new members
 		for (final WorkbenchUser u : userList) {
-			for (final UserRole role : u.getRoles()) {
-				this.saveWorkbenchUserToUserRoleMapping(u, role );
+			if (u.isEnabled()) {
+				u.getRoles().stream().filter(ur -> ur.getId() == null && ur.getCreatedBy() == null)
+					.forEach(ur -> ur.setCreatedBy(this.contextUtil.getCurrentWorkbenchUser()));
+
+				final UserDto userDto = new UserDto(u);
+				this.userService.updateUser(userDto);
 			}
 		}
 
@@ -127,25 +130,8 @@ public class ProgramService {
 
 	}
 
-	private void saveWorkbenchUserToUserRoleMapping(final WorkbenchUser user,
-		final UserRole userRole) {
-		if (userRole.getId() == null) {
-			if (userRole.getCreatedBy() == null) {
-				userRole.setCreatedBy(this.contextUtil.getCurrentWorkbenchUser());
-			}
-
-			if (userRole.getCreatedDate() == null) {
-				userRole.setCreatedDate(new Date());
-			}
-
-			userRole.setUser(user);
-
-			this.workbenchDataManager.saveOrUpdateUserRole(userRole);
-		}
-	}
-
 	protected List<Integer> getUsersNotAssociatedToSpecificProgram(final long projectId, final Collection<WorkbenchUser> workbenchUsers) {
-		final List<Integer> activeUserIds = this.userService.getActiveUserIDsWithProgramRoleByProjectId(projectId);
+		final List<Integer> activeUserIds = this.userService.getActiveUserIDsWithAccessToTheProgram(projectId);
 		final List<Integer> userIdsOfUsersAssociatedToAProgram = new ArrayList<>();
 		for (final WorkbenchUser user : workbenchUsers) {
 			userIdsOfUsersAssociatedToAProgram.add(user.getUserid());

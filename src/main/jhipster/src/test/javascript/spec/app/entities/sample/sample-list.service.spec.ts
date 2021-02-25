@@ -28,7 +28,7 @@ describe('Service Tests', () => {
             injector = getTestBed();
             service = injector.get(SampleListService);
             httpMock = injector.get(HttpTestingController);
-            service.setCropAndProgram(cropName, currentProgramId)
+            service.setCropAndProgram(cropName, currentProgramId);
         });
 
         describe('Service methods', () => {

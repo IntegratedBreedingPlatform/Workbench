@@ -31,7 +31,7 @@ export class InventoryDetailsModalComponent implements OnInit {
     ngOnInit() {
         (<any>window).closeModal = () => {
             this.activeModal.close();
-        }
+        };
     }
 
 }

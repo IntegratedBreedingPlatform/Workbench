@@ -28,14 +28,14 @@ module.exports = (options) => webpackMerge(commonConfig({env: ENV}), {
             secure: false,
             headers: {host: 'localhost:9000'}
         }],
+        stats: options.stats,
         watchOptions: {
             ignored: /node_modules/
         }
     },
     entry: {
         polyfills: './src/main/webapp/app/polyfills',
-        // TODO migrate IBP-4093
-        // global: './src/main/webapp/content/css/global.scss',
+        global: './src/main/webapp/content/scss/global.scss',
         main: './src/main/webapp/app/app.main'
     },
     output: {
@@ -97,6 +97,7 @@ module.exports = (options) => webpackMerge(commonConfig({env: ENV}), {
             loaders: ['style-loader', 'css-loader']
         }]
     },
+    stats: options.stats,
     plugins: [
         new SimpleProgressWebpackPlugin({
             format: options.stats === 'minimal' ? 'compact' : 'expanded'

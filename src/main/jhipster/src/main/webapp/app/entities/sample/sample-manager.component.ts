@@ -13,11 +13,8 @@ declare const cropName: string;
 declare var $: any;
 
 @Component({
-    encapsulation: ViewEncapsulation.None,
     selector: 'jhi-sample-manager',
-    templateUrl: './sample-manager.component.html',
-    // TODO migrate IBP-4093
-    styleUrls: ['../../../content/css/global-bs4.scss']
+    templateUrl: './sample-manager.component.html'
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 

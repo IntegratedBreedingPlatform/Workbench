@@ -12,7 +12,6 @@ import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ProjectUserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SaveUsersInProjectActionTest {
-
-	private static final Integer USER_ID = 100;
 
 	@Mock
 	private ProgramService programService;
@@ -56,6 +53,9 @@ public class SaveUsersInProjectActionTest {
 	@Mock
 	private Window window;
 
+	@Mock
+	private ProgramMembersPanel programMembersPanel;
+
 	@InjectMocks
 	private SaveUsersInProjectAction saveUsersInProjectAction;
 
@@ -63,14 +63,16 @@ public class SaveUsersInProjectActionTest {
 
 	private Set<WorkbenchUser> userList;
 
-	private ProjectUserInfo projectUserInfo;
-
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 
+
 		this.project = ProjectTestDataInitializer.createProject();
-		this.saveUsersInProjectAction = new SaveUsersInProjectAction(this.project, this.twinTable);
+		programMembersPanel = new ProgramMembersPanel(project);
+		programMembersPanel.setSelect(twinTable);
+
+		this.saveUsersInProjectAction = new SaveUsersInProjectAction(programMembersPanel);
 		this.saveUsersInProjectAction.setTransactionManager(this.transactionManager);
 		this.saveUsersInProjectAction.setProgramService(this.programService);
 

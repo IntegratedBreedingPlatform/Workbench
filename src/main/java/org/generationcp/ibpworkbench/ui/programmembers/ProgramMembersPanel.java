@@ -64,8 +64,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -222,9 +222,11 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				ProgramMembersPanel.this.getSelect().removeCheckedSelectedItems();
-				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
-					ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
+				final Integer removedItemsCount = ProgramMembersPanel.this.getSelect().removeCheckedSelectedItems();
+				if (removedItemsCount > 0) {
+					MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
+						ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
+				}
 			}
 		});
 
@@ -281,9 +283,8 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 							final Set<Object> sourceItemIds = (Set<Object>) source.getValue();
 							for (final Object itemId : sourceItemIds) {
-								final List<UserRole> userRoles = new ArrayList<>();
-								userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId));
-								((WorkbenchUser) itemId).setRoles(userRoles);
+								final UserRole userRole = ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId);
+								((WorkbenchUser) itemId).getRoles().add(userRole);
 								if (((WorkbenchUser) itemId).isEnabled()) {
 									source.removeItem(itemId);
 									target.addItem(itemId);
@@ -299,9 +300,9 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 							if (itemIdOver != null && (sourceItemIds.isEmpty() || selectedItemIsDisabled)) {
 								if (((WorkbenchUser) itemIdOver).isEnabled()) {
-									final List<UserRole> userRoles = new ArrayList<>();
-									userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemIdOver));
-									((WorkbenchUser) itemIdOver).setRoles(userRoles);
+									final UserRole newUserRole =
+										ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemIdOver);
+									((WorkbenchUser) itemIdOver).getRoles().add(newUserRole);
 									source.removeItem(itemIdOver);
 									target.addItem(itemIdOver);
 								}
@@ -341,33 +342,34 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				final Table target = (Table) dragAndDropEvent.getTargetDetails().getTarget();
 
 				final Object itemIdOver = t.getItemId();
-				final WorkbenchUser workbenchUser = (WorkbenchUser) itemIdOver;
-				workbenchUser.getRoles().remove(0);
+				final Set<Object> sourceItemIds = new HashSet<>((Set<Object>) source.getValue());
+				sourceItemIds.add(itemIdOver);
 
-				final Set<Object> sourceItemIds = (Set<Object>) source.getValue();
+				int droppedItemsCount = 0;
 				for (final Object itemId : sourceItemIds) {
 					if (((WorkbenchUser) itemId).isEnabled()) {
+						final WorkbenchUser workbenchUser = (WorkbenchUser) itemId;
+
+						final Optional<UserRole>
+							programRole = workbenchUser.getRoles().stream()
+							.filter(
+								ur -> ur.getWorkbenchProject() != null && ur.getWorkbenchProject().equals(ProgramMembersPanel.this.project))
+							.findFirst();
+
+						workbenchUser.getRoles().remove(programRole.get());
+
 						source.removeItem(itemId);
 						target.addItem(itemId);
+						droppedItemsCount++;
 					}
 				}
 
-				boolean selectedItemIsDisabled = false;
-				if (sourceItemIds.size() == 1) {
-					if (!((WorkbenchUser) sourceItemIds.iterator().next()).isEnabled()) {
-						selectedItemIsDisabled = true;
-					}
-				}
-
-				if (itemIdOver != null && (sourceItemIds.isEmpty() || selectedItemIsDisabled)) {
-					if (((WorkbenchUser) itemIdOver).isEnabled()) {
-						source.removeItem(itemIdOver);
-						target.addItem(itemIdOver);
-					}
-				}
 				ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
-				MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
-					ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
+				if (droppedItemsCount > 0) {
+					MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), "Information",
+						ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_UNSELECT_MEMBERS_CONFIRMATION_MESSAGE));
+				}
+
 
 			}
 
@@ -397,7 +399,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 		return userRole;
 	}
 
-	final Action actionAddToProgramMembers = new Action("Add Selected Items");
 	final Action actionRemoveFromProgramMembers = new Action("Remove Selected Items");
 	final Action actionSelectAll = new Action("Select All");
 	final Action actionDeSelectAll = new Action("De-select All");
@@ -410,7 +411,7 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 				if (table.getData().toString().equals("left")) {
 					return new Action[] {
-						ProgramMembersPanel.this.actionAddToProgramMembers, ProgramMembersPanel.this.actionSelectAll,
+						ProgramMembersPanel.this.actionSelectAll,
 						ProgramMembersPanel.this.actionDeSelectAll};
 				} else {
 					return new Action[] {
@@ -439,8 +440,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().setValue(false);
 						ProgramMembersPanel.this.getSelect().getChkSelectAllRight().click();
 					}
-				} else if (ProgramMembersPanel.this.actionAddToProgramMembers == action) {
-					ProgramMembersPanel.this.addCheckedSelectedItems();
 				} else if (ProgramMembersPanel.this.actionRemoveFromProgramMembers == action) {
 					ProgramMembersPanel.this.removeCheckedSelectedItems();
 				}
@@ -466,51 +465,6 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 				this.getSelect().getTableRight().removeItem(itemId);
 				this.getSelect().getChkSelectAllRight().setValue(false);
 			}
-		}
-
-	}
-
-	private void addCheckedSelectedItems() {
-
-		if (((Set<Object>) this.getSelect().getTableLeft().getValue()).size() != 0) {
-
-			this.setRoleSelectionWindow(new RoleSelectionWindow(this,
-				new Button.ClickListener() {
-
-					private static final long serialVersionUID = 1L;
-
-					@Override
-					public void buttonClick(final ClickEvent event) {
-
-						final Role roleSelected =  ProgramMembersPanel.this.getRoleSelected();
-
-						if (roleSelected == null) {
-							MessageNotifier.showWarning(ProgramMembersPanel.this.getWindow(), ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_ASSIGN_ROLE_ERROR),
-								ProgramMembersPanel.this.messageSource.getMessage(Message.MEMBERS_TAB_SELECT_PROGRAM_ROLE));
-							return;
-						}
-
-						for (final Object itemId : (Set<Object>) ProgramMembersPanel.this.getSelect().getTableLeft().getValue()) {
-							if (((WorkbenchUser) itemId).isActive() && ((WorkbenchUser) itemId).isEnabled()) {
-								((WorkbenchUser) itemId).setActive(false);
-								final List<UserRole> userRoles = new ArrayList<>();
-								userRoles.add(ProgramMembersPanel.this.createUserRole(roleSelected, (WorkbenchUser) itemId));
-								((WorkbenchUser) itemId).setRoles(userRoles);
-								ProgramMembersPanel.this.getSelect().getTableRight().addItem(itemId);
-								ProgramMembersPanel.this.getSelect().getTableLeft().removeItem(itemId);
-								ProgramMembersPanel.this.getSelect().getChkSelectAllLeft().setValue(false);
-							}
-						}
-
-						ProgramMembersPanel.this.getRoleSelectionWindow().getParent()
-							.removeWindow(ProgramMembersPanel.this.getRoleSelectionWindow());
-					}
-
-				}));
-
-			this.getRoleSelectionWindow().setVisible(true);
-			this.getWindow().addWindow(this.getRoleSelectionWindow());
-
 		}
 
 	}
@@ -610,29 +564,30 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	protected void initializeUsers() {
+
 		final Container container = this.tblMembers.getContainerDataSource();
-		final List<Integer> userIDs = this.userService
-			.getActiveUserIDsWithProgramRoleByProjectId(this.project.getProjectId());
+		final List<Integer> userIDs =
+			this.userService.getActiveUserIDsWithAccessToTheProgram(this.project.getProjectId());
 		final Set<WorkbenchUser> selectedItems = new HashSet<>();
 
 		for (final Integer userID : userIDs) {
 			final WorkbenchUser userTemp = this.userService.getUserById(userID);
+			final boolean enabled = this.isUserEnabled(userTemp);
+			userTemp.setEnabled(enabled);
 
-			if (!userTemp.isSuperAdmin()) {
-				selectedItems.add(userTemp);
+			selectedItems.add(userTemp);
+			container.removeItem(userTemp);
 
-				container.removeItem(userTemp);
+			final Item item = container.addItem(userTemp);
+			item.getItemProperty("userId").setValue(1);
+			item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
+			this.getSelect().select(userTemp);
 
-				final Item item = container.addItem(userTemp);
-				item.getItemProperty("userId").setValue(1);
-				item.getItemProperty(ProgramMembersPanel.USERNAME).setValue(userTemp.getPerson().getDisplayName());
-				this.getSelect().select(userTemp);
-			}
 		}
 	}
 
 	protected void initializeActions() {
-		this.saveButton.addListener(new SaveUsersInProjectAction(this.project, this.getSelect()));
+		this.saveButton.addListener(new SaveUsersInProjectAction(this));
 		this.cancelButton.addListener(new Button.ClickListener() {
 
 			private static final long serialVersionUID = 8879824681692031501L;
@@ -665,19 +620,12 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 
 	protected Container createUsersContainer() {
 		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
-
 		final List<WorkbenchUser> userList = this.userService.getUsersByCrop(cropName);
-
 		final BeanItemContainer<WorkbenchUser> beanItemContainer = new BeanItemContainer<>(WorkbenchUser.class);
-		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
 		for (final WorkbenchUser user : userList) {
-			if (!user.isSuperAdmin()) {
-				if (user.getUserid().equals(currentUserId)
-					|| user.getUserid().equals(this.project.getUserId())) {
-					user.setEnabled(false);
-				}
-				beanItemContainer.addBean(user);
-			}
+			final boolean enabled = this.isUserEnabled(user);
+			user.setEnabled(enabled);
+			beanItemContainer.addBean(user);
 		}
 		return beanItemContainer;
 	}
@@ -724,12 +672,23 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	}
 
 	private String getUserRole(final Object itemId) {
+		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
 		final WorkbenchUser workbenchUser = (WorkbenchUser) itemId;
-		if(workbenchUser!=null && workbenchUser.getRoles()!=null && !workbenchUser.getRoles().isEmpty()){
-			final List<UserRole> userRoles = workbenchUser.getRoles().stream().filter(userRole -> userRole.getWorkbenchProject()!=null && userRole.getWorkbenchProject().equals(this.project)).collect(
-				Collectors.toList());
-			if(userRoles!=null && !userRoles.isEmpty() && userRoles.get(0)!=null) {
-				return userRoles.get(0).getCapitalizedRole();
+		if (workbenchUser != null && workbenchUser.getRoles() != null && !workbenchUser.getRoles().isEmpty()) {
+			if (workbenchUser.hasInstanceRole()) {
+				return workbenchUser.getInstanceRole().getCapitalizedRole();
+			}
+			if (workbenchUser.hasCropRole(cropName) && !workbenchUser.hasProgramRoles(cropName)) {
+				return workbenchUser.getCropRole(cropName).getCapitalizedRole();
+			}
+
+			final Optional<UserRole>
+				programRole = workbenchUser.getRoles().stream()
+				.filter(ur -> ur.getWorkbenchProject() != null && ur.getWorkbenchProject().equals(this.project)).findFirst();
+			if (programRole.isPresent()) {
+				return programRole.get().getCapitalizedRole();
+			} else {
+				return "";
 			}
 		}
 		return "";
@@ -738,4 +697,16 @@ public class ProgramMembersPanel extends Panel implements InitializingBean {
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
+
+	private boolean isUserEnabled(final WorkbenchUser user) {
+		final String cropName = this.contextUtil.getProjectInContext().getCropType().getCropName();
+		final int currentUserId = this.contextUtil.getCurrentWorkbenchUserId();
+		if (user.getUserid().equals(currentUserId)
+			|| user.getUserid().equals(this.project.getUserId()) || user.hasInstanceRole() || (user.hasCropRole(cropName)
+			&& !user.hasProgramRoles(cropName))) {
+			return false;
+		}
+		return true;
+	}
+
 }
