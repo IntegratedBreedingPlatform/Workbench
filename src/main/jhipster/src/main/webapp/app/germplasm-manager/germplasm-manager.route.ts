@@ -5,7 +5,7 @@ import { GermplasmManagerComponent } from './germplasm-manager.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
 import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
-import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS, SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
+import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
 import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
 import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
 import { GermplasmListCreationComponent, GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation.component';
@@ -24,18 +24,21 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         component: LotCreationDialogComponent,
         data: {
             authorities: [
-                'ADMIN',
+                ...CREATE_INVENTORY_LOT_PERMISSIONS,
                 'CROP_MANAGEMENT',
                 'STUDIES',
                 'LISTS',
                 'GERMPLASM_LISTS',
-                'MG_MANAGE_INVENTORY',
                 'MG_CREATE_LOTS',
                 'MANAGE_STUDIES',
-                'MS_CREATE_LOTS'
             ]
         },
         canActivate: [RouteAccessService]
+    },
+    {
+        path: 'lot-creation',
+        component: LotCreationPopupComponent,
+        outlet: 'popup',
     },
     {
         path: 'germplasm-selector',
@@ -99,10 +102,5 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         path: 'germplasm-import',
         component: GermplasmImportPopupComponent,
         outlet: 'popup'
-    },
-    {
-        path: 'lot-creation',
-        component: LotCreationPopupComponent,
-        outlet: 'popup',
     }
 ];
