@@ -347,6 +347,12 @@ tr.selected {
     background-color: #bed6b2 !important;
 }
 
+#listBuilderDrop {
+    height: 80%;
+    background-color: #e3e3e3;
+    border-radius: $table-curved-border-radius;
+}
+
 // FIXME github.com/twbs/bootstrap/issues/23499#issuecomment-346845362
 .btn-primary {
     color: #fff;
