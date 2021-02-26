@@ -5,6 +5,7 @@ import { GermplasmListCreationComponent } from '../germplasm-list-creation.compo
 import { ParamContext } from '../../service/param.context';
 import { GermplasmListEntry } from '../../model/germplasm-list';
 import { HttpClient } from '@angular/common/http';
+import { ColumnLabels } from '../../../germplasm-manager/germplasm-search.component';
 
 @Injectable()
 export class GermplasmListBuilderService implements ListBuilderService {
@@ -19,7 +20,7 @@ export class GermplasmListBuilderService implements ListBuilderService {
                 size: 'lg', backdrop: 'static' });
         modalRef.componentInstance.entries = param.map((row, i) => {
             return <GermplasmListEntry>({
-                gid: row['GID'],
+                gid: row[ColumnLabels.GID],
                 entryNo: i + 1
             });
 

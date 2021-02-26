@@ -557,14 +557,17 @@ export class GermplasmSearchComponent implements OnInit {
         } else {
             selected = [dragged];
         }
-        this.listBuilderContext.data = selected.map((germplasm) => {
+        this.listBuilderContext.data = selected.map((germplasm: Germplasm) => {
             const row: ListEntry = new ListEntry();
             row[ColumnLabels.GID] = germplasm.gid;
             row[ColumnLabels.NAMES] = germplasm.names;
             row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
-            row[ColumnLabels.LOT_UNITS] = germplasm.unit;
+            // FIXME consolidate enum ColumnLabels with localization files
+            //  Modify backend sorting mechanism if needed
+            row['UNIT'] = germplasm.unit;
+            row['LOTS'] = germplasm.lotCount;
             row[ColumnLabels.CROSS] = germplasm.pedigreeString;
-            row[ColumnLabels.LOCATIONS] = germplasm.locationName;
+            row['LOCATION'] = germplasm.locationName;
             row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
             return row;
         });
