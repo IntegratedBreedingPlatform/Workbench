@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProgramService } from '../../shared/program/service/program.service';
 import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
@@ -43,7 +43,7 @@ export class ProgramComponent implements OnInit {
     }
 
     isSelected(program: Program) {
-        return program.programUUID ===
+        return program.uniqueID ===
             (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
     }
 

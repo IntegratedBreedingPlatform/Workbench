@@ -1,11 +1,11 @@
 export class Program {
     constructor(
-        public id: number,
-        public programUUID: string,
+        public id: string,
+        public uniqueID: string,
         public name: string,
         public createdBy: string,
         public members: string[],
-        public cropName: string,
+        public crop: string,
         public startDate: string,
     ) {
     }
