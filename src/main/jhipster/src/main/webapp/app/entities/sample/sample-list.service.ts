@@ -5,6 +5,7 @@ import {SampleList} from './sample-list.model';
 import {Observable} from 'rxjs';
 import {createRequestOption} from '../../shared';
 import { map } from 'rxjs/operators';
+import {ParamContext} from "../../shared/service/param.context";
 
 @Injectable()
 export class SampleListService {
@@ -13,8 +14,11 @@ export class SampleListService {
     private programUUID: string;
 
     constructor(
-        private http: HttpClient
-    ) { }
+        private http: HttpClient,
+        private context: ParamContext
+    ) {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
+    }
 
     setCropAndProgram(crop: string, programUUID: string) {
         this.resourceUrl = SERVER_API_URL + `crops/${crop}/sample-lists`;

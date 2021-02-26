@@ -8,10 +8,9 @@ import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { TreeTableComponent } from './tree-table';
-import {SampleListService} from './sample-list.service';
+import {ParamContext} from "../../shared/service/param.context";
 
 declare const cropName: string;
-declare const currentProgramId: string;
 declare var $: any;
 
 @Component({
@@ -30,14 +29,13 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
 
     lists: SampleList[] = [];
 
-    constructor(
-                private sampleListService: SampleListService,
-                private activatedRoute: ActivatedRoute,
+    constructor(private activatedRoute: ActivatedRoute,
                 private modalService: NgbModal,
                 public activeModal: NgbActiveModal,
                 private router: Router,
                 private sampleContext: SampleContext,
                 private helpService: HelpService,
+                private paramContext: ParamContext
                 ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -54,8 +52,8 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         });
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
-            this.sampleListService.setCropAndProgram(this.crop, currentProgramId);
         });
+        this.paramContext.readParams();
 
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_MANAGE_SAMPLES).toPromise().then((response) => {
