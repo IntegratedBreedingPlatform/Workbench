@@ -25,6 +25,9 @@ import { SampleListService } from './service/sample-list.service';
     ]
 })
 export class SampleListCreationComponent extends ListCreationComponent {
+
+    _isLoading: boolean;
+
     constructor(
         public modal: NgbActiveModal,
         public jhiLanguageService: JhiLanguageService,
@@ -67,14 +70,18 @@ export class SampleListCreationComponent extends ListCreationComponent {
             parentFolderId: this.selectedNode.data.id
         });
         listModel.entries = this.entries;
-        this.isLoading = true;
+        this._isLoading = true;
         this.listService.save(listModel)
             .pipe(finalize(() => {
-                this.isLoading = false;
+                this._isLoading = false;
             })).subscribe(
             (res) => this.onSaveSuccess(),
             (res: HttpErrorResponse) => this.onError(res)
         );
+    }
+
+    get isLoading() {
+        return this._isLoading;
     }
 
 }

@@ -33,8 +33,6 @@ export abstract class ListCreationComponent implements OnInit {
     public FolderModes = FolderMode;
     public name: string; // rename or add item
 
-    isLoading: boolean;
-
     private loggedUserId: number;
 
     // for import process
@@ -59,6 +57,7 @@ export abstract class ListCreationComponent implements OnInit {
     }
 
     abstract save();
+    abstract get isLoading();
 
     ngOnInit(): void {
         this.principal.identity().then((account) => {
