@@ -5,7 +5,7 @@ import {SampleList} from './sample-list.model';
 import {Observable} from 'rxjs';
 import {createRequestOption} from '../../shared';
 import { map } from 'rxjs/operators';
-import {ParamContext} from "../../shared/service/param.context";
+import {ParamContext} from '../../shared/service/param.context';
 
 @Injectable()
 export class SampleListService {
