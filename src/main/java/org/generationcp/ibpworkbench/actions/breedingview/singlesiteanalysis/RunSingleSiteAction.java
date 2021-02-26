@@ -449,7 +449,7 @@ public class RunSingleSiteAction implements ClickListener {
 	private void downloadInputFile(final File file, final String filename) {
 		final VaadinFileDownloadResource fileDownloadResource =
 				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
-		this.source.getApplication().getMainWindow().open(fileDownloadResource);
+		this.source.getWindow().open(fileDownloadResource);
 	}
 
 	public void setIsServerApp(final String isServerApp) {

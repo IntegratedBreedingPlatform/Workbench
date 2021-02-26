@@ -4,6 +4,8 @@ import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { Principal } from '../../shared';
+import { HELP_DASHBOARD } from '../../app.constants';
+import { HelpService } from '../../shared/service/help.service';
 
 @Component({
     selector: 'jhi-program',
@@ -21,10 +23,12 @@ export class ProgramComponent implements OnInit {
     pageSize = 20;
     page = 1;
     isLoading = false;
+    helpLink: string;
 
     constructor(
         private programService: ProgramService,
-        private principal: Principal
+        private principal: Principal,
+        private helpService: HelpService
     ) {
     }
 
@@ -36,6 +40,12 @@ export class ProgramComponent implements OnInit {
         }
 
         this.loadPage();
+
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getHelpLink(HELP_DASHBOARD).toPromise().then((response) => {
+                this.helpLink = response.body;
+            }).catch((error) => {});
+        }
     }
 
     onProgramSelect(program: Program) {

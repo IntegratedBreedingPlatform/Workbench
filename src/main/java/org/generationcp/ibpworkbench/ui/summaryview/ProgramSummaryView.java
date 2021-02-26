@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.ui.summaryview;
 
 import com.jensjansson.pagedtable.PagedTable;
-import com.vaadin.addon.tableexport.ExcelExport;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanContainer;
 import com.vaadin.terminal.ThemeResource;
@@ -590,11 +589,11 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		public void buttonClick(final Button.ClickEvent event) {
 
 			final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-			this.doExport(new ExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
+			this.doExport(new ProgramSummaryExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
 
 		}
 
-		void doExport(final ExcelExport excelExport, final String tableName) {
+		void doExport(final ProgramSummaryExcelExport excelExport, final String tableName) {
 
 			final String programName = ProgramSummaryView.this.contextUtil.getProjectInContext().getProjectName();
 
