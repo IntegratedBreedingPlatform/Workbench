@@ -143,5 +143,6 @@ export class ListBuilderComponent {
 
     private onSuccess() {
         this.context.visible = false;
+        this.data = [];
     }
 }
