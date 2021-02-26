@@ -18,6 +18,7 @@ import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.program.ProgramSearchRequest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +79,9 @@ public class WorkbenchDashboardTest {
 
 		this.programs = this.createProjects(WorkbenchDashboardTest.NUMBER_OF_PROGRAMS, new CropType(CropType.CropEnum.MAIZE.toString()));
 		this.lastOpenedProgram = this.programs.get(7);
-		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjectsByUser(currentUser, null);
+		final ProgramSearchRequest programSearchRequest = new ProgramSearchRequest();
+		programSearchRequest.setLoggedInUserId(currentUser.getUserid());
+		Mockito.doReturn(this.programs).when(this.workbenchDataManager).getProjects(null, programSearchRequest);
 		Mockito.doReturn(this.lastOpenedProgram).when(this.workbenchDataManager).getLastOpenedProject(currentUser.getUserid());
 		Mockito.when(httpServletRequest.getSession()).thenReturn(httpSession);
 
