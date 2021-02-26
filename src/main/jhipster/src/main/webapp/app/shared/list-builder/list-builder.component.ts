@@ -92,11 +92,9 @@ export class ListBuilderComponent {
 
     drop(event: CdkDragDrop<any>) {
         if (event.previousContainer === event.container) {
-            moveItemInArray(this.data, event.previousIndex, event.currentIndex);
-            // if (this.selectedItems[event.previousIndex]) {
-            //     this.selectedItems[event.currentIndex] = true;
-            //     // delete this.selectedItems[event.previousIndex];
-            // }
+            moveItemInArray(this.data,
+                event.previousIndex + this.pageOffset(),
+                event.currentIndex + this.pageOffset());
         } else if (this.data.length > 0) {
             this.data.push(...this.context.data);
         } else {
