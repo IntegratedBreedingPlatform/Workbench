@@ -2,6 +2,7 @@
 @import 'fonts.css';
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
+@import "~bootstrap/scss/mixins/breakpoints";
 
 /* ==============================================================
 Bootstrap tweaks
@@ -476,6 +477,7 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 .pagination-container {
     display: flex;
     margin-top: $spacer;
+    flex-wrap: wrap;
 
     .pagination-box {
         flex: 1;
@@ -489,6 +491,13 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 
     .pagination-box-left > div {
         margin-right: auto;
+    }
+}
+/* FIXME using wrap workaround for now
+     https://github.com/ng-bootstrap/ng-bootstrap/issues/2877 */
+@include media-breakpoint-down(md) {
+    .pagination-wrap ul.pagination {
+        flex-wrap: wrap;
     }
 }
 
