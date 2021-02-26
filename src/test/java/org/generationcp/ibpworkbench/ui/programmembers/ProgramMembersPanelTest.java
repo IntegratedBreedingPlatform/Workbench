@@ -8,15 +8,14 @@ import org.generationcp.middleware.data.initializer.UserTestDataInitializer;
 import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Role;
+import org.generationcp.middleware.pojos.workbench.RoleType;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -66,7 +65,7 @@ public class ProgramMembersPanelTest {
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		this.project = this.createProjectTestData(1, ProgramMembersPanelTest.OWNER_USER_ID);
+		this.project = this.createProjectTestData(1, ProgramMembersPanelTest.MEMBER_PERSON_ID);
 		this.programMembersPanel = new ProgramMembersPanel(this.project);
 		this.programMembersPanel.setUserService(this.userService);
 		this.programMembersPanel.setContextUtil(this.contextUtil);
@@ -144,11 +143,16 @@ public class ProgramMembersPanelTest {
 	@Test
 	public void testInitializeUsers() {
 		// Setup test data and mocks
-		Mockito.when(this.userService.getActiveUserIDsWithProgramRoleByProjectId(Matchers.anyLong()))
+		Mockito.when(this.userService.getActiveUserIDsWithAccessToTheProgram(Mockito.anyLong()))
 				.thenReturn(Arrays.asList(ProgramMembersPanelTest.OWNER_USER_ID, ProgramMembersPanelTest.ADMIN_USER_ID,
 						ProgramMembersPanelTest.MEMBER_USER_ID));
-		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
 		final List<WorkbenchUser> testProgramMembers = this.createProgramMembersTestData();
+
+		Mockito.when(this.userService.getUsersByCrop(Mockito.anyString()))
+			.thenReturn(testProgramMembers);
+
+
+		this.mockCurrentUser(ProgramMembersPanelTest.MEMBER_USER_ID);
 		for (final WorkbenchUser user : testProgramMembers) {
 			Mockito.when(this.userService.getUserById(user.getUserid())).thenReturn(user);
 		}
@@ -163,11 +167,11 @@ public class ProgramMembersPanelTest {
 		// Check that members are selected in twin table
 		final Set<WorkbenchUser> programMembers = this.programMembersPanel.getProgramMembersDisplayed();
 		Assert.assertNotNull(programMembers);
-		Assert.assertEquals("There should be 2 program members.", 2, programMembers.size());
+		Assert.assertEquals("There should be 3 program members.", 3, programMembers.size());
 
-		// Check that ADMIN user is disabled from selection
+		// Check that Instance user and Current User are disabled from selection
 		for (final WorkbenchUser user : programMembers) {
-			if (this.superAdminUser.equals(user)) {
+			if (this.superAdminUser.equals(user) || user.getUserid().equals(MEMBER_USER_ID)) {
 				Assert.assertFalse("SuperAdmin user should be disabled and cannot be removed as program member.",
 						user.isEnabled());
 			} else {
@@ -175,11 +179,6 @@ public class ProgramMembersPanelTest {
 						user.isEnabled());
 			}
 		}
-	}
-
-	private void mockProgramMembers() {
-		final List<WorkbenchUser> programMembers = this.createProgramMembersTestData();
-		Mockito.doReturn(programMembers).when(this.userService).getUsersByCrop(ArgumentMatchers.anyString());
 	}
 
 	private void mockCurrentUser(final int userId) {
@@ -191,20 +190,39 @@ public class ProgramMembersPanelTest {
 		final WorkbenchUser user1 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.OWNER_USER_ID,
 				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_PERSON_ID,
 				ProgramMembersPanelTest.OWNER_NAME, ProgramMembersPanelTest.OWNER_NAME);
-		user1.setRoles(Collections.singletonList(new UserRole(user1, new Role(2, "Breeder"))));
+		final Role breeder = new Role(2, "Breeder");
+		final RoleType cropRoleType = new RoleType(org.generationcp.middleware.domain.workbench.RoleType.PROGRAM.name());
+		cropRoleType.setId(org.generationcp.middleware.domain.workbench.RoleType.PROGRAM.getId());
+		breeder.setRoleType(cropRoleType);
+
+		final UserRole userRole1 = new UserRole(user1, breeder);
+		userRole1.setCropType(project.getCropType());
+		userRole1.setWorkbenchProject(project);
+		user1.setRoles(Collections.singletonList(userRole1));
 		programMembers.add(user1);
 
 		final WorkbenchUser user2 = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.MEMBER_USER_ID,
 				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_PERSON_ID,
 				ProgramMembersPanelTest.MEMBER_NAME, ProgramMembersPanelTest.MEMBER_NAME);
-		user2.setRoles(Collections.singletonList(new UserRole(user2, new Role(3, "Technician"))));
+		final Role technician = new Role(3, "Technician");
+		final RoleType programRoleType = new RoleType(org.generationcp.middleware.domain.workbench.RoleType.PROGRAM.name());
+		programRoleType.setId(org.generationcp.middleware.domain.workbench.RoleType.PROGRAM.getId());
+		technician.setRoleType(programRoleType);
+		final UserRole userRole2 = new UserRole(user2, technician);
+		userRole2.setCropType(project.getCropType());
+		userRole2.setWorkbenchProject(project);
+		user2.setRoles(Collections.singletonList(userRole2));
 		programMembers.add(user2);
 
 		this.superAdminUser = UserTestDataInitializer.createUserWithPerson(ProgramMembersPanelTest.ADMIN_USER_ID,
 				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_PERSON_ID,
 				ProgramMembersPanelTest.ADMIN_NAME, ProgramMembersPanelTest.ADMIN_NAME);
-		this.superAdminUser.setRoles(Collections.singletonList(new UserRole(this.superAdminUser, new Role(5, "SuperAdmin"))));
-		Mockito.when(this.userService.isSuperAdminUser(this.superAdminUser.getUserid())).thenReturn(true);
+		final Role superAdminRole = new Role(5, "SuperAdmin");
+		final RoleType instanceRoleType = new RoleType(org.generationcp.middleware.domain.workbench.RoleType.INSTANCE.name());
+		instanceRoleType.setId(org.generationcp.middleware.domain.workbench.RoleType.INSTANCE.getId());
+		superAdminRole.setRoleType(instanceRoleType);
+
+		this.superAdminUser.setRoles(Collections.singletonList(new UserRole(this.superAdminUser, superAdminRole)));
 		programMembers.add(this.superAdminUser);
 
 		return programMembers;
