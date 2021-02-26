@@ -55,7 +55,7 @@
             "create-list": "Create new list",
             "add-to-list": "Add to existing list",
             "import": "Import germplasm",
-            "delete-germplasm": "Delete Germplasm"
+            "delete-germplasm": "Delete selected germplasm records"
         },
         "included-gids": "(+ included germplasm)"
     },
