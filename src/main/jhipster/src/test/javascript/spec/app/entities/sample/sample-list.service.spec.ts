@@ -20,8 +20,7 @@ describe('Service Tests', () => {
         beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [
-                    HttpClientTestingModule,
-                    ParamContext
+                    HttpClientTestingModule
                 ],
                 providers: [
                     SampleListService
