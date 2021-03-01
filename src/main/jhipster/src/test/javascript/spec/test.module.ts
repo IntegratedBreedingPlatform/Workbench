@@ -12,7 +12,6 @@ import { MockActiveModal } from './helpers/mock-active-modal.service';
 import { MockEventManager } from './helpers/mock-event-manager.service';
 import { MockAlertService, MockJhiAlertService } from './helpers/mock-alert.service';
 import { AlertService } from '../../../main/webapp/app/shared/alert/alert.service';
-import {ParamContext} from '../../../main/webapp/app/shared/service/param.context';
 
 @NgModule({
     providers: [
@@ -20,7 +19,6 @@ import {ParamContext} from '../../../main/webapp/app/shared/service/param.contex
         JhiDataUtils,
         JhiDateUtils,
         JhiParseLinks,
-        ParamContext,
         {
             provide: JhiLanguageService,
             useClass: MockLanguageService

@@ -5,6 +5,8 @@ import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants'
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
+import {ActivatedRoute} from "@angular/router";
+import {MockActivatedRoute} from "../../../helpers/mock-route.service";
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -23,6 +25,11 @@ describe('Service Tests', () => {
                     HttpClientTestingModule
                 ],
                 providers: [
+                    {
+                        provide: ActivatedRoute,
+                        useValue: new MockActivatedRoute({id: 123})
+                    },
+                    ParamContext,
                     SampleListService
                 ]
 
@@ -31,6 +38,8 @@ describe('Service Tests', () => {
             paramContext = injector.get(ParamContext);
             service = injector.get(SampleListService);
             httpMock = injector.get(HttpTestingController);
+            paramContext.programUUID = currentProgramId;
+            paramContext.cropName = cropName;
             service.setCropAndProgram(cropName, currentProgramId);
         });
 
