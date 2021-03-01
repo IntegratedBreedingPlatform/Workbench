@@ -8,6 +8,7 @@ import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { TreeTableComponent } from './tree-table';
+import {ParamContext} from '../../shared/service/param.context';
 
 declare const cropName: string;
 declare var $: any;
@@ -34,6 +35,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
                 private router: Router,
                 private sampleContext: SampleContext,
                 private helpService: HelpService,
+                private paramContext: ParamContext
                 ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -51,6 +53,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
         this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
             this.crop = cropName;
         });
+        this.paramContext.readParams();
 
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_MANAGE_SAMPLES).toPromise().then((response) => {
