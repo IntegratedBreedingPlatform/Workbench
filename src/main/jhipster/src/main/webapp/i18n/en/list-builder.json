@@ -1,0 +1,13 @@
+{
+    "list-builder": {
+        "header": "Build a new list",
+        "description": "Build your list by dragging in entries from the left.",
+        "entries": "List entries",
+        "show": "Show list builder",
+        "hide": "Hide list builder",
+        "no.data": "Drag items here",
+        "delete.selected.items": "Remove selected entries from list",
+        "delete.confirm": "Do you want to remove the <strong>selected</strong> items from the list builder?",
+        "reset.confirm": "Do you want to remove <strong>all</strong> items from the list builder?"
+    }
+}

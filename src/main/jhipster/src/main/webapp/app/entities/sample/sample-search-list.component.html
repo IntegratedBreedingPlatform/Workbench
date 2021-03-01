@@ -52,8 +52,8 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let sampleList of sampleListResults; trackBy: trackId;" (click)="selectList(sampleList)" class="selected"
-				[ngClass]="{'highlight' : sampleList.id == selectedListId}">
+			<tr *ngFor="let sampleList of sampleListResults; trackBy: trackId;" (click)="selectList(sampleList)"
+				[class.selected]="sampleList.id == selectedListId">
 				<td>{{sampleList.listName}}</td>
 				<td>{{sampleList.description}}</td>
 			</tr>
