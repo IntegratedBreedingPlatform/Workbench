@@ -159,7 +159,6 @@ public class RunMultiSiteActionTest {
 	public void testButtonClickServerAppIsTrue() throws IOException {
 		final Project project = ProjectTestDataInitializer.createProject();
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
-		this.runMultiSiteAction.setIsServerApp(true);
 
 		final Component component = Mockito.mock(Component.class);
 		Mockito.when(component.getWindow()).thenReturn(this.window);

@@ -147,7 +147,6 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	@Test
 	public void testButtonsLayoutWhenServerAppConfigured() {
 		this.ssaPanel.instantiateActionButtons();
-		this.ssaPanel.setIsServerApp("true");
 		this.ssaPanel.updateLabels();
 		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.DOWNLOAD_INPUT_FILES);
 		Assert.assertTrue(this.ssaPanel.getBtnUpload().isVisible());
@@ -158,22 +157,12 @@ public class SingleSiteAnalysisDetailsPanelTest {
 	public void testButtonsLayoutWhentUserLacksPermissionToUpload() {
 		when(this.studyPermissionValidator.userLacksPermissionForStudy(Matchers.any(StudyReference.class))).thenReturn(true);
 		this.ssaPanel.instantiateActionButtons();
-		this.ssaPanel.setIsServerApp("true");
 		this.ssaPanel.updateLabels();
 		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.DOWNLOAD_INPUT_FILES);
 		Button btnUpload = this.ssaPanel.getBtnUpload();
 		Assert.assertTrue(btnUpload.isVisible());
 		Assert.assertFalse(btnUpload.isEnabled());
 		Assert.assertEquals("Upload Output Files to BMS", btnUpload.getCaption());
-	}
-
-	@Test
-	public void testButtonsLayoutWhenStandaloneConfigured() {
-		this.ssaPanel.instantiateActionButtons();
-		this.ssaPanel.setIsServerApp("false");
-		this.ssaPanel.updateLabels();
-		Mockito.verify(this.messageSource).setCaption(this.ssaPanel.getBtnRun(), Message.RUN_BREEDING_VIEW);
-		Assert.assertFalse(this.ssaPanel.getBtnUpload().isVisible());
 	}
 
 	@Test

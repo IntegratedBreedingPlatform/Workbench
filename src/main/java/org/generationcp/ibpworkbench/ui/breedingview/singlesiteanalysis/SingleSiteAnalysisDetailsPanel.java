@@ -68,9 +68,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 	public static final String ENVIRONMENT_NAME = "environmentName";
 	protected static final String REQUIRED_FIELD_INDICATOR = " <span style='color: red'>*</span>";
 
-	@Value("${workbench.is.server.app}")
-	private String isServerApp;
-
 	private SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
 
 	private Label lblPageTitle;
@@ -272,19 +269,15 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	@Override
 	public void updateLabels() {
-		if (Boolean.parseBoolean(this.isServerApp)) {
-			this.messageSource.setCaption(this.btnRun, Message.DOWNLOAD_INPUT_FILES);
-			this.btnUpload.setVisible(true);
-			this.btnUpload.setCaption("Upload Output Files to BMS");
-			final StudyReference study = this.studyDataManager.getStudyReference(this.breedingViewInput.getStudyId());
-			if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
-				this.btnUpload.setEnabled(false);
-				this.btnUpload.setDescription(this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, study.getOwnerName()));
-			}
-		} else {
-			this.messageSource.setCaption(this.btnRun, Message.RUN_BREEDING_VIEW);
-			this.btnUpload.setVisible(false);
+		this.messageSource.setCaption(this.btnRun, Message.DOWNLOAD_INPUT_FILES);
+		this.btnUpload.setVisible(true);
+		this.btnUpload.setCaption("Upload Output Files to BMS");
+		final StudyReference study = this.studyDataManager.getStudyReference(this.breedingViewInput.getStudyId());
+		if (this.studyPermissionValidator.userLacksPermissionForStudy(study)) {
+			this.btnUpload.setEnabled(false);
+			this.btnUpload.setDescription(this.messageSource.getMessage(Message.LOCKED_STUDY_CANT_BE_MODIFIED, study.getOwnerName()));
 		}
+
 		this.messageSource.setCaption(this.btnReset, Message.CANCEL);
 		this.messageSource.setCaption(this.btnBack, Message.BACK);
 
@@ -391,14 +384,6 @@ public class SingleSiteAnalysisDetailsPanel extends VerticalLayout implements In
 
 	public Project getProject() {
 		return this.project;
-	}
-
-	public String getIsServerApp() {
-		return this.isServerApp;
-	}
-
-	protected void setIsServerApp(final String isServerApp) {
-		this.isServerApp = isServerApp;
 	}
 
 	public SingleSiteAnalysisEnvironmentsComponent getEnvironmentsComponent() {

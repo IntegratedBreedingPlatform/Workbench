@@ -49,9 +49,6 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GxeXMLWriter.class);
 
-	@Value("${workbench.is.server.app}")
-	private String isServerAppString;
-
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private final GxeInput gxeInput;
@@ -61,7 +58,6 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 	}
 
 	public void writeProjectXML() throws GxeXMLWriterException {
-		final boolean isServerApp = Boolean.parseBoolean(this.isServerAppString);
 
 		final List<Trait> traits = new ArrayList<>();
 		for (final Trait t : this.gxeInput.getTraits()) {
@@ -74,13 +70,8 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 
 		// create DataFile element
 		final DataFile data = new DataFile();
-		if (isServerApp) {
-			data.setName(new File(this.gxeInput.getSourceCSVFilePath()).getName());
-			data.setSummarystats(new File(this.gxeInput.getSourceCSVSummaryStatsFilePath()).getName());
-		} else {
-			data.setName(this.gxeInput.getSourceCSVFilePath());
-			data.setSummarystats(this.gxeInput.getSourceCSVSummaryStatsFilePath());
-		}
+		data.setName(new File(this.gxeInput.getSourceCSVFilePath()).getName());
+		data.setSummarystats(new File(this.gxeInput.getSourceCSVSummaryStatsFilePath()).getName());
 
 		final Environments environments = new Environments();
 		environments.setName(BreedingViewUtil.sanitizeName(this.gxeInput.getEnvironmentName()));
@@ -127,7 +118,6 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 		bvSession.setDataFile(data);
 
 		final SSAParameters ssaParameters = new SSAParameters();
-		this.setOutputDirectory(isServerApp, ssaParameters);
 		bvSession.setIbws(ssaParameters);
 
 		// prepare the writing of the xml
@@ -149,21 +139,6 @@ public class GxeXMLWriter implements InitializingBean, Serializable {
 			fileWriter.close();
 		} catch (final Exception ex) {
 			throw new GxeXMLWriterException(String.format("Error with writing xml to: %s : %s", "", ex.getMessage()), ex);
-		}
-	}
-
-	void setOutputDirectory(final boolean isServerApp, final SSAParameters ssaParameters) {
-		// output directory is not needed if deployed on server
-		if (!isServerApp) {
-			try {
-
-				final String outputDirectory = this.installationDirectoryUtil
-						.getOutputDirectoryForProjectAndTool(this.gxeInput.getProject(), ToolName.BREEDING_VIEW);
-
-				ssaParameters.setOutputDirectory(outputDirectory);
-			} catch (final Exception e) {
-				GxeXMLWriter.LOG.error("Error getting BMS installation directory", e);
-			}
 		}
 	}
 

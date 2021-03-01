@@ -1,19 +1,18 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import org.junit.Assert;
+import java.io.File;
 
 public class GxeXMLWriterTest {
 	
@@ -44,18 +43,8 @@ public class GxeXMLWriterTest {
 	@Test
 	public void testSetOutputDirectoryServerAppIsTrue() {
 		 final SSAParameters ssaParameters = new SSAParameters();
-		 this.gxeXmlWriter.setOutputDirectory(true, ssaParameters);
 		 Assert.assertNull(ssaParameters.getOutputDirectory());
 		 Mockito.verifyZeroInteractions(this.installationDirectoryUtil);
 	}
-	
-	@Test
-	public void testSetOutputDirectoryServerAppIsFalse() {
-		 final SSAParameters ssaParameters = new SSAParameters();
-		 this.gxeXmlWriter.setOutputDirectory(false, ssaParameters);
-		 Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		 Assert.assertEquals(XML_FILEPATH, ssaParameters.getOutputDirectory());
-	}
-	
 
 }

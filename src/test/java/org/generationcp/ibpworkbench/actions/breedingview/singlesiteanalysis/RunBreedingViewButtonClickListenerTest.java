@@ -1,6 +1,6 @@
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
-import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
+import com.vaadin.ui.Button.ClickEvent;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,16 +9,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.ui.Button.ClickEvent;
-
 public class RunBreedingViewButtonClickListenerTest {
 	
 	@Mock
 	private StudyDataManager studyDataManager;
 	
-	@Mock
-	private SingleSiteAnalysisDetailsPanel ssaDetailsPanel;
-
 	@InjectMocks
 	private RunBreedingViewButtonClickListener listener;
 	
@@ -36,7 +31,6 @@ public class RunBreedingViewButtonClickListenerTest {
 	
 	@Test
 	public void testButtonClickWhenServerAppConfigured() {
-		Mockito.doReturn("true").when(this.ssaDetailsPanel).getIsServerApp();
 		this.listener.buttonClick(this.event);
 		Mockito.verifyZeroInteractions(this.studyDataManager);
 		Mockito.verify(this.runSsaAction).buttonClick(event);

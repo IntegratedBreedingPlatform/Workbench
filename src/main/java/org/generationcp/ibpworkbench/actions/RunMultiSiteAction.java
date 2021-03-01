@@ -51,9 +51,6 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private Tool breedingViewTool;
 
-	@Value("${workbench.is.server.app}")
-	private boolean isServerApp;
-
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -97,15 +94,7 @@ public class RunMultiSiteAction implements ClickListener {
 		final GxeInput gxeInput;
 		gxeInput = this.generateInputFiles();
 
-		if (this.isServerApp) {
-
-			this.zipInputFilesAndDownload(gxeInput, buttonClickEvent.getComponent().getWindow());
-
-		} else {
-
-			this.launchBV(gxeInput.getDestXMLFilePath(), buttonClickEvent.getComponent().getWindow());
-		}
-
+		this.zipInputFilesAndDownload(gxeInput, buttonClickEvent.getComponent().getWindow());
 	}
 
 	protected void zipInputFilesAndDownload(final GxeInput gxeInput, final Window window) {
@@ -233,24 +222,6 @@ public class RunMultiSiteAction implements ClickListener {
 
 	}
 
-	protected void launchBV(final String projectFilePath, final Window windowSource) {
-
-		final File absoluteToolFile = new File(this.breedingViewTool.getPath()).getAbsoluteFile();
-
-		try {
-			final ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", projectFilePath);
-			pb.start();
-
-			MessageNotifier.showMessage(windowSource, "GxE files saved",
-				"Successfully generated the means dataset and xml input files for breeding view.");
-		} catch (final IOException e) {
-			RunMultiSiteAction.LOG.error(e.getMessage(), e);
-			MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(),
-				"But it successfully created GxE Excel and XML input file for the breeding_view!");
-		}
-
-	}
-
 	protected List<Trait> getSelectedTraits() {
 		final List<Trait> selectedTraits = new ArrayList<Trait>();
 		final Iterator<?> itr = this.selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
@@ -273,10 +244,6 @@ public class RunMultiSiteAction implements ClickListener {
 		final VaadinFileDownloadResource fileDownloadResource =
 			new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
 		window.open(fileDownloadResource);
-	}
-
-	protected void setIsServerApp(final boolean isServerApp) {
-		this.isServerApp = isServerApp;
 	}
 
 	protected void setSelectTraitsTable(final Table selectTraitsTable) {

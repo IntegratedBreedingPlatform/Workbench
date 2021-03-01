@@ -45,12 +45,6 @@ public class DeleteProjectActionTest {
 	private Window window;
 
 	@Mock
-	private Window mainWindow;
-
-	@Mock
-	private Application application;
-
-	@Mock
 	private WorkbenchDataManager manager;
 
 	@Mock
@@ -87,9 +81,6 @@ public class DeleteProjectActionTest {
 		project.setProjectName(PROJECT_NAME);
 
 		when(contextUtil.getProjectInContext()).thenReturn(project);
-		when(window.getApplication()).thenReturn(application);
-		when(application.getMainWindow()).thenReturn(mainWindow);
-
 	}
 
 	@Test
@@ -103,7 +94,7 @@ public class DeleteProjectActionTest {
 		deleteProjectAction.doAction(window, null, false);
 
 		final ArgumentCaptor<ConfirmDialog> captor = ArgumentCaptor.forClass(ConfirmDialog.class);
-		verify(mainWindow).addWindow(captor.capture());
+		verify(window).addWindow(captor.capture());
 
 		final ConfirmDialog confirmDialog = captor.getValue();
 
