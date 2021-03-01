@@ -37,3 +37,10 @@ export const SITE_ADMIN_PERMISSIONS = [
     'ADMINISTRATION',
     'SITE_ADMIN'
 ];
+
+export const ADD_PROGRAM_PERMISSION = [
+    'ADMIN',
+    'CROP_MANAGEMENT',
+    'ADD_PROGRAM',
+    'MANAGE_PROGRAMS'
+];
