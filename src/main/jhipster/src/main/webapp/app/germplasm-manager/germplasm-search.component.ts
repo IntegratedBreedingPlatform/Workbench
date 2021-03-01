@@ -586,6 +586,12 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
+
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-delete.delete-all-germplasm-not-supported');
+            return;
+        }
+
         if (this.selectedItems.length > 500) {
             this.alertService.error('germplasm-delete.too-many-selected-germplasm');
             return;
