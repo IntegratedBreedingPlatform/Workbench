@@ -101,6 +101,7 @@ public class WorkbenchMainView extends Window implements IContentWindow, Initial
 	@Value("${workbench.is.single.user.only}")
 	private String isSingleUserOnly;
 
+	@Deprecated
 	@Value("${workbench.is.add.program.enabled}")
 	private String isAddProgramEnabled;
 
