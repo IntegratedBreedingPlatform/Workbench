@@ -1,13 +1,10 @@
 package org.generationcp.ibpworkbench.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
@@ -16,7 +13,7 @@ import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
@@ -34,6 +31,7 @@ import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,13 +43,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-
-import org.junit.Assert;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunMultiSiteActionTest {
@@ -94,7 +92,7 @@ public class RunMultiSiteActionTest {
 	private ZipUtil zipUtil;
 
 	@Mock
-	private IBPWorkbenchApplication workbenchApplication;
+	private WorkbenchContentApp workbenchApplication;
 
 	@Mock
 	Window window;
@@ -146,7 +144,8 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.studyDataManager.findOneDataSetByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId())).thenReturn(this.createSummaryDataSet());
 
 		Mockito.when(this.multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
-				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class)))
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(
+				WorkbenchContentApp.class)))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
 		Mockito.when(this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
@@ -223,7 +222,7 @@ public class RunMultiSiteActionTest {
 		// Make sure the Means DataSet is exported to CSV
 		Mockito.verify(this.multiSiteDataExporter).exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.eq(
 			this.multiSiteParameters),
-				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(IBPWorkbenchApplication.class));
+				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(WorkbenchContentApp.class));
 
 		// Make sure the Summary Data is exported to CSV
 		Mockito.verify(this.multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),

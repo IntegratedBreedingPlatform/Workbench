@@ -1,14 +1,13 @@
 package org.generationcp.ibpworkbench;
 
 import com.vaadin.ui.Window;
+import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
-import org.generationcp.ibpworkbench.ui.programadministration.OpenManageProgramPageAction;
 import org.generationcp.ibpworkbench.ui.programadministration.ProgramAdministrationPanel;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
-import org.generationcp.ibpworkbench.ui.project.create.CreateProjectPanel;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
@@ -83,6 +82,9 @@ public class WorkbenchContentApp extends SpringContextApplication {
 		LOG.error("Encountered error", event.getThrowable());
 	}
 
+	public static WorkbenchContentApp get() {
+		return ContextApplication.get(WorkbenchContentApp.class);
+	}
 
 }
 

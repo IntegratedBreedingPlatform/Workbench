@@ -15,7 +15,7 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
@@ -63,7 +63,7 @@ public class RunMultiSiteAction implements ClickListener {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	private IBPWorkbenchApplication workbenchApplication;
+	private WorkbenchContentApp workbenchApplication;
 
 	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
 
@@ -85,7 +85,7 @@ public class RunMultiSiteAction implements ClickListener {
 		this.gxeTable = gxeTable;
 		this.selectTraitsTable = selectTraitsTable;
 		this.multiSiteParameters = multiSiteParameters;
-		this.workbenchApplication = IBPWorkbenchApplication.get();
+		this.workbenchApplication = WorkbenchContentApp.get();
 	}
 
 	@Override
