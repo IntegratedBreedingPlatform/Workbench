@@ -3,6 +3,7 @@ package org.generationcp.ibpworkbench.actions;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Trait;
@@ -131,8 +132,6 @@ public class RunMultiSiteActionTest {
 
 	void initMocks() throws IOException {
 
-		Mockito.when(this.workbenchApplication.getMainWindow()).thenReturn(this.window);
-
 		Mockito.when(this.gxeTable.getSelectedEnvironments()).thenReturn(this.createEnvironmentList());
 		Mockito.when(this.gxeTable.getEnvironmentName()).thenReturn(ENVIRONMENT_NAME);
 		Mockito.when(this.gxeTable.getMeansDataSet()).thenReturn(this.createMeansDataSet(MEANS_DATASET_NAME));
@@ -162,7 +161,13 @@ public class RunMultiSiteActionTest {
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 		this.runMultiSiteAction.setIsServerApp(true);
 
-		this.runMultiSiteAction.buttonClick(Mockito.mock(Button.ClickEvent.class));
+		final Component component = Mockito.mock(Component.class);
+		Mockito.when(component.getWindow()).thenReturn(this.window);
+
+		final Button.ClickEvent event = Mockito.mock(Button.ClickEvent.class);
+		Mockito.when(event.getComponent()).thenReturn(component);
+
+		this.runMultiSiteAction.buttonClick(event);
 
 		// Make sure that the expected files are compressed in zip
 		final ArgumentCaptor<String> filenameCaptor = ArgumentCaptor.forClass(String.class);
@@ -180,7 +185,8 @@ public class RunMultiSiteActionTest {
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
 
 		// Verify zip file is downloaded to the browser with proper filename
-		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
+		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
+		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		final String[] uSCount = downloadResource.getFilename().split("_");
 		try {
@@ -295,7 +301,7 @@ public class RunMultiSiteActionTest {
 	@Test
 	public void testDownloadInputFile() {
 
-		this.runMultiSiteAction.downloadInputFile(Mockito.mock(File.class), Mockito.anyString());
+		this.runMultiSiteAction.downloadInputFile(Mockito.mock(File.class), Mockito.anyString(), this.window);
 
 		// Make sure the file is downloaded to the browser.
 		Mockito.verify(this.window).open(Mockito.any(FileResource.class));

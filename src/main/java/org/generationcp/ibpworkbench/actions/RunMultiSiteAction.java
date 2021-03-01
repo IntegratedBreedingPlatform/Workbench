@@ -99,7 +99,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 		if (this.isServerApp) {
 
-			this.zipInputFilesAndDownload(gxeInput);
+			this.zipInputFilesAndDownload(gxeInput, buttonClickEvent.getComponent().getWindow());
 
 		} else {
 
@@ -108,7 +108,7 @@ public class RunMultiSiteAction implements ClickListener {
 
 	}
 
-	protected void zipInputFilesAndDownload(final GxeInput gxeInput) {
+	protected void zipInputFilesAndDownload(final GxeInput gxeInput, final Window window) {
 		final List<String> filenameList = new ArrayList<>();
 		filenameList.add(gxeInput.getDestXMLFilePath());
 		filenameList.add(gxeInput.getSourceCSVFilePath());
@@ -120,7 +120,7 @@ public class RunMultiSiteAction implements ClickListener {
 		try {
 			final String finalZipfileName =
 				this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
-			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename));
+			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename), window);
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
@@ -269,10 +269,10 @@ public class RunMultiSiteAction implements ClickListener {
 		return selectedTraits;
 	}
 
-	void downloadInputFile(final File file, final String filename) {
+	void downloadInputFile(final File file, final String filename, final Window window) {
 		final VaadinFileDownloadResource fileDownloadResource =
 			new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
-		this.workbenchApplication.getMainWindow().open(fileDownloadResource);
+		window.open(fileDownloadResource);
 	}
 
 	protected void setIsServerApp(final boolean isServerApp) {
