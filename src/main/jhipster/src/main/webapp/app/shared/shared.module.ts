@@ -44,6 +44,14 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
+import { ListBuilderComponent } from './list-builder/list-builder.component';
+import { ListBuilderContext } from './list-builder/list-builder.context';
+import { TableModule } from 'primeng/table';
+import { DragDropModule as CdkDragDropModule } from '@angular/cdk/drag-drop'
+import { GermplasmListCreationComponent } from './list-creation/germplasm-list-creation.component';
+import { SampleListBuilderService } from './list-creation/service/sample-list-builder.service';
+import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
+import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 
@@ -51,7 +59,11 @@ import { ToolService } from './tool/service/tool.service';
     imports: [
         BmsjHipsterSharedLibsModule,
         BmsjHipsterSharedCommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TableModule,
+        TreeModule,
+        DragDropModule,
+        CdkDragDropModule
     ],
     declarations: [
         ModalComponent,
@@ -77,7 +89,10 @@ import { ToolService } from './tool/service/tool.service';
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     providers: [
         LoginService,
@@ -89,6 +104,9 @@ import { ToolService } from './tool/service/tool.service';
         LotService,
         TransactionService,
         ParamContext,
+        ListBuilderContext,
+        GermplasmListBuilderService,
+        SampleListBuilderService,
         HelpService,
         GermplasmService,
         AttributesService,
@@ -98,17 +116,18 @@ import { ToolService } from './tool/service/tool.service';
         ProgramService,
         PopupService,
         AlertService,
+        ToolService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal,
-        AlertService,
-        ToolService
+        NgbActiveModal
     ],
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -116,6 +135,8 @@ import { ToolService } from './tool/service/tool.service';
         TreeTableModule,
         TreeModule,
         DragDropModule,
+        CdkDragDropModule,
+        TableModule,
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
@@ -139,7 +160,10 @@ import { ToolService } from './tool/service/tool.service';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

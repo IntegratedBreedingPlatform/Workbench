@@ -7,7 +7,12 @@ import { HelpService } from '../../shared/service/help.service';
 import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
-import { TreeTableComponent } from './tree-table';
+import { SampleTreeService, TreeTableComponent } from './tree-table';
+import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
+import { ListBuilderService } from '../../shared/list-creation/service/list-builder.service';
+import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
+import { TreeService } from '../../shared/tree/tree.service';
+import { ListCreationComponent } from '../../shared/list-creation/list-creation.component';
 import { ParamContext } from '../../shared/service/param.context';
 
 declare const cropName: string;
@@ -15,12 +20,14 @@ declare var $: any;
 
 @Component({
     selector: 'jhi-sample-manager',
-    templateUrl: './sample-manager.component.html'
+    templateUrl: './sample-manager.component.html',
+    providers: [
+        { provide: ListBuilderService, useClass: SampleListBuilderService },
+    ],
 })
 export class SampleManagerComponent implements OnInit, OnDestroy {
 
     private listId: number;
-    private crop: string;
     private queryParamSubscription: Subscription;
     private paramSubscription: Subscription;
     helpLink: string;
@@ -32,6 +39,7 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     constructor(private activatedRoute: ActivatedRoute,
                 private modalService: NgbModal,
                 public activeModal: NgbActiveModal,
+                public listBuilderContext: ListBuilderContext,
                 private router: Router,
                 private sampleContext: SampleContext,
                 private helpService: HelpService,
@@ -50,7 +58,6 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
 
             this.setActive(this.listId);
         });
-
         this.paramContext.readParams();
 
         if (!this.helpLink || !this.helpLink.length) {

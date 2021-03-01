@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiAlertService } from 'ng-jhipster';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeNode } from '../../shared/tree';
 import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm-tree-table.service';
 import { ParamContext } from '../../shared/service/param.context';
-import { GermplasmListService } from './germplasm-list.service';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,6 +14,8 @@ import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode'
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../../shared/alert/alert.service';
+import { GermplasmListService } from '../../shared/list-creation/service/germplasm-list.service';
+import { ListService } from '../../shared/list-creation/service/list.service';
 
 declare var $: any;
 
@@ -23,7 +23,8 @@ declare var $: any;
     selector: 'jhi-germplasm-list-add',
     templateUrl: './germplasm-list-add.component.html',
     providers: [
-        { provide: TreeService, useClass: GermplasmTreeTableService }
+        { provide: TreeService, useClass: GermplasmTreeTableService },
+        GermplasmListService
     ]
 })
 export class GermplasmListAddComponent implements OnInit {

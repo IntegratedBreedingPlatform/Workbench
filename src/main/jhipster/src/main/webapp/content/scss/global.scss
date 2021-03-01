@@ -2,6 +2,7 @@
 @import 'fonts.css';
 @import '~bootstrap/scss/functions';
 @import '~bootstrap/scss/variables';
+@import "~bootstrap/scss/mixins/breakpoints";
 
 /* ==============================================================
 Angular material
@@ -242,8 +243,6 @@ ui bootstrap tweaks
 BMS bootstrap styleGuide
 ========================================================================== */
 
-$tab-active-color: #f6f6f6;
-
 .nav-tabs {
     .nav-item {
         .nav-link {
@@ -349,7 +348,16 @@ $table-curved-border-radius: 0.625rem; // 10 px default
         }
     }
 }
+tr.selected {
+    color: olivedrab;
+    background-color: #bed6b2 !important;
+}
 
+#listBuilderDrop {
+    height: 80%;
+    background-color: #e3e3e3;
+    border-radius: $table-curved-border-radius;
+}
 
 // FIXME github.com/twbs/bootstrap/issues/23499#issuecomment-346845362
 .btn-primary {
@@ -474,6 +482,7 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 .pagination-container {
     display: flex;
     margin-top: $spacer;
+    flex-wrap: wrap;
 
     .pagination-box {
         flex: 1;
@@ -487,6 +496,13 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 
     .pagination-box-left > div {
         margin-right: auto;
+    }
+}
+/* FIXME using wrap workaround for now
+     https://github.com/ng-bootstrap/ng-bootstrap/issues/2877 */
+@include media-breakpoint-down(md) {
+    .pagination-wrap ul.pagination {
+        flex-wrap: wrap;
     }
 }
 
@@ -514,3 +530,11 @@ FIXME Using Nested Flex Containers workaround for now https://stackoverflow.com/
 .close-nav-tab {
     padding-left: 10px;
 }
+
+/* ==========================================================================
+Angular cdk
+========================================================================== */
+tr.cdk-drag-preview {
+    display: table;
+}
+

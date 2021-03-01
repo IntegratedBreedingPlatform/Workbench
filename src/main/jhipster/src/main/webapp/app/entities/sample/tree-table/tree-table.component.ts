@@ -1,30 +1,19 @@
-import { Component, HostListener, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TreeNode } from './tree-node.model';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/api';
 import { ModalAnimation } from '../../../shared/animations/modal.animation';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { SampleTreeService } from './sample-tree.service';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-
-declare var authToken: string
-    , selectedProjectId: string
-    , loggedInUserId: string;
+import { SampleTreeService } from '.';
+import { TreeService } from '../../../shared/tree/tree.service';
 
 declare var $: any;
-declare const cropName: string;
-declare const currentProgramId: string;
-
-const AUTH_PARAMS = {
-    authToken,
-    selectedProjectId,
-    loggedInUserId
-};
 
 /**
  * TODO tree state persist
@@ -32,7 +21,10 @@ const AUTH_PARAMS = {
 @Component({
     selector: 'jhi-tree-table',
     animations: [ModalAnimation],
-    templateUrl: './tree-table.component.html'
+    templateUrl: './tree-table.component.html',
+    providers: [
+        { provide: TreeService, useClass: SampleTreeService }
+    ]
 })
 export class TreeTableComponent implements OnInit {
 
@@ -69,12 +61,11 @@ export class TreeTableComponent implements OnInit {
         }
     }
 
-    // TODO make generic interface: TreeService
     constructor(private modal: NgbActiveModal,
                 private languageservice: JhiLanguageService,
                 private translateService: TranslateService,
                 private alertService: AlertService,
-                private service: SampleTreeService,
+                private service: TreeService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router,
                 private modalService: NgbModal) {
@@ -85,8 +76,8 @@ export class TreeTableComponent implements OnInit {
     }
 
     private loadTree() {
-        this.service.expand(null, AUTH_PARAMS).subscribe((res: HttpResponse<TreeNode[]>) => {
-            res.body.forEach((node) => this.addNode(node));
+        this.service.expand(null).subscribe((res: TreeNode[]) => {
+            res.forEach((node) => this.addNode(node));
             this.redrawNodes();
             // FIXME tableStyleClass not working on primeng treetable 6?
             $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
@@ -126,7 +117,8 @@ export class TreeTableComponent implements OnInit {
                 this.draggedNode = null;
                 return;
             }
-            this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
+            const isParentCropList = this.isParentCropList(node);
+            this.service.move(this.draggedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
                     if (!node.children) {
                         node.children = [];
                     }
@@ -232,11 +224,10 @@ export class TreeTableComponent implements OnInit {
     }
 
     private expand(parent, selectedId?: any) {
-        this.service
-            .expand(parent.data.id, AUTH_PARAMS)
-            .subscribe((res2: HttpResponse<TreeNode[]>) => {
+        this.service.expand(parent.data.id)
+            .subscribe((res2: TreeNode[]) => {
                 parent.children = [];
-                res2.body.forEach((node) => {
+                res2.forEach((node) => {
                     const primeNgTreeNode = this.toPrimeNgNode(node, parent);
                     parent.children.push(primeNgTreeNode);
                     if (selectedId === primeNgTreeNode.data.id) {
@@ -312,7 +303,8 @@ export class TreeTableComponent implements OnInit {
 
     submitAddOrRenameFolder() {
         if (this.mode === Mode.Add) {
-            this.service.create(this.name, this.selectedNode.data.id).subscribe((res) => {
+            const isParentCropList = this.isParentCropList(this.selectedNode);
+            this.service.create(this.name, this.selectedNode.data.id, isParentCropList).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(this.selectedNode, res.id);
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
@@ -329,6 +321,13 @@ export class TreeTableComponent implements OnInit {
                 (res: HttpErrorResponse) =>
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
+    }
+
+    isParentCropList(node: PrimeNgTreeNode): boolean {
+        if (node.parent) {
+            return this.isParentCropList(node.parent);
+        }
+        return node.data.id === 'CROPLISTS';
     }
 }
 
