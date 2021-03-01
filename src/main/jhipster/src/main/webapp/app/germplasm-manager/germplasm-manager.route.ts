@@ -8,12 +8,13 @@ import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
 import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
 import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
 import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
-import { GermplasmListCreationComponent, GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation.component';
+import { GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation-popup.component';
 import { GermplasmImportPopupComponent } from './import/germplasm-import.component';
 import { InventoryDetailsPopupComponent } from './inventory/details/inventory-details-modal.component';
 import { inventoryDetailsRoutes } from './inventory/details/inventory-details.route';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
+import { ListCreationComponent } from '../shared/list-creation/list-creation.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...germplasmRoutes,
@@ -60,10 +61,6 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         data: { authorities: IMPORT_GERMPLASM_UPDATES_PERMISSIONS },
         canActivate: [RouteAccessService],
         outlet: 'popup',
-    },
-    {
-        path: 'germplasm-list-creation',
-        component: GermplasmListCreationComponent,
     },
     {
         path: 'inventory-details-dialog',

@@ -6,7 +6,7 @@ import { ColumnFilterComponent, FilterType } from '../shared/column-filter/colum
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
@@ -22,6 +22,9 @@ import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
+import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
+import { BaseEntity } from '../shared';
+import { ListEntry } from '../shared/list-builder/model/list.model';
 
 declare var $: any;
 
@@ -84,6 +87,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmHiddenColumns = hiddenColumns;
     }
 
+    // TODO rewrite as map (see sample.component)
     selectedItems: any[] = [];
     isSelectAll = false;
 
@@ -279,7 +283,9 @@ export class GermplasmSearchComponent implements OnInit {
                 private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
-                private germplasmManagerContext: GermplasmManagerContext) {
+                private germplasmManagerContext: GermplasmManagerContext,
+                public listBuilderContext: ListBuilderContext
+    ) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -543,6 +549,36 @@ export class GermplasmSearchComponent implements OnInit {
             return false;
         }
         return true;
+    }
+
+    dragStart($event, dragged: Germplasm) {
+        let selected;
+        if (this.selectedItems.indexOf(dragged.gid) !== -1) {
+            selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+        } else {
+            selected = [dragged];
+        }
+        this.listBuilderContext.data = selected.map((germplasm: Germplasm) => {
+            const row: ListEntry = new ListEntry();
+            row[ColumnLabels.GID] = germplasm.gid;
+            row[ColumnLabels.NAMES] = germplasm.names;
+            row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
+            // FIXME consolidate enum ColumnLabels with localization files
+            //  Modify backend sorting mechanism if needed
+            row['UNIT'] = germplasm.unit;
+            row['LOTS'] = germplasm.lotCount;
+            row[ColumnLabels.CROSS] = germplasm.pedigreeString;
+            row['LOCATION'] = germplasm.locationName;
+            row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
+            return row;
+        });
+    }
+
+    dragEnd($event) {
+    }
+
+    toggleListBuilder() {
+        this.listBuilderContext.visible = !this.listBuilderContext.visible;
     }
 
     openCreateList() {
