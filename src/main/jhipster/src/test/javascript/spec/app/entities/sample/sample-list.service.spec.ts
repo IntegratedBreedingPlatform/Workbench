@@ -13,6 +13,7 @@ describe('Service Tests', () => {
 
     describe('Sample List Service', () => {
         let injector: TestBed;
+        let paramContext: ParamContext;
         let service: SampleListService;
         let httpMock: HttpTestingController;
 
@@ -28,6 +29,7 @@ describe('Service Tests', () => {
 
             });
             injector = getTestBed();
+            paramContext = injector.get(ParamContext);
             service = injector.get(SampleListService);
             httpMock = injector.get(HttpTestingController);
             service.setCropAndProgram(cropName, currentProgramId);
