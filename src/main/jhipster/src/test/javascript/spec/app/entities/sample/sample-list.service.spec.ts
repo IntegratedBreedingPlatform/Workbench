@@ -5,7 +5,6 @@ import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants'
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
-import {Router} from "@angular/router";
 
 declare const cropName: string;
 declare const currentProgramId: string;
