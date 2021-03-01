@@ -4,6 +4,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants';
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
+import {ParamContext} from "../../../../../../main/webapp/app/shared/service/param.context";
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -21,6 +22,7 @@ describe('Service Tests', () => {
                     HttpClientTestingModule
                 ],
                 providers: [
+                    ParamContext,
                     SampleListService
                 ]
 
