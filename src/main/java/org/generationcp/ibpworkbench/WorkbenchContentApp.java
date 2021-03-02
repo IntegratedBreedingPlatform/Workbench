@@ -32,7 +32,7 @@ public class WorkbenchContentApp extends SpringContextApplication {
 	@Override
 	protected void initSpringApplication(final ConfigurableWebApplicationContext configurableWebApplicationContext) {
 		this.setTheme("gcp-default");
-		this.setMainWindow(new ContentWindow());
+		this.setMainWindow(new WorkbenchContentAppWindow());
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class WorkbenchContentApp extends SpringContextApplication {
 				final Project project = this.contextUtil.getProjectInContext();
 				final SingleSiteAnalysisPanel singleSiteAnalysis = new SingleSiteAnalysisPanel(project);
 				singleSiteAnalysis.setDebugId("singleSiteAnalysisPanel");
-				final ContentWindow contentWindow = new ContentWindow();
+				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
 				this.addWindow(contentWindow);
 				contentWindow.showContent(singleSiteAnalysis);
 				return contentWindow;
@@ -53,21 +53,21 @@ public class WorkbenchContentApp extends SpringContextApplication {
 				final Project project = this.contextUtil.getProjectInContext();
 				final MultiSiteAnalysisPanel gxeAnalysisPanel = new MultiSiteAnalysisPanel(project);
 				gxeAnalysisPanel.setDebugId("gxeAnalysisPanel");
-				final ContentWindow contentWindow = new ContentWindow();
+				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
 				this.addWindow(contentWindow);
 				contentWindow.showContent(gxeAnalysisPanel);
 				return contentWindow;
 			} else if (ToolName.MANAGE_PROGRAMS.getName().equals(name)) {
 				final ProgramAdministrationPanel projectPanel = new ProgramAdministrationPanel();
 				projectPanel.setDebugId("projectPanel");
-				final ContentWindow contentWindow = new ContentWindow();
+				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
 				this.addWindow(contentWindow);
 				contentWindow.showContent(projectPanel);
 				return contentWindow;
 			} else if (ToolName.CREATE_PROGRAMS.getName().equals(name)) {
 				final AddProgramView createProjectPanel = new AddProgramView();
 				createProjectPanel.setDebugId("createProjectPanel");
-				final ContentWindow contentWindow = new ContentWindow();
+				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
 				this.addWindow(contentWindow);
 				contentWindow.showContent(createProjectPanel);
 				return contentWindow;
