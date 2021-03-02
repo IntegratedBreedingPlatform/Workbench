@@ -1,28 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { TreeNode } from './tree-node.model';
 import { map } from 'rxjs/operators';
-
-export type EntityResponseType = HttpResponse<TreeNode>;
+import { TreeService } from '../../../shared/tree/tree.service';
+import { ParamContext } from '../../../shared/service/param.context';
 
 @Injectable()
-export class SampleTreeService {
+export class SampleTreeService implements TreeService {
 
     private resourceUrl;
     private crop;
     private programUUID;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                private context: ParamContext) {
     }
 
-    setCropAndProgram(crop: string, programUUID: string) {
+    private setCropAndProgram(crop: string, programUUID: string) {
         this.crop = crop;
         this.programUUID = programUUID;
         this.resourceUrl = `/bmsapi/crops/${crop}/programs/${programUUID}/sample-list-folders/`;
     }
 
     move(source: string, target: string): Observable<any> {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
         const isCropList = target === 'CROPLISTS';
         const sourceId = source === 'LISTS' || source === 'CROPLISTS' ? 0 : source;
         const targetId = target === 'LISTS' || target === 'CROPLISTS' ? 0 : target;
@@ -32,22 +34,26 @@ export class SampleTreeService {
     }
 
     delete(folderId: string): Observable<HttpResponse<any>> {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
         const url = `${this.resourceUrl}/${folderId}`;
         return this.http.delete<TreeNode[]>(url, { observe: 'response' });
     }
 
     create(folderName: string, parentId: string) {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
         const id = parentId === 'LISTS' || parentId === 'CROPLISTS' ? 0 : parentId;
         const url = `${this.resourceUrl}?folderName=${folderName}&parentId=${id}`;
         return this.http.post<any>(url, { observe: 'response' });
     }
 
     rename(newFolderName: string, folderId: string) {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
         const url = `${this.resourceUrl}/${folderId}?newFolderName=${newFolderName}`;
         return this.http.put<TreeNode[]>(url, { observe: 'response' });
     }
 
-    expand(parentKey: string, req?: any): Observable<HttpResponse<TreeNode[]>> {
+    expand(parentKey: string, req?: any): Observable<TreeNode[]> {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
 
         const url = `/bmsapi/crops/${this.crop}/sample-lists/tree`;
         const params = {
@@ -60,27 +66,15 @@ export class SampleTreeService {
             params['programUUID'] = this.programUUID;
         }
         return this.http.get<TreeNode[]>(url, {
-            params,
-            observe: 'response'
-        }).pipe(map((res: HttpResponse<TreeNode[]>) => this.convertArrayResponse(res, parentKey)));
-
+            params
+        }).pipe(map((res: TreeNode[]) => {
+            return res.map((treeNode) =>  {
+                const copy: TreeNode = Object.assign({}, treeNode);
+                copy.parentId = parentKey;
+                copy.id = treeNode.key;
+                copy.name = treeNode.title;
+                return copy;
+            });
+        }));
     }
-
-    private convertArrayResponse(res: HttpResponse<TreeNode[]>, parentKey?: string): HttpResponse<TreeNode[]> {
-        const jsonResponse: TreeNode[] = res.body;
-        const body: TreeNode[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i], parentKey));
-        }
-        return res.clone({ body });
-    }
-
-    private convertItemFromServer(treeNode: TreeNode, parentKey?: string): TreeNode {
-        const copy: TreeNode = Object.assign({}, treeNode);
-        copy.parentId = parentKey;
-        copy.id = treeNode.key;
-        copy.name = treeNode.title;
-        return copy;
-    }
-
 }

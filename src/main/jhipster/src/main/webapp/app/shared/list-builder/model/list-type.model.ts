@@ -1,4 +1,4 @@
-export class GermplasmListType {
+export class ListType {
 
     constructor(
         public id?: number,

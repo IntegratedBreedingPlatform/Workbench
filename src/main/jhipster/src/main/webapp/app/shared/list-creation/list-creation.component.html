@@ -15,25 +15,25 @@
 				</div>
 				<div class="col">
 					<div class="pull-right">
-						<img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
+						<img (click)="setMode(FolderModes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
 							 [ngClass]="{ 'disable-image': !selectedNode || selectedNode.data.id === 'CROPLISTS' || selectedNode && selectedNode.leaf }"/>
-						<img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
+						<img (click)="setMode(FolderModes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
 							 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
-						<img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
+						<img (click)="setMode(FolderModes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
 							 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
 					</div>
 				</div>
 			</div>
 
-			<div id="addFolderDiv" *ngIf="mode == Modes.Add || mode == Modes.Rename">
+			<div id="addFolderDiv" *ngIf="mode == FolderModes.Add || mode == FolderModes.Rename">
 				<div class="form-group row">
-					<label class="col-sm-5 col-form-label font-weight-bold">{{ Modes[mode] }} Folder<span class="required">*</span></label>
+					<label class="col-sm-5 col-form-label font-weight-bold">{{ FolderModes[mode] }} Folder<span class="required">*</span></label>
 					<div class="col-sm-7 input-group" style="height: 34px">
 						<input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="name" maxlength="{{ NAME_MAX_LENGTH }}"/>
-						<button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolder()">
+						<button class="btn btn-success" [title]="FolderModes[mode]" (click)="submitAddOrRenameFolder()">
 							<span class="fa fa-check"></span>
 						</button>
-						<button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
+						<button class="btn btn-danger" title="Cancel" (click)="mode = FolderModes.None">
 							<span class="fa fa-close"></span>
 						</button>
 					</div>
@@ -82,7 +82,7 @@
 					<label for="type" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.type"></label>
 					<div class="col-sm-9">
 						<select class="form-control" name="dropdownTypes" id="dropdownTypes" [(ngModel)]="model.type" #dropdownTypes="ngModel" required>
-							<option *ngFor="let type of germplasmListTypes" [value]="type.code">
+							<option *ngFor="let type of listTypes" [value]="type.code">
 								<label>{{type.name}}</label>
 							</option>
 						</select>

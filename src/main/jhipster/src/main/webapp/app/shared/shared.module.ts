@@ -44,12 +44,24 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
+import { ListBuilderComponent } from './list-builder/list-builder.component';
+import { ListBuilderContext } from './list-builder/list-builder.context';
+import { TableModule } from 'primeng/table';
+import { DragDropModule as CdkDragDropModule } from '@angular/cdk/drag-drop'
+import { GermplasmListCreationComponent } from './list-creation/germplasm-list-creation.component';
+import { SampleListBuilderService } from './list-creation/service/sample-list-builder.service';
+import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
+import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedLibsModule,
         BmsjHipsterSharedCommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TableModule,
+        TreeModule,
+        DragDropModule,
+        CdkDragDropModule
     ],
     declarations: [
         ModalComponent,
@@ -75,7 +87,10 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     providers: [
         LoginService,
@@ -87,6 +102,9 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         LotService,
         TransactionService,
         ParamContext,
+        ListBuilderContext,
+        GermplasmListBuilderService,
+        SampleListBuilderService,
         HelpService,
         GermplasmService,
         AttributesService,
@@ -104,6 +122,8 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -111,6 +131,8 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         TreeTableModule,
         TreeModule,
         DragDropModule,
+        CdkDragDropModule,
+        TableModule,
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
@@ -134,7 +156,10 @@ import { LocationSelect2DataPipe } from './location/model/location-select2.pipe'
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -14,6 +14,7 @@ import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
 import { Component } from '@angular/core';
 import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
+import { ListBuilderContext } from '../../../../../../main/webapp/app/shared/list-builder/list-builder.context';
 import {ActivatedRoute} from '@angular/router';
 import {MockActivatedRoute} from '../../../helpers/mock-route.service';
 import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
@@ -41,7 +42,8 @@ describe('Component Tests', () => {
                     SampleService,
                     SampleListService,
                     FileDownloadHelper,
-                    SampleImportPlateComponent
+                    SampleImportPlateComponent,
+                    ListBuilderContext
                 ]
             })
             .overrideTemplate(SampleComponent, '')
