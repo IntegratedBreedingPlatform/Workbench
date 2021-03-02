@@ -312,7 +312,7 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 
 			final String visibleFileName = FileNameGenerator.generateFileName(
 					temporaryFilePath,
-					"xls",
+					XLS_EXT,
 					this.germplasmList.getName().replace(" ", "_"),
 					"ForGenotyping"
 			);
