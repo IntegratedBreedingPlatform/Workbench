@@ -10,7 +10,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { GermplasmImportPayload, GermplasmImportRequest, PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
+import { GermplasmImportPayload, GermplasmImportRequest } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { HEADERS } from './germplasm-import.component';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
@@ -20,11 +20,11 @@ import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
-import { GermplasmListCreationComponent } from '../germplasm-list/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/model/germplasm-list';
 import { toUpper } from '../../shared/util/to-upper';
 import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
+import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -328,12 +328,11 @@ export class GermplasmImportReviewComponent implements OnInit {
         const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
             { size: 'lg', backdrop: 'static' });
         germplasmListCreationModalRef.componentInstance.entries = this.context.data.map((row) => {
-            return <GermplasmListEntry>({
-                gid: this.getSavedGid(row),
-                entryCode: row[HEADERS.ENTRY_CODE],
-                designation: row[row[HEADERS['PREFERRED NAME']]],
-                entryNo: Number(row[HEADERS.ENTRY_NO])
-            });
+            const entry = new GermplasmListEntry();
+            entry.gid = this.getSavedGid(row);
+            entry.entryCode = row[HEADERS.ENTRY_CODE];
+            entry.entryNo = Number(row[HEADERS.ENTRY_NO]);
+            return entry
         });
     }
 

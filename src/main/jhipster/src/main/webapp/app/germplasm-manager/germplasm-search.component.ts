@@ -6,8 +6,8 @@ import { ColumnFilterComponent, FilterType } from '../shared/column-filter/colum
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { NgbActiveModal, NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
@@ -22,6 +22,9 @@ import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
 import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
+import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
+import { ListEntry } from '../shared/list-builder/model/list.model';
+import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
 
 declare var $: any;
 
@@ -37,7 +40,6 @@ export class GermplasmSearchComponent implements OnInit {
     ColumnLabels = ColumnLabels;
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
-    @ViewChild(ColumnFilterComponent) public columnFilterComponent: ColumnFilterComponent;
 
     eventSubscriber: Subscription;
     germplasmList: Germplasm[];
@@ -83,6 +85,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmHiddenColumns = hiddenColumns;
     }
 
+    // TODO rewrite as map (see sample.component)
     selectedItems: any[] = [];
     isSelectAll = false;
 
@@ -275,10 +278,13 @@ export class GermplasmSearchComponent implements OnInit {
                 private germplasmService: GermplasmService,
                 private router: Router,
                 private alertService: AlertService,
-                private modal: NgbModal,
                 private translateService: TranslateService,
                 private popupService: PopupService,
-                private germplasmManagerContext: GermplasmManagerContext) {
+                private germplasmManagerContext: GermplasmManagerContext,
+                private modalService: NgbModal,
+                private activeModal: NgbActiveModal,
+                public listBuilderContext: ListBuilderContext
+    ) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -405,7 +411,7 @@ export class GermplasmSearchComponent implements OnInit {
             this.preSortCheck();
 
             if (this.isExpensiveFilter()) {
-                const confirmModalRef = this.modal.open(ModalConfirmComponent as Component);
+                const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
                 confirmModalRef.componentInstance.title = this.translateService.instant('search-germplasm.performance-warning.title');
                 let message = this.translateService.instant('search-germplasm.performance-warning.text');
                 message += this.getExpensiveFilterWarningList();
@@ -424,17 +430,10 @@ export class GermplasmSearchComponent implements OnInit {
     registerFilterBy() {
         // E.g germplasm changed via import.
         this.eventSubscriber = this.eventManager.subscribe('filterByGid', (event) => {
-
-            this.columnFilterComponent.clearFilters();
-
-            // Get the existing gids filter
-            const gidsFilter = this.filters.find((filter) => filter.key === 'gids');
-            gidsFilter.value = event.content.join(',');
-
-            // Manually add it to the filters and apply.
-            this.columnFilterComponent.selectedFilter = gidsFilter.key;
-            this.columnFilterComponent.AddFilter();
-            this.columnFilterComponent.updateListFilter(gidsFilter);
+            this.resetFilters();
+            this.request.gids = event.content;
+            ColumnFilterComponent.reloadFilters(this.filters, this.request);
+            this.resetTable();
         });
     }
 
@@ -498,6 +497,12 @@ export class GermplasmSearchComponent implements OnInit {
         }
     }
 
+    private resetFilters() {
+        this.filters = GermplasmSearchComponent.getInitialFilters();
+        this.request = new GermplasmSearchRequest();
+        this.request.addedColumnsPropertyIds = [];
+    }
+
     isSelected(germplasm: Germplasm) {
         return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
     }
@@ -544,6 +549,36 @@ export class GermplasmSearchComponent implements OnInit {
         return true;
     }
 
+    dragStart($event, dragged: Germplasm) {
+        let selected;
+        if (this.selectedItems.indexOf(dragged.gid) !== -1) {
+            selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+        } else {
+            selected = [dragged];
+        }
+        this.listBuilderContext.data = selected.map((germplasm: Germplasm) => {
+            const row: ListEntry = new ListEntry();
+            row[ColumnLabels.GID] = germplasm.gid;
+            row[ColumnLabels.NAMES] = germplasm.names;
+            row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
+            // FIXME consolidate enum ColumnLabels with localization files
+            //  Modify backend sorting mechanism if needed
+            row['UNIT'] = germplasm.unit;
+            row['LOTS'] = germplasm.lotCount;
+            row[ColumnLabels.CROSS] = germplasm.pedigreeString;
+            row['LOCATION'] = germplasm.locationName;
+            row[ColumnLabels['METHOD NAME']] = germplasm.methodName;
+            return row;
+        });
+    }
+
+    dragEnd($event) {
+    }
+
+    toggleListBuilder() {
+        this.listBuilderContext.visible = !this.listBuilderContext.visible;
+    }
+
     openCreateList() {
         if (!this.validateSelection()) {
             return;
@@ -580,6 +615,52 @@ export class GermplasmSearchComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });
+    }
+
+    deleteGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-delete.delete-all-germplasm-not-supported');
+            return;
+        }
+
+        if (this.selectedItems.length > 500) {
+            this.alertService.error('germplasm-delete.too-many-selected-germplasm');
+            return;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.title = 'Delete Germplasm';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
+        confirmModalRef.result.then(() => {
+            this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
+                if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
+                    this.alertService.warning('germplasm-delete.warning');
+                    this.resetFilters();
+                    // Show the germplasm that were not deleted because of validation
+                    this.request.gids = response.germplasmWithErrors;
+                    ColumnFilterComponent.reloadFilters(this.filters, this.request);
+                } else {
+                    this.alertService.success('germplasm-delete.success');
+                }
+                this.resetTable();
+
+                // If there are deleted germplasm, show the Clear Prefix Key Cache Sequence Dialog
+                if (response.deletedGermplasm && response.deletedGermplasm.length) {
+                    this.openKeySequenceDeletionDialog(response.deletedGermplasm);
+                }
+
+            });
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
+    }
+
+    openKeySequenceDeletionDialog(gids: number[]) {
+        const confirmModalRef = this.modalService.open(KeySequenceRegisterDeletionDialogComponent as Component);
+        confirmModalRef.componentInstance.gids = gids;
     }
 }
 

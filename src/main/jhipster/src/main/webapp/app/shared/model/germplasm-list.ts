@@ -1,29 +1,22 @@
 import { SearchComposite } from './search-composite';
 import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
+import { ListEntry, ListModel } from '../list-builder/model/list.model';
 
-export class GermplasmList {
+export class GermplasmList extends ListModel {
     constructor(
-        public name?: string,
-        public description?: string,
-        public type?: string,
-        public date?: any,
-        public notes?: string,
-        public parentFolderId?: string,
-        public entries?: GermplasmListEntry[],
         public searchComposite?: SearchComposite<GermplasmSearchRequest, number>
     ) {
+        super();
     }
 }
 
-export class GermplasmListEntry {
+export class GermplasmListEntry extends ListEntry {
     constructor(
-        public entryNo?: number,
         public gid?: number,
         public entryCode?: string,
         public seedSource?: string,
-        public designation?: string,
         public groupName?: string,
     ) {
-
+        super();
     }
 }

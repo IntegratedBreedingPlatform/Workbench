@@ -86,7 +86,10 @@
             "dev":"Development"
         },
         "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
-        "clear-sort": "Clear sort"
+        "clear-sort": "Clear sort",
+        "selected": "Selected",
+        "select.all": "Select all pages",
+        "total.entries": "Total entries"
     },
     "entity": {
         "action": {
@@ -139,6 +142,7 @@
     "no.data": "No records found",
     "confirm": "Confirm",
     "cancel": "Cancel",
+    "reset": "Reset",
     "back": "Back",
     "save": "Save",
     "next": "Next",
