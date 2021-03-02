@@ -1,19 +1,24 @@
 <section>
     <header>
         <h1> Germplasm Manager <a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a> </h1>
-        <label>
-        </label>
     </header>
-    <nav>
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['germplasm-search']"
-                   [routerLinkActive]="['active']">Germplasm Search</a>
-            </li>
-        </ul>
-    </nav>
-    <div class="tab-content p-3">
-        <router-outlet></router-outlet>
-		<jhi-alert></jhi-alert>
+	<div class="row">
+        <section [ngClass]="listBuilderContext.visible ? 'col-7' : 'col'">
+            <nav>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['germplasm-search']"
+                           [routerLinkActive]="['active']">Germplasm Search</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="tab-content p-3">
+                <router-outlet></router-outlet>
+                <jhi-alert></jhi-alert>
+            </div>
+        </section>
+        <section [hidden]="!listBuilderContext.visible" class="col-5 h-auto">
+            <jhi-list-builder></jhi-list-builder>
+        </section>
     </div>
 </section>

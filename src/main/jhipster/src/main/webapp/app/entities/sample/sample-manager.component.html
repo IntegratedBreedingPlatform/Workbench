@@ -4,26 +4,33 @@
 	</header>
 	<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
 	<div class="form-control-label"><a href (click)="browseList($event)">Browse</a> or <a href (click)="openSearch($event)">search</a> for a list of samples to work with.</div>
-	<div *ngIf="lists && lists.length" style="padding-top: 10px;">
-		<nav>
-			<!-- Nav tabs -->
-			<ul class="nav nav-tabs" role="tablist">
-				<li class="nav-item" *ngFor="let list of lists" role="presentation">
-					<a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
-						{{list.listName}}
-						<i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
-					</a>
-				</li>
-			</ul>
-			<div class="tab-content">
-				<!-- Tab panes -->
-				<div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="list.active" id="list-{{list.id}}">
-					<div class="col-xs-12 col-md-12">
-						<jhi-sample [sampleList]="list"></jhi-sample>
-					</div>
-				</div>
-			</div>
-		</nav>
-	</div>
+	<div class="row">
+        <section [ngClass]="listBuilderContext.visible ? 'col-7' : 'col'">
+            <div *ngIf="lists && lists.length" style="padding-top: 10px;">
+                <nav>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item" *ngFor="let list of lists" role="presentation">
+                            <a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+                                {{list.listName}}
+                                <i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <!-- Tab panes -->
+                        <div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="list.active" id="list-{{list.id}}">
+                            <div class="col-xs-12 col-md-12">
+                                <jhi-sample [sampleList]="list"></jhi-sample>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </section>
+        <section [hidden]="!listBuilderContext.visible" class="col-5 mb-3">
+            <jhi-list-builder></jhi-list-builder>
+        </section>
+    </div>
 </section>
 <jhi-alert></jhi-alert>

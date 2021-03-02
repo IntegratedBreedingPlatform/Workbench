@@ -5,17 +5,13 @@ import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-d
 import { RouterModule } from '@angular/router';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportReviewComponent, NameAttributeColumnPipe } from './germplasm-import-review.component';
-import { TableModule } from 'primeng/table';
-import { DragDropModule } from 'primeng/dragdrop';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedModule,
-        RouterModule,
-        TableModule,
-        DragDropModule
+        RouterModule
     ],
     declarations: [
         GermplasmImportComponent,
