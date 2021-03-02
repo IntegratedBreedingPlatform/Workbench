@@ -7,13 +7,19 @@ import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { ITEMS_PER_PAGE } from '../../shared';
+import { BaseEntity, ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
 import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
+import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
+import { ListBuilderService } from '../../shared/list-creation/service/list-builder.service';
+import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
+import { TreeService } from '../../shared/tree/tree.service';
+import { SampleTreeService } from './tree-table';
+import { ListEntry } from '../../shared/list-builder/model/list.model';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -44,6 +50,10 @@ export class SampleComponent implements OnInit, OnDestroy {
     crop: string;
     private paramSubscription: Subscription;
 
+    // { <data-index>: boolean }
+    selectedItems = {};
+    isSelectAllPages = false;
+
     constructor(
         private sampleService: SampleService,
         private sampleListService: SampleListService,
@@ -56,6 +66,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         private fileDownloadHelper: FileDownloadHelper,
         private modalService: NgbModal,
         public activeModal: NgbActiveModal,
+        public listBuilderContext: ListBuilderContext
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
 
@@ -171,6 +182,73 @@ export class SampleComponent implements OnInit, OnDestroy {
             result.push('id');
         }
         return result;
+    }
+
+    toggleListBuilder() {
+        this.listBuilderContext.visible = !this.listBuilderContext.visible;
+    }
+
+    isSelected(sample: Sample) {
+        return this.selectedItems[sample.sampleId];
+    }
+
+    toggleSelect(sample: Sample) {
+        if (this.selectedItems[sample.sampleId]) {
+            delete this.selectedItems[sample.sampleId];
+        } else {
+            this.selectedItems[sample.sampleId] = true;
+        }
+    }
+
+    isPageSelected() {
+        const pageItemIds = this.getPageItemIds();
+        return this.size(this.selectedItems) && pageItemIds.every((itemId) => this.selectedItems[itemId]);
+    }
+
+    onSelectPage() {
+        const pageItemIds = this.getPageItemIds();
+        if (this.isPageSelected()) {
+            // remove all items
+            pageItemIds.forEach((itemId) => delete this.selectedItems[itemId]);
+        } else {
+            // check remaining items
+            pageItemIds.forEach((itemId) => this.selectedItems[itemId] = true);
+        }
+    }
+
+    getPageItemIds() {
+        return this.sampleList.samples.map((sample) => sample.sampleId);
+    }
+
+    onSelectAllPages() {
+        this.isSelectAllPages = !this.isSelectAllPages;
+        this.selectedItems = {};
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
+    }
+
+    dragStart($event, dragged: Sample) {
+        let selected;
+        if (this.selectedItems[dragged.sampleId]) {
+            selected = this.sampleList.samples.filter((sample) => this.selectedItems[sample.sampleId]);
+        } else {
+            selected = [dragged];
+        }
+        this.listBuilderContext.data = selected.map((sample) => {
+            const row = new ListEntry();
+            row['SAMPLE_ID'] = sample.sampleId;
+            row['DESIGNATION'] = sample.designation;
+            row['GID'] = sample.gid;
+            row['SAMPLE_NAME'] = sample.sampleName;
+            row['TAKEN_BY'] = sample.takenBy;
+            row['SAMPLING_DATE'] = sample.samplingDate;
+            row['SAMPLE_UID'] = sample.sampleBusinessKey;
+            row['PLATE'] = sample.plateId;
+            row['WELL'] = sample.well;
+            return row;
+        });
     }
 
     private onSuccess(data, headers) {

@@ -44,13 +44,25 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
 import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
+import { ListBuilderComponent } from './list-builder/list-builder.component';
+import { ListBuilderContext } from './list-builder/list-builder.context';
+import { TableModule } from 'primeng/table';
+import { DragDropModule as CdkDragDropModule } from '@angular/cdk/drag-drop'
+import { GermplasmListCreationComponent } from './list-creation/germplasm-list-creation.component';
+import { SampleListBuilderService } from './list-creation/service/sample-list-builder.service';
+import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
+import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
 import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedLibsModule,
         BmsjHipsterSharedCommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TableModule,
+        TreeModule,
+        DragDropModule,
+        CdkDragDropModule
     ],
     declarations: [
         ModalComponent,
@@ -76,7 +88,10 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     providers: [
         LoginService,
@@ -88,6 +103,9 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         LotService,
         TransactionService,
         ParamContext,
+        ListBuilderContext,
+        GermplasmListBuilderService,
+        SampleListBuilderService,
         HelpService,
         GermplasmService,
         AttributesService,
@@ -106,6 +124,8 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -113,6 +133,8 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         TreeTableModule,
         TreeModule,
         DragDropModule,
+        CdkDragDropModule,
+        TableModule,
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
@@ -136,7 +158,10 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ItemCountCustomComponent,
-        LocationSelect2DataPipe
+        LocationSelect2DataPipe,
+        ListBuilderComponent,
+        GermplasmListCreationComponent,
+        SampleListCreationComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
