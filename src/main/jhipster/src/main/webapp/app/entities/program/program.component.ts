@@ -6,6 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { Principal } from '../../shared';
 import { HELP_DASHBOARD } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-program',
@@ -28,7 +29,8 @@ export class ProgramComponent implements OnInit {
     constructor(
         private programService: ProgramService,
         private principal: Principal,
-        private helpService: HelpService
+        private helpService: HelpService,
+        private languageService: JhiLanguageService
     ) {
     }
 
