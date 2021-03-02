@@ -127,6 +127,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             return;
         }
         if (event.data.programSelected) {
+
+            console.log();
+
             this.program = event.data.programSelected;
             localStorage['selectedProjectId'] = this.program.id;
             localStorage['loggedInUserId'] = this.user.userId;

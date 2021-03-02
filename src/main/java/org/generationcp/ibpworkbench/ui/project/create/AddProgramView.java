@@ -402,13 +402,13 @@ public class AddProgramView extends Panel implements InitializingBean {
 		private final Long id;
 		private final String name;
 		private final String crop;
-		private final String programUUID;
+		private final String uniqueID;
 
-		public RedirectToMainModel(final Long id, final String name, final String crop, final String programUUID) {
+		public RedirectToMainModel(final Long id, final String name, final String crop, final String uniqueID) {
 			this.id = id;
 			this.name = name;
 			this.crop = crop;
-			this.programUUID = programUUID;
+			this.uniqueID = uniqueID;
 		}
 
 		public Long getId() {
@@ -423,8 +423,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 			return crop;
 		}
 
-		public String getProgramUUID() {
-			return programUUID;
+		public String getUniqueID() {
+			return uniqueID;
 		}
 	}
 }
