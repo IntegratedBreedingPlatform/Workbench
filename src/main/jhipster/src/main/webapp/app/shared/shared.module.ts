@@ -52,6 +52,7 @@ import { GermplasmListCreationComponent } from './list-creation/germplasm-list-c
 import { SampleListBuilderService } from './list-creation/service/sample-list-builder.service';
 import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
 import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
+import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 
@@ -117,6 +118,7 @@ import { ToolService } from './tool/service/tool.service';
         PopupService,
         AlertService,
         ToolService,
+        KeySequenceRegisterService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
