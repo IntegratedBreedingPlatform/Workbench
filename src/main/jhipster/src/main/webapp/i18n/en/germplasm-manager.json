@@ -16,6 +16,12 @@
         "validation.progenitors.must.be.both.defined": "Both Progenitor 1 and Progenitor 2 have to be defined (0 for unknown gid).",
         "import.success" : "Germplasm updates are saved successfully."
     },
+    "germplasm-delete": {
+        "success": "Germplasm are deleted successfully.",
+        "warning": "Some germplasm can not be deleted due to internal validations (has inventory, is fixed, has descendants, present in one or more list, or it is associated with a study). For further information please contact support.",
+        "too-many-selected-germplasm": "You can only delete 500 germplasm records at a time.",
+        "delete-all-germplasm-not-supported": "Deletion of germplasm in all pages is not supported. Please select individual germplasm to delete."
+    },
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
@@ -49,7 +55,8 @@
         "actions": {
             "create-list": "Create new list",
             "add-to-list": "Add to existing list",
-            "import": "Import germplasm"
+            "import": "Import germplasm",
+            "delete-germplasm": "Delete selected germplasm records"
         },
         "included-gids": "(+ included germplasm)"
     },
@@ -167,5 +174,18 @@
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"
         }
+    },
+    "key-sequence-register": {
+        "title": "CLEAR PREFIX CACHED SEQUENCES",
+        "description": "Please specify the prefixes for which you want to clear the cached sequences.",
+        "enter.prefix": "Enter Prefix:",
+        "add.prefix": "Add",
+        "prefix": "PREFIX",
+        "remove": "Remove",
+        "delete": "Delete",
+        "no.prefix.added": "No prefix added.",
+        "no.existing.name.with.prefix": "The deleted germplasm has no names with the specified prefix(es).",
+        "prefix.delete.success":"The cache was cleared for all prefixes.",
+        "prefix.delete.warning": "Cache for {{param1}} prefixes was successfully cleared and the cache for following prefixes: {{param2}} cannot be cleared because they are not used by the names of the deleted germplasm."
     }
 }
