@@ -10,7 +10,9 @@
 		<div class="toolbar-filler"></div>
 		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS">Site Admin</button>
 		<button mat-button *ngIf="toolUrl" (click)="myPrograms()">My Programs</button>
-		<button mat-button *ngIf="!toolUrl" (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION"><i class="fa fa-plus"></i> Add a Program</button>
+		<ng-container *ngIf="!toolUrl">
+			<button mat-button (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION"><i class="fa fa-plus"></i> Add a Program</button>
+		</ng-container>
 
 		<button mat-icon-button (click)="about()">
 			<mat-icon fontSet="fa" fontIcon="fa-info"></mat-icon>
