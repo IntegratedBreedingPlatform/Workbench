@@ -109,6 +109,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     siteAdmin() {
+        this.program = null;
         this.openTool('/ibpworkbench/controller/admin');
     }
 
