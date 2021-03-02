@@ -127,16 +127,22 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             return;
         }
         if (event.data.programSelected) {
+            const program = event.data.programSelected;
 
-            this.program = event.data.programSelected;
-            localStorage['selectedProjectId'] = this.program.id;
-            localStorage['loggedInUserId'] = this.user.userId;
-            localStorage['cropName'] = this.program.crop;
-            localStorage['programUUID'] = this.program.uniqueID;
-
-            this.toolService.getTools(this.program.crop, this.program.uniqueID)
+            this.toolService.getTools(program.crop, program.uniqueID)
                 .subscribe(
                     (res: HttpResponse<Tool[]>) => {
+                        if (!(res.body && res.body.length)) {
+                            this.jhiAlertService.error('error.no.tool.available');
+                            return;
+                        }
+
+                        this.program = program;
+                        localStorage['selectedProjectId'] = this.program.id;
+                        localStorage['loggedInUserId'] = this.user.userId;
+                        localStorage['cropName'] = this.program.crop;
+                        localStorage['programUUID'] = this.program.uniqueID;
+
                         this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
 
                         const firstNode = this.treeControl.dataNodes[0];
