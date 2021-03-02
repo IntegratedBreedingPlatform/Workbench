@@ -43,7 +43,7 @@ export class GermplasmService {
                 germplasmUUIDs,
                 names
             }, {
-                params: createRequestOption({page, size: pageSize})
+                params: createRequestOption({ page, size: pageSize })
             });
         });
     }
@@ -81,6 +81,14 @@ export class GermplasmService {
         return this.http.post<ImportGermplasmResultType>(url, germplasmList);
     }
 
+    deleteGermplasm(gids: number[]): Observable<DeleteGermplasmResultType> {
+        const params = {};
+        params['gids'] = gids;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.delete<DeleteGermplasmResultType>(url, { params });
+    }
 }
 
 export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };
+export type DeleteGermplasmResultType = { deletedGermplasm: number[], germplasmWithErrors: number[] };

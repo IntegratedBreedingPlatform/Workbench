@@ -102,6 +102,8 @@ export class LotCreationDialogComponent implements OnInit {
     save() {
         this.isLoading = true;
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
+        this.jhiAlertService.clear();
+
         const lotGeneratorBatchRequest = {
             searchComposite: this.getSearchComposite(),
             lotGeneratorInput: Object.assign({
@@ -176,6 +178,7 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     close() {
+        this.jhiAlertService.clear();
         this.activeModal.dismiss();
     }
 
