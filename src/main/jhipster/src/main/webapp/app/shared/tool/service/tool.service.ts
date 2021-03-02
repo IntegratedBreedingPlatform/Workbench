@@ -9,10 +9,10 @@ export class ToolService {
     constructor(private http: HttpClient) {
     }
 
-    getTools(cropName: string, programId: number): Observable<HttpResponse<Tool[]>> {
+    getTools(cropName: string, programUUID: string): Observable<HttpResponse<Tool[]>> {
         const params = {
             cropName,
-            programId: programId.toString()
+            programUUID
         };
         return this.http.get<Tool[]>(SERVER_API_URL + `tools`, { params, observe: 'response' });
     }

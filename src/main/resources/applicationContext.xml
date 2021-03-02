@@ -495,8 +495,7 @@
 	</bean>
 
 	<bean id="workbenchService"
-			  class="org.generationcp.middleware.service.impl.workbench.WorkbenchServiceImpl"
-			  destroy-method="close">
+			  class="org.generationcp.middleware.service.impl.workbench.WorkbenchServiceImpl">
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 	</bean>
 

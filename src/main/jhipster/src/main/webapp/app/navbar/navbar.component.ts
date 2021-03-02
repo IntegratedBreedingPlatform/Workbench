@@ -128,15 +128,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
         if (event.data.programSelected) {
 
-            console.log();
-
             this.program = event.data.programSelected;
             localStorage['selectedProjectId'] = this.program.id;
             localStorage['loggedInUserId'] = this.user.userId;
             localStorage['cropName'] = this.program.crop;
             localStorage['programUUID'] = this.program.uniqueID;
 
-            this.toolService.getTools(this.program.crop, Number(this.program.id))
+            this.toolService.getTools(this.program.crop, this.program.uniqueID)
                 .subscribe(
                     (res: HttpResponse<Tool[]>) => {
                         this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
