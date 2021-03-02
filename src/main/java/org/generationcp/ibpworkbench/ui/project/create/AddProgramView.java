@@ -15,7 +15,6 @@ import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
@@ -402,13 +401,13 @@ public class AddProgramView extends Panel implements InitializingBean {
 
 		private final Long id;
 		private final String name;
-		private final String cropName;
+		private final String crop;
 		private final String programUUID;
 
-		public RedirectToMainModel(final Long id, final String name, final String cropName, final String programUUID) {
+		public RedirectToMainModel(final Long id, final String name, final String crop, final String programUUID) {
 			this.id = id;
 			this.name = name;
-			this.cropName = cropName;
+			this.crop = crop;
 			this.programUUID = programUUID;
 		}
 
@@ -420,8 +419,8 @@ public class AddProgramView extends Panel implements InitializingBean {
 			return name;
 		}
 
-		public String getCropName() {
-			return cropName;
+		public String getCrop() {
+			return crop;
 		}
 
 		public String getProgramUUID() {
