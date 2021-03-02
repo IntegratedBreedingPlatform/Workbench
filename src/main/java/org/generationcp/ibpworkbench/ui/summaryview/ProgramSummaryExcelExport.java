@@ -17,8 +17,11 @@ public class ProgramSummaryExcelExport extends com.vaadin.addon.tableexport.Exce
 
 	private static final Logger LOGGER = Logger.getLogger(ProgramSummaryExcelExport.class.getName());
 
-	public ProgramSummaryExcelExport(final Table component, final String tableName) {
+	private Window window;
+
+	public ProgramSummaryExcelExport(final Window window, final Table component, final String tableName) {
 		super(component, tableName);
+		this.window = window;
 	}
 
 	@Override
@@ -63,15 +66,8 @@ public class ProgramSummaryExcelExport extends com.vaadin.addon.tableexport.Exce
 
 		try {
 			TemporaryFileDownloadResource resource = new TemporaryFileDownloadResource(app, exportFileName, this.mimeType, fileToExport);
-			final Optional<Window> window = app.getWindows()
-				.stream()
-				.filter(w -> w.getContent() instanceof ProgramAdministrationPanel)
-				.findFirst();
-			if (window.isPresent()) {
-				window.get().open(resource, this.exportWindow);
-				return true;
-			}
-			return false;
+			this.window.open(resource, this.exportWindow);
+			return true;
 		} catch (FileNotFoundException var6) {
 			LOGGER.warning("Sending file to user failed with FileNotFoundException " + var6);
 			return false;

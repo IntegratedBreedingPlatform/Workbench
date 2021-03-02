@@ -589,7 +589,8 @@ public class ProgramSummaryView extends VerticalLayout implements InitializingBe
 		public void buttonClick(final Button.ClickEvent event) {
 
 			final String tableName = ProgramSummaryView.this.header.getValue().toString().split("\\[")[0].trim();
-			this.doExport(new ProgramSummaryExcelExport((Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
+			this.doExport(new ProgramSummaryExcelExport(event.getComponent().getWindow().getContent().getComponentIterator().next().getWindow(),
+				(Table) ProgramSummaryView.this.getComponent(1), tableName), tableName);
 
 		}
 
