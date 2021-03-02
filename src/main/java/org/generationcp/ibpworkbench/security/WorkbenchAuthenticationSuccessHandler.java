@@ -30,7 +30,6 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
 
-	//TODO: fix me! For some reason there is a 404 using "/main". We need to check why servlet url mapping doesn't work for
 	private static final String DEFAULT_TARGET_URL = "/main/";
 
 	@Autowired
