@@ -7,6 +7,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.programadministration.ProgramAdministrationPanel;
+import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -67,6 +68,13 @@ public class WorkbenchContentApp extends SpringContextApplication {
 			} else if (ToolName.CREATE_PROGRAMS.getName().equals(name)) {
 				final AddProgramView createProjectPanel = new AddProgramView();
 				createProjectPanel.setDebugId("createProjectPanel");
+				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
+				this.addWindow(contentWindow);
+				contentWindow.showContent(createProjectPanel);
+				return contentWindow;
+			} else if (ToolName.METHOD_MANAGER.getName().equals(name)) {
+				final ProgramMethodsView createProjectPanel = new ProgramMethodsView(this.contextUtil.getProjectInContext());
+				createProjectPanel.setDebugId("methodsView");
 				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
 				this.addWindow(contentWindow);
 				contentWindow.showContent(createProjectPanel);
