@@ -7,12 +7,10 @@ import { HelpService } from '../../shared/service/help.service';
 import { HELP_MANAGE_SAMPLES } from '../../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleSearchListComponent } from './sample-search-list.component';
-import { SampleTreeService, TreeTableComponent } from './tree-table';
+import { TreeTableComponent } from './tree-table';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
 import { ListBuilderService } from '../../shared/list-creation/service/list-builder.service';
 import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
-import { TreeService } from '../../shared/tree/tree.service';
-import { ListCreationComponent } from '../../shared/list-creation/list-creation.component';
 import { ParamContext } from '../../shared/service/param.context';
 
 declare const cropName: string;

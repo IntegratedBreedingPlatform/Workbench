@@ -8,9 +8,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PopupService } from '../../shared/modal/popup.service';
-
-declare const cropName: string;
-declare const currentProgramId: string;
+import { ParamContext } from '../../shared/service/param.context';
 
 @Component({
     selector: 'jhi-sample-search-list',
@@ -28,7 +26,6 @@ export class SampleSearchListComponent {
     reverse = 'asc';
 
     private paramSubscription: Subscription;
-    private crop: string;
 
     constructor(private sampleListService: SampleListService,
                 private activatedRoute: ActivatedRoute,
@@ -36,13 +33,9 @@ export class SampleSearchListComponent {
                 private alertService: AlertService,
                 private languageservice: JhiLanguageService,
                 public activeModal: NgbActiveModal,
-                private modalService: NgbModal) {
-
-        this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = cropName;
-            this.sampleListService.setCropAndProgram(this.crop, currentProgramId);
-        });
-
+                private modalService: NgbModal,
+                private paramContext: ParamContext,
+    ) {
     }
 
     searchList() {
@@ -55,7 +48,7 @@ export class SampleSearchListComponent {
         const params = {
             searchString: this.searchString,
             exactMatch: this.exactMatch,
-            programUUID : currentProgramId,
+            programUUID : this.paramContext.programUUID,
             sort: this.sort()
         };
         this.sampleListService.search(params).subscribe(
@@ -94,10 +87,6 @@ export class SampleSearchListComponent {
 
     trackId(index: number, item: SampleList) {
         return item.id;
-    }
-
-    setCrop(crop: string) {
-        this.crop = crop;
     }
 
     confirm() {

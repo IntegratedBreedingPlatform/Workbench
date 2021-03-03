@@ -7,7 +7,7 @@ import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Sample } from './sample.model';
 import { SampleService } from './sample.service';
 // import { ITEMS_PER_PAGE } from '../../shared';
-import { BaseEntity, ITEMS_PER_PAGE } from '../../shared';
+import { ITEMS_PER_PAGE } from '../../shared';
 import { SampleList } from './sample-list.model';
 import { SampleListService } from './sample-list.service';
 import { FileDownloadHelper } from './file-download.helper';
@@ -15,14 +15,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
-import { ListBuilderService } from '../../shared/list-creation/service/list-builder.service';
-import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
-import { TreeService } from '../../shared/tree/tree.service';
-import { SampleTreeService } from './tree-table';
 import { ListEntry } from '../../shared/list-builder/model/list.model';
-
-declare const cropName: string;
-declare const currentProgramId: string;
 
 @Component({
     selector: 'jhi-sample',
@@ -47,8 +40,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     predicate: any;
     previousPage: any;
     reverse: any;
-    crop: string;
-    private paramSubscription: Subscription;
 
     // { <data-index>: boolean }
     selectedItems = {};
@@ -76,11 +67,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
-        this.paramSubscription = this.activatedRoute.params.subscribe((params) => {
-            this.crop = cropName;
-            this.sampleService.setCropAndProgram(this.crop, currentProgramId);
-            this.loadAll();
-        });
+        this.loadAll();
 
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
@@ -166,7 +153,6 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.eventManager.destroy(this.eventSubscriber);
-        this.paramSubscription.unsubscribe();
     }
 
     trackId(index: number, item: Sample) {
