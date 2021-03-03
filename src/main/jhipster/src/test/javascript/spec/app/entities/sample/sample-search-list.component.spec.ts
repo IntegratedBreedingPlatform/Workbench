@@ -7,7 +7,9 @@ import { BmsjHipsterTestModule } from '../../../test.module';
 import { SampleList } from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import {SampleSearchListComponent} from '../../../../../../main/webapp/app/entities/sample/sample-search-list.component';
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MockActivatedRoute} from '../../../helpers/mock-route.service';
+import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
 
 declare const cropName: string;
 
@@ -25,6 +27,11 @@ describe('Component Tests', () => {
                 imports: [BmsjHipsterTestModule],
                 declarations: [SampleSearchListComponent],
                 providers: [
+                    {
+                        provide: ActivatedRoute,
+                        useValue: new MockActivatedRoute({id: 123})
+                    },
+                    ParamContext,
                     SampleListService,
                     { provide: Router, useClass: MockRouter }
                 ]
