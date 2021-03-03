@@ -98,7 +98,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			try {
 
 				if (environmentExists) {
-					ConfirmDialog.show(event.getComponent().getApplication().getMainWindow(), "",
+					ConfirmDialog.show(event.getComponent().getWindow(), "",
 						this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING), this.messageSource.getMessage(Message.OK),
 						this.messageSource.getMessage(Message.CANCEL), new Runnable() {
 
