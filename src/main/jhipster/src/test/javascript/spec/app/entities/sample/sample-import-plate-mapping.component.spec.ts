@@ -13,6 +13,9 @@ import { Component } from '@angular/core';
 import { SampleImportPlateComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate.component';
 import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
+import {ActivatedRoute} from '@angular/router';
+import {MockActivatedRoute} from '../../../helpers/mock-route.service';
+import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
 
 describe('Component Tests', () => {
 
@@ -31,6 +34,11 @@ describe('Component Tests', () => {
                 imports: [BmsjHipsterTestModule, TranslateModule.forRoot()],
                 declarations: [SampleImportPlateMappingComponent],
                 providers: [
+                    {
+                        provide: ActivatedRoute,
+                        useValue: new MockActivatedRoute({id: 123})
+                    },
+                    ParamContext,
                     SampleContext,
                     SampleListService,
                     JhiEventManager,
