@@ -15,6 +15,9 @@ import { SampleImportPlateComponent } from '../../../../../../main/webapp/app/en
 import { Component } from '@angular/core';
 import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
 import { ListBuilderContext } from '../../../../../../main/webapp/app/shared/list-builder/list-builder.context';
+import {ActivatedRoute} from '@angular/router';
+import {MockActivatedRoute} from '../../../helpers/mock-route.service';
+import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
 
 describe('Component Tests', () => {
 
@@ -31,6 +34,11 @@ describe('Component Tests', () => {
                 imports: [BmsjHipsterTestModule],
                 declarations: [SampleComponent],
                 providers: [
+                    {
+                        provide: ActivatedRoute,
+                        useValue: new MockActivatedRoute({id: 123})
+                    },
+                    ParamContext,
                     SampleService,
                     SampleListService,
                     FileDownloadHelper,
