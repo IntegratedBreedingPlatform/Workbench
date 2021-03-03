@@ -20,6 +20,7 @@ describe('Component Tests', () => {
         let comp: SampleSearchListComponent;
         let fixture: ComponentFixture<SampleSearchListComponent>;
         let service: SampleListService;
+        let paramContext: ParamContext;
         let router: Router;
 
         beforeEach(async(() => {
@@ -42,7 +43,10 @@ describe('Component Tests', () => {
         beforeEach(() => {
             fixture = TestBed.createComponent(SampleSearchListComponent);
             comp = fixture.componentInstance;
-            comp.setCrop(cropName);
+            paramContext = fixture.debugElement.injector.get(ParamContext);
+            // FIXME see global.js
+            paramContext.programUUID = currentProgramId;
+            paramContext.cropName = cropName;
             service = fixture.debugElement.injector.get(SampleListService);
             router = fixture.debugElement.injector.get(Router);
         });
