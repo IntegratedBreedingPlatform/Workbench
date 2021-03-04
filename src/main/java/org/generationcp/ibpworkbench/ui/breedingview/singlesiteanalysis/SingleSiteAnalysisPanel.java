@@ -98,9 +98,6 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Value("${workbench.is.server.app}")
-	private String isServerApp;
-
 	@Autowired
 	private StudyDataManager studyDataManager;
 
@@ -238,26 +235,17 @@ public class SingleSiteAnalysisPanel extends VerticalLayout implements Initializ
 		final HorizontalLayout browseLabelLayout = new HorizontalLayout();
 		browseLabelLayout.setDebugId("browseLabelLayout");
 		browseLabelLayout.addComponent(this.browseLink);
-		Label workWith = null;
 
-		if (Boolean.parseBoolean(this.isServerApp)) {
-			workWith = new Label("for a study to work with ");
-		} else {
-			workWith = new Label("for a study to work with.");
-		}
-
+		Label workWith = new Label("for a study to work with ");
 		workWith.setWidth("150px");
 		browseLabelLayout.addComponent(workWith);
 		final Label orLabel = new Label("or");
 		orLabel.setDebugId("orLabel");
 		orLabel.setWidth("20px");
 
-		if (Boolean.parseBoolean(this.isServerApp)) {
-			browseLabelLayout.addComponent(orLabel);
-			browseLabelLayout.addComponent(this.uploadLink);
-			browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));
-		}
-
+		browseLabelLayout.addComponent(orLabel);
+		browseLabelLayout.addComponent(this.uploadLink);
+		browseLabelLayout.addComponent(new Label(" Breeding View output files to BMS."));
 		browseLabelLayout.setSizeUndefined();
 
 		final VerticalLayout selectDataForAnalysisLayout = new VerticalLayout();

@@ -53,6 +53,8 @@ import { SampleListBuilderService } from './list-creation/service/sample-list-bu
 import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
 import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
 import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
+import { ProgramService } from './program/service/program.service';
+import { ToolService } from './tool/service/tool.service';
 
 @NgModule({
     imports: [
@@ -112,8 +114,10 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         NameTypeService,
         BreedingMethodService,
         LocationService,
+        ProgramService,
         PopupService,
         AlertService,
+        ToolService,
         KeySequenceRegisterService,
         /*
          * Workaround to reuse modal content outside ngb modals

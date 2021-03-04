@@ -2,6 +2,7 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import com.vaadin.ui.Button;
+
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA. User: cyrus Date: 10/28/13 Time: 11:07 AM To change this template use File | Settings | File Templates.
@@ -73,9 +76,13 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 			this.contextUtil.logProgramActivity("Update Program", "Updated Program - " + project.getProjectName());
 
-			if (IBPWorkbenchApplication.get().getMainWindow() instanceof WorkbenchMainView) {
-				((WorkbenchMainView) IBPWorkbenchApplication.get().getMainWindow()).addTitle(project.getProjectName());
+			try {
+				final String updatedProjectModel = new ObjectMapper().writeValueAsString(new ProjectUpdatedModel(project.getProjectName()));
+				this.projectPanel.getContent().getWindow().executeJavaScript("window.top.postMessage({ programUpdated: " + updatedProjectModel + "}, '*');");
+			} catch (IOException e) {
+				LOG.error(e.getMessage(), e);
 			}
+			
 		}
 	}
 
@@ -89,6 +96,19 @@ public class UpdateProjectAction implements Button.ClickListener {
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
+	}
+
+	private static class ProjectUpdatedModel {
+
+		private final String name;
+
+		public ProjectUpdatedModel(final String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
 	}
 
 }

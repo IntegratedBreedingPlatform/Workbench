@@ -66,9 +66,6 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 	@Value("${web.api.url}")
 	private String webApiUrl;
 
-	@Value("${workbench.is.server.app}")
-	private String isServerApp;
-
 	private BreedingViewInput breedingViewInput;
 
 	private final List<Integer> numericTypes;
@@ -174,14 +171,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 			ssaParameters.setWorkbenchProjectId(workbenchProject.getProjectId());
 		}
 
-		final String outputDirectory =
-			this.installationDirectoryUtil.getOutputDirectoryForProjectAndTool(workbenchProject, ToolName.BREEDING_VIEW);
-		ssaParameters.setOutputDirectory(outputDirectory);
-
-		if (Boolean.parseBoolean(this.isServerApp)) {
-			ssaParameters.setOutputDirectory(null);
-			ssaParameters.setWebApiUrl(null);
-		}
+		ssaParameters.setOutputDirectory(null);
+		ssaParameters.setWebApiUrl(null);
 
 		return ssaParameters;
 	}

@@ -141,9 +141,9 @@ public class RunSingleSiteActionTest {
 		Mockito.doReturn(this.breedingViewInput.getSelectedEnvironments()).when(this.source).getSelectedEnvironments();
 		Mockito.doReturn(this.breedingViewInput).when(this.source).getBreedingViewInput();
 		Mockito.doReturn(this.application).when(this.source).getApplication();
-		Mockito.doReturn(this.window).when(this.application).getMainWindow();
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
 				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
+		Mockito.when(this.source.getWindow()).thenReturn(this.window);
 	}
 
 	private void initializeStudyDataManagerMocks() {
@@ -477,11 +477,10 @@ public class RunSingleSiteActionTest {
 	}
 
 	@Test
-	public void testButtonClickServerAppIsTrue() throws IOException {
+	public void testButtonClick() throws IOException {
 		final Project project = ProjectTestDataInitializer.createProject();
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 
-		this.runSingleSiteAction.setIsServerApp("true");
 		this.runSingleSiteAction.setSource(this.source);
 		this.runSingleSiteAction.setZipUtil(this.zipUtil);
 		this.runSingleSiteAction.buttonClick(this.event);

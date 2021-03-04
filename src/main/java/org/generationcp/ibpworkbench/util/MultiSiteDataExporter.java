@@ -1,21 +1,13 @@
 package org.generationcp.ibpworkbench.util;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import au.com.bytecode.opencsv.CSVWriter;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
@@ -27,7 +19,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Configurable
 public class MultiSiteDataExporter {
@@ -53,7 +52,7 @@ public class MultiSiteDataExporter {
 
 	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters,
 			final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
-			final List<Trait> selectedTraits, final IBPWorkbenchApplication workbenchApplication) {
+			final List<Trait> selectedTraits, final WorkbenchContentApp workbenchApplication) {
 
 		final Project currentProject = multiSiteParameters.getProject();
 		final String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();

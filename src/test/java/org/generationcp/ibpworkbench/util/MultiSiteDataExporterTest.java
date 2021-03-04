@@ -2,12 +2,13 @@ package org.generationcp.ibpworkbench.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.junit.Assert;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -19,13 +20,12 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -118,7 +118,7 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, ENV_FACTOR, this.gxeEnvironment,
-						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
+						this.meansTraits, Mockito.mock(WorkbenchContentApp.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
 				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
@@ -176,7 +176,7 @@ public class MultiSiteDataExporterTest {
 
 		this.multiSiteDataExporter
 				.exportMeansDatasetToCsv(BASIC_FILE_NAME, this.multiSiteParameters, meansExperiments, LOCATION_ID, testGxeEnvironment,
-						this.meansTraits, Mockito.mock(IBPWorkbenchApplication.class));
+						this.meansTraits, Mockito.mock(WorkbenchContentApp.class));
 
 		Mockito.verify(this.multiSiteDataExporter)
 				.writeToCsvFile(ArgumentMatchers.eq(BASIC_FILE_NAME), ArgumentMatchers.eq(this.project), this.meansRowsCaptor.capture(),
@@ -279,7 +279,7 @@ public class MultiSiteDataExporterTest {
 
 	@Test
 	public void exportMeansDatasetToCsv_HasMissingMean_ShowWarning() {
-		final IBPWorkbenchApplication workbenchApplication = Mockito.mock(IBPWorkbenchApplication.class);
+		final WorkbenchContentApp workbenchApplication = Mockito.mock(WorkbenchContentApp.class);
 		final Window window = Mockito.mock(Window.class);
 		Mockito.when(workbenchApplication.getMainWindow()).thenReturn(window);
 

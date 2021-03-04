@@ -1,17 +1,18 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { BmsjHipsterTestModule } from '../../../test.module';
 import { SampleList } from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
-import {SampleSearchListComponent} from '../../../../../../main/webapp/app/entities/sample/sample-search-list.component';
-import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MockActivatedRoute} from '../../../helpers/mock-route.service';
-import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
+import { SampleSearchListComponent } from '../../../../../../main/webapp/app/entities/sample/sample-search-list.component';
+import { SampleListService } from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MockActivatedRoute } from '../../../helpers/mock-route.service';
+import { ParamContext } from '../../../../../../main/webapp/app/shared/service/param.context';
 
 declare const cropName: string;
+declare const currentProgramId: string;
 
 describe('Component Tests', () => {
 
@@ -20,6 +21,7 @@ describe('Component Tests', () => {
         let comp: SampleSearchListComponent;
         let fixture: ComponentFixture<SampleSearchListComponent>;
         let service: SampleListService;
+        let paramContext: ParamContext;
         let router: Router;
 
         beforeEach(async(() => {
@@ -42,7 +44,10 @@ describe('Component Tests', () => {
         beforeEach(() => {
             fixture = TestBed.createComponent(SampleSearchListComponent);
             comp = fixture.componentInstance;
-            comp.setCrop(cropName);
+            paramContext = fixture.debugElement.injector.get(ParamContext);
+            // FIXME see global.js
+            paramContext.programUUID = currentProgramId;
+            paramContext.cropName = cropName;
             service = fixture.debugElement.injector.get(SampleListService);
             router = fixture.debugElement.injector.get(Router);
         });

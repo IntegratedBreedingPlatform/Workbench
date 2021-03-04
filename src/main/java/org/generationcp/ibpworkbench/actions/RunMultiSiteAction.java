@@ -15,7 +15,7 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.IBPWorkbenchApplication;
+import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
@@ -51,9 +51,6 @@ public class RunMultiSiteAction implements ClickListener {
 
 	private Tool breedingViewTool;
 
-	@Value("${workbench.is.server.app}")
-	private boolean isServerApp;
-
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
 
@@ -63,7 +60,7 @@ public class RunMultiSiteAction implements ClickListener {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	private IBPWorkbenchApplication workbenchApplication;
+	private WorkbenchContentApp workbenchApplication;
 
 	private MultiSiteDataExporter multiSiteDataExporter = new MultiSiteDataExporter();
 
@@ -85,7 +82,7 @@ public class RunMultiSiteAction implements ClickListener {
 		this.gxeTable = gxeTable;
 		this.selectTraitsTable = selectTraitsTable;
 		this.multiSiteParameters = multiSiteParameters;
-		this.workbenchApplication = IBPWorkbenchApplication.get();
+		this.workbenchApplication = WorkbenchContentApp.get();
 	}
 
 	@Override
@@ -97,18 +94,10 @@ public class RunMultiSiteAction implements ClickListener {
 		final GxeInput gxeInput;
 		gxeInput = this.generateInputFiles();
 
-		if (this.isServerApp) {
-
-			this.zipInputFilesAndDownload(gxeInput);
-
-		} else {
-
-			this.launchBV(gxeInput.getDestXMLFilePath(), buttonClickEvent.getComponent().getWindow());
-		}
-
+		this.zipInputFilesAndDownload(gxeInput, buttonClickEvent.getComponent().getWindow());
 	}
 
-	protected void zipInputFilesAndDownload(final GxeInput gxeInput) {
+	protected void zipInputFilesAndDownload(final GxeInput gxeInput, final Window window) {
 		final List<String> filenameList = new ArrayList<>();
 		filenameList.add(gxeInput.getDestXMLFilePath());
 		filenameList.add(gxeInput.getSourceCSVFilePath());
@@ -120,7 +109,7 @@ public class RunMultiSiteAction implements ClickListener {
 		try {
 			final String finalZipfileName =
 				this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
-			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename));
+			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename), window);
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
@@ -233,24 +222,6 @@ public class RunMultiSiteAction implements ClickListener {
 
 	}
 
-	protected void launchBV(final String projectFilePath, final Window windowSource) {
-
-		final File absoluteToolFile = new File(this.breedingViewTool.getPath()).getAbsoluteFile();
-
-		try {
-			final ProcessBuilder pb = new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", projectFilePath);
-			pb.start();
-
-			MessageNotifier.showMessage(windowSource, "GxE files saved",
-				"Successfully generated the means dataset and xml input files for breeding view.");
-		} catch (final IOException e) {
-			RunMultiSiteAction.LOG.error(e.getMessage(), e);
-			MessageNotifier.showMessage(windowSource, "Cannot launch " + absoluteToolFile.getName(),
-				"But it successfully created GxE Excel and XML input file for the breeding_view!");
-		}
-
-	}
-
 	protected List<Trait> getSelectedTraits() {
 		final List<Trait> selectedTraits = new ArrayList<Trait>();
 		final Iterator<?> itr = this.selectTraitsTable.getItem(1).getItemPropertyIds().iterator();
@@ -269,14 +240,10 @@ public class RunMultiSiteAction implements ClickListener {
 		return selectedTraits;
 	}
 
-	void downloadInputFile(final File file, final String filename) {
+	void downloadInputFile(final File file, final String filename, final Window window) {
 		final VaadinFileDownloadResource fileDownloadResource =
 			new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.workbenchApplication);
-		this.workbenchApplication.getMainWindow().open(fileDownloadResource);
-	}
-
-	protected void setIsServerApp(final boolean isServerApp) {
-		this.isServerApp = isServerApp;
+		window.open(fileDownloadResource);
 	}
 
 	protected void setSelectTraitsTable(final Table selectTraitsTable) {

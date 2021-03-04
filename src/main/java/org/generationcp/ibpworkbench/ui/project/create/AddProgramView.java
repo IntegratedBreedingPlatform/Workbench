@@ -10,31 +10,35 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.generationcp.commons.help.document.HelpButton;
 import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.ibpworkbench.actions.HomeAction;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
 import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
-import org.generationcp.ibpworkbench.ui.dashboard.listener.LaunchProgramAction;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 @Configurable
 public class AddProgramView extends Panel implements InitializingBean {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AddProgramView.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -161,11 +165,20 @@ public class AddProgramView extends Panel implements InitializingBean {
 			@Override
 			public void buttonClick(final Button.ClickEvent clickEvent) {
 				final Project newlyCreatedProgram = AddProgramView.this.contextUtil.getProjectInContext();
-				new LaunchProgramAction(newlyCreatedProgram).buttonClick(clickEvent);
+				final ObjectMapper objectMapper = new ObjectMapper();
+				try {
+					final String redirectToMainModel = objectMapper.writeValueAsString(
+						new RedirectToMainModel(newlyCreatedProgram.getProjectId(), newlyCreatedProgram.getProjectName(),
+							newlyCreatedProgram.getCropType().getCropName(), newlyCreatedProgram.getUniqueID()));
+					clickEvent.getComponent().getWindow().executeJavaScript("window.top.postMessage({ programSelected: " + redirectToMainModel + "}, '*');");
+				} catch (IOException e) {
+					LOG.error(e.getMessage(), e);
+				}
 			}
 		});
 
-		this.cancelButton.addListener(new HomeAction());
+		this.cancelButton.addListener((Button.ClickListener) event ->
+			event.getComponent().getWindow().executeJavaScript("window.top.location.href='/ibpworkbench/main/'"));
 	}
 
 	protected void initializeLayout() {
@@ -382,5 +395,36 @@ public class AddProgramView extends Panel implements InitializingBean {
 	
 	public void setContextUtil(ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
+	}
+
+	private static class RedirectToMainModel {
+
+		private final Long id;
+		private final String name;
+		private final String crop;
+		private final String uniqueID;
+
+		public RedirectToMainModel(final Long id, final String name, final String crop, final String uniqueID) {
+			this.id = id;
+			this.name = name;
+			this.crop = crop;
+			this.uniqueID = uniqueID;
+		}
+
+		public Long getId() {
+			return id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getCrop() {
+			return crop;
+		}
+
+		public String getUniqueID() {
+			return uniqueID;
+		}
 	}
 }

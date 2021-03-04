@@ -10,7 +10,6 @@
 
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.Application;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component.Event;
@@ -20,7 +19,6 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.service.ProgramService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -37,7 +35,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 @Configurable
 public class DeleteProjectAction implements ClickListener, ActionListener {
@@ -67,8 +68,8 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@Autowired
 	private GermplasmListManager germplasmListManager;
 
-	@Autowired
-	private ProgramService programService;
+	@Resource
+	private HttpServletRequest request;
 
 	public DeleteProjectAction() {
 		// does nothing here
@@ -100,16 +101,15 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_CROP_MANAGEMENT')")
 	public void doAction(final Window window, final String uriFragment, final boolean isLinkAccessed) {
-		final Application app = window.getApplication();
 		final Project currentProject = this.contextUtil.getProjectInContext();
 
-		if (app.getMainWindow() != null) {
+		if (!Objects.isNull(window)) {
 			if (currentProject == null) {
 				MessageNotifier.showError(window, this.messageSource.getMessage(Message.INVALID_OPERATION),
 						this.messageSource.getMessage(Message.INVALID_NO_PROGRAM_SELECTED));
 
 			}
-			ConfirmDialog.show(app.getMainWindow(), this.messageSource.getMessage(Message.DELETE_PROJECT_LINK),
+			ConfirmDialog.show(window, this.messageSource.getMessage(Message.DELETE_PROJECT_LINK),
 					this.messageSource.getMessage(Message.DELETE_PROGRAM_CONFIRM, currentProject.getProjectName()),
 					this.messageSource.getMessage(Message.YES), this.messageSource.getMessage(Message.NO), new ConfirmDialog.Listener() {
 
@@ -123,11 +123,15 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 							if (dialog.isConfirmed()) {
 								try {
 									DeleteProjectAction.this.deleteProgram(currentProject);
+
+									org.generationcp.commons.util.ContextUtil
+										.setContextInfo(DeleteProjectAction.this.request, DeleteProjectAction.this.contextUtil.getCurrentWorkbenchUserId(), null, null);
+
 								} catch (final MiddlewareQueryException e) {
 									DeleteProjectAction.LOG.error(e.getMessage(), e);
 								}
 								// go back to dashboard
-								new HomeAction().doAction(window, "/Home", true);
+								window.executeJavaScript("window.top.postMessage({ programDeleted: 'true'}, '*');");
 							}
 						}
 					});
