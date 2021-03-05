@@ -118,7 +118,24 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 					listToSave.setUserId(SaveListButtonClickListener.this.contextUtil.getCurrentWorkbenchUserId());
 
 					final Integer listId = SaveListButtonClickListener.this.germplasmListManager.addGermplasmList(listToSave);
+					listToSave.setId(listId);
 
+					if (!listEntries.isEmpty()) {
+						SaveListButtonClickListener.this.setNeededValuesForNewListEntries(listToSave, listEntries);
+
+						if (!SaveListButtonClickListener.this.saveNewListEntries(listEntries)) {
+							return;
+						}
+
+						SaveListButtonClickListener.this.saveListDataColumns(listToSave);
+					}
+
+					/**
+					 * TODO Investigate IBP-4393 further
+					 *  After Migration to Hibernate 4 (IBP-3298), getGermplasmListById causes a lock and saveNewListEntries times out
+					 *  This doesn't happen if saving to Program List
+					 *  Move getById after saveNewListEntries as a workaround
+					 */
 					if (listId != null) {
 						final GermplasmList listSaved = SaveListButtonClickListener.this.germplasmListManager.getGermplasmListById(listId);
 						currentlySavedList = listSaved;
@@ -134,15 +151,7 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 					}
 
 					if (!listEntries.isEmpty()) {
-						SaveListButtonClickListener.this.setNeededValuesForNewListEntries(currentlySavedList, listEntries);
-
-						if (!SaveListButtonClickListener.this.saveNewListEntries(listEntries)) {
-							return;
-						}
-
 						SaveListButtonClickListener.this.updateListDataTableContent(currentlySavedList);
-
-						SaveListButtonClickListener.this.saveListDataColumns(listToSave);
 					}
 
 				} else if (currentlySavedList != null) {
