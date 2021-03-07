@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.doAnswer;
+
 public class SaveListButtonClickListenerTest {
 
 	private SaveListButtonClickListener saveListener;
@@ -164,7 +166,11 @@ public class SaveListButtonClickListenerTest {
 		Mockito.when(this.source.getCurrentlySetGermplasmListInfo()).thenReturn(this.germplasmList);
 		Mockito.when(this.source.getBuildNewListDropHandler()).thenReturn(buildNewListDropHandler);
 		Mockito.when(this.source.saveListAction()).thenReturn(false);
-		Mockito.when(this.dataManager.addGermplasmList(this.germplasmList)).thenReturn(1);
+		doAnswer(invocation -> {
+			Object[] args = invocation.getArguments();
+			((GermplasmList) args[0]).setId(1);
+			return null;
+		}).when(this.dataManager).addGermplasmList(this.germplasmList);
 		Mockito.when(this.dataManager.getGermplasmListById(Mockito.isA(Integer.class))).thenReturn(currentlySavedGermplasmList);
 
 		this.saveListener.doSaveAction(true, true);
@@ -190,8 +196,11 @@ public class SaveListButtonClickListenerTest {
 		final GermplasmListData germplasmListData = ListInventoryDataInitializer.createGermplasmListData(1);
 		Mockito.when(this.source.getListEntriesFromTable()).thenReturn(Lists.newArrayList(germplasmListData));
 
-		Mockito.when(this.dataManager.addGermplasmList(this.germplasmList)).thenReturn(1);
-		Mockito.when(this.dataManager.getGermplasmListById(Mockito.isA(Integer.class))).thenReturn(currentlySavedGermplasmList);
+		doAnswer(invocation -> {
+			Object[] args = invocation.getArguments();
+			((GermplasmList) args[0]).setId(1);
+			return null;
+		}).when(this.dataManager).addGermplasmList(this.germplasmList);
 
 		final List<Integer> listDataIds = Lists.newArrayList();
 		listDataIds.add(germplasmListData.getId());

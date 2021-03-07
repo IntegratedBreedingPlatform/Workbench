@@ -117,33 +117,42 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 
 					listToSave.setUserId(SaveListButtonClickListener.this.contextUtil.getCurrentWorkbenchUserId());
 
-					final Integer listId = SaveListButtonClickListener.this.germplasmListManager.addGermplasmList(listToSave);
+					SaveListButtonClickListener.this.germplasmListManager.addGermplasmList(listToSave);
 
-					if (listId != null) {
-						final GermplasmList listSaved = SaveListButtonClickListener.this.germplasmListManager.getGermplasmListById(listId);
-						currentlySavedList = listSaved;
-						SaveListButtonClickListener.this.source.setCurrentlySavedGermplasmList(listSaved);
+					if (!listEntries.isEmpty()) {
+
+						SaveListButtonClickListener.this.setNeededValuesForNewListEntries(listToSave, listEntries);
+
+						if (!SaveListButtonClickListener.this.saveNewListEntries(listEntries)) {
+							return;
+						}
+
+						SaveListButtonClickListener.this.saveListDataColumns(listToSave);
+					}
+
+					/**
+					 * TODO Investigate IBP-4393 further
+					 *  After Migration to Hibernate 4 (IBP-3298), getGermplasmListById causes a lock and saveNewListEntries times out
+					 *  GetByID was not required anyway. Please do not modify this code without properly testing all options in Germplasm List
+					 */
+					if (listToSave.getId() != null) {
+						currentlySavedList = listToSave;
+
+						if (!listEntries.isEmpty()) {
+							SaveListButtonClickListener.this.updateListDataTableContent(currentlySavedList);
+						}
+
+						SaveListButtonClickListener.this.source.setCurrentlySavedGermplasmList(listToSave);
 
 						SaveListButtonClickListener.this.source.setHasUnsavedChanges(false);
 
-						SaveListButtonClickListener.this.source.getSource().getListSelectionComponent().showNodeOnTree(listId);
+						SaveListButtonClickListener.this.source.getSource().getListSelectionComponent().showNodeOnTree(listToSave.getId());
 
 					} else {
 						SaveListButtonClickListener.this.showErrorOnSavingGermplasmList(showMessages);
 						return;
 					}
 
-					if (!listEntries.isEmpty()) {
-						SaveListButtonClickListener.this.setNeededValuesForNewListEntries(currentlySavedList, listEntries);
-
-						if (!SaveListButtonClickListener.this.saveNewListEntries(listEntries)) {
-							return;
-						}
-
-						SaveListButtonClickListener.this.updateListDataTableContent(currentlySavedList);
-
-						SaveListButtonClickListener.this.saveListDataColumns(listToSave);
-					}
 
 				} else if (currentlySavedList != null) {
 
