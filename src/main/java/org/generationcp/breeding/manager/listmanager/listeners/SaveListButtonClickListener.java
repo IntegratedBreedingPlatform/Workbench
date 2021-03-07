@@ -117,10 +117,10 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 
 					listToSave.setUserId(SaveListButtonClickListener.this.contextUtil.getCurrentWorkbenchUserId());
 
-					final Integer listId = SaveListButtonClickListener.this.germplasmListManager.addGermplasmList(listToSave);
-					listToSave.setId(listId);
+					SaveListButtonClickListener.this.germplasmListManager.addGermplasmList(listToSave);
 
 					if (!listEntries.isEmpty()) {
+
 						SaveListButtonClickListener.this.setNeededValuesForNewListEntries(listToSave, listEntries);
 
 						if (!SaveListButtonClickListener.this.saveNewListEntries(listEntries)) {
@@ -133,26 +133,26 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 					/**
 					 * TODO Investigate IBP-4393 further
 					 *  After Migration to Hibernate 4 (IBP-3298), getGermplasmListById causes a lock and saveNewListEntries times out
-					 *  This doesn't happen if saving to Program List
-					 *  Move getById after saveNewListEntries as a workaround
+					 *  GetByID was not required anyway. Please do not modify this code without properly testing all options in Germplasm List
 					 */
-					if (listId != null) {
-						final GermplasmList listSaved = SaveListButtonClickListener.this.germplasmListManager.getGermplasmListById(listId);
-						currentlySavedList = listSaved;
-						SaveListButtonClickListener.this.source.setCurrentlySavedGermplasmList(listSaved);
+					if (listToSave.getId() != null) {
+						currentlySavedList = listToSave;
+
+						if (!listEntries.isEmpty()) {
+							SaveListButtonClickListener.this.updateListDataTableContent(currentlySavedList);
+						}
+
+						SaveListButtonClickListener.this.source.setCurrentlySavedGermplasmList(listToSave);
 
 						SaveListButtonClickListener.this.source.setHasUnsavedChanges(false);
 
-						SaveListButtonClickListener.this.source.getSource().getListSelectionComponent().showNodeOnTree(listId);
+						SaveListButtonClickListener.this.source.getSource().getListSelectionComponent().showNodeOnTree(listToSave.getId());
 
 					} else {
 						SaveListButtonClickListener.this.showErrorOnSavingGermplasmList(showMessages);
 						return;
 					}
 
-					if (!listEntries.isEmpty()) {
-						SaveListButtonClickListener.this.updateListDataTableContent(currentlySavedList);
-					}
 
 				} else if (currentlySavedList != null) {
 
