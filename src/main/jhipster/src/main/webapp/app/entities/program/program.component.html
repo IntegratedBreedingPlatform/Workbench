@@ -1,6 +1,7 @@
 <section>
 	<header>
 		<h1>
+			<img src="/ibpworkbench/controller/static/images/programs.png" style="width: 18px; height: 18px;"/>
 			Programs <a href="{{helpLink}}" target="_blank">
 			<i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a>
 		</h1>
@@ -11,11 +12,7 @@
 	</div>
 
 	<div *ngIf="programs?.length > 0">
-		<div class="input-group">
-			<img src="/ibpworkbench/controller/static/images/programs.png" style="width: 18px; height: 18px;"/>
-			<h5>&nbsp;PROGRAMS&nbsp;</h5>
-			<span jhiTranslate="program.open"></span>
-		</div>
+		<div jhiTranslate="program.open"></div>
 		<div class="row">
 			<div class="col-sm-8">
 				<span *ngIf="isLoading" class="throbber throbber-2x"></span>
