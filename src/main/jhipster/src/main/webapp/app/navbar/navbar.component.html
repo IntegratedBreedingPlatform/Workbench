@@ -3,7 +3,7 @@
 		<button mat-icon-button id="menu" (click)="sideNav.toggle()" *ngIf="isSideNavAvailable()">
 			<mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
 		</button>
-		<button (click)="myPrograms()" mat-icon-button color="accent" class="navbar-brand">
+		<button (click)="myPrograms()" mat-icon-button color="accent" class="navbar-brand" style="margin-left: 15px;">
 			<img src="../../content/images/ibp_logo.jpg" alt="">
 		</button>
 		<span>{{program?.name}}</span>
@@ -32,13 +32,13 @@
 		<mat-menu #memberMenu="matMenu" yPosition="below" [overlapTrigger]="false">
 			<div class="container">
 				<div class="row">
-					<div class=col>{{user?.firstName}} {{user?.lastName}}</div>
+					<h6 class=col>{{user?.firstName}} {{user?.lastName}}</h6>
 				</div>
 				<div class="row">
-					<div class=col>{{user?.email}}</div>
+					<h6 class=col>{{user?.email}}</h6>
 				</div>
 			</div>
-			<button mat-menu-item (click)="logout()">Sign out</button>
+			<button class="btn btn-primary" style="margin-left: 15px; margin-top: 10px;" (click)="logout()">Sign out</button>
 		</mat-menu>
 
 	</mat-toolbar>
