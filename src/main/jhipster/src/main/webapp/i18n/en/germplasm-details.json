@@ -37,5 +37,24 @@
             "x": "X",
             "y": "Y"
         }
+    },
+    "attributes": {
+        "title": "Attributes",
+        "passport": {
+            "title": "PASSPORT",
+            "variable": "Variable",
+            "variable-description": "Variable Desc",
+            "value": "Value",
+            "date": "Date",
+            "location": "Location"
+        },
+        "attributes": {
+            "title": "ATTRIBUTES",
+            "variable": "Variable",
+            "variable-description": "Variable Desc",
+            "value": "Value",
+            "date": "Date",
+            "location": "Location"
+        }
     }
 }
