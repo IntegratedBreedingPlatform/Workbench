@@ -55,6 +55,7 @@ import { SampleListCreationComponent } from './list-creation/sample-list-creatio
 import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
+import { CollapsibleComponent } from './component/collapsible.component';
 
 @NgModule({
     imports: [
@@ -93,7 +94,8 @@ import { ToolService } from './tool/service/tool.service';
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        CollapsibleComponent
     ],
     providers: [
         LoginService,
@@ -165,7 +167,8 @@ import { ToolService } from './tool/service/tool.service';
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        CollapsibleComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

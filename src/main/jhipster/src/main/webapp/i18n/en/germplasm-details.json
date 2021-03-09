@@ -1,0 +1,41 @@
+{
+    "germplasm-details": {
+        "germplasm": "Germplasm",
+        "attributes": "Attributes",
+        "pedigree": "Pedigree",
+        "observations": "Observations",
+        "inventory": "Inventory",
+        "lists": "Lists",
+        "samples": "Samples",
+        "actions": "Actions"
+    },
+    "basic-details": {
+        "title": "Basic Details",
+        "preferred-name": "Preferred Name:",
+        "gid": "GID:",
+        "guid": "GUID:",
+        "group-id": "Group ID:",
+        "created-date": "Created Date",
+        "location": "Location",
+        "reference": "Reference",
+        "names": {
+            "title": "NAMES",
+            "name-type": "Name Type",
+            "name-description": "Name Description",
+            "value": "Value",
+            "location": "Location",
+            "preferred": "Preferred"
+        },
+        "germplasm-origin": {
+            "title": "GERMPLASM ORIGIN",
+            "study": "Study",
+            "obs-unit": "Obs_Unit",
+            "id": "ID",
+            "plot": "Plot",
+            "rep": "Rep",
+            "block": "Block",
+            "x": "X",
+            "y": "Y"
+        }
+    }
+}

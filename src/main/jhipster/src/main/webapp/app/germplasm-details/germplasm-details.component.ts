@@ -5,6 +5,10 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: './germplasm-details.component.html'
 })
 export class GermplasmDetailsComponent implements OnInit {
+
+    constructor() {
+    }
+
     ngOnInit(): void {
     }
 
