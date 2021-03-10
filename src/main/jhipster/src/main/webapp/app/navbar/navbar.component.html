@@ -3,7 +3,7 @@
 		<button mat-icon-button id="menu" (click)="sideNav.toggle()" *ngIf="isSideNavAvailable()">
 			<mat-icon fontSet="fa" fontIcon="fa-bars"></mat-icon>
 		</button>
-		<button (click)="myPrograms()" mat-icon-button color="accent" class="navbar-brand" style="margin-left: 15px;">
+		<button (click)="myPrograms()" mat-icon-button color="accent" class="navbar-brand">
 			<img src="../../content/images/ibp_logo.jpg" alt="">
 		</button>
 		<span>{{program?.name}}</span>
