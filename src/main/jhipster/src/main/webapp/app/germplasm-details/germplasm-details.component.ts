@@ -10,10 +10,11 @@ import { GermplasmDetailsContext } from './germplasm-details.context';
 })
 export class GermplasmDetailsComponent implements OnInit {
 
-    constructor() {
+    constructor(private paramContext: ParamContext) {
     }
 
     ngOnInit(): void {
+        this.paramContext.readParams();
     }
 
 }

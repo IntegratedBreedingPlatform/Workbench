@@ -4,12 +4,17 @@ import { PopupService } from '../shared/modal/popup.service';
 import { ParamContext } from '../shared/service/param.context';
 import { GermplasmDetailsContext } from './germplasm-details.context';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { GERMPLASM_DETAILS_URL } from '../app.constants';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'jhi-germplasm-details-dialog',
     templateUrl: './germplasm-details-dialog.component.html'
 })
 export class GermplasmDetailsDialogComponent implements OnInit {
+
+    safeUrl: string;
+    gid: number;
 
     constructor(private route: ActivatedRoute, private router: Router,
                 private germplasmDetailsContext: GermplasmDetailsContext,
@@ -18,6 +23,7 @@ export class GermplasmDetailsDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.router.navigate(['/germplasm-basic-details']);
+        this.germplasmDetailsContext.gid = this.gid;
     }
 
     clear() {
@@ -35,14 +41,22 @@ export class GermplasmDetailsPopupComponent implements OnInit {
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService,
                 private paramContext: ParamContext,
-                private germplasmDetailsContext: GermplasmDetailsContext) {
+                private sanitizer: DomSanitizer) {
     }
 
     ngOnInit(): void {
-        this.paramContext.readParams();
         const gid = this.route.snapshot.paramMap.get('gid');
-        this.germplasmDetailsContext.gid = gid;
+        const authParams = '?cropName=' + this.paramContext.cropName
+            + '&programUUID=' + this.paramContext.programUUID
+            + '&authToken=' + this.paramContext.authToken
+            + '&loggedInUserId=' + this.paramContext.loggedInUserId
+            + '&selectedProjectId=' + this.paramContext.selectedProjectId;
+
         const modal = this.popupService.open(GermplasmDetailsDialogComponent as Component, { windowClass: 'modal-extra-large', backdrop: 'static' });
+        modal.then((modalRef) => {
+            modalRef.componentInstance.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + authParams);
+            modalRef.componentInstance.gid = gid;
+        });
     }
 
 }

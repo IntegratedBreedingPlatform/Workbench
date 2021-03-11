@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { germplasmDetailsPaneRoutes, germplasmDetailsRoutes } from './germplasm-details.route';
+import { germplasmDetailsRoutes } from './germplasm-details.route';
 import { GermplasmDetailsComponent } from './germplasm-details.component';
 import { BasicDetailsPaneComponent } from './basic-details/basic-details-pane.component';
 import { AttributesPaneComponent } from './attributes/attributes-pane.component';
@@ -16,7 +16,7 @@ import { GermplasmDetailsDialogComponent, GermplasmDetailsPopupComponent } from 
 @NgModule({
     imports: [
         BmsjHipsterSharedModule,
-        RouterModule.forChild([...germplasmDetailsRoutes, ...germplasmDetailsPaneRoutes]),
+        RouterModule.forChild([...germplasmDetailsRoutes]),
     ],
     declarations: [
         GermplasmDetailsPopupComponent,
