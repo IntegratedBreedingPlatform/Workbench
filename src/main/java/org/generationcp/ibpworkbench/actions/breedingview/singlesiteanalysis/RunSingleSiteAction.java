@@ -107,7 +107,7 @@ public class RunSingleSiteAction implements ClickListener {
 				final String finalZipfileName =
 					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
 				this.downloadInputFile(new File(finalZipfileName), FileNameGenerator
-					.generateFileName(outputFilename, ZipUtil.ZIP_EXTENSION, false));
+					.generateFileName(outputFilename, null));
 			} catch (final IOException e) {
 				RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 				this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");

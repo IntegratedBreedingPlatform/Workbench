@@ -263,14 +263,14 @@ public class ExportListAsDialogTest {
 
 	@Test
 	public void testExportListForGenotypingOrderAction() throws GermplasmListExporterException {
-		final String visibleFileName = ExportListAsDialogTest.germplasmList.getName().replace(" ", "_") + "ForGenotyping.xls";
+		final String visibleFileName = ExportListAsDialogTest.germplasmList.getName().replace(" ", "_") + "ForGenotyping";
 		ExportListAsDialogTest.germplasmList.setStatus(100);
 		this.dialog.exportListForGenotypingOrderAction();
 		verify(this.listExporter, Mockito.times(1))
 				.exportKBioScienceGenotypingOrderXLS(ExportListAsDialogTest.TEST_GERMPLASM_LIST_ID, TEMPORARY_FILE_PATH_CSV,
 						ExportListAsDialog.DEFAULT_PLATE_SIZE);
 		verify(this.fileDownloaderUtility, Mockito.times(1)).initiateFileDownload(TEMPORARY_FILE_PATH_CSV,
-				FileNameGenerator.generateFileName(visibleFileName), this.source);
+				FileNameGenerator.generateFileName(visibleFileName, ".xls"), this.source);
 	}
 
 	private static GermplasmList getGermplasmList() {

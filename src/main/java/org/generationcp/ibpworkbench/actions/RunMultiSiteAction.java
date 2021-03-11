@@ -109,7 +109,7 @@ public class RunMultiSiteAction implements ClickListener {
 		try {
 			final String finalZipfileName =
 				this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_GXE);
-			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename), window);
+			this.downloadInputFile(new File(finalZipfileName), FileNameGenerator.generateFileName(outputFilename, null), window);
 		} catch (final IOException e) {
 			RunMultiSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
 			MessageNotifier.showMessage(this.workbenchApplication.getMainWindow(), "Error creating zip file.", "");
@@ -165,13 +165,13 @@ public class RunMultiSiteAction implements ClickListener {
 		final String inputFileName = this.generateInputFileName(multiSiteParameters.getProject());
 
 		final String meansDataFilePath = this.multiSiteDataExporter
-			.exportMeansDatasetToCsv(FileNameGenerator.generateFileName(inputFileName, "csv", false), multiSiteParameters, this.gxeTable.getExperiments(),
+			.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getExperiments(),
 				this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits, this.workbenchApplication);
 
 		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(studyId);
 
 		final String summaryStatsDataFilePath = this.multiSiteDataExporter
-			.exportTrialDatasetToSummaryStatsCsv(studyId, FileNameGenerator.generateFileName(inputFileName, "csv", false), this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
+			.exportTrialDatasetToSummaryStatsCsv(studyId, inputFileName, this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
 				this.gxeTable.getEnvironmentName(), selectedTraits, multiSiteParameters.getProject());
 
 		gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsDataFilePath);
