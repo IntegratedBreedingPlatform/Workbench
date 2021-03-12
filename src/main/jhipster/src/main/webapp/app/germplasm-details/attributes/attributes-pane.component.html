@@ -1,7 +1,9 @@
-<div class="container pt-3">
+<div class="container-fluid pt-3">
 	<jhi-collapsible heading="{{translateService.instant('attributes.passport.title')}}">
-		<div class="container">
-			<a class="link pull-right">New</a>
+		<div class="container-fluid">
+			<div class="pull-right pb-3">
+				<button class="btn btn-outline-info"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New </button>
+			</div>
 			<table class="table table-striped table-bordered table-curved">
 				<thead>
 				<th scope="col" jhiTranslate="attributes.passport.variable">Variable</th>
@@ -25,9 +27,11 @@
 			</table>
 		</div>
 	</jhi-collapsible>
-	<jhi-collapsible heading="{{translateService.instant('basic-details.germplasm-origin.title')}}">
-		<div class="container">
-			<a class="link pull-right">New</a>
+	<jhi-collapsible heading="{{translateService.instant('attributes.attributes.title')}}">
+		<div class="container-fluid">
+			<div class="pull-right pb-3">
+				<button class="btn btn-outline-info"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New </button>
+			</div>
 			<table class="table table-striped table-bordered table-curved">
 				<thead>
 				<th scope="col" jhiTranslate="attributes.attributes.variable">Variable</th>

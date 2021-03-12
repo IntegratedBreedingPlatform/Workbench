@@ -1,54 +1,55 @@
-<div class="container pt-3">
-	<div class="row">
-		<div class="col">
-			<h5 jhiTranslate="basic-details.title">Basic Details</h5>
-		</div>
-	</div>
-	<div class="container">
-		<div class="row">
-			<div class="col-2">
-				<label class="font-weight-bold" jhiTranslate="basic-details.preferred-name">Preferred Name:</label>
+<div class="container-fluid pt-3">
+	<jhi-collapsible heading="{{translateService.instant('basic-details.title')}}">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-2">
+					<label class="font-weight-bold" jhiTranslate="basic-details.preferred-name">Preferred Name:</label>
+				</div>
+				<div class="col">{{germplasm?.germplasmPeferredName}}</div>
 			</div>
-			<div class="col"></div>
-		</div>
-		<div class="row">
-			<div class="col-2">
-				<label class="font-weight-bold" jhiTranslate="basic-details.gid">GID:</label>
+			<div class="row">
+				<div class="col-2">
+					<label class="font-weight-bold" jhiTranslate="basic-details.gid">GID:</label>
+				</div>
+				<div class="col">{{germplasm?.gid}}</div>
 			</div>
-			<div class="col">{{germplasm.gid}}</div>
-		</div>
-		<div class="row">
-			<div class="col-2">
-				<label class="font-weight-bold" jhiTranslate="basic-details.guid">GUID:</label>
+			<div class="row">
+				<div class="col-2">
+					<label class="font-weight-bold" jhiTranslate="basic-details.guid">GUID:</label>
+				</div>
+				<div class="col"></div>
 			</div>
-			<div class="col"></div>
-		</div>
-		<div class="row">
-			<div class="col-2">
-				<label class="font-weight-bold" jhiTranslate="basic-details.group-id">Group ID:</label>
+			<div class="row">
+				<div class="col-2">
+					<label class="font-weight-bold" jhiTranslate="basic-details.group-id">Group ID:</label>
+				</div>
+				<div class="col">{{germplasm?.groupId}}</div>
 			</div>
-			<div class="col"></div>
+			<table class="table table-striped table-bordered table-curved">
+				<thead>
+				<th scope="col" jhiTranslate="basic-details.created-date">Created Date</th>
+				<th scope="col" jhiTranslate="basic-details.location">Location</th>
+				<th scope="col" jhiTranslate="basic-details.reference">Reference</th>
+				<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+				</thead>
+				<tbody>
+				<tr>
+					<td>{{germplasm?.germplasmDate}}</td>
+					<td>{{germplasm?.locationName}}</td>
+					<td></td>
+					<td>
+						<button class="btn btn-info"><i class="fa fa-edit fa-fa-md" aria-hidden="true"></i></button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
 		</div>
-		<table class="table table-striped table-bordered table-curved">
-			<thead>
-			<th scope="col" jhiTranslate="basic-details.created-date">Created Date</th>
-			<th scope="col" jhiTranslate="basic-details.location">Location</th>
-			<th scope="col" jhiTranslate="basic-details.reference">Reference</th>
-			<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
-			</thead>
-			<tbody>
-			<tr>
-				<td> -</td>
-				<td> -</td>
-				<td> -</td>
-				<td><button class="btn btn-info"><i class="fa fa-edit fa-fa-md" aria-hidden="true"></i></button></td>
-			</tr>
-			</tbody>
-		</table>
-	</div>
+	</jhi-collapsible>
 	<jhi-collapsible heading="{{translateService.instant('basic-details.names.title')}}">
-		<div class="container">
-			<a class="link pull-right">New</a>
+		<div class="container-fluid">
+			<div class="pull-right pb-3">
+				<button class="btn btn-outline-info"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+			</div>
 			<table class="table table-striped table-bordered table-curved">
 				<thead>
 				<th scope="col" jhiTranslate="basic-details.names.name-type">Name type</th>
@@ -65,14 +66,16 @@
 					<td> -</td>
 					<td> -</td>
 					<td> -</td>
-					<td><button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;<button class="btn btn-info"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button></td>
+					<td>
+						<button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;<button class="btn btn-info"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
+					</td>
 				</tr>
 				</tbody>
 			</table>
 		</div>
 	</jhi-collapsible>
 	<jhi-collapsible heading="{{translateService.instant('basic-details.germplasm-origin.title')}}">
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row">
 				<div class="col">
 					<table class="table table-striped table-bordered table-curved">
@@ -101,7 +104,6 @@
 					</table>
 				</div>
 				<div class="col">
-					<iframe title="Germplasm Origin Map" style="width:100%; height: 300px"></iframe>
 				</div>
 			</div>
 		</div>

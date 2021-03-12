@@ -22,7 +22,6 @@ export class BasicDetailsPaneComponent implements OnInit {
     ngOnInit(): void {
         this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((value) => {
             this.germplasm = value.body;
-            console.log(this.germplasm);
         })
     }
 
