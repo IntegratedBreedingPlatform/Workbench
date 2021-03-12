@@ -9,15 +9,15 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
-import org.generationcp.ibpworkbench.germplasm.inventory.InventoryViewComponent;
-import org.generationcp.ibpworkbench.germplasm.pedigree.GermplasmPedigreeGraphComponent;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.ComponentTree;
 import org.generationcp.commons.vaadin.ui.ComponentTreeItem;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
+import org.generationcp.ibpworkbench.germplasm.inventory.InventoryViewComponent;
+import org.generationcp.ibpworkbench.germplasm.pedigree.GermplasmPedigreeGraphComponent;
 import org.generationcp.ibpworkbench.sample.SampleInfoComponent;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,6 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private ComponentTreeItem derivativeNeighborhoodTreeItem;
 	private ComponentTreeItem maintenanceNeighborhoodTreeItem;
 	private ComponentTreeItem groupRelativesTreeItem;
-
 
 	private ComponentTreeItem tempAttributesChild;
 	private ComponentTreeItem tempPedigreeTreeItemChild;
@@ -103,56 +102,56 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 		this.germplasmDetailModel = this.germplasmQueries.getGermplasmDetails(this.gid);
 		this.basicDetailsComponent = new GermplasmCharacteristicsComponent(this.germplasmDetailModel);
 		this.basicDetailsTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.CHARACTERISTICS_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.CHARACTERISTICS_LABEL)));
 		this.basicDetailsTreeItem.showChild();
 		this.basicDetailsTreeItem.addChild(this.basicDetailsComponent);
 
 		this.attributesTreeItem =
-				this.componentTree
-						.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.ATTRIBUTES_LABEL)));
+			this.componentTree
+				.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.ATTRIBUTES_LABEL)));
 		this.tempAttributesChild = this.attributesTreeItem.addChild(new Label());
 		this.pedigreeTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.PEDIGREE_TREE_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.PEDIGREE_TREE_LABEL)));
 		this.tempPedigreeTreeItemChild = this.pedigreeTreeItem.addChild(new Label());
 		this.namesTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.NAMES_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.NAMES_LABEL)));
 		this.tempNamesChild = this.namesTreeItem.addChild(new Label());
 		this.inventoryInformationTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.INVENTORY_INFORMATION_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.INVENTORY_INFORMATION_LABEL)));
 		this.tempInventoryChild = this.inventoryInformationTreeItem.addChild(new Label());
 		this.listsTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.LISTS_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.LISTS_LABEL)));
 		this.tempListsTreeItemChild = this.listsTreeItem.addChild(new Label());
 
 		this.samplesTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.SAMPLES)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.SAMPLES)));
 		this.tempSamplesTreeItemChild = this.samplesTreeItem.addChild(new Label());
 
 		this.studiesTreeItem =
 			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource.getMessage(Message.STUDIES)));
 		this.tempStudiesTreeItemChild = this.studiesTreeItem.addChild(new Label());
 		this.generationHistoryTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.GENERATION_HISTORY_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.GENERATION_HISTORY_LABEL)));
 		this.tempGenerationHistoryTreeItemChild = this.generationHistoryTreeItem.addChild(new Label());
 		this.managementNeighborsTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.MANAGEMENT_NEIGHBORS_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.MANAGEMENT_NEIGHBORS_LABEL)));
 		this.tempManagementNeighborsTreeItemChild = this.managementNeighborsTreeItem.addChild(new Label());
 		this.derivativeNeighborhoodTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.DERIVATIVE_NEIGHBORHOOD_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.DERIVATIVE_NEIGHBORHOOD_LABEL)));
 		this.tempDerivativeNeighborhoodTreeItemChild = this.derivativeNeighborhoodTreeItem.addChild(new Label());
 		this.maintenanceNeighborhoodTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.MAINTENANCE_NEIGHBORHOOD_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.MAINTENANCE_NEIGHBORHOOD_LABEL)));
 		this.tempMaintenanceNeighborhoodTreeItemChild = this.maintenanceNeighborhoodTreeItem.addChild(new Label());
 		this.groupRelativesTreeItem =
-				this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
-						.getMessage(Message.GROUP_RELATIVES_LABEL)));
+			this.componentTree.addChild(ComponentTreeItem.createHeaderComponent(this.messageSource
+				.getMessage(Message.GROUP_RELATIVES_LABEL)));
 		this.tempGroupRelativesTreeItemChild = this.groupRelativesTreeItem.addChild(new Label());
 	}
 
@@ -464,7 +463,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showAttributes() {
 		if (this.attributesComponent == null) {
 			this.attributesComponent =
-					new GermplasmAttributesComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel);
+				new GermplasmAttributesComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel);
 			this.attributesTreeItem.removeChild(this.tempAttributesChild);
 			this.attributesTreeItem.addChild(this.attributesComponent);
 		}
@@ -472,7 +471,14 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 
 	private void showPedigreeTree() {
 		if (this.pedigreeTreeComponent == null) {
-			this.pedigreeTreeComponent = new GermplasmPedigreeTreeContainer(this.gid, this.germplasmQueries, this);
+			this.pedigreeTreeComponent = new GermplasmPedigreeTreeContainer(this.gid, this.germplasmQueries,
+				new GermplasmPedigreeTreeContainer.GermplasmPedigreeTreeActions() {
+
+					@Override
+					public void showPedigreeGraphWindow() {
+						GermplasmDetailsComponentTree.this.showPedigreeGraphWindow();
+					}
+				});
 			this.pedigreeTreeItem.removeChild(this.tempPedigreeTreeItemChild);
 			this.pedigreeTreeItem.addChild(this.pedigreeTreeComponent);
 		}
@@ -481,7 +487,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showNames() {
 		if (this.namesComponent == null) {
 			this.namesComponent =
-					new GermplasmNamesComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel);
+				new GermplasmNamesComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel);
 			this.namesTreeItem.removeChild(this.tempNamesChild);
 			this.namesTreeItem.addChild(this.namesComponent);
 		}
@@ -506,7 +512,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showStudies() {
 		if (this.studiesComponent == null) {
 			this.studiesComponent =
-					new GermplasmStudyInfoComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel, true);
+				new GermplasmStudyInfoComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel, true);
 			this.studiesTreeItem.removeChild(this.tempStudiesTreeItemChild);
 			this.studiesTreeItem.addChild(this.studiesComponent);
 		}
@@ -515,7 +521,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showSamples() {
 		if (this.samplesComponent == null) {
 			this.samplesComponent =
-				new SampleInfoComponent( this.gid);
+				new SampleInfoComponent(this.gid);
 			this.samplesTreeItem.removeChild(this.tempSamplesTreeItemChild);
 			this.samplesTreeItem.addChild(this.samplesComponent);
 		}
@@ -524,7 +530,7 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showGenerationHistory() {
 		if (this.generationHistoryComponent == null) {
 			this.generationHistoryComponent =
-					new GermplasmGenerationHistoryComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel);
+				new GermplasmGenerationHistoryComponent(new GermplasmIndexContainer(this.germplasmQueries), this.germplasmDetailModel);
 			this.generationHistoryTreeItem.removeChild(this.tempGenerationHistoryTreeItemChild);
 			this.generationHistoryTreeItem.addChild(this.generationHistoryComponent);
 		}
@@ -541,8 +547,8 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showDerivativeNeighborhood() {
 		if (this.derivativeNeighborhoodComponent == null) {
 			this.derivativeNeighborhoodComponent =
-					new GermplasmDerivativeNeighborhoodComponent(this.gid, this.germplasmQueries, new GermplasmIndexContainer(
-							this.germplasmQueries), null, null);
+				new GermplasmDerivativeNeighborhoodComponent(this.gid, this.germplasmQueries, new GermplasmIndexContainer(
+					this.germplasmQueries), null, null);
 			this.derivativeNeighborhoodTreeItem.removeChild(this.tempDerivativeNeighborhoodTreeItemChild);
 			this.derivativeNeighborhoodTreeItem.addChild(this.derivativeNeighborhoodComponent);
 		}
@@ -551,8 +557,8 @@ public class GermplasmDetailsComponentTree extends VerticalLayout implements Int
 	private void showMaintenanceNeighborhood() {
 		if (this.maintenanceNeighborhoodComponent == null) {
 			this.maintenanceNeighborhoodComponent =
-					new GermplasmMaintenanceNeighborhoodComponent(this.gid, this.germplasmQueries, new GermplasmIndexContainer(
-							this.germplasmQueries), null, null);
+				new GermplasmMaintenanceNeighborhoodComponent(this.gid, this.germplasmQueries, new GermplasmIndexContainer(
+					this.germplasmQueries), null, null);
 			this.maintenanceNeighborhoodTreeItem.removeChild(this.tempMaintenanceNeighborhoodTreeItemChild);
 			this.maintenanceNeighborhoodTreeItem.addChild(this.maintenanceNeighborhoodComponent);
 		}
