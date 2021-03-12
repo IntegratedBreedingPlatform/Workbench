@@ -31,6 +31,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -388,8 +390,32 @@ public class MultiSiteDataExporterTest {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, false);
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + ".csv").getAbsolutePath(),
-				meansFile.getAbsolutePath());
+
+		final File expectedFile = new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv");
+		final String expectedFileName = BASIC_FILE_NAME + "_";
+
+		Assert.assertEquals(meansFile.getParent(), expectedFile.getParent());
+		Assert.assertTrue(meansFile.getName().contains(expectedFileName));
+
+		// Check for date time
+		final String[] generatedFileName = meansFile.getName().split("_");
+		Assert.assertTrue("File contains 3 or more underscore",generatedFileName.length > 3);
+		try {
+			Assert.assertTrue("File contains date", new SimpleDateFormat("yyyyMMdd").parse(generatedFileName[generatedFileName.length-2]) != null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Date with format yyyyMMdd");
+		}
+
+		try {
+			Assert.assertTrue("File contains time", new SimpleDateFormat("hhmmss").parse(generatedFileName[generatedFileName.length-1]) != null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Time with format hhmmss");
+
+		}
+
+
 	}
 
 	@Test
@@ -397,8 +423,30 @@ public class MultiSiteDataExporterTest {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, true);
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv")
-				.getAbsolutePath(), meansFile.getAbsolutePath());
+
+		final File expectedFile = new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv");
+		final String expectedFileName = BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + "_";
+
+		Assert.assertEquals(meansFile.getParent(), expectedFile.getParent());
+		Assert.assertTrue(meansFile.getName().contains(expectedFileName));
+
+		// Check for date time
+		final String[] generatedFileName = meansFile.getName().split("_");
+		Assert.assertTrue("File contains 3 or more underscore",generatedFileName.length > 3);
+		try {
+			Assert.assertTrue("File contains date", new SimpleDateFormat("yyyyMMdd").parse(generatedFileName[generatedFileName.length-2]) != null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Date with format yyyyMMdd");
+		}
+
+		try {
+			Assert.assertTrue("File contains time", new SimpleDateFormat("hhmmss").parse(generatedFileName[generatedFileName.length-1]) != null);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Time with format hhmmss");
+
+		}
 	}
 
 	private List<Experiment> createMeansExperiments(final String environmentFactor, final List<String> environmentNames) {
