@@ -742,7 +742,7 @@ public class ProcessImportedGermplasmActionTest {
 				ibdbUserId, date);
 
 		Assert.assertEquals("The gid should be " + gid, gid, germplasm.getGid());
-		Assert.assertEquals("The user id should be " + ibdbUserId, ibdbUserId, germplasm.getUserId());
+		Assert.assertEquals("The user id should be " + ibdbUserId, ibdbUserId, germplasm.getCreatedBy());
 		Assert.assertEquals("The location id should be " + ProcessImportedGermplasmAction.DEFAULT_LOCATION_ID,
 				ProcessImportedGermplasmAction.DEFAULT_LOCATION_ID, germplasm.getLocationId());
 		Assert.assertEquals("The date should be " + date, date, germplasm.getGdate());
@@ -774,7 +774,7 @@ public class ProcessImportedGermplasmActionTest {
 
 		Assert.assertEquals("The gid should be " + gid, gid, germplasm.getGid());
 		Assert.assertEquals("The user id should be " + ProcessImportedGermplasmActionTest.IBDB_USER_ID,
-				ProcessImportedGermplasmActionTest.IBDB_USER_ID, germplasm.getUserId());
+				ProcessImportedGermplasmActionTest.IBDB_USER_ID, germplasm.getCreatedBy());
 		Assert.assertEquals("The location id should be " + locationId, locationId,
 				germplasm.getLocationId().toString());
 		Assert.assertEquals("The date should be " + ProcessImportedGermplasmActionTest.DATE_INT_VALUE,
