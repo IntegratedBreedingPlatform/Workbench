@@ -597,7 +597,7 @@ public class AddEntryDialog extends BaseSubWindow
 		name.setNstat(1);
 		name.setReferenceId(0);
 		name.setTypeId(nameTypeId);
-		name.setUserId(currentUserLocalId);
+		name.setCreatedBy(currentUserLocalId);
 		return name;
 	}
 

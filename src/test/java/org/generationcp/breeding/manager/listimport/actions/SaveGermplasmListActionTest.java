@@ -250,7 +250,7 @@ public class SaveGermplasmListActionTest {
 		Assert.assertEquals("The gid should be " + germplasm.getGid(), germplasm.getGid(), resultName.getGermplasmId());
 		Assert.assertEquals("The typeid should be 0", 0, resultName.getTypeId().intValue());
 		Assert.assertEquals("The nstat should be 0", 0, resultName.getNstat().intValue());
-		Assert.assertEquals("The user id should be 1", 1, resultName.getUserId().intValue());
+		Assert.assertEquals("The user id should be 1", 1, resultName.getCreatedBy().intValue());
 		Assert.assertEquals("The nval should be 'DRVNM 1'", "DRVNM 1", resultName.getNval());
 		Assert.assertEquals("The ndate should be " + Util.getCurrentDateAsIntegerValue(), Util.getCurrentDateAsIntegerValue(),
 				resultName.getNdate());

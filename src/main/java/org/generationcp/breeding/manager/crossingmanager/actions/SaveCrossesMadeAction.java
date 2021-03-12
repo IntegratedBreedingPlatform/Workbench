@@ -269,7 +269,7 @@ public class SaveCrossesMadeAction implements Serializable {
 
 			final Name n = triple.getMiddle();
 			n.setReferenceId(SaveCrossesMadeAction.NAME_REFID);
-			n.setUserId(ibdbUserId);
+			n.setCreatedBy(ibdbUserId);
 		}
 
 		final GermplasmList list = crossesMade.getGermplasmList();
