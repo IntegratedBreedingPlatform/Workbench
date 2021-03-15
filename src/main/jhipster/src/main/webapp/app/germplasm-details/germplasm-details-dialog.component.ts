@@ -50,7 +50,8 @@ export class GermplasmDetailsPopupComponent implements OnInit {
             + '&programUUID=' + this.paramContext.programUUID
             + '&authToken=' + this.paramContext.authToken
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
-            + '&selectedProjectId=' + this.paramContext.selectedProjectId;
+            + '&selectedProjectId=' + this.paramContext.selectedProjectId
+            + '&modal=true'; // Tell the page that it is shown as a modal.
 
         const modal = this.popupService.open(GermplasmDetailsDialogComponent as Component, { windowClass: 'modal-extra-large', backdrop: 'static' });
         modal.then((modalRef) => {
