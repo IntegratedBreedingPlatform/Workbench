@@ -7,7 +7,7 @@ import { ObservationsPaneComponent } from './observations/observations-pane.comp
 import { InventoryPaneComponent } from './inventory/inventory-pane.component';
 import { ListsPaneComponent } from './lists/lists-pane.component';
 import { SamplesPaneComponent } from './samples/samples-pane.component';
-import { GermplasmDetailsPopupComponent } from './germplasm-details-dialog.component';
+import { GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 
 export const germplasmDetailsRoutes: Routes = [
     {

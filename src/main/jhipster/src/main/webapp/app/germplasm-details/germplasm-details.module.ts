@@ -11,7 +11,7 @@ import { ListsPaneComponent } from './lists/lists-pane.component';
 import { SamplesPaneComponent } from './samples/samples-pane.component';
 import { BmsjHipsterSharedModule } from '../shared';
 import { GermplasmDetailsContext } from './germplasm-details.context';
-import { GermplasmDetailsDialogComponent, GermplasmDetailsPopupComponent } from './germplasm-details-dialog.component';
+import { GermplasmDetailsModalComponent, GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 
 @NgModule({
     imports: [
@@ -20,7 +20,7 @@ import { GermplasmDetailsDialogComponent, GermplasmDetailsPopupComponent } from 
     ],
     declarations: [
         GermplasmDetailsPopupComponent,
-        GermplasmDetailsDialogComponent,
+        GermplasmDetailsModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
         AttributesPaneComponent,
@@ -32,7 +32,7 @@ import { GermplasmDetailsDialogComponent, GermplasmDetailsPopupComponent } from 
     ],
     entryComponents: [
         GermplasmDetailsPopupComponent,
-        GermplasmDetailsDialogComponent,
+        GermplasmDetailsModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
         AttributesPaneComponent,

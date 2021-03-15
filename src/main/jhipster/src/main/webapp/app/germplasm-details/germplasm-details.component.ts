@@ -23,14 +23,14 @@ export class GermplasmDetailsComponent implements OnInit {
         const gid = this.route.snapshot.paramMap.get('gid');
         this.germplasmDetailsContext.gid = Number(gid);
         this.paramContext.readParams();
-        const authParams = '?cropName=' + this.paramContext.cropName
+        const queryParams = '?cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
             + '&authToken=' + this.paramContext.authToken
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectedProjectId=' + this.paramContext.selectedProjectId;
 
         // Link to open Germplasm Details page to a new tab.
-        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + authParams);
+        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + queryParams);
 
         // Only show 'Open to a new tab' button if the page is shown inside a modal window.
         this.isModal = this.route.snapshot.queryParamMap.has('modal');
