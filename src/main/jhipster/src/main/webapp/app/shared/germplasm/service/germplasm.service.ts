@@ -9,7 +9,7 @@ import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
-import { GermplasmDto } from '../model/germplasm.model';
+import { GermplasmAttribute, GermplasmDto } from '../model/germplasm.model';
 
 @Injectable()
 export class GermplasmService {
@@ -61,6 +61,11 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
             '?programUUID=' + this.context.programUUID + '&codes=' + codes;
         return this.http.get<Attribute[]>(url);
+    }
+
+    getGermplasmAttributesByGidAndType(gid: number, type: string): Observable<GermplasmAttribute[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?type=${type}`;
+        return this.http.get<GermplasmAttribute[]>(url);
     }
 
     getGermplasmNameTypes(codes: string[]): Observable<NameType[]> {
