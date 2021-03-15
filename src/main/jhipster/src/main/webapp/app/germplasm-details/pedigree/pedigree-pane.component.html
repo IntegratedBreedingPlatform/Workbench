@@ -1,26 +1,30 @@
 <div class="container-fluid pt-3">
 	<jhi-collapsible heading="{{translateService.instant('pedigree.progenitors.title')}}">
 		<div class="container-fluid">
-			<table class="table table-striped table-bordered table-curved">
-				<thead>
-				<th scope="col" jhiTranslate="pedigree.progenitors.male-parent">Male Parent</th>
-				<th scope="col" jhiTranslate="pedigree.progenitors.female-parent">Female Parent</th>
-				<th scope="col" jhiTranslate="pedigree.progenitors.group-source">Group Source</th>
-				<th scope="col" jhiTranslate="pedigree.progenitors.immediate-source">Immediate Source</th>
-				<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method">Breeding Method</th>
-				<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
-				</thead>
-				<tbody>
-				<tr>
-					<td> -</td>
-					<td> -</td>
-					<td> -</td>
-					<td> -</td>
-					<td> -</td>
-					<td><button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button></td>
-				</tr>
-				</tbody>
-			</table>
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<th scope="col" jhiTranslate="pedigree.progenitors.male-parent">Male Parent</th>
+					<th scope="col" jhiTranslate="pedigree.progenitors.female-parent">Female Parent</th>
+					<th scope="col" jhiTranslate="pedigree.progenitors.group-source">Group Source</th>
+					<th scope="col" jhiTranslate="pedigree.progenitors.immediate-source">Immediate Source</th>
+					<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method">Breeding Method</th>
+					<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+					</thead>
+					<tbody>
+					<tr>
+						<td> -</td>
+						<td> -</td>
+						<td> -</td>
+						<td> -</td>
+						<td> -</td>
+						<td class="text-center">
+							<button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</jhi-collapsible>
 	<iframe [src]="safeUrl" style="border: 0" width="100%" height="600" scrolling="auto"></iframe>
