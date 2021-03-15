@@ -7,12 +7,14 @@
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved" *ngIf="passportAttributes.length else nodata">
 					<thead>
-					<th scope="col" jhiTranslate="attributes.passport.variable">Variable</th>
-					<th scope="col" jhiTranslate="attributes.passport.variable-description">Variable Desc</th>
-					<th scope="col" jhiTranslate="attributes.passport.value">Value</th>
-					<th scope="col" jhiTranslate="attributes.passport.date">Date</th>
-					<th scope="col" jhiTranslate="attributes.passport.location">Location</th>
-					<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+					<tr>
+						<th scope="col" jhiTranslate="attributes.passport.variable">Variable</th>
+						<th scope="col" jhiTranslate="attributes.passport.variable-description">Variable Desc</th>
+						<th scope="col" jhiTranslate="attributes.passport.value">Value</th>
+						<th scope="col" jhiTranslate="attributes.passport.date">Date</th>
+						<th scope="col" jhiTranslate="attributes.passport.location">Location</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+					</tr>
 					</thead>
 					<tbody>
 					<tr *ngFor="let attribute of passportAttributes">
@@ -53,12 +55,14 @@
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved" *ngIf="attributes.length else nodata">
 					<thead>
-					<th scope="col" jhiTranslate="attributes.attributes.variable">Variable</th>
-					<th scope="col" jhiTranslate="attributes.attributes.variable-description">Variable Desc</th>
-					<th scope="col" jhiTranslate="attributes.attributes.value">Value</th>
-					<th scope="col" jhiTranslate="attributes.attributes.date">Date</th>
-					<th scope="col" jhiTranslate="attributes.attributes.location">Location</th>
-					<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+					<tr>
+						<th scope="col" jhiTranslate="attributes.attributes.variable">Variable</th>
+						<th scope="col" jhiTranslate="attributes.attributes.variable-description">Variable Desc</th>
+						<th scope="col" jhiTranslate="attributes.attributes.value">Value</th>
+						<th scope="col" jhiTranslate="attributes.attributes.date">Date</th>
+						<th scope="col" jhiTranslate="attributes.attributes.location">Location</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+					</tr>
 					</thead>
 					<tbody>
 					<tr *ngFor="let attribute of attributes">
