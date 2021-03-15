@@ -593,10 +593,11 @@ td.v-table-cell-content-accepted-value{
 }
 
 /* COMPONENT TREE */
-.germplasm-details-component-tree {
+.pedigree-details-component-tree {
     background-color: #f6f6f6;
 }
 
-.germplasm-details-page {
+.pedigree-details-page {
     background-color: #f6f6f6;
+    overflow: auto;
 }

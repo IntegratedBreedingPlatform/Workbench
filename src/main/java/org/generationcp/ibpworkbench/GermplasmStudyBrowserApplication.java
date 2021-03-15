@@ -223,7 +223,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 				Window pedigreeDetailsWindow = new Window(this.messageSource.getMessage(Message.GERMPLASM_DETAILS_TEXT) + " " + 1);
 				pedigreeDetailsWindow.setSizeUndefined();
 				pedigreeDetailsWindow.setSizeFull();
-				pedigreeDetailsWindow.setStyleName("germplasm-details-page");
 				pedigreeDetailsWindow.addComponent(new GermplasmPedigreeDetailsComponent(this.gid, new GermplasmQueries()));
 				this.addWindow(pedigreeDetailsWindow);
 				return pedigreeDetailsWindow;

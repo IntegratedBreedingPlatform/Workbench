@@ -7,6 +7,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -22,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class GermplasmPedigreeDetailsComponent extends CssLayout implements InternationalizableComponent, InitializingBean {
+public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements InternationalizableComponent, InitializingBean {
 
 	private static final long serialVersionUID = -424140540302043647L;
 
@@ -317,8 +318,10 @@ public class GermplasmPedigreeDetailsComponent extends CssLayout implements Inte
 	}
 
 	private void layoutComponents() {
+		this.setSizeUndefined();
 		this.setSizeFull();
 		this.setMargin(false);
+		this.addStyleName("pedigree-details-page");
 		this.addComponent(this.componentTree);
 	}
 
