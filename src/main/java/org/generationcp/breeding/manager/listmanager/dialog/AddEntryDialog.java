@@ -572,7 +572,7 @@ public class AddEntryDialog extends BaseSubWindow
 		germplasm.setMethodId(breedingMethodId);
 		germplasm.setMgid(0);
 		germplasm.setReferenceId(0);
-		germplasm.setUserId(currentUserLocalId);
+		germplasm.setCreatedBy(currentUserLocalId);
 
 		if (selectedGermplasm != null) {
 			// temporarily set GID so that it can be used as key in map for saving
@@ -597,7 +597,7 @@ public class AddEntryDialog extends BaseSubWindow
 		name.setNstat(1);
 		name.setReferenceId(0);
 		name.setTypeId(nameTypeId);
-		name.setUserId(currentUserLocalId);
+		name.setCreatedBy(currentUserLocalId);
 		return name;
 	}
 

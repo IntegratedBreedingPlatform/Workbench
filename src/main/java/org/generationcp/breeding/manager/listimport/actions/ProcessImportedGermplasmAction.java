@@ -329,7 +329,7 @@ public class ProcessImportedGermplasmAction implements Serializable {
 		final Name name = new Name();
 
 		name.setTypeId((Integer) this.getGermplasmFieldsComponent().getNameTypeComboBox().getValue());
-		name.setUserId(ibdbUserId);
+		name.setCreatedBy(ibdbUserId);
 		name.setNval(desig);
 
 		// Set the location id to the id of Unknown Location (0) if the user did
@@ -350,7 +350,7 @@ public class ProcessImportedGermplasmAction implements Serializable {
 		final Germplasm germplasm = new Germplasm();
 
 		germplasm.setGid(gid);
-		germplasm.setUserId(ibdbUserId);
+		germplasm.setCreatedBy(ibdbUserId);
 
 		// Set the location id to the id of Unknown Location (0) if the user did
 		// not select any location
