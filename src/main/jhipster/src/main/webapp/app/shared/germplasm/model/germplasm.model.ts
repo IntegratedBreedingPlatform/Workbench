@@ -45,3 +45,22 @@ export class GermplasmAttribute {
     ) {
     }
 }
+
+export class GermplasmList {
+    constructor(
+        public listId?: number,
+        public listName?: string,
+        public creationDate?: string,
+        public description?: string
+    ) {
+    }
+}
+
+export class GermplasmStudy {
+    constructor(
+        public studyId?: number,
+        public name?: string,
+        public description?: string
+    ) {
+    }
+}
