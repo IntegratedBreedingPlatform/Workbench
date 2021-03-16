@@ -592,12 +592,16 @@ td.v-table-cell-content-accepted-value{
     font-weight: bold;
 }
 
-/* COMPONENT TREE */
+/* Pedigree details COMPONENT TREE */
 .pedigree-details-component-tree {
     background-color: #f6f6f6;
 }
 
 .pedigree-details-page {
     background-color: #f6f6f6;
-    overflow: auto;
+}
+
+.v-tree-node-link span {
+    cursor: pointer;
+    color: #337ab7;
 }

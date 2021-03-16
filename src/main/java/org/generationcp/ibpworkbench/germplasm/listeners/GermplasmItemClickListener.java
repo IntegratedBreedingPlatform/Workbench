@@ -45,44 +45,7 @@ public class GermplasmItemClickListener implements ItemClickEvent.ItemClickListe
 	@Override
 	public void itemClick(ItemClickEvent event) {
 
-		if (this.sourceClass instanceof GermplasmPedigreeTreeComponent) {
-			if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-				try {
-					((GermplasmPedigreeTreeComponent) this.sourceClass).displayNewGermplasmDetailTab((Integer) event.getItemId());
-				} catch (InternationalizableException e) {
-					GermplasmItemClickListener.LOG.error("Error in GermplasmItemClickListener: " + e.toString() + "\n" + e.getStackTrace(),
-							e);
-					// TESTED
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				}
-			}
-
-		} else if (this.sourceClass instanceof GermplasmDerivativeNeighborhoodComponent) {
-			if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-				try {
-					((GermplasmDerivativeNeighborhoodComponent) this.sourceClass).displayNewGermplasmDetailTab((Integer) event.getItemId());
-				} catch (InternationalizableException e) {
-					GermplasmItemClickListener.LOG.error("Error in GermplasmItemClickListener: " + e.toString() + "\n" + e.getStackTrace(),
-							e);
-					// TESTED
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				}
-			}
-
-		} else if (this.sourceClass instanceof GermplasmMaintenanceNeighborhoodComponent) {
-			if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-				try {
-					((GermplasmMaintenanceNeighborhoodComponent) this.sourceClass)
-							.displayNewGermplasmDetailTab((Integer) event.getItemId());
-				} catch (InternationalizableException e) {
-					GermplasmItemClickListener.LOG.error("Error in GermplasmItemClickListener: " + e.toString() + "\n" + e.getStackTrace(),
-							e);
-					// TESTED
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				}
-			}
-
-		} else if (this.sourceClass instanceof SelectAGermplasmDialog) {
+		if (this.sourceClass instanceof SelectAGermplasmDialog) {
 			if (event.getButton() == ClickEvent.BUTTON_LEFT && event.isDoubleClick()) {
 				try {
 					((SelectAGermplasmDialog) this.sourceClass).resultTableItemDoubleClickAction((Table) event.getSource(),

@@ -11,9 +11,13 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.containers.GroupRelativesQuery;
 import org.generationcp.ibpworkbench.germplasm.containers.GroupRelativesQueryFactory;
@@ -35,6 +39,9 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public GermplasmGroupRelativesComponent(int gid) {
 		this.gid = gid;
@@ -70,6 +77,21 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 															// collapsing
 			this.groupRelativesTable.setColumnReorderingAllowed(true);
 			this.groupRelativesTable.setColumnCollapsingAllowed(true);
+
+			this.groupRelativesTable.addGeneratedColumn(GroupRelativesQuery.GID, new Table.ColumnGenerator() {
+
+				@Override
+				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
+					final Link link =
+						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
+							+ GermplasmGroupRelativesComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()));
+					link.setTargetName("_blank");
+					return link;
+				}
+			});
+
+
 		} else {
 			this.noDataAvailableLabel = new Label("There is no Group Relatives information for this germplasm.");
 		}

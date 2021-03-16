@@ -12,13 +12,17 @@
 package org.generationcp.ibpworkbench.germplasm;
 
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -36,6 +40,9 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public GermplasmGenerationHistoryComponent(GermplasmIndexContainer dataIndexContainer, GermplasmDetailModel gDetailModel) {
 		this.dataIndexContainer = dataIndexContainer;
@@ -64,11 +71,25 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 			this.generationHistoryTable.setSelectable(true);
 			this.generationHistoryTable.setMultiSelect(false);
 			this.generationHistoryTable.setImmediate(true); // react at once when something is selected turn on column reordering and
-															// collapsing
+			// collapsing
 			this.generationHistoryTable.setColumnReorderingAllowed(true);
 			this.generationHistoryTable.setColumnCollapsingAllowed(true);
-			this.generationHistoryTable.setColumnHeaders(new String[] {this.messageSource.getMessage(Message.GID_LABEL),
-					this.messageSource.getMessage(Message.PREFNAME_LABEL)});
+			this.generationHistoryTable.setColumnHeaders(new String[] {
+				this.messageSource.getMessage(Message.GID_LABEL),
+				this.messageSource.getMessage(Message.PREFNAME_LABEL)});
+
+			this.generationHistoryTable.addGeneratedColumn("gid", new Table.ColumnGenerator() {
+
+				@Override
+				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
+					final Link link =
+						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
+							+ GermplasmGenerationHistoryComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()));
+					link.setTargetName("_blank");
+					return link;
+				}
+			});
 		}
 	}
 

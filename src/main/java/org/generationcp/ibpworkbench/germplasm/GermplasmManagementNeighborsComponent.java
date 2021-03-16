@@ -11,10 +11,15 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQuery;
 import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQueryFactory;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -36,6 +41,9 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public GermplasmManagementNeighborsComponent(Integer gid) {
 		this.gid = gid;
@@ -75,6 +83,19 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 			this.managementNeighborsTable.setColumnHeader(ManagementNeighborsQuery.GID, this.messageSource.getMessage(Message.GID_LABEL));
 			this.managementNeighborsTable.setColumnHeader(ManagementNeighborsQuery.PREFERRED_NAME,
 					this.messageSource.getMessage(Message.PREFNAME_LABEL));
+
+			this.managementNeighborsTable.addGeneratedColumn(ManagementNeighborsQuery.GID, new Table.ColumnGenerator() {
+
+				@Override
+				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
+					final Link link =
+						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
+							+ GermplasmManagementNeighborsComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()));
+					link.setTargetName("_blank");
+					return link;
+				}
+			});
 		} else {
 			this.noDataAvailableLabel = new Label("There is no Management Neighbors Information for this germplasm.");
 		}

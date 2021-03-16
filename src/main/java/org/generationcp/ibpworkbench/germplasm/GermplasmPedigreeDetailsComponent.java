@@ -77,7 +77,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 		this.componentTree = new ComponentTree();
 		this.componentTree.setSizeFull();
 		this.componentTree.setMargin(false);
-		this.componentTree.addStyleName("germplasm-details-component-tree");
+		this.componentTree.addStyleName("pedigree-details-component-tree");
 
 		this.germplasmDetailModel = this.germplasmQueries.getGermplasmDetails(this.gid);
 
@@ -321,7 +321,6 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 		this.setSizeUndefined();
 		this.setSizeFull();
 		this.setMargin(false);
-		this.addStyleName("pedigree-details-page");
 		this.addComponent(this.componentTree);
 	}
 

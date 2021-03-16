@@ -11,6 +11,8 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -22,6 +24,8 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmButtonClickListener;
@@ -65,6 +69,9 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	public GermplasmMaintenanceNeighborhoodComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
 			VerticalLayout mainLayout, TabSheet tabSheet) throws InternationalizableException {
@@ -169,7 +176,27 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 
 		this.maintenanceNeighborhoodTree = new Tree();
 		this.addComponent(this.maintenanceNeighborhoodTree);
-		this.maintenanceNeighborhoodTree.addListener(new GermplasmItemClickListener(this));
+
+		this.maintenanceNeighborhoodTree.setSelectable(false);
+
+		this.maintenanceNeighborhoodTree.setItemStyleGenerator(new Tree.ItemStyleGenerator() {
+
+			@Override
+			public String getStyle(final Object itemId) {
+				return "link";
+			}
+		});
+
+		this.maintenanceNeighborhoodTree.addListener(new ItemClickEvent.ItemClickListener() {
+
+			@Override
+			public void itemClick(ItemClickEvent event) {
+				final String gid = event.getItemId().toString();
+				GermplasmMaintenanceNeighborhoodComponent.this
+					.getWindow().open(new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
+					+ GermplasmMaintenanceNeighborhoodComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()), "_blank", false);
+			}
+		});
 
 		this.maintenanceNeighborhoodTree.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
 
@@ -223,26 +250,5 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 
 		this.addComponent(this.maintenanceNeighborhoodTree);
 
-	}
-
-	public void displayNewGermplasmDetailTab(int gid) throws InternationalizableException {
-		if (this.mainLayout != null && this.tabSheet != null) {
-			VerticalLayout detailLayout = new VerticalLayout();
-			detailLayout.setSpacing(true);
-
-			if (!Util.isTabExist(this.tabSheet, String.valueOf(gid))) {
-				detailLayout.addComponent(new GermplasmDetail(gid, this.qQuery, this.dataIndexContainer, this.mainLayout, this.tabSheet,
-						false));
-				Tab tab = this.tabSheet.addTab(detailLayout, String.valueOf(gid), null);
-				tab.setClosable(true);
-				this.tabSheet.setSelectedTab(detailLayout);
-				this.mainLayout.addComponent(this.tabSheet);
-
-			} else {
-				Tab tab = Util.getTabAlreadyExist(this.tabSheet, String.valueOf(gid));
-				this.tabSheet.setSelectedTab(tab.getComponent());
-			}
-
-		}
 	}
 }

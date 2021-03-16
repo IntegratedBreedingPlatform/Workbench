@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench;
 
 import com.vaadin.terminal.Terminal;
+import com.vaadin.ui.AbstractLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import org.apache.commons.lang3.StringUtils;
@@ -220,10 +221,16 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 				this.addWindow(awhereWindow);
 				return awhereWindow;
 			} else if ("pedigree-details".equals(name)) {
-				Window pedigreeDetailsWindow = new Window(this.messageSource.getMessage(Message.GERMPLASM_DETAILS_TEXT) + " " + 1);
+				final Window pedigreeDetailsWindow = new Window(this.messageSource.getMessage(Message.GERMPLASM_DETAILS_TEXT) + " " + 1);
 				pedigreeDetailsWindow.setSizeUndefined();
 				pedigreeDetailsWindow.setSizeFull();
+				pedigreeDetailsWindow.setStyleName("pedigree-details-page");
 				pedigreeDetailsWindow.addComponent(new GermplasmPedigreeDetailsComponent(this.gid, new GermplasmQueries()));
+
+				// Override Margin inside window
+				final AbstractLayout contentLayout = (AbstractLayout) pedigreeDetailsWindow.getContent();
+				contentLayout.setMargin(false);
+
 				this.addWindow(pedigreeDetailsWindow);
 				return pedigreeDetailsWindow;
 			}
