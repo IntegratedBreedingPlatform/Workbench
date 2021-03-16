@@ -319,7 +319,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 
 	private void layoutComponents() {
 		this.setSizeUndefined();
-		this.setSizeFull();
+		this.setWidth("100%");
 		this.setMargin(false);
 		this.addComponent(this.componentTree);
 	}
