@@ -102,7 +102,7 @@ public class RunSingleSiteAction implements ClickListener {
 			filenameList.add(breedingViewInput.getDestXMLFilePath());
 			filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-			final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(FileNameGenerator.generateFileName(breedingViewInput.getDatasetSource(), null));
+			final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(FileNameGenerator.generateFileName(breedingViewInput.getDatasetSource()));
 			try {
 				final String finalZipfileName =
 					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
