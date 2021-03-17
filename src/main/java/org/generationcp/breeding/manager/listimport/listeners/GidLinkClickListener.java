@@ -11,20 +11,6 @@
 
 package org.generationcp.breeding.manager.listimport.listeners;
 
-import org.generationcp.breeding.manager.util.Util;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction;
@@ -36,6 +22,17 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.WorkbenchAppPathResolver;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class GidLinkClickListener implements Button.ClickListener, ItemClickListener {
@@ -49,6 +46,9 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private String gid;
 	private final Boolean viaToolURL;
@@ -95,23 +95,9 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 			mainWindow = component.getApplication().getWindow(GidLinkClickListener.GERMPLASM_IMPORT_WINDOW_NAME);
 		}
 
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		} catch (MiddlewareQueryException qe) {
-			GidLinkClickListener.LOG.error("QueryException", qe);
-		}
-		String addtlParams = Util.getAdditionalParams(this.workbenchDataManager);
-
-		ExternalResource germplasmBrowserLink = null;
-		if (tool == null) {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK
-							+ this.gid, "?restartApplication" + addtlParams));
-		} else {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool, this.gid, "?restartApplication" + addtlParams));
-		}
+		final ExternalResource germplasmDetailsLink = new ExternalResource(
+			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
+				+ this.contextUtil.getProjectInContext().getCropType().getCropName()));
 
 		String preferredName = null;
 		try {
@@ -133,7 +119,7 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 		layoutForGermplasm.setHeight("100%");
 		layoutForGermplasm.addStyleName("no-caption");
 
-		Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
+		Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setDebugId("germplasmInfo");
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();

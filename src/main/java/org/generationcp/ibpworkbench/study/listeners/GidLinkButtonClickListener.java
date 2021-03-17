@@ -19,16 +19,15 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
-import org.generationcp.ibpworkbench.study.TableViewerComponent;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
+import org.generationcp.ibpworkbench.study.TableViewerComponent;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +38,18 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 
 	private static final long serialVersionUID = -6751894969990825730L;
 	private final static Logger LOG = LoggerFactory.getLogger(GidLinkButtonClickListener.class);
-	private final String[] CHILD_WINDOWS = {TableViewerComponent.TABLE_VIEWER_WINDOW_NAME,
-			ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
+	private final String[] CHILD_WINDOWS = {
+		TableViewerComponent.TABLE_VIEWER_WINDOW_NAME,
+		ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
 
 	@Autowired
 	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
+
+	@Autowired
+	private ContextUtil contextUtil;
 
 	private final String gid;
 
@@ -64,21 +67,9 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 			mainWindow = eventWindow;
 		}
 
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		} catch (MiddlewareQueryException qe) {
-			GidLinkButtonClickListener.LOG.error("QueryException", qe);
-		}
-
-		ExternalResource germplasmBrowserLink;
-		if (tool == null) {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK
-							+ this.gid));
-		} else {
-			germplasmBrowserLink = new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool, this.gid));
-		}
+		final ExternalResource germplasmDetailsLink = new ExternalResource(
+			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
+				+ this.contextUtil.getProjectInContext().getCropType().getCropName()));
 
 		String preferredName = null;
 		try {
@@ -98,7 +89,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		layoutForGermplasm.setWidth("98%");
 		layoutForGermplasm.setHeight("98%");
 
-		Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
+		Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();
 		layoutForGermplasm.addComponent(germplasmInfo);
