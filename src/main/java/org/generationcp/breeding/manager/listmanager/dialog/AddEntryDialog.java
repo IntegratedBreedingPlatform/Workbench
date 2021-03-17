@@ -516,14 +516,14 @@ public class AddEntryDialog extends BaseSubWindow
 					germplasmName = preferredName;
 				}
 
-				final Germplasm germplasm = this.createGermplasm(selectedGermplasm, date, locationId, breedingMethodId, currentUserLocalId);
+				final Germplasm germplasm = this.createGermplasm(selectedGermplasm, date, locationId, breedingMethodId);
 				final Name name = this.createName(germplasmName, locationId, date, nameTypeId, currentUserLocalId);
 				germplasmNamesMap.put(germplasm, name);
 			}
 
 			// If no selected GIDs, add new germplasm with name equals to search string
 		} else {
-			final Germplasm germplasm = this.createGermplasm(null, date, locationId, breedingMethodId, currentUserLocalId);
+			final Germplasm germplasm = this.createGermplasm(null, date, locationId, breedingMethodId);
 			final String germplasmName = this.searchBarComponent.getSearchField().getValue().toString();
 			final Name name = this.createName(germplasmName, locationId, date, nameTypeId, currentUserLocalId);
 			germplasmNamesMap.put(germplasm, name);
@@ -559,7 +559,7 @@ public class AddEntryDialog extends BaseSubWindow
 	}
 
 	private Germplasm createGermplasm(final Germplasm selectedGermplasm, final Integer date, final Integer locationId,
-			final Integer breedingMethodId, final Integer currentUserLocalId) {
+		final Integer breedingMethodId) {
 
 		final Germplasm germplasm = new Germplasm();
 		germplasm.setGdate(date);
@@ -572,7 +572,6 @@ public class AddEntryDialog extends BaseSubWindow
 		germplasm.setMethodId(breedingMethodId);
 		germplasm.setMgid(0);
 		germplasm.setReferenceId(0);
-		germplasm.setCreatedBy(currentUserLocalId);
 
 		if (selectedGermplasm != null) {
 			// temporarily set GID so that it can be used as key in map for saving

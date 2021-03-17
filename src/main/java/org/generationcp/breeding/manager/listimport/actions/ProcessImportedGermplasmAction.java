@@ -350,7 +350,6 @@ public class ProcessImportedGermplasmAction implements Serializable {
 		final Germplasm germplasm = new Germplasm();
 
 		germplasm.setGid(gid);
-		germplasm.setCreatedBy(ibdbUserId);
 
 		// Set the location id to the id of Unknown Location (0) if the user did
 		// not select any location
