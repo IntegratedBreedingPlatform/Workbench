@@ -248,6 +248,11 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 			this.addNode(this.germplasmMaintenanceNeighborhood.getRoot(), 1);
 		}
 
+		// Prevent any items in the tree to be selected.
+		for (final Object itemId : this.maintenanceNeighborhoodTree.getItemIds()) {
+			this.maintenanceNeighborhoodTree.unselect(itemId);
+		}
+
 		this.addComponent(this.maintenanceNeighborhoodTree);
 
 	}

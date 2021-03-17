@@ -250,6 +250,11 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 			this.addNode(this.germplasmDerivativeNeighborhood.getRoot(), 1);
 		}
 
+		// Prevent any items in the tree to be selected.
+		for (final Object itemId : this.derivativeNeighborhoodTree.getItemIds()) {
+			this.derivativeNeighborhoodTree.unselect(itemId);
+		}
+
 		this.addComponent(this.derivativeNeighborhoodTree);
 
 	}
