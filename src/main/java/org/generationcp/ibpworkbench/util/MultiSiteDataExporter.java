@@ -2,9 +2,11 @@ package org.generationcp.ibpworkbench.util;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.util.BreedingViewUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.WorkbenchContentApp;
@@ -259,9 +261,9 @@ public class MultiSiteDataExporter {
 		if (isSummaryStatsFile) {
 			sb.append(MultiSiteDataExporter.SUMMARY_STATS);
 		}
-		sb.append(".csv");
+		final String fileName = FileNameGenerator.generateFileName(sb.toString(), AppConstants.EXPORT_CSV_SUFFIX.getString());
 
-		return new File(directory + File.separator + sb.toString());
+		return new File(directory + File.separator + fileName);
 	}
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
