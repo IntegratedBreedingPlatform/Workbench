@@ -599,6 +599,7 @@ td.v-table-cell-content-accepted-value{
 
 .pedigree-details-page {
     background-color: #f6f6f6;
+    overflow: scroll;
 }
 
 .v-tree-node-link span {
