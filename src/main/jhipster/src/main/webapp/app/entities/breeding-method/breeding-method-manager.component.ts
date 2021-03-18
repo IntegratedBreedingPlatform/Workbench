@@ -5,7 +5,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { PopupService } from '../../shared/modal/popup.service';
 import { ParamContext } from '../../shared/service/param.context';
 import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
-import { GermplasmComponent } from '../germplasm/germplasm.component';
 
 @Component({
     selector: 'jhi-breeding-method-manager',
