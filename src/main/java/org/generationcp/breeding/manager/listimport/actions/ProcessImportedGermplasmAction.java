@@ -329,7 +329,6 @@ public class ProcessImportedGermplasmAction implements Serializable {
 		final Name name = new Name();
 
 		name.setTypeId((Integer) this.getGermplasmFieldsComponent().getNameTypeComboBox().getValue());
-		name.setCreatedBy(ibdbUserId);
 		name.setNval(desig);
 
 		// Set the location id to the id of Unknown Location (0) if the user did

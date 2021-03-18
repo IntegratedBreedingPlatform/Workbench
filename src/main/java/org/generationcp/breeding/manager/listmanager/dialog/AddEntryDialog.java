@@ -500,8 +500,6 @@ public class AddEntryDialog extends BaseSubWindow
 			return null;
 		}
 
-		final Integer currentUserLocalId = this.getCurrentUserLocalId();
-
 		final Map<Germplasm, Name> germplasmNamesMap = new HashMap<>();
 		if (!selectedGids.isEmpty()) {
 			// One-off DB retrieval for germplasm and preferred names for selected germplasm
@@ -517,7 +515,7 @@ public class AddEntryDialog extends BaseSubWindow
 				}
 
 				final Germplasm germplasm = this.createGermplasm(selectedGermplasm, date, locationId, breedingMethodId);
-				final Name name = this.createName(germplasmName, locationId, date, nameTypeId, currentUserLocalId);
+				final Name name = this.createName(germplasmName, locationId, date, nameTypeId);
 				germplasmNamesMap.put(germplasm, name);
 			}
 
@@ -525,7 +523,7 @@ public class AddEntryDialog extends BaseSubWindow
 		} else {
 			final Germplasm germplasm = this.createGermplasm(null, date, locationId, breedingMethodId);
 			final String germplasmName = this.searchBarComponent.getSearchField().getValue().toString();
-			final Name name = this.createName(germplasmName, locationId, date, nameTypeId, currentUserLocalId);
+			final Name name = this.createName(germplasmName, locationId, date, nameTypeId);
 			germplasmNamesMap.put(germplasm, name);
 		}
 
@@ -546,16 +544,6 @@ public class AddEntryDialog extends BaseSubWindow
 			return null;
 		}
 		return Integer.parseInt(parsedDate);
-	}
-
-	private Integer getCurrentUserLocalId() {
-		int currentUserLocalId = -1;
-		try {
-			currentUserLocalId = this.contextUtil.getCurrentWorkbenchUserId();
-		} catch (final MiddlewareQueryException e) {
-			AddEntryDialog.LOG.error(e.getMessage(), e);
-		}
-		return currentUserLocalId;
 	}
 
 	private Germplasm createGermplasm(final Germplasm selectedGermplasm, final Integer date, final Integer locationId,
@@ -587,8 +575,7 @@ public class AddEntryDialog extends BaseSubWindow
 		return germplasm;
 	}
 
-	private Name createName(final String germplasmName, final Integer locationId, final Integer date, final Integer nameTypeId,
-			final Integer currentUserLocalId) {
+	private Name createName(final String germplasmName, final Integer locationId, final Integer date, final Integer nameTypeId) {
 		final Name name = new Name();
 		name.setNval(germplasmName);
 		name.setLocationId(locationId);
@@ -596,7 +583,6 @@ public class AddEntryDialog extends BaseSubWindow
 		name.setNstat(1);
 		name.setReferenceId(0);
 		name.setTypeId(nameTypeId);
-		name.setCreatedBy(currentUserLocalId);
 		return name;
 	}
 

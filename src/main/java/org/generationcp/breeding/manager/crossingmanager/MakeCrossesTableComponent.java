@@ -653,8 +653,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 				while (iterator.hasNext()) {
 					final GermplasmListEntry maleParentEntry = iterator.next();
-					progenitors.add(new Progenitor(germplasm, progenitorNumber, maleParentEntry.getGid(),
-						this.contextUtil.getContextInfoFromSession().getLoggedInUserId()));
+					progenitors.add(new Progenitor(germplasm, progenitorNumber, maleParentEntry.getGid()));
 					progenitorNumber++;
 				}
 
