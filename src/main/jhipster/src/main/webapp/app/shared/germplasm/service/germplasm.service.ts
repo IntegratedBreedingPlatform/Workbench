@@ -49,12 +49,12 @@ export class GermplasmService {
         });
     }
 
-    getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
+    getGermplasmById(gid: number): Observable<HttpResponse<GermplasmDto>> {
         const params = {};
         if (this.context.programUUID) {
             params['programUUID'] = this.context.programUUID;
         }
-        return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
+        return this.http.get<GermplasmDto>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
             { params, observe: 'response' });
     }
 
