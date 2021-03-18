@@ -7,6 +7,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Trait;
+import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -174,7 +175,7 @@ public class RunMultiSiteActionTest {
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
 		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
-		Assert.assertEquals(STUDY_NAME, filenameCaptor.getValue());
+		Assert.assertTrue( filenameCaptor.getValue().contains(STUDY_NAME));
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(3, filesInZip.size());
@@ -213,7 +214,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
 
-		Assert.assertEquals(FileNameGenerator.generateFileName(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS.xml"), gxeInput.getDestXMLFilePath());
+		Assert.assertEquals(FileNameGenerator.generateFileName(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS", ".xml"), gxeInput.getDestXMLFilePath());
 
 	}
 

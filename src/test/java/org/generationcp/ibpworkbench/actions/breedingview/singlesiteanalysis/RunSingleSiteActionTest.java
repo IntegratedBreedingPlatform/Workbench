@@ -491,7 +491,7 @@ public class RunSingleSiteActionTest {
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
 		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
-		Assert.assertEquals(DATA_SOURCE_NAME, filenameCaptor.getValue());
+		Assert.assertTrue(filenameCaptor.getValue().contains(DATA_SOURCE_NAME));
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(2, filesInZip.size());
