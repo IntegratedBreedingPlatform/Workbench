@@ -5,7 +5,7 @@
 				<div class="col-2">
 					<label class="font-weight-bold" jhiTranslate="basic-details.preferred-name">Preferred Name:</label>
 				</div>
-				<div class="col">{{germplasm?.germplasmPeferredName}}</div>
+				<div class="col">{{germplasm?.preferredName}}</div>
 			</div>
 			<div class="row">
 				<div class="col-2">
@@ -37,8 +37,8 @@
 					</thead>
 					<tbody>
 					<tr>
-						<td>{{germplasm?.germplasmDate}}</td>
-						<td>{{germplasm?.locationName}}</td>
+						<td>{{germplasm?.creationDate}}</td>
+						<td>{{germplasm?.breedingLocation}}</td>
 						<td></td>
 						<td class="text-center">
 							<button class="btn btn-info"><i class="fa fa-edit fa-fa-md" aria-hidden="true"></i></button>

@@ -3,7 +3,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { Germplasm } from '../../entities/germplasm/germplasm.model';
+import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 
 @Component({
     selector: 'jhi-basic-details-pane',
@@ -11,7 +11,7 @@ import { Germplasm } from '../../entities/germplasm/germplasm.model';
 })
 export class BasicDetailsPaneComponent implements OnInit {
 
-    germplasm: Germplasm;
+    germplasm: GermplasmDto;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
