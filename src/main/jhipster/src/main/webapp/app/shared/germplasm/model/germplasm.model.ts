@@ -14,14 +14,18 @@ export class GermplasmDto {
         public breedingMethod?: string,
         public isGroupedLine?: boolean,
         public groupId?: number,
+        public gpid1?: number,
+        public gpid2?: number,
+        public otherProgenitors?: number[],
         public names?: GermplasmName[],
-        public attributes?: GermplasmAttribute[],
+        public attributes?: GermplasmAttribute[]
     ) {
     }
 }
 
 export class GermplasmName {
     constructor(
+        public id?: number,
         public gid?: number,
         public name?: string,
         public date?: string,
