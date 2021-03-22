@@ -31,13 +31,13 @@
             "title": "GERMPLASM ORIGIN",
             "study": "Study",
             "obs-unit": "Obs_Unit_ID",
-            "id": "ID",
             "plot": "Plot",
             "rep": "Rep",
             "block": "Block",
             "x": "X",
             "y": "Y"
-        }
+        },
+        "no-germplasm-origin": "Imported germplasm. Origin observation unit id is undefined."
     },
     "attributes": {
         "passport": {

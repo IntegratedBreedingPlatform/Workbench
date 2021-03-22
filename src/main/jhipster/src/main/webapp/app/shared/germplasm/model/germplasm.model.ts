@@ -18,7 +18,8 @@ export class GermplasmDto {
         public gpid2?: number,
         public otherProgenitors?: number[],
         public names?: GermplasmName[],
-        public attributes?: GermplasmAttribute[]
+        public attributes?: GermplasmAttribute[],
+        public germplasmOrigin?: GermplasmOrigin
     ) {
     }
 }
@@ -33,6 +34,7 @@ export class GermplasmName {
         public locationName?: string,
         public nameTypeCode?: string,
         public nameTypeDescription?: string,
+        public preferred?: boolean,
     ) {
     }
 
@@ -65,6 +67,21 @@ export class GermplasmStudy {
         public studyId?: number,
         public name?: string,
         public description?: string
+    ) {
+    }
+}
+
+export class GermplasmOrigin {
+    constructor(
+        public studyId?: number,
+        public studyName?: string,
+        public observationUnitId?: string,
+        public plotNumber?: number,
+        public repNumber?: number,
+        public blockNumber?: number,
+        public positionCoordinateX?: string,
+        public positionCoordinateY?: string,
+        public geoCoordinates?: any,
     ) {
     }
 }
