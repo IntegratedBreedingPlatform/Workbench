@@ -6,8 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.vaadin.ui.Link;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.study.containers.RepresentationDatasetQueryFactory;
@@ -39,9 +42,6 @@ public class RepresentationDatasetComponentTest {
 	private static final String XLS_FILEPATH = "/someDirectory/output/" + RepresentationDatasetComponent.TEMP_FILENAME + ".xls";
 
 	private static final int DATASET_ID = 2;
-
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private DatasetExporter datasetExporter;
@@ -197,20 +197,8 @@ public class RepresentationDatasetComponentTest {
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(), ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILEPATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >= 3);
-
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			org.junit.Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			org.junit.Assert.fail("Date must be included in the file name");
-		}
+		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLS_DATE_TIME_PATTERN));
 	}
 
 	@Test
@@ -234,5 +222,9 @@ public class RepresentationDatasetComponentTest {
 		Assert.assertEquals(message, error.getCaption());
 		Assert.assertEquals("</br>", error.getDescription());
 	}
-
+	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
+		final Pattern pattern1 = Pattern.compile(pattern);
+		final Matcher matcher = pattern1.matcher(fileName);
+		return matcher.find();
+	}
 }

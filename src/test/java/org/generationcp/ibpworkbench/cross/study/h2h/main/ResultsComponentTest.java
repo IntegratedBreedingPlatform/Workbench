@@ -4,7 +4,10 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.EnvironmentForComparison;
@@ -29,8 +32,6 @@ import org.junit.Assert;
 public class ResultsComponentTest {
 
 	private static final String XLS_FILE_PATH = "/someDirectory/output/HeadtoHeadDataList.xls";
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -79,19 +80,9 @@ public class ResultsComponentTest {
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >= 3);
+		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLS_DATE_TIME_PATTERN));
 		Mockito.verify(this.window).open(downloadResource);
 		Mockito.verify(this.mainScreen).selectFirstTab();
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			Assert.fail("Date must be included in the file name");
-		}
 	}
 
 	@Test
@@ -119,4 +110,9 @@ public class ResultsComponentTest {
 		Mockito.verify(this.mainScreen).selectThirdTab();
 	}
 
+	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
+		final Pattern pattern1 = Pattern.compile(pattern);
+		final Matcher matcher = pattern1.matcher(fileName);
+		return matcher.find();
+	}
 }

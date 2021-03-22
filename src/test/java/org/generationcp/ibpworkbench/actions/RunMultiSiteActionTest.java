@@ -52,6 +52,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunMultiSiteActionTest {
@@ -73,7 +76,7 @@ public class RunMultiSiteActionTest {
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
+//	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -179,28 +182,23 @@ public class RunMultiSiteActionTest {
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(3, filesInZip.size());
-		Assert.assertTrue(filesInZip.contains(SUMMARY_DATA_FILEPATH));
-		Assert.assertTrue(filesInZip.contains(MEANS_DATA_FILEPATH));
-		Assert.assertTrue(filesInZip.contains(BMS_INPUT_FILES_DIR + File.separator + FileNameGenerator.generateFileName(this.getExpectedBVInputXmlFilename(), "xml")));
+		// File formatted use contains instead of equals for checking filename
+		Assert.assertEquals(3,filesInZip.stream().filter(s -> {
+			return
+					s.contains(this.getExpectedBVInputXmlFilename()) ||
+							s.contains(SUMMARY_DATA_FILEPATH) ||
+							s.contains(MEANS_DATA_FILEPATH);
+		}).collect(Collectors.toList()).size());
+
+
 		Assert.assertEquals(ToolName.BV_GXE, toolCaptor.getValue());
 
 		// Verify zip file is downloaded to the browser with proper filename
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		final String[] uSCount = downloadResource.getFilename().split("_");
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			Assert.fail("Date must be included in the file name");
-		}
+		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >=3);
 	}
 
 	@Test
@@ -213,9 +211,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.multiSiteDataExporter).generateXmlFieldBook(gxeInput);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
-
-		Assert.assertEquals(FileNameGenerator.generateFileName(BMS_INPUT_FILES_DIR + File.separator + PROJECT_NAME + "_0_TEST STUDY-MEANS", ".xml"), gxeInput.getDestXMLFilePath());
-
+		Assert.assertTrue(this.isValidFileNameFormat(gxeInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
 	}
 
 	@Test
@@ -396,4 +392,9 @@ public class RunMultiSiteActionTest {
 
 	}
 
+	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
+		final Pattern pattern1 = Pattern.compile(pattern);
+		final Matcher matcher = pattern1.matcher(fileName);
+		return matcher.find();
+	}
 }
