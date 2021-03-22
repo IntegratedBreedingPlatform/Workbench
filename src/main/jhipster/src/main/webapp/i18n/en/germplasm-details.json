@@ -14,7 +14,7 @@
         "title": "BASIC DETAILS",
         "preferred-name": "Preferred Name:",
         "gid": "GID:",
-        "guid": "GUID:",
+        "guid": "Germplasm UUID:",
         "group-id": "Group ID:",
         "created-date": "Created Date",
         "location": "Location",
@@ -30,7 +30,7 @@
         "germplasm-origin": {
             "title": "GERMPLASM ORIGIN",
             "study": "Study",
-            "obs-unit": "Obs_Unit",
+            "obs-unit": "Obs_Unit_ID",
             "id": "ID",
             "plot": "Plot",
             "rep": "Rep",

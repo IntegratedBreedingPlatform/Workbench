@@ -12,6 +12,7 @@ import { SamplesPaneComponent } from './samples/samples-pane.component';
 import { BmsjHipsterSharedModule } from '../shared';
 import { GermplasmDetailsContext } from './germplasm-details.context';
 import { GermplasmDetailsModalComponent, GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
+import { GermplasmDetailsUrlService } from './germplasm-details.url.service';
 
 @NgModule({
     imports: [
@@ -43,7 +44,8 @@ import { GermplasmDetailsModalComponent, GermplasmDetailsPopupComponent } from '
         SamplesPaneComponent
     ],
     providers: [
-        GermplasmDetailsContext
+        GermplasmDetailsContext,
+        GermplasmDetailsUrlService
     ]
 })
 export class GermplasmDetailsModule {

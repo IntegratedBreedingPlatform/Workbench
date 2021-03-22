@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
+import { GermplasmDetailsUrlService } from '../germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-basic-details-pane',
@@ -16,7 +17,8 @@ export class BasicDetailsPaneComponent implements OnInit {
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private germplasmService: GermplasmService,
-                private germplasmDetailsContext: GermplasmDetailsContext) {
+                private germplasmDetailsContext: GermplasmDetailsContext,
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
     }
 
     ngOnInit(): void {
