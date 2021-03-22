@@ -85,7 +85,7 @@ public class TableViewerComponentTest {
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(),ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLSX_DATE_TIME_PATTERN));
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLSX_DATE_TIME_PATTERN));
 	}
 
 	@Test
@@ -115,11 +115,5 @@ public class TableViewerComponentTest {
 		Mockito.doReturn(this.window).when(this.parentComponent).getWindow();
 		Mockito.doReturn(this.application).when(spyComponent).getApplication();
 		return spyComponent;
-	}
-
-	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
-		final Pattern pattern1 = Pattern.compile(pattern);
-		final Matcher matcher = pattern1.matcher(fileName);
-		return matcher.find();
 	}
 }

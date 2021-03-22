@@ -210,8 +210,8 @@ public class OpenSelectDatasetForExportActionTest {
 
 		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
 				breedingViewInput.getBreedingViewProjectName());
-		Assert.assertTrue("XML has valid file name format", this.isValidFileNameFormat(breedingViewInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
-		Assert.assertTrue("CSV has valid file name format", this.isValidFileNameFormat(breedingViewInput.getSourceXLSFilePath(), FileNameGenerator.CSV_DATE_TIME_PATTERN));
+		Assert.assertTrue("XML has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
+		Assert.assertTrue("CSV has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getSourceXLSFilePath(), FileNameGenerator.CSV_DATE_TIME_PATTERN));
 	}
 
 	@Test

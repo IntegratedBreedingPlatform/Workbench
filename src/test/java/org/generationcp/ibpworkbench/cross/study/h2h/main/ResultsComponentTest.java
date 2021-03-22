@@ -80,7 +80,7 @@ public class ResultsComponentTest {
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(XLS_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLS_DATE_TIME_PATTERN));
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLS_DATE_TIME_PATTERN));
 		Mockito.verify(this.window).open(downloadResource);
 		Mockito.verify(this.mainScreen).selectFirstTab();
 	}

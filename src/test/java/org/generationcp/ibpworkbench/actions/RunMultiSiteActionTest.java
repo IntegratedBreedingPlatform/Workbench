@@ -197,7 +197,7 @@ public class RunMultiSiteActionTest {
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture());
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
 	}
 
@@ -211,7 +211,7 @@ public class RunMultiSiteActionTest {
 		Mockito.verify(this.multiSiteDataExporter).generateXmlFieldBook(gxeInput);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.multiSiteParameters.getProject(),
 				ToolName.BREEDING_VIEW);
-		Assert.assertTrue(this.isValidFileNameFormat(gxeInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(gxeInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
 	}
 
 	@Test

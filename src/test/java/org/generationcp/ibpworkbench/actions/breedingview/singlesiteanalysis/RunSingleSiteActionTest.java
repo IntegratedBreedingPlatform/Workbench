@@ -506,7 +506,7 @@ public class RunSingleSiteActionTest {
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(this.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
 	}
 	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
 		final Pattern pattern1 = Pattern.compile(pattern);
