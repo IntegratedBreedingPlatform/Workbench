@@ -17,6 +17,7 @@ export class InventoryDetailsComponent implements OnInit {
 
     gid: number;
     title: String;
+    isModal: boolean;
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private activeModal: NgbActiveModal,
@@ -31,6 +32,8 @@ export class InventoryDetailsComponent implements OnInit {
         this.route.queryParams.subscribe((value) => {
             this.gid = value.gid;
         });
+
+        this.isModal = this.route.snapshot.queryParamMap.has('modal');
     }
 
     ngOnInit() {

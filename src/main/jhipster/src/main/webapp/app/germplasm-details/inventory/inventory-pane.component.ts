@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { LotService } from '../../shared/inventory/service/lot.service';
-import { Lot } from '../../shared/inventory/model/lot.model';
+import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { ParamContext } from '../../shared/service/param.context';
+import { INVENTORY_DETAILS_URL } from '../../app.constants';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'jhi-inventory-pane',
@@ -11,18 +13,21 @@ import { Lot } from '../../shared/inventory/model/lot.model';
 })
 export class InventoryPaneComponent implements OnInit {
 
-    lots: Lot[] = [];
+    safeUrl: SafeResourceUrl;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private germplasmDetailsContext: GermplasmDetailsContext,
-                private lotService: LotService) {
+                private paramContext: ParamContext,
+                private sanitizer: DomSanitizer
+    ) {
+
+        const queryParams = `?cropName=${paramContext.cropName}&programUUID=${paramContext.programUUID}&gid=${germplasmDetailsContext.gid}`;
+        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(INVENTORY_DETAILS_URL + queryParams);
+
     }
 
     ngOnInit(): void {
-        this.lotService.getLotsByGId(this.germplasmDetailsContext.gid, {}).toPromise().then((response) => {
-            this.lots = response.body;
-        });
     }
 
 }
