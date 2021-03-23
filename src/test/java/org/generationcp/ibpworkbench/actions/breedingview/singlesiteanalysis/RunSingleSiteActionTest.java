@@ -508,9 +508,4 @@ public class RunSingleSiteActionTest {
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
 		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
 	}
-	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
-		final Pattern pattern1 = Pattern.compile(pattern);
-		final Matcher matcher = pattern1.matcher(fileName);
-		return matcher.find();
-	}
 }

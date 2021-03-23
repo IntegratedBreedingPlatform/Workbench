@@ -391,10 +391,4 @@ public class RunMultiSiteActionTest {
 		return ds;
 
 	}
-
-	private boolean isValidFileNameFormat(final String fileName, final String pattern) {
-		final Pattern pattern1 = Pattern.compile(pattern);
-		final Matcher matcher = pattern1.matcher(fileName);
-		return matcher.find();
-	}
 }
