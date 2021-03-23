@@ -97,7 +97,8 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 				final String gid = itemGids.length == 1 ? itemGids[0] : itemGids[1];
 				GermplasmPedigreeTreeComponent.this
 					.getWindow().open(new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-					+ GermplasmPedigreeTreeComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()), "_blank", false);
+					+ GermplasmPedigreeTreeComponent.this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID="
+					+ GermplasmPedigreeTreeComponent.this.contextUtil.getProjectInContext().getUniqueID()), "_blank", false);
 			}
 		});
 
