@@ -70,17 +70,17 @@ export class GermplasmService {
     }
 
     getGermplasmListsByGid(gid: number): Observable<GermplasmList[]> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/lists/?programUUID=${this.context.programUUID}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/lists`;
         return this.http.get<GermplasmList[]>(url);
     }
 
     getGermplasmSamplesByGid(gid: number): Observable<Sample[]> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/samples/?programUUID=${this.context.programUUID}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/samples`;
         return this.http.get<Sample[]>(url);
     }
 
     getGermplasmStudiesByGid(gid: number): Observable<GermplasmStudy[]> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/studies/?programUUID=${this.context.programUUID}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/studies`;
         return this.http.get<GermplasmStudy[]>(url);
     }
 
