@@ -5,21 +5,31 @@
 				<table class="table table-striped table-bordered table-curved">
 					<thead>
 					<tr>
-						<th scope="col" jhiTranslate="pedigree.progenitors.male-parent">Male Parent</th>
-						<th scope="col" jhiTranslate="pedigree.progenitors.female-parent">Female Parent</th>
-						<th scope="col" jhiTranslate="pedigree.progenitors.group-source">Group Source</th>
-						<th scope="col" jhiTranslate="pedigree.progenitors.immediate-source">Immediate Source</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType === 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.female-parent">Female Parent</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType === 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.male-parent">Male Parent</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.group-source">Group Source</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.immediate-source">Immediate Source</th>
 						<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method">Breeding Method</th>
 						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
 					<tr>
-						<td> -</td>
-						<td> -</td>
-						<td> -</td>
-						<td> -</td>
-						<td> -</td>
+						<td *ngIf="germplasmProgenitorsDetails?.breedingMethodType == 'GEN'">
+							<a [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails.femaleParent.gid)" target="_blank">{{germplasmProgenitorsDetails?.femaleParent?.preferredName}}</a>
+						</td>
+						<td *ngIf="germplasmProgenitorsDetails.breedingMethodType == 'GEN'">
+							<span *ngFor="let maleParent of germplasmProgenitorsDetails?.maleParents; let last = last; let first = first;">
+								{{(first && germplasmProgenitorsDetails?.maleParents.length) > 1 ? '[' : ''}}<a [href]="this.germplasmDetailsUrlService.getUrl(maleParent.gid)" target="_blank">{{maleParent?.preferredName}}</a>{{(last && germplasmProgenitorsDetails?.maleParents.length > 1) ? ']' : ''}} {{last? '' : ','}}
+							</span>
+						</td>
+						<td *ngIf="germplasmProgenitorsDetails.breedingMethodType !== 'GEN'">
+							<a [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.groupSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.groupSource?.preferredName}}</a>
+						</td>
+						<td *ngIf="germplasmProgenitorsDetails.breedingMethodType !== 'GEN'">
+							<a [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.immediateSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.immediateSource?.preferredName}}</a>
+						</td>
+						<td>{{germplasmProgenitorsDetails?.breedingMethodName}}</td>
 						<td class="text-center">
 							<button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
 						</td>

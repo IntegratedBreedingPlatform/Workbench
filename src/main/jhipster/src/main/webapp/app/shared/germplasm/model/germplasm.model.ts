@@ -85,3 +85,17 @@ export class GermplasmOrigin {
     ) {
     }
 }
+
+export class GermplasmProgenitorsDetails {
+    constructor(
+        public breedingMethodId?: number,
+        public breedingMethodName?: string,
+        public breedingMethodCode?: string,
+        public breedingMethodType?: string,
+        public femaleParent?: GermplasmDto,
+        public maleParents?: GermplasmDto[],
+        public groupSource?: GermplasmDto,
+        public immediateSource?: GermplasmDto
+    ) {
+    }
+}
