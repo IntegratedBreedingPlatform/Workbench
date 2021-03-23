@@ -7,7 +7,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -47,13 +46,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +72,6 @@ public class RunMultiSiteActionTest {
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-//	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private StudyDataManager studyDataManager;

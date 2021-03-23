@@ -1,12 +1,8 @@
 package org.generationcp.ibpworkbench.cross.study.h2h.main;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.vaadin.Application;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -16,6 +12,7 @@ import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TraitForComparis
 import org.generationcp.ibpworkbench.cross.study.h2h.main.util.HeadToHeadDataListExport;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.util.HeadToHeadDataListExportException;
 import org.generationcp.ibpworkbench.cross.study.util.test.MockCrossStudyDataUtil;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -23,11 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.Application;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
-
-import org.junit.Assert;
+import java.io.File;
+import java.util.List;
 
 public class ResultsComponentTest {
 

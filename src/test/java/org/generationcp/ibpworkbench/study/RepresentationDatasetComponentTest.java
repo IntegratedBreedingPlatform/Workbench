@@ -1,22 +1,23 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.vaadin.Application;
 import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
+import junit.framework.Assert;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.study.containers.RepresentationDatasetQueryFactory;
 import org.generationcp.ibpworkbench.study.util.DatasetExporter;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
-import org.generationcp.middleware.domain.dms.*;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
+import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.dms.StandardVariable;
+import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
@@ -28,14 +29,11 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import com.vaadin.Application;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
-
-import junit.framework.Assert;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RepresentationDatasetComponentTest {
 
