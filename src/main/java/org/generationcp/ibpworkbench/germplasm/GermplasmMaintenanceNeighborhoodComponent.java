@@ -74,7 +74,7 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 	private ContextUtil contextUtil;
 
 	public GermplasmMaintenanceNeighborhoodComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet) throws InternationalizableException {
+		VerticalLayout mainLayout, TabSheet tabSheet) throws InternationalizableException {
 
 		super();
 
@@ -194,7 +194,9 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 				final String gid = event.getItemId().toString();
 				GermplasmMaintenanceNeighborhoodComponent.this
 					.getWindow().open(new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-					+ GermplasmMaintenanceNeighborhoodComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()), "_blank", false);
+						+ GermplasmMaintenanceNeighborhoodComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
+						+ "&programUUID=" + GermplasmMaintenanceNeighborhoodComponent.this.contextUtil.getProjectInContext().getUniqueID()),
+					"_blank", false);
 			}
 		});
 
@@ -242,8 +244,8 @@ public class GermplasmMaintenanceNeighborhoodComponent extends VerticalLayout im
 		int numberOfStepsForward = Integer.valueOf(this.selectNumberOfStepForward.getValue().toString());
 
 		this.germplasmMaintenanceNeighborhood =
-				this.qQuery.getMaintenanceNeighborhood(Integer.valueOf(this.gid), numberOfStepsBackward, numberOfStepsForward); // throws
-																																// QueryException
+			this.qQuery.getMaintenanceNeighborhood(Integer.valueOf(this.gid), numberOfStepsBackward, numberOfStepsForward); // throws
+		// QueryException
 		if (this.germplasmMaintenanceNeighborhood != null) {
 			this.addNode(this.germplasmMaintenanceNeighborhood.getRoot(), 1);
 		}

@@ -85,7 +85,8 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
 					final Link link =
 						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-							+ GermplasmGenerationHistoryComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()));
+							+ GermplasmGenerationHistoryComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
+							+ "&programUUID=" + GermplasmGenerationHistoryComponent.this.contextUtil.getProjectInContext().getUniqueID()));
 					link.setTargetName("_blank");
 					return link;
 				}

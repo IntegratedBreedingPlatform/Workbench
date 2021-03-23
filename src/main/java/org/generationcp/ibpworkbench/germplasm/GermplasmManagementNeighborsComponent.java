@@ -76,13 +76,13 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 			this.managementNeighborsTable.setSelectable(true);
 			this.managementNeighborsTable.setMultiSelect(false);
 			this.managementNeighborsTable.setImmediate(true); // react at once when something is selected turn on column reordering and
-																// collapsing
+			// collapsing
 			this.managementNeighborsTable.setColumnReorderingAllowed(true);
 			this.managementNeighborsTable.setColumnCollapsingAllowed(true);
 
 			this.managementNeighborsTable.setColumnHeader(ManagementNeighborsQuery.GID, this.messageSource.getMessage(Message.GID_LABEL));
 			this.managementNeighborsTable.setColumnHeader(ManagementNeighborsQuery.PREFERRED_NAME,
-					this.messageSource.getMessage(Message.PREFNAME_LABEL));
+				this.messageSource.getMessage(Message.PREFNAME_LABEL));
 
 			this.managementNeighborsTable.addGeneratedColumn(ManagementNeighborsQuery.GID, new Table.ColumnGenerator() {
 
@@ -91,7 +91,9 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
 					final Link link =
 						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-							+ GermplasmManagementNeighborsComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()));
+							+ GermplasmManagementNeighborsComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
+							+ "&programUUID=" + GermplasmManagementNeighborsComponent.this.contextUtil.getProjectInContext()
+							.getUniqueID()));
 					link.setTargetName("_blank");
 					return link;
 				}

@@ -194,7 +194,7 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 				final String gid = event.getItemId().toString();
 				GermplasmDerivativeNeighborhoodComponent.this
 					.getWindow().open(new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-					+ GermplasmDerivativeNeighborhoodComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()), "_blank", false);
+					+ GermplasmDerivativeNeighborhoodComponent.this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + GermplasmDerivativeNeighborhoodComponent.this.contextUtil.getProjectInContext().getUniqueID()), "_blank", false);
 			}
 		});
 

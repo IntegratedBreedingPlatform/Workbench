@@ -66,7 +66,7 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 
 			this.groupRelativesTable.setColumnHeader(GroupRelativesQuery.GID, this.messageSource.getMessage(Message.GID_LABEL));
 			this.groupRelativesTable.setColumnHeader(GroupRelativesQuery.PREFERRED_NAME,
-					this.messageSource.getMessage(Message.PREFNAME_LABEL));
+				this.messageSource.getMessage(Message.PREFNAME_LABEL));
 
 			container.getQueryView().getItem(0); // initialize the first batch of data to be displayed
 
@@ -74,7 +74,7 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 			this.groupRelativesTable.setSelectable(true);
 			this.groupRelativesTable.setMultiSelect(false);
 			this.groupRelativesTable.setImmediate(true); // react at once when something is selected turn on column reordering and
-															// collapsing
+			// collapsing
 			this.groupRelativesTable.setColumnReorderingAllowed(true);
 			this.groupRelativesTable.setColumnCollapsingAllowed(true);
 
@@ -85,12 +85,12 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
 					final Link link =
 						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-							+ GermplasmGroupRelativesComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()));
+							+ GermplasmGroupRelativesComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
+							+ "&programUUID=" + GermplasmGroupRelativesComponent.this.contextUtil.getProjectInContext().getUniqueID()));
 					link.setTargetName("_blank");
 					return link;
 				}
 			});
-
 
 		} else {
 			this.noDataAvailableLabel = new Label("There is no Group Relatives information for this germplasm.");
