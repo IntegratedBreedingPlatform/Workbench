@@ -28,7 +28,6 @@ import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +39,6 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 	private static final long serialVersionUID = -6751894969990825730L;
 	private final static Logger LOG = LoggerFactory.getLogger(GidLinkClickListener.class);
 	public static final String GERMPLASM_IMPORT_WINDOW_NAME = "germplasm-import";
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
@@ -85,7 +81,7 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 	}
 
 	private void openDetailsWindow(final Component component) {
-		Window mainWindow;
+		final Window mainWindow;
 
 		if (this.parentWindow != null) {
 			mainWindow = this.parentWindow;
@@ -97,12 +93,13 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 
 		final ExternalResource germplasmDetailsLink = new ExternalResource(
 			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
-				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil.getCurrentProgramUUID()) + "&modal");
+				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil
+				.getCurrentProgramUUID()) + "&modal");
 
 		String preferredName = null;
 		try {
 			preferredName = this.germplasmDataManager.getPreferredNameValueByGID(Integer.valueOf(this.gid));
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			GidLinkClickListener.LOG.error("Error with getting preferred name of " + this.gid, ex);
 		}
 
@@ -110,16 +107,16 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 		if (preferredName != null) {
 			windowTitle = "Germplasm Details: " + preferredName + " (GID: " + this.gid + ")";
 		}
-		Window germplasmWindow = new BaseSubWindow(windowTitle);
+		final Window germplasmWindow = new BaseSubWindow(windowTitle);
 
-		VerticalLayout layoutForGermplasm = new VerticalLayout();
+		final VerticalLayout layoutForGermplasm = new VerticalLayout();
 		layoutForGermplasm.setDebugId("layoutForGermplasm");
 		layoutForGermplasm.setMargin(false);
 		layoutForGermplasm.setWidth("100%");
 		layoutForGermplasm.setHeight("100%");
 		layoutForGermplasm.addStyleName("no-caption");
 
-		Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
+		final Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setDebugId("germplasmInfo");
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();

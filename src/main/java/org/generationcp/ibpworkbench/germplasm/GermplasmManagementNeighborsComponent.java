@@ -18,12 +18,11 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
-import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQuery;
-import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQueryFactory;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQuery;
+import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQueryFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -45,7 +44,7 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public GermplasmManagementNeighborsComponent(Integer gid) {
+	public GermplasmManagementNeighborsComponent(final Integer gid) {
 		this.gid = gid;
 	}
 
@@ -56,8 +55,8 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 	}
 
 	private void initializeComponents() {
-		ManagementNeighborsQueryFactory factory = new ManagementNeighborsQueryFactory(this.gid);
-		LazyQueryContainer container = new LazyQueryContainer(factory, false, 50);
+		final ManagementNeighborsQueryFactory factory = new ManagementNeighborsQueryFactory(this.gid);
+		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 50);
 
 		if (container.size() > 0) {
 			this.managementNeighborsTable = new Table();

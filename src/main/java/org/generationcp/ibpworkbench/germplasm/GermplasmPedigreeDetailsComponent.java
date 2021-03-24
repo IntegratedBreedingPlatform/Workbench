@@ -5,7 +5,6 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -59,7 +58,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public GermplasmPedigreeDetailsComponent(Integer gid, GermplasmQueries germplasmQueries) {
+	public GermplasmPedigreeDetailsComponent(final Integer gid, final GermplasmQueries germplasmQueries) {
 		this.gid = gid;
 		this.germplasmQueries = germplasmQueries;
 	}
@@ -123,7 +122,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void layoutClick(LayoutClickEvent event) {
+			public void layoutClick(final LayoutClickEvent event) {
 				if (event.getRelativeY() < GermplasmPedigreeDetailsComponent.TOGGABLE_Y_COORDINATE) {
 					GermplasmPedigreeDetailsComponent.this.showPedigreeTree();
 					GermplasmPedigreeDetailsComponent.this.pedigreeTreeItem.toggleChild();
@@ -136,7 +135,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 6108554806619975288L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GermplasmPedigreeDetailsComponent.this.showPedigreeTree();
 			}
 		});
@@ -146,7 +145,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void layoutClick(LayoutClickEvent event) {
+			public void layoutClick(final LayoutClickEvent event) {
 				if (event.getRelativeY() < GermplasmPedigreeDetailsComponent.TOGGABLE_Y_COORDINATE) {
 					GermplasmPedigreeDetailsComponent.this.showGenerationHistory();
 					GermplasmPedigreeDetailsComponent.this.generationHistoryTreeItem.toggleChild();
@@ -159,7 +158,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 6108554806619975288L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GermplasmPedigreeDetailsComponent.this.showGenerationHistory();
 			}
 		});
@@ -169,7 +168,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void layoutClick(LayoutClickEvent event) {
+			public void layoutClick(final LayoutClickEvent event) {
 				if (event.getRelativeY() < GermplasmPedigreeDetailsComponent.TOGGABLE_Y_COORDINATE) {
 					GermplasmPedigreeDetailsComponent.this.showManagementNeighbors();
 					GermplasmPedigreeDetailsComponent.this.managementNeighborsTreeItem.toggleChild();
@@ -182,7 +181,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 6108554806619975288L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GermplasmPedigreeDetailsComponent.this.showManagementNeighbors();
 			}
 		});
@@ -192,7 +191,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void layoutClick(LayoutClickEvent event) {
+			public void layoutClick(final LayoutClickEvent event) {
 				if (event.getRelativeY() < GermplasmPedigreeDetailsComponent.TOGGABLE_Y_COORDINATE) {
 					GermplasmPedigreeDetailsComponent.this.showDerivativeNeighborhood();
 					GermplasmPedigreeDetailsComponent.this.derivativeNeighborhoodTreeItem.toggleChild();
@@ -205,7 +204,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 6108554806619975288L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GermplasmPedigreeDetailsComponent.this.showDerivativeNeighborhood();
 			}
 		});
@@ -215,7 +214,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void layoutClick(LayoutClickEvent event) {
+			public void layoutClick(final LayoutClickEvent event) {
 				if (event.getRelativeY() < GermplasmPedigreeDetailsComponent.TOGGABLE_Y_COORDINATE) {
 					GermplasmPedigreeDetailsComponent.this.showMaintenanceNeighborhood();
 					GermplasmPedigreeDetailsComponent.this.maintenanceNeighborhoodTreeItem.toggleChild();
@@ -228,7 +227,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 6108554806619975288L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GermplasmPedigreeDetailsComponent.this.showMaintenanceNeighborhood();
 			}
 		});
@@ -238,7 +237,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void layoutClick(LayoutClickEvent event) {
+			public void layoutClick(final LayoutClickEvent event) {
 				if (event.getRelativeY() < GermplasmPedigreeDetailsComponent.TOGGABLE_Y_COORDINATE) {
 					GermplasmPedigreeDetailsComponent.this.showGroupRelatives();
 					GermplasmPedigreeDetailsComponent.this.groupRelativesTreeItem.toggleChild();
@@ -251,7 +250,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 			private static final long serialVersionUID = 6108554806619975288L;
 
 			@Override
-			public void buttonClick(ClickEvent event) {
+			public void buttonClick(final ClickEvent event) {
 				GermplasmPedigreeDetailsComponent.this.showGroupRelatives();
 			}
 		});
@@ -330,7 +329,7 @@ public class GermplasmPedigreeDetailsComponent extends VerticalLayout implements
 	}
 
 	public void showPedigreeGraphWindow() {
-		Window pedigreeGraphWindow = new BaseSubWindow("Pedigree Graph");
+		final Window pedigreeGraphWindow = new BaseSubWindow("Pedigree Graph");
 		pedigreeGraphWindow.setModal(true);
 		pedigreeGraphWindow.setWidth("100%");
 		pedigreeGraphWindow.setHeight("620px");

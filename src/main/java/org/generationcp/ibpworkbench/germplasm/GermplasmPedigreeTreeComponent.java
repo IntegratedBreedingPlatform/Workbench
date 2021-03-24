@@ -14,14 +14,12 @@ package org.generationcp.ibpworkbench.germplasm;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmTreeExpandListener;
-import org.generationcp.ibpworkbench.util.Util;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.slf4j.Logger;
@@ -44,8 +42,9 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public GermplasmPedigreeTreeComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-		VerticalLayout mainLayout, TabSheet tabSheet) {
+	public GermplasmPedigreeTreeComponent(final int gid, final GermplasmQueries qQuery,
+		final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet) {
 
 		super();
 
@@ -53,16 +52,17 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 
 	}
 
-	public GermplasmPedigreeTreeComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-		VerticalLayout mainLayout, TabSheet tabSheet, Boolean includeDerivativeLines) {
+	public GermplasmPedigreeTreeComponent(final int gid, final GermplasmQueries qQuery,
+		final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet, final Boolean includeDerivativeLines) {
 
 		super();
 
 		this.initializeTree(gid, qQuery, dataResultIndexContainer, mainLayout, tabSheet, includeDerivativeLines);
 	}
 
-	private void initializeTree(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-		VerticalLayout mainLayout, TabSheet tabSheet, Boolean includeDerivativeLines) {
+	private void initializeTree(final int gid, final GermplasmQueries qQuery, final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet, final Boolean includeDerivativeLines) {
 		this.mainLayout = mainLayout;
 		this.tabSheet = tabSheet;
 		this.qQuery = qQuery;
@@ -106,9 +106,9 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 
 	}
 
-	private void addNode(GermplasmPedigreeTreeNode node, int level) {
+	private void addNode(final GermplasmPedigreeTreeNode node, final int level) {
 		if (level == 1) {
-			String leafNodeId = node.getGermplasm().getGid().toString();
+			final String leafNodeId = node.getGermplasm().getGid().toString();
 			this.addItem(leafNodeId);
 			this.setItemCaption(leafNodeId, this.getNodeLabel(node));
 			this.setParent(leafNodeId, leafNodeId);
@@ -116,10 +116,10 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 
 		}
 
-		for (GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			String leafNodeId = node.getGermplasm().getGid().toString();
+		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
-			String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
+			final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
 			this.addItem(parentNodeId);
 			this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
 			this.setParent(parentNodeId, leafNodeId);
@@ -134,7 +134,7 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		final Integer gid = node.getGermplasm().getGid();
 		try {
 			preferredName = node.getGermplasm().getPreferredName().getNval();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 			preferredName = String.valueOf(gid);
 		}
@@ -146,9 +146,9 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		return sb.toString();
 	}
 
-	private void addNode(GermplasmPedigreeTreeNode node, String itemIdOfParent) {
-		for (GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			String parentNodeId = node.getGermplasm().getGid() + "@" + parent.getGermplasm().getGid();
+	private void addNode(final GermplasmPedigreeTreeNode node, final String itemIdOfParent) {
+		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			final String parentNodeId = node.getGermplasm().getGid() + "@" + parent.getGermplasm().getGid();
 			this.addItem(parentNodeId);
 			this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
 			this.setParent(parentNodeId, itemIdOfParent);
@@ -156,9 +156,9 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		}
 	}
 
-	public void pedigreeTreeExpandAction(String itemId) {
+	public void pedigreeTreeExpandAction(final String itemId) {
 		if (itemId.contains("@")) {
-			String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
+			final String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
 			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);
 			this.addNode(this.germplasmPedigreeTree.getRoot(), itemId);
 		} else {

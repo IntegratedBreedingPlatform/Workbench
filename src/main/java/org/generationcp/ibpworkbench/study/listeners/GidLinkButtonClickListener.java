@@ -27,7 +27,6 @@ import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObserv
 import org.generationcp.ibpworkbench.study.TableViewerComponent;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +42,6 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
@@ -53,14 +49,14 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 
 	private final String gid;
 
-	public GidLinkButtonClickListener(String gid) {
+	public GidLinkButtonClickListener(final String gid) {
 		this.gid = gid;
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
-		Window mainWindow;
-		Window eventWindow = event.getComponent().getWindow();
+	public void buttonClick(final ClickEvent event) {
+		final Window mainWindow;
+		final Window eventWindow = event.getComponent().getWindow();
 		if (ArrayUtils.contains(this.CHILD_WINDOWS, eventWindow.getName())) {
 			mainWindow = eventWindow.getParent();
 		} else {
@@ -69,12 +65,13 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 
 		final ExternalResource germplasmDetailsLink = new ExternalResource(
 			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
-				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil.getCurrentProgramUUID()) + "&modal");
+				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil
+				.getCurrentProgramUUID()) + "&modal");
 
 		String preferredName = null;
 		try {
 			preferredName = this.germplasmDataManager.getPreferredNameValueByGID(Integer.valueOf(this.gid));
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			GidLinkButtonClickListener.LOG.error("Error with getting preferred name of " + this.gid, ex);
 		}
 
@@ -82,14 +79,14 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		if (preferredName != null) {
 			windowTitle = "Germplasm Details: " + preferredName + " (GID: " + this.gid + ")";
 		}
-		Window germplasmWindow = new BaseSubWindow(windowTitle);
+		final Window germplasmWindow = new BaseSubWindow(windowTitle);
 
-		VerticalLayout layoutForGermplasm = new VerticalLayout();
+		final VerticalLayout layoutForGermplasm = new VerticalLayout();
 		layoutForGermplasm.setMargin(false);
 		layoutForGermplasm.setWidth("98%");
 		layoutForGermplasm.setHeight("98%");
 
-		Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
+		final Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();
 		layoutForGermplasm.addComponent(germplasmInfo);

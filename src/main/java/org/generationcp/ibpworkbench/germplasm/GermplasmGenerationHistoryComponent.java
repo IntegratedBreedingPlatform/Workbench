@@ -44,7 +44,7 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 	@Autowired
 	private ContextUtil contextUtil;
 
-	public GermplasmGenerationHistoryComponent(GermplasmIndexContainer dataIndexContainer, GermplasmDetailModel gDetailModel) {
+	public GermplasmGenerationHistoryComponent(final GermplasmIndexContainer dataIndexContainer, final GermplasmDetailModel gDetailModel) {
 		this.dataIndexContainer = dataIndexContainer;
 		this.gDetailModel = gDetailModel;
 	}
@@ -56,7 +56,7 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 	}
 
 	private void initializeComponents() {
-		IndexedContainer generationHistory = this.dataIndexContainer.getGermplasmGenerationHistory(this.gDetailModel);
+		final IndexedContainer generationHistory = this.dataIndexContainer.getGermplasmGenerationHistory(this.gDetailModel);
 
 		if (generationHistory.getItemIds().isEmpty()) {
 			this.noDataAvailableLabel = new Label("There is no Generation History Information for this gemrplasm.");

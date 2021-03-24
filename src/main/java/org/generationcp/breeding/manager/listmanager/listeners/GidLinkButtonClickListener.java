@@ -84,7 +84,8 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 
 		final ExternalResource germplasmDetailsLink = new ExternalResource(
 			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
-				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil.getCurrentProgramUUID()) + "&modal");
+				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil
+				.getCurrentProgramUUID()) + "&modal");
 
 		String preferredName = null;
 		try {
