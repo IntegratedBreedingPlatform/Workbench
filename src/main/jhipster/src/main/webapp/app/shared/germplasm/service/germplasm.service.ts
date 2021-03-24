@@ -85,7 +85,7 @@ export class GermplasmService {
     }
 
     getGermplasmProgenitorsDetails(gid: number): Observable<GermplasmProgenitorsDetails> {
-        const url = SERVER_API_URL + `/crops/${this.context.cropName}/germplasm/${gid}/progenitor-details`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details`;
         return this.http.get<GermplasmProgenitorsDetails>(url);
     }
 
