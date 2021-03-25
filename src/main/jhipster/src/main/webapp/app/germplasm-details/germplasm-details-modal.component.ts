@@ -7,6 +7,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GERMPLASM_DETAILS_URL } from '../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
+import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
 
 @Component({
     selector: 'jhi-germplasm-details-modal',
@@ -14,6 +16,7 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 })
 export class GermplasmDetailsModalComponent implements OnInit {
 
+    germplasm: GermplasmDto
     safeUrl: SafeResourceUrl;
     gid: number;
 
@@ -21,7 +24,8 @@ export class GermplasmDetailsModalComponent implements OnInit {
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 public activeModal: NgbActiveModal,
                 private paramContext: ParamContext,
-                private sanitizer: DomSanitizer) {
+                private sanitizer: DomSanitizer,
+                private germplasmService: GermplasmService) {
         const queryParams = '?cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
             + '&authToken=' + this.paramContext.authToken
@@ -33,7 +37,9 @@ export class GermplasmDetailsModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
+        this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((value) => {
+            this.germplasm = value.body;
+        })
     }
 
     clear() {
@@ -47,6 +53,8 @@ export class GermplasmDetailsModalComponent implements OnInit {
     template: ``
 })
 export class GermplasmDetailsPopupComponent implements OnInit {
+
+    germplasm: GermplasmDto;
 
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService,

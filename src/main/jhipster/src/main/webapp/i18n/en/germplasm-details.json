@@ -1,5 +1,6 @@
 {
     "germplasm-details": {
+        "header": "Germplasm Details: ",
         "germplasm": "Germplasm",
         "attributes": "Attributes",
         "pedigree": "Pedigree",
