@@ -16,9 +16,11 @@
 					<tbody>
 					<tr>
 						<td *ngIf="germplasmProgenitorsDetails?.breedingMethodType == 'GEN'">
+							<span *ngIf="!germplasmProgenitorsDetails?.femaleParent"> - </span>
 							<a *ngIf="germplasmProgenitorsDetails?.femaleParent" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.femaleParent.gid)" target="_blank">{{germplasmProgenitorsDetails?.femaleParent?.preferredName}}</a>
 						</td>
 						<td *ngIf="germplasmProgenitorsDetails?.breedingMethodType == 'GEN'">
+							<span *ngIf="!germplasmProgenitorsDetails?.maleParents"> - </span>
 							<span *ngIf="germplasmProgenitorsDetails?.maleParents">
 								<span *ngFor="let maleParent of germplasmProgenitorsDetails?.maleParents; let last = last; let first = first;">
 									{{(first && germplasmProgenitorsDetails?.maleParents.length) > 1 ? '[' : ''}}<a [href]="this.germplasmDetailsUrlService.getUrl(maleParent.gid)" target="_blank">{{maleParent?.preferredName}}</a>{{(last && germplasmProgenitorsDetails?.maleParents.length > 1) ? ']' : ''}} {{last ? '' : ','}}
@@ -26,9 +28,11 @@
 							</span>
 						</td>
 						<td *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'">
+							<span *ngIf="!germplasmProgenitorsDetails?.groupSource"> - </span>
 							<a *ngIf="germplasmProgenitorsDetails?.groupSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.groupSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.groupSource?.preferredName}}</a>
 						</td>
 						<td *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'">
+							<span *ngIf="!germplasmProgenitorsDetails?.immediateSource"> - </span>
 							<a *ngIf="germplasmProgenitorsDetails?.immediateSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.immediateSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.immediateSource?.preferredName}}</a>
 						</td>
 						<td>{{germplasmProgenitorsDetails?.breedingMethodName}}</td>
