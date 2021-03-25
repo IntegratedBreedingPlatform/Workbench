@@ -18,7 +18,6 @@ import com.vaadin.ui.Table;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs.SelectGermplasmEntryDialog;
-import org.generationcp.ibpworkbench.germplasm.dialogs.SelectAGermplasmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,26 +40,7 @@ public class GermplasmItemClickListener implements ItemClickEvent.ItemClickListe
 
 	@Override
 	public void itemClick(final ItemClickEvent event) {
-
-		if (this.sourceClass instanceof SelectAGermplasmDialog) {
-			if (event.getButton() == ClickEvent.BUTTON_LEFT && event.isDoubleClick()) {
-				try {
-					((SelectAGermplasmDialog) this.sourceClass).resultTableItemDoubleClickAction((Table) event.getSource(),
-						event.getItemId(), event.getItem());
-				} catch (final InternationalizableException e) {
-					GermplasmItemClickListener.LOG.error(e.toString() + "\n" + e.getStackTrace(), e);
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				}
-			} else if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-				try {
-					((SelectAGermplasmDialog) this.sourceClass).resultTableItemClickAction((Table) event.getSource(), event.getItemId(),
-						event.getItem());
-				} catch (final InternationalizableException e) {
-					GermplasmItemClickListener.LOG.error(e.toString() + "\n" + e.getStackTrace(), e);
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				}
-			}
-		} else if (this.sourceClass instanceof SelectGermplasmEntryDialog) {
+		if (this.sourceClass instanceof SelectGermplasmEntryDialog) {
 			if (event.getButton() == ClickEvent.BUTTON_LEFT) {
 				try {
 					((SelectGermplasmEntryDialog) this.sourceClass).resultTableItemClickAction((Table) event.getSource(),

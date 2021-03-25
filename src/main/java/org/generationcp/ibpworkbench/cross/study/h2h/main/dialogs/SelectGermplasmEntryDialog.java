@@ -3,15 +3,18 @@ package org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs;
 
 import com.vaadin.data.Item;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
-import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.SpecifyGermplasmsComponent;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener;
@@ -22,20 +25,10 @@ import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContaine
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmItemClickListener;
 import org.generationcp.ibpworkbench.util.CloseWindowAction;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -63,9 +56,6 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 	private CrossStudyDataManager crossStudyDataManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	private final Component source;
@@ -87,7 +77,7 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 
 	private List<Integer> environmentIds;
 
-	public SelectGermplasmEntryDialog(Component source, Window parentWindow, boolean isTestEntry) {
+	public SelectGermplasmEntryDialog(final Component source, Window parentWindow, final boolean isTestEntry) {
 		this.source = source;
 		this.parentWindow = parentWindow;
 		this.isTestEntry = isTestEntry;
@@ -111,7 +101,7 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		this.mainLayout.setDebugId("mainLayout");
 		this.mainLayout.setSpacing(true);
 
-		HorizontalLayout searchFormLayout = new HorizontalLayout();
+		final HorizontalLayout searchFormLayout = new HorizontalLayout();
 		searchFormLayout.setDebugId("searchFormLayout");
 
 		this.searchComponent = new GermplasmSearchFormComponent();
@@ -135,7 +125,7 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		this.resultComponent.setHeight("320px");
 		this.mainLayout.addComponent(this.resultComponent);
 
-		HorizontalLayout buttonLayout = new HorizontalLayout();
+		final HorizontalLayout buttonLayout = new HorizontalLayout();
 		buttonLayout.setDebugId("buttonLayout");
 		buttonLayout.setSpacing(true);
 
@@ -170,8 +160,8 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		this.doneButton.setEnabled(false);
 		this.selectedGid = null;
 
-		String searchChoice = this.searchComponent.getChoice();
-		String searchValue = this.searchComponent.getSearchValue();
+		final String searchChoice = this.searchComponent.getChoice();
+		final String searchValue = this.searchComponent.getSearchValue();
 
 		if (searchValue.length() > 0) {
 			boolean withNoError = true;
@@ -179,11 +169,11 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 			if ("GID".equals(searchChoice)) {
 				try {
 					Integer.parseInt(searchValue);
-				} catch (NumberFormatException e) {
+				} catch (final NumberFormatException e) {
 					withNoError = false;
 					if (this.getWindow() != null) {
 						MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_INVALID_FORMAT),
-								this.messageSource.getMessage(Message.ERROR_INVALID_INPUT_MUST_BE_NUMERIC));
+							this.messageSource.getMessage(Message.ERROR_INVALID_INPUT_MUST_BE_NUMERIC));
 					}
 				}
 			}
@@ -193,12 +183,12 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 				LazyQueryContainer dataSourceResultLazy = null;
 				if (this.isTestEntry || this.environmentIds == null) {
 					dataSourceResultLazy =
-							this.dataResultIndexContainer.getGermplasmResultLazyContainer(this.germplasmDataManager, searchChoice,
-									searchValue);
+						this.dataResultIndexContainer.getGermplasmResultLazyContainer(this.germplasmDataManager, searchChoice,
+							searchValue);
 				} else {
 					dataSourceResultLazy =
-							this.dataResultIndexContainer.getGermplasmEnvironmentResultLazyContainer(this.crossStudyDataManager,
-									searchChoice, searchValue, this.environmentIds);
+						this.dataResultIndexContainer.getGermplasmEnvironmentResultLazyContainer(this.crossStudyDataManager,
+							searchChoice, searchValue, this.environmentIds);
 				}
 				this.resultComponent.setCaption("Germplasm Search Result: " + dataSourceResultLazy.size());
 				if (!this.isTestEntry && this.environmentIds != null && this.environmentIds.isEmpty()) {
@@ -214,76 +204,27 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 
 	public void addButtonClickAction() {
 		try {
-			Germplasm selectedGermplasm = this.germplasmDataManager.getGermplasmWithPrefName(this.selectedGid);
+			final Germplasm selectedGermplasm = this.germplasmDataManager.getGermplasmWithPrefName(this.selectedGid);
 			if (this.isTestEntry) {
 				((SpecifyGermplasmsComponent) this.source).addTestGermplasm(selectedGermplasm);
 			} else {
 				((SpecifyGermplasmsComponent) this.source).addStandardGermplasm(selectedGermplasm);
 			}
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			SelectGermplasmEntryDialog.LOG.error("Error with getting germplasm with gid: " + this.selectedGid, ex);
 			MessageNotifier.showError(this.getWindow(), "Database Error!", "Error with getting germplasm with gid: " + this.selectedGid
-					+ ". " + this.messageSource.getMessage(Message.ERROR_REPORT_TO));
-		} catch (Exception ex) {
+				+ ". " + this.messageSource.getMessage(Message.ERROR_REPORT_TO));
+		} catch (final Exception ex) {
 			SelectGermplasmEntryDialog.LOG.error("Error with setting selected germplasm.", ex);
 			MessageNotifier.showError(this.getWindow(), "Application Error!", "Error with setting selected germplasm." + " "
-					+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
+				+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
 		}
 	}
 
-	public void resultTableItemClickAction(Table sourceTable, Object itemId, Item item) {
+	public void resultTableItemClickAction(final Table sourceTable, final Object itemId, final Item item) {
 		sourceTable.select(itemId);
 		this.selectedGid = Integer.valueOf(item.getItemProperty(SelectGermplasmEntryDialog.GID).toString());
 		this.doneButton.setEnabled(true);
-	}
-
-	public void resultTableItemDoubleClickAction(Table sourceTable, Object itemId, Item item) {
-		sourceTable.select(itemId);
-		int gid = Integer.valueOf(item.getItemProperty(SelectGermplasmEntryDialog.GID).toString());
-
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		} catch (MiddlewareQueryException qe) {
-			SelectGermplasmEntryDialog.LOG.error("QueryException", qe);
-		}
-
-		ExternalResource germplasmBrowserLink;
-		if (tool == null) {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK
-							+ gid, "?restartApplication"));
-		} else {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(gid), "?restartApplication"));
-		}
-
-		Window germplasmWindow = new BaseSubWindow("Germplasm Information - " + gid);
-
-		VerticalLayout layoutForGermplasm = new VerticalLayout();
-		layoutForGermplasm.setDebugId("layoutForGermplasm");
-		layoutForGermplasm.setMargin(false);
-		layoutForGermplasm.setWidth("98%");
-		layoutForGermplasm.setHeight("98%");
-
-		Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
-		germplasmInfo.setDebugId("germplasmInfo");
-		germplasmInfo.setType(Embedded.TYPE_BROWSER);
-		germplasmInfo.setSizeFull();
-		layoutForGermplasm.addComponent(germplasmInfo);
-
-		germplasmWindow.setContent(layoutForGermplasm);
-
-		// Instead of setting by percentage, compute it
-		germplasmWindow.setWidth(Integer.valueOf((int) Math.round(this.parentWindow.getWidth() * .90)) + "px");
-		germplasmWindow.setHeight(Integer.valueOf((int) Math.round(this.parentWindow.getHeight() * .90)) + "px");
-
-		germplasmWindow.center();
-		germplasmWindow.setResizable(false);
-
-		germplasmWindow.setModal(true);
-
-		this.parentWindow.addWindow(germplasmWindow);
 	}
 
 	@Override
@@ -291,7 +232,7 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		// do nothing
 	}
 
-	public void setEnvironmentIds(List<Integer> environmentIds) {
+	public void setEnvironmentIds(final List<Integer> environmentIds) {
 		this.environmentIds = environmentIds;
 	}
 
