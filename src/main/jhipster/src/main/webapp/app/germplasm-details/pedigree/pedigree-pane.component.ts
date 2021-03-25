@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { PEDIGREE_DETAILS_URL } from '../../app.constants';
@@ -16,8 +16,11 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 })
 export class PedigreePaneComponent implements OnInit {
 
+    @ViewChild('pedigreeIframe') pedigreeIframe: ElementRef;
+
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     safeUrl: SafeResourceUrl;
+    isIframeLoaded: boolean = false;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
@@ -34,6 +37,15 @@ export class PedigreePaneComponent implements OnInit {
             + '&selectedProjectId=' + this.paramContext.selectedProjectId;
 
         this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(PEDIGREE_DETAILS_URL + authParams);
+    }
+
+    onIframeLoad(): void {
+        if (this.pedigreeIframe.nativeElement.src) {
+            // Only display the iframe after the iframe page is loaded, this is to prevent the page from automatically scrolling down when iframe source is loaded.
+            setTimeout(() => {
+                this.isIframeLoaded = true;
+            }, 1000);
+        }
     }
 
     ngOnInit(): void {
