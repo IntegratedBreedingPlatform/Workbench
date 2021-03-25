@@ -20,7 +20,7 @@ export class PedigreePaneComponent implements OnInit {
 
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     safeUrl: SafeResourceUrl;
-    isIframeLoaded: boolean = false;
+    isIframeLoaded: boolean;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
