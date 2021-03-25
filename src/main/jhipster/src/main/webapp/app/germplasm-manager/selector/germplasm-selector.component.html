@@ -90,9 +90,9 @@
 					<input *ngIf="selectMultiple" type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
 					<input *ngIf="!selectMultiple" type="radio" name="gid-option-group" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
 				</td>
-				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.gid}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [href]="this.germplasmDetailsUrlService.getUrl(germplasm.gid)" target="_blank">{{germplasm.gid}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
-				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a [href]="this.germplasmDetailsUrlService.getUrl(germplasm.gid)" target="_blank">{{germplasm.names}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{germplasm.unit}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOTS]">{{germplasm.lotCount}}</td>

@@ -8,7 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { GermplasmProgenitorsDetails } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
-import { GermplasmDetailsUrlService } from '../germplasm-details.url.service';
+import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-pedigree-pane',

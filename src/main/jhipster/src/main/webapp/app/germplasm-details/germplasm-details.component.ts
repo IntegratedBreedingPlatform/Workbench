@@ -3,7 +3,7 @@ import { ParamContext } from '../shared/service/param.context';
 import { ActivatedRoute } from '@angular/router';
 import { GermplasmDetailsContext } from './germplasm-details.context';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GermplasmDetailsUrlService } from './germplasm-details.url.service';
+import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-germplasm-details',

@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
-import { GermplasmDetailsUrlService } from '../germplasm-details.url.service';
+import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-basic-details-pane',
