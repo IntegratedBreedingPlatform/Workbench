@@ -42,4 +42,5 @@
 		</div>
 	</jhi-collapsible>
 </div>
-<iframe [src]="safeUrl" style="border: 0" width="100%" height="600" scrolling="auto"></iframe>
+<!--Added onLoad="self.scrollTo(0,0);" to prevent the page from automatically scroll down when iframe is loaded. -->
+<iframe [src]="safeUrl" style="border: 0" width="100%" height="600" onLoad="self.scrollTo(0,0);"></iframe>
