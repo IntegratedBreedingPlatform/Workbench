@@ -23,16 +23,15 @@ import org.generationcp.breeding.manager.customfields.BreedingLocationField;
 import org.generationcp.breeding.manager.customfields.BreedingLocationFieldSource;
 import org.generationcp.breeding.manager.customfields.BreedingMethodField;
 import org.generationcp.breeding.manager.customfields.ListDateField;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.breeding.manager.listmanager.GermplasmSearchBarComponent;
 import org.generationcp.breeding.manager.listmanager.GermplasmSearchResultsComponent;
 import org.generationcp.breeding.manager.listmanager.listeners.CloseWindowAction;
 import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListButtonClickListener;
 import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListItemClickListener;
 import org.generationcp.breeding.manager.service.BreedingManagerService;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -86,6 +85,9 @@ public class AddEntryDialog extends BaseSubWindow
 
 	@Resource
 	private ContextUtil contextUtil;
+
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	private final Window parentWindow;
 	private VerticalLayout topPart;
@@ -272,10 +274,7 @@ public class AddEntryDialog extends BaseSubWindow
 		sourceTable.select(itemId);
 		final int gid = Integer.parseInt(item.getItemProperty(ColumnLabels.GID.getName() + "_REF").getValue().toString());
 
-		final ExternalResource germplasmDetailsLink = new ExternalResource(
-			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil
-				.getCurrentProgramUUID()) + "&modal");
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(gid, true);
 
 		final Window germplasmWindow = new BaseSubWindow(this.messageSource.getMessage(Message.GERMPLASM_INFORMATION) + " - " + gid);
 

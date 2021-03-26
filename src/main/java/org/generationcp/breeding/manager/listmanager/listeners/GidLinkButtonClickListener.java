@@ -21,10 +21,8 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 import org.generationcp.breeding.manager.application.BreedingManagerApplication;
 import org.generationcp.breeding.manager.constants.AppConstants;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.breeding.manager.listmanager.ListManagerMain;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -51,7 +49,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	private ListManagerMain listManagerMain;
 	private final String gid;
@@ -82,10 +80,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 			mainWindow = event.getComponent().getApplication().getWindow(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME);
 		}
 
-		final ExternalResource germplasmDetailsLink = new ExternalResource(
-			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
-				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil
-				.getCurrentProgramUUID()) + "&modal");
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(Integer.parseInt(this.gid), true);
 
 		String preferredName = null;
 		try {

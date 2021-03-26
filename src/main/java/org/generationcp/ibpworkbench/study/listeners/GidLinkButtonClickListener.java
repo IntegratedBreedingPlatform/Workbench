@@ -19,9 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
 import org.generationcp.ibpworkbench.study.TableViewerComponent;
@@ -45,7 +43,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	private final String gid;
 
@@ -63,10 +61,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 			mainWindow = eventWindow;
 		}
 
-		final ExternalResource germplasmDetailsLink = new ExternalResource(
-			WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + this.gid + "?cropName="
-				+ this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID=" + this.contextUtil
-				.getCurrentProgramUUID()) + "&modal");
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(Integer.parseInt(this.gid), true);
 
 		String preferredName = null;
 		try {

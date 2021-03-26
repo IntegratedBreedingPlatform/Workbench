@@ -12,13 +12,11 @@
 package org.generationcp.ibpworkbench.germplasm;
 
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -42,7 +40,7 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	public GermplasmGenerationHistoryComponent(final GermplasmIndexContainer dataIndexContainer, final GermplasmDetailModel gDetailModel) {
 		this.dataIndexContainer = dataIndexContainer;
@@ -84,9 +82,8 @@ public class GermplasmGenerationHistoryComponent extends VerticalLayout implemen
 				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
 					final Link link =
-						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-							+ GermplasmGenerationHistoryComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
-							+ "&programUUID=" + GermplasmGenerationHistoryComponent.this.contextUtil.getProjectInContext().getUniqueID()));
+						new Link(gid, GermplasmGenerationHistoryComponent.this.germplasmDetailsUrlService
+							.getExternalResource(Integer.parseInt(gid), false));
 					link.setTargetName("_blank");
 					return link;
 				}

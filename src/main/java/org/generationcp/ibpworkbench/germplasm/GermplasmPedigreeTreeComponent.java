@@ -12,12 +12,10 @@
 package org.generationcp.ibpworkbench.germplasm;
 
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmTreeExpandListener;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
@@ -40,7 +38,7 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 	private Boolean includeDerivativeLines;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	public GermplasmPedigreeTreeComponent(final int gid, final GermplasmQueries qQuery,
 		final GermplasmIndexContainer dataResultIndexContainer,
@@ -96,9 +94,8 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 				// If the itemId contains both the parent gid and child gid (i.e. [parentGid]@[childGid]), then only get the child Id
 				final String gid = itemGids.length == 1 ? itemGids[0] : itemGids[1];
 				GermplasmPedigreeTreeComponent.this
-					.getWindow().open(new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-					+ GermplasmPedigreeTreeComponent.this.contextUtil.getProjectInContext().getCropType().getCropName() + "&programUUID="
-					+ GermplasmPedigreeTreeComponent.this.contextUtil.getProjectInContext().getUniqueID()), "_blank", false);
+					.getWindow().open(GermplasmPedigreeTreeComponent.this.germplasmDetailsUrlService
+					.getExternalResource(Integer.parseInt(gid), false), "_blank", false);
 			}
 		});
 

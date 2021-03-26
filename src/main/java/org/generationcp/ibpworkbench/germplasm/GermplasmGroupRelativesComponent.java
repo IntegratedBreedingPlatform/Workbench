@@ -11,18 +11,16 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.containers.GroupRelativesQuery;
 import org.generationcp.ibpworkbench.germplasm.containers.GroupRelativesQueryFactory;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -41,7 +39,7 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	public GermplasmGroupRelativesComponent(int gid) {
 		this.gid = gid;
@@ -84,9 +82,8 @@ public class GermplasmGroupRelativesComponent extends VerticalLayout implements 
 				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
 					final Link link =
-						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-							+ GermplasmGroupRelativesComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
-							+ "&programUUID=" + GermplasmGroupRelativesComponent.this.contextUtil.getProjectInContext().getUniqueID()));
+						new Link(gid, GermplasmGroupRelativesComponent.this.germplasmDetailsUrlService
+							.getExternalResource(Integer.parseInt(gid), false));
 					link.setTargetName("_blank");
 					return link;
 				}

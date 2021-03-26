@@ -11,13 +11,11 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
@@ -42,7 +40,7 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	public GermplasmManagementNeighborsComponent(final Integer gid) {
 		this.gid = gid;
@@ -89,10 +87,8 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
 					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
 					final Link link =
-						new Link(gid, new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-							+ GermplasmManagementNeighborsComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
-							+ "&programUUID=" + GermplasmManagementNeighborsComponent.this.contextUtil.getProjectInContext()
-							.getUniqueID()));
+						new Link(gid, GermplasmManagementNeighborsComponent.this.germplasmDetailsUrlService
+							.getExternalResource(Integer.parseInt(gid), false));
 					link.setTargetName("_blank");
 					return link;
 				}

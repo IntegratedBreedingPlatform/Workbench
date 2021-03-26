@@ -12,7 +12,6 @@
 package org.generationcp.ibpworkbench.germplasm;
 
 import com.vaadin.event.ItemClickEvent;
-import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -23,9 +22,8 @@ import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -68,7 +66,7 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private ContextUtil contextUtil;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	public GermplasmDerivativeNeighborhoodComponent(final int gid, final GermplasmQueries qQuery,
 		final GermplasmIndexContainer dataResultIndexContainer,
@@ -191,9 +189,8 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 			public void itemClick(final ItemClickEvent event) {
 				final String gid = event.getItemId().toString();
 				GermplasmDerivativeNeighborhoodComponent.this
-					.getWindow().open(new ExternalResource(DefaultGermplasmStudyBrowserPath.GERMPLASM_DETAILS_LINK + gid + "?cropName="
-						+ GermplasmDerivativeNeighborhoodComponent.this.contextUtil.getProjectInContext().getCropType().getCropName()
-						+ "&programUUID=" + GermplasmDerivativeNeighborhoodComponent.this.contextUtil.getProjectInContext().getUniqueID()),
+					.getWindow().open(GermplasmDerivativeNeighborhoodComponent.this.germplasmDetailsUrlService
+						.getExternalResource(Integer.parseInt(gid), false),
 					"_blank", false);
 			}
 		});
