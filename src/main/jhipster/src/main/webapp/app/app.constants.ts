@@ -12,6 +12,7 @@ export const GERMPLASM_DETAILS_URL = '/ibpworkbench/main/app/#/germplasm-details
 export const PEDIGREE_DETAILS_URL = '/ibpworkbench/maingpsb/pedigree-details/';
 export const INVENTORY_DETAILS_URL = '/ibpworkbench/controller/jhipster#/inventory-details/';
 export const MAX_PAGE_SIZE = process.env.MAX_PAGE_SIZE;
+export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/userProgramInfo';
 
 // HELP
 export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';

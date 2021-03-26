@@ -3,7 +3,10 @@ package org.generationcp.ibpworkbench.study;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.ibpworkbench.GermplasmStudyBrowserApplication;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
@@ -27,9 +30,6 @@ public class TableViewerComponentTest {
 	private static final String STUDY_NAME = "TEST_STUDY  ";
 
 	private static final String XLS_FILEPATH = "/someDirectory/output/" + TableViewerComponent.FILENAME_PREFIX + ".xlsx";
-
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private TableViewerExporter tableViewerExporter;
@@ -85,19 +85,7 @@ public class TableViewerComponentTest {
 		final ArgumentCaptor<VaadinFileDownloadResource> fileDownloadResourceCaptor = ArgumentCaptor.forClass(VaadinFileDownloadResource.class);
 		Mockito.verify(this.window).open(fileDownloadResourceCaptor.capture(),ArgumentMatchers.<String>isNull(), ArgumentMatchers.eq(false));
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
-		final String[] uSCount = downloadResource.getFilename().split("_");
-		Assert.assertTrue(uSCount.length >= 3);
-
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			org.junit.Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			org.junit.Assert.fail("Date must be included in the file name");
-		}
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.XLSX_DATE_TIME_PATTERN));
 	}
 
 	@Test
