@@ -55,6 +55,7 @@ import { SampleListCreationComponent } from './list-creation/sample-list-creatio
 import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
+import { UserProgramInfoService } from './service/user-program-info.service';
 
 @NgModule({
     imports: [
@@ -119,6 +120,7 @@ import { ToolService } from './tool/service/tool.service';
         AlertService,
         ToolService,
         KeySequenceRegisterService,
+        UserProgramInfoService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034

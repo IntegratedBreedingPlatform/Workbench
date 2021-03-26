@@ -14,6 +14,7 @@ import { LoginService } from '../shared/login/login.service';
 import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
+import { UserProgramInfoService } from '../shared/service/user-program-info.service';
 
 @Component({
     selector: 'jhi-navbar',
@@ -53,7 +54,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private toolService: ToolService,
         private jhiAlertService: JhiAlertService,
         private loginService: LoginService,
-        private helpService: HelpService
+        private helpService: HelpService,
+        private userProgramInfoService: UserProgramInfoService
     ) {
         this.version = VERSION ? `BMS ${VERSION}` : '';
         this.principal.identity().then((identity) => {
@@ -128,30 +130,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
         if (event.data.programSelected) {
             const program = event.data.programSelected;
-
-            this.toolService.getTools(program.crop, program.uniqueID)
-                .subscribe(
-                    (res: HttpResponse<Tool[]>) => {
-                        if (!(res.body && res.body.length)) {
-                            this.jhiAlertService.error('error.no.tool.available');
-                            return;
-                        }
-
-                        this.program = program;
-                        localStorage['selectedProjectId'] = this.program.id;
-                        localStorage['loggedInUserId'] = this.user.userId;
-                        localStorage['cropName'] = this.program.crop;
-                        localStorage['programUUID'] = this.program.uniqueID;
-
-                        this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
-
-                        const firstNode = this.treeControl.dataNodes[0];
-                        this.treeControl.expand(firstNode);
-
-                        this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
-                    },
-                    (res: HttpErrorResponse) => this.onError(res)
-                );
+            this.userProgramInfoService.setSelectedProgram(program.uniqueID).toPromise().then(() => {
+                this.getTools(program);
+            }).catch((error) => {
+                this.onError(error);
+            });
         } else if (event.data.programUpdated && this.program) {
             this.program.name = event.data.programUpdated.name;
         } else if (event.data.programDeleted) {
@@ -198,7 +181,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         if (!helpLink || !helpLink.length) {
             return await this.helpService.getHelpLink(key).toPromise().then((response) => {
                 return response.body;
-            }).catch((error) => {});
+            }).catch((error) => {
+                this.onError(error);
+            });
         }
     }
 
@@ -214,6 +199,31 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
     }
 
+    getTools(program) {
+        this.toolService.getTools(program.crop, program.uniqueID)
+            .subscribe(
+                (res: HttpResponse<Tool[]>) => {
+                    if (!(res.body && res.body.length)) {
+                        this.jhiAlertService.error('error.no.tool.available');
+                        return;
+                    }
+
+                    this.program = program;
+                    localStorage['selectedProjectId'] = this.program.id;
+                    localStorage['loggedInUserId'] = this.user.userId;
+                    localStorage['cropName'] = this.program.crop;
+                    localStorage['programUUID'] = this.program.uniqueID;
+
+                    this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
+
+                    const firstNode = this.treeControl.dataNodes[0];
+                    this.treeControl.expand(firstNode);
+
+                    this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
+                },
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+    }
 }
 
 interface Node {
