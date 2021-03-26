@@ -63,6 +63,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	public static final String AWHERE_WINDOW_NAME = "awheretool";
 
 	private static final String HTML_BREAK = "</br>";
+	public static final String PEDIGREE_DETAILS_NAME = "pedigree-details";
 
 	private Window window;
 
@@ -221,7 +222,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 				awhereWindow.setHeight("100%");
 				this.addWindow(awhereWindow);
 				return awhereWindow;
-			} else if ("pedigree-details".equals(name)) {
+			} else if (PEDIGREE_DETAILS_NAME.equals(name)) {
 				final CssLayout cssLayout = new CssLayout();
 				cssLayout.setMargin(false);
 				cssLayout.setSizeFull();
