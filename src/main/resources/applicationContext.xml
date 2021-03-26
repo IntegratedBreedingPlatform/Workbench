@@ -499,6 +499,8 @@
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 	</bean>
 
+	<bean id="germplasmDetailsUrlService"
+		  class="org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService">
+    </bean>
 	<!-- Nested <beans> elements can only be at the end. -->
-	
 </beans>

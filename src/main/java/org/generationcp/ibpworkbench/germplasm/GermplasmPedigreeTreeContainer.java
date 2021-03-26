@@ -1,6 +1,13 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.VerticalLayout;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -15,14 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class GermplasmPedigreeTreeContainer extends VerticalLayout implements InitializingBean, InternationalizableComponent {
@@ -39,20 +38,24 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 
 	private final Integer gid;
 	private final GermplasmQueries germplasmQueries;
-	private final GermplasmDetailsComponentTree parent;
+	private final GermplasmPedigreeTreeActions germplasmPedigreeTreeActions;
 	private Integer pedigreeLevelCount;
 	boolean maxReached = false;
 	private GridLayout treeLayout;
 	private Label levelLabel;
 
+	static interface GermplasmPedigreeTreeActions {
+		void showPedigreeGraphWindow();
+	}
+
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	public GermplasmPedigreeTreeContainer(final Integer gid, final GermplasmQueries germplasmQueries,
-			final GermplasmDetailsComponentTree parent) {
+		final GermplasmPedigreeTreeActions germplasmPedigreeTreeActions) {
 		this.gid = gid;
 		this.germplasmQueries = germplasmQueries;
-		this.parent = parent;
+		this.germplasmPedigreeTreeActions = germplasmPedigreeTreeActions;
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 		this.refreshButton.addStyleName(Bootstrap.Buttons.PRIMARY.styleName());
 
 		this.pedigreeTree = new GermplasmPedigreeTreeComponent(this.gid, this.germplasmQueries,
-				new GermplasmIndexContainer(this.germplasmQueries), null, null, false);
+			new GermplasmIndexContainer(this.germplasmQueries), null, null, false);
 
 		this.updatePedigreeLevelCount(false);
 	}
@@ -85,7 +88,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 			this.displayFullPedigreeButton.setVisible(false);
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
+				this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
 			GermplasmPedigreeTreeContainer.LOG.error(e.getMessage());
 		} catch (final MaxPedigreeLevelReachedException e) {
 			this.pedigreeLevelCount = PedigreeDataManagerImpl.MAX_PEDIGREE_LEVEL;
@@ -111,7 +114,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				GermplasmPedigreeTreeContainer.this.parent.showPedigreeGraphWindow();
+				GermplasmPedigreeTreeContainer.this.germplasmPedigreeTreeActions.showPedigreeGraphWindow();
 			}
 		});
 
@@ -137,12 +140,12 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 		this.initializeTree();
 		try {
 			this.pedigreeTree = new GermplasmPedigreeTreeComponent(this.gid, this.germplasmQueries,
-					new GermplasmIndexContainer(this.germplasmQueries), null, null, this.includeDerivativeLinesCheckbox.booleanValue());
+				new GermplasmIndexContainer(this.germplasmQueries), null, null, this.includeDerivativeLinesCheckbox.booleanValue());
 			this.treeLayout.addComponent(this.pedigreeTree);
-			
+
 			final String labelValue =
-					this.germplasmQueries.getPedigreeLevelCountLabel(this.gid, this.includeDerivativeLinesCheckbox.booleanValue(), true);
-			
+				this.germplasmQueries.getPedigreeLevelCountLabel(this.gid, this.includeDerivativeLinesCheckbox.booleanValue(), true);
+
 			this.levelLabel = new Label(labelValue);
 			this.treeLayout.addComponent(this.levelLabel);
 
@@ -150,7 +153,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 			this.displayFullPedigreeButton.setVisible(false);
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
+				this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
 			GermplasmPedigreeTreeContainer.LOG.error(e.getMessage());
 		}
 	}
@@ -204,7 +207,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 		this.initializeTree();
 
 		this.pedigreeTree = new GermplasmPedigreeTreeComponent(this.gid, this.germplasmQueries,
-				new GermplasmIndexContainer(this.germplasmQueries), null, null, this.includeDerivativeLinesCheckbox.booleanValue());
+			new GermplasmIndexContainer(this.germplasmQueries), null, null, this.includeDerivativeLinesCheckbox.booleanValue());
 		this.treeLayout.addComponent(this.pedigreeTree);
 
 		try {
@@ -213,7 +216,7 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 			this.addComponent(this.treeLayout);
 		} catch (final MiddlewareQueryException e) {
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
+				this.messageSource.getMessage(Message.ERROR_IN_GETTING_PEDIGREE_LEVEL));
 			GermplasmPedigreeTreeContainer.LOG.error(e.getMessage());
 		}
 	}
@@ -227,8 +230,9 @@ public class GermplasmPedigreeTreeContainer extends VerticalLayout implements In
 	public Button getDisplayFullPedigreeButton() {
 		return this.displayFullPedigreeButton;
 	}
-	
+
 	void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
+
 }

@@ -14,14 +14,19 @@ export class GermplasmDto {
         public breedingMethod?: string,
         public isGroupedLine?: boolean,
         public groupId?: number,
+        public gpid1?: number,
+        public gpid2?: number,
+        public otherProgenitors?: number[],
         public names?: GermplasmName[],
         public attributes?: GermplasmAttribute[],
+        public germplasmOrigin?: GermplasmOrigin
     ) {
     }
 }
 
 export class GermplasmName {
     constructor(
+        public id?: number,
         public gid?: number,
         public name?: string,
         public date?: string,
@@ -29,6 +34,7 @@ export class GermplasmName {
         public locationName?: string,
         public nameTypeCode?: string,
         public nameTypeDescription?: string,
+        public preferred?: boolean,
     ) {
     }
 
@@ -42,6 +48,54 @@ export class GermplasmAttribute {
         public date?: string,
         public locationId?: string,
         public locationName?: string,
+    ) {
+    }
+}
+
+export class GermplasmList {
+    constructor(
+        public listId?: number,
+        public listName?: string,
+        public creationDate?: string,
+        public description?: string
+    ) {
+    }
+}
+
+export class GermplasmStudy {
+    constructor(
+        public studyId?: number,
+        public name?: string,
+        public description?: string
+    ) {
+    }
+}
+
+export class GermplasmOrigin {
+    constructor(
+        public studyId?: number,
+        public studyName?: string,
+        public observationUnitId?: string,
+        public plotNumber?: number,
+        public repNumber?: number,
+        public blockNumber?: number,
+        public positionCoordinateX?: string,
+        public positionCoordinateY?: string,
+        public geoCoordinates?: any,
+    ) {
+    }
+}
+
+export class GermplasmProgenitorsDetails {
+    constructor(
+        public breedingMethodId?: number,
+        public breedingMethodName?: string,
+        public breedingMethodCode?: string,
+        public breedingMethodType?: string,
+        public femaleParent?: GermplasmDto,
+        public maleParents?: GermplasmDto[],
+        public groupSource?: GermplasmDto,
+        public immediateSource?: GermplasmDto
     ) {
     }
 }
