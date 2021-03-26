@@ -26,8 +26,6 @@ public class UserProgramController {
     @Resource
     private WorkbenchDataManager workbenchDataManager;
 
-    @Resource
-    private UserService userService;
 
     @Resource
     private AuthorizationService authorizationService;
@@ -42,26 +40,9 @@ public class UserProgramController {
             org.generationcp.commons.util.ContextUtil.setContextInfo(this.request,
                     this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
 
-            this.updateProjectLastOpenedDate(project);
-
             this.authorizationService.reloadAuthorities(project);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * Updates Project last Opened Date and User's last opened Project
-     * @param project - Opened / Selected project
-     */
-    private void updateProjectLastOpenedDate(final Project project) {
-        ProjectUserInfo pui = this.userService.getProjectUserInfoByProjectIdAndUserId(project.getProjectId(), this.contextUtil.getCurrentWorkbenchUserId());
-        if (pui == null) {
-            pui = new ProjectUserInfo(project, this.contextUtil.getCurrentWorkbenchUser());
-        }
-        pui.setLastOpenDate(new Date());
-        this.userService.saveOrUpdateProjectUserInfo(pui);
-
-        project.setLastOpenDate(new Date());
-        this.workbenchDataManager.saveOrUpdateProject(project);
-    }
 }
