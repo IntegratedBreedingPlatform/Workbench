@@ -88,6 +88,7 @@ export class GermplasmSearchComponent implements OnInit {
     // TODO rewrite as map (see sample.component)
     selectedItems: any[] = [];
     isSelectAll = false;
+    lastClickIndex: any;
 
     private static getInitialFilters() {
         return [
@@ -527,12 +528,21 @@ export class GermplasmSearchComponent implements OnInit {
         }
     }
 
-    toggleSelect(germplasm: Germplasm) {
-        if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
-            this.selectedItems = this.selectedItems.filter((item) => item !== germplasm.gid);
+    toggleSelect($event, index, germplasm: Germplasm) {
+        let gids;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1,
+                min = Math.min(this.lastClickIndex, index);
+            gids = this.germplasmList.slice(min, max).map((g) => g.gid);
         } else {
-            this.selectedItems.push(germplasm.gid);
+            gids = [germplasm.gid];
         }
+        if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
+            this.selectedItems = this.selectedItems.filter((item) => gids.indexOf(item) === -1);
+        } else {
+            this.selectedItems.push(...gids);
+        }
+        this.lastClickIndex = index;
     }
 
     isPageSelected() {

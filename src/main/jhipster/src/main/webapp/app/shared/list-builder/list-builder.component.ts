@@ -22,6 +22,7 @@ export class ListBuilderComponent {
     // { <data-index>: boolean }
     selectedItems = {};
     isSelectAllPages = false;
+    lastClickIndex: any;
 
     templateColumnCount = 1;
 
@@ -38,12 +39,24 @@ export class ListBuilderComponent {
         return this.selectedItems[index];
     }
 
-    toggleSelect(index) {
-        if (this.selectedItems[index]) {
-            delete this.selectedItems[index];
+    toggleSelect($event, index, internal_id) {
+        let ids;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1 + this.pageOffset(),
+                min = Math.min(this.lastClickIndex, index) + this.pageOffset();
+            ids = this.data.slice(min, max).map((g) => g.internal_id);
         } else {
-            this.selectedItems[index] = true;
+            ids = [internal_id];
         }
+        const isClickedItemSelected = this.selectedItems[internal_id];
+        for (const id of ids) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[id];
+            } else {
+                this.selectedItems[id] = true;
+            }
+        }
+        this.lastClickIndex = index;
     }
 
     isPageSelected() {

@@ -53,7 +53,7 @@
 							[class.selected]="isSelected(row.internal_id)"
 							cdkDrag >
 							<td *ngIf="!isSelectAllPages">
-								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect(row.internal_id)">
+								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect($event, index, row.internal_id)">
 							</td>
 							<td>{{pageOffset() + index + 1}}</td>
 							<td *ngFor="let header of headers()">
