@@ -57,7 +57,7 @@
 </head>
 <body ng-controller="MainController">
 <div style="margin:1em" class="container-fluid">
-	<div class="row">
+	<div class="row" ng-if="!gid">
 		<div class="col-xs-6">
 			<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI Graphical Queries</h2>
 		</div>
@@ -161,7 +161,7 @@
 	<hr  ng-show="flags.isDataLoaded" />
 	<div ng-switch="toolId" ng-show="flags.isDataLoaded">
 		<div class="row" ng-switch-when="graphical-filtering">
-			<button id="export"
+			<button ng-if="!gid" id="export"
 					class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
 				Export
 			</button>
