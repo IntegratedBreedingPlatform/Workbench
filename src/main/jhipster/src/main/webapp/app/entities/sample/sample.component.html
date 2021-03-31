@@ -29,6 +29,7 @@
 	-->
 	<br/>
 	<!-- TODO IBP-4375
+	-->
 	<div class="row mb-3">
 		<div class="col">
 			<button class="btn btn-outline-info float-right" (click)="toggleListBuilder()">
@@ -38,7 +39,6 @@
 			</button>
 		</div>
 	</div>
-	-->
 	<div class="row">
 		<div class="col-xs-1 col-md-12">
 			<div ngbDropdown class="float-right" placement="bottom-right">
@@ -55,29 +55,29 @@
 		</div>
 	</div>
 	<br/>
-	<!-- TODO IBP-4375
+	<!-- TODO IBP-4375 -->
 	<div class="row my-2">
 		<div class="col form-inline">
 			<span class="mr-1 font-weight-bold" jhiTranslate="global.total.entries"></span>
 			<span>{{totalItems}}</span>
 			<span class="ml-3 mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
-			<span>{{isSelectAllPages ? totalItems : size(selectedItems)}}</span> -->
+			<span>{{isSelectAllPages ? totalItems : size(selectedItems)}}</span>
 			<!--<div class="form-check form-check-inline ml-3">
 				<input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages()" id="sample-select-all-{{sampleList.id}}">
 				<label class="form-check-label ml-1" for="sample-select-all-{{sampleList.id}}" jhiTranslate="global.select.all"></label>
 			</div>-->
 	<!-- TODO IBP-4375
+	-->
 		</div>
 	</div>
-	-->
 	<div class="table-responsive" *ngIf="sampleList.samples">
 		<table class="table table-striped table-curved">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-				<!-- TODO IBP-4375
+				<!-- TODO IBP-4375-->
 				<th>
 					<input *ngIf="!isSelectAllPages" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" />
-				</th>-->
+				</th>
 				<th jhiSortBy="entryNumber"><span jhiTranslate="bmsjHipsterApp.sample.entryNo">SAMPLE_ENTRY</span><span class="fa fa-sort"></span></th>
 				<th jhiSortBy="stock.name"><span jhiTranslate="bmsjHipsterApp.sample.designation">DESIGNATION</span><span class="fa fa-sort"></span> </th>
 				<th jhiSortBy="gid"><span jhiTranslate="bmsjHipsterApp.sample.gid">GID</span><span class="fa fa-sort"></span> </th>
@@ -96,8 +96,8 @@
 				<div *cdkDragPlaceholder>&nbsp;</div>
 
 				<!-- TODO IBP-4375
-				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect(sample)"></td>
 				-->
+				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect($event, index, sample)"></td>
 				<td>
 					<!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
 					{{sample.entryNo}}
