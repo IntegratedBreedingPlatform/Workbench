@@ -80,7 +80,7 @@
 				<span style="margin-left: 20px;">Selected:</span>
 				<span style="padding-left: 5px;" class="font-weight-bold">
 					<!-- includes gids not counted in filteredItems (e.g pedigree, group members)  -->
-					{{isSelectAll ? (+filteredItems + (germplasmList.length > filteredItems ? germplasmList.length - filteredItems : 0)) : selectedItems.length}}
+					{{isSelectAll ? (+filteredItems + (germplasmList.length > filteredItems ? germplasmList.length - filteredItems : 0)) : size(selectedItems)}}
 				</span>
 				<!-- An message indicating that there could be more items not included in this page  -->
 				<span style="padding-left: 5px;" class="font-italic" *ngIf="hasIncludedGids() && isSelectAll && filteredItems > itemsPerPage"
@@ -136,7 +136,7 @@
 			</tr>
 			</thead>
 			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop" >
-			<tr *ngFor="let germplasm of germplasmList; trackBy: trackId, let index = index"
+			<tr *ngFor="let germplasm of germplasmList; trackBy: trackId; index as index"
 				[class.selected]="isSelected(germplasm)"
 				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, germplasm)">
 				<div *cdkDragPlaceholder>&nbsp;</div>

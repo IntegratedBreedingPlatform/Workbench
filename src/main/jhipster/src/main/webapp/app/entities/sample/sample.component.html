@@ -90,9 +90,11 @@
 			</tr>
 			</thead>
 			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop">
-			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId;"
+			<tr *ngFor="let sample of sampleList.samples; trackBy: trackId; index as index"
 				[class.selected]="isSelected(sample)"
 				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, sample)">
+				<div *cdkDragPlaceholder>&nbsp;</div>
+
 				<!-- TODO IBP-4375
 				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect(sample)"></td>
 				-->
