@@ -139,6 +139,7 @@
 			<tr *ngFor="let germplasm of germplasmList; trackBy: trackId, let index = index"
 				[class.selected]="isSelected(germplasm)"
 				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, germplasm)">
+				<div *cdkDragPlaceholder>&nbsp;</div>
 
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect($event, index, germplasm)"></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]">{{germplasm.gid}}</a></td>
