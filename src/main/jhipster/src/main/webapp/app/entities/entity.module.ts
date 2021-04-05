@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 
 import { BmsjHipsterSampleModule } from './sample/sample.module';
-import { GermplasmModule } from './germplasm/germplasm.module';
 import { BreedingMethodModule } from './breeding-method/breeding-method.module';
 import { LocationModule } from './location/location.module';
 import { ProgramModule } from './program/program.module';
@@ -11,7 +10,6 @@ import { ProgramModule } from './program/program.module';
 @NgModule({
     imports: [
         BmsjHipsterSampleModule,
-        GermplasmModule,
         BreedingMethodModule,
         LocationModule,
         ProgramModule

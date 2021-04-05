@@ -20,6 +20,7 @@ import {ParamContext} from '../../shared/service/param.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
+import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 
 declare var $: any;
 
@@ -270,7 +271,8 @@ export class GermplasmSelectorComponent implements OnInit {
                 private alertService: AlertService,
                 private modal: NgbModal,
                 private translateService: TranslateService,
-                private paramContext: ParamContext) {
+                private paramContext: ParamContext,
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {

@@ -9,7 +9,8 @@ import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
-import { GermplasmDto } from '../model/germplasm.model';
+import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy } from '../model/germplasm.model';
+import { Sample } from '../../../entities/sample';
 
 @Injectable()
 export class GermplasmService {
@@ -48,12 +49,12 @@ export class GermplasmService {
         });
     }
 
-    getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
+    getGermplasmById(gid: number): Observable<HttpResponse<GermplasmDto>> {
         const params = {};
         if (this.context.programUUID) {
             params['programUUID'] = this.context.programUUID;
         }
-        return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
+        return this.http.get<GermplasmDto>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
             { params, observe: 'response' });
     }
 
@@ -61,6 +62,31 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
             '?programUUID=' + this.context.programUUID + '&codes=' + codes;
         return this.http.get<Attribute[]>(url);
+    }
+
+    getGermplasmAttributesByGidAndType(gid: number, type: string): Observable<GermplasmAttribute[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?type=${type}`;
+        return this.http.get<GermplasmAttribute[]>(url);
+    }
+
+    getGermplasmListsByGid(gid: number): Observable<GermplasmList[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/lists`;
+        return this.http.get<GermplasmList[]>(url);
+    }
+
+    getGermplasmSamplesByGid(gid: number): Observable<Sample[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/samples`;
+        return this.http.get<Sample[]>(url);
+    }
+
+    getGermplasmStudiesByGid(gid: number): Observable<GermplasmStudy[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/studies`;
+        return this.http.get<GermplasmStudy[]>(url);
+    }
+
+    getGermplasmProgenitorsDetails(gid: number): Observable<GermplasmProgenitorsDetails> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details`;
+        return this.http.get<GermplasmProgenitorsDetails>(url);
     }
 
     getGermplasmNameTypes(codes: string[]): Observable<NameType[]> {
