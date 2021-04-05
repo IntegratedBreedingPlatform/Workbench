@@ -68,9 +68,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 	@Autowired
 	private StudyDataManager studyDataManager;
 
-	@Value("${workbench.is.server.app}")
-	private String isServerApp;
-
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
 	private Project project;
@@ -155,19 +152,12 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 		breedingViewProjectName = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewProjectName);
 
-		final String defaultFilePath = File.separator + breedingViewProjectName;
-
 		breedingViewInput.setBreedingViewProjectName(breedingViewProjectName);
 
-		final String sourceCSVFile;
-		if (Boolean.parseBoolean(this.isServerApp)) {
-			sourceCSVFile = FileNameGenerator.generateFileName(breedingViewProjectName,"csv");
-		} else {
-			sourceCSVFile = inputDirectory + FileNameGenerator.generateFileName(defaultFilePath, "csv");
-		}
+		final String sourceCSVFile = FileNameGenerator.generateFileName(breedingViewProjectName,"csv");;
 		breedingViewInput.setSourceXLSFilePath(sourceCSVFile);
 
-		final String destXMLFilePath = inputDirectory + FileNameGenerator.generateFileName(defaultFilePath, "xml");
+		final String destXMLFilePath = inputDirectory + File.separator + FileNameGenerator.generateFileName(breedingViewProjectName, "xml");
 		breedingViewInput.setDestXMLFilePath(destXMLFilePath);
 
 	}
@@ -264,10 +254,6 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 	public void setInstallationDirectoryUtil(final InstallationDirectoryUtil installationDirectoryUtil) {
 		this.installationDirectoryUtil = installationDirectoryUtil;
-	}
-
-	public void setIsServerApp(final String isServerApp) {
-		this.isServerApp = isServerApp;
 	}
 
 	public void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {

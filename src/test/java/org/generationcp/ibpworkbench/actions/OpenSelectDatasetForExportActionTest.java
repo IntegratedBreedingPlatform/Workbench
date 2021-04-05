@@ -23,7 +23,6 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
-import org.generationcp.ibpworkbench.util.StudyUtil;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
@@ -45,11 +44,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.when;
 
@@ -208,17 +210,14 @@ public class OpenSelectDatasetForExportActionTest {
 
 		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
 				breedingViewInput.getBreedingViewProjectName());
-		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "xml"),
-				breedingViewInput.getDestXMLFilePath());
-		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
-				breedingViewInput.getSourceXLSFilePath());
+		Assert.assertTrue("XML has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
+		Assert.assertTrue("CSV has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getSourceXLSFilePath(), FileNameGenerator.CSV_DATE_TIME_PATTERN));
 	}
 
 	@Test
 	public void testPopulateProjectNameAndFilePathsForServerAppConfig() {
 
 		final BreedingViewInput breedingViewInput = new BreedingViewInput();
-		this.openSelectDatasetForExportAction.setIsServerApp("true");
 		this.openSelectDatasetForExportAction.populateProjectNameAndFilePaths(breedingViewInput, this.project, INPUT_DIRECTORY);
 
 		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
@@ -259,9 +258,9 @@ public class OpenSelectDatasetForExportActionTest {
 		Assert.assertEquals(0, bvInput.getOutputDatasetId().intValue());
 		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,"xml"),
 				bvInput.getDestXMLFilePath());
-		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
+		Assert.assertEquals(FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
 				bvInput.getSourceXLSFilePath());
-		Assert.assertEquals( FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME ,"csv"),
+		Assert.assertEquals( FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME ,"csv"),
 				bvInput.getSourceXLSFilePath());
 		Assert.assertTrue(bvInput.getBreedingViewAnalysisName().contains("SSA analysis of " + SANITIZED_DATASET_NAME + "  (run at "));
 		Assert.assertTrue(bvInput.getVariatesSelectionMap().get("Variable1"));
@@ -386,5 +385,4 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.verifyZeroInteractions(this.messageSource);
 
 	}
-
 }

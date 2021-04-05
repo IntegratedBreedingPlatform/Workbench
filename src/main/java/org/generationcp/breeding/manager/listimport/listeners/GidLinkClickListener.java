@@ -11,20 +11,6 @@
 
 package org.generationcp.breeding.manager.listimport.listeners;
 
-import org.generationcp.breeding.manager.util.Util;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.ShortcutAction;
@@ -36,6 +22,14 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
 public class GidLinkClickListener implements Button.ClickListener, ItemClickListener {
@@ -45,10 +39,10 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 	public static final String GERMPLASM_IMPORT_WINDOW_NAME = "germplasm-import";
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
-	private GermplasmDataManager germplasmDataManager;
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	private String gid;
 	private final Boolean viaToolURL;
@@ -85,7 +79,7 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 	}
 
 	private void openDetailsWindow(final Component component) {
-		Window mainWindow;
+		final Window mainWindow;
 
 		if (this.parentWindow != null) {
 			mainWindow = this.parentWindow;
@@ -95,28 +89,12 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 			mainWindow = component.getApplication().getWindow(GidLinkClickListener.GERMPLASM_IMPORT_WINDOW_NAME);
 		}
 
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		} catch (MiddlewareQueryException qe) {
-			GidLinkClickListener.LOG.error("QueryException", qe);
-		}
-		String addtlParams = Util.getAdditionalParams(this.workbenchDataManager);
-
-		ExternalResource germplasmBrowserLink = null;
-		if (tool == null) {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK
-							+ this.gid, "?restartApplication" + addtlParams));
-		} else {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool, this.gid, "?restartApplication" + addtlParams));
-		}
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(Integer.parseInt(this.gid), true);
 
 		String preferredName = null;
 		try {
 			preferredName = this.germplasmDataManager.getPreferredNameValueByGID(Integer.valueOf(this.gid));
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			GidLinkClickListener.LOG.error("Error with getting preferred name of " + this.gid, ex);
 		}
 
@@ -124,16 +102,16 @@ public class GidLinkClickListener implements Button.ClickListener, ItemClickList
 		if (preferredName != null) {
 			windowTitle = "Germplasm Details: " + preferredName + " (GID: " + this.gid + ")";
 		}
-		Window germplasmWindow = new BaseSubWindow(windowTitle);
+		final Window germplasmWindow = new BaseSubWindow(windowTitle);
 
-		VerticalLayout layoutForGermplasm = new VerticalLayout();
+		final VerticalLayout layoutForGermplasm = new VerticalLayout();
 		layoutForGermplasm.setDebugId("layoutForGermplasm");
 		layoutForGermplasm.setMargin(false);
 		layoutForGermplasm.setWidth("100%");
 		layoutForGermplasm.setHeight("100%");
 		layoutForGermplasm.addStyleName("no-caption");
 
-		Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
+		final Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setDebugId("germplasmInfo");
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();

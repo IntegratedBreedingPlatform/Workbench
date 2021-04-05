@@ -13,6 +13,7 @@ import org.generationcp.commons.breedingview.xml.Plot;
 import org.generationcp.commons.breedingview.xml.Replicates;
 import org.generationcp.commons.breedingview.xml.Rows;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.util.ZipUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -41,8 +42,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,8 +68,6 @@ public class RunSingleSiteActionTest {
 	private static final String XML_FILEPATH = BMS_INPUT_FILES_DIR + BASE_FILENAME + ".xml";
 	private static final String XLS_FILEPATH = BMS_INPUT_FILES_DIR + BASE_FILENAME + ".xls";
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + DATA_SOURCE_NAME + ".zip";
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 
 	@Mock
 	private StudyDataManager studyDataManager;
@@ -141,9 +138,9 @@ public class RunSingleSiteActionTest {
 		Mockito.doReturn(this.breedingViewInput.getSelectedEnvironments()).when(this.source).getSelectedEnvironments();
 		Mockito.doReturn(this.breedingViewInput).when(this.source).getBreedingViewInput();
 		Mockito.doReturn(this.application).when(this.source).getApplication();
-		Mockito.doReturn(this.window).when(this.application).getMainWindow();
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), Mockito.anyListOf(String.class), Mockito.any(Project.class),
 				Mockito.any(ToolName.class))).thenReturn(ZIP_FILE_PATH);
+		Mockito.when(this.source.getWindow()).thenReturn(this.window);
 	}
 
 	private void initializeStudyDataManagerMocks() {
@@ -477,11 +474,10 @@ public class RunSingleSiteActionTest {
 	}
 
 	@Test
-	public void testButtonClickServerAppIsTrue() throws IOException {
+	public void testButtonClick() throws IOException {
 		final Project project = ProjectTestDataInitializer.createProject();
 		Mockito.doReturn(project).when(this.contextUtil).getProjectInContext();
 
-		this.runSingleSiteAction.setIsServerApp("true");
 		this.runSingleSiteAction.setSource(this.source);
 		this.runSingleSiteAction.setZipUtil(this.zipUtil);
 		this.runSingleSiteAction.buttonClick(this.event);
@@ -492,7 +488,7 @@ public class RunSingleSiteActionTest {
 		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
 		Mockito.verify(this.zipUtil).zipIt(filenameCaptor.capture(), this.filesInZipCaptor.capture(), projectCaptor.capture(),
 				toolCaptor.capture());
-		Assert.assertEquals(DATA_SOURCE_NAME, filenameCaptor.getValue());
+		Assert.assertTrue(filenameCaptor.getValue().contains(DATA_SOURCE_NAME));
 		Assert.assertEquals(project, projectCaptor.getValue());
 		final List<String> filesInZip = this.filesInZipCaptor.getValue();
 		Assert.assertEquals(2, filesInZip.size());
@@ -506,18 +502,6 @@ public class RunSingleSiteActionTest {
 		final VaadinFileDownloadResource downloadResource = fileDownloadResourceCaptor.getValue();
 		final String[] uSCount = downloadResource.getFilename().split("_");
 		Assert.assertEquals(new File(ZIP_FILE_PATH).getAbsolutePath(), downloadResource.getSourceFile().getAbsolutePath());
-		Assert.assertTrue(uSCount.length >= 3);
-
-		try {
-			TIME_FORMAT.parse(uSCount[uSCount.length - 1].replace(".xml", ""));
-		} catch (final ParseException ex) {
-			Assert.fail("TimeStamp must be included in the file name");
-		}
-		try {
-			DATE_FORMAT.parse(uSCount[uSCount.length - 2]);
-		} catch (final ParseException ex) {
-			Assert.fail("Date must be included in the file name");
-		}
+		Assert.assertTrue(FileNameGenerator.isValidFileNameFormat(downloadResource.getFilename(), FileNameGenerator.ZIP_DATE_TIME_PATTERN));
 	}
-
 }

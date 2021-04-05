@@ -65,9 +65,6 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private SingleSiteAnalysisDetailsPanel source;
 
-	@Value("${workbench.is.server.app}")
-	private String isServerApp;
-
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -101,26 +98,18 @@ public class RunSingleSiteAction implements ClickListener {
 
 			this.writeProjectXML(window, breedingViewInput);
 
-			if (Boolean.parseBoolean(this.isServerApp)) {
+			final List<String> filenameList = new ArrayList<>();
+			filenameList.add(breedingViewInput.getDestXMLFilePath());
+			filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-				final List<String> filenameList = new ArrayList<>();
-				filenameList.add(breedingViewInput.getDestXMLFilePath());
-				filenameList.add(breedingViewInput.getSourceXLSFilePath());
-
-				final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(breedingViewInput.getDatasetSource());
-				try {
-					final String finalZipfileName =
-							this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
-					this.downloadInputFile(new File(finalZipfileName), FileNameGenerator
-						.generateFileName(outputFilename, ZipUtil.ZIP_EXTENSION, false));
-				} catch (final IOException e) {
-					RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
-					this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");
-				}
-
-			} else {
-
-				this.launchBV(event);
+			final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(FileNameGenerator.generateFileName(breedingViewInput.getDatasetSource()));
+			try {
+				final String finalZipfileName =
+					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
+				this.downloadInputFile(new File(finalZipfileName), outputFilename);
+			} catch (final IOException e) {
+				RunSingleSiteAction.LOG.error("Error creating zip file " + outputFilename + ZipUtil.ZIP_EXTENSION, e);
+				this.showErrorMessage(this.source.getApplication().getMainWindow(), "Error creating zip file.", "");
 			}
 
 		}
@@ -425,35 +414,10 @@ public class RunSingleSiteAction implements ClickListener {
 
 	}
 
-	private void launchBV(final ClickEvent event) {
-
-		final BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
-
-		try {
-
-			// launch breeding view
-			final File absoluteToolFile = new File(this.source.getTool().getPath()).getAbsoluteFile();
-
-			final ProcessBuilder pb =
-					new ProcessBuilder(absoluteToolFile.getAbsolutePath(), "-project=", breedingViewInput.getDestXMLFilePath());
-			pb.start();
-
-		} catch (final IOException e) {
-			RunSingleSiteAction.LOG.debug("Cannot write Breeding View input XML", e);
-
-			this.showErrorMessage(event.getComponent().getWindow(), e.getMessage(), "");
-		}
-
-	}
-
 	private void downloadInputFile(final File file, final String filename) {
 		final VaadinFileDownloadResource fileDownloadResource =
 				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
-		this.source.getApplication().getMainWindow().open(fileDownloadResource);
-	}
-
-	public void setIsServerApp(final String isServerApp) {
-		this.isServerApp = isServerApp;
+		this.source.getWindow().open(fileDownloadResource);
 	}
 
 	public void setSource(final SingleSiteAnalysisDetailsPanel source) {

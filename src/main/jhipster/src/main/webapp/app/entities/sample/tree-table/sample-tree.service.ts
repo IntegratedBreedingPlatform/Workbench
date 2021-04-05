@@ -25,6 +25,7 @@ export class SampleTreeService implements TreeService {
 
     move(source: string, target: string): Observable<any> {
         this.setCropAndProgram(this.context.cropName, this.context.programUUID);
+
         const isCropList = target === 'CROPLISTS';
         const sourceId = source === 'LISTS' || source === 'CROPLISTS' ? 0 : source;
         const targetId = target === 'LISTS' || target === 'CROPLISTS' ? 0 : target;
@@ -35,12 +36,14 @@ export class SampleTreeService implements TreeService {
 
     delete(folderId: string): Observable<HttpResponse<any>> {
         this.setCropAndProgram(this.context.cropName, this.context.programUUID);
+
         const url = `${this.resourceUrl}/${folderId}`;
         return this.http.delete<TreeNode[]>(url, { observe: 'response' });
     }
 
     create(folderName: string, parentId: string) {
         this.setCropAndProgram(this.context.cropName, this.context.programUUID);
+
         const id = parentId === 'LISTS' || parentId === 'CROPLISTS' ? 0 : parentId;
         const url = `${this.resourceUrl}?folderName=${folderName}&parentId=${id}`;
         return this.http.post<any>(url, { observe: 'response' });
@@ -48,6 +51,7 @@ export class SampleTreeService implements TreeService {
 
     rename(newFolderName: string, folderId: string) {
         this.setCropAndProgram(this.context.cropName, this.context.programUUID);
+
         const url = `${this.resourceUrl}/${folderId}?newFolderName=${newFolderName}`;
         return this.http.put<TreeNode[]>(url, { observe: 'response' });
     }

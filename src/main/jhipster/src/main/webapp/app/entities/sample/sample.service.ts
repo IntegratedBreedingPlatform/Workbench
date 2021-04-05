@@ -8,6 +8,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { Sample } from './sample.model';
 import { createRequestOption } from '../../shared';
 import { map } from 'rxjs/operators';
+import { ParamContext } from '../../shared/service/param.context';
 
 export type EntityResponseType = HttpResponse<Sample>;
 
@@ -18,9 +19,11 @@ export class SampleService {
     private resourceSearchUrl;
 
     constructor(
-        private http: HttpClient
-        // ,private dateUtils: JhiDateUtils
-    ) { }
+        private http: HttpClient,
+        private context: ParamContext
+    ) {
+        this.setCropAndProgram(this.context.cropName, this.context.programUUID);
+    }
 
     setCropAndProgram(crop: string, programUUID: string) {
         this.resourceUrl =  SERVER_API_URL + `crops/${crop}/programs/${programUUID}/samples`;

@@ -30,7 +30,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 
 	private static final Logger LOG = LoggerFactory.getLogger(WorkbenchAuthenticationSuccessHandler.class);
 
-	private static final String DEFAULT_TARGET_URL = "/main";
+	private static final String DEFAULT_TARGET_URL = "/main/";
 
 	@Autowired
 	private UserService userService;

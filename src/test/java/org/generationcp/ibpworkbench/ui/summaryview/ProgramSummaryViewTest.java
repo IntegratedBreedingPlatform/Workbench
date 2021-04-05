@@ -123,31 +123,9 @@ public class ProgramSummaryViewTest {
 	}
 
 	@Test
-	public void testExportButtonListener() {
-
-		this.summaryView.initializeLayout();
-
-		final String tableName = "tableName";
-		final Label header = new Label();
-		header.setValue(tableName);
-		this.summaryView.setHeader(header);
-		this.summaryView.addComponent(new Table());
-
-		final ProgramSummaryView.ExportButtonListener listener = Mockito.spy(this.summaryView.new ExportButtonListener());
-
-		doNothing().when(listener).doExport(Matchers.any(ExcelExport.class), eq(tableName));
-
-		listener.buttonClick(null);
-
-		// Make sure that doExport is called when the button is clicked
-		verify(listener).doExport(Matchers.any(ExcelExport.class), eq(tableName));
-
-	}
-
-	@Test
 	public void testExportButtonListenerDoExport() {
 
-		final ExcelExport excelExport = mock(ExcelExport.class);
+		final ProgramSummaryExcelExport excelExport = mock(ProgramSummaryExcelExport.class);
 		final String tableName = "tableName";
 		final ProgramSummaryView.ExportButtonListener listener = this.summaryView.new ExportButtonListener();
 

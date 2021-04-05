@@ -128,9 +128,6 @@ public class UploadBreedingViewOutputActionTest {
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getUploadZip()).thenReturn(this.uploadZip);
 		Mockito.when(this.fileUploadBreedingViewOutputWindow.getParent()).thenReturn(this.window);
 		Mockito.when(this.event.getComponent()).thenReturn(this.component);
-		Mockito.when(this.component.getApplication()).thenReturn(this.application);
-		Mockito.when(this.application.getMainWindow()).thenReturn(this.window);
-
 	}
 
 	@Test

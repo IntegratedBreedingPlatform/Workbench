@@ -5,6 +5,9 @@ import { JhiDateUtils } from 'ng-jhipster';
 
 import { SampleService } from '../../../../../../main/webapp/app/entities/sample/sample.service';
 import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants';
+import { ParamContext } from '../../../../../../main/webapp/app/shared/service/param.context';
+import { ActivatedRoute } from '@angular/router';
+import { MockActivatedRoute } from '../../../helpers/mock-route.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -14,6 +17,7 @@ describe('Service Tests', () => {
     describe('Sample Service', () => {
         let injector: TestBed;
         let service: SampleService;
+        let paramContext: ParamContext;
         let httpMock: HttpTestingController;
 
         beforeEach(() => {
@@ -22,11 +26,20 @@ describe('Service Tests', () => {
                     HttpClientTestingModule
                 ],
                 providers: [
+                    {
+                        provide: ActivatedRoute,
+                        useValue: new MockActivatedRoute({id: 123})
+                    },
                     JhiDateUtils,
+                    ParamContext,
                     SampleService
                 ]
             });
             injector = getTestBed();
+            paramContext = injector.get(ParamContext);
+            // FIXME see global.js
+            paramContext.programUUID = currentProgramId;
+            paramContext.cropName = cropName;
             service = injector.get(SampleService);
             httpMock = injector.get(HttpTestingController);
             service.setCropAndProgram(cropName, currentProgramId);

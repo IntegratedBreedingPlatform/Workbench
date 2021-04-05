@@ -19,6 +19,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
@@ -67,7 +68,7 @@ import com.vaadin.ui.themes.Reindeer;
 @Configurable
 public class RepresentationDatasetComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
-	protected static final String XLS_DOWNLOAD_FILENAME = "export.xls";
+	protected static final String XLS_DOWNLOAD_FILENAME = "export";
 	protected static final String TEMP_FILENAME = "dataset-temp";
 	public static final String EXPORT_CSV_BUTTON_ID = "RepresentationDatasetComponent Export CSV Button";
 	public static final String EXPORT_EXCEL_BUTTON_ID = "RepresentationDatasetComponent Export to FieldBook Excel File Button";
@@ -138,7 +139,7 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			final String temporaryFileName =
 					this.datasetExporter.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
 			final VaadinFileDownloadResource fileDownloadResource = new VaadinFileDownloadResource(new File(temporaryFileName),
-					FileNameGenerator.generateFileName(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME), this.getApplication());
+					FileNameGenerator.generateFileName(RepresentationDatasetComponent.XLS_DOWNLOAD_FILENAME, AppConstants.EXPORT_XLS_SUFFIX.getString()), this.getApplication());
 			Util.showExportExcelDownloadFile(fileDownloadResource, this.getWindow());
 
 		} catch (final DatasetExporterException e) {

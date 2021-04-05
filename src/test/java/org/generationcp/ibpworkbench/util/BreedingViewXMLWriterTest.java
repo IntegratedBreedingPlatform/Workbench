@@ -169,17 +169,10 @@ public class BreedingViewXMLWriterTest {
 
 	@Test
 	public void testWriteProjectXML() throws Exception {
-		Mockito.doReturn(OUTPUT_DIRECTORY).when(this.installationDirectoryUtil)
-				.getOutputDirectoryForProjectAndTool(Mockito.any(Project.class), Mockito.any(ToolName.class));
 		final String filePath = this.breedingViewInput.getDestXMLFilePath();
 		this.breedingViewInput.setTrialInstanceName(BreedingViewXMLWriterTest.ENVIRONMENT_NAME);
 		this.breedingViewXMLWriter.writeProjectXML();
 
-		final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
-		final ArgumentCaptor<ToolName> toolCaptor = ArgumentCaptor.forClass(ToolName.class);
-		Mockito.verify(this.installationDirectoryUtil).getOutputDirectoryForProjectAndTool(projectCaptor.capture(), toolCaptor.capture());
-		Assert.assertEquals(this.project, projectCaptor.getValue());
-		Assert.assertEquals(ToolName.BREEDING_VIEW, toolCaptor.getValue());
 		Assert.assertTrue(filePath + " should exist", new File(filePath).exists());
 	}
 

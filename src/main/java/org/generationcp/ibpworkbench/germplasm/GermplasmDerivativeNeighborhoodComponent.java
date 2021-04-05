@@ -11,6 +11,7 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import com.vaadin.event.ItemClickEvent;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -19,18 +20,16 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
-import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmButtonClickListener;
-import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmItemClickListener;
-import org.generationcp.ibpworkbench.util.Util;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
+import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmButtonClickListener;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.slf4j.Logger;
@@ -66,8 +65,12 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public GermplasmDerivativeNeighborhoodComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet) throws InternationalizableException {
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
+
+	public GermplasmDerivativeNeighborhoodComponent(final int gid, final GermplasmQueries qQuery,
+		final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet) throws InternationalizableException {
 
 		super();
 
@@ -78,23 +81,23 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 		this.gid = gid;
 	}
 
-	private void addNode(GermplasmPedigreeTreeNode node, int level) {
+	private void addNode(final GermplasmPedigreeTreeNode node, final int level) {
 
 		if (level == 1) {
-			String name = node.getGermplasm().getPreferredName() != null ? node.getGermplasm().getPreferredName().getNval() : null;
-			String rootNodeLabel = name + "(" + node.getGermplasm().getGid() + ")";
-			int rootNodeId = node.getGermplasm().getGid();
+			final String name = node.getGermplasm().getPreferredName() != null ? node.getGermplasm().getPreferredName().getNval() : null;
+			final String rootNodeLabel = name + "(" + node.getGermplasm().getGid() + ")";
+			final int rootNodeId = node.getGermplasm().getGid();
 			this.derivativeNeighborhoodTree.addItem(rootNodeId);
 			this.derivativeNeighborhoodTree.setItemCaption(rootNodeId, rootNodeLabel);
 			this.derivativeNeighborhoodTree.setParent(rootNodeId, rootNodeId);
 			this.derivativeNeighborhoodTree.setChildrenAllowed(rootNodeId, true);
 			this.derivativeNeighborhoodTree.expandItemsRecursively(rootNodeId);
 		}
-		for (GermplasmPedigreeTreeNode child : node.getLinkedNodes()) {
-			String name = child.getGermplasm().getPreferredName() != null ? child.getGermplasm().getPreferredName().getNval() : null;
-			int parentNodeId = node.getGermplasm().getGid();
-			String childNodeLabel = name + "(" + child.getGermplasm().getGid() + ")";
-			int childNodeId = child.getGermplasm().getGid();
+		for (final GermplasmPedigreeTreeNode child : node.getLinkedNodes()) {
+			final String name = child.getGermplasm().getPreferredName() != null ? child.getGermplasm().getPreferredName().getNval() : null;
+			final int parentNodeId = node.getGermplasm().getGid();
+			final String childNodeLabel = name + "(" + child.getGermplasm().getGid() + ")";
+			final int childNodeId = child.getGermplasm().getGid();
 			this.derivativeNeighborhoodTree.addItem(childNodeId);
 			this.derivativeNeighborhoodTree.setItemCaption(childNodeId, childNodeLabel);
 			this.derivativeNeighborhoodTree.setParent(childNodeId, parentNodeId);
@@ -159,7 +162,7 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 		this.hLayout2.addComponent(this.selectNumberOfStepForward);
 		this.hLayout3.addComponent(this.btnDisplay);
 
-		CssLayout cssLayout = new CssLayout();
+		final CssLayout cssLayout = new CssLayout();
 		cssLayout.setWidth("100%");
 		cssLayout.addComponent(this.hLayout1);
 		cssLayout.addComponent(this.hLayout2);
@@ -169,7 +172,28 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 
 		this.derivativeNeighborhoodTree = new Tree();
 		this.addComponent(this.derivativeNeighborhoodTree);
-		this.derivativeNeighborhoodTree.addListener(new GermplasmItemClickListener(this));
+
+		this.derivativeNeighborhoodTree.setSelectable(false);
+
+		this.derivativeNeighborhoodTree.setItemStyleGenerator(new Tree.ItemStyleGenerator() {
+
+			@Override
+			public String getStyle(final Object itemId) {
+				return "link";
+			}
+		});
+
+		this.derivativeNeighborhoodTree.addListener(new ItemClickEvent.ItemClickListener() {
+
+			@Override
+			public void itemClick(final ItemClickEvent event) {
+				final String gid = event.getItemId().toString();
+				GermplasmDerivativeNeighborhoodComponent.this
+					.getWindow().open(GermplasmDerivativeNeighborhoodComponent.this.germplasmDetailsUrlService
+						.getExternalResource(Integer.parseInt(gid), false),
+					"_blank", false);
+			}
+		});
 
 		if (this.mainLayout != null) {
 			this.derivativeNeighborhoodTree.setItemDescriptionGenerator(new AbstractSelect.ItemDescriptionGenerator() {
@@ -177,7 +201,7 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 				private static final long serialVersionUID = 3442425534732855473L;
 
 				@Override
-				public String generateDescription(Component source, Object itemId, Object propertyId) {
+				public String generateDescription(final Component source, final Object itemId, final Object propertyId) {
 					return GermplasmDerivativeNeighborhoodComponent.this.messageSource.getMessage(Message.CLICK_TO_VIEW_GERMPLASM_DETAILS);
 				}
 			});
@@ -186,7 +210,7 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 		this.displayButtonClickAction();
 	}
 
-	private void populateSelectSteps(Select select) {
+	private void populateSelectSteps(final Select select) {
 
 		for (int i = 1; i <= 10; i++) {
 			select.addItem(String.valueOf(i));
@@ -213,38 +237,22 @@ public class GermplasmDerivativeNeighborhoodComponent extends VerticalLayout imp
 
 		this.removeComponent(this.derivativeNeighborhoodTree);
 		this.derivativeNeighborhoodTree.removeAllItems();
-		int numberOfStepsBackward = Integer.valueOf(this.selectNumberOfStepBackward.getValue().toString());
-		int numberOfStepsForward = Integer.valueOf(this.selectNumberOfStepForward.getValue().toString());
+		final int numberOfStepsBackward = Integer.valueOf(this.selectNumberOfStepBackward.getValue().toString());
+		final int numberOfStepsForward = Integer.valueOf(this.selectNumberOfStepForward.getValue().toString());
 
 		this.germplasmDerivativeNeighborhood =
-				this.qQuery.getDerivativeNeighborhood(Integer.valueOf(this.gid), numberOfStepsBackward, numberOfStepsForward); // throws
-																																// QueryException
+			this.qQuery.getDerivativeNeighborhood(Integer.valueOf(this.gid), numberOfStepsBackward, numberOfStepsForward); // throws
+		// QueryException
 		if (this.germplasmDerivativeNeighborhood != null) {
 			this.addNode(this.germplasmDerivativeNeighborhood.getRoot(), 1);
 		}
 
+		// Prevent any items in the tree to be selected.
+		for (final Object itemId : this.derivativeNeighborhoodTree.getItemIds()) {
+			this.derivativeNeighborhoodTree.unselect(itemId);
+		}
+
 		this.addComponent(this.derivativeNeighborhoodTree);
 
-	}
-
-	public void displayNewGermplasmDetailTab(int gid) throws InternationalizableException {
-		if (this.mainLayout != null && this.tabSheet != null) {
-			VerticalLayout detailLayout = new VerticalLayout();
-			detailLayout.setSpacing(true);
-
-			if (!Util.isTabExist(this.tabSheet, String.valueOf(gid))) {
-				detailLayout.addComponent(new GermplasmDetail(gid, this.qQuery, this.dataIndexContainer, this.mainLayout, this.tabSheet,
-						false));
-				Tab tab = this.tabSheet.addTab(detailLayout, String.valueOf(gid), null);
-				tab.setClosable(true);
-				this.tabSheet.setSelectedTab(detailLayout);
-				this.mainLayout.addComponent(this.tabSheet);
-
-			} else {
-				Tab tab = Util.getTabAlreadyExist(this.tabSheet, String.valueOf(gid));
-				this.tabSheet.setSelectedTab(tab.getComponent());
-			}
-
-		}
 	}
 }

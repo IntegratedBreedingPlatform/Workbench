@@ -79,9 +79,6 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout
 
 	private List<DataSet> ds;
 
-	@Value("${workbench.is.server.app}")
-	private String isServerApp;
-
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -138,11 +135,7 @@ public class MultiSiteAnalysisGxePanel extends VerticalLayout
 	public void updateLabels() {
 		this.messageSource.setCaption(this.btnBack, Message.BACK);
 		this.messageSource.setCaption(this.btnReset, Message.RESET);
-		if (Boolean.parseBoolean(this.isServerApp)) {
-			this.messageSource.setCaption(this.btnRunMultiSite, Message.DOWNLOAD_INPUT_FILES);
-		} else {
-			this.messageSource.setCaption(this.btnRunMultiSite, Message.LAUNCH_BREEDING_VIEW);
-		}
+		this.messageSource.setCaption(this.btnRunMultiSite, Message.DOWNLOAD_INPUT_FILES);
 
 		this.messageSource.setValue(this.lblDataSelectedForAnalysisHeader, Message.GXE_SELECTED_INFO);
 		this.messageSource.setValue(this.lblDatasetName, Message.BV_DATASET_NAME);

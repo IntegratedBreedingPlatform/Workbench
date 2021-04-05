@@ -53,6 +53,10 @@ import { SampleListBuilderService } from './list-creation/service/sample-list-bu
 import { GermplasmListBuilderService } from './list-creation/service/germplasm-list-builder.service';
 import { SampleListCreationComponent } from './list-creation/sample-list-creation.component';
 import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
+import { ProgramService } from './program/service/program.service';
+import { ToolService } from './tool/service/tool.service';
+import { CollapsibleComponent } from './component/collapsible.component';
+import { UserProgramInfoService } from './service/user-program-info.service';
 
 @NgModule({
     imports: [
@@ -91,7 +95,8 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        CollapsibleComponent
     ],
     providers: [
         LoginService,
@@ -112,9 +117,12 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         NameTypeService,
         BreedingMethodService,
         LocationService,
+        ProgramService,
         PopupService,
         AlertService,
+        ToolService,
         KeySequenceRegisterService,
+        UserProgramInfoService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
@@ -161,7 +169,8 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        CollapsibleComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -30,7 +30,8 @@
 	</listener>
 
 	<session-config>
-		<session-timeout>60</session-timeout>
+		<!-- TODO: investigate vaadin redirect -->
+		<session-timeout>-1</session-timeout>
 	</session-config>
 
 	<filter>
@@ -118,12 +119,17 @@
 		<servlet-name>mvcdispatcher</servlet-name>
 		<url-pattern>/controller/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet-mapping>
-		<servlet-name>ibpworkbench</servlet-name>
+		<servlet-name>mvcdispatcher</servlet-name>
 		<url-pattern>/main/*</url-pattern>
 	</servlet-mapping>
-	
+
+	<servlet-mapping>
+		<servlet-name>ibpworkbench</servlet-name>
+		<url-pattern>/old/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>ibpworkbench</servlet-name>
 		<url-pattern>/VAADIN/*</url-pattern>
@@ -133,7 +139,12 @@
 		<servlet-name>workbenchcontent</servlet-name>
 		<url-pattern>/content/*</url-pattern>
 	</servlet-mapping>
-	
+
+	<servlet-mapping>
+		<servlet-name>workbenchcontent</servlet-name>
+		<url-pattern>/workbenchtools/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>web_login_forward</servlet-name>
 		<url-pattern>/web_login_forward/*</url-pattern>
