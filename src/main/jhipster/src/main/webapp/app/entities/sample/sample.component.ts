@@ -62,6 +62,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         public listBuilderContext: ListBuilderContext
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
+        this.listBuilderContext.pageSize = this.itemsPerPage;
 
         this.routeData = this.activatedRoute.data.subscribe((data: any) => {
             this.page = data.pagingParams.page;

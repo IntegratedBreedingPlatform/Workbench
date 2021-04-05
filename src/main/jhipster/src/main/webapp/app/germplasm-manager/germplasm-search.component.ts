@@ -301,6 +301,7 @@ export class GermplasmSearchComponent implements OnInit {
             this.filters = GermplasmSearchComponent.getInitialFilters();
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
+        this.listBuilderContext.pageSize = this.itemsPerPage;
     }
 
     loadAll(request: GermplasmSearchRequest) {

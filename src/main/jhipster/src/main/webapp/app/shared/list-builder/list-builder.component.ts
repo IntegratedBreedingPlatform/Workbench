@@ -17,7 +17,6 @@ export class ListBuilderComponent {
     HIDDEN_COLUMNS = ['_internal_id', 'entryNo'];
     data: ListEntry[] = [];
     page = 1;
-    pageSize = 20;
 
     // { <data-index>: boolean }
     selectedItems = {};
@@ -82,12 +81,12 @@ export class ListBuilderComponent {
         if (!(this.data && this.data.length)) {
             return [];
         }
-        return this.data.slice(this.pageOffset(), this.page * this.pageSize)
+        return this.data.slice(this.pageOffset(), this.page * this.context.pageSize)
             .map((row) => row.internal_id);
     }
 
     pageOffset() {
-        return (this.page - 1) * this.pageSize;
+        return (this.page - 1) * this.context.pageSize;
     }
 
     onSelectAllPages() {
