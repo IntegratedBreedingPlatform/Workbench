@@ -523,7 +523,13 @@ export class GermplasmSearchComponent implements OnInit {
         this.selectedItems = {};
     }
 
-    toggleSelect($event, index, germplasm: Germplasm) {
+    toggleSelect($event, index, germplasm: Germplasm, checkbox = false) {
+        if (this.isSelectAll) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
         let items;
         if ($event.shiftKey) {
             const max = Math.max(this.lastClickIndex, index) + 1,
@@ -531,6 +537,7 @@ export class GermplasmSearchComponent implements OnInit {
             items = this.germplasmList.slice(min, max);
         } else {
             items = [germplasm];
+            this.lastClickIndex = index;
         }
         const isClickedItemSelected = this.selectedItems[germplasm.gid];
         for (const item of items) {
@@ -540,7 +547,6 @@ export class GermplasmSearchComponent implements OnInit {
                 this.selectedItems[item.gid] = item;
             }
         }
-        this.lastClickIndex = index;
     }
 
     isPageSelected() {

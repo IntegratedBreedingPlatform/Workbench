@@ -51,9 +51,10 @@
 					<tbody>
 						<tr *ngFor="let row of data | slice: pageOffset() : page * pageSize; let index = index"
 							[class.selected]="isSelected(row.internal_id)"
+							(click)="toggleSelect($event, index, row.internal_id)"
 							cdkDrag >
 							<td *ngIf="!isSelectAllPages">
-								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect($event, index, row.internal_id)">
+								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect($event, index, row.internal_id, true); $event.stopPropagation()">
 							</td>
 							<td>{{pageOffset() + index + 1}}</td>
 							<td *ngFor="let header of headers()">

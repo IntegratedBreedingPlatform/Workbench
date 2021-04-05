@@ -39,7 +39,10 @@ export class ListBuilderComponent {
         return this.selectedItems[index];
     }
 
-    toggleSelect($event, index, internal_id) {
+    toggleSelect($event, index, internal_id, checkbox = false) {
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
         let ids;
         if ($event.shiftKey) {
             const max = Math.max(this.lastClickIndex, index) + 1 + this.pageOffset(),
@@ -47,6 +50,7 @@ export class ListBuilderComponent {
             ids = this.data.slice(min, max).map((g) => g.internal_id);
         } else {
             ids = [internal_id];
+            this.lastClickIndex = index;
         }
         const isClickedItemSelected = this.selectedItems[internal_id];
         for (const id of ids) {
@@ -56,7 +60,6 @@ export class ListBuilderComponent {
                 this.selectedItems[id] = true;
             }
         }
-        this.lastClickIndex = index;
     }
 
     isPageSelected() {

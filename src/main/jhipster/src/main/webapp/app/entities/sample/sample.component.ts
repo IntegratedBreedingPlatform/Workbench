@@ -16,6 +16,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
 import { ListEntry } from '../../shared/list-builder/model/list.model';
+import { Germplasm } from '../germplasm/germplasm.model';
 
 @Component({
     selector: 'jhi-sample',
@@ -179,7 +180,13 @@ export class SampleComponent implements OnInit, OnDestroy {
         return this.selectedItems[sample.sampleId];
     }
 
-    toggleSelect($event, index, sample: Sample) {
+    toggleSelect($event, index, sample: Sample, checkbox = false) {
+        if (this.isSelectAllPages) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
         let items;
         if ($event.shiftKey) {
             const max = Math.max(this.lastClickIndex, index) + 1,
@@ -187,6 +194,7 @@ export class SampleComponent implements OnInit, OnDestroy {
             items = this.sampleList.samples.slice(min, max);
         } else {
             items = [sample];
+            this.lastClickIndex = index;
         }
         const isClickedItemSelected = this.selectedItems[sample.sampleId];
         for (const item of items) {
@@ -196,7 +204,6 @@ export class SampleComponent implements OnInit, OnDestroy {
                 this.selectedItems[item.sampleId] = item;
             }
         }
-        this.lastClickIndex = index;
     }
 
     isPageSelected() {
