@@ -28,4 +28,8 @@ export class GermplasmListBuilderService implements ListBuilderService {
         return modalRef.result;
     }
 
+    getIdColumnName(): string {
+        return ColumnLabels.GID;
+    }
+
 }

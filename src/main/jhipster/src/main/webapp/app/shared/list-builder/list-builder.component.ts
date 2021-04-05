@@ -134,6 +134,22 @@ export class ListBuilderComponent {
         this.selectedItems = {};
     }
 
+    async deleteDuplicates() {
+        const modalRef = this.modalService.open(ModalConfirmComponent);
+        modalRef.componentInstance.message = this.translateService.instant('list-builder.delete.duplicates.confirm');
+        try {
+            await modalRef.result;
+        } catch (e) {
+            return;
+        }
+        const map = this.data.reduce((_map, row) => {
+            _map[row[this.listBuilderService.getIdColumnName()]] = row;
+            return _map;
+        }, {})
+        this.data = Object.values(map);
+        this.selectedItems = {};
+    }
+
     async reset() {
         const modalRef = this.modalService.open(ModalConfirmComponent);
         modalRef.componentInstance.message = this.translateService.instant('list-builder.reset.confirm');
