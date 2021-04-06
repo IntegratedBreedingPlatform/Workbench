@@ -20,7 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListEntry } from '../shared/list-builder/model/list.model';
@@ -36,6 +36,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
+    GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
@@ -614,6 +615,22 @@ export class GermplasmSearchComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
+        });
+    }
+
+    exportDataAndLabels() {
+        this.paramContext.resetQueryParams().then(() => {
+            /*
+             * FIXME workaround for history.back() with base-href
+             *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href
+             *  or 'inventory-manager' string
+             */
+            window.history.pushState({}, '',  window.location.hash);
+
+            window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
+                + '?programId=' + this.paramContext.programUUID
+                + '&printingLabelType=' + GERMPLASM_LABEL_PRINTING_TYPE
+                + '&searchRequestId=' + 0 ; // Fix this cuenyad
         });
     }
 

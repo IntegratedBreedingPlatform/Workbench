@@ -33,6 +33,9 @@
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.delete-germplasm"
 							(click)="deleteGermplasm()" >
 					</button>
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GERMPLASM_LABEL_PRINTING_PERMISSIONS" jhiTranslate="search-germplasm.actions.export-data-and-labels"
+							(click)="exportDataAndLabels()">
+					</button>
 				</div>
 			</div>
 		</div>
