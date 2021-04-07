@@ -23,8 +23,8 @@ export class AttributesPaneComponent implements OnInit {
     ngOnInit(): void {
         this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'PASSPORT').toPromise().then((germplasmAttributes) => {
             this.passportAttributes = germplasmAttributes;
-        });
-        this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'ATTRIBUTE').toPromise().then((germplasmAttributes) => {
+            return this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'ATTRIBUTE').toPromise();
+        }).then((germplasmAttributes) => {
             this.attributes = germplasmAttributes;
         });
     }
