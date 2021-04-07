@@ -16,6 +16,8 @@ import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
 import { UserProgramInfoService } from '../shared/service/user-program-info.service';
 
+declare const showReleaseNotes: string;
+
 @Component({
     selector: 'jhi-navbar',
     templateUrl: './navbar.component.html',
@@ -68,6 +70,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // Get ask for support link url
         this.getHelpLink(this.askForSupportHelpLink, HELP_NAVIGATION_ASK_FOR_SUPPORT)
             .then((response) => this.askForSupportHelpLink = response);
+
+        console.log(showReleaseNotes);
     }
 
     hasChild = (_: number, node: any) => node.expandable;
