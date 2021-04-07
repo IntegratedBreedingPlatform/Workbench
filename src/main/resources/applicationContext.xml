@@ -426,6 +426,11 @@
 
 	<bean id="germplasmNamingService" class="org.generationcp.commons.service.impl.GermplasmNamingServiceImpl" />
 
+	<bean id="germplasmService" factory-bean="managerFactory"
+		  factory-method="getGermplasmService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="ruleService"
 		  class="org.generationcp.commons.ruleengine.impl.RulesServiceImpl" />
 
