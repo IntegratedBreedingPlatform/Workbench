@@ -114,6 +114,15 @@ export class GermplasmService {
             '?programUUID=' + this.context.programUUID;
         return this.http.delete<DeleteGermplasmResultType>(url, { params });
     }
+
+    getGermplasmPresentInOtherLists(gids: number[], listId: number): Observable<number[]> {
+        const params = {};
+        params['gids'] = gids;
+        var listIdUrl = listId !== null ? '&listId='+listId : '';
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/lists` +
+            '?programUUID=' + this.context.programUUID + listIdUrl;
+        return this.http.get<number[]>(url, { params });
+    }
 }
 
 export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };

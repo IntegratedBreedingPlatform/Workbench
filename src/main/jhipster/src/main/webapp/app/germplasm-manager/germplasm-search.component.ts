@@ -632,29 +632,36 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = 'Delete Germplasm';
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
-        confirmModalRef.result.then(() => {
-            this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
-                if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
-                    this.alertService.warning('germplasm-delete.warning');
-                    this.resetFilters();
-                    // Show the germplasm that were not deleted because of validation
-                    this.request.gids = response.germplasmWithErrors;
-                    ColumnFilterComponent.reloadFilters(this.filters, this.request);
-                } else {
-                    this.alertService.success('germplasm-delete.success');
-                }
-                this.resetTable();
+        const confirmDeleteGermplasmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmDeleteGermplasmModalRef.componentInstance.title = 'Delete Germplasm';
+        confirmDeleteGermplasmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
+        confirmDeleteGermplasmModalRef.result.then(() => {
+            this.germplasmService.getGermplasmPresentInOtherLists(this.selectedItems, null).subscribe((response) => {
+                const confirmDeleteGermplasmInOtherListsModalRef = this.modalService.open(ModalConfirmComponent as Component);
+                confirmDeleteGermplasmInOtherListsModalRef.componentInstance.title = 'Delete Germplasm';
+                confirmDeleteGermplasmInOtherListsModalRef.componentInstance.message = "The following germplasm with GIDs: " + response.join(', ') + " are included in some lists. Continue with the deletion?";
+                confirmDeleteGermplasmInOtherListsModalRef.result.then(() => {
+                    this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
+                        if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
+                            this.alertService.warning('germplasm-delete.warning');
+                            this.resetFilters();
+                            // Show the germplasm that were not deleted because of validation
+                            this.request.gids = response.germplasmWithErrors;
+                            ColumnFilterComponent.reloadFilters(this.filters, this.request);
+                        } else {
+                            this.alertService.success('germplasm-delete.success');
+                        }
+                        this.resetTable();
 
-                // If there are deleted germplasm, show the Clear Prefix Key Cache Sequence Dialog
-                if (response.deletedGermplasm && response.deletedGermplasm.length) {
-                    this.openKeySequenceDeletionDialog(response.deletedGermplasm);
-                }
+                        // If there are deleted germplasm, show the Clear Prefix Key Cache Sequence Dialog
+                        if (response.deletedGermplasm && response.deletedGermplasm.length) {
+                            this.openKeySequenceDeletionDialog(response.deletedGermplasm);
+                        }
 
+                    });
+                    this.activeModal.close();
+                });
             });
-            this.activeModal.close();
         }, () => this.activeModal.dismiss());
     }
 
