@@ -11,6 +11,8 @@ import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../mod
 import { getAllRecords } from '../../util/get-all-records';
 import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy } from '../model/germplasm.model';
 import { Sample } from '../../../entities/sample';
+import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class GermplasmService {
@@ -18,10 +20,15 @@ export class GermplasmService {
                 private context: ParamContext) {
     }
 
-    searchGermplasm(germplasmSearchRequest, pageable): Observable<HttpResponse<Germplasm[]>> {
-        const options = createRequestOption(pageable);
-        return this.http.post<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
-            germplasmSearchRequest, { params: options, observe: 'response' });
+    getSearchResults(req?: any): Observable<HttpResponse<Germplasm[]>> {
+        const options = createRequestOption(req);
+        return this.http.get<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
+            { params: options, observe: 'response' });
+    }
+
+    search(req?: GermplasmSearchRequest): Observable<string> {
+        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID, req, { observe: 'response' })
+            .pipe(map((res: any) => res.body.result.searchResultDbId));
     }
 
     downloadGermplasmTemplate(isGermplasmUpdateFormat: boolean): Observable<HttpResponse<Blob>> {

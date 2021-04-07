@@ -27,6 +27,7 @@ import { ListEntry } from '../shared/list-builder/model/list.model';
 import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
 import { GERMPLASM_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
+import { SearchResult } from '../shared/search-result.model';
 
 declare var $: any;
 
@@ -56,13 +57,13 @@ export class GermplasmSearchComponent implements OnInit {
     predicate: any;
     previousPage: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
 
     germplasmSearchRequest = new GermplasmSearchRequest();
     germplasmFilters: any;
     germplasmHiddenColumns = {};
-    resultSearch: any = {};
 
     get request() {
         return this.germplasmSearchRequest;
@@ -304,22 +305,40 @@ export class GermplasmSearchComponent implements OnInit {
             this.filters = GermplasmSearchComponent.getInitialFilters();
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
+        this.resultSearch = new SearchResult('');
+
+    }
+
+    search(request: GermplasmSearchRequest): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (!this.resultSearch.searchResultDbId) {
+                this.germplasmService.search(request).subscribe((response) => {
+                    this.resultSearch.searchResultDbId = response;
+                    resolve(this.resultSearch.searchResultDbId);
+                }, (error) => reject(error));
+                this.page = 1;
+            } else {
+                resolve(this.resultSearch.searchResultDbId);
+            }
+        });
     }
 
     loadAll(request: GermplasmSearchRequest) {
         this.isLoading = true;
-        this.germplasmService.searchGermplasm(request,
-            this.addSortParam({
-                page: this.page - 1,
-                size: this.itemsPerPage
-            })
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
-
+        this.search(request).then((searchId) => {
+            this.germplasmService.getSearchResults(
+                this.addSortParam({
+                    searchRequestId: searchId,
+                    page: this.page - 1,
+                    size: this.itemsPerPage
+                })
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
@@ -505,6 +524,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.filters = GermplasmSearchComponent.getInitialFilters();
         this.request = new GermplasmSearchRequest();
         this.request.addedColumnsPropertyIds = [];
+        this.resultSearch = new SearchResult('');
     }
 
     isSelected(germplasm: Germplasm) {
@@ -633,7 +653,7 @@ export class GermplasmSearchComponent implements OnInit {
             window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
                 + '?programId=' + this.paramContext.programUUID
                 + '&printingLabelType=' + GERMPLASM_LABEL_PRINTING_TYPE
-                + '&searchRequestId=' + 0 ; // Fix this cuenyad
+                + '&searchRequestId=' + this.resultSearch.searchResultDbId ;
         });
     }
 
