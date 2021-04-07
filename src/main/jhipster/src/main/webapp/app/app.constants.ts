@@ -11,6 +11,7 @@ export const BREEDING_METHODS_BROWSER_DEFAULT_URL = '/ibpworkbench/content/Progr
 export const GERMPLASM_DETAILS_URL = '/ibpworkbench/main/app/#/germplasm-details/';
 export const PEDIGREE_DETAILS_URL = '/ibpworkbench/maingpsb/pedigree-details/';
 export const INVENTORY_DETAILS_URL = '/ibpworkbench/controller/jhipster#/inventory-details/';
+export const GRAPHICAL_QUERIES_URL = '/ibpworkbench/controller/graphical-queries/';
 export const MAX_PAGE_SIZE = process.env.MAX_PAGE_SIZE;
 export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/userProgramInfo';
 
