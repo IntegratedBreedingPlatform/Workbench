@@ -25,6 +25,8 @@ import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListEntry } from '../shared/list-builder/model/list.model';
 import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
+import { GERMPLASM_LABEL_PRINTING_TYPE } from '../app.constants';
+import { ParamContext } from '../shared/service/param.context';
 
 declare var $: any;
 
@@ -284,7 +286,8 @@ export class GermplasmSearchComponent implements OnInit {
                 private germplasmManagerContext: GermplasmManagerContext,
                 private modalService: NgbModal,
                 private activeModal: NgbActiveModal,
-                public listBuilderContext: ListBuilderContext
+                public listBuilderContext: ListBuilderContext,
+                private paramContext: ParamContext
     ) {
 
         this.predicate = '';
