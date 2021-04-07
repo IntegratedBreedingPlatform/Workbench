@@ -6,7 +6,7 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 import { ParamContext } from '../../shared/service/param.context';
 import { INVENTORY_DETAILS_URL } from '../../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
+import { LoginService } from '../../shared/login/login.service';
 
 @Component({
     selector: 'jhi-inventory-pane',
@@ -21,7 +21,7 @@ export class InventoryPaneComponent implements OnInit {
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private paramContext: ParamContext,
                 private sanitizer: DomSanitizer,
-                private germplasmService: GermplasmService
+                private loginService: LoginService
     ) {
 
         const queryParams = `?cropName=${paramContext.cropName}&programUUID=${paramContext.programUUID}&gid=${germplasmDetailsContext.gid}`;
@@ -30,8 +30,8 @@ export class InventoryPaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // Call this service but do nothing. This is just to make sure that if token is invalid (via AuthExpiredInterceptor), the page will be redirected to login.
-        this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((value) => {
+        // Explicitly validate token when this page is loaded. If token is invalid, browser will redirect to login page.
+        this.loginService.validateToken().toPromise().then(() => {
         });
     }
 

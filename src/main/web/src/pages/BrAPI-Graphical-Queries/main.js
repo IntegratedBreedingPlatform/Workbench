@@ -338,7 +338,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
 
 		if ($scope.gid) {
-			// If the gid query parameter is specified, on the location, germplasm and dataset level filters are enabled.
+			// If the gid query parameter is specified, only the location, germplasm and dataset level filters are enabled.
 			return {
 				locationDbIds: locationDbIds || null,
 				germplasmDbIds: [$scope.gid],
