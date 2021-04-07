@@ -502,5 +502,11 @@
 	<bean id="germplasmDetailsUrlService"
 		  class="org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService">
     </bean>
+
+	<bean id="releaseNoteService"
+			  class="org.generationcp.middleware.service.releasenote.ReleaseNoteServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>
