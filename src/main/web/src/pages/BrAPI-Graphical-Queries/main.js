@@ -1,4 +1,4 @@
-// FIXME: Refactor these to Angular.
+// FIXME: Refactor these to Angular (validate token, load locations, load trials)
 $(document).ready(function () {
 	$.ajax({
 		dataType: "json",
@@ -15,9 +15,6 @@ $(document).ready(function () {
 	});
 	loadLocations().then(function (response) {
 		buildLocationsCombo(response);
-	});
-	loadObservationLevels().then(function (response) {
-		buildObservationLevelsCombo(response);
 	});
 	loadTrials();
 });
@@ -69,34 +66,6 @@ function buildLocationsCombo(response) {
 	$('#breedingLocations select').select2();
 }
 
-
-function loadObservationLevels() {
-
-	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/observationLevels";
-
-	return $.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
-		url: url,
-		beforeSend: beforeSend,
-		error: error
-	});
-}
-
-
-function buildObservationLevelsCombo(response) {
-	if (!response
-		|| !response.result
-		|| !response.result.data) {
-		return;
-	}
-
-	$('#observationLevels').html('<select class="form-control" name="observationLevel"></select>');
-	$('#observationLevels select').append(response.result.data.map(function (observationLevel) {
-		return '<option value="' + observationLevel + '">' + observationLevel + '</option>';
-	}));
-}
-
 function loadTrials() {
 	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/trials"
 		+ '?programDbId=' + getUrlParameter('programUUID');
@@ -139,7 +108,7 @@ function getExportFileName(fileName, fileType) {
 // Angular ****************************
 var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
 
-mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function ($scope, $uibModal, $http) {
+mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observationService', function ($scope, $uibModal, $http, observationService) {
 
 	$scope.flags = {
 		groupByAccession: false,
@@ -155,26 +124,36 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 
 	$scope.filteredDataResult = [];
 
+	$scope.gid = null;
+
+	$scope.observationLevels = [];
+	$scope.selectedObservationModel = 'PLOT';
+
+	$scope.init = function () {
+
+		// Get the gid from the query params if available.
+		$scope.gid = getUrlParameter("gid");
+
+		observationService.getObservationLevels().success(function (response) {
+			$scope.observationLevels = response.result.data;
+		}).finally(function () {
+			// If the gid is specified in the query parameters, load the result automatically, to
+			// display the PLOT observations filtered by the gid. This is used when the Graphical Query page is
+			// embedded inside the Germplasm Details popup.
+			if ($scope.gid) {
+				$scope.loadData();
+			}
+		});
+
+	}
+
 	$scope.loadData = function () {
 
 		var form = $("#brapi-form").serializeArray().reduce(function (vals, entry) {
 			vals[entry.name] = entry.value;
 			return vals
 		}, {});
-
-		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
-
-		const phenotypesSearchPromise = $scope.phenotypesSearch({
-			locationDbIds: locationDbIds || null,
-			observationLevel: form.observationLevel || null,
-			programDbIds: [getUrlParameter('programUUID')],
-			trialDbIds: $('#trials select').val() || null,
-			observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
-			observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
-			germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
-			pageSize: form.pageSize,
-			page: 0
-		});
+		const phenotypesSearchPromise = $scope.phenotypesSearch(createSearchObject(form));
 
 		switch ($scope.toolId) {
 			case 'graphical-filtering':
@@ -226,7 +205,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		$uibModal.open({
 			templateUrl: 'pages/BrAPI-Graphical-Queries/selectGermplasmModal.html',
 			controller: 'SelectGermplasmController',
-			windowClass : 'modal-very-huge'
+			windowClass: 'modal-very-huge'
 		});
 	};
 
@@ -316,7 +295,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		$("#graph_div").html("");
 		$("#hist_div").html("");
 
-		var scomp = StudyComparison().links(function(dbId){
+		var scomp = StudyComparison().links(function (dbId) {
 			return '/ibpworkbench/maingpsb/germplasm-' + dbId;
 		});
 		var sharedVars = scomp.loadData(data);
@@ -326,11 +305,15 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 			.data(sharedVars);
 		varOpts.exit().remove();
 		varOpts.enter().append("option").merge(varOpts)
-			.attr("value",function(d){return d})
-			.text(function(d){return d})
+			.attr("value", function (d) {
+				return d
+			})
+			.text(function (d) {
+				return d
+			})
 			.raise();
 
-		$("#scomp-compare").off().click(function(){
+		$("#scomp-compare").off().click(function () {
 			scomp.setVariable($("#scomp-select-var").val());
 			scomp.graphGrid("#graph_div");
 			scomp.multiHist("#hist_div");
@@ -349,6 +332,33 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		});
 	}
 
+	function createSearchObject(form) {
+
+		// TODO: Use the new Locations selector (same as the locations-select directive used in Fieldbook)
+		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
+
+		if ($scope.gid) {
+			// If the gid query parameter is specified, only the location, germplasm and dataset level filters are enabled.
+			return {
+				locationDbIds: locationDbIds || null,
+				germplasmDbIds: [$scope.gid],
+				observationLevel: $scope.selectedObservationModel || null
+			}
+		} else {
+			return {
+				locationDbIds: locationDbIds || null,
+				observationLevel: $scope.selectedObservationModel || null,
+				programDbIds: [getUrlParameter('programUUID')],
+				trialDbIds: $('#trials select').val() || null,
+				observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
+				observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
+				germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
+				pageSize: form.pageSize,
+				page: 0
+			};
+		}
+	}
+
 	function tryParseNumber(str) {
 		var retValue = null;
 		if (str && !isNaN(str)) {
@@ -356,6 +366,8 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', function (
 		}
 		return retValue;
 	}
+
+	$scope.init();
 
 }]);
 
@@ -367,12 +379,12 @@ mainApp.controller('SelectGermplasmController', ['$scope', '$q', '$uibModalInsta
 			'&programUUID=' + getUrlParameter("programUUID") +
 			'&selectMultiple=true';
 
-		window.onGidsSelected = function(gids) {
+		window.onGidsSelected = function (gids) {
 			$("#germplasmDbIds").val(gids);
 			$uibModalInstance.close();
 		}
 
-		window.closeModal = function() {
+		window.closeModal = function () {
 			$uibModalInstance.close(null);
 		}
 
@@ -481,6 +493,22 @@ mainApp.factory('rCallService', ['$http', function ($http) {
 
 	return rCallService;
 
+
+}]);
+
+mainApp.factory('observationService', ['$http', function ($http) {
+
+	var observationService = {};
+
+	observationService.getObservationLevels = function () {
+		return $http({
+			method: 'GET',
+			url: '/bmsapi/' + getUrlParameter('cropName') + '/brapi/v1/observationLevels',
+			headers: {'Authorization': 'Bearer ' + JSON.parse(localStorage["bms.xAuthToken"]).token}
+		});
+	};
+
+	return observationService;
 
 }]);
 

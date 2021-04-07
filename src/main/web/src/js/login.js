@@ -36,6 +36,11 @@
 	var display_name = getUrlParameter("display_name");
 	var return_url = getUrlParameter("return_url");
 
+	// Reset the authentication token when login page is loaded.
+	// TODO: Handle null bms.xAuthToken in all code that uses this localStorage item, so that we can just remove
+	// this item from localStorage rathen than resetting its value.
+	localStorage['bms.xAuthToken'] = JSON.stringify({success: false, token: '', expires: 0});
+
 	var failedLoginAttemptCount = 0;
 
 	function toggleCheckbox() {
