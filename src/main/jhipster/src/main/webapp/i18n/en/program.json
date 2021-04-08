@@ -4,6 +4,8 @@
         "no-data": "No records found or you don't have the proper permissions.",
         "crop": "Crop",
         "program": "Program",
-        "launch": "Launch"
+        "launch": "Launch",
+        "my.studies": "My Studies",
+        "my.lists": "My Lists"
     }
 }

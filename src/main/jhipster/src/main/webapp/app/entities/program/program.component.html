@@ -23,6 +23,7 @@
 					<label class="col-sm-auto col-form-label" for="programDropdown" jhiTranslate="program.program"></label>
 					<div class="col-sm-auto">
 						<select class="form-control" id="programDropdown" name="programDropdown"
+								(change)="onProgramChange()"
 								[(ngModel)]="program" #programDropdown="ngModel" >
 							<option *ngFor="let program of programs" [ngValue]="program">{{program.name}}</option>
 						</select>
@@ -40,6 +41,27 @@
 		<div class="col"><!-- filler --></div>
 		<div class="col-auto">
 			<img [src]="instituteLogoPath" alt="" style="max-height: 100px;"/>
+		</div>
+	</div>
+	<div class="row mt-3" *ngIf="programSelected">
+		<div class="col">
+			<nav>
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link" jhiTranslate="program.my.studies" [routerLink]="['my-studies']"
+						   [routerLinkActive]="['active']"
+						   [queryParams]="{ programUUID: programSelected.uniqueID }"></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" jhiTranslate="program.my.lists" [routerLink]="['my-lists']"
+						   [routerLinkActive]="['active']"
+						   [queryParams]="{ programUUID: programSelected.uniqueID }"></a>
+					</li>
+				</ul>
+			</nav>
+			<div class="tab-content p-3">
+				<router-outlet></router-outlet>
+			</div>
 		</div>
 	</div>
 </section>

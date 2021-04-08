@@ -4,11 +4,12 @@ import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { Principal } from '../../shared';
-import { HELP_DASHBOARD, INSTITUTE_LOGO_PATH } from '../../app.constants';
+import { INSTITUTE_LOGO_PATH } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 import { JhiLanguageService } from 'ng-jhipster';
 import { CropService } from '../../shared/crop/service/crop.service';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'jhi-program',
@@ -28,7 +29,11 @@ export class ProgramComponent implements OnInit {
     cropChanged = new Subject<string>();
 
     programs: Program[];
+    // bound to dropdown
     program: Program;
+    programChanged = new Subject<string>();
+    // after debounce time
+    programSelected: Program;
 
     itemCount: any;
     pageSize = 20;
@@ -42,7 +47,9 @@ export class ProgramComponent implements OnInit {
         private cropService: CropService,
         private principal: Principal,
         private helpService: HelpService,
-        private languageService: JhiLanguageService
+        private languageService: JhiLanguageService,
+        private router: Router,
+        private route: ActivatedRoute
     ) {
     }
 
@@ -69,6 +76,19 @@ export class ProgramComponent implements OnInit {
                 this.programs = resp.body;
             });
 
+        this.programChanged
+            .debounceTime(500)
+            .switchMap(() => {
+                this.programSelected = this.program;
+                this.router.navigate(['my-studies'], {
+                    relativeTo: this.route,
+                    queryParams: {
+                        programUUID: this.program.uniqueID
+                    }
+                })
+                return of('');
+            }).subscribe();
+
         /*
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_DASHBOARD).toPromise().then((response) => {
@@ -89,6 +109,10 @@ export class ProgramComponent implements OnInit {
 
     onCropChange() {
         this.cropChanged.next();
+    }
+
+    onProgramChange() {
+        this.programChanged.next();
     }
 
 }
