@@ -58,7 +58,8 @@ module.exports = (options) => ({
                 // If you use an API server, in `prod` mode, you will need to enable CORS
                 // (see the `jhipster.cors` common JHipster property in the `application-*.yml` configurations)
                 SERVER_API_URL: `'/bmsapi/'`,
-                MAX_PAGE_SIZE: `'${appProperties.get('pagedresult.max.page.size')}'`
+                MAX_PAGE_SIZE: `'${appProperties.get('pagedresult.max.page.size')}'`,
+                INSTITUTE_LOGO_PATH: `'${appProperties.get('institute.logo.path')}'`
             }
         }),
         new CopyWebpackPlugin([

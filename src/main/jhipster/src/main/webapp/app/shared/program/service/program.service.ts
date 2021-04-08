@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { SERVER_API_URL } from '../../../app.constants';
 import { Program } from '../model/program';
 import { Observable } from 'rxjs';
@@ -11,9 +11,11 @@ export class ProgramService {
     constructor(private http: HttpClient) {
     }
 
-    getPrograms(pageable): Observable<HttpResponse<Program[]>> {
+    getPrograms(cropName, pageable): Observable<HttpResponse<Program[]>> {
+        const params = Object.assign({}, pageable);
+        params['cropName'] = cropName;
         return this.http.get<Program[]>(SERVER_API_URL + 'programs', {
-            params: createRequestOption(pageable),
+            params: createRequestOption(params),
             observe: 'response'
         });
     }

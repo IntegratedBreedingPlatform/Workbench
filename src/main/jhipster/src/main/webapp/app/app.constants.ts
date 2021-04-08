@@ -14,6 +14,7 @@ export const INVENTORY_DETAILS_URL = '/ibpworkbench/controller/jhipster#/invento
 export const GRAPHICAL_QUERIES_URL = '/ibpworkbench/controller/graphical-queries/';
 export const MAX_PAGE_SIZE = process.env.MAX_PAGE_SIZE;
 export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/userProgramInfo';
+export const INSTITUTE_LOGO_PATH = process.env.INSTITUTE_LOGO_PATH;
 
 // HELP
 export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';

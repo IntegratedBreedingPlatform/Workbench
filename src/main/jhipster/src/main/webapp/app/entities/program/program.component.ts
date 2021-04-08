@@ -4,9 +4,11 @@ import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { Principal } from '../../shared';
-import { HELP_DASHBOARD } from '../../app.constants';
+import { HELP_DASHBOARD, INSTITUTE_LOGO_PATH } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 import { JhiLanguageService } from 'ng-jhipster';
+import { CropService } from '../../shared/crop/service/crop.service';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'jhi-program',
@@ -17,17 +19,27 @@ import { JhiLanguageService } from 'ng-jhipster';
 })
 export class ProgramComponent implements OnInit {
 
+    instituteLogoPath = '/ibpworkbench/controller/' + INSTITUTE_LOGO_PATH;
+
     user?: any;
 
+    crops: string[];
+    cropName: string;
+    cropChanged = new Subject<string>();
+
     programs: Program[];
+    program: Program;
+
     itemCount: any;
     pageSize = 20;
     page = 1;
+
     isLoading = false;
     helpLink: string;
 
     constructor(
         private programService: ProgramService,
+        private cropService: CropService,
         private principal: Principal,
         private helpService: HelpService,
         private languageService: JhiLanguageService
@@ -41,17 +53,33 @@ export class ProgramComponent implements OnInit {
             this.user = identity;
         }
 
-        this.loadPage();
+        this.cropService.getCrops().subscribe((crops) => this.crops = crops);
+        this.cropChanged
+            .debounceTime(500)
+            .switchMap(() =>  {
+                this.isLoading = true;
+                return this.programService.getPrograms(this.cropName, {
+                    page: this.page - 1,
+                    size: this.pageSize
+                }).pipe(
+                    finalize(() => this.isLoading = false)
+                )
+            })
+            .subscribe((resp: HttpResponse<Program[]>) => {
+                this.programs = resp.body;
+            });
 
+        /*
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_DASHBOARD).toPromise().then((response) => {
                 this.helpLink = response.body;
             }).catch((error) => {});
         }
+         */
     }
 
-    onProgramSelect(program: Program) {
-        window.parent.postMessage({ programSelected: program }, '*');
+    onProgramSelect() {
+        window.parent.postMessage({ programSelected: this.program }, '*');
     }
 
     isSelected(program: Program) {
@@ -59,17 +87,8 @@ export class ProgramComponent implements OnInit {
             (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
     }
 
-    loadPage() {
-        this.isLoading = true;
-        this.programService.getPrograms({
-            page: this.page - 1,
-            size: this.pageSize
-        }).pipe(
-            finalize(() => this.isLoading = false)
-        ).subscribe((resp: HttpResponse<Program[]>) => {
-            this.programs = resp.body;
-            this.itemCount = resp.headers.get('X-Total-Count');
-        });
+    onCropChange() {
+        this.cropChanged.next();
     }
 
 }

@@ -57,6 +57,7 @@ import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 import { CollapsibleComponent } from './component/collapsible.component';
 import { UserProgramInfoService } from './service/user-program-info.service';
+import { CropService } from './crop/service/crop.service';
 
 @NgModule({
     imports: [
@@ -118,6 +119,7 @@ import { UserProgramInfoService } from './service/user-program-info.service';
         BreedingMethodService,
         LocationService,
         ProgramService,
+        CropService,
         PopupService,
         AlertService,
         ToolService,
