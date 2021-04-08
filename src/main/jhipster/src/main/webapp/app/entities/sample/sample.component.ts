@@ -16,6 +16,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
 import { ListEntry } from '../../shared/list-builder/model/list.model';
+import { Germplasm } from '../germplasm/germplasm.model';
 
 @Component({
     selector: 'jhi-sample',
@@ -41,9 +42,10 @@ export class SampleComponent implements OnInit, OnDestroy {
     previousPage: any;
     reverse: any;
 
-    // { <data-index>: boolean }
-    selectedItems = {};
+    // { <data-index>: sample }
+    selectedItems: {[key: number]: Sample} = {};
     isSelectAllPages = false;
+    lastClickIndex: any;
 
     constructor(
         private sampleService: SampleService,
@@ -60,6 +62,7 @@ export class SampleComponent implements OnInit, OnDestroy {
         public listBuilderContext: ListBuilderContext
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
+        this.listBuilderContext.pageSize = this.itemsPerPage;
 
         this.routeData = this.activatedRoute.data.subscribe((data: any) => {
             this.page = data.pagingParams.page;
@@ -178,32 +181,44 @@ export class SampleComponent implements OnInit, OnDestroy {
         return this.selectedItems[sample.sampleId];
     }
 
-    toggleSelect(sample: Sample) {
-        if (this.selectedItems[sample.sampleId]) {
-            delete this.selectedItems[sample.sampleId];
+    toggleSelect($event, index, sample: Sample, checkbox = false) {
+        if (this.isSelectAllPages) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
+        let items;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1,
+                min = Math.min(this.lastClickIndex, index);
+            items = this.sampleList.samples.slice(min, max);
         } else {
-            this.selectedItems[sample.sampleId] = true;
+            items = [sample];
+            this.lastClickIndex = index;
+        }
+        const isClickedItemSelected = this.selectedItems[sample.sampleId];
+        for (const item of items) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[item.sampleId];
+            } else {
+                this.selectedItems[item.sampleId] = item;
+            }
         }
     }
 
     isPageSelected() {
-        const pageItemIds = this.getPageItemIds();
-        return this.size(this.selectedItems) && pageItemIds.every((itemId) => this.selectedItems[itemId]);
+        return this.size(this.selectedItems) && this.sampleList.samples.every((s) => Boolean(this.selectedItems[s.sampleId]));
     }
 
     onSelectPage() {
-        const pageItemIds = this.getPageItemIds();
         if (this.isPageSelected()) {
             // remove all items
-            pageItemIds.forEach((itemId) => delete this.selectedItems[itemId]);
+            this.sampleList.samples.forEach((item) => delete this.selectedItems[item.sampleId]);
         } else {
             // check remaining items
-            pageItemIds.forEach((itemId) => this.selectedItems[itemId] = true);
+            this.sampleList.samples.forEach((item) => this.selectedItems[item.sampleId] = item);
         }
-    }
-
-    getPageItemIds() {
-        return this.sampleList.samples.map((sample) => sample.sampleId);
     }
 
     onSelectAllPages() {
@@ -218,7 +233,8 @@ export class SampleComponent implements OnInit, OnDestroy {
     dragStart($event, dragged: Sample) {
         let selected;
         if (this.selectedItems[dragged.sampleId]) {
-            selected = this.sampleList.samples.filter((sample) => this.selectedItems[sample.sampleId]);
+            // TODO sort as in table
+            selected = Object.values(this.selectedItems).sort((a, b) => a.sampleId > b.sampleId ? 1 : -1);
         } else {
             selected = [dragged];
         }

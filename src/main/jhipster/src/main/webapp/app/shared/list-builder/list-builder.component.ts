@@ -17,11 +17,11 @@ export class ListBuilderComponent {
     HIDDEN_COLUMNS = ['_internal_id', 'entryNo'];
     data: ListEntry[] = [];
     page = 1;
-    pageSize = 20;
 
     // { <data-index>: boolean }
     selectedItems = {};
     isSelectAllPages = false;
+    lastClickIndex: any;
 
     templateColumnCount = 1;
 
@@ -38,11 +38,26 @@ export class ListBuilderComponent {
         return this.selectedItems[index];
     }
 
-    toggleSelect(index) {
-        if (this.selectedItems[index]) {
-            delete this.selectedItems[index];
+    toggleSelect($event, index, internal_id, checkbox = false) {
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
+        let ids;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1 + this.pageOffset(),
+                min = Math.min(this.lastClickIndex, index) + this.pageOffset();
+            ids = this.data.slice(min, max).map((g) => g.internal_id);
         } else {
-            this.selectedItems[index] = true;
+            ids = [internal_id];
+            this.lastClickIndex = index;
+        }
+        const isClickedItemSelected = this.selectedItems[internal_id];
+        for (const id of ids) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[id];
+            } else {
+                this.selectedItems[id] = true;
+            }
         }
     }
 
@@ -66,12 +81,12 @@ export class ListBuilderComponent {
         if (!(this.data && this.data.length)) {
             return [];
         }
-        return this.data.slice(this.pageOffset(), this.page * this.pageSize)
+        return this.data.slice(this.pageOffset(), this.page * this.context.pageSize)
             .map((row) => row.internal_id);
     }
 
     pageOffset() {
-        return (this.page - 1) * this.pageSize;
+        return (this.page - 1) * this.context.pageSize;
     }
 
     onSelectAllPages() {
@@ -115,6 +130,22 @@ export class ListBuilderComponent {
         } else {
             this.data = this.data.filter((row) => !this.selectedItems[row.internal_id]);
         }
+        this.selectedItems = {};
+    }
+
+    async deleteDuplicates() {
+        const modalRef = this.modalService.open(ModalConfirmComponent);
+        modalRef.componentInstance.message = this.translateService.instant('list-builder.delete.duplicates.confirm');
+        try {
+            await modalRef.result;
+        } catch (e) {
+            return;
+        }
+        const map = this.data.reduce((_map, row) => {
+            _map[row[this.listBuilderService.getIdColumnName()]] = row;
+            return _map;
+        }, {})
+        this.data = Object.values(map);
         this.selectedItems = {};
     }
 

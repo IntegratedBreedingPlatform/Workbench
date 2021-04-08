@@ -90,14 +90,19 @@
 			</tr>
 			</thead>
 			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop">
-			<tr *ngFor="let sample of sampleList.samples ;trackBy: trackId;"
+			<!-- TODO IBP-4375 (add to row)
+			(click)="toggleSelect($event, index, sample)"
+			-->
+			<tr *ngFor="let sample of sampleList.samples; trackBy: trackId; index as index"
 				[class.selected]="isSelected(sample)"
 				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, sample)">
+				<div *cdkDragPlaceholder>&nbsp;</div>
+
 				<!-- TODO IBP-4375
-				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect(sample)"></td>
+				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect($event, index, sample, true); $event.stopPropagation()"></td>
 				-->
 				<td>
-					<!--<a [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
+					<!--<a (click)="$event.stopPropagation()" [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
 					{{sample.entryNo}}
 				</td>
 				<td>{{sample.designation}}</td>
@@ -114,12 +119,14 @@
 				<td class="text-right">
 					<div class="btn-group flex-btn-group-container">
 						<button type="submit"
+						 (click)="$event.stopPropagation()"
 								[routerLink]="['../sample', sample.id ]"
 								class="btn btn-info btn-sm">
 							<span class="fa fa-eye"></span>
 							<span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
 						</button>
 						<button type="submit"
+						 (click)="$event.stopPropagation()"
 								[routerLink]="['/', { outlets: { popup: 'sample/'+ sample.id + '/edit'} }]"
 								replaceUrl="true"
 								queryParamsHandling="merge"
@@ -128,6 +135,7 @@
 							<span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
 						</button>
 						<button type="submit"
+						 (click)="$event.stopPropagation()"
 								[routerLink]="['/', { outlets: { popup: 'sample/'+ sample.id + '/delete'} }]"
 								replaceUrl="true"
 								queryParamsHandling="merge"
@@ -158,7 +166,7 @@
 					<div class="pagination-box pagination-box-right">
 						<div class="form-inline">
 							<label for="itemsPerPage" class="control-label control-label-left">Items Per Page</label>
-							<select [(ngModel)]="itemsPerPage" class="form-control ml-2" id="itemsPerPage" [disabled]="isLoading" (change)="loadAll()" style="width:95px">
+							<select [(ngModel)]="itemsPerPage" class="form-control ml-2" id="itemsPerPage" [disabled]="isLoading" (change)="loadAll(); listBuilderContext.pageSize = itemsPerPage" style="width:95px">
 								<option value="20">20</option>
 								<option value="50">50</option>
 								<option value="75">75</option>
