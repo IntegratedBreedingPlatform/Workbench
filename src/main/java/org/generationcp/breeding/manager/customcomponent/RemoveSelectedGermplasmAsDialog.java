@@ -223,7 +223,7 @@ public class RemoveSelectedGermplasmAsDialog extends BaseSubWindow
 				(Collection<? extends Integer>) this.removeSelectedGermplasmAsDialog.listDataTable.getValue());
 			if(CollectionUtils.isNotEmpty(germplasmUsedInOtherLists)) {
 				final String message = "The following germplasm with GIDs: " + StringUtils.join(germplasmUsedInOtherLists, ", ")
-					+ " are included in other list(s). Continue with the deletion?";
+					+ " are included in other list(s). Deletion might take some time. Continue with the deletion?";
 				ConfirmDialog
 					.show(removeSelectedGermplasmAsDialog.getParent(), "Delete Germplasm:", message, "Yes", "No",
 						new ConfirmDialog.Listener() {

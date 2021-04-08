@@ -663,7 +663,7 @@ export class GermplasmSearchComponent implements OnInit {
             this.germplasmService.getGermplasmPresentInOtherLists(this.getSelectedItemIds(), null).subscribe((response) => {
                 const confirmDeleteGermplasmInOtherListsModalRef = this.modalService.open(ModalConfirmComponent as Component);
                 confirmDeleteGermplasmInOtherListsModalRef.componentInstance.title = 'Delete Germplasm';
-                confirmDeleteGermplasmInOtherListsModalRef.componentInstance.message = "The following germplasm with GIDs: " + response.join(', ') + " are included in some lists. Continue with the deletion?";
+                confirmDeleteGermplasmInOtherListsModalRef.componentInstance.message = "The following germplasm with GIDs: " + response.join(', ') + " are included in some lists. Deletion might take some time. Continue with the deletion?";
                 confirmDeleteGermplasmInOtherListsModalRef.result.then(() => {
                     this.germplasmService.deleteGermplasm(this.getSelectedItemIds()).subscribe((response) => {
                         if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
