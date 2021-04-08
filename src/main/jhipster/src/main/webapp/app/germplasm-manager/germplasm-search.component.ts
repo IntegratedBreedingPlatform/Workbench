@@ -85,9 +85,10 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmHiddenColumns = hiddenColumns;
     }
 
-    // TODO rewrite as map (see sample.component)
-    selectedItems: any[] = [];
+    // { <gid>: germplasm }
+    selectedItems: {[key: number]: Germplasm} = {};
     isSelectAll = false;
+    lastClickIndex: any;
 
     private static getInitialFilters() {
         return [
@@ -300,6 +301,7 @@ export class GermplasmSearchComponent implements OnInit {
             this.filters = GermplasmSearchComponent.getInitialFilters();
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
+        this.listBuilderContext.pageSize = this.itemsPerPage;
     }
 
     loadAll(request: GermplasmSearchRequest) {
@@ -468,7 +470,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.page = 1;
         this.previousPage = 1;
         this.isSelectAll = false;
-        this.selectedItems = [];
+        this.selectedItems = {};
         this.loadAll(this.request);
     }
 
@@ -504,43 +506,64 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     isSelected(germplasm: Germplasm) {
-        return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
+        return this.selectedItems[germplasm.gid];
     }
 
     onSelectPage() {
-        const isPageSelected = this.isPageSelected();
-        const pageGids = this.germplasmList.map((germplasm) => germplasm.gid);
-        if (isPageSelected) {
-            this.selectedItems = this.selectedItems.filter((item) =>
-                pageGids.indexOf(item) === -1);
+        if (this.isPageSelected()) {
+            // remove all items
+            this.germplasmList.forEach((g) => delete this.selectedItems[g.gid]);
         } else {
-            this.selectedItems = pageGids.filter((item) =>
-                this.selectedItems.indexOf(item) === -1
-            ).concat(this.selectedItems);
+            // check remaining items
+            this.germplasmList.forEach((g) => this.selectedItems[g.gid] = g);
         }
     }
 
     onSelectAll(isSelectAll) {
         this.isSelectAll = !isSelectAll;
-        if (this.isSelectAll) {
-            this.selectedItems = [];
-        }
+        this.selectedItems = {};
     }
 
-    toggleSelect(germplasm: Germplasm) {
-        if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
-            this.selectedItems = this.selectedItems.filter((item) => item !== germplasm.gid);
+    toggleSelect($event, index, germplasm: Germplasm, checkbox = false) {
+        if (this.isSelectAll) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
+        let items;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1,
+                min = Math.min(this.lastClickIndex, index);
+            items = this.germplasmList.slice(min, max);
         } else {
-            this.selectedItems.push(germplasm.gid);
+            items = [germplasm];
+            this.lastClickIndex = index;
+        }
+        const isClickedItemSelected = this.selectedItems[germplasm.gid];
+        for (const item of items) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[item.gid];
+            } else {
+                this.selectedItems[item.gid] = item;
+            }
         }
     }
 
     isPageSelected() {
-        return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
+        return this.size(this.selectedItems) && this.germplasmList.every((g) => Boolean(this.selectedItems[g.gid]));
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
+    }
+
+    private getSelectedItemIds() {
+        return Object.keys(this.selectedItems).map((gid) => Number(gid));
     }
 
     private validateSelection() {
-        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
+        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) === 0)) {
             this.alertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
             });
@@ -551,8 +574,9 @@ export class GermplasmSearchComponent implements OnInit {
 
     dragStart($event, dragged: Germplasm) {
         let selected;
-        if (this.selectedItems.indexOf(dragged.gid) !== -1) {
-            selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+        if (this.selectedItems[dragged.gid]) {
+            // TODO sort as in table
+            selected = Object.values(this.selectedItems).sort((a, b) => a.gid > b.gid ? 1 : -1);
         } else {
             selected = [dragged];
         }
@@ -588,7 +612,7 @@ export class GermplasmSearchComponent implements OnInit {
         if (this.isSelectAll) {
             searchComposite.searchRequest = this.request;
         } else {
-            searchComposite.itemIds = this.selectedItems;
+            searchComposite.itemIds = this.getSelectedItemIds();
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
 
@@ -607,7 +631,7 @@ export class GermplasmSearchComponent implements OnInit {
         if (this.isSelectAll) {
             searchComposite.searchRequest = this.request;
         } else {
-            searchComposite.itemIds = this.selectedItems;
+            searchComposite.itemIds = this.getSelectedItemIds();
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
 
@@ -627,7 +651,7 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        if (this.selectedItems.length > 500) {
+        if (this.size(this.selectedItems) > 500) {
             this.alertService.error('germplasm-delete.too-many-selected-germplasm');
             return;
         }
@@ -636,12 +660,12 @@ export class GermplasmSearchComponent implements OnInit {
         confirmDeleteGermplasmModalRef.componentInstance.title = 'Delete Germplasm';
         confirmDeleteGermplasmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
         confirmDeleteGermplasmModalRef.result.then(() => {
-            this.germplasmService.getGermplasmPresentInOtherLists(this.selectedItems, null).subscribe((response) => {
+            this.germplasmService.getGermplasmPresentInOtherLists(this.getSelectedItemIds(), null).subscribe((response) => {
                 const confirmDeleteGermplasmInOtherListsModalRef = this.modalService.open(ModalConfirmComponent as Component);
                 confirmDeleteGermplasmInOtherListsModalRef.componentInstance.title = 'Delete Germplasm';
                 confirmDeleteGermplasmInOtherListsModalRef.componentInstance.message = "The following germplasm with GIDs: " + response.join(', ') + " are included in some lists. Continue with the deletion?";
                 confirmDeleteGermplasmInOtherListsModalRef.result.then(() => {
-                    this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
+                    this.germplasmService.deleteGermplasm(this.getSelectedItemIds()).subscribe((response) => {
                         if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
                             this.alertService.warning('germplasm-delete.warning');
                             this.resetFilters();
@@ -657,7 +681,6 @@ export class GermplasmSearchComponent implements OnInit {
                         if (response.deletedGermplasm && response.deletedGermplasm.length) {
                             this.openKeySequenceDeletionDialog(response.deletedGermplasm);
                         }
-
                     });
                     this.activeModal.close();
                 });

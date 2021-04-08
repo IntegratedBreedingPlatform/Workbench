@@ -26,4 +26,8 @@ export class SampleListBuilderService implements ListBuilderService {
         return modalRef.result;
     }
 
+    getIdColumnName(): string {
+        return 'SAMPLE_ID';
+    }
+
 }

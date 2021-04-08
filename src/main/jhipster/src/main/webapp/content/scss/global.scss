@@ -538,3 +538,7 @@ tr.cdk-drag-preview {
     display: table;
 }
 
+.cdk-drop-list-receiving,
+#listBuilderDrop.cdk-drop-list-dragging {
+    border: 2px dashed olivedrab;
+}
