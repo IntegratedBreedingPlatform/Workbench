@@ -57,7 +57,6 @@ import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 import { CollapsibleComponent } from './component/collapsible.component';
 import { UserProgramInfoService } from './service/user-program-info.service';
-import { ReleaseNoteService } from './release-note/service/release-note.service';
 
 @NgModule({
     imports: [
@@ -124,7 +123,6 @@ import { ReleaseNoteService } from './release-note/service/release-note.service'
         ToolService,
         KeySequenceRegisterService,
         UserProgramInfoService,
-        ReleaseNoteService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034

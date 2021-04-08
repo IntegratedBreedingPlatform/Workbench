@@ -15,7 +15,7 @@ import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
 import { UserProgramInfoService } from '../shared/service/user-program-info.service';
-import { ReleaseNoteService } from '../shared/release-note/service/release-note.service';
+import { Router } from '@angular/router';
 
 declare const showReleaseNotes: string;
 
@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private loginService: LoginService,
         private helpService: HelpService,
         private userProgramInfoService: UserProgramInfoService,
-        private releaseNoteService: ReleaseNoteService
+        private router: Router,
     ) {
         this.version = VERSION ? `BMS ${VERSION}` : '';
         this.principal.identity().then((identity) => {
@@ -89,9 +89,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        if (showReleaseNotes) {
-            const releaseNote = this.releaseNoteService.getLatest();
-            console.log('SHOWING RELEASE NOTE');
+        if (showReleaseNotes || 1 === 1) {
+            this.router.navigate(['/', { outlets: { popup: 'release-notes-dialog' }, }], {
+                replaceUrl: true,
+                queryParamsHandling: 'merge'
+            });
         }
     }
 
