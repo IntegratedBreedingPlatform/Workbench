@@ -504,7 +504,7 @@
     </bean>
 
 	<bean id="releaseNoteService"
-			  class="org.generationcp.middleware.service.releasenote.ReleaseNoteServiceImpl">
+			  class="org.generationcp.middleware.service.api.releasenote.ReleaseNoteServiceImpl">
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 

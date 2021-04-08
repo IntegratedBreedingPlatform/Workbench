@@ -5,7 +5,7 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.pojos.workbench.releasenote.ReleaseNote;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
-import org.generationcp.middleware.service.releasenote.ReleaseNoteService;
+import org.generationcp.middleware.service.api.releasenote.ReleaseNoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
