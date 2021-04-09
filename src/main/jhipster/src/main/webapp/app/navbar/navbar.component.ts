@@ -15,9 +15,6 @@ import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
 import { UserProgramInfoService } from '../shared/service/user-program-info.service';
-import { Router } from '@angular/router';
-
-declare const showReleaseNotes: string;
 
 @Component({
     selector: 'jhi-navbar',
@@ -58,8 +55,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private jhiAlertService: JhiAlertService,
         private loginService: LoginService,
         private helpService: HelpService,
-        private userProgramInfoService: UserProgramInfoService,
-        private router: Router,
+        private userProgramInfoService: UserProgramInfoService
     ) {
         this.version = VERSION ? `BMS ${VERSION}` : '';
         this.principal.identity().then((identity) => {
@@ -72,8 +68,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // Get ask for support link url
         this.getHelpLink(this.askForSupportHelpLink, HELP_NAVIGATION_ASK_FOR_SUPPORT)
             .then((response) => this.askForSupportHelpLink = response);
-
-        console.log(showReleaseNotes);
     }
 
     hasChild = (_: number, node: any) => node.expandable;
@@ -89,13 +83,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        if (showReleaseNotes || 1 === 1) {
-            this.router.navigate(['/', { outlets: { popup: 'release-notes-popup' }, }], {
-                replaceUrl: false,
-                queryParamsHandling: 'merge',
-                skipLocationChange: true
-            });
-        }
+
     }
 
     ngAfterViewInit() {

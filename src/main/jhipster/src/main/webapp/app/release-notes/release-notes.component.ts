@@ -32,7 +32,7 @@ export class ReleaseNotesDialogComponent implements OnInit {
 @Component({
     selector: 'jhi-release-notes-wrapper',
     template: `
-        <iframe src="/ibpworkbench/main/app/#release-notes-dialog" style="border: 0; min-height: 300px;" width="100%"></iframe>
+        <iframe src="/ibpworkbench/main/#release-notes-dialog" style="border: 0; min-height: 300px;" width="100%"></iframe>
     `
 })
 export class ReleaseNotesWrapperComponent {

@@ -7,6 +7,9 @@ import { Principal } from '../../shared';
 import { HELP_DASHBOARD } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 import { JhiLanguageService } from 'ng-jhipster';
+import { Router } from '@angular/router';
+
+declare const showReleaseNotes: string;
 
 @Component({
     selector: 'jhi-program',
@@ -30,7 +33,8 @@ export class ProgramComponent implements OnInit {
         private programService: ProgramService,
         private principal: Principal,
         private helpService: HelpService,
-        private languageService: JhiLanguageService
+        private languageService: JhiLanguageService,
+        private router: Router,
     ) {
     }
 
@@ -47,6 +51,13 @@ export class ProgramComponent implements OnInit {
             this.helpService.getHelpLink(HELP_DASHBOARD).toPromise().then((response) => {
                 this.helpLink = response.body;
             }).catch((error) => {});
+        }
+
+        if (showReleaseNotes || 1 === 1) {
+            this.router.navigate(['/', { outlets: { popup: 'release-notes-popup' }, }], {
+                replaceUrl: true,
+                queryParamsHandling: 'merge'
+            });
         }
     }
 
