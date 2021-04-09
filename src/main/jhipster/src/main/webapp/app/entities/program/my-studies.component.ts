@@ -91,7 +91,7 @@ export class MyStudiesComponent {
         this.route.queryParams.subscribe(((params) => this.programUUID = params['programUUID']));
 
         this.mouseEnter.pipe(
-            debounceTime(300),
+            debounceTime(100),
             takeUntil(this.mouseLeave),
             repeat()
         ).subscribe((study: StudyInfo) => {
