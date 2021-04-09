@@ -115,6 +115,7 @@
         "sort.labels.by": "Sort labels by",
         "output.format": "Output format",
         "export.excel": "Excel",
-        "export.csv": "CSV"
+        "export.csv": "CSV",
+        "sort.label.by": "Sort label by"
     }
 }
