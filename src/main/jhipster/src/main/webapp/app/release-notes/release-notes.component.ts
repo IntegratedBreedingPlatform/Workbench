@@ -3,6 +3,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-release-notes-dialog',
@@ -12,7 +13,9 @@ export class ReleaseNotesDialogComponent implements OnInit {
 
     dontShowAgain = true;
 
-    constructor(public modal: NgbActiveModal
+    constructor(
+        public modal: NgbActiveModal,
+        private languageService: JhiLanguageService
     ) {
 
     }
@@ -23,6 +26,16 @@ export class ReleaseNotesDialogComponent implements OnInit {
     dismiss() {
         this.modal.dismiss();
     }
+
+}
+
+@Component({
+    selector: 'jhi-release-notes-wrapper',
+    template: `
+        <iframe src="/ibpworkbench/main/app/#release-notes-dialog" style="border: 0; min-height: 300px;" width="100%"></iframe>
+    `
+})
+export class ReleaseNotesWrapperComponent {
 
 }
 
@@ -43,7 +56,7 @@ export class ReleaseNotesPopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.routeSub = this.route.params.subscribe((params) => {
             this.popupService
-                .open(ReleaseNotesDialogComponent as Component);
+                .open(ReleaseNotesWrapperComponent as Component);
         });
     }
 

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ReleaseNotesDialogComponent, ReleaseNotesPopupComponent } from './release-notes.component';
+import { ReleaseNotesDialogComponent, ReleaseNotesPopupComponent, ReleaseNotesWrapperComponent } from './release-notes.component';
 import { ReleaseNotesService } from './release-notes.service';
 import { RouterModule } from '@angular/router';
 import { RELEASE_NOTES_ROUTES } from './release-notes.route';
@@ -14,12 +14,14 @@ import { ReleaseNotesContentComponent } from './release-notes-content.component'
     declarations: [
         ReleaseNotesDialogComponent,
         ReleaseNotesPopupComponent,
-        ReleaseNotesContentComponent
+        ReleaseNotesContentComponent,
+        ReleaseNotesWrapperComponent
     ],
     entryComponents: [
         ReleaseNotesDialogComponent,
         ReleaseNotesPopupComponent,
-        ReleaseNotesContentComponent
+        ReleaseNotesContentComponent,
+        ReleaseNotesWrapperComponent
     ],
     providers: [ReleaseNotesService]
 })
