@@ -8,28 +8,36 @@ import { empty, fromEvent, Subject, of } from 'rxjs';
     selector: 'jhi-my-studies',
     templateUrl: './my-studies.component.html'
 })
-export class MyStudiesComponent {
+export class MyStudiesComponent  {
     programUUID: string;
     mouseEnter = new Subject();
     mouseLeave = new Subject();
 
-    @ViewChildren('tr')
-    private rows: QueryList<ElementRef>;
+    // ngx-charts options
+    view: any[] = [625, 191];
+    // FIXME adapt to parent not working
+    // view: any[] = undefined;
+    showXAxis = true;
+    showYAxis = true;
+    gradient = false;
+    showLegend = true;
+    showXAxisLabel = true;
+    xAxisLabel = 'environment';
+    showYAxisLabel = true;
+    yAxisLabel = 'count';
+    animations = true;
+    colorScheme = {
+        domain: ['#f7912f', '#f7b62f', '#ffffff']
+    };
 
     // TODO get from server
     studies: StudyInfo[] = [{
-        selected: true,
         name: 'study 1',
         type: 'study type 1',
         date: '2019',
         folder: 'folder 1',
         metadata: {
-            observations: {
-                env1: {
-                    count: 2,
-                    countPending: 5
-                }
-            }
+            observations: data
         }
     }, {
         name: 'study 1',
@@ -37,12 +45,7 @@ export class MyStudiesComponent {
         date: '2019',
         folder: 'folder 1',
         metadata: {
-            observations: {
-                env1: {
-                    count: 2,
-                    countPending: 5
-                }
-            }
+            observations: data2
         }
     }, {
         name: 'study 1',
@@ -50,12 +53,7 @@ export class MyStudiesComponent {
         date: '2019',
         folder: 'folder 1',
         metadata: {
-            observations: {
-                env1: {
-                    count: 2,
-                    countPending: 5
-                }
-            }
+            observations: data
         }
     }, {
         name: 'study 1',
@@ -63,12 +61,7 @@ export class MyStudiesComponent {
         date: '2019',
         folder: 'folder 1',
         metadata: {
-            observations: {
-                env1: {
-                    count: 2,
-                    countPending: 5
-                }
-            }
+            observations: data2
         }
     }, {
         name: 'study 1',
@@ -76,14 +69,10 @@ export class MyStudiesComponent {
         date: '2019',
         folder: 'folder 1',
         metadata: {
-            observations: {
-                env1: {
-                    count: 2,
-                    countPending: 5
-                }
-            }
+            observations: data
         }
     }];
+    study: StudyInfo;
 
     constructor(
         private route: ActivatedRoute
@@ -103,6 +92,8 @@ export class MyStudiesComponent {
 
     load() {
         // TODO get from server
+
+        this.select(this.studies[0]);
     }
 
     onMouseEnter(study) {
@@ -116,5 +107,114 @@ export class MyStudiesComponent {
     select(study: StudyInfo) {
         this.studies.forEach((s) => s.selected = false);
         study.selected = true;
+        this.study = study;
     }
 }
+
+const data = [
+    {
+        'name': 'Agua fria',
+        'series': [
+            {
+                'name': 'confirmed',
+                'value': 300
+            },
+            {
+                'name': 'pending',
+                'value': 300
+            },
+            {
+                'name': 'unobserved',
+                'value': 300
+            },
+        ]
+    },
+    {
+        'name': 'El batan',
+        'series': [
+            {
+                'name': 'confirmed',
+                'value': 300
+            },
+            {
+                'name': 'pending',
+                'value': 150
+            },
+            {
+                'name': 'unobserved',
+                'value': 50
+            },
+        ]
+    },
+    {
+        'name': 'Obregon',
+        'series': [
+            {
+                'name': 'confirmed',
+                'value': 50
+            },
+            {
+                'name': 'pending',
+                'value': 200
+            },
+            {
+                'name': 'unobserved',
+                'value': 350
+            },
+        ]
+    },
+];
+
+const data2 = [
+    {
+        'name': 'Agua fria',
+        'series': [
+            {
+                'name': 'confirmed',
+                'value': 300
+            },
+            {
+                'name': 'pending',
+                'value': 100
+            },
+            {
+                'name': 'unobserved',
+                'value': 200
+            },
+        ]
+    },
+    {
+        'name': 'El batan',
+        'series': [
+            {
+                'name': 'confirmed',
+                'value': 300
+            },
+            {
+                'name': 'pending',
+                'value': 250
+            },
+            {
+                'name': 'unobserved',
+                'value': 250
+            },
+        ]
+    },
+    {
+        'name': 'Obregon',
+        'series': [
+            {
+                'name': 'confirmed',
+                'value': 450
+            },
+            {
+                'name': 'pending',
+                'value': 50
+            },
+            {
+                'name': 'unobserved',
+                'value': 100
+            },
+        ]
+    },
+];
