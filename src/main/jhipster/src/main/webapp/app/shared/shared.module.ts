@@ -57,6 +57,8 @@ import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 import { CollapsibleComponent } from './component/collapsible.component';
 import { UserProgramInfoService } from './service/user-program-info.service';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { CropService } from './crop/service/crop.service';
 
 @NgModule({
@@ -67,7 +69,8 @@ import { CropService } from './crop/service/crop.service';
         TableModule,
         TreeModule,
         DragDropModule,
-        CdkDragDropModule
+        CdkDragDropModule,
+        LeafletModule
     ],
     declarations: [
         ModalComponent,
@@ -97,7 +100,8 @@ import { CropService } from './crop/service/crop.service';
         ListBuilderComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
-        CollapsibleComponent
+        CollapsibleComponent,
+        GeojsonMapComponent
     ],
     providers: [
         LoginService,
@@ -172,7 +176,8 @@ import { CropService } from './crop/service/crop.service';
         ListBuilderComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
-        CollapsibleComponent
+        CollapsibleComponent,
+        GeojsonMapComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
