@@ -7,11 +7,18 @@ import { ReleaseNotes } from './release-notes.model';
 @Injectable()
 export class ReleaseNotesService {
 
+    private readonly resourceUrl: string;
+
     constructor(private http: HttpClient) {
+        this.resourceUrl = SERVER_API_URL + 'release-notes';
     }
 
     getLatest(): Observable<HttpResponse<ReleaseNotes>> {
-        return this.http.get<ReleaseNotes>(SERVER_API_URL + `release-notes/latest`, { observe: 'response' });
+        return this.http.get<ReleaseNotes>(this.resourceUrl + `/latest`, { observe: 'response' });
+    }
+
+    dontShowAgain(): Observable<void> {
+       return this.http.put<void>(this.resourceUrl + '/dont-show-again', { observe: 'response' });
     }
 
 }
