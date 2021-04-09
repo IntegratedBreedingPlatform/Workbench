@@ -498,6 +498,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
+        this.resultSearch.searchResultDbId = '';
         this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);
