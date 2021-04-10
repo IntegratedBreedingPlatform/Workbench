@@ -1,6 +1,6 @@
-import { Component, OnInit, Pipe, PipeTransform, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting } from './label-printing.model';
+import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting, Sortable } from './label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
@@ -8,7 +8,7 @@ import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../shared/alert/alert.service';
 import { HelpService } from '../shared/service/help.service';
-import { HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { GERMPLASM_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 
@@ -37,6 +37,9 @@ export class LabelPrintingComponent implements OnInit {
     modalTitle: string;
     modalMessage: string;
     helpLink: string;
+
+    sortableFields: Sortable[];
+    sortBySelected: any = '';
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -83,11 +86,17 @@ export class LabelPrintingComponent implements OnInit {
 
         const presetPromise = this.loadPresets();
 
+        const sorteableFieldsPromise = this.service.getSortableFields().toPromise();
+        sorteableFieldsPromise.then((sortables) => {
+            this.sortableFields = sortables;
+        });
+
         Promise.all([
             labelsNeededPromise,
             metadataPromise,
             fieldsPromise,
-            presetPromise
+            presetPromise,
+            sorteableFieldsPromise
         ]).then(() => {
             this.initDragAndDrop();
             this.initComplete = true;
@@ -222,6 +231,7 @@ export class LabelPrintingComponent implements OnInit {
         this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
         this.labelPrintingData.barcodeNeeded = false;
         this.labelPrintingData.includeHeadings = true;
+        this.sortBySelected = '';
         $('#leftSelectedFields').empty();
         $('#rightSelectedFields').empty();
         this.initDragAndDrop();
@@ -283,7 +293,8 @@ export class LabelPrintingComponent implements OnInit {
             includeHeadings: this.labelPrintingData.includeHeadings,
             fileName: this.labelPrintingData.filename,
             datasetId: undefined,
-            studyId: undefined
+            studyId: undefined,
+            sortBy: !this.sortBySelected ? undefined : this.sortBySelected
         };
 
         this.proceed = function donwloadPrintingLabel(): void {
