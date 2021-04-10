@@ -99,3 +99,11 @@ export class FileConfiguration {
     ) {
     }
 }
+
+export class Sortable {
+    constructor(
+        public fieldName?: string,
+        public sortBy?: string
+    ) {
+    }
+}
