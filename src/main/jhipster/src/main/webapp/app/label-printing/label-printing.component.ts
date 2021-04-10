@@ -20,6 +20,7 @@ declare const $: any;
     styleUrls: ['./label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
+    GERMPLASM_LABEL_PRINTING_TYPE = GERMPLASM_LABEL_PRINTING_TYPE;
     initComplete: boolean;
 
     labelPrintingData: LabelPrintingData = new LabelPrintingData();
@@ -398,6 +399,8 @@ export class LabelPrintingComponent implements OnInit {
                 return 'DATASET_LABEL_PRINTING_PRESET';
             case LabelPrintingType.LOT:
                 return 'LOT_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.GERMPLASM:
+                return 'GERMPLASM_LABEL_PRINTING_PRESET';
             default:
                 return;
         }
@@ -465,7 +468,8 @@ export enum FileType {
 export enum LabelPrintingType {
     OBSERVATION_DATASET = 'ObservationDataset',
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
-    LOT = 'Lot'
+    LOT = 'Lot',
+    GERMPLASM = 'Germplasm'
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [
