@@ -4,7 +4,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-md-6">
 		<div class="table-responsive">
 			<table class="table table-striped table-bordered table-curved" (mouseleave)="onMouseLeave()">
 				<thead>
@@ -27,7 +27,8 @@
 			</table>
 		</div>
 	</div>
-	<div class="col-sm-6">
+	<!-- Workaround for right overlap (md-5) and min-height -->
+	<div class="col-md-5" style="min-height: 400px">
 		<ngx-charts-bar-vertical-normalized
 			[view]="view"
 			[results]="study.metadata.observations"

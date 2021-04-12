@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, isDevMode, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap, debounceTime, takeUntil, repeat } from 'rxjs/operators';
 import { StudyInfo } from './study-info';
@@ -14,9 +14,16 @@ export class MyStudiesComponent  {
     mouseLeave = new Subject();
 
     // ngx-charts options
-    view: any[] = [625, 191];
-    // FIXME adapt to parent not working
-    // view: any[] = undefined;
+
+    /*
+     * FIXME dev mode issues (not happening in prod)
+     *  - responsive (view=undefined) (use default->600,400 as workaround)
+     *   https://github.com/swimlane/ngx-charts/issues/374
+     *  - ERROR TypeError: Cannot read property 'runOutsideAngular' of undefined
+     *  - tooltip icons not rendering correctly
+     *  - PLEASE NOTE in dev mode the chart will overflow in small screens
+     */
+    view: any[] = isDevMode() ? [600, 400] : undefined;
     showXAxis = true;
     showYAxis = true;
     gradient = false;
