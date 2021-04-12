@@ -11,7 +11,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
-import org.generationcp.breeding.manager.listmanager.ListComponent;
 import org.generationcp.breeding.manager.listmanager.ListManagerMain;
 import org.generationcp.breeding.manager.listmanager.listeners.CloseWindowAction;
 import org.generationcp.commons.vaadin.ui.ConfirmDialog;
@@ -35,7 +34,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -219,7 +217,7 @@ public class RemoveSelectedGermplasmAsDialog extends BaseSubWindow
 
 		@Override
 		public void buttonClick(final Button.ClickEvent event) {
-			final Set<Integer> germplasmUsedInOtherLists = this.removeSelectedGermplasmAsDialog.getGermplasmUsedInOneOrMoreList(
+			final Set<Integer> germplasmUsedInOtherLists = this.removeSelectedGermplasmAsDialog.getGermplasmPresentInOtherLists(
 				(Collection<? extends Integer>) this.removeSelectedGermplasmAsDialog.listDataTable.getValue());
 			if(CollectionUtils.isNotEmpty(germplasmUsedInOtherLists)) {
 				final String message = "The following germplasm with GIDs: " + StringUtils.join(germplasmUsedInOtherLists, ", ")
@@ -255,8 +253,8 @@ public class RemoveSelectedGermplasmAsDialog extends BaseSubWindow
 		}
 	}
 
-	Set<Integer> getGermplasmUsedInOneOrMoreList(final Collection<? extends Integer> selectedIdsToDelete ) {
-		return this.germplasmService.getGermplasmUsedInOneOrMoreList(this.getDeleteGids(selectedIdsToDelete), this.getGermplasmList().getId());
+	Set<Integer> getGermplasmPresentInOtherLists(final Collection<? extends Integer> selectedIdsToDelete ) {
+		return this.germplasmService.getGermplasmPresentInOtherLists(this.getDeleteGids(selectedIdsToDelete), this.getGermplasmList().getId());
 	}
 	protected void deleteGermplasmsAction(final Collection<? extends Integer> selectedIdsToDelete) {
 
