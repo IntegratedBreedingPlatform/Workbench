@@ -219,13 +219,14 @@ public class RemoveSelectedGermplasmAsDialog extends BaseSubWindow
 
 		@Override
 		public void buttonClick(final Button.ClickEvent event) {
-			Set<Integer> germplasmUsedInOtherLists = this.removeSelectedGermplasmAsDialog.getGermplasmUsedInOneOrMoreList(
+			final Set<Integer> germplasmUsedInOtherLists = this.removeSelectedGermplasmAsDialog.getGermplasmUsedInOneOrMoreList(
 				(Collection<? extends Integer>) this.removeSelectedGermplasmAsDialog.listDataTable.getValue());
 			if(CollectionUtils.isNotEmpty(germplasmUsedInOtherLists)) {
 				final String message = "The following germplasm with GIDs: " + StringUtils.join(germplasmUsedInOtherLists, ", ")
 					+ " are included in other list(s). Deletion might take some time. Continue with the deletion?";
 				ConfirmDialog
-					.show(removeSelectedGermplasmAsDialog.getParent(), "Delete Germplasm:", message, "Yes", "No",
+					.show(
+						this.removeSelectedGermplasmAsDialog.getParent(), "Delete Germplasm:", message, "Yes", "No",
 						new ConfirmDialog.Listener() {
 
 							private static final long serialVersionUID = -6641772458404494412L;

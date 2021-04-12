@@ -243,7 +243,7 @@ public class RemoveSelectedGermplasmAsDialogTest {
 
 		// #2 Seed Reserved
 		// default value
-		String seedRes = "-";
+		final String seedRes = "-";
 		newItem.getItemProperty(ColumnLabels.SEED_RESERVATION.getName()).setValue(seedRes);
 	}
 
