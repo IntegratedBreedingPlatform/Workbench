@@ -19,8 +19,6 @@ export class ReleaseNotesService {
 
     getContent(version: string): Observable<HttpEvent<string>> {
         const options: any = {responseType: 'text'};
-        this.http.get<string>(`/ibpworkbench/main/app/content/release-notes/${version}.html`, options);
-
         return this.http.get<string>(`/ibpworkbench/main/app/content/release-notes/${version}.html`, options);
     }
 
