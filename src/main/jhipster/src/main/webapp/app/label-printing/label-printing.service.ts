@@ -55,7 +55,7 @@ export class LabelPrintingService {
         const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/SortableFields`;
         return this.http.get<Sortable[]>(this.baseUrl + resourceUrl);
     }
-    
+
     download(fileExtension: any, labelsGeneratorInput: any) {
 
         labelsGeneratorInput.datasetId = this.context.datasetId;
@@ -85,7 +85,7 @@ export class LabelPrintingService {
 
     addPreset(preset: PresetSetting): Observable<PresetSetting> {
         const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets`;
-        return this.http.put<PresetSetting>(this.baseUrl + resourceUrl,  preset );
+        return this.http.put<PresetSetting>(this.baseUrl + resourceUrl, preset);
     }
 
     deletePreset(presetId: number): Observable<PresetSetting> {

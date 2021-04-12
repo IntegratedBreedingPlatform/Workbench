@@ -106,4 +106,5 @@ export class Sortable {
         public sortBy?: string
     ) {
     }
+
 }
