@@ -329,6 +329,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     transition() {
         this.router.navigate(['./'], {
+            queryParamsHandling: 'merge',
             queryParams:
                 this.addSortParam({
                     page: this.page,
