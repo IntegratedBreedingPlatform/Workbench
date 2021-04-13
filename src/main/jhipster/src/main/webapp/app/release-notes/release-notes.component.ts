@@ -13,7 +13,10 @@ import { ReleaseNoteContext } from './release-note.context';
 
 @Component({
     selector: 'jhi-release-notes-dialog',
-    templateUrl: './release-notes.component.html'
+    templateUrl: './release-notes.component.html',
+    styleUrls: [
+        'release-notes.scss'
+    ],
 })
 export class ReleaseNotesDialogComponent implements OnInit {
 
