@@ -379,17 +379,45 @@ export class LabelPrintingComponent implements OnInit {
         preset.fileConfiguration = fileConfiguration;
         preset.includeHeadings = this.labelPrintingData.includeHeadings;
 
-        this.service.addPreset(preset).subscribe((presetSetting) => {
-            this.presetSettings.push(presetSetting);
-            this.presetSettingId = presetSetting.id;
-            this.alertService.success('label-printing.save.preset.success');
-        }, (response) => {
-            if (response.error.errors[0].message) {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-            } else {
-                this.alertService.error('error.general');
-            }
-        });
+        const presetSetting = this.presetSettings.filter((x) => x.name === preset.name)[0];
+
+        if (!presetSetting) {
+            this.service.addPreset(preset).subscribe((presetCreated) => {
+                this.presetSettings.push(presetCreated);
+                this.presetSettingId = presetCreated.id;
+                this.alertService.success('label-printing.save.preset.success');
+            }, (response) => {
+                if (response.error.errors[0].message) {
+                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                } else {
+                    this.alertService.error('error.general');
+                }
+            });
+        } else {
+            this.modalTitle = 'Confirmation';
+            this.modalMessage = '"' + presetSetting.name + '" already exists, do you wish to overwrite the preset? ';
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.title = this.modalTitle;
+            confirmModalRef.componentInstance.message = this.modalMessage;
+            confirmModalRef.result.then(() => {
+                preset.id = presetSetting.id
+                this.service.updatePreset(preset).subscribe((res: void) => {
+                    presetSetting.selectedFields = preset.selectedFields;
+                    presetSetting.barcodeSetting = preset.barcodeSetting;
+                    presetSetting.fileConfiguration = preset.fileConfiguration;
+                    presetSetting.includeHeadings = preset.includeHeadings;
+                    this.alertService.success('label-printing.update.preset.success');
+                }, (response) => {
+                    if (response.error.errors[0].message) {
+                        this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                    } else {
+                        this.alertService.error('error.general');
+                    }
+                });
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
+        }
+
     }
 
     private getToolSection() {
