@@ -88,6 +88,11 @@ export class LabelPrintingService {
         return this.http.put<PresetSetting>(this.baseUrl + resourceUrl, preset);
     }
 
+    updatePreset(preset: PresetSetting): Observable<void> {
+        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets/${preset.id}`;
+        return this.http.put<void>(this.baseUrl + resourceUrl, preset);
+    }
+
     deletePreset(presetId: number): Observable<PresetSetting> {
         const options: HttpParams = new HttpParams()
             .append('presetId', presetId.toString());
