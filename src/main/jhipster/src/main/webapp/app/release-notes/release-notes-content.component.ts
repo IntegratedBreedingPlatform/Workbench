@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ReleaseNotesService } from './release-notes.service';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { ReleaseNotes } from './release-notes.model';
+import { ActivatedRoute } from '@angular/router';
+import { ReleaseNoteContext } from './release-note.context';
 
 @Component({
     selector: 'jhi-release-notes-content',
@@ -10,17 +10,19 @@ import { ReleaseNotes } from './release-notes.model';
 })
 export class ReleaseNotesContentComponent implements OnInit {
 
+    fileName: string;
     content: SafeHtml;
 
-    constructor(private sanitizer: DomSanitizer,
+    constructor(private activatedRoute: ActivatedRoute,
+                private sanitizer: DomSanitizer,
                 private releaseNoteService: ReleaseNotesService,
-                private http: HttpClient) {
+                private paramContext: ReleaseNoteContext) {
+        const queryParams = this.activatedRoute.snapshot.queryParams;
+        this.fileName = (queryParams.fileName) ? queryParams.fileName : this.paramContext.fileName;
     }
 
     ngOnInit(): void {
-        this.releaseNoteService.getLatest().subscribe((resp: HttpResponse<ReleaseNotes>) => {
-            this.releaseNoteService.getContent(resp.body.version).subscribe((resp1) => this.content = resp1);
-        });
+        this.releaseNoteService.getContent(this.fileName).subscribe((resp1) => this.content = resp1);
     }
 
 }

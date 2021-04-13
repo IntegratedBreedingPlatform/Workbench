@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { RELEASE_NOTES_ROUTES } from './release-notes.route';
 import { BmsjHipsterSharedModule } from '../shared';
 import { ReleaseNotesContentComponent } from './release-notes-content.component';
+import { ReleaseNoteContext } from './release-note.context';
 
 @NgModule({
     imports: [
@@ -23,7 +24,10 @@ import { ReleaseNotesContentComponent } from './release-notes-content.component'
         ReleaseNotesContentComponent,
         ReleaseNotesWrapperComponent
     ],
-    providers: [ReleaseNotesService]
+    providers: [
+        ReleaseNotesService,
+        ReleaseNoteContext
+    ]
 })
 export class ReleaseNotesModule {
 }

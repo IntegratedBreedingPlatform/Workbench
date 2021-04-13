@@ -16,7 +16,11 @@
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="release-notes.nav.notes"
-						   [routerLink]="['content']" [routerLinkActive]="['active']" queryParamsHandling="merge"></a>
+						   [routerLink]="['content']" [routerLinkActive]="['active']"  [queryParams]="{fileName: releaseNoteFileName}"  queryParamsHandling="merge"></a>
+					</li>
+					<li class="nav-item" *ngIf="hasComingSoon">
+						<a class="nav-link" jhiTranslate="release-notes.nav.coming-soon"
+						   [routerLink]="['coming-soon']" [routerLinkActive]="['active']" [queryParams]="{fileName: comingSoonFileName}" queryParamsHandling="merge"></a>
 					</li>
 				</ul>
 			</nav>

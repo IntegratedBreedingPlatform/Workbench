@@ -87,7 +87,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        if (showReleaseNotes) {
+        if (showReleaseNotes || 1 === 1) {
             this.router.navigate(['/', { outlets: { popup: 'release-notes-popup' }, }], {
                 replaceUrl: false,
                 skipLocationChange: true,

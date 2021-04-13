@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../app.constants';
-import { ReleaseNotes } from './release-notes.model';
+import { ReleaseNote } from './release-notes.model';
 
 @Injectable()
 export class ReleaseNotesService {
@@ -13,8 +13,8 @@ export class ReleaseNotesService {
         this.resourceUrl = SERVER_API_URL + 'release-notes';
     }
 
-    getLatest(): Observable<HttpResponse<ReleaseNotes>> {
-        return this.http.get<ReleaseNotes>(this.resourceUrl + `/latest`, { observe: 'response' });
+    getLatest(): Observable<HttpResponse<ReleaseNote>> {
+        return this.http.get<ReleaseNote>(this.resourceUrl + `/latest`, { observe: 'response' });
     }
 
     getContent(version: string): Observable<HttpEvent<string>> {

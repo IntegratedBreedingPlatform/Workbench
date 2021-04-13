@@ -15,11 +15,15 @@ export const RELEASE_NOTES_ROUTES: Routes = [
             {
                 path: '',
                 redirectTo: 'content',
-                pathMatch: 'full'
+                pathMatch: 'full',
             },
             {
                 path: 'content',
-                component: ReleaseNotesContentComponent
+                component: ReleaseNotesContentComponent,
+            },
+            {
+                path: 'coming-soon',
+                component: ReleaseNotesContentComponent,
             }
         ]
     }

@@ -5,6 +5,11 @@ import { PopupService } from '../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { ReleaseNotesService } from './release-notes.service';
+import { HttpResponse } from '@angular/common/http';
+import { ReleaseNote } from './release-notes.model';
+import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ReleaseNoteContext } from './release-note.context';
 
 @Component({
     selector: 'jhi-release-notes-dialog',
@@ -14,14 +19,27 @@ export class ReleaseNotesDialogComponent implements OnInit {
 
     dontShowAgain = true;
 
+    hasComingSoon = false;
+    releaseNoteFileName: string
+    comingSoonFileName: string
+
     constructor(
         private modal: NgbActiveModal,
         private releaseNoteService: ReleaseNotesService,
-        private languageService: JhiLanguageService
+        private languageService: JhiLanguageService,
+        private route: ActivatedRoute,
+        private paramContext: ReleaseNoteContext
     ) {
+        const queryParams = this.route.snapshot.queryParams;
+        this.paramContext.fileName = queryParams.version;
+
+        this.releaseNoteFileName = queryParams.version;
+        this.comingSoonFileName = `${queryParams.version}_coming_soon`;
+        this.hasComingSoon = queryParams.hasComingSoon;
     }
 
     ngOnInit(): void {
+
     }
 
     dismiss() {
@@ -39,14 +57,24 @@ export class ReleaseNotesDialogComponent implements OnInit {
 
 @Component({
     selector: 'jhi-release-notes-wrapper',
-    template: `
-        <iframe src="/ibpworkbench/main/#release-notes-dialog" style="border: 0; min-height: 300px;" width="100%"></iframe>
-    `
+    templateUrl: './release-note-modal.component.html'
 })
 export class ReleaseNotesWrapperComponent implements OnInit {
 
-    constructor(private activeModal: NgbActiveModal) {
+    url: SafeResourceUrl;
 
+    constructor(private activeModal: NgbActiveModal,
+                private sanitizer: DomSanitizer,
+                private releaseNoteService: ReleaseNotesService) {
+
+        this.releaseNoteService.getLatest().subscribe((resp: HttpResponse<ReleaseNote>) => {
+            const releaseNote: ReleaseNote = resp.body;
+            const url = '/ibpworkbench/main/#release-notes-dialog?' +
+                '&version=' + releaseNote.version +
+                '&hasComingSoon=' + releaseNote.hasComingSoon;
+
+            this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        });
     }
 
     ngOnInit() {
