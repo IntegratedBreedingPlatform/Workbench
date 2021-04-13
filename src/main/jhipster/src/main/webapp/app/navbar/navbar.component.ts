@@ -90,8 +90,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     openTool(url) {
+        const hasParams = url.includes('?');
         this.toolLinkSelected = url;
-        const authParams = '?cropName=' + localStorage['cropName']
+        const authParams = (hasParams ? '&' : '?') + 'cropName=' + localStorage['cropName']
             + '&programUUID=' + localStorage['programUUID']
             // Deprecated, not needed
             // + '&authToken=' + localStorage['authToken']
@@ -144,7 +145,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             localStorage.removeItem('programUUID');
             window.top.location.href = '/ibpworkbench/main/';
         } else if (event.data.toolSelected) {
-            this.toolLinkSelected = event.data.toolSelected;
+            this.openTool(event.data.toolSelected);
             this.expandParent();
         }
     }
@@ -189,7 +190,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     private expandParent() {
         // Find node by selected tool name
-        const selectedNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => node.link === this.toolLinkSelected);
+        const selectedNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => this.toolLinkSelected.startsWith(node.link));
         if (selectedNode.length === 1) {
             // Find parent node
             const parentNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => node.name === selectedNode[0].parent.name);

@@ -26,18 +26,15 @@ export class GermplasmDetailsUrlService {
 
     }
 
-    getStudyUrl(studyId: any): SafeResourceUrl {
-        const queryParams = `?loggedInUserId=${this.paramContext.loggedInUserId}`
-            + `&selectedProjectId=${this.paramContext.selectedProjectId}`;
-        // Link to open Study
-        return this.sanitizer.bypassSecurityTrustResourceUrl(`${STUDY_URL}${studyId}` + queryParams);
-
+    openStudy(studyId: any) {
+        window.top.postMessage({ toolSelected: STUDY_URL + studyId }, '*');
+        return false;
     }
 
-    getGermplasmListUrl(listId: any): SafeResourceUrl {
-        const queryParams = `?restartApplication`
-            + `&lists=${listId}`;
-        return this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_LIST_MANAGER_URL + queryParams);
+    openList(listId: any) {
+        const queryParams = `?restartApplication&lists=${listId}`;
+        window.top.postMessage({ toolSelected: GERMPLASM_LIST_MANAGER_URL + queryParams }, '*');
+        return false;
     }
 
 }
