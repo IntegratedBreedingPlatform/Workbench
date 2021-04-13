@@ -13,6 +13,7 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 export class BasicDetailsPaneComponent implements OnInit {
 
     germplasm: GermplasmDto;
+    geojson: any;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
