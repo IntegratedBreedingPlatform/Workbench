@@ -105,7 +105,7 @@ export class ReleaseNotesPopupComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.routeSub = this.route.params.subscribe((params) => {
             this.popupService
-                .open(ReleaseNotesWrapperComponent as Component);
+                .open(ReleaseNotesWrapperComponent as Component, { size: 'lg', backdrop: 'static', keyboard: false});
         });
     }
 
