@@ -41,7 +41,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.germplasmNameContext.germplasmName = null;
+        this.germplasmNameContext.germplasmName = new GermplasmName();
     }
 }
 
