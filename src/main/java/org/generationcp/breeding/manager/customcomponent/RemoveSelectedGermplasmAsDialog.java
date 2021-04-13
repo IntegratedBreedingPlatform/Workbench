@@ -118,7 +118,7 @@ public class RemoveSelectedGermplasmAsDialog extends BaseSubWindow
 		this.addStyleName(Bootstrap.WINDOW.CONFIRM.styleName());
 		this.setModal(true);
 		this.setResizable(false);
-		this.setHeight("175px");
+		this.setHeight("210px");
 		this.setWidth("400px");
 
 		final HorizontalLayout buttonLayout = new HorizontalLayout();
