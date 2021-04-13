@@ -1,0 +1,65 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold"><span jhiTranslate="germplasm-name-modal.create.header">Create Germplasm Name</span></h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="clear()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm">
+			<div class="form-group row">
+				<label for="dropdownTypes" class="col-sm-3 col-form-label" jhiTranslate="germplasm-name-modal.type">Name Type</label>
+				<div class="col-sm-9">
+					<select class="form-control" name="dropdownTypes" id="dropdownTypes" [(ngModel)]="germplasmName.nameTypeCode" #dropdownTypes="ngModel" required>
+						<option *ngFor="let type of nameTypes" [value]="type.code">
+							<label>{{type.code}}</label>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="name" class="col-4 col-form-label" jhiTranslate="germplasm-name-modal.name">Name</label>
+				<input type="text" class="form-control col-4" name="name" id="name" [(ngModel)]="germplasmName.name" #name="ngModel" [ngClass]="{ 'is-invalid': f.submitted && name.invalid }" required/>
+			</div>
+			<div class="form-group row">
+				<label for="date" class="col-sm-3 col-form-label" jhiTranslate="germplasm-name-modal.date">Date</label>
+				<div class="input-group col-sm-9">
+					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="germplasmName.date"
+						   ngbDatepicker #date="ngbDatepicker" id="date" name="date" required/>
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="dropdownLocations" class="col-sm-3 col-form-label" jhiTranslate="germplasm-name-modal.location">Location</label>
+				<div class="col-sm-9">
+					<select class="form-control" name="dropdownLocations" id="dropdownLocations" [(ngModel)]="germplasmName.locationId" #dropdownLocations="ngModel" required>
+						<option *ngFor="let location of locations" [value]="location.id">
+							<label>{{location.name}}</label>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-3 col-form-label"></label>
+				<div class="col-sm-9">
+					<input type="checkbox" name="preferred" id="preferred" [(ngModel)]="germplasmName.preferred"><label jhiTranslate="germplasm-name-modal.preferred">Preferred Name</label>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+		</button>
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+		</button>
+	</div>
+</div>
