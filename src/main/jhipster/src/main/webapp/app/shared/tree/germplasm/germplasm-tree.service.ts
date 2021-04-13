@@ -5,10 +5,10 @@ import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
+import { Sample } from '../../../entities/sample';
 
-// TODO rename GermplasmTreeService
 @Injectable()
-export class GermplasmTreeTableService extends TreeService {
+export class GermplasmTreeService extends TreeService {
 
     private readonly resourceUrl: string;
 
@@ -76,6 +76,20 @@ export class GermplasmTreeTableService extends TreeService {
             params['programUUID'] = this.paramContext.programUUID;
         }
         return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
+    }
+
+    getUserTree(userId:string) : any {
+        const url = `${this.resourceUrl}/germplasm-list-folders/user-tree`;
+        const params = {
+            userId: userId
+        };
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.get<TreeNode[]>(url, {
+            params,
+            observe: 'response'
+        }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, ''))));
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {

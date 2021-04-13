@@ -4,7 +4,7 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../../shared/tree/tree.service';
 import { TreeNode } from '../../shared/tree';
-import { GermplasmTreeTableService } from '../../shared/tree/germplasm/germplasm-tree-table.service';
+import { GermplasmTreeService } from '../../shared/tree/germplasm/germplasm-tree.service';
 import { ParamContext } from '../../shared/service/param.context';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
@@ -23,7 +23,7 @@ declare var $: any;
     selector: 'jhi-germplasm-list-add',
     templateUrl: './germplasm-list-add.component.html',
     providers: [
-        { provide: TreeService, useClass: GermplasmTreeTableService },
+        { provide: TreeService, useClass: GermplasmTreeService },
         GermplasmListService
     ]
 })
