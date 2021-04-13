@@ -103,5 +103,11 @@
         "sampling-date": "Sampling Date",
         "dataset-type": "Dataset_Type",
         "obs_unit_id": "Obs_Unit_ID"
+    },
+    "edit-basic-details": {
+        "title": "Edit Germplasm Details",
+        "germplasm-location": "Germplasm Location",
+        "germplasm-date": "Germplasm Date",
+        "reference": "Reference"
     }
 }

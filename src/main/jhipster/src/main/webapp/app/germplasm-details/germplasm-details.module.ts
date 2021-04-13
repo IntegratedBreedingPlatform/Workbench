@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { germplasmDetailsRoutes } from './germplasm-details.route';
 import { GermplasmDetailsComponent } from './germplasm-details.component';
 import { BasicDetailsPaneComponent } from './basic-details/basic-details-pane.component';
+import { EditBasicDetailsPaneComponent, EditBasicDetailsPopupComponent } from './basic-details/edit-basic-details-pane.component';
 import { AttributesPaneComponent } from './attributes/attributes-pane.component';
 import { PedigreePaneComponent } from './pedigree/pedigree-pane.component';
 import { ObservationsPaneComponent } from './observations/observations-pane.component';
@@ -24,6 +25,8 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
         GermplasmDetailsModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
+        EditBasicDetailsPaneComponent,
+        EditBasicDetailsPopupComponent,
         AttributesPaneComponent,
         PedigreePaneComponent,
         ObservationsPaneComponent,
@@ -36,6 +39,8 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
         GermplasmDetailsModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
+        EditBasicDetailsPaneComponent,
+        EditBasicDetailsPopupComponent,
         AttributesPaneComponent,
         PedigreePaneComponent,
         ObservationsPaneComponent,
