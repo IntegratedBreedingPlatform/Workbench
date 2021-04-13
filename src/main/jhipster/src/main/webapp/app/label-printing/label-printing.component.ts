@@ -345,9 +345,9 @@ export class LabelPrintingComponent implements OnInit {
 
         fileConfiguration.outputType = this.fileType.toString();
 
-        selectedFields.push($('#leftSelectedFields').sortable('toArray'));
+        selectedFields.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
         if (this.fileType === FileType.PDF) {
-            selectedFields.push($('#rightSelectedFields').sortable('toArray'));
+            selectedFields.push($('#rightSelectedFields').sortable('toArray').map((i) => Number(i)));
             fileConfiguration.sizeOfLabelSheet = this.labelPrintingData.sizeOfLabelSheet;
             fileConfiguration.numberOfRowsPerPage = this.labelPrintingData.numberOfRowsPerPage;
         }
