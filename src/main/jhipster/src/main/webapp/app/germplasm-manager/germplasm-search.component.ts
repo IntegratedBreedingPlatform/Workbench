@@ -658,12 +658,14 @@ export class GermplasmSearchComponent implements OnInit {
 
         const confirmDeleteGermplasmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmDeleteGermplasmModalRef.componentInstance.title = 'Delete Germplasm';
-        confirmDeleteGermplasmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
+        confirmDeleteGermplasmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? '
+            + 'The deletion will be permanent.';
         confirmDeleteGermplasmModalRef.result.then(() => {
-            this.germplasmService.getGermplasmPresentInOtherLists(this.getSelectedItemIds(), null).subscribe((response) => {
+            this.germplasmService.getGermplasmPresentInOtherLists(this.getSelectedItemIds(), null).subscribe((germplasmPresentInOtherLists) => {
                 const confirmDeleteGermplasmInOtherListsModalRef = this.modalService.open(ModalConfirmComponent as Component);
                 confirmDeleteGermplasmInOtherListsModalRef.componentInstance.title = 'Delete Germplasm';
-                confirmDeleteGermplasmInOtherListsModalRef.componentInstance.message = "The following germplasm with GIDs: " + response.join(', ') + " are included in some lists. Deletion might take some time. Continue with the deletion?";
+                confirmDeleteGermplasmInOtherListsModalRef.componentInstance.message = 'The following germplasm with GIDs: ' + germplasmPresentInOtherLists.join(', ')
+                    + ' are included in some lists.  Deletion might take some time. Continue with the deletion?';
                 confirmDeleteGermplasmInOtherListsModalRef.result.then(() => {
                     this.germplasmService.deleteGermplasm(this.getSelectedItemIds()).subscribe((response) => {
                         if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
