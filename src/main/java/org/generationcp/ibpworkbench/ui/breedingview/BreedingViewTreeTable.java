@@ -76,7 +76,7 @@ public class BreedingViewTreeTable extends TreeTable {
 
 		try {
 			final List<String> parsedState = programStateDataManager
-					.getUserProgramTreeStateByUserIdProgramUuidAndType(contextUtil.getCurrentWorkbenchUserId(),
+					.getUserProgramTreeState(contextUtil.getCurrentWorkbenchUserId(),
 							contextUtil.getProjectInContext().getUniqueID(), ListTreeState.STUDY_LIST.name());
 
 			if (parsedState.isEmpty() || (parsedState.size() == 1 && !StringUtils.isEmpty(parsedState.get(0)))) {
