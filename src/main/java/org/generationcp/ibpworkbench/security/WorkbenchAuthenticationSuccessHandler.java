@@ -2,10 +2,9 @@ package org.generationcp.ibpworkbench.security;
 
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.pojos.workbench.releasenote.ReleaseNote;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
-import org.generationcp.middleware.service.api.user.UserService;
 import org.generationcp.middleware.service.api.releasenote.ReleaseNoteService;
+import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Handler for setting up Workbench specific stuff e.g. {@link org.generationcp.commons.spring.util.ContextUtil} before redirecting to the page requested on successful
@@ -53,11 +51,11 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		}
 
 		final WorkbenchUser user = retrieveUserFromAuthentication(authentication);
-		final Optional<ReleaseNote> releaseNote = this.releaseNoteService.shouldShowReleaseNote(user.getUserid());
+		final boolean shouldShowReleaseNote = this.releaseNoteService.shouldShowReleaseNote(user.getUserid());
 
 		// Initialize the ContextInfo to set the userId of the authenticated user.
 		// The projectId and token will be populated later when a program is opened/loaded.
-		ContextUtil.setContextInfo(request, user.getUserid(), null, null, releaseNote.isPresent());
+		ContextUtil.setContextInfo(request, user.getUserid(), null, null, shouldShowReleaseNote);
 
 		this.clearAuthenticationAttributes(request);
 

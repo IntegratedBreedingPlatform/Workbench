@@ -6,7 +6,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
-import org.generationcp.middleware.pojos.workbench.releasenote.ReleaseNote;
 import org.generationcp.middleware.service.api.releasenote.ReleaseNoteService;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Before;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import static org.junit.Assert.assertTrue;
@@ -67,7 +65,7 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 		final Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.getName()).thenReturn(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER);
 
-		Mockito.when(this.releaseNoteService.shouldShowReleaseNote(USER_ID)).thenReturn(Optional.of(Mockito.mock(ReleaseNote.class)));
+		Mockito.when(this.releaseNoteService.shouldShowReleaseNote(USER_ID)).thenReturn(true);
 
 		final List<WorkbenchUser> matchingUsers = new ArrayList();
 		final WorkbenchUser testUserWorkbench = Mockito.mock(WorkbenchUser.class);
