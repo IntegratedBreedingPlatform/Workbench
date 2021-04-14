@@ -1,7 +1,10 @@
 <div class="container">
 	<div class="modal-header">
 		<div class="col-xs-11 col-md-11">
-			<h4 class="modal-title font-weight-bold"><span jhiTranslate="germplasm-name-modal.create.header">Create Germplasm Name</span></h4>
+			<h4 class="modal-title font-weight-bold">
+				<span *ngIf="nameId" jhiTranslate="germplasm-name-modal.edit.header"></span>
+				<span *ngIf="!nameId" jhiTranslate="germplasm-name-modal.create.header"></span>
+			</h4>
 		</div>
 		<div class="col-xs-1 col-md-1">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -14,37 +17,37 @@
 			<div class="form-group row required">
 				<label for="dropdownTypes" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.type">Name Type</label>
 				<div class="col-sm-9">
-					<ng-select2 name="dropdownTypes" id="dropdownTypes" width="100%" [(ngModel)]="germplasmName.nameTypeCode"
+					<ng-select2 name="dropdownTypes" id="dropdownTypes" width="100%" [(ngModel)]="nameTypeCode"
 								[data]="nameTypes | async | NameTypeSelect2Data">
 					</ng-select2>
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="name" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.name">Name</label>
+				<label for="germplasmname" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.name">Name</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="germplasmName.name" #name="ngModel"/>
+					<input type="text" class="form-control" name="germplasmname" id="name" [(ngModel)]="name" #germplasmname="ngModel"/>
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="date" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.date">Date</label>
+				<label for="germplasmdate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.date">Date</label>
 				<div class="input-group col-sm-9">
-					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="germplasmName.date"
-						   ngbDatepicker #date="ngbDatepicker" id="date" name="date"/>
+					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="date"
+						   ngbDatepicker #germplasmdate="ngbDatepicker" id="germplasmdate" name="date"/>
 					<div class="input-group-append">
-						<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
+						<button class="btn btn-outline-secondary calendar" (click)="germplasmdate.toggle()" type="button"></button>
 					</div>
 				</div>
 			</div>
 			<div class="form-group row required">
 				<label for="dropdownLocations" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.location">Location</label>
 				<div class="col-sm-9">
-					<jhi-locations-select [name]="'dropdownLocations'"></jhi-locations-select>
+					<jhi-locations-select [(value)]="locationId" [showFilterOptions]="false"></jhi-locations-select>
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="type" class="col-sm-3 col-form-label"></label>
+				<label for="germplasmpreferred" class="col-sm-3 col-form-label"></label>
 				<div class="col-sm-9">
-					<input type="checkbox" name="preferred" id="preferred" [(ngModel)]="germplasmName.preferred"><label jhiTranslate="germplasm-name-modal.preferred">Preferred Name</label>
+					<input type="checkbox" name="germplasmpreferred" id="germplasmpreferred" [(ngModel)]="preferred"><label jhiTranslate="germplasm-name-modal.preferred">Preferred Name</label>
 				</div>
 			</div>
 		</form>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LocationService } from '../location/service/location.service';
 import { LocationTypeEnum } from '../location/model/location.model';
 
@@ -8,24 +8,35 @@ import { LocationTypeEnum } from '../location/model/location.model';
 })
 export class LocationsSelectComponent implements OnInit {
 
-    @Input() name: string;
+    @Input() showFilterOptions?: boolean;
+    @Input() value: number;
+    @Output() valueChange = new EventEmitter<number>();
+
+    // If selectBoxOnly is true, the component will only display the select box with all locations options.
+    hideFilterOptions: boolean;
 
     locationsOptions: any;
     locationSelected: string;
     useFavoriteLocations = true;
-    isBreedingAndCountryLocationsOnly = false;
+    isBreedingAndCountryLocationsOnly;
     locationsFilteredItemsCount;
 
     constructor(private locationService: LocationService) {
+
     }
 
     ngOnInit(): void {
+
+        if (this.value) {
+            this.locationSelected = String(this.value);
+        }
+        this.useFavoriteLocations = this.showFilterOptions;
 
         this.locationsOptions = {
             ajax: {
                 delay: 500,
                 transport: function (params, success, failure) {
-                    let locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
+                    const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
                     this.locationService.queryLocationsByType(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
                         this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
                         success(res.body);
@@ -37,7 +48,7 @@ export class LocationsSelectComponent implements OnInit {
                     return {
                         results: locations.map((location) => {
                             return {
-                                id: location.abbreviation ? location.abbreviation : location.name,
+                                id: location.id,
                                 text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name
                             };
                         }),
@@ -46,11 +57,12 @@ export class LocationsSelectComponent implements OnInit {
                         }
                     };
                 }.bind(this)
-            },
-            selectionCssClass: 'form-control'
+            }
         };
 
     }
 
-
+    onValueChanged($event): void {
+        this.valueChange.emit(Number($event));
+    }
 }

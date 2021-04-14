@@ -74,7 +74,8 @@
 						<td>{{name.locationName}}</td>
 						<td>{{name.preferred ? 'Yes' : 'No'}}</td>
 						<td class="text-center">
-							<button class="btn btn-info" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;<button class="btn btn-info"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
+							<button class="btn btn-info" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
+							<button class="btn btn-info" (click)="deleteGermplasmName(name.id)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 					</tbody>
