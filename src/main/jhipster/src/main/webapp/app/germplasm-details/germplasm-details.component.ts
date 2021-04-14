@@ -12,9 +12,8 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
 export class GermplasmDetailsComponent implements OnInit {
 
     safeUrl: any;
-    isModal: boolean;
 
-    constructor(private paramContext: ParamContext, private germplasmDetailsContext: GermplasmDetailsContext,
+    constructor(private paramContext: ParamContext, public germplasmDetailsContext: GermplasmDetailsContext,
                 private route: ActivatedRoute,
                 private sanitizer: DomSanitizer,
                 private germplasmDetailsUrlService: GermplasmDetailsUrlService) {
@@ -29,7 +28,7 @@ export class GermplasmDetailsComponent implements OnInit {
         this.safeUrl = this.germplasmDetailsUrlService.getUrl(this.germplasmDetailsContext.gid);
 
         // Only show 'Open to a new tab' button if the page is shown inside a modal window.
-        this.isModal = this.route.snapshot.queryParamMap.has('modal');
+        this.germplasmDetailsContext.isModal = this.route.snapshot.queryParamMap.has('modal');
 
     }
 
