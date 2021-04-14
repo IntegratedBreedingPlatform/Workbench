@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
@@ -31,7 +31,8 @@ export class BasicDetailsPaneComponent implements OnInit {
                 private modalService: NgbModal,
                 private popupService: PopupService,
                 private router: Router,
-                private germplasmNameContext: GermplasmNameContext) {
+                private germplasmNameContext: GermplasmNameContext,
+                private alertService: JhiAlertService) {
     }
 
     ngOnInit(): void {
@@ -71,6 +72,8 @@ export class BasicDetailsPaneComponent implements OnInit {
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, nameId).toPromise().then((result) => {
                 this.loadGermplasm();
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }, () => confirmModalRef.dismiss());
     }

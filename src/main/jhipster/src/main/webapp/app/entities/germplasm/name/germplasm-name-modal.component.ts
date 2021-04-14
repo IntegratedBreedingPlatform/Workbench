@@ -6,7 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { GermplasmNameContext } from './germplasm-name.context';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
 
 @Component({
@@ -34,7 +34,8 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 private germplasmNameContext: GermplasmNameContext,
                 private germplasmService: GermplasmService,
                 private calendar: NgbCalendar,
-                private dateHelperService: DateHelperService) {
+                private dateHelperService: DateHelperService,
+                private alertService: JhiAlertService) {
     }
 
     ngOnInit(): void {
@@ -67,6 +68,8 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
                 this.clear();
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         } else {
             // If name id is not available, we have to create a new name
@@ -78,6 +81,8 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
                 this.clear();
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }
 
