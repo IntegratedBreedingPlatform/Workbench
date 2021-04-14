@@ -352,6 +352,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     transition() {
         this.router.navigate(['./'], {
+            queryParamsHandling: 'merge',
             queryParams:
                 this.addSortParam({
                     page: this.page,
@@ -699,7 +700,8 @@ export class GermplasmSearchComponent implements OnInit {
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.title = 'Delete Germplasm';
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? '
+            + 'The deletion will be permanent and can take a long time for germplasm included in lists - from which they will also be deleted.';
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasm(this.getSelectedItemIds()).subscribe((response) => {
                 if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
