@@ -10,6 +10,7 @@ import { ReleaseNote } from './release-notes.model';
 import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ReleaseNoteContext } from './release-note.context';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-release-notes-dialog',
@@ -37,8 +38,11 @@ export class ReleaseNotesDialogComponent implements OnInit {
         this.paramContext.fileName = queryParams.version;
 
         this.releaseNoteFileName = queryParams.version;
-        this.comingSoonFileName = `${queryParams.version}_coming_soon`;
-        this.hasComingSoon = queryParams.hasComingSoon;
+        this.hasComingSoon = (queryParams.hasComingSoon === 'true') ? true : false;
+
+        if (this.hasComingSoon) {
+            this.comingSoonFileName = `${queryParams.version}_coming_soon`;
+        }
     }
 
     ngOnInit(): void {
@@ -47,9 +51,16 @@ export class ReleaseNotesDialogComponent implements OnInit {
 
     dismiss() {
         if (this.dontShowAgain) {
-            this.releaseNoteService.dontShowAgain().subscribe(() => {});
+            this.releaseNoteService.dontShowAgain().pipe(finalize(() => {
+                this.closeModal();
+            })).subscribe(() => {});
+            return;
         }
 
+        this.closeModal();
+    }
+
+    private closeModal() {
         this.modal.dismiss();
         if ((<any>window.parent).closeModal) {
             (<any>window.parent).closeModal();
