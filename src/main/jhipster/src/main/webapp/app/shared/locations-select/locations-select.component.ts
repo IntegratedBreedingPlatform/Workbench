@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LocationService } from '../location/service/location.service';
 import { LocationTypeEnum } from '../location/model/location.model';
+import { Select2OptionData } from 'ng-select2';
 
 @Component({
     selector: 'jhi-locations-select',
@@ -20,6 +21,8 @@ export class LocationsSelectComponent implements OnInit {
     useFavoriteLocations = true;
     isBreedingAndCountryLocationsOnly;
     locationsFilteredItemsCount;
+    initialData: Select2OptionData[];
+
 
     constructor(private locationService: LocationService) {
 
@@ -30,7 +33,14 @@ export class LocationsSelectComponent implements OnInit {
         if (this.value) {
             this.locationSelected = String(this.value);
         }
-        this.useFavoriteLocations = this.showFilterOptions;
+
+        this.useFavoriteLocations = this.showFilterOptions
+
+        // The locations are retrieved only when the dropdown is opened, so we have to manually set the initial selected item on first load.
+        // Get the location method and add it to the initial data.
+        this.locationService.queryBreedingLocation(this.locationSelected).toPromise().then((location) => {
+            this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
+        });
 
         this.locationsOptions = {
             ajax: {
@@ -48,7 +58,7 @@ export class LocationsSelectComponent implements OnInit {
                     return {
                         results: locations.map((location) => {
                             return {
-                                id: location.id,
+                                id: String(location.id),
                                 text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name
                             };
                         }),
