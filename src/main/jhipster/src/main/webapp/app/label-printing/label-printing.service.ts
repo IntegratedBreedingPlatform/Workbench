@@ -52,7 +52,7 @@ export class LabelPrintingService {
 
     getSortableFields(): Observable<Sortable[]> {
         const printingLabelType = this.context.printingLabelType;
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/SortableFields`;
+        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/sortable-fields`;
         return this.http.get<Sortable[]>(this.baseUrl + resourceUrl);
     }
 
