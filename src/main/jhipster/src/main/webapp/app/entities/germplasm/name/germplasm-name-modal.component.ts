@@ -42,7 +42,6 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
         this.nameTypes = this.germplasmService.getGermplasmNameTypes([]).toPromise();
         this.date = this.calendar.getToday();
         if (this.germplasmNameContext.germplasmName) {
-            console.log(this.germplasmNameContext.germplasmName);
             this.nameId = this.germplasmNameContext.germplasmName.id;
             this.name = this.germplasmNameContext.germplasmName.name;
             this.nameTypeCode = this.germplasmNameContext.germplasmName.nameTypeCode;
@@ -67,7 +66,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
-                this.clear();
+                this.notifyChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
@@ -80,14 +79,17 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
-                this.clear();
+                this.notifyChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }
 
-        this.eventManager.broadcast({ name: 'germplasmNameChanged' });
+    }
 
+    notifyChanges(): void {
+        this.eventManager.broadcast({ name: 'germplasmNameChanged' });
+        this.clear();
     }
 
     isFormValid(f) {
