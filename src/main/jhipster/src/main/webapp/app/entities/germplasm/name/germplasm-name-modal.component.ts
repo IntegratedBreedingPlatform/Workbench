@@ -6,6 +6,7 @@ import { LocationModel } from '../../../shared/location/model/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { GermplasmNameContext } from './germplasm-name.context';
+import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
 
 @Component({
     selector: 'jhi-germplasm-name-modal',
@@ -16,16 +17,18 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
     isEditMode: boolean;
     germplasmName: GermplasmName = new GermplasmName();
-    nameTypes: NameType[];
+    nameTypes: Promise<NameType[]>;
     locations: LocationModel[];
     isLoading: boolean;
 
     constructor(public activeModal: NgbActiveModal,
-                private germplasmNameContext: GermplasmNameContext) {
+                private germplasmNameContext: GermplasmNameContext,
+                private germplasmService: GermplasmService) {
     }
 
     ngOnInit(): void {
         this.germplasmName = this.germplasmNameContext.germplasmName;
+        this.nameTypes = this.germplasmService.getGermplasmNameTypes([]).toPromise();
     }
 
     clear() {

@@ -59,6 +59,8 @@ import { CollapsibleComponent } from './component/collapsible.component';
 import { UserProgramInfoService } from './service/user-program-info.service';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
+import { LocationsSelectComponent } from './locations-select/locations-select.component';
+import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 
 @NgModule({
     imports: [
@@ -94,13 +96,15 @@ import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
+        NameTypeSelect2Pipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
-        GeojsonMapComponent
+        GeojsonMapComponent,
+        LocationsSelectComponent
     ],
     providers: [
         LoginService,
@@ -150,6 +154,7 @@ import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
+        NameTypeSelect2Pipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -175,7 +180,8 @@ import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
         GermplasmListCreationComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
-        GeojsonMapComponent
+        GeojsonMapComponent,
+        LocationsSelectComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
