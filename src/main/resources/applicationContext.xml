@@ -426,6 +426,16 @@
 
 	<bean id="germplasmNamingService" class="org.generationcp.commons.service.impl.GermplasmNamingServiceImpl" />
 
+	<bean id="germplasmListService" factory-bean="managerFactory"
+		  factory-method="getGermplasmListService" scope="request">
+		<aop:scoped-proxy />
+    </bean>
+
+	<bean id="germplasmSearchService" factory-bean="managerFactory"
+		  factory-method="getGermplasmSearchService" scope="request">
+		<aop:scoped-proxy />
+    </bean>
+
 	<bean id="germplasmService" factory-bean="managerFactory"
 		  factory-method="getGermplasmService" scope="request">
 		<aop:scoped-proxy />
