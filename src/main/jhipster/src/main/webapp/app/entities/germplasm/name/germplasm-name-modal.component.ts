@@ -7,6 +7,7 @@ import { PopupService } from '../../../shared/modal/popup.service';
 import { GermplasmNameContext } from './germplasm-name.context';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
 import { JhiEventManager } from 'ng-jhipster';
+import { DateHelperService } from '../../../shared/service/date.helper.service';
 
 @Component({
     selector: 'jhi-germplasm-name-modal',
@@ -32,7 +33,8 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 private eventManager: JhiEventManager,
                 private germplasmNameContext: GermplasmNameContext,
                 private germplasmService: GermplasmService,
-                private calendar: NgbCalendar) {
+                private calendar: NgbCalendar,
+                private dateHelperService: DateHelperService) {
     }
 
     ngOnInit(): void {
@@ -44,7 +46,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
             this.name = this.germplasmNameContext.germplasmName.name;
             this.nameTypeCode = this.germplasmNameContext.germplasmName.nameTypeCode;
             this.locationId = this.germplasmNameContext.germplasmName.locationId;
-            this.date = this.convertStringToNgbDate(this.germplasmNameContext.germplasmName.date);
+            this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmNameContext.germplasmName.date);
             this.preferred = this.germplasmNameContext.germplasmName.preferred;
         }
     }
@@ -62,7 +64,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 nameTypeCode: this.nameTypeCode,
                 preferredName: this.preferred || false,
                 locationId: this.locationId,
-                date: this.convertNgbDateToString(this.date)
+                date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
                 this.clear();
             });
@@ -73,7 +75,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 nameTypeCode: this.nameTypeCode,
                 preferredName: this.preferred || false,
                 locationId: this.locationId,
-                date: this.convertNgbDateToString(this.date)
+                date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
                 this.clear();
             });
@@ -90,25 +92,6 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.germplasmNameContext.germplasmName = null;
-    }
-
-    // TODO: Create helper class
-    convertNgbDateToString(date: NgbDate) {
-        return '' + date.year + this.twoDigit(date.month) + this.twoDigit(date.day);
-    }
-
-    convertStringToNgbDate(dateString: string): NgbDate {
-        if (dateString && dateString.length == 8) {
-            let year = Number(dateString.substring(0, 4));
-            let month = Number(dateString.substring(4, 6));
-            let day = Number(dateString.substring(6, 8));
-            return new NgbDate(year, month, day);
-        }
-        return this.calendar.getToday();
-    }
-
-    twoDigit(n) {
-        return (n < 10 ? '0' : '') + n;
     }
 }
 

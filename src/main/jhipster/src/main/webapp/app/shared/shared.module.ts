@@ -61,6 +61,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { LocationsSelectComponent } from './locations-select/locations-select.component';
 import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
+import { DateHelperService } from './service/date.helper.service';
 
 @NgModule({
     imports: [
@@ -131,6 +132,7 @@ import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
         ToolService,
         KeySequenceRegisterService,
         UserProgramInfoService,
+        DateHelperService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
