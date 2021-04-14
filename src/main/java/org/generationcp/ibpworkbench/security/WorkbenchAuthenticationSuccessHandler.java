@@ -53,7 +53,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		}
 
 		final WorkbenchUser user = retrieveUserFromAuthentication(authentication);
-		final Optional<ReleaseNote> releaseNote = this.releaseNoteService.shouldShowReleaseNote(user.getPerson().getId());
+		final Optional<ReleaseNote> releaseNote = this.releaseNoteService.shouldShowReleaseNote(user.getUserid());
 
 		// Initialize the ContextInfo to set the userId of the authenticated user.
 		// The projectId and token will be populated later when a program is opened/loaded.
