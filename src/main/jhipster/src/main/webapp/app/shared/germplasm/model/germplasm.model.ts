@@ -24,6 +24,15 @@ export class GermplasmDto {
     }
 }
 
+export class GermplasmBasicDetailsDto{
+    constructor(
+        public creationDate?: string,
+        public reference?: string,
+        public breedingLocationId?: number
+    ){
+    }
+}
+
 export class GermplasmName {
     constructor(
         public id?: number,

@@ -1,9 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 import { PopupService } from '../../shared/modal/popup.service';
+import { GermplasmDetailsContext } from '../germplasm-details.context';
+import { LocationModel } from '../../shared/location/model/location.model';
 import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
@@ -13,14 +16,24 @@ import { JhiLanguageService } from 'ng-jhipster';
 
 export class EditBasicDetailsPaneComponent implements OnInit {
 
-    @Input() public germplasm: GermplasmDto;
+    germplasm: GermplasmDto = new GermplasmDto();
+    locations: LocationModel[];
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
-                public activeModal: NgbActiveModal,) {
+                private germplasmDetailsContext: GermplasmDetailsContext,
+                public activeModal: NgbActiveModal,
+                public germplasmService: GermplasmService) {
     }
 
     ngOnInit(): void {
+        this.germplasm = this.germplasmDetailsContext.germplasm;
+    }
+
+    updateGermplasmBasicDetails(): void{
+        this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then(() => {
+            this. activeModal.close();
+        })
     }
 
     clear() {
@@ -41,12 +54,7 @@ export class EditBasicDetailsPopupComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const germplasm = this.route.snapshot.paramMap.get('germplasm');
-
-        const modal = this.popupService.open(EditBasicDetailsPaneComponent as Component);
-        modal.then((modalRef) => {
-            modalRef.componentInstance.germplasm = germplasm;
-        });
+        const modal = this.popupService.open(EditBasicDetailsPaneComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
     }
 
 }

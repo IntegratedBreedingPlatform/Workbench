@@ -9,7 +9,7 @@ import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
-import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy } from '../model/germplasm.model';
+import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy, GermplasmBasicDetailsDto } from '../model/germplasm.model';
 import { Sample } from '../../../entities/sample';
 
 @Injectable()
@@ -105,6 +105,12 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
             '?programUUID=' + this.context.programUUID;
         return this.http.post<ImportGermplasmResultType>(url, germplasmList);
+    }
+
+    updateGermplasmBasicDetails(germplasm: GermplasmDto) {
+        const germplasmBasicDetailsDto: GermplasmBasicDetailsDto = new GermplasmBasicDetailsDto(germplasm.creationDate, germplasm.reference, germplasm.breedingLocationId);
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${germplasm.gid}/basic-details?programUUID=` + this.context.programUUID;
+        return this.http.patch(url, germplasmBasicDetailsDto);
     }
 
     deleteGermplasm(gids: number[]): Observable<DeleteGermplasmResultType> {

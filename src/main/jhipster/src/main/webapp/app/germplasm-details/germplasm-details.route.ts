@@ -59,7 +59,7 @@ export const germplasmDetailsRoutes: Routes = [
     },
     {
         // Path for showing edit germplasm basic details pop-up
-        path: 'germplasm-edit-basic-details/:germplasm',
+        path: 'germplasm-edit-basic-details',
         component: EditBasicDetailsPopupComponent,
         outlet: 'popup'
     }

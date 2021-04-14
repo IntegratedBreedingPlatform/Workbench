@@ -41,7 +41,7 @@
 						<td>{{germplasm?.breedingLocation}}</td>
 						<td>{{germplasm?.reference}}</td>
 						<td class="text-center">
-							<button class="btn btn-info" [routerLink]="['/', { outlets: { popup: 'germplasm-edit-basic-details/' + germplasm } }]">
+							<button class="btn btn-info" (click)="editGermplasmBasicDetails()">
 								<i class="fa fa-edit fa-fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
