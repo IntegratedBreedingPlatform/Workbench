@@ -27,5 +27,4 @@ export class BasicDetailsPaneComponent implements OnInit {
             this.germplasm = value.body;
         })
     }
-
 }
