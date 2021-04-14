@@ -1,7 +1,7 @@
 {
     "release-notes": {
         "title": "Upgrade Notification",
-        "description": "BMS has been upgraded since your last login. See more information below",
+        "description": "BMS has been upgraded recently. See more information below.",
         "nav": {
             "notes": "Release notes",
             "coming-soon": "Coming Soon"

@@ -20,7 +20,7 @@ import { ReleaseNoteContext } from './release-note.context';
 })
 export class ReleaseNotesDialogComponent implements OnInit {
 
-    dontShowAgain = true;
+    dontShowAgain;
 
     hasComingSoon = false;
     releaseNoteFileName: string
