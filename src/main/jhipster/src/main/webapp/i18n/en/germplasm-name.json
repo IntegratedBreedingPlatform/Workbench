@@ -1,7 +1,7 @@
 {
     "germplasm-name-modal": {
-        "edit.header": "Edit Germplasm Name",
-        "create.header": "Create Germplasm Name",
+        "edit.header": "Edit Name",
+        "create.header": "Create Name",
         "type": "Name Type:",
         "name": "Name:",
         "date": "Date:",
