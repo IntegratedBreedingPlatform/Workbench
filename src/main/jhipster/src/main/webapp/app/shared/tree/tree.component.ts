@@ -24,7 +24,7 @@ export class TreeComponent implements OnInit {
                 this.service.init()
                     .subscribe((nodes: TreeNode[]) => {
                         if (nodes.length > 0) {
-                            let rootNode = this.nodes.find(c => c.data.id === nodes[0].key);
+                            const rootNode = this.nodes.find((c) => c.data.id === nodes[0].key);
                             if (rootNode) {
                                this.addChildren(rootNode, nodes[0].children)
                             }
@@ -42,7 +42,7 @@ export class TreeComponent implements OnInit {
         });
     }
 
-    private addNode(node: TreeNode) {
+    addNode(node: TreeNode) {
         return this.nodes.push(this.toPrimeNgNode(node));
     }
 
@@ -75,7 +75,7 @@ export class TreeComponent implements OnInit {
         this.activeModal.dismiss();
     }
 
-    private expand(parent) {
+    expand(parent) {
         if (parent.leaf) {
             return;
         }
@@ -86,11 +86,11 @@ export class TreeComponent implements OnInit {
             });
     }
 
-    private addChildren(parent:any, children : TreeNode[]) {
+    addChildren(parent: any, children: TreeNode[]) {
         parent.children = [];
-        if (children) {
+        if (children.length > 0) {
             children.forEach((node) => {
-                let child = this.toPrimeNgNode(node, parent);
+                const child = this.toPrimeNgNode(node, parent);
                 parent.children.push(child);
                 // Recursively add "grand" children nodes as well
                 if (node.children) {
@@ -101,7 +101,7 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    private redrawNodes() {
+    redrawNodes() {
         // see primefaces/primeng/issues/5966#issuecomment-402498667
         this.nodes = Object.assign([], this.nodes);
     }
@@ -119,9 +119,13 @@ export class TreeComponent implements OnInit {
             },
             draggable: node.isFolder,
             droppable: node.isFolder,
-            selectable: !node.isFolder,
+            selectable: this.isSelectable(node),
             leaf: !node.isFolder,
             parent,
         };
+    }
+
+    isSelectable(node: TreeNode) {
+        return !node.isFolder;
     }
 }
