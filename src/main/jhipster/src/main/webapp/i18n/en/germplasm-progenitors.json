@@ -4,11 +4,14 @@
     "header": "Edit the germplasm progenitors",
     "breeding.method": "Breeding Method:",
     "female.parent": "Female Parent:",
-    "male.parent": "Male Parent:",
+    "male.parent": "Male Parent/s:",
+    "group.source": "Group Source:",
+    "immediate.source": "Immediate Source:",
     "parent.subtext": "('0' if unknown):",
     "breeding.method.generative": "Generative",
     "breeding.method.der.man": "Derivative/Maintenance",
     "update": "Update",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "search": "Search"
   }
 }

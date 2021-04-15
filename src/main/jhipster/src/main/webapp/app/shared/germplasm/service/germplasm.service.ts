@@ -13,6 +13,7 @@ import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDe
 import { Sample } from '../../../entities/sample';
 import { GermplasmNameRequestModel } from '../model/germplasm-name-request.model';
 import { GernplasmAttributeRequestModel } from '../model/gernplasm-attribute-request.model';
+import { GermplasmProgenitorsUpdateRequestModel } from '../model/germplasm-progenitors-update-request.model';
 
 @Injectable()
 export class GermplasmService {
@@ -157,6 +158,12 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}` +
             '?programUUID=' + this.context.programUUID;
         return this.http.delete<any>(url);
+    }
+
+    updateGermplasmProgenitors(gid: number, germplasmProgenitorsUpdateRequestModel: GermplasmProgenitorsUpdateRequestModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.patch<any>(url, germplasmProgenitorsUpdateRequestModel);
     }
 }
 
