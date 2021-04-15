@@ -35,6 +35,24 @@ export class GermplasmTreeService extends TreeService {
         }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, parentKey))));
     }
 
+    init(): any {
+        const url = `${this.resourceUrl}/germplasm-list-folders/user-tree`;
+        const params = {
+            onlyFolders: '0'
+        };
+        if (this.paramContext.loggedInUserId) {
+            params['userId'] = this.paramContext.loggedInUserId;
+        }
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.get<TreeNode[]>(url, {
+            params,
+            observe: 'response'
+        }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, null))));
+    }
+
+
     move(source: string, target: string, isParentCropList: boolean): Observable<HttpResponse<number>> {
         const url = `${this.resourceUrl}/germplasm-list-folders/${source}/move`;
         const params = {
@@ -78,22 +96,8 @@ export class GermplasmTreeService extends TreeService {
         return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
     }
 
-    getUserTree(userId:string) : any {
-        const url = `${this.resourceUrl}/germplasm-list-folders/user-tree`;
-        const params = {
-            userId: userId
-        };
-        if (this.paramContext.programUUID) {
-            params['programUUID'] = this.paramContext.programUUID;
-        }
-        return this.http.get<TreeNode[]>(url, {
-            params,
-            observe: 'response'
-        }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, ''))));
-    }
-
     private toTreeNode(item: any, parentKey: any): TreeNode {
-        return <TreeNode>({
+        let treeNode = <TreeNode>({
             name: item.title,
             key: item.key,
             parentId: parentKey,
@@ -104,6 +108,13 @@ export class GermplasmTreeService extends TreeService {
             noOfEntries: item.noOfEntries,
             numOfChildren: item.numOfChildren,
             isFolder: item.isFolder,
+            children: []
         });
+        if (item.children) {
+            item.children.forEach((node) => {
+               treeNode.children.push(this.toTreeNode(node, treeNode.key));
+            });
+        }
+        return treeNode;
     }
 }
