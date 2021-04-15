@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { GermplasmDetailsComponent } from './germplasm-details.component';
 import { BasicDetailsPaneComponent } from './basic-details/basic-details-pane.component';
-import { EditBasicDetailsPopupComponent } from './basic-details/edit-basic-details-pane.component';
+import { EditGermplasmBasicDetailsPopupComponent } from './basic-details/germplasm-basic-details-modal.component';
 import { AttributesPaneComponent } from './attributes/attributes-pane.component';
 import { PedigreePaneComponent } from './pedigree/pedigree-pane.component';
 import { ObservationsPaneComponent } from './observations/observations-pane.component';
@@ -60,7 +60,7 @@ export const germplasmDetailsRoutes: Routes = [
     {
         // Path for showing edit germplasm basic details pop-up
         path: 'germplasm-edit-basic-details',
-        component: EditBasicDetailsPopupComponent,
+        component: EditGermplasmBasicDetailsPopupComponent,
         outlet: 'popup'
     }
 ];

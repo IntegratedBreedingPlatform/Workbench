@@ -11,10 +11,10 @@ import { DateHelperService } from '../../shared/service/date.helper.service';
 
 @Component({
     selector: 'jhi-edit-basic-details-pane',
-    templateUrl: './edit-basic-details-pane.component.html'
+    templateUrl: './germplasm-basic-details-modal.component.html'
 })
 
-export class EditBasicDetailsPaneComponent implements OnInit {
+export class GermplasmBasicDetailsModalComponent implements OnInit {
 
     germplasm: GermplasmDto = new GermplasmDto();
     germplasmDate: NgbDate;
@@ -50,14 +50,14 @@ export class EditBasicDetailsPaneComponent implements OnInit {
     selector: 'jhi-edit-basic-details-popup',
     template: ``
 })
-export class EditBasicDetailsPopupComponent implements OnInit {
+export class EditGermplasmBasicDetailsPopupComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService) {
     }
 
     ngOnInit(): void {
-        const modal = this.popupService.open(EditBasicDetailsPaneComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmBasicDetailsModalComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
     }
 
 }
