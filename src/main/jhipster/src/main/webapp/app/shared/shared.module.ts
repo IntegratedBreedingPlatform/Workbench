@@ -62,6 +62,7 @@ import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { LocationsSelectComponent } from './locations-select/locations-select.component';
 import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 import { DateHelperService } from './service/date.helper.service';
+import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
 
 @NgModule({
     imports: [
@@ -98,6 +99,7 @@ import { DateHelperService } from './service/date.helper.service';
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,
@@ -157,6 +159,7 @@ import { DateHelperService } from './service/date.helper.service';
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,

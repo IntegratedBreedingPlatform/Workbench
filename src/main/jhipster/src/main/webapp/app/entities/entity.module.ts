@@ -5,6 +5,7 @@ import { BreedingMethodModule } from './breeding-method/breeding-method.module';
 import { LocationModule } from './location/location.module';
 import { ProgramModule } from './program/program.module';
 import { GermplasmNameModule } from './germplasm/name/germplasm-name.module';
+import { GermplasmAttributeModule } from './germplasm/attribute/germplasm-attribute.module';
 
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -14,7 +15,8 @@ import { GermplasmNameModule } from './germplasm/name/germplasm-name.module';
         BreedingMethodModule,
         LocationModule,
         ProgramModule,
-        GermplasmNameModule
+        GermplasmNameModule,
+        GermplasmAttributeModule
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

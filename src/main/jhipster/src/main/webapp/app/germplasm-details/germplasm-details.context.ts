@@ -5,4 +5,5 @@ import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
 export class GermplasmDetailsContext {
     gid: number;
     germplasm: GermplasmDto;
+    isModal: boolean;
 }

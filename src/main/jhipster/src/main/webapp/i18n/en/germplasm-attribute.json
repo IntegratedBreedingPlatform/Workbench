@@ -1,0 +1,10 @@
+{
+    "germplasm-attribute-modal": {
+        "edit.header": "Edit Attribute",
+        "create.header": "Create Attribute",
+        "variable": "Variable:",
+        "value": "Value:",
+        "date": "Date:",
+        "location": "Location:"
+    }
+}

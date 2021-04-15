@@ -103,7 +103,8 @@
 						</thead>
 						<tbody>
 						<tr>
-							<td>{{germplasm?.germplasmOrigin?.studyName}}</td>
+							<td><a *ngIf="germplasmDetailsContext.isModal" [href]="germplasmDetailsUrlService.getStudyUrl(germplasm?.germplasmOrigin?.studyId)" target="_parent">{{germplasm?.germplasmOrigin?.studyName}}</a>
+								<span *ngIf="!germplasmDetailsContext.isModal">{{germplasm?.germplasmOrigin?.studyName}}</span></td>
 							<td>{{germplasm?.germplasmOrigin?.observationUnitId}}</td>
 							<td>{{germplasm?.germplasmOrigin?.plotNumber}}</td>
 							<td>{{germplasm?.germplasmOrigin?.repNumber}}</td>

@@ -4,35 +4,35 @@ import { NameType } from '../../../shared/germplasm/model/name-type.model';
 import { LocationModel } from '../../../shared/location/model/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
-import { GermplasmNameContext } from './germplasm-name.context';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
+import { GermplasmAttributeContext } from './germplasm-attribute.context';
+import { Attribute } from '../../../shared/attributes/model/attribute.model';
 
 @Component({
-    selector: 'jhi-germplasm-name-modal',
-    templateUrl: './germplasm-name-modal.component.html',
-    styleUrls: ['./germplasm-name-modal.component.css']
+    selector: 'jhi-germplasm-attribute-modal',
+    templateUrl: './germplasm-attribute-modal.component.html',
+    styleUrls: ['./germplasm-attribute-modal.component.css']
 })
-export class GermplasmNameModalComponent implements OnInit, OnDestroy {
+export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 
     isEditMode: boolean;
     gid: number;
-    nameTypes: Promise<NameType[]>;
+    attributeCodes: Promise<Attribute[]>;
     locations: LocationModel[];
     isLoading: boolean;
 
-    nameId: number;
-    name: string;
-    nameTypeCode: string;
+    attributeId: number;
+    attributeCode: string;
+    value: string;
     locationId: number;
     date: NgbDate;
-    preferred: boolean;
 
 
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
-                private germplasmNameContext: GermplasmNameContext,
+                private germplasmAttributeContext: GermplasmAttributeContext,
                 private germplasmService: GermplasmService,
                 private calendar: NgbCalendar,
                 private dateHelperService: DateHelperService,
@@ -40,15 +40,14 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.nameTypes = this.germplasmService.getGermplasmNameTypes([]).toPromise();
+        this.attributeCodes = this.germplasmService.getGermplasmAttributesByType(this.germplasmAttributeContext.attributeType).toPromise();
         this.date = this.calendar.getToday();
-        if (this.germplasmNameContext.germplasmName) {
-            this.nameId = this.germplasmNameContext.germplasmName.id;
-            this.name = this.germplasmNameContext.germplasmName.name;
-            this.nameTypeCode = this.germplasmNameContext.germplasmName.nameTypeCode;
-            this.locationId = this.germplasmNameContext.germplasmName.locationId;
-            this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmNameContext.germplasmName.date);
-            this.preferred = this.germplasmNameContext.germplasmName.preferred;
+        if (this.germplasmAttributeContext.attribute) {
+            this.attributeId = this.germplasmAttributeContext.attribute.id;
+            this.attributeCode = this.germplasmAttributeContext.attribute.attributeCode;
+            this.value = this.germplasmAttributeContext.attribute.value;
+            this.locationId = Number(this.germplasmAttributeContext.attribute.locationId);
+            this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmAttributeContext.attribute.date);
         }
     }
 
@@ -58,12 +57,12 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
     save() {
 
-        if (this.nameId) {
-            // if name id is available, we have to update the name
-            this.germplasmService.updateGermplasmName(this.gid, this.nameId, {
-                name: this.name,
-                nameTypeCode: this.nameTypeCode,
-                preferredName: this.preferred || false,
+        if (this.attributeId) {
+            // if attribute id is available, we have to update the attribute
+            this.germplasmService.updateGermplasmAttribute(this.gid, this.attributeId, {
+                attributeCode: this.attributeCode,
+                attributeType: this.germplasmAttributeContext.attributeType,
+                value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
@@ -72,11 +71,11 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         } else {
-            // If name id is not available, we have to create a new name
-            this.germplasmService.createGermplasmName(this.gid, {
-                name: this.name,
-                nameTypeCode: this.nameTypeCode,
-                preferredName: this.preferred || false,
+            // If attribute id is not available, we have to create a new attribute
+            this.germplasmService.createGermplasmAttribute(this.gid, {
+                attributeCode: this.attributeCode,
+                attributeType: this.germplasmAttributeContext.attributeType,
+                value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
@@ -89,32 +88,33 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'germplasmNameChanged' });
+        this.eventManager.broadcast({ name: 'attributeChanged' });
         this.clear();
     }
 
     isFormValid(f) {
-        return f.form.valid && this.name
-            && this.nameTypeCode && this.locationId && this.date;
+        return f.form.valid && this.attributeCode
+            && this.value && this.locationId && this.date;
     }
 
     ngOnDestroy(): void {
-        this.germplasmNameContext.germplasmName = null;
+        this.germplasmAttributeContext.attributeType = null;
+        this.germplasmAttributeContext.attribute = null;
     }
 }
 
 @Component({
-    selector: 'jhi-germplasm-name-popup',
+    selector: 'jhi-germplasm-attribute-popup',
     template: ``
 })
-export class GermplasmNamePopupComponent implements OnInit {
+export class GermplasmAttributePopupComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService) {
     }
 
     ngOnInit(): void {
-        const modal = this.popupService.open(GermplasmNameModalComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmAttributeModalComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
         modal.then((modalRef) => {
             modalRef.componentInstance.gid = Number(this.route.snapshot.paramMap.get('gid'));
         });
