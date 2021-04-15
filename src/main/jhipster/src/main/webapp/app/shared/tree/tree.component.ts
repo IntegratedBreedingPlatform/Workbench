@@ -18,13 +18,27 @@ export class TreeComponent implements OnInit {
     ngOnInit(): void {
         this.service.expand('').subscribe((res: TreeNode[]) => {
             res.forEach((node) => this.addNode(node));
-            this.redrawNodes();
+
+            // Expand to display saved tree state but wait for the root nodes to be filled first
+            setTimeout(() => {
+                this.service.init()
+                    .subscribe((nodes: TreeNode[]) => {
+                        if (nodes.length > 0) {
+                            let rootNode = this.nodes.find(c => c.data.id === nodes[0].key);
+                            if (rootNode) {
+                               this.addChildren(rootNode, nodes[0].children)
+                            }
+                        }
+                    });
+            }, 400);
+            // Refresh nodes - Set timeout so it works for both cases when there is or no tree state
+            setTimeout(() => {
+              this.redrawNodes();
+            }, 1000);
+
             // FIXME tableStyleClass not working on primeng treetable 6?
             $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
-            this.nodes.forEach((parent) => {
-                this.expand(parent);
-                parent.expanded = true;
-            });
+
         });
     }
 
@@ -67,12 +81,24 @@ export class TreeComponent implements OnInit {
         }
         this.service.expand(parent.data.id)
             .subscribe((res: TreeNode[]) => {
-                parent.children = [];
-                res.forEach((node) => {
-                    parent.children.push(this.toPrimeNgNode(node, parent));
-                });
+                this.addChildren(parent, res);
                 this.redrawNodes();
             });
+    }
+
+    private addChildren(parent:any, children : TreeNode[]) {
+        parent.children = [];
+        if (children) {
+            children.forEach((node) => {
+                let child = this.toPrimeNgNode(node, parent);
+                parent.children.push(child);
+                // Recursively add "grand" children nodes as well
+                if (node.children) {
+                    this.addChildren(child, node.children)
+                }
+            });
+            parent.expanded = true;
+        }
     }
 
     private redrawNodes() {
