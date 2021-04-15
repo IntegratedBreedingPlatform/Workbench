@@ -12,7 +12,8 @@ import { Attribute } from '../../../shared/attributes/model/attribute.model';
 
 @Component({
     selector: 'jhi-germplasm-attribute-modal',
-    templateUrl: './germplasm-attribute-modal.component.html'
+    templateUrl: './germplasm-attribute-modal.component.html',
+    styleUrls: ['./germplasm-attribute-modal.component.css']
 })
 export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 

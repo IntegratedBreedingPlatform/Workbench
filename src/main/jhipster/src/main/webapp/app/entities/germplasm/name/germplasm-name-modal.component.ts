@@ -11,7 +11,8 @@ import { DateHelperService } from '../../../shared/service/date.helper.service';
 
 @Component({
     selector: 'jhi-germplasm-name-modal',
-    templateUrl: './germplasm-name-modal.component.html'
+    templateUrl: './germplasm-name-modal.component.html',
+    styleUrls: ['./germplasm-name-modal.component.css']
 })
 export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
