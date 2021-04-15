@@ -26,6 +26,20 @@
 				</tbody>
 			</table>
 		</div>
+		<div *ngIf="studies && studies.length">
+			<div class="row">
+				<div class="col">
+					<div class="pagination-container">
+						<div class="pagination-box pagination-box-left"></div>
+						<div class="pagination-box">
+							<ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" [disabled]="isLoading"
+											[maxSize]="5" [rotate]="true" (pageChange)="load()"></ngb-pagination>
+						</div>
+						<div class="pagination-box pagination-box-right"></div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<!-- Workaround for right overlap (md-5) and min-height -->
 	<div class="col-md-5" style="min-height: 400px">
@@ -45,3 +59,4 @@
 		></ngx-charts-bar-vertical-normalized>
 	</div>
 </div>
+<!--[yAxisTicks]="study?.metadata?.yAxisTicks"-->

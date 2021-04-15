@@ -6,6 +6,7 @@ import { ProgramComponent } from './program.component';
 import { MyStudiesComponent } from './my-studies.component';
 import { MyListsComponent } from './my-lists.component';
 import { BarChartModule, NgxChartsModule } from '@swimlane/ngx-charts';
+import { MyStudiesService } from './my-studies.service';
 
 @NgModule({
     imports: [
@@ -17,6 +18,9 @@ import { BarChartModule, NgxChartsModule } from '@swimlane/ngx-charts';
         ProgramComponent,
         MyStudiesComponent,
         MyListsComponent
+    ],
+    providers: [
+        MyStudiesService
     ]
 })
 export class ProgramModule {

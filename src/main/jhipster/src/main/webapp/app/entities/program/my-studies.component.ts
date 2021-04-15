@@ -1,15 +1,18 @@
 import { AfterViewInit, Component, ElementRef, isDevMode, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, debounceTime, takeUntil, repeat } from 'rxjs/operators';
-import { StudyInfo } from './study-info';
+import { switchMap, debounceTime, takeUntil, repeat, map } from 'rxjs/operators';
+import { MyStudy, MyStudyMetadata, NgChartsBarPlotMetadata, ObservationsMetadata } from './my-study';
 import { empty, fromEvent, Subject, of } from 'rxjs';
+import { MyStudiesService } from './my-studies.service';
 
 @Component({
     selector: 'jhi-my-studies',
     templateUrl: './my-studies.component.html'
 })
-export class MyStudiesComponent  {
+export class MyStudiesComponent {
     programUUID: string;
+    cropName: string;
+
     mouseEnter = new Subject();
     mouseLeave = new Subject();
 
@@ -37,70 +40,79 @@ export class MyStudiesComponent  {
         domain: ['#f7912f', '#f7b62f', '#ffffff']
     };
 
-    // TODO get from server
-    studies: StudyInfo[] = [{
-        name: 'study 1',
-        type: 'study type 1',
-        date: '2019',
-        folder: 'folder 1',
-        metadata: {
-            observations: data
-        }
-    }, {
-        name: 'study 1',
-        type: 'study type 1',
-        date: '2019',
-        folder: 'folder 1',
-        metadata: {
-            observations: data2
-        }
-    }, {
-        name: 'study 1',
-        type: 'study type 1',
-        date: '2019',
-        folder: 'folder 1',
-        metadata: {
-            observations: data
-        }
-    }, {
-        name: 'study 1',
-        type: 'study type 1',
-        date: '2019',
-        folder: 'folder 1',
-        metadata: {
-            observations: data2
-        }
-    }, {
-        name: 'study 1',
-        type: 'study type 1',
-        date: '2019',
-        folder: 'folder 1',
-        metadata: {
-            observations: data
-        }
-    }];
-    study: StudyInfo;
+    studies: MyStudy[] = [];
+    study: MyStudy;
+
+    page = 1;
+    pageSize = 10;
+    totalCount: any;
+    isLoading = false;
 
     constructor(
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private myStudiesService: MyStudiesService
     ) {
-        this.route.queryParams.subscribe(((params) => this.programUUID = params['programUUID']));
+        this.route.queryParams.subscribe((params) => {
+            this.cropName = params['cropName'];
+            this.programUUID = params['programUUID'];
+            this.load();
+        });
 
         this.mouseEnter.pipe(
             debounceTime(100),
             takeUntil(this.mouseLeave),
             repeat()
-        ).subscribe((study: StudyInfo) => {
+        ).subscribe((study: MyStudy) => {
             this.select(study);
         })
-
-        this.load();
     }
 
     load() {
-        // TODO get from server
+        this.myStudiesService.getMyStudies(
+            this.page - 1,
+            this.pageSize,
+            this.cropName,
+            this.programUUID
+        ).pipe(map((resp) => {
+            // TODO
+            // this.totalCount = resp.headers.get('X-Total-Count')
+            this.totalCount = 50;
+            return resp.body.map((study) => <MyStudy>({
+                name: study.name,
+                type: study.type,
+                date: study.date,
+                folder: study.folder,
+                metadata: this.transformMetadata(study)
+            }));
+        })).subscribe((studies) => {
+            this.studies = studies;
+            this.select(this.studies[0]);
+        });
+    }
 
-        this.select(this.studies[0]);
+    private transformMetadata(study: MyStudy) {
+        if (!(study.metadata && study.metadata.observations)) {
+            return {};
+        }
+        // TODO combine datasets
+        const observationSeries = study.metadata.observations.map((obs: ObservationsMetadata) => {
+            return <NgChartsBarPlotMetadata>({
+                name: obs.instanceName,
+                series: [{
+                    name: 'confirmed',
+                    value: obs.confirmedCount
+                }, {
+                    name: 'pending',
+                    value: obs.pendingCount
+                }, {
+                    name: 'unobserved',
+                    value: obs.unobservedCount
+                }]
+            });
+        });
+        return <MyStudyMetadata>({
+            observations: observationSeries
+        });
     }
 
     onMouseEnter(study) {
@@ -111,117 +123,11 @@ export class MyStudiesComponent  {
         this.mouseLeave.next();
     }
 
-    select(study: StudyInfo) {
+    select(study: MyStudy) {
         this.studies.forEach((s) => s.selected = false);
         study.selected = true;
         this.study = study;
     }
 }
 
-const data = [
-    {
-        'name': 'Agua fria',
-        'series': [
-            {
-                'name': 'confirmed',
-                'value': 300
-            },
-            {
-                'name': 'pending',
-                'value': 300
-            },
-            {
-                'name': 'unobserved',
-                'value': 300
-            },
-        ]
-    },
-    {
-        'name': 'El batan',
-        'series': [
-            {
-                'name': 'confirmed',
-                'value': 300
-            },
-            {
-                'name': 'pending',
-                'value': 150
-            },
-            {
-                'name': 'unobserved',
-                'value': 50
-            },
-        ]
-    },
-    {
-        'name': 'Obregon',
-        'series': [
-            {
-                'name': 'confirmed',
-                'value': 50
-            },
-            {
-                'name': 'pending',
-                'value': 200
-            },
-            {
-                'name': 'unobserved',
-                'value': 350
-            },
-        ]
-    },
-];
 
-const data2 = [
-    {
-        'name': 'Agua fria',
-        'series': [
-            {
-                'name': 'confirmed',
-                'value': 300
-            },
-            {
-                'name': 'pending',
-                'value': 100
-            },
-            {
-                'name': 'unobserved',
-                'value': 200
-            },
-        ]
-    },
-    {
-        'name': 'El batan',
-        'series': [
-            {
-                'name': 'confirmed',
-                'value': 300
-            },
-            {
-                'name': 'pending',
-                'value': 250
-            },
-            {
-                'name': 'unobserved',
-                'value': 250
-            },
-        ]
-    },
-    {
-        'name': 'Obregon',
-        'series': [
-            {
-                'name': 'confirmed',
-                'value': 450
-            },
-            {
-                'name': 'pending',
-                'value': 50
-            },
-            {
-                'name': 'unobserved',
-                'value': 100
-            },
-        ]
-    },
-];

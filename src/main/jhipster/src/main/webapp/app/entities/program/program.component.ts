@@ -83,6 +83,7 @@ export class ProgramComponent implements OnInit {
                 this.router.navigate(['my-studies'], {
                     relativeTo: this.route,
                     queryParams: {
+                        cropName: this.cropName,
                         programUUID: this.program.uniqueID
                     }
                 })

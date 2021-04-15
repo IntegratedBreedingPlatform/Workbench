@@ -50,12 +50,12 @@
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.studies" [routerLink]="['my-studies']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected.uniqueID }"></a>
+						   [queryParams]="{ programUUID: programSelected.uniqueID, cropName: cropName }"></a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.lists" [routerLink]="['my-lists']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected.uniqueID }"></a>
+						   [queryParams]="{ programUUID: programSelected.uniqueID, cropName: cropName }"></a>
 					</li>
 				</ul>
 			</nav>
