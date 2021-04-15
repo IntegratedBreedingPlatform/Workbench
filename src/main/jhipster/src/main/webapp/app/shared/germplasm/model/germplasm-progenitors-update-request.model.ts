@@ -1,8 +1,8 @@
 export class GermplasmProgenitorsUpdateRequestModel {
     constructor(
         public breedingMethodId?: number,
-        public gpid1?: string,
-        public gpid2?: string,
+        public gpid1?: number,
+        public gpid2?: number,
         public otherProgenitors?: number[]
     ) {
     }

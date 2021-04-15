@@ -48,11 +48,13 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        const maleParentsList = this.maleParent.split(',').map(item => Number(item));
+        const firstMaleElement = maleParentsList.shift();
         this.germplasmService.updateGermplasmProgenitors(this.gid, {
             breedingMethodId: this.breedingMethodSelected.mid,
-            gpid1: null,
-            gpid2: null,
-            otherProgenitors: []
+            gpid1: Number(this.femaleParent),
+            gpid2: firstMaleElement,
+            otherProgenitors: maleParentsList
         }).toPromise().then((result) => {
             this.notifyChanges();
         }).catch((response) => {
@@ -66,9 +68,6 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
     initializeForm() {
         this.isGenerative = this.progenitorsDetails.breedingMethodType === 'GEN';
-        this.breedingMethodSelected = {
-            mid: this.progenitorsDetails.breedingMethodId
-        };
         this.femaleParent = this.getFemaleParentId(this.progenitorsDetails);
         this.maleParent = this.getMaleParentId(this.progenitorsDetails);
     }
@@ -76,6 +75,10 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     notifyChanges(): void {
         this.eventManager.broadcast({ name: 'progenitorsChanged' });
         this.clear();
+    }
+
+    breedingMethodOptionChanged() {
+        this.breedingMethodSelected = null;
     }
 
     getFemaleParentId(progenitorsDetails: GermplasmProgenitorsDetails) {
@@ -96,18 +99,24 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         return '';
     }
 
+    isMutation(): boolean {
+        return this.breedingMethodSelected && this.breedingMethodSelected.numberOfProgenitors === 1;
+    }
+
     loadBreedingMethods() {
         this.breedingMethodService.getBreedingMethods(false, ['GEN']).toPromise().then((result) => {
             this.generativeBreedingMethods = result;
-        });
-        this.breedingMethodService.getBreedingMethods(false, ['DER', 'MAN']).toPromise().then((result) => {
+            return this.breedingMethodService.getBreedingMethods(false, ['DER', 'MAN']).toPromise();
+        }).then((result) => {
             this.derivativeBreedingMethods = result;
+            this.breedingMethodSelected = (this.isGenerative) ? this.generativeBreedingMethods.find((item) => item.mid === this.progenitorsDetails.breedingMethodId) :
+                this.derivativeBreedingMethods.find((item) => item.mid === this.progenitorsDetails.breedingMethodId);
         });
     }
 
     /* Return true or false if it is the selected */
     compareById(idFist, idSecond): boolean {
-        return idFist && idSecond && idFist.id == idSecond.id;
+        return idFist && idSecond && idFist.mid === idSecond.mid;
     }
 
 }
