@@ -67,6 +67,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
+                this.alertService.success('germplasm-name-modal.edit.success');
                 this.notifyChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -80,6 +81,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
+                this.alertService.success('germplasm-name-modal.add.success');
                 this.notifyChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });

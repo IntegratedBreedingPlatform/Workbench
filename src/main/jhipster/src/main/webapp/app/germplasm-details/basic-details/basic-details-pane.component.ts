@@ -78,6 +78,7 @@ export class BasicDetailsPaneComponent implements OnInit {
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, nameId).toPromise().then((result) => {
+                this.alertService.success('germplasm-name-modal.delete.success');
                 this.loadGermplasm();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });

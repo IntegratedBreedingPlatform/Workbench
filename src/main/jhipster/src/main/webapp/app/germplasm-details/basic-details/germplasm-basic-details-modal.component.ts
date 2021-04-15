@@ -6,12 +6,14 @@ import { GermplasmService } from '../../shared/germplasm/service/germplasm.servi
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 import { PopupService } from '../../shared/modal/popup.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { DateHelperService } from '../../shared/service/date.helper.service';
+
 
 @Component({
     selector: 'jhi-edit-basic-details-pane',
-    templateUrl: './germplasm-basic-details-modal.component.html'
+    templateUrl: './germplasm-basic-details-modal.component.html',
+    styleUrls: ['./germplasm-basic-details.modal.component.css']
 })
 
 export class GermplasmBasicDetailsModalComponent implements OnInit {
@@ -24,7 +26,8 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 public activeModal: NgbActiveModal,
                 public germplasmService: GermplasmService,
-                public dateHelperService: DateHelperService) {
+                public dateHelperService: DateHelperService,
+                private alertService: JhiAlertService) {
     }
 
     ngOnInit(): void {
@@ -34,9 +37,12 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
 
     updateGermplasmBasicDetails(): void{
         this.germplasm.creationDate = this.dateHelperService.convertNgbDateToString(this.germplasmDate);
-        this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then(() => {
+        this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then((result) => {
+            this.alertService.success('edit-basic-details.success');
             this.clear();
-        })
+        }).catch((response) => {
+            this.alertService.error('error.custom', { param: response.error.errors[0].message });
+        });
     }
 
     clear() {

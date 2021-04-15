@@ -37,6 +37,9 @@
 		<button (click)="clear()" type="submit" class="btn btn-secondary" value="Cancel">
 			<span class="fa fa-ban"></span>&nbsp;Cancel
 		</button>
-		<button class="btn btn-primary" (click)="updateGermplasmBasicDetails()">Update</button>
+		<button (click)="updateGermplasmBasicDetails()" class="btn btn-primary">
+			<span class="fa fa-save"></span>&nbsp;
+			<span jhiTranslate="update"></span>
+		</button>
 	</div>
 </div>

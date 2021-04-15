@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { NameType } from '../../../shared/germplasm/model/name-type.model';
 import { LocationModel } from '../../../shared/location/model/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
@@ -66,6 +65,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
+                this.alertService.success('germplasm-attribute-modal.edit.success');
                 this.notifyChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -79,6 +79,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
+                this.alertService.success('germplasm-attribute-modal.add.success');
                 this.notifyChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });

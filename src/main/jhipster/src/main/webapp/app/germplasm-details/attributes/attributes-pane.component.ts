@@ -72,6 +72,7 @@ export class AttributesPaneComponent implements OnInit {
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, attributeId).toPromise().then((result) => {
+                this.alertService.success('germplasm-attribute-modal.delete.success');
                 this.loadAttributes();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });

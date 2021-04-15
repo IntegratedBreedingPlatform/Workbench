@@ -6,7 +6,10 @@
         "name": "Name:",
         "date": "Date:",
         "location": "Location:",
-        "preferred": "Preferred Name"
+        "preferred": "Preferred Name",
+        "edit.success": "Germplasm name updated successfully",
+        "add.success": "Germplasm name added successfully",
+        "delete.success": "Germplasm name delete successfully"
     }
 }
 

@@ -108,6 +108,7 @@
         "title": "Edit Germplasm Details",
         "germplasm-location": "Germplasm Location:",
         "germplasm-date": "Germplasm Date:",
-        "reference": "Reference:"
+        "reference": "Reference:",
+        "success": "Germplasm Basic Details updated successfully."
     }
 }
