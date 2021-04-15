@@ -63,6 +63,7 @@ import { LocationsSelectComponent } from './locations-select/locations-select.co
 import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 import { DateHelperService } from './service/date.helper.service';
 import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
+import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
 
 @NgModule({
     imports: [
@@ -107,7 +108,8 @@ import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.p
         SampleListCreationComponent,
         CollapsibleComponent,
         GeojsonMapComponent,
-        LocationsSelectComponent
+        LocationsSelectComponent,
+        OnlyNumbersDirective
     ],
     providers: [
         LoginService,
@@ -186,7 +188,8 @@ import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.p
         SampleListCreationComponent,
         CollapsibleComponent,
         GeojsonMapComponent,
-        LocationsSelectComponent
+        LocationsSelectComponent,
+        OnlyNumbersDirective
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -103,6 +103,10 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         return this.breedingMethodSelected && this.breedingMethodSelected.numberOfProgenitors === 1;
     }
 
+    allowMultipleMaleParents(): boolean {
+        return (this.breedingMethodSelected.type === 'GEN' && this.breedingMethodSelected.numberOfProgenitors === 0);
+    }
+
     loadBreedingMethods() {
         this.breedingMethodService.getBreedingMethods(false, ['GEN']).toPromise().then((result) => {
             this.generativeBreedingMethods = result;
