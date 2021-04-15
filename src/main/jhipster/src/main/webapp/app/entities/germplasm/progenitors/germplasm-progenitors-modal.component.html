@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="modal-header">
+        <div class="col-xs-11 col-md-11">
+            <h4 class="modal-title font-weight-bold"><span jhiTranslate="germplasm-progenitors-modal.edit.header">Edit pedigree</span></h4>
+        </div>
+        <div class="col-xs-1 col-md-1">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                    (click)="clear()">&times;
+            </button>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="col-xs-11 col-md-11">
+            <h4 class="modal-title font-weight-bold"><span jhiTranslate="germplasm-progenitors-modal.header">Edit the germplasm progenitors</span></h4>
+        </div>
+        <form name="form" #f="ngForm">
+            <div class="form-group row">
+                <label for="dropdownTypes" class="col-sm-3 col-form-label" jhiTranslate="germplasm-progenitors-modal.breeding.method">Name Type</label>
+                <div class="col-sm-9">
+                    <select class="form-control" name="dropdownTypes" id="dropdownTypes" [(ngModel)]="germplasmProgenitorsDetails.breedingMethodCode" #dropdownTypes="ngModel" required>
+                        <option *ngFor="let method of breedingMethods" [value]="method.code">
+                            <label>{{method.code}}</label>
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+        </button>
+        <button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+            <span *ngIf="isLoading" class="throbber throbber-btn"></span>
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+        </button>
+    </div>
+</div>

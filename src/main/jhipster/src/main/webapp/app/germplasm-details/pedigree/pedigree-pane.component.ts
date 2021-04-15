@@ -9,6 +9,8 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 import { GermplasmProgenitorsDetails } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import {Router} from "@angular/router";
+import {GermplasmProgenitorsContext} from "../../entities/germplasm/progenitors/germplasm-progenitors.context";
 
 @Component({
     selector: 'jhi-pedigree-pane',
@@ -28,7 +30,9 @@ export class PedigreePaneComponent implements OnInit {
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private sanitizer: DomSanitizer,
                 private germplasmService: GermplasmService,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+                private router: Router,
+                private germplasmProgenitorsContext: GermplasmProgenitorsContext) {
         const authParams = '?gid=' + this.germplasmDetailsContext.gid
             + '&cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
@@ -54,4 +58,10 @@ export class PedigreePaneComponent implements OnInit {
         });
     }
 
+    editPedigree(progenidtorDetails: GermplasmProgenitorsDetails): void {
+        this.germplasmProgenitorsContext.germplasmProgenitorsDetails = progenidtorDetails;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-progenitors-dialog' }, }], {
+            queryParamsHandling: 'merge'
+        });
+    }
 }
