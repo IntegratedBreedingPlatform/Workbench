@@ -105,7 +105,7 @@
 								</div>
 								<div *ngIf="sortableFields != null && sortableFields.length !=0" class="row">
 									<label class="col-md-5 col-form-label font-weight-bold" jhiTranslate="label-printing.sort.label.by">:</label>
-									<div class="col-md-3">
+									<div class="col-md-6">
 										<select class="form-control" [(ngModel)]="sortBySelected">
 											<option value="">Please Choose</option>
 											<ng-container *ngFor="let sortableField of sortableFields">
