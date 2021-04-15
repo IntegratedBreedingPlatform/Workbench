@@ -4,7 +4,9 @@ import { BmsjHipsterSampleModule } from './sample/sample.module';
 import { BreedingMethodModule } from './breeding-method/breeding-method.module';
 import { LocationModule } from './location/location.module';
 import { ProgramModule } from './program/program.module';
-import {GermplasmProgenitorsModule} from "./germplasm/progenitors/germplasm-progenitors.module";
+import { GermplasmProgenitorsModule } from './germplasm/progenitors/germplasm-progenitors.module';
+import { GermplasmNameModule } from './germplasm/name/germplasm-name.module';
+import { GermplasmAttributeModule } from './germplasm/attribute/germplasm-attribute.module';
 
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -14,6 +16,8 @@ import {GermplasmProgenitorsModule} from "./germplasm/progenitors/germplasm-prog
         BreedingMethodModule,
         LocationModule,
         ProgramModule,
+        GermplasmNameModule,
+        GermplasmAttributeModule,
         GermplasmProgenitorsModule
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],

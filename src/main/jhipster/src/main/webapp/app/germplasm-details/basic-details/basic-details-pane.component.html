@@ -51,9 +51,9 @@
 	</jhi-collapsible>
 	<jhi-collapsible heading="{{translateService.instant('basic-details.names.title')}}">
 		<div class="container-fluid">
-			<!--			<div class="pull-right pb-3">-->
-			<!--				<button class="btn btn-outline-info"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>-->
-			<!--			</div>-->
+			<div class="pull-right pb-3">
+			<button class="btn btn-outline-info" (click)="createGermplasmName()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved">
 					<thead>
@@ -63,7 +63,7 @@
 						<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
 						<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
 						<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
-						<!--						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>-->
+						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -73,9 +73,10 @@
 						<td>{{name.name}}</td>
 						<td>{{name.locationName}}</td>
 						<td>{{name.preferred ? 'Yes' : 'No'}}</td>
-						<!--						<td class="text-center">-->
-						<!--							<button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;<button class="btn btn-info"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>-->
-						<!--						</td>-->
+						<td class="text-center">
+						<button class="btn btn-info" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
+							<button class="btn btn-info" (click)="deleteGermplasmName(name.id)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
+						</td>
 					</tr>
 					</tbody>
 				</table>
@@ -128,7 +129,7 @@
 				</div>
 				<div class="col">
 					<div style="height: 350px; width: 100%">
-						<jhi-geojson-map [geojson]="germplasm?.germplasmOrigin?.geoCoordinates" *ngIf="germplasm?.germplasmOrigin">
+						<jhi-geojson-map [geojson]="germplasm?.germplasmOrigin?.geoCoordinates" *ngIf="germplasm?.germplasmOrigin?.geoCoordinates">
 						</jhi-geojson-map>
 					</div>
 

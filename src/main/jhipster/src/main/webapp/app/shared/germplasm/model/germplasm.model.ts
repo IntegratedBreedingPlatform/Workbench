@@ -42,6 +42,7 @@ export class GermplasmName {
 
 export class GermplasmAttribute {
     constructor(
+        public id?: number,
         public value?: string,
         public attributeCode?: string,
         public attributeDescription?: string,
