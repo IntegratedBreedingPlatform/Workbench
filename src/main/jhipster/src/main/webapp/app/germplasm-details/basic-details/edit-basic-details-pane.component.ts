@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 import { PopupService } from '../../shared/modal/popup.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { LocationModel } from '../../shared/location/model/location.model';
 import { JhiLanguageService } from 'ng-jhipster';
+import { DateHelperService } from '../../shared/service/date.helper.service';
 
 @Component({
     selector: 'jhi-edit-basic-details-pane',
@@ -17,20 +17,23 @@ import { JhiLanguageService } from 'ng-jhipster';
 export class EditBasicDetailsPaneComponent implements OnInit {
 
     germplasm: GermplasmDto = new GermplasmDto();
-    locations: LocationModel[];
+    germplasmDate: NgbDate;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 public activeModal: NgbActiveModal,
-                public germplasmService: GermplasmService) {
+                public germplasmService: GermplasmService,
+                public dateHelperService: DateHelperService) {
     }
 
     ngOnInit(): void {
         this.germplasm = this.germplasmDetailsContext.germplasm;
+        this.germplasmDate = this.dateHelperService.convertStringToNgbDate(this.germplasm.creationDate);
     }
 
     updateGermplasmBasicDetails(): void{
+        this.germplasm.creationDate = this.dateHelperService.convertNgbDateToString(this.germplasmDate);
         this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then(() => {
             this. activeModal.close();
         })

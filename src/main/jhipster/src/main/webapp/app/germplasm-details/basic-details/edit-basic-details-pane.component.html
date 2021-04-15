@@ -12,17 +12,15 @@
 			<div class="form-group row">
 				<label class="col-sm-4 control-label control-label-left" jhiTranslate="edit-basic-details.germplasm-location">Germplasm Location</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="dropdownLocations" id="dropdownLocations" [(ngModel)]="germplasm.breedingLocationId" #dropdownLocations="ngModel" required>
-						<option *ngFor="let location of locations" [value]="location.id">
-							<label>{{location.name}}</label>
-						</option>
-					</select>
+					<div class="col-sm-9">
+						<jhi-locations-select [(value)]="germplasm.breedingLocationId" [showFilterOptions]="true"></jhi-locations-select>
+					</div>
 				</div>
 			</div>
 			<div class="form-group row">
 				<label class="col-sm-4 control-label control-label-left" jhiTranslate="edit-basic-details.germplasm-date">Germplasm Date</label>
 				<div class="input-group col-sm-8">
-					<input class="form-control" placeholder="yyyyMMdd" [(ngModel)]="germplasm.creationDate"
+					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="germplasmDate"
 						   ngbDatepicker #date="ngbDatepicker" id="date" name="date" required/>
 					<div class="input-group-append">
 						<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
