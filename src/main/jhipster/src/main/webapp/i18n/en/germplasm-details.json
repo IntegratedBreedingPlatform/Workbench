@@ -106,8 +106,8 @@
     },
     "edit-basic-details": {
         "title": "Edit Germplasm Details",
-        "germplasm-location": "Germplasm Location",
-        "germplasm-date": "Germplasm Date",
-        "reference": "Reference"
+        "germplasm-location": "Germplasm Location:",
+        "germplasm-date": "Germplasm Date:",
+        "reference": "Reference:"
     }
 }

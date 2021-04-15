@@ -35,7 +35,7 @@ export class EditBasicDetailsPaneComponent implements OnInit {
     updateGermplasmBasicDetails(): void{
         this.germplasm.creationDate = this.dateHelperService.convertNgbDateToString(this.germplasmDate);
         this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then(() => {
-            this. activeModal.close();
+            this.clear();
         })
     }
 
