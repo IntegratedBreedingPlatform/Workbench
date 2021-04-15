@@ -42,8 +42,8 @@
 		</div>
 	</div>
 	<!-- Workaround for right overlap (md-5) and min-height -->
-	<div class="col-md-5" style="min-height: 400px">
-		<ngx-charts-bar-vertical-normalized
+	<div class="col-md-5" style="min-height: 400px" *ngIf="study?.metadata?.observations">
+		<ngx-charts-bar-vertical-stacked
 			[view]="view"
 			[results]="study.metadata.observations"
 			[scheme]="colorScheme"
@@ -55,8 +55,8 @@
 			[showYAxisLabel]="showYAxisLabel"
 			[xAxisLabel]="xAxisLabel"
 			[yAxisLabel]="yAxisLabel"
-			[animations]="animations"
-		></ngx-charts-bar-vertical-normalized>
+			[animations]="animations">
+		</ngx-charts-bar-vertical-stacked>
 	</div>
 </div>
 <!--[yAxisTicks]="study?.metadata?.yAxisTicks"-->
