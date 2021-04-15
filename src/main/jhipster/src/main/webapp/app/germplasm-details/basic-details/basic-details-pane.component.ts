@@ -52,6 +52,13 @@ export class BasicDetailsPaneComponent implements OnInit {
         })
     }
 
+    editGermplasmBasicDetails(): void {
+        this.germplasmDetailsContext.germplasm = this.germplasm;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-edit-basic-details' }, }], {
+            queryParamsHandling: 'merge'
+        });
+    }
+
     editGermplasmName(germplasmName: GermplasmName): void {
         this.germplasmNameContext.germplasmName = germplasmName;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-name-dialog/' + this.germplasm.gid }, }], {
@@ -71,6 +78,7 @@ export class BasicDetailsPaneComponent implements OnInit {
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, nameId).toPromise().then((result) => {
+                this.alertService.success('germplasm-name-modal.delete.success');
                 this.loadGermplasm();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
