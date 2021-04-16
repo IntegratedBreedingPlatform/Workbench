@@ -9,6 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
+import { JhiEventManager } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-germplasm-details-modal',
@@ -22,6 +23,7 @@ export class GermplasmDetailsModalComponent implements OnInit {
 
     constructor(private route: ActivatedRoute, private router: Router,
                 private germplasmDetailsContext: GermplasmDetailsContext,
+                private eventManager: JhiEventManager,
                 public activeModal: NgbActiveModal,
                 private paramContext: ParamContext,
                 private sanitizer: DomSanitizer,
@@ -44,6 +46,8 @@ export class GermplasmDetailsModalComponent implements OnInit {
 
     clear() {
         this.activeModal.dismiss('cancel');
+        // Refresh the Germplasm Manager search germplasm table to reflect the changes made in a germplasm.
+        this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
     }
 
 }
