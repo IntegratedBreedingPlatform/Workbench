@@ -1,32 +1,35 @@
-<div class="row">
-	<div class="col">
+<div class="row mb-3">
+	<div class="col-auto">
 		Hover over studies to display information
 	</div>
+	<div class="col-1">
+		<span class="throbber" [style.visibility]="isLoading ? 'visible' : 'hidden'"></span>
+	</div>
 </div>
-<div class="row">
-	<div class="col-md-6">
-		<div class="table-responsive">
-			<table class="table table-striped table-bordered table-curved" (mouseleave)="onMouseLeave()">
-				<thead>
-				<tr>
-					<th>NAME</th>
-					<th>TYPE</th>
-					<th>DATE</th>
-					<th>FOLDER</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr *ngFor="let study of studies" [class.selected]="study.selected"
-					(mouseenter)="onMouseEnter(study)">
-					<td>{{study.name}}</td>
-					<td>{{study.type}}</td>
-					<td>{{study.date}}</td>
-					<td>{{study.folder}}</td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-		<div *ngIf="studies && studies.length">
+<div *ngIf="studies">
+	<div class="row" *ngIf="studies.length else nodata">
+		<div class="col-md-6">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved" (mouseleave)="onMouseLeave()">
+					<thead>
+					<tr>
+						<th>NAME</th>
+						<th>TYPE</th>
+						<th>DATE</th>
+						<th>FOLDER</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let study of studies" [class.selected]="study.selected"
+						(mouseenter)="onMouseEnter(study)">
+						<td>{{study.name}}</td>
+						<td>{{study.type}}</td>
+						<td>{{study.date}}</td>
+						<td>{{study.folder}}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
 			<div class="row">
 				<div class="col">
 					<div class="pagination-container">
@@ -40,23 +43,40 @@
 				</div>
 			</div>
 		</div>
+		<!-- Workaround for right overlap (md-5) and min-height -->
+		<div class="col-md-5" style="min-height: 400px" *ngIf="study?.metadata?.observations">
+			<ngx-charts-bar-vertical-stacked
+				[view]="view"
+				[results]="study.metadata.observations"
+				[scheme]="colorScheme"
+				[gradient]="gradient"
+				[xAxis]="showXAxis"
+				[yAxis]="showYAxis"
+				[legend]="showLegend"
+				[showXAxisLabel]="showXAxisLabel"
+				[showYAxisLabel]="showYAxisLabel"
+				[xAxisLabel]="xAxisLabel"
+				[yAxisLabel]="yAxisLabel"
+				[animations]="animations">
+			</ngx-charts-bar-vertical-stacked>
+		</div>
 	</div>
-	<!-- Workaround for right overlap (md-5) and min-height -->
-	<div class="col-md-5" style="min-height: 400px" *ngIf="study?.metadata?.observations">
-		<ngx-charts-bar-vertical-stacked
-			[view]="view"
-			[results]="study.metadata.observations"
-			[scheme]="colorScheme"
-			[gradient]="gradient"
-			[xAxis]="showXAxis"
-			[yAxis]="showYAxis"
-			[legend]="showLegend"
-			[showXAxisLabel]="showXAxisLabel"
-			[showYAxisLabel]="showYAxisLabel"
-			[xAxisLabel]="xAxisLabel"
-			[yAxisLabel]="yAxisLabel"
-			[animations]="animations">
-		</ngx-charts-bar-vertical-stacked>
-	</div>
+	<ng-template #nodata>
+		<div class="row">
+			<div class="col-md-6">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr>
+						<th></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</ng-template>
 </div>
-<!--[yAxisTicks]="study?.metadata?.yAxisTicks"-->

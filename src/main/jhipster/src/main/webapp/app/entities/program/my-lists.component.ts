@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MyListsService } from './my-lists.service';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { MyList } from './my-list';
 
 @Component({
@@ -31,7 +31,7 @@ export class MyListsComponent {
     }
 
     load() {
-
+        this.isLoading = true;
         this.myListsService.getMyLists(
             this.page - 1,
             this.pageSize,
@@ -42,7 +42,9 @@ export class MyListsComponent {
             // this.totalCount = resp.headers.get('X-Total-Count')
             this.totalCount = 50;
             return resp.body;
-        })).subscribe((lists) => {
+        })).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe((lists) => {
             this.lists = lists;
         });
     }

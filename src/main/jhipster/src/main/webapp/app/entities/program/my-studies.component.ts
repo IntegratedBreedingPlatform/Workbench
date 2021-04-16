@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, isDevMode, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, debounceTime, takeUntil, repeat, map } from 'rxjs/operators';
+import { switchMap, debounceTime, takeUntil, repeat, map, finalize } from 'rxjs/operators';
 import { MyStudy, MyStudyMetadata, NgChartsBarPlotMetadata, ObservationsMetadata } from './my-study';
 import { empty, fromEvent, Subject, of } from 'rxjs';
 import { MyStudiesService } from './my-studies.service';
@@ -40,7 +40,7 @@ export class MyStudiesComponent {
         domain: ['#f7912f', '#f7b62f', '#ffffff']
     };
 
-    studies: MyStudy[] = [];
+    studies: MyStudy[];
     study: MyStudy;
 
     page = 1;
@@ -68,6 +68,7 @@ export class MyStudiesComponent {
     }
 
     load() {
+        this.isLoading = true;
         this.myStudiesService.getMyStudies(
             this.page - 1,
             this.pageSize,
@@ -84,7 +85,9 @@ export class MyStudiesComponent {
                 folder: study.folder,
                 metadata: this.transformMetadata(study)
             }));
-        })).subscribe((studies) => {
+        })).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe((studies) => {
             this.studies = studies;
             this.select(this.studies[0]);
         });
