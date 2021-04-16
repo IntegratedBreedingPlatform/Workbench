@@ -3,7 +3,7 @@ import { GermplasmProgenitorsPopupComponent } from './germplasm-progenitors-moda
 
 export const germplasmProgenitorsRoutes: Routes = [
     {
-        path: 'germplasm-progenitors-dialog',
+        path: 'germplasm-progenitors-dialog/:gid',
         component: GermplasmProgenitorsPopupComponent,
         outlet: 'popup'
     }

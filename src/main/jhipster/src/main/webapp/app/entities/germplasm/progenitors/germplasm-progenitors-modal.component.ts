@@ -77,9 +77,10 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         this.germplasmService.updateGermplasmProgenitors(this.gid, {
             breedingMethodId: this.breedingMethodSelected.mid,
             gpid1: Number(this.femaleParent),
-            gpid2: firstMaleElement,
+            gpid2: !this.isMutation() ? firstMaleElement : 0,
             otherProgenitors: maleParentsList
         }).toPromise().then((result) => {
+            this.alertService.success('germplasm-progenitors-modal.edit.success');
             this.notifyChanges();
         }).catch((response) => {
             this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -178,6 +179,9 @@ export class GermplasmProgenitorsPopupComponent implements OnInit {
 
     ngOnInit(): void {
         const modal = this.popupService.open(GermplasmProgenitorsModalComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' })
+        modal.then((modalRef) => {
+            modalRef.componentInstance.gid = Number(this.route.snapshot.paramMap.get('gid'));
+        });
     }
 
 }

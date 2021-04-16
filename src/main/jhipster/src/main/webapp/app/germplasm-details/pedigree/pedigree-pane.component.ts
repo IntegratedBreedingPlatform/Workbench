@@ -74,7 +74,7 @@ export class PedigreePaneComponent implements OnInit {
 
     editPedigree(progenitorsDetails: GermplasmProgenitorsDetails): void {
         this.germplasmProgenitorsContext.germplasmProgenitorsDetails = progenitorsDetails;
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-progenitors-dialog' }, }], {
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-progenitors-dialog/' + this.germplasmDetailsContext.gid }, }], {
             queryParamsHandling: 'merge'
         });
     }
