@@ -13,7 +13,7 @@ import { InventoryDetailsPopupComponent } from './inventory/details/inventory-de
 import { inventoryDetailsRoutes } from './inventory/details/inventory-details.route';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
-import { ListCreationComponent } from '../shared/list-creation/list-creation.component';
+import { GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...breedingMethodRoutes,
@@ -44,6 +44,11 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         resolve: {
             'pagingParams': GermplasmSearchResolvePagingParams
         },
+    },
+    {
+        path: 'germplasm-selector-dialog',
+        component: GermplasmSelectorPopupComponent,
+        outlet: 'popup'
     },
     {
         path: 'germplasm-list-creation-dialog',

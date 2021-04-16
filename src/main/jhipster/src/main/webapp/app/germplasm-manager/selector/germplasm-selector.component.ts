@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Germplasm } from '../../entities/germplasm/germplasm.model';
 import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,8 +6,8 @@ import { ColumnFilterComponent, FilterType } from '../../shared/column-filter/co
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { NgbActiveModal, NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../../shared/tree/study/study-tree.component';
@@ -16,7 +16,7 @@ import { PedigreeType } from '../../shared/column-filter/column-filter-pedigree-
 import { SORT_PREDICATE_NONE } from '.././germplasm-search-resolve-paging-params';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import {ParamContext} from '../../shared/service/param.context';
+import { ParamContext } from '../../shared/service/param.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
@@ -270,6 +270,7 @@ export class GermplasmSelectorComponent implements OnInit {
                 private router: Router,
                 private alertService: AlertService,
                 private modal: NgbModal,
+                private activeModal: NgbActiveModal,
                 private translateService: TranslateService,
                 private paramContext: ParamContext,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
@@ -524,11 +525,28 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     selectGermplasm() {
-        (<any>window.parent).onGidsSelected(this.selectedItems);
+        // Handle handle selection when this page is loaded inside Angular.
+        this.eventManager.broadcast({ name: 'germplasmSelectorSelected', content: this.selectedItems.join(',') });
+        // Handle handle selection when this page is loaded outside Angular.
+        if ((<any>window.parent).onGidsSelected) {
+            (<any>window.parent).onGidsSelected(this.selectedItems);
+        }
+
+        // Handle closing of modal when this page is loaded inside Angular.
+        if (this.activeModal) {
+            this.activeModal.dismiss('cancel');
+        }
     }
 
     cancel() {
-        (<any>window.parent).closeModal();
+        // Handle closing of modal when this page is loaded outside of Angular.
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
+        // Handle closing of modal when this page is loaded inside Angular.
+        if (this.activeModal) {
+            this.activeModal.dismiss('cancel');
+        }
     }
 
 }

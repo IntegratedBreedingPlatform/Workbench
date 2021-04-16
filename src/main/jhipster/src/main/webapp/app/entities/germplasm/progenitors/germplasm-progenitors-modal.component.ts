@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
@@ -8,6 +8,8 @@ import { GermplasmProgenitorsContext } from './germplasm-progenitors.context';
 import { GermplasmProgenitorsDetails } from '../../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
+import { ParamContext } from '../../../shared/service/param.context';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-modal',
@@ -26,12 +28,17 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     femaleParent: string;
     maleParent: string;
 
+    eventSubscriber: Subscription;
+    selectorTarget: string;
+
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
                 private breedingMethodService: BreedingMethodService,
                 private germplasmProgenitorsContext: GermplasmProgenitorsContext,
                 private germplasmService: GermplasmService,
-                private alertService: JhiAlertService) {
+                private alertService: JhiAlertService,
+                private router: Router,
+                private paramContext: ParamContext) {
         this.progenitorsDetails = this.germplasmProgenitorsContext.germplasmProgenitorsDetails;
     }
 
@@ -41,6 +48,17 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.loadBreedingMethods();
         this.initializeForm();
+        this.registerGermplasmSelectorSelected();
+    }
+
+    registerGermplasmSelectorSelected() {
+        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
+            if (this.selectorTarget === 'female') {
+                this.femaleParent = event.content;
+            } else if (this.selectorTarget === 'male') {
+                this.maleParent = event.content;
+            }
+        });
     }
 
     clear() {
@@ -129,6 +147,21 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     compareById(idFist, idSecond): boolean {
         return idFist && idSecond && idFist.mid === idSecond.mid;
     }
+
+    openGermplasmSelector(selectMultiple: boolean, target: string): void {
+        this.selectorTarget = target;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-selector-dialog' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                cropName: this.paramContext.cropName,
+                loggedInUserId: this.paramContext.loggedInUserId,
+                programUUID: this.paramContext.programUUID,
+                authToken: this.paramContext.authToken,
+                selectMultiple: selectMultiple
+            }
+        });
+    }
+
 
 }
 
