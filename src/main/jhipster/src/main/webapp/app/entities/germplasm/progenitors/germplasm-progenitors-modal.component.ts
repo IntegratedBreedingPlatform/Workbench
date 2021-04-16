@@ -49,6 +49,12 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
     save() {
         const maleParentsList = this.maleParent.split(',').map(item => Number(item));
+
+        if (!this.allowMultipleMaleParents() && maleParentsList.length > 1) {
+            this.alertService.error('germplasm-progenitors-modal.validation.only.one.male.parent.is.allowed', { param: this.breedingMethodSelected.name });
+            return;
+        }
+
         const firstMaleElement = maleParentsList.shift();
         this.germplasmService.updateGermplasmProgenitors(this.gid, {
             breedingMethodId: this.breedingMethodSelected.mid,
@@ -62,8 +68,9 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         });
     }
 
+
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.breedingMethodSelected && this.femaleParent && this.maleParent;
+        return f.form.valid && !this.isLoading && this.breedingMethodSelected && this.femaleParent && (!this.isMutation() && this.maleParent);
     }
 
     initializeForm() {
@@ -104,7 +111,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     allowMultipleMaleParents(): boolean {
-        return (this.breedingMethodSelected.type === 'GEN' && this.breedingMethodSelected.numberOfProgenitors === 0);
+        return this.breedingMethodSelected && this.breedingMethodSelected.type === 'GEN' && this.breedingMethodSelected.numberOfProgenitors === 0;
     }
 
     loadBreedingMethods() {

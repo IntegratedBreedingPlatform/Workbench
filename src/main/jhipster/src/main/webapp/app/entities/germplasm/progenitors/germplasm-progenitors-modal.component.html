@@ -36,31 +36,24 @@
 				</div>
 			</div>
 			<div *ngIf="!isMutation()" class="form-group row required">
-				<label *ngIf="isGenerative" for="femaleparent" class="col-sm-4 col-form-label font-weight-bold">
-					<span jhiTranslate="germplasm-progenitors-modal.female.parent"></span><br/>
-					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span>
-				</label>
-				<label *ngIf="!isGenerative" for="femaleparent" class="col-sm-4 col-form-label font-weight-bold">
-					<span jhiTranslate="germplasm-progenitors-modal.group.source"></span><br/>
+				<label for="femaleparent" class="col-sm-4 col-form-label font-weight-bold">
+					<span>{{(isGenerative ? 'germplasm-progenitors-modal.female.parent' : 'germplasm-progenitors-modal.group.source') | translate}}</span><br/>
 					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span>
 				</label>
 				<div class="input-group col-sm-8">
-					<input appOnlyNumbers type="text" class="form-control" name="femaleparent" id="femaleparent" [(ngModel)]="femaleParent" #femaleparent="ngModel"/>
+					<input appOnlyNumbers type="text" class="form-control" name="femaleparent" id="femaleparent" [(ngModel)]="femaleParent" #femaleparent="ngModel" placeholder="Enter GID"/>
 					<div class="input-group-append" style="display: block;">
 						<button class="btn btn-outline-secondary" type="button" jhiTranslate="germplasm-progenitors-modal.search">Search</button>
 					</div>
 				</div>
 			</div>
 			<div *ngIf="!isMutation()" class="form-group row required">
-				<label *ngIf="isGenerative" for="maleparent" class="col-sm-4 col-form-label font-weight-bold">
-					<span jhiTranslate="germplasm-progenitors-modal.male.parent"></span><br/>
-					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span></label>
-				<label *ngIf="!isGenerative" for="maleparent" class="col-sm-4 col-form-label font-weight-bold">
-					<span jhiTranslate="germplasm-progenitors-modal.immediate.source"></span><br/>
+				<label for="maleparent" class="col-sm-4 col-form-label font-weight-bold">
+					<span>{{ (isGenerative ? (allowMultipleMaleParents() ? 'germplasm-progenitors-modal.male.parents' : 'germplasm-progenitors-modal.male.parent') : 'germplasm-progenitors-modal.immediate.source') | translate}}</span><br/>
 					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span></label>
 				<div class="input-group col-sm-8">
-					<input *ngIf="!allowMultipleMaleParents()" appOnlyNumbers [allowComma]="false" type="text" class="form-control" name="maleparent" id="maleparent" [(ngModel)]="maleParent" #maleparent="ngModel"/>
-					<input *ngIf="allowMultipleMaleParents()" appOnlyNumbers [allowComma]="true" type="text" class="form-control" name="maleparent" id="maleparent" [(ngModel)]="maleParent" #maleparent="ngModel"/>
+					<input *ngIf="!allowMultipleMaleParents()" appOnlyNumbers [allowComma]="false" type="text" class="form-control" name="maleparent" id="maleparent" [(ngModel)]="maleParent" #maleparent="ngModel" placeholder="Enter GID"/>
+					<input *ngIf="allowMultipleMaleParents()" appOnlyNumbers [allowComma]="true" type="text" class="form-control" name="maleparent" id="maleparent" [(ngModel)]="maleParent" #maleparent="ngModel" placeholder="Enter GID/s separated by comma"/>
 					<div class="input-group-append" style="display: block;">
 						<button class="btn btn-outline-secondary" type="button" jhiTranslate="germplasm-progenitors-modal.search">Search</button>
 					</div>
@@ -86,7 +79,7 @@
 		</button>
 		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
 			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
-			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="update"></span>
 		</button>
 	</div>
 </div>
