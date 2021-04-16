@@ -52,7 +52,6 @@ export class GermplasmTreeService extends TreeService {
         }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, null))));
     }
 
-
     move(source: string, target: string, isParentCropList: boolean): Observable<HttpResponse<number>> {
         const url = `${this.resourceUrl}/germplasm-list-folders/${source}/move`;
         const params = {
@@ -97,7 +96,7 @@ export class GermplasmTreeService extends TreeService {
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {
-        let treeNode = <TreeNode>({
+        const treeNode = <TreeNode>({
             name: item.title,
             key: item.key,
             parentId: parentKey,

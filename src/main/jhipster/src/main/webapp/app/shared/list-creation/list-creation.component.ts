@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TreeService } from '../tree/tree.service';
 import { TreeDragDropService, TreeNode as PrimeNgTreeNode } from 'primeng/api';
 import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,7 +18,7 @@ import { ListService } from './service/list.service';
 
 declare var $: any;
 
-export abstract class ListCreationComponent extends TreeComponent {
+export abstract class ListCreationComponent extends TreeComponent implements OnInit {
 
     readonly NAME_MAX_LENGTH: number = 50;
 
