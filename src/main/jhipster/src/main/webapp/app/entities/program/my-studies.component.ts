@@ -129,5 +129,3 @@ export class MyStudiesComponent {
         this.study = study;
     }
 }
-
-
