@@ -1,0 +1,42 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="release-notes.title"></span>
+	</h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col">
+			<span jhiTranslate="release-notes.description"></span>
+		</div>
+	</div>
+	<br/>
+	<div class="row" class="release-notes-content">
+		<div class="col">
+			<nav>
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link" jhiTranslate="release-notes.nav.notes"
+						   [routerLink]="['content']" [routerLinkActive]="['active']"  [queryParams]="{fileName: releaseNoteFileName}"  queryParamsHandling="merge"></a>
+					</li>
+					<li class="nav-item" *ngIf="hasComingSoon">
+						<a class="nav-link" jhiTranslate="release-notes.nav.coming-soon"
+						   [routerLink]="['coming-soon']" [routerLinkActive]="['active']" [queryParams]="{fileName: comingSoonFileName}" queryParamsHandling="merge"></a>
+					</li>
+				</ul>
+			</nav>
+			<div class="tab-content p-3">
+				<router-outlet></router-outlet>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="form-check form-check-inline">
+		<input type="checkbox" class="form-check-input" name="dontShowAgain" id="dontShowAgain" [(ngModel)]="dontShowAgain">
+		<label class="form-check-label" for="dontShowAgain" jhiTranslate="release-notes.dont-show-again-checkbox">
+		</label>
+	</div>
+	<button type="button" class="btn btn-primary" data-dismiss="modal" (click)="dismiss()">
+		<span jhiTranslate="release-notes.ok-button"></span>
+	</button>
+</div>
