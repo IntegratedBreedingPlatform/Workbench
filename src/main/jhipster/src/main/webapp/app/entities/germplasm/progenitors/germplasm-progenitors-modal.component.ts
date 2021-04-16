@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
 import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
 import { GermplasmProgenitorsContext } from './germplasm-progenitors.context';
@@ -10,6 +10,7 @@ import { GermplasmService } from '../../../shared/germplasm/service/germplasm.se
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { ParamContext } from '../../../shared/service/param.context';
 import { Subscription } from 'rxjs';
+import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-modal',
@@ -38,7 +39,8 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                 private germplasmService: GermplasmService,
                 private alertService: JhiAlertService,
                 private router: Router,
-                private paramContext: ParamContext) {
+                private paramContext: ParamContext,
+                private modalService: NgbModal) {
         this.progenitorsDetails = this.germplasmProgenitorsContext.germplasmProgenitorsDetails;
     }
 
@@ -73,6 +75,22 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if(this.progenitorsDetails.numberOfDerivativeProgeny > 0 && !this.isGenerative){
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.title = 'Update Germplasm Progenitors';
+            confirmModalRef.componentInstance.message = 'Germplasm has derivative progeny and the group source will change. ' +
+                'Group source change will be applied to the progeny (' + this.progenitorsDetails.numberOfDerivativeProgeny + ' germplasm). Are you sure you want to continue?';
+            confirmModalRef.result.then(() => {
+                this.updateGermplasmProgenitors(maleParentsList);
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
+        } else {
+            this.updateGermplasmProgenitors(maleParentsList);
+        }
+
+    }
+
+    updateGermplasmProgenitors(maleParentsList) {
         const firstMaleElement = maleParentsList.shift();
         this.germplasmService.updateGermplasmProgenitors(this.gid, {
             breedingMethodId: this.breedingMethodSelected.mid,

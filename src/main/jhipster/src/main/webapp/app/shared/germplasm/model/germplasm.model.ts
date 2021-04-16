@@ -105,7 +105,8 @@ export class GermplasmProgenitorsDetails {
         public femaleParent?: GermplasmDto,
         public maleParents?: GermplasmDto[],
         public groupSource?: GermplasmDto,
-        public immediateSource?: GermplasmDto
+        public immediateSource?: GermplasmDto,
+        public numberOfDerivativeProgeny?: number
     ) {
     }
 }
