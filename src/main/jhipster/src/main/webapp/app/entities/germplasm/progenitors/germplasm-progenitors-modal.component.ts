@@ -75,7 +75,8 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if(this.progenitorsDetails.numberOfDerivativeProgeny > 0 && !this.isGenerative){
+        if(!this.isGenerative && this.progenitorsDetails.numberOfDerivativeProgeny > 0
+            && (this.progenitorsDetails.breedingMethodType === 'GEN' || this.hasProgenitorsChanges())) {
             const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
             confirmModalRef.componentInstance.title = 'Update Germplasm Progenitors';
             confirmModalRef.componentInstance.message = 'Germplasm has derivative progeny and the group source will change. ' +
@@ -87,7 +88,11 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         } else {
             this.updateGermplasmProgenitors(maleParentsList);
         }
+    }
 
+    hasProgenitorsChanges() {
+        //Compare the maleParentIds without splitting the string since only one germplasm is allowed as male parent for non-generative germplasm
+        return this.getFemaleParentId(this.progenitorsDetails) !== this.femaleParent || this.getMaleParentId(this.progenitorsDetails) !== this.maleParent;
     }
 
     updateGermplasmProgenitors(maleParentsList) {
