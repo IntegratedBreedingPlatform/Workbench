@@ -66,12 +66,12 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    deleteGermplasmAttribute(attributeId: number): void {
+    deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete this germlasm attribute?';
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.attributeCode });
 
         confirmModalRef.result.then(() => {
-            this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, attributeId).toPromise().then((result) => {
+            this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise().then((result) => {
                 this.alertService.success('germplasm-attribute-modal.delete.success');
                 this.loadAttributes();
             }).catch((response) => {

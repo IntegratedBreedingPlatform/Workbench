@@ -72,12 +72,12 @@ export class BasicDetailsPaneComponent implements OnInit {
         });
     }
 
-    deleteGermplasmName(nameId: number): void {
+    deleteGermplasmName(germplasmName: GermplasmName): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete this germlasm name?';
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-name-modal.delete.warning', { param: germplasmName.name });
 
         confirmModalRef.result.then(() => {
-            this.germplasmService.deleteGermplasmName(this.germplasm.gid, nameId).toPromise().then((result) => {
+            this.germplasmService.deleteGermplasmName(this.germplasm.gid, germplasmName.id).toPromise().then((result) => {
                 this.alertService.success('germplasm-name-modal.delete.success');
                 this.loadGermplasm();
             }).catch((response) => {

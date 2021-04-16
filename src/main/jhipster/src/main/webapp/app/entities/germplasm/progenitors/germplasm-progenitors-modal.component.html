@@ -35,7 +35,7 @@
 					</div>
 				</div>
 			</div>
-			<div *ngIf="!isMutation()" class="form-group row required">
+			<div *ngIf="!isMutation()" class="form-group row">
 				<label for="femaleparent" class="col-sm-4 col-form-label font-weight-bold">
 					<span>{{(isGenerative ? 'germplasm-progenitors-modal.female.parent' : 'germplasm-progenitors-modal.group.source') | translate}}</span><br/>
 					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span>
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 			</div>
-			<div *ngIf="!isMutation()" class="form-group row required">
+			<div *ngIf="!isMutation()" class="form-group row">
 				<label for="maleparent" class="col-sm-4 col-form-label font-weight-bold">
 					<span>{{ (isGenerative ? (allowMultipleMaleParents() ? 'germplasm-progenitors-modal.male.parents' : 'germplasm-progenitors-modal.male.parent') : 'germplasm-progenitors-modal.immediate.source') | translate}}</span><br/>
 					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span></label>
@@ -59,7 +59,7 @@
 					</div>
 				</div>
 			</div>
-			<div *ngIf="isMutation()" class="form-group row required">
+			<div *ngIf="isMutation()" class="form-group row">
 				<label for="origin" class="col-sm-4 col-form-label font-weight-bold">
 					<span jhiTranslate="germplasm-progenitors-modal.origin"></span><br/>
 					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span>

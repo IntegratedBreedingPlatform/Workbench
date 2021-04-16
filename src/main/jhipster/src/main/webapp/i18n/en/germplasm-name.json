@@ -9,7 +9,8 @@
         "preferred": "Preferred Name",
         "edit.success": "Germplasm name updated successfully",
         "add.success": "Germplasm name added successfully",
-        "delete.success": "Germplasm name delete successfully"
+        "delete.success": "Germplasm name delete successfully",
+        "delete.warning": "Are you sure you want to delete {{param}} as germplasm name?"
     }
 }
 

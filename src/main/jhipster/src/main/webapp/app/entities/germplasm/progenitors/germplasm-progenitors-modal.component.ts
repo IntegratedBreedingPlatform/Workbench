@@ -112,7 +112,8 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         } else if (progenitorsDetails.groupSource) {
             return String(this.progenitorsDetails.groupSource.gid);
         }
-        return '';
+        // Return 0 if unknown
+        return '0';
     }
 
     getMaleParentId(progenitorsDetails: GermplasmProgenitorsDetails) {
@@ -121,7 +122,8 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         } else if (progenitorsDetails.immediateSource) {
             return String(this.progenitorsDetails.immediateSource.gid);
         }
-        return '';
+        // Return 0 if unknown
+        return '0';
     }
 
     isMutation(): boolean {

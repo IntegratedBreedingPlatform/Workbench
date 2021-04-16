@@ -15,6 +15,6 @@
     "update": "Update",
     "cancel": "Cancel",
     "search": "Search",
-    "only.one.male.parent.is.allowed": "Only one male parent is allowed for this method: {{param}}"
+    "validation.only.one.male.parent.is.allowed": "Only one male parent is allowed for this method: {{param}}"
   }
 }
