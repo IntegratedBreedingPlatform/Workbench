@@ -45,7 +45,7 @@ export class StudyTreeService extends TreeService {
     }
 
     init() {
-        // TODO
+        return this.expand('');
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {

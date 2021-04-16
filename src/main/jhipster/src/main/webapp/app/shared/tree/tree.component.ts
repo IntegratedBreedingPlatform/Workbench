@@ -16,30 +16,22 @@ export class TreeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.service.expand('').subscribe((res: TreeNode[]) => {
-            res.forEach((node) => this.addNode(node));
 
-            // Expand to display saved tree state but wait for the root nodes to be filled first
-            setTimeout(() => {
-                this.service.init()
-                    .subscribe((nodes: TreeNode[]) => {
-                        if (nodes.length > 0) {
-                            const rootNode = this.nodes.find((c) => c.data.id === nodes[0].key);
-                            if (rootNode) {
-                               this.addChildren(rootNode, nodes[0].children)
-                            }
-                        }
-                    });
-            }, 400);
-            // Refresh nodes - Set timeout so it works for both cases when there is or no tree state
-            setTimeout(() => {
-              this.redrawNodes();
-            }, 1000);
+        this.service.init()
+            .subscribe((nodes: TreeNode[]) => {
+                nodes.forEach((node) => this.addNode(node));
+                this.nodes.forEach( (rootNode)  => {
+                    const node = nodes.find((c) => rootNode.data.id === c.key);
+                    if (node && node.children) {
+                        this.addChildren(rootNode, node.children)
+                    }
+                });
 
-            // FIXME tableStyleClass not working on primeng treetable 6?
-            $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
+                this.redrawNodes();
+            });
 
-        });
+        // FIXME tableStyleClass not working on primeng treetable 6?
+        $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
     }
 
     addNode(node: TreeNode) {
