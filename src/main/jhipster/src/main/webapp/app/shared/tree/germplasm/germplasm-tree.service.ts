@@ -36,7 +36,7 @@ export class GermplasmTreeService extends TreeService {
     }
 
     init(): any {
-        const url = `${this.resourceUrl}/germplasm-list-folders/user-tree`;
+        const url = `${this.resourceUrl}/germplasm-lists/user-tree`;
         const params = {
             onlyFolders: '0'
         };
