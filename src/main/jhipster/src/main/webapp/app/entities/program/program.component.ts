@@ -73,20 +73,27 @@ export class ProgramComponent implements OnInit {
                 )
             })
             .subscribe((resp: HttpResponse<Program[]>) => {
+                this.program = null;
+                this.programSelected = null;
                 this.programs = resp.body;
+                if (!(this.programs && this.programs.length)) {
+                    return;
+                }
+                for (const program of this.programs) {
+                    if (this.isPreSelected(program)) {
+                        this.program = program;
+                        this.programSelected = program;
+                        this.displayProgramInfo();
+                        break;
+                    }
+                }
             });
 
         this.programChanged
             .debounceTime(500)
             .switchMap(() => {
                 this.programSelected = this.program;
-                this.router.navigate(['my-studies'], {
-                    relativeTo: this.route,
-                    queryParams: {
-                        cropName: this.cropName,
-                        programUUID: this.program.uniqueID
-                    }
-                })
+                this.displayProgramInfo();
                 return of('');
             }).subscribe();
 
@@ -99,11 +106,21 @@ export class ProgramComponent implements OnInit {
          */
     }
 
-    onProgramSelect() {
+    onOpenProgram() {
         window.parent.postMessage({ programSelected: this.program }, '*');
     }
 
-    isSelected(program: Program) {
+    displayProgramInfo(): any {
+        this.router.navigate(['my-studies'], {
+            relativeTo: this.route,
+            queryParams: {
+                cropName: this.cropName,
+                programUUID: this.programSelected.uniqueID
+            }
+        })
+    }
+
+    isPreSelected(program: Program) {
         return program.uniqueID ===
             (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
     }
