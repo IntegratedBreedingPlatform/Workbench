@@ -91,7 +91,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'germplasmNameChanged' });
+        this.eventManager.broadcast({ name: 'basicDetailsChanged' });
         this.clear();
     }
 

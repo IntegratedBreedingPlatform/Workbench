@@ -7,6 +7,7 @@ import { ProgramModule } from './program/program.module';
 import { GermplasmProgenitorsModule } from './germplasm/progenitors/germplasm-progenitors.module';
 import { GermplasmNameModule } from './germplasm/name/germplasm-name.module';
 import { GermplasmAttributeModule } from './germplasm/attribute/germplasm-attribute.module';
+import { GermplasmBasicDetailsModule } from './germplasm/basic-details/germplasm-basic-details.module';
 
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -16,6 +17,7 @@ import { GermplasmAttributeModule } from './germplasm/attribute/germplasm-attrib
         BreedingMethodModule,
         LocationModule,
         ProgramModule,
+        GermplasmBasicDetailsModule,
         GermplasmNameModule,
         GermplasmAttributeModule,
         GermplasmProgenitorsModule

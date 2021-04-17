@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
-import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
-import { PopupService } from '../../shared/modal/popup.service';
-import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
-import { DateHelperService } from '../../shared/service/date.helper.service';
+import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
+import { GermplasmDto } from '../../../shared/germplasm/model/germplasm.model';
+import { PopupService } from '../../../shared/modal/popup.service';
+import { GermplasmDetailsContext } from '../../../germplasm-details/germplasm-details.context';
+import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { DateHelperService } from '../../../shared/service/date.helper.service';
 
 
 @Component({
@@ -23,6 +23,7 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
+                private eventManager: JhiEventManager,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 public activeModal: NgbActiveModal,
                 public germplasmService: GermplasmService,
@@ -35,10 +36,11 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
         this.germplasmDate = this.dateHelperService.convertStringToNgbDate(this.germplasm.creationDate);
     }
 
-    updateGermplasmBasicDetails(): void{
+    updateGermplasmBasicDetails(): void {
         this.germplasm.creationDate = this.dateHelperService.convertNgbDateToString(this.germplasmDate);
         this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then((result) => {
             this.alertService.success('edit-basic-details.success');
+            this.eventManager.broadcast({ name: 'basicDetailsChanged' });
             this.clear();
         }).catch((response) => {
             this.alertService.error('error.custom', { param: response.error.errors[0].message });

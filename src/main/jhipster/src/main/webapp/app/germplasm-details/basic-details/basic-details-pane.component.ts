@@ -41,7 +41,7 @@ export class BasicDetailsPaneComponent implements OnInit {
     }
 
     registerGermplasmNameChanged() {
-        this.eventSubscriber = this.eventManager.subscribe('germplasmNameChanged', (event) => {
+        this.eventSubscriber = this.eventManager.subscribe('basicDetailsChanged', (event) => {
             this.loadGermplasm();
         });
     }
