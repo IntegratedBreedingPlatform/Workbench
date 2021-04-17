@@ -8,7 +8,9 @@ export class GermplasmDetailsContext {
     isModal: boolean;
 
     notifyGermplasmDetailChanges() {
-        // Notify the parent window that germplasm attribute has changed
-        window.parent.postMessage('germplasm-details-changed', '*');
+        if (window.parent) {
+            // Notify the parent window that germplasm attribute has changed
+            window.parent.postMessage('germplasm-details-changed', '*');
+        }
     }
 }

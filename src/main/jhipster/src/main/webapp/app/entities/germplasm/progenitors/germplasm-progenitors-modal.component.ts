@@ -75,7 +75,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if(!this.isGenerative && this.progenitorsDetails.numberOfDerivativeProgeny > 0
+        if (!this.isGenerative && this.progenitorsDetails.numberOfDerivativeProgeny > 0
             && (this.progenitorsDetails.breedingMethodType === 'GEN' || this.hasProgenitorsChanges())) {
             const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
             confirmModalRef.componentInstance.title = 'Update Germplasm Progenitors';
@@ -112,7 +112,10 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.breedingMethodSelected && this.femaleParent && (!this.isMutation() && this.maleParent);
+        if (this.isMutation() && !this.femaleParent) {
+            return false;
+        }
+        return f.form.valid && !this.isLoading && this.breedingMethodSelected && this.femaleParent && this.maleParent;
     }
 
     initializeForm() {
