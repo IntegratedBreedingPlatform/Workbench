@@ -39,6 +39,7 @@ export class AttributesPaneComponent implements OnInit {
     registerGermplasmAttributeChanged() {
         this.eventSubscriber = this.eventManager.subscribe('attributeChanged', (event) => {
             this.loadAttributes();
+            this.germplasmDetailsContext.notifyGermplasmDetailChanges();
         });
     }
 
@@ -74,11 +75,11 @@ export class AttributesPaneComponent implements OnInit {
             this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise().then((result) => {
                 this.alertService.success('germplasm-attribute-modal.delete.success');
                 this.loadAttributes();
+                this.germplasmDetailsContext.notifyGermplasmDetailChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }, () => confirmModalRef.dismiss());
     }
-
 
 }

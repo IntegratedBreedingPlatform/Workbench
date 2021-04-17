@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../shared/modal/popup.service';
 import { ParamContext } from '../shared/service/param.context';
@@ -17,9 +17,17 @@ import { JhiEventManager } from 'ng-jhipster';
 })
 export class GermplasmDetailsModalComponent implements OnInit {
 
-    germplasm: GermplasmDto
+    hasChanges: boolean;
+    germplasm: GermplasmDto;
     safeUrl: SafeResourceUrl;
     gid: number;
+
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data === 'germplasm-details-changed') {
+            this.hasChanges = true;
+        }
+    }
 
     constructor(private route: ActivatedRoute, private router: Router,
                 private germplasmDetailsContext: GermplasmDetailsContext,
@@ -46,8 +54,13 @@ export class GermplasmDetailsModalComponent implements OnInit {
 
     clear() {
         this.activeModal.dismiss('cancel');
-        // Refresh the Germplasm Manager search germplasm table to reflect the changes made in a germplasm.
-        this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+
+        // hasChanges is true when any germplasm details information has changed/deleted/added (basic details, name, attributes, pedigree)
+        if (this.hasChanges) {
+            // Refresh the Germplasm Manager search germplasm table to reflect the changes made in a germplasm.
+            this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+        }
+
     }
 
 }

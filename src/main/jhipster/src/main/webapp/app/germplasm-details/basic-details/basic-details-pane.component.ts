@@ -43,6 +43,7 @@ export class BasicDetailsPaneComponent implements OnInit {
     registerGermplasmNameChanged() {
         this.eventSubscriber = this.eventManager.subscribe('basicDetailsChanged', (event) => {
             this.loadGermplasm();
+            this.germplasmDetailsContext.notifyGermplasmDetailChanges();
         });
     }
 
@@ -80,6 +81,7 @@ export class BasicDetailsPaneComponent implements OnInit {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, germplasmName.id).toPromise().then((result) => {
                 this.alertService.success('germplasm-name-modal.delete.success');
                 this.loadGermplasm();
+                this.germplasmDetailsContext.notifyGermplasmDetailChanges();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });

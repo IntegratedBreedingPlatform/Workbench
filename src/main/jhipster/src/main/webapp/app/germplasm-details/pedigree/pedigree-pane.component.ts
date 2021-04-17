@@ -63,6 +63,7 @@ export class PedigreePaneComponent implements OnInit {
     registerGermplasmNameChanged() {
         this.eventSubscriber = this.eventManager.subscribe('progenitorsChanged', (event) => {
             this.loadProgenitorDetails();
+            this.germplasmDetailsContext.notifyGermplasmDetailChanges();
         });
     }
 

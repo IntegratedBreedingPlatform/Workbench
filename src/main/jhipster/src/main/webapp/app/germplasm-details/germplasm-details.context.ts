@@ -6,4 +6,9 @@ export class GermplasmDetailsContext {
     gid: number;
     germplasm: GermplasmDto;
     isModal: boolean;
+
+    notifyGermplasmDetailChanges() {
+        // Notify the parent window that germplasm attribute has changed
+        window.parent.postMessage('germplasm-details-changed', '*');
+    }
 }
