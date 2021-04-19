@@ -16,11 +16,12 @@ export class TreeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-
         this.service.init()
             .subscribe((nodes: TreeNode[]) => {
                 nodes.forEach((node) => this.addNode(node));
-                this.nodes.forEach( (rootNode)  => {
+                // FIXME tableStyleClass not working on primeng treetable 6?
+                $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
+                this.nodes.forEach((rootNode) => {
                     const node = nodes.find((c) => rootNode.data.id === c.key);
                     if (node && node.children) {
                         this.addChildren(rootNode, node.children)
@@ -29,9 +30,6 @@ export class TreeComponent implements OnInit {
 
                 this.redrawNodes();
             });
-
-        // FIXME tableStyleClass not working on primeng treetable 6?
-        $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
     }
 
     addNode(node: TreeNode) {
