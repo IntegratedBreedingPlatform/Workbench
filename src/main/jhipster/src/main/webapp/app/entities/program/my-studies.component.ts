@@ -75,9 +75,7 @@ export class MyStudiesComponent {
             this.cropName,
             this.programUUID
         ).pipe(map((resp) => {
-            // TODO
-            // this.totalCount = resp.headers.get('X-Total-Count')
-            this.totalCount = 50;
+            this.totalCount = resp.headers.get('X-Total-Count')
             return resp.body.map((study) => <MyStudy>({
                 name: study.name,
                 type: study.type,

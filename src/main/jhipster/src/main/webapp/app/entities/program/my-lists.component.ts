@@ -38,9 +38,7 @@ export class MyListsComponent {
             this.cropName,
             this.programUUID
         ).pipe(map((resp) => {
-            // TODO
-            // this.totalCount = resp.headers.get('X-Total-Count')
-            this.totalCount = 50;
+            this.totalCount = resp.headers.get('X-Total-Count')
             return resp.body;
         })).pipe(
             finalize(() => this.isLoading = false)
