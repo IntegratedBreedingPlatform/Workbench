@@ -2,15 +2,15 @@
 	<jhi-collapsible heading="{{translateService.instant('pedigree.progenitors.title')}}">
 		<div class="container-fluid">
 			<div class="table-responsive">
-				<table class="table table-striped table-bordered table-curved">
+				<table class="table table-striped table-bordered table-curved table-fixed">
 					<thead>
 					<tr>
-						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType === 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.female-parent">Female Parent</th>
-						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType === 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.male-parent">Male Parent</th>
-						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.group-source">Group Source</th>
-						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.immediate-source">Immediate Source</th>
-						<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method">Breeding Method</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType === 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.female-parent" style="width: 30%">Female Parent</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType === 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.male-parent" style="width: 30%">Male Parent</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.group-source" style="width: 30%">Group Source</th>
+						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.immediate-source" style="width: 30%">Immediate Source</th>
+						<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method" style="width: 30%">Breeding Method</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" style="width: 10%">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -20,7 +20,7 @@
 							<a *ngIf="germplasmProgenitorsDetails?.femaleParent" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.femaleParent.gid)" target="_blank">{{germplasmProgenitorsDetails?.femaleParent?.preferredName}}</a>
 						</td>
 						<td *ngIf="germplasmProgenitorsDetails?.breedingMethodType == 'GEN'">
-							<span *ngIf="!germplasmProgenitorsDetails?.maleParents"> - </span>
+							<span *ngIf="!germplasmProgenitorsDetails?.maleParents || germplasmProgenitorsDetails?.maleParents.length === 0"> - </span>
 							<span *ngIf="germplasmProgenitorsDetails?.maleParents">
 								<span *ngFor="let maleParent of germplasmProgenitorsDetails?.maleParents; let last = last; let first = first;">
 									{{(first && germplasmProgenitorsDetails?.maleParents.length) > 1 ? '[' : ''}}<a [href]="this.germplasmDetailsUrlService.getUrl(maleParent.gid)" target="_blank">{{maleParent?.preferredName}}</a>{{(last && germplasmProgenitorsDetails?.maleParents.length > 1) ? ']' : ''}} {{last ? '' : ','}}

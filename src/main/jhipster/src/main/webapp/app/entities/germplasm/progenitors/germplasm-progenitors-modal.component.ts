@@ -68,23 +68,24 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     save() {
-        const maleParentsList = this.maleParent.split(',').map(item => Number(item));
+        const maleParentsList = this.maleParent.split(',');
 
-        if (this.isNumberOutOfRange([Number(this.femaleParent)])) {
-            this.alertService.error('germplasm-progenitors-modal.validation.gid.out.of.range', { param: 'Female Parent or Group Source' });
+        if (this.isNumberOutOfRange([this.femaleParent])) {
+            this.alertService.error('germplasm-progenitors-modal.validation.gid.out.of.range', { param: this.isMutation() ? 'Origin' : 'Female Parent or Group Source' });
             return;
         }
 
-        if (this.isNumberOutOfRange(maleParentsList)) {
+        if (!this.isMutation() && this.isNumberOutOfRange(maleParentsList)) {
             this.alertService.error('germplasm-progenitors-modal.validation.gid.out.of.range', { param: 'Male Parent or Immediate Source' });
             return;
         }
 
-        if (!this.allowMultipleMaleParents() && maleParentsList.length > 1) {
+        if (!this.isMutation() && !this.allowMultipleMaleParents() && maleParentsList.length > 1) {
             this.alertService.error('germplasm-progenitors-modal.validation.only.one.male.parent.is.allowed', { param: this.breedingMethodSelected.name });
             return;
         }
 
+        const maleParentsNumbers = maleParentsList.map(item => Number(item));
         if (!this.isGenerative && this.progenitorsDetails.numberOfDerivativeProgeny > 0
             && (this.progenitorsDetails.breedingMethodType === 'GEN' || this.hasProgenitorsChanges())) {
             const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
@@ -92,11 +93,11 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             confirmModalRef.componentInstance.message = 'Germplasm has derivative progeny and the group source will change. ' +
                 'Group source change will be applied to the progeny (' + this.progenitorsDetails.numberOfDerivativeProgeny + ' germplasm). Are you sure you want to continue?';
             confirmModalRef.result.then(() => {
-                this.updateGermplasmProgenitors(maleParentsList);
+                this.updateGermplasmProgenitors(maleParentsNumbers);
                 this.activeModal.close();
             }, () => this.activeModal.dismiss());
         } else {
-            this.updateGermplasmProgenitors(maleParentsList);
+            this.updateGermplasmProgenitors(maleParentsNumbers);
         }
     }
 
@@ -112,7 +113,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             breedingMethodId: this.breedingMethodSelected.mid,
             gpid1: Number(this.femaleParent),
             gpid2: !this.isMutation() ? firstMaleElement : 0,
-            otherProgenitors: maleParentsList
+            otherProgenitors: !this.isMutation() ? maleParentsList : []
         }).toPromise().then((result) => {
             this.alertService.success('germplasm-progenitors-modal.edit.success');
             this.notifyChanges();
@@ -204,8 +205,9 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         });
     }
 
-    isNumberOutOfRange(numbers: Number[]) {
-        return numbers.some(num => num > 2147483647);
+    isNumberOutOfRange(numbersString: string[]) {
+        const maxInteger = 2147483647; // Maxiumum 32 bit integer;
+        return numbersString.some(num => Number.isNaN(Number.parseInt(num)) || Number(num) > maxInteger);
     }
 
 
