@@ -21,6 +21,7 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import { SearchResult } from '../../shared/search-result.model';
 
 declare var $: any;
 
@@ -45,6 +46,7 @@ export class GermplasmSelectorComponent implements OnInit {
     predicate: any;
     previousPage: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
     selectMultiple: any = false;
@@ -52,7 +54,6 @@ export class GermplasmSelectorComponent implements OnInit {
     germplasmSearchRequest = new GermplasmSearchRequest();
     germplasmFilters: any;
     germplasmHiddenColumns = {};
-    resultSearch: any = {};
 
     get request() {
         return this.germplasmSearchRequest;
@@ -292,22 +293,40 @@ export class GermplasmSelectorComponent implements OnInit {
             this.filters = GermplasmSelectorComponent.getInitialFilters();
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
+        this.resultSearch = new SearchResult('');
+
+    }
+
+    search(request: GermplasmSearchRequest): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (!this.resultSearch.searchResultDbId) {
+                this.germplasmService.search(request).subscribe((response) => {
+                    this.resultSearch.searchResultDbId = response;
+                    resolve(this.resultSearch.searchResultDbId);
+                }, (error) => reject(error));
+                this.page = 1;
+            } else {
+                resolve(this.resultSearch.searchResultDbId);
+            }
+        });
     }
 
     loadAll(request: GermplasmSearchRequest) {
         this.isLoading = true;
-        this.germplasmService.searchGermplasm(request,
-            this.addSortParam({
-                page: this.page - 1,
-                size: this.itemsPerPage
-            })
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
-
+        this.search(request).then((searchId) => {
+            this.germplasmService.getSearchResults(
+                this.addSortParam({
+                    searchRequestId: searchId,
+                    page: this.page - 1,
+                    size: this.itemsPerPage
+                })
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
@@ -330,9 +349,9 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loadAll(this.request);
         this.registerChangeInGermplasm();
         this.request.addedColumnsPropertyIds = [];
-        this.loadAll(this.request);
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
         this.hiddenColumns[ColumnLabels['GERMPLASM DATE']] = true;
         this.hiddenColumns[ColumnLabels['METHOD ABBREV']] = true;
@@ -446,6 +465,7 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
+        this.resultSearch.searchResultDbId = '';
         this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);
@@ -521,6 +541,7 @@ export class GermplasmSelectorComponent implements OnInit {
     private resetFilters() {
         this.filters = GermplasmSelectorComponent.getInitialFilters();
         this.request = new GermplasmSearchRequest();
+        this.resultSearch = new SearchResult('');
     }
 
     selectGermplasm() {

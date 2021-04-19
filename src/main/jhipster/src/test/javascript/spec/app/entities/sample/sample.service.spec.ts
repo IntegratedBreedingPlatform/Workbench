@@ -1,13 +1,13 @@
 /* tslint:disable max-line-length */
-import { TestBed, getTestBed } from '@angular/core/testing';
+import { getTestBed, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { SampleService } from '../../../../../../main/webapp/app/entities/sample/sample.service';
 import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants';
 import { ParamContext } from '../../../../../../main/webapp/app/shared/service/param.context';
-import { ActivatedRoute } from '@angular/router';
-import { MockActivatedRoute } from '../../../helpers/mock-route.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MockActivatedRoute, MockRouter } from '../../../helpers/mock-route.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -32,7 +32,8 @@ describe('Service Tests', () => {
                     },
                     JhiDateUtils,
                     ParamContext,
-                    SampleService
+                    SampleService,
+                    { provide: Router, useClass: MockRouter }
                 ]
             });
             injector = getTestBed();

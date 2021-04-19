@@ -64,6 +64,7 @@
         "save.preset.heading": "Save settings",
         "save.preset.name.note": "Preset name",
         "save.preset.success": "Successfully saved preset",
+        "update.preset.success": "Successfully updated preset",
         "delete.preset.success": "Successfully deleted preset",
         "filename": "Filename",
         "filename.field.error": "Filename is required",
@@ -115,6 +116,7 @@
         "sort.labels.by": "Sort labels by",
         "output.format": "Output format",
         "export.excel": "Excel",
-        "export.csv": "CSV"
+        "export.csv": "CSV",
+        "sort.label.by": "Sort label by"
     }
 }
