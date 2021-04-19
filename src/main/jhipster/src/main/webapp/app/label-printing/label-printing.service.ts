@@ -3,7 +3,7 @@ import { SERVER_API_URL } from '../app.constants';
 import { LabelPrintingContext } from './label-printing.context';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LabelType, OriginResourceMetadata, PresetSetting } from './label-printing.model';
+import { LabelType, OriginResourceMetadata, PresetSetting, Sortable } from './label-printing.model';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -50,6 +50,12 @@ export class LabelPrintingService {
         });
     }
 
+    getSortableFields(): Observable<Sortable[]> {
+        const printingLabelType = this.context.printingLabelType;
+        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/sortable-fields`;
+        return this.http.get<Sortable[]>(this.baseUrl + resourceUrl);
+    }
+
     download(fileExtension: any, labelsGeneratorInput: any) {
 
         labelsGeneratorInput.datasetId = this.context.datasetId;
@@ -79,7 +85,12 @@ export class LabelPrintingService {
 
     addPreset(preset: PresetSetting): Observable<PresetSetting> {
         const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets`;
-        return this.http.put<PresetSetting>(this.baseUrl + resourceUrl,  preset );
+        return this.http.put<PresetSetting>(this.baseUrl + resourceUrl, preset);
+    }
+
+    updatePreset(preset: PresetSetting): Observable<void> {
+        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets/${preset.id}`;
+        return this.http.put<void>(this.baseUrl + resourceUrl, preset);
     }
 
     deletePreset(presetId: number): Observable<PresetSetting> {
