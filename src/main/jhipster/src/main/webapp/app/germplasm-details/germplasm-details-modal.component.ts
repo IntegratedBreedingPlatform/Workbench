@@ -26,6 +26,7 @@ export class GermplasmDetailsModalComponent implements OnInit {
     onMessage(event) {
         if (event.data === 'germplasm-details-changed') {
             this.hasChanges = true;
+            this.loadGermplasm();
         }
     }
 
@@ -47,6 +48,10 @@ export class GermplasmDetailsModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadGermplasm();
+    }
+
+    loadGermplasm() {
         this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((value) => {
             this.germplasm = value.body;
         })

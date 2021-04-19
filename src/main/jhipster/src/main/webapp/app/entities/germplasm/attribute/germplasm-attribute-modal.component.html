@@ -50,7 +50,7 @@
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
 		</button>
-		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary" [disabled]="isLoading">
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
 			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 			<span class="fa fa-save"></span>&nbsp;
 			<span *ngIf="attributeId" jhiTranslate="update"></span>

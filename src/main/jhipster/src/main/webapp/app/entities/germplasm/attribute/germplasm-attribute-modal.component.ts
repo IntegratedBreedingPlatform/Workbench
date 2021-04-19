@@ -100,7 +100,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && this.attributeCode
+        return f.form.valid && !this.isLoading && this.attributeCode
             && this.value && this.locationId && this.date;
     }
 

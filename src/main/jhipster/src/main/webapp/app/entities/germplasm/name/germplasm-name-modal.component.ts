@@ -101,7 +101,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && this.name
+        return f.form.valid && !this.isLoading && this.name
             && this.nameTypeCode && this.locationId && this.date;
     }
 
