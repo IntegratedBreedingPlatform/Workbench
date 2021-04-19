@@ -32,7 +32,7 @@
 				<label for="attributedate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-attribute-modal.date">Date</label>
 				<div class="input-group col-sm-9">
 					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="date"
-						   ngbDatepicker #attributedate="ngbDatepicker" id="attributedate" name="date"/>
+						   ngbDatepicker #attributedate="ngbDatepicker" id="attributedate" name="date" required/>
 					<div class="input-group-append">
 						<button class="btn btn-outline-secondary calendar" (click)="attributedate.toggle()" type="button"></button>
 					</div>

@@ -32,7 +32,7 @@
 				<label for="germplasmdate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-name-modal.date">Date</label>
 				<div class="input-group col-sm-9">
 					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="date"
-						   ngbDatepicker #germplasmdate="ngbDatepicker" id="germplasmdate" name="date"/>
+						   ngbDatepicker #germplasmdate="ngbDatepicker" id="germplasmdate" name="date" required/>
 					<div class="input-group-append">
 						<button class="btn btn-outline-secondary calendar" (click)="germplasmdate.toggle()" type="button"></button>
 					</div>

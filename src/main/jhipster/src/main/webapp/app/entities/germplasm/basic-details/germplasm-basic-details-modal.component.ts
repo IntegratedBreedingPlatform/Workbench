@@ -55,6 +55,10 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
         this.activeModal.dismiss('cancel');
     }
 
+    isFormValid(f){
+        return f.form.valid && this.germplasmDetailsContext && this.germplasmDate && !this.isLoading && this.germplasm.breedingLocationId;
+    }
+
 }
 
 
