@@ -83,6 +83,6 @@ export class SampleTreeService implements TreeService {
     }
 
     init() {
-        // TODO
+        return this.expand('');
     }
 }
