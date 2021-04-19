@@ -70,6 +70,16 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     save() {
         const maleParentsList = this.maleParent.split(',').map(item => Number(item));
 
+        if (this.isNumberOutOfRange([Number(this.femaleParent)])) {
+            this.alertService.error('germplasm-progenitors-modal.validation.gid.out.of.range', { param: 'Female Parent or Group Source' });
+            return;
+        }
+
+        if (this.isNumberOutOfRange(maleParentsList)) {
+            this.alertService.error('germplasm-progenitors-modal.validation.gid.out.of.range', { param: 'Male Parent or Immediate Source' });
+            return;
+        }
+
         if (!this.allowMultipleMaleParents() && maleParentsList.length > 1) {
             this.alertService.error('germplasm-progenitors-modal.validation.only.one.male.parent.is.allowed', { param: this.breedingMethodSelected.name });
             return;
@@ -192,6 +202,10 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                 selectMultiple: selectMultiple
             }
         });
+    }
+
+    isNumberOutOfRange(numbers: Number[]) {
+        return numbers.some(num => num > 2147483647);
     }
 
 

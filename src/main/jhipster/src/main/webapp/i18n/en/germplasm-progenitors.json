@@ -16,6 +16,7 @@
     "cancel": "Cancel",
     "search": "Search",
     "validation.only.one.male.parent.is.allowed": "Only one male parent is allowed for this method: {{param}}",
+    "validation.gid.out.of.range": "GID specified in {{param}} is out of range.",
     "edit.success": "Progenitor details updated successfully"
   }
 }
