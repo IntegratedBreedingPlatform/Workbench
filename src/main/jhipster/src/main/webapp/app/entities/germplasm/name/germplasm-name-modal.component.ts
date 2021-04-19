@@ -16,7 +16,6 @@ import { DateHelperService } from '../../../shared/service/date.helper.service';
 })
 export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
-    isEditMode: boolean;
     gid: number;
     nameTypes: Promise<NameType[]>;
     locations: LocationModel[];
@@ -60,6 +59,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
         if (this.nameId) {
             // if name id is available, we have to update the name
+            this.isLoading = true;
             this.germplasmService.updateGermplasmName(this.gid, this.nameId, {
                 name: this.name,
                 nameTypeCode: this.nameTypeCode,
@@ -69,11 +69,14 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
             }).toPromise().then((result) => {
                 this.alertService.success('germplasm-name-modal.edit.success');
                 this.notifyChanges();
+                this.isLoading = false;
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
             });
         } else {
             // If name id is not available, we have to create a new name
+            this.isLoading = true;
             this.germplasmService.createGermplasmName(this.gid, {
                 name: this.name,
                 nameTypeCode: this.nameTypeCode,
@@ -83,8 +86,10 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
             }).toPromise().then((result) => {
                 this.alertService.success('germplasm-name-modal.add.success');
                 this.notifyChanges();
+                this.isLoading = false;
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
             });
         }
 

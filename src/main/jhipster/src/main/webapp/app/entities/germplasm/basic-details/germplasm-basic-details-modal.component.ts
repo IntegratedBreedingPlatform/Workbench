@@ -18,6 +18,7 @@ import { DateHelperService } from '../../../shared/service/date.helper.service';
 
 export class GermplasmBasicDetailsModalComponent implements OnInit {
 
+    isLoading: boolean;
     germplasm: GermplasmDto = new GermplasmDto();
     germplasmDate: NgbDate;
 
@@ -37,13 +38,16 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
     }
 
     updateGermplasmBasicDetails(): void {
+        this.isLoading = true;
         this.germplasm.creationDate = this.dateHelperService.convertNgbDateToString(this.germplasmDate);
         this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then((result) => {
             this.alertService.success('edit-basic-details.success');
             this.eventManager.broadcast({ name: 'basicDetailsChanged' });
             this.clear();
+            this.isLoading = false;
         }).catch((response) => {
             this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.isLoading = false;
         });
     }
 

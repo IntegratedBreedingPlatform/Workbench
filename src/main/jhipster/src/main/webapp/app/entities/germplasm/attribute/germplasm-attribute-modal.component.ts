@@ -58,6 +58,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 
         if (this.attributeId) {
             // if attribute id is available, we have to update the attribute
+            this.isLoading = true;
             this.germplasmService.updateGermplasmAttribute(this.gid, this.attributeId, {
                 attributeCode: this.attributeCode,
                 attributeType: this.germplasmAttributeContext.attributeType,
@@ -67,11 +68,14 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             }).toPromise().then((result) => {
                 this.alertService.success('germplasm-attribute-modal.edit.success');
                 this.notifyChanges();
+                this.isLoading = false;
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
             });
         } else {
             // If attribute id is not available, we have to create a new attribute
+            this.isLoading = true;
             this.germplasmService.createGermplasmAttribute(this.gid, {
                 attributeCode: this.attributeCode,
                 attributeType: this.germplasmAttributeContext.attributeType,
@@ -81,8 +85,10 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             }).toPromise().then((result) => {
                 this.alertService.success('germplasm-attribute-modal.add.success');
                 this.notifyChanges();
+                this.isLoading = false;
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
             });
         }
 

@@ -96,6 +96,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     updateGermplasmProgenitors(maleParentsList) {
+        this.isLoading = true;
         const firstMaleElement = maleParentsList.shift();
         this.germplasmService.updateGermplasmProgenitors(this.gid, {
             breedingMethodId: this.breedingMethodSelected.mid,
@@ -105,8 +106,10 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         }).toPromise().then((result) => {
             this.alertService.success('germplasm-progenitors-modal.edit.success');
             this.notifyChanges();
+            this.isLoading = false;
         }).catch((response) => {
             this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.isLoading = false;
         });
     }
 
