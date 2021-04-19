@@ -525,16 +525,13 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     selectGermplasm() {
-        // Handle handle selection when this page is loaded inside Angular.
-        this.eventManager.broadcast({ name: 'germplasmSelectorSelected', content: this.selectedItems.join(',') });
-        // Handle handle selection when this page is loaded outside Angular.
+
+        // Handle selection when this page is loaded outside Angular.
         if ((<any>window.parent).onGidsSelected) {
             (<any>window.parent).onGidsSelected(this.selectedItems);
         }
-
-        // Handle closing of modal when this page is loaded inside Angular.
-        if (this.activeModal) {
-            this.activeModal.dismiss('cancel');
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'selector-changed', 'value': this.selectedItems }, '*');
         }
     }
 
@@ -542,10 +539,6 @@ export class GermplasmSelectorComponent implements OnInit {
         // Handle closing of modal when this page is loaded outside of Angular.
         if ((<any>window.parent).closeModal) {
             (<any>window.parent).closeModal();
-        }
-        // Handle closing of modal when this page is loaded inside Angular.
-        if (this.activeModal) {
-            this.activeModal.dismiss('cancel');
         }
     }
 
