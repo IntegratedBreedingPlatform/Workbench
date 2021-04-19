@@ -158,7 +158,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     getMaleParentId(progenitorsDetails: GermplasmProgenitorsDetails) {
-        if (progenitorsDetails.maleParents) {
+        if (progenitorsDetails.maleParents && progenitorsDetails.maleParents.length > 0) {
             return this.progenitorsDetails.maleParents.map((parent) => parent.gid).join(',');
         } else if (progenitorsDetails.immediateSource) {
             return String(this.progenitorsDetails.immediateSource.gid);
