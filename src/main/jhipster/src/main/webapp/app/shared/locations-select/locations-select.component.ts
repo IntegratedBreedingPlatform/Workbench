@@ -38,9 +38,11 @@ export class LocationsSelectComponent implements OnInit {
 
         // The locations are retrieved only when the dropdown is opened, so we have to manually set the initial selected item on first load.
         // Get the location method and add it to the initial data.
-        this.locationService.queryBreedingLocation(this.locationSelected).toPromise().then((location) => {
-            this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
-        });
+        if (this.locationSelected) {
+            this.locationService.queryBreedingLocation(this.locationSelected).toPromise().then((location) => {
+                this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
+            });
+        }
 
         this.locationsOptions = {
             ajax: {
