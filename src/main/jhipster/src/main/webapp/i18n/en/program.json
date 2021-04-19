@@ -5,7 +5,19 @@
         "crop": "Crop",
         "program": "Program",
         "launch": "Launch",
-        "my.studies": "My Studies",
-        "my.lists": "My Lists"
+        "my.studies": {
+            "tab.name": "My Studies",
+            "col.name": "Name",
+            "col.type": "Type",
+            "col.date": "Date",
+            "col.folder": "Folder"
+        },
+        "my.lists": {
+            "tab.name": "My Lists",
+            "col.name": "Name",
+            "col.type": "Type",
+            "col.date": "Date",
+            "col.folder": "Folder"
+        }
     }
 }

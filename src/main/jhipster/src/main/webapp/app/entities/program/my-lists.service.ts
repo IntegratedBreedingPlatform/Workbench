@@ -6,6 +6,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { createRequestOption } from '../../shared';
 import { ParamContext } from '../../shared/service/param.context';
 import { MyList } from './my-list';
+import { Pageable } from '../../shared/model/pageable';
 
 @Injectable()
 export class MyListsService {
@@ -15,12 +16,10 @@ export class MyListsService {
     ) {
     }
 
-    getMyLists(page, pageSize, cropName, programUUID): Observable<HttpResponse<MyList[]>> {
-        const params = createRequestOption({
-            page,
-            size: pageSize,
+    getMyLists(pageable: Pageable, cropName, programUUID): Observable<HttpResponse<MyList[]>> {
+        const params = createRequestOption(Object.assign({
             programUUID
-        });
+        }, pageable));
         return this.http.get<MyStudy[]>(SERVER_API_URL + `crops/${cropName}/germplasm-lists/my-lists`,
             { params, observe: 'response' });
     }

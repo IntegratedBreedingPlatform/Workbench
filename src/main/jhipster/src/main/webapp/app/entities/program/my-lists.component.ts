@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MyListsService } from './my-lists.service';
 import { finalize, map } from 'rxjs/operators';
 import { MyList } from './my-list';
+import { Pageable } from '../../shared/model/pageable';
 
 @Component({
     selector: 'jhi-my-lists',
@@ -14,6 +15,8 @@ export class MyListsComponent {
 
     page = 1;
     pageSize = 5;
+    predicate = 'date';
+    reverse = false;
     totalCount: any;
     isLoading = false;
 
@@ -33,8 +36,11 @@ export class MyListsComponent {
     load() {
         this.isLoading = true;
         this.myListsService.getMyLists(
-            this.page - 1,
-            this.pageSize,
+            <Pageable>({
+                page: this.page - 1,
+                size: this.pageSize,
+                sort: this.getSort()
+            }),
             this.cropName,
             this.programUUID
         ).pipe(map((resp) => {
@@ -45,5 +51,17 @@ export class MyListsComponent {
         ).subscribe((lists) => {
             this.lists = lists;
         });
+    }
+
+    sort() {
+        this.page = 1;
+        this.load();
+    }
+
+    getSort() {
+        if (!this.predicate) {
+            return '';
+        }
+        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 }

@@ -4,6 +4,7 @@ import { switchMap, debounceTime, takeUntil, repeat, map, finalize } from 'rxjs/
 import { MyStudy, MyStudyMetadata, NgChartsBarPlotMetadata, ObservationsMetadata } from './my-study';
 import { empty, fromEvent, Subject, of } from 'rxjs';
 import { MyStudiesService } from './my-studies.service';
+import { Pageable } from '../../shared/model/pageable';
 
 @Component({
     selector: 'jhi-my-studies',
@@ -45,6 +46,8 @@ export class MyStudiesComponent {
 
     page = 1;
     pageSize = 5;
+    predicate = 'startDate';
+    reverse = false;
     totalCount: any;
     isLoading = false;
 
@@ -70,8 +73,11 @@ export class MyStudiesComponent {
     load() {
         this.isLoading = true;
         this.myStudiesService.getMyStudies(
-            this.page - 1,
-            this.pageSize,
+            <Pageable>({
+                page: this.page - 1,
+                size: this.pageSize,
+                sort: this.getSort()
+            }),
             this.cropName,
             this.programUUID
         ).pipe(map((resp) => {
@@ -89,6 +95,18 @@ export class MyStudiesComponent {
             this.studies = studies;
             this.select(this.studies[0]);
         });
+    }
+
+    sort() {
+        this.page = 1;
+        this.load();
+    }
+
+    getSort() {
+        if (!this.predicate) {
+            return '';
+        }
+        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
     private transformMetadata(study: MyStudy) {
