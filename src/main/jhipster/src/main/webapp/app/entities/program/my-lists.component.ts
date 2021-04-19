@@ -13,7 +13,7 @@ export class MyListsComponent {
     cropName: string;
 
     page = 1;
-    pageSize = 10;
+    pageSize = 5;
     totalCount: any;
     isLoading = false;
 

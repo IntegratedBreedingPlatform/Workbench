@@ -44,7 +44,7 @@ export class MyStudiesComponent {
     study: MyStudy;
 
     page = 1;
-    pageSize = 10;
+    pageSize = 5;
     totalCount: any;
     isLoading = false;
 
