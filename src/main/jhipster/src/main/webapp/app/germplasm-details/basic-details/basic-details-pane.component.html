@@ -5,7 +5,7 @@
 				<div class="col-3">
 					<label class="font-weight-bold" jhiTranslate="basic-details.preferred-name">Preferred Name:</label>
 				</div>
-				<div class="col">{{germplasm?.preferredName}}</div>
+				<div class="col word-wrap">{{germplasm?.preferredName}}</div>
 			</div>
 			<div class="row">
 				<div class="col-3">
@@ -39,7 +39,7 @@
 					<tr>
 						<td>{{germplasm?.creationDate}}</td>
 						<td>{{germplasm?.breedingLocation}}</td>
-						<td>{{germplasm?.reference}}</td>
+						<td class="word-wrap">{{germplasm?.reference}}</td>
 						<td class="text-center">
 							<button class="btn btn-info" (click)="editGermplasmBasicDetails()">
 								<i class="fa fa-edit fa-fa-md" aria-hidden="true"></i>
