@@ -42,6 +42,8 @@ export class GermplasmSelectorModalComponent implements OnInit {
         if (event.data.name === 'selector-changed') {
             this.eventManager.broadcast({ name: 'germplasmSelectorSelected', content: event.data.value.join(',') });
             this.clear();
+        } else if (event.data.name === 'cancel') {
+            this.clear();
         }
     }
 

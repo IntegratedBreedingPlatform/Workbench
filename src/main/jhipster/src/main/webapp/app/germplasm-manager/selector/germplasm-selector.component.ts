@@ -561,6 +561,9 @@ export class GermplasmSelectorComponent implements OnInit {
         if ((<any>window.parent).closeModal) {
             (<any>window.parent).closeModal();
         }
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
+        }
     }
 
 }
