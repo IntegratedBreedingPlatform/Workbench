@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProgramService } from '../../shared/program/service/program.service';
 import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Principal } from '../../shared';
 import { INSTITUTE_LOGO_PATH } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
@@ -28,12 +28,13 @@ export class ProgramComponent implements OnInit {
     cropName: string;
     cropChanged = new Subject<string>();
 
-    programs: Program[];
+    programsById: {[key: string]: Program};
     // bound to dropdown
-    program: Program;
+    programModel: string;
     programChanged = new Subject<string>();
     // after debounce time
-    programSelected: Program;
+    programSelected: string;
+    programDropdownOptions: any;
 
     itemCount: any;
     pageSize = 20;
@@ -63,36 +64,16 @@ export class ProgramComponent implements OnInit {
         this.cropService.getCrops().subscribe((crops) => this.crops = crops);
         this.cropChanged
             .debounceTime(500)
-            .switchMap(() =>  {
-                this.isLoading = true;
-                return this.programService.getPrograms(this.cropName, {
-                    page: this.page - 1,
-                    size: this.pageSize
-                }).pipe(
-                    finalize(() => this.isLoading = false)
-                )
-            })
-            .subscribe((resp: HttpResponse<Program[]>) => {
-                this.program = null;
-                this.programSelected = null;
-                this.programs = resp.body;
-                if (!(this.programs && this.programs.length)) {
-                    return;
-                }
-                for (const program of this.programs) {
-                    if (this.isPreSelected(program)) {
-                        this.program = program;
-                        this.programSelected = program;
-                        this.displayProgramInfo();
-                        break;
-                    }
-                }
-            });
+            .switchMap(() => {
+                this.page = 1;
+                this.loadPrograms(this.page);
+                return of('');
+            }).subscribe();
 
         this.programChanged
             .debounceTime(500)
             .switchMap(() => {
-                this.programSelected = this.program;
+                this.programSelected = this.programModel;
                 this.displayProgramInfo();
                 return of('');
             }).subscribe();
@@ -104,10 +85,53 @@ export class ProgramComponent implements OnInit {
             }).catch((error) => {});
         }
          */
+
+        this.programDropdownOptions = {
+            ajax: {
+                delay: 500,
+                transport: function(params, success, failure) {
+                    this.loadPrograms(params.data.page, params.data.term).subscribe((res) => success(res.body), failure);
+                }.bind(this),
+                processResults: function(programs: Program[], params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: programs.map((program) => {
+                            return {
+                                id: program.uniqueID,
+                                text: program.name
+                            };
+                        }),
+                        pagination: {
+                            more: (params.page * this.pageSize) < this.itemCount
+                        }
+                    }
+                }.bind(this)
+            }
+        };
+    }
+
+    private loadPrograms(page: number, query = '') {
+        this.isLoading = true;
+        const programsObservable = this.programService.getPrograms(this.cropName, query, {
+            page,
+            size: this.pageSize
+        }).pipe(map((res) => {
+            this.itemCount = res.headers.get('X-Total-Count');
+            return res;
+        })).pipe(
+            finalize(() => this.isLoading = false)
+        );
+        programsObservable.subscribe((resp: HttpResponse<Program[]>) => {
+            this.programsById = resp.body.reduce((prev, curr) => {
+                prev[curr.uniqueID] = curr;
+                return prev;
+            }, {});
+        });
+        return programsObservable;
     }
 
     onOpenProgram() {
-        window.parent.postMessage({ programSelected: this.program }, '*');
+        window.parent.postMessage({ programSelected: this.programsById[this.programSelected] }, '*');
     }
 
     displayProgramInfo(): any {
@@ -115,11 +139,16 @@ export class ProgramComponent implements OnInit {
             relativeTo: this.route,
             queryParams: {
                 cropName: this.cropName,
-                programUUID: this.programSelected.uniqueID
+                programUUID: this.programSelected
             }
         })
     }
 
+    /*
+     * FIXME
+     *  - not possible because of dropdown pagination?
+     *  - preselected crop -> easier -> no pagination
+     */
     isPreSelected(program: Program) {
         return program.uniqueID ===
             (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);

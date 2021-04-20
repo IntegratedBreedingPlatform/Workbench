@@ -4,6 +4,7 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { Program } from '../model/program';
 import { Observable } from 'rxjs';
 import { createRequestOption } from '../..';
+import { Pageable } from '../../model/pageable';
 
 @Injectable()
 export class ProgramService {
@@ -11,9 +12,10 @@ export class ProgramService {
     constructor(private http: HttpClient) {
     }
 
-    getPrograms(cropName, pageable): Observable<HttpResponse<Program[]>> {
+    getPrograms(cropName, query: string, pageable: Pageable): Observable<HttpResponse<Program[]>> {
         const params = Object.assign({}, pageable);
         params['cropName'] = cropName;
+        params['programNameContainsString'] = query;
         return this.http.get<Program[]>(SERVER_API_URL + 'programs', {
             params: createRequestOption(params),
             observe: 'response'

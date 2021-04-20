@@ -25,15 +25,16 @@
 				<div class="form-group row">
 					<label class="col-sm-2 col-form-label" for="programDropdown" jhiTranslate="program.program"></label>
 					<div class="col-sm-7">
-						<select class="form-control" id="programDropdown" name="programDropdown"
-								(change)="onProgramChange()"
-								[(ngModel)]="program" #programDropdown="ngModel" >
-							<option *ngFor="let program of programs" [ngValue]="program">{{program.name}}</option>
-						</select>
+						<ng-select2 name="programDropdown" id="programDropdown" width="100%"
+									[disabled]="!cropName"
+									[(ngModel)]="programModel"
+									(ngModelChange)="onProgramChange()"
+									[options]="programDropdownOptions">
+						</ng-select2>
 					</div>
 					<div class="col-sm-auto">
 						<button class="btn btn-info" jhiTranslate="program.launch"
-								[disabled]="!program" (click)="onOpenProgram()"></button>
+								[disabled]="!programSelected" (click)="onOpenProgram()"></button>
 					</div>
 				</div>
 			</form>
@@ -50,12 +51,12 @@
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.studies.tab.name" [routerLink]="['my-studies']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected.uniqueID, cropName: cropName }"></a>
+						   [queryParams]="{ programUUID: programSelected, cropName: cropName }"></a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.lists.tab.name" [routerLink]="['my-lists']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected.uniqueID, cropName: cropName }"></a>
+						   [queryParams]="{ programUUID: programSelected, cropName: cropName }"></a>
 					</li>
 				</ul>
 			</nav>
