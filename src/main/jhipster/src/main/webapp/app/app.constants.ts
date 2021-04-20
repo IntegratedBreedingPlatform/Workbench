@@ -17,6 +17,7 @@ export const STUDY_URL = '/Fieldbook/TrialManager/openTrial/';
 export const MAX_PAGE_SIZE = process.env.MAX_PAGE_SIZE;
 export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/userProgramInfo';
 export const INSTITUTE_LOGO_PATH = process.env.INSTITUTE_LOGO_PATH;
+export const GERMPLASM_LABEL_PRINTING_TYPE = 'Germplasm';
 
 // HELP
 export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';
