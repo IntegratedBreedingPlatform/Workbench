@@ -12,12 +12,15 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 import { Router } from '@angular/router';
 import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitors/germplasm-progenitors.context';
 import { Subscription } from 'rxjs';
+import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-pedigree-pane',
     templateUrl: './pedigree-pane.component.html'
 })
 export class PedigreePaneComponent implements OnInit {
+
+    MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
 
     @ViewChild('pedigreeIframe') pedigreeIframe: ElementRef;
 

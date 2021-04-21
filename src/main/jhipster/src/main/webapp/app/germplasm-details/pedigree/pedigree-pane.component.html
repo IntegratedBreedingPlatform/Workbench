@@ -37,7 +37,7 @@
 						</td>
 						<td>{{germplasmProgenitorsDetails?.breedingMethodName}}</td>
 						<td class="text-center">
-							<button class="btn btn-info" (click)="editPedigree(germplasmProgenitorsDetails)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
+							<button class="btn btn-info" *jhiHasAnyAuthority="MODIFY_PEDIGREE_PERMISSIONS" (click)="editPedigree(germplasmProgenitorsDetails)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 					</tbody>

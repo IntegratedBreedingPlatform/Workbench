@@ -9,6 +9,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -16,6 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AttributesPaneComponent implements OnInit {
 
+    MODIFY_ATTRIBUTES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_ATTRIBUTES'];
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
     attributes: GermplasmAttribute[] = [];

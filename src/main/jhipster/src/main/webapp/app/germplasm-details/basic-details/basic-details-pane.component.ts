@@ -11,12 +11,16 @@ import { GermplasmNameContext } from '../../entities/germplasm/name/germplasm-na
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-basic-details-pane',
     templateUrl: './basic-details-pane.component.html'
 })
 export class BasicDetailsPaneComponent implements OnInit {
+
+    EDIT_BASIC_DETAILS_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_BASIC_DETAILS'];
+    MODIFY_NAMES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_NAMES'];
 
     eventSubscriber: Subscription;
     germplasm: GermplasmDto;
