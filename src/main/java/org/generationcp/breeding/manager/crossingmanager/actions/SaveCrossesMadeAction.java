@@ -264,12 +264,10 @@ public class SaveCrossesMadeAction implements Serializable {
 			g.setGrplce(SaveCrossesMadeAction.GERMPLASM_GRPLCE);
 			g.setLgid(SaveCrossesMadeAction.GERMPLASM_LGID);
 			g.setMgid(SaveCrossesMadeAction.GERMPLASM_MGID);
-			g.setUserId(ibdbUserId);
 			g.setReferenceId(SaveCrossesMadeAction.GERMPLASM_REFID);
 
 			final Name n = triple.getMiddle();
 			n.setReferenceId(SaveCrossesMadeAction.NAME_REFID);
-			n.setUserId(ibdbUserId);
 		}
 
 		final GermplasmList list = crossesMade.getGermplasmList();

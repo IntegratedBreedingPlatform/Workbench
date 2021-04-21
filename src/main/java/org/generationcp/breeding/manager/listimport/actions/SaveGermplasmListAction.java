@@ -570,7 +570,6 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 					final Attribute newAttribute = new Attribute();
 					newAttribute.setGermplasmId(germplasm.getGid());
 					newAttribute.setTypeId(this.getUserDefinedFieldId(existingUserDefinedFields, code));
-					newAttribute.setUserId(this.contextUtil.getCurrentWorkbenchUserId());
 					newAttribute.setAval(value);
 					newAttribute.setLocationId(germplasm.getLocationId());
 					newAttribute.setReferenceId(0);
@@ -608,7 +607,6 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 					final Name newName = new Name();
 					newName.setGermplasmId(germplasm.getGid());
 					newName.setTypeId(this.getUserDefinedFieldId(existingUdflds, code));
-					newName.setUserId(this.contextUtil.getCurrentWorkbenchUserId());
 					newName.setNstat(0);
 					newName.setNval(value);
 					newName.setLocationId(germplasm.getLocationId());

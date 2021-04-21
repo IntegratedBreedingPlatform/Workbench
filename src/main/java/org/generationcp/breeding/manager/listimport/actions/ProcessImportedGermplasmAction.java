@@ -106,7 +106,7 @@ public class ProcessImportedGermplasmAction implements Serializable {
 		for (int i = 0; i < this.getImportedGermplasm().size(); i++) {
 			final ImportedGermplasm importedGermplasm = this.getImportedGermplasm().get(i);
 
-			final Germplasm germplasm = this.createGermplasmObject(i, -1, 0, 0, ibdbUserId, dateIntValue);
+			final Germplasm germplasm = this.createGermplasmObject(i, -1, 0, 0, dateIntValue);
 			final Name name = this.createNameObject(ibdbUserId, dateIntValue, importedGermplasm.getDesig());
 
 			this.germplasmNameObjects.add(new GermplasmName(germplasm, name));
@@ -131,7 +131,7 @@ public class ProcessImportedGermplasmAction implements Serializable {
 			final String designationName = importedGermplasm.getDesig();
 			// gpid1 and gpid 2 values are default here, actual values will be
 			// set below based on matched germplasm
-			final Germplasm germplasm = this.createGermplasmObject(i, -1, 0, 0, ibdbUserId, dateIntValue);
+			final Germplasm germplasm = this.createGermplasmObject(i, -1, 0, 0, dateIntValue);
 			List<Germplasm> foundGermplasm = new ArrayList<>();
 			final Integer germplasmMatchesCount = germplasmMatchesMap.get(designationName);
 
@@ -198,7 +198,7 @@ public class ProcessImportedGermplasmAction implements Serializable {
 			// with GID in file (if applicable) or when
 			// once germplasm is matched by designation (either automatic for
 			// single match) or via Select Germplasm pop-up
-			final Germplasm germplasm = this.createGermplasmObject(i, 0, 0, 0, ibdbUserId, dateIntValue);
+			final Germplasm germplasm = this.createGermplasmObject(i, 0, 0, 0, dateIntValue);
 			final Name name = this.createNameObject(ibdbUserId, dateIntValue, importedGermplasm.getDesig());
 			final GermplasmName germplasmToName = new GermplasmName(germplasm, name);
 			this.germplasmNameObjects.add(germplasmToName);
@@ -329,7 +329,6 @@ public class ProcessImportedGermplasmAction implements Serializable {
 		final Name name = new Name();
 
 		name.setTypeId((Integer) this.getGermplasmFieldsComponent().getNameTypeComboBox().getValue());
-		name.setUserId(ibdbUserId);
 		name.setNval(desig);
 
 		// Set the location id to the id of Unknown Location (0) if the user did
@@ -346,11 +345,10 @@ public class ProcessImportedGermplasmAction implements Serializable {
 	}
 
 	protected Germplasm createGermplasmObject(final Integer gid, final Integer gnpgs, final Integer gpid1,
-			final Integer gpid2, final Integer ibdbUserId, final Integer dateIntValue) {
+		final Integer gpid2, final Integer dateIntValue) {
 		final Germplasm germplasm = new Germplasm();
 
 		germplasm.setGid(gid);
-		germplasm.setUserId(ibdbUserId);
 
 		// Set the location id to the id of Unknown Location (0) if the user did
 		// not select any location
@@ -439,8 +437,8 @@ public class ProcessImportedGermplasmAction implements Serializable {
 
 		final int index = listener.getGermplasmIndex();
 		final String desig = listener.getDesignation();
-		final Germplasm germplasm = this.createGermplasmObject(index, 0, 0, 0, listener.getIbdbUserId(),
-				listener.getDateIntValue());
+		final Germplasm germplasm = this.createGermplasmObject(index, 0, 0, 0,
+			listener.getDateIntValue());
 
 		if (listener.getNameMatchesCount() == 1
 				&& this.germplasmDetailsComponent.automaticallyAcceptSingleMatchesCheckbox()) {
