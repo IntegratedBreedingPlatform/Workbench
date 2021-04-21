@@ -28,7 +28,7 @@ export class ProgramComponent implements OnInit {
     cropName: string;
     cropChanged = new Subject<string>();
 
-    programsById: {[key: string]: Program};
+    programsById: { [key: string]: Program } = {};
     // bound to dropdown
     programModel: string;
     programChanged = new Subject<string>();
@@ -38,7 +38,6 @@ export class ProgramComponent implements OnInit {
 
     itemCount: any;
     pageSize = 20;
-    page = 1;
 
     isLoading = false;
     helpLink: string;
@@ -61,14 +60,7 @@ export class ProgramComponent implements OnInit {
             this.user = identity;
         }
 
-        this.cropService.getCrops().subscribe((crops) => this.crops = crops);
-        this.cropChanged
-            .debounceTime(500)
-            .switchMap(() => {
-                this.page = 1;
-                this.loadPrograms(this.page);
-                return of('');
-            }).subscribe();
+        this.crops = await this.cropService.getCrops().toPromise();
 
         this.programChanged
             .debounceTime(500)
@@ -90,7 +82,8 @@ export class ProgramComponent implements OnInit {
             ajax: {
                 delay: 500,
                 transport: function(params, success, failure) {
-                    this.loadPrograms(params.data.page, params.data.term).subscribe((res) => success(res.body), failure);
+                    params.data.page = params.data.page || 1;
+                    this.getPrograms(params.data.page, params.data.term).subscribe((res) => success(res.body), failure);
                 }.bind(this),
                 processResults: function(programs: Program[], params) {
                     params.page = params.page || 1;
@@ -110,24 +103,29 @@ export class ProgramComponent implements OnInit {
         };
     }
 
-    private loadPrograms(page: number, query = '') {
+    private getPrograms(page: number, query = '') {
         this.isLoading = true;
-        const programsObservable = this.programService.getPrograms(this.cropName, query, {
-            page,
+        return  this.programService.getPrograms(this.cropName, query, {
+            page: page - 1,
             size: this.pageSize
         }).pipe(map((res) => {
             this.itemCount = res.headers.get('X-Total-Count');
+            this.programsById = res.body.reduce((prev, curr) => {
+                prev[curr.uniqueID] = curr;
+                return prev;
+            }, {});
             return res;
         })).pipe(
             finalize(() => this.isLoading = false)
         );
-        programsObservable.subscribe((resp: HttpResponse<Program[]>) => {
-            this.programsById = resp.body.reduce((prev, curr) => {
-                prev[curr.uniqueID] = curr;
-                return prev;
-            }, {});
-        });
-        return programsObservable;
+    }
+
+    getProgramCrop() {
+        const program = this.programsById[this.programSelected];
+        if (!program) {
+            return null;
+        }
+        return program.crop;
     }
 
     onOpenProgram() {
@@ -138,7 +136,7 @@ export class ProgramComponent implements OnInit {
         this.router.navigate(['my-studies'], {
             relativeTo: this.route,
             queryParams: {
-                cropName: this.cropName,
+                cropName: this.getProgramCrop(),
                 programUUID: this.programSelected
             }
         })
@@ -155,7 +153,11 @@ export class ProgramComponent implements OnInit {
     }
 
     onCropChange() {
-        this.cropChanged.next();
+        // workaround to trigger select2 ajax reload
+        if (this.cropName) {
+            this.programModel = null;
+            this.programSelected = null;
+        }
     }
 
     onProgramChange() {

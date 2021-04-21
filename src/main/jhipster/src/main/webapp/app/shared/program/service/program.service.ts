@@ -14,7 +14,9 @@ export class ProgramService {
 
     getPrograms(cropName, query: string, pageable: Pageable): Observable<HttpResponse<Program[]>> {
         const params = Object.assign({}, pageable);
-        params['cropName'] = cropName;
+        if (cropName) {
+            params['cropName'] = cropName;
+        }
         params['programNameContainsString'] = query;
         return this.http.get<Program[]>(SERVER_API_URL + 'programs', {
             params: createRequestOption(params),

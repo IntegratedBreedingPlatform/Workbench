@@ -60,6 +60,7 @@ import { UserProgramInfoService } from './service/user-program-info.service';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { CropService } from './crop/service/crop.service';
+import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
 
 @NgModule({
     imports: [
@@ -95,6 +96,7 @@ import { CropService } from './crop/service/crop.service';
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,
@@ -152,6 +154,7 @@ import { CropService } from './crop/service/crop.service';
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,

@@ -13,10 +13,13 @@
 				<div class="form-group row">
 					<label class="col-sm-2 col-form-label" for="cropDropdown" jhiTranslate="program.crop"></label>
 					<div class="col-sm-7">
-						<select class="form-control" id="cropDropdown" name="cropDropdown"
-								(change)="onCropChange()" [(ngModel)]="cropName" #cropDropdown="ngModel" >
-							<option *ngFor="let crop of crops" [value]="crop">{{crop}}</option>
-						</select>
+						<ng-select2 name="cropDropdown" id="cropDropdown" width="100%"
+									[data]="crops | CropSelect2Data"
+									[(ngModel)]="cropName"
+									placeholder="All"
+									[allowClear]="true"
+									(ngModelChange)="onCropChange()">
+						</ng-select2>
 					</div>
 					<div class="col-sm-auto">
 						<div class="throbber" *ngIf="isLoading"></div>
@@ -25,8 +28,9 @@
 				<div class="form-group row">
 					<label class="col-sm-2 col-form-label" for="programDropdown" jhiTranslate="program.program"></label>
 					<div class="col-sm-7">
+						<!-- ngIf -> workaround to fire ajax load -->
 						<ng-select2 name="programDropdown" id="programDropdown" width="100%"
-									[disabled]="!cropName"
+									*ngIf="crops?.length"
 									[(ngModel)]="programModel"
 									(ngModelChange)="onProgramChange()"
 									[options]="programDropdownOptions">
@@ -51,12 +55,12 @@
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.studies.tab.name" [routerLink]="['my-studies']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected, cropName: cropName }"></a>
+						   [queryParams]="{ programUUID: programSelected, cropName: getProgramCrop() }"></a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.lists.tab.name" [routerLink]="['my-lists']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected, cropName: cropName }"></a>
+						   [queryParams]="{ programUUID: programSelected, cropName: getProgramCrop() }"></a>
 					</li>
 				</ul>
 			</nav>
