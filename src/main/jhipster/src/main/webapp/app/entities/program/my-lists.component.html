@@ -16,7 +16,11 @@
 					</thead>
 					<tbody>
 					<tr *ngFor="let list of lists">
-						<td>{{list.name}}</td>
+						<td>
+							<a href (click)="urlService.openList(list.listId, context.program)">
+								{{list.name}}
+							</a>
+						</td>
 						<!-- easier to sort by type instead of typeName (udflds) -->
 						<td [title]="list.typeName">{{list.type}}</td>
 						<td>{{list.date}}</td>

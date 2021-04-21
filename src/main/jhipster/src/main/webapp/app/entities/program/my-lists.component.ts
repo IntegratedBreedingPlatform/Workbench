@@ -4,14 +4,14 @@ import { MyListsService } from './my-lists.service';
 import { finalize, map } from 'rxjs/operators';
 import { MyList } from './my-list';
 import { Pageable } from '../../shared/model/pageable';
+import { UrlService } from '../../shared/service/url.service';
+import { ProgramContext } from './program.context';
 
 @Component({
     selector: 'jhi-my-lists',
     templateUrl: './my-lists.component.html'
 })
 export class MyListsComponent {
-    programUUID: string;
-    cropName: string;
 
     page = 1;
     pageSize = 5;
@@ -24,11 +24,12 @@ export class MyListsComponent {
 
     constructor(
         private route: ActivatedRoute,
-        private myListsService: MyListsService
+        private myListsService: MyListsService,
+        public urlService: UrlService,
+        public context: ProgramContext
     ) {
         this.route.queryParams.subscribe((params) => {
-            this.cropName = params['cropName'];
-            this.programUUID = params['programUUID'];
+            // params['programUUID'] just to listen for changes
             this.load();
         });
     }
@@ -41,8 +42,8 @@ export class MyListsComponent {
                 size: this.pageSize,
                 sort: this.getSort()
             }),
-            this.cropName,
-            this.programUUID
+            this.context.program.crop,
+            this.context.program.uniqueID
         ).pipe(map((resp) => {
             this.totalCount = resp.headers.get('X-Total-Count')
             return resp.body;

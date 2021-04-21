@@ -1,5 +1,6 @@
 export class MyStudy {
     constructor(
+        public studyId?: number,
         public name?: string,
         public type?: string,
         public date?: string,

@@ -38,7 +38,7 @@
 					</div>
 					<div class="col-sm-auto">
 						<button class="btn btn-info" jhiTranslate="program.launch"
-								[disabled]="!programSelected" (click)="onOpenProgram()"></button>
+								[disabled]="!programModel" (click)="onOpenProgram()"></button>
 					</div>
 				</div>
 			</form>
@@ -48,19 +48,19 @@
 			<img [src]="instituteLogoPath" alt="" style="max-height: 100px;"/>
 		</div>
 	</div>
-	<div class="row mt-3" *ngIf="programSelected">
+	<div class="row mt-3" *ngIf="programModel">
 		<div class="col">
 			<nav>
 				<ul class="nav nav-tabs">
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.studies.tab.name" [routerLink]="['my-studies']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected, cropName: getProgramCrop() }"></a>
+						   [queryParams]="{ programUUID: programModel }"></a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" jhiTranslate="program.my.lists.tab.name" [routerLink]="['my-lists']"
 						   [routerLinkActive]="['active']"
-						   [queryParams]="{ programUUID: programSelected, cropName: getProgramCrop() }"></a>
+						   [queryParams]="{ programUUID: programModel }"></a>
 					</li>
 				</ul>
 			</nav>

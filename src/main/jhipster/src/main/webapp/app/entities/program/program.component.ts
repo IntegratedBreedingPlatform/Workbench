@@ -10,6 +10,8 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { CropService } from '../../shared/crop/service/crop.service';
 import { of, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProgramContext } from './program.context';
+import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
 
 @Component({
     selector: 'jhi-program',
@@ -29,11 +31,8 @@ export class ProgramComponent implements OnInit {
     cropChanged = new Subject<string>();
 
     programsById: { [key: string]: Program } = {};
-    // bound to dropdown
     programModel: string;
     programChanged = new Subject<string>();
-    // after debounce time
-    programSelected: string;
     programDropdownOptions: any;
 
     itemCount: any;
@@ -49,7 +48,8 @@ export class ProgramComponent implements OnInit {
         private helpService: HelpService,
         private languageService: JhiLanguageService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        public context: ProgramContext
     ) {
     }
 
@@ -61,14 +61,6 @@ export class ProgramComponent implements OnInit {
         }
 
         this.crops = await this.cropService.getCrops().toPromise();
-
-        this.programChanged
-            .debounceTime(500)
-            .switchMap(() => {
-                this.programSelected = this.programModel;
-                this.displayProgramInfo();
-                return of('');
-            }).subscribe();
 
         /*
         if (!this.helpLink || !this.helpLink.length) {
@@ -120,24 +112,16 @@ export class ProgramComponent implements OnInit {
         );
     }
 
-    getProgramCrop() {
-        const program = this.programsById[this.programSelected];
-        if (!program) {
-            return null;
-        }
-        return program.crop;
-    }
-
     onOpenProgram() {
-        window.parent.postMessage({ programSelected: this.programsById[this.programSelected] }, '*');
+        const message: NavbarMessageEvent = { programSelected: this.context.program };
+        window.parent.postMessage(message, '*');
     }
 
     displayProgramInfo(): any {
         this.router.navigate(['my-studies'], {
             relativeTo: this.route,
             queryParams: {
-                cropName: this.getProgramCrop(),
-                programUUID: this.programSelected
+                programUUID: this.programModel
             }
         })
     }
@@ -156,12 +140,12 @@ export class ProgramComponent implements OnInit {
         // workaround to trigger select2 ajax reload
         if (this.cropName) {
             this.programModel = null;
-            this.programSelected = null;
         }
     }
 
     onProgramChange() {
-        this.programChanged.next();
+        this.context.program = this.programsById[this.programModel];
+        this.displayProgramInfo();
     }
 
 }

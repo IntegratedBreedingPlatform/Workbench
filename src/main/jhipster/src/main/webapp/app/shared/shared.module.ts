@@ -61,6 +61,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { CropService } from './crop/service/crop.service';
 import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
+import { UrlService } from './service/url.service';
 
 @NgModule({
     imports: [
@@ -135,7 +136,8 @@ import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal
+        NgbActiveModal,
+        UrlService
     ],
     entryComponents: [
         ModalComponent,

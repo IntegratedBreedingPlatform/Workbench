@@ -22,7 +22,11 @@
 					<tbody>
 					<tr *ngFor="let study of studies" [class.selected]="study.selected"
 						(mouseenter)="onMouseEnter(study)">
-						<td>{{study.name}}</td>
+						<td>
+							<a href (click)="urlService.openStudy(study.studyId, context.program)">
+								{{study.name}}
+							</a>
+						</td>
 						<td>{{study.type}}</td>
 						<td>{{study.date}}</td>
 						<td>{{study.folder}}</td>

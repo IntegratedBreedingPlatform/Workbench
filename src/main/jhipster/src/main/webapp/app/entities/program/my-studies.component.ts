@@ -5,14 +5,14 @@ import { MyStudy, MyStudyMetadata, NgChartsBarPlotMetadata, ObservationsMetadata
 import { empty, fromEvent, Subject, of } from 'rxjs';
 import { MyStudiesService } from './my-studies.service';
 import { Pageable } from '../../shared/model/pageable';
+import { UrlService } from '../../shared/service/url.service';
+import { ProgramContext } from './program.context';
 
 @Component({
     selector: 'jhi-my-studies',
     templateUrl: './my-studies.component.html'
 })
 export class MyStudiesComponent {
-    programUUID: string;
-    cropName: string;
 
     mouseEnter = new Subject();
     mouseLeave = new Subject();
@@ -53,11 +53,12 @@ export class MyStudiesComponent {
 
     constructor(
         private route: ActivatedRoute,
-        private myStudiesService: MyStudiesService
+        private myStudiesService: MyStudiesService,
+        public urlService: UrlService,
+        public context: ProgramContext
     ) {
         this.route.queryParams.subscribe((params) => {
-            this.cropName = params['cropName'];
-            this.programUUID = params['programUUID'];
+            // params['programUUID'] just to listen for changes
             this.load();
         });
 
@@ -78,11 +79,12 @@ export class MyStudiesComponent {
                 size: this.pageSize,
                 sort: this.getSort()
             }),
-            this.cropName,
-            this.programUUID
+            this.context.program.crop,
+            this.context.program.uniqueID
         ).pipe(map((resp) => {
             this.totalCount = resp.headers.get('X-Total-Count')
             return resp.body.map((study) => <MyStudy>({
+                studyId: study.studyId,
                 name: study.name,
                 type: study.type,
                 date: study.date,
