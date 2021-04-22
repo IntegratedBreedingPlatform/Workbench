@@ -1,10 +1,10 @@
 export class MyStudy {
     constructor(
-        public studyId?: number,
-        public name?: string,
-        public type?: string,
-        public date?: string,
-        public folder?: string,
+        public studyId: number,
+        public name: string,
+        public type: string,
+        public date: string,
+        public folder: string,
         public selected?: boolean,
         public metadata?: MyStudyMetadata
     ) {
@@ -13,20 +13,19 @@ export class MyStudy {
 
 export class MyStudyMetadata {
     constructor(
-        public observations?: (ObservationsMetadata| NgChartsBarPlotMetadata)[],
-        public yAxisTicks?: any[]
+        public observations?: (ObservationsMetadata| NgChartsBarPlotMetadata)[]
     ) {
     }
 }
 
 export class ObservationsMetadata {
     constructor(
-        public studyId?: number,
-        public datasetName?: string,
-        public instanceName?: string,
-        public confirmedCount?: number,
-        public pendingCount?: number,
-        public unobservedCount?: number,
+        public studyId: number,
+        public datasetName: string,
+        public instanceName: string,
+        public confirmedCount: number,
+        public pendingCount: number,
+        public unobservedCount: number,
     ) {
     }
 }
@@ -34,8 +33,8 @@ export class ObservationsMetadata {
 
 export class NgChartsBarPlotMetadata {
     constructor(
-        public name?: string,
-        public series?: { name: string, value: number }[]
+        public name: string,
+        public series: { name: string, value: number }[]
     ) {
     }
 }
