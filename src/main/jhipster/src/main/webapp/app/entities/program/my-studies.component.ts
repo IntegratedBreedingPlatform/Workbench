@@ -115,8 +115,19 @@ export class MyStudiesComponent {
         if (!(study.metadata && study.metadata.observations)) {
             return {};
         }
-        // TODO combine datasets
-        const observationSeries = study.metadata.observations.map((obs: ObservationsMetadata) => {
+        const aggregatedDatasetsByEnvName: { [key: string]: ObservationsMetadata } =
+            study.metadata.observations.reduce((prev: { [key: string]: ObservationsMetadata }, curr: ObservationsMetadata) => {
+                const prevVal = prev[curr.instanceName];
+                if (!prevVal) {
+                    prev[curr.instanceName] = Object.assign({}, curr);
+                } else {
+                    prevVal.confirmedCount += curr.confirmedCount;
+                    prevVal.pendingCount += curr.pendingCount;
+                    prevVal.unobservedCount += curr.unobservedCount;
+                }
+                return prev;
+            }, {});
+        const observationSeries = Object.values(aggregatedDatasetsByEnvName).map((obs: ObservationsMetadata) => {
             return <NgChartsBarPlotMetadata>({
                 name: obs.instanceName,
                 series: [{
