@@ -30,6 +30,11 @@ public class JHipsterController {
 		return this.getProjectPropertyFromContext(Project::getUniqueID);
 	}
 
+	@ModelAttribute("showReleaseNotes")
+	public boolean showReleaseNotes() {
+		return this.contextUtil.shouldShowReleaseNotes();
+	}
+
 	@RequestMapping(value = {"/" ,"/jhipster"}, method = RequestMethod.GET)
 	public String index(Model model) throws MiddlewareQueryException {
 		return "jhipster/index";

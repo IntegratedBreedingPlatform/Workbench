@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmList } from '../../shared/germplasm/model/germplasm.model';
+import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-lists-pane',
@@ -15,6 +16,7 @@ export class ListsPaneComponent implements OnInit {
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 private germplasmService: GermplasmService,
                 private germplasmDetailsContext: GermplasmDetailsContext) {
     }

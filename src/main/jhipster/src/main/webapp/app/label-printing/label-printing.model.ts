@@ -39,7 +39,7 @@ export class LabelPrintingData {
         public filename = '',
         public barcodeNeeded = false,
         public includeHeadings = true
-) {
+    ) {
     }
 }
 
@@ -48,7 +48,8 @@ export class LabelsNeededSummary {
         public headers?: any[],
         public values?: any[],
         public totalNumberOfLabelsNeeded?: number
-    ) { }
+    ) {
+    }
 }
 
 export class LabelType {
@@ -56,14 +57,16 @@ export class LabelType {
         public title?: string,
         public key?: string,
         public fields?: { id: number, name: string }[]
-    ) { }
+    ) {
+    }
 }
 
 export class OriginResourceMetadata {
     constructor(
         public defaultFileName?: string,
         public metadata?: Map<string, string>
-    ) { }
+    ) {
+    }
 }
 
 export class PresetSetting {
@@ -98,4 +101,13 @@ export class FileConfiguration {
         public sizeOfLabelSheet?: string
     ) {
     }
+}
+
+export class Sortable {
+    constructor(
+        public fieldName?: string,
+        public sortBy?: string
+    ) {
+    }
+
 }
