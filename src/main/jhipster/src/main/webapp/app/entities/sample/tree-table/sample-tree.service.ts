@@ -85,4 +85,8 @@ export class SampleTreeService implements TreeService {
     init() {
         return this.expand('');
     }
+
+    persist(folders: string[]) {
+        // TODO
+    }
 }

@@ -5,4 +5,5 @@ export abstract class TreeService {
     abstract delete(folderId: string): any;
     abstract move(source: string, target: string, isParentCropList: boolean): any;
     abstract init(): any;
+    abstract persist(folders: string[]): any;
 }

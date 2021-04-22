@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
-import { Sample } from '../../../entities/sample';
 
 @Injectable()
 export class GermplasmTreeService extends TreeService {
@@ -36,7 +35,7 @@ export class GermplasmTreeService extends TreeService {
     }
 
     init(): any {
-        const url = `${this.resourceUrl}/germplasm-lists/user-tree`;
+        const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
         const params = {
             onlyFolders: '0'
         };
@@ -93,6 +92,17 @@ export class GermplasmTreeService extends TreeService {
             params['programUUID'] = this.paramContext.programUUID;
         }
         return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
+    }
+
+    persist(foldersParam: string[]): any {
+
+        const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
+        const body = {
+            programUUID: this.paramContext.programUUID,
+            userId: this.paramContext.loggedInUserId,
+            folders: foldersParam
+        };
+        return this.http.post(url, body);
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {

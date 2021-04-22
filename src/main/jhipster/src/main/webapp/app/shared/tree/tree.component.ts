@@ -9,7 +9,7 @@ declare var $: any;
 export class TreeComponent implements OnInit {
 
     public nodes: PrimeNgTreeNode[] = [];
-    selectedNodes: PrimeNgTreeNode[];
+    selectedNodes: PrimeNgTreeNode[] = [];
 
     constructor(public service: TreeService,
                 public activeModal: NgbActiveModal) {
@@ -46,23 +46,51 @@ export class TreeComponent implements OnInit {
         const node: PrimeNgTreeNode = event.node;
         if (!node.expanded) {
             this.expand(node);
-            node.expanded = true;
         }
     }
 
     selectLists() {
-        const selected = this.selectedNodes.filter((node: PrimeNgTreeNode) => node.leaf)
-            .map((node: PrimeNgTreeNode) => {
-                return {
-                    id: node.data.id,
-                    name: node.data.name
-                };
-            });
-        this.activeModal.close(selected);
+        const persistPromise = this.persistTreeState();
+        persistPromise.then(() => {
+            const selected = this.selectedNodes.filter((node: PrimeNgTreeNode) => node.leaf)
+                .map((node: PrimeNgTreeNode) => {
+                    return {
+                        id: node.data.id,
+                        name: node.data.name
+                    };
+                });
+            this.activeModal.close(selected);
+        });
+    }
+
+    private collectExpandedNodes(expandedNodes: string[], node: PrimeNgTreeNode) {
+        if (!node.expanded) {
+            return;
+        }
+        expandedNodes.push(node.data.id);
+        if (node.children.length > 0) {
+            node.children.forEach((c) => this.collectExpandedNodes(expandedNodes, c));
+        }
+    }
+
+    private async persistTreeState() {
+        const expandedNodes = [];
+        this.nodes.forEach((rootNode) => {
+               this.collectExpandedNodes(expandedNodes, rootNode);
+        });
+        // Ensure that Program Lists node is always saved as expanded
+        if (expandedNodes.length === 0) {
+            expandedNodes.push('LISTS');
+        }
+        await this.service.persist(expandedNodes).subscribe();
+        return Promise.resolve()
     }
 
     closeModal() {
-        this.activeModal.dismiss();
+        const persistPromise = this.persistTreeState();
+        persistPromise.then(() => {
+            this.activeModal.dismiss();
+        });
     }
 
     expand(parent) {
@@ -79,15 +107,15 @@ export class TreeComponent implements OnInit {
     addChildren(parent: any, children: TreeNode[]) {
         parent.children = [];
         if (children.length > 0) {
+            parent.expanded = true;
+            // Recursively add "grand" children nodes as well
             children.forEach((node) => {
                 const child = this.toPrimeNgNode(node, parent);
                 parent.children.push(child);
-                // Recursively add "grand" children nodes as well
                 if (node.children) {
                     this.addChildren(child, node.children)
                 }
             });
-            parent.expanded = true;
         }
     }
 

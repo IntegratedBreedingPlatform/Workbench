@@ -48,6 +48,10 @@ export class StudyTreeService extends TreeService {
         return this.expand('');
     }
 
+    persist(folders: string[]) {
+        // TODO
+    }
+
     private toTreeNode(item: any, parentKey: any): TreeNode {
         return <TreeNode>({
             name: item.title,
