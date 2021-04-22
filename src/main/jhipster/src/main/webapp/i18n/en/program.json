@@ -11,7 +11,9 @@
             "col.type": "Type",
             "col.date": "Date",
             "col.folder": "Folder",
-            "max.env.warning": "Only {{param}} environments are shown here, but there are more."
+            "plot.title": "Observations",
+            "max.env.warning": "Only {{param}} environments are shown here, but there are more.",
+            "no.observations": "There are no observations for this study."
         },
         "my.lists": {
             "tab.name": "My Lists",
