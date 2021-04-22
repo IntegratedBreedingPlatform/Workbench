@@ -7,12 +7,15 @@ import { MyStudiesService } from './my-studies.service';
 import { Pageable } from '../../shared/model/pageable';
 import { UrlService } from '../../shared/service/url.service';
 import { ProgramContext } from './program.context';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-my-studies',
     templateUrl: './my-studies.component.html'
 })
 export class MyStudiesComponent {
+
+    readonly MAX_ENVIRONMENTS_TO_SHOW = 10;
 
     mouseEnter = new Subject();
     mouseLeave = new Subject();
@@ -55,7 +58,8 @@ export class MyStudiesComponent {
         private route: ActivatedRoute,
         private myStudiesService: MyStudiesService,
         public urlService: UrlService,
-        public context: ProgramContext
+        public context: ProgramContext,
+        private translateService: TranslateService
     ) {
         this.route.queryParams.subscribe((params) => {
             // params['programUUID'] just to listen for changes
@@ -127,23 +131,27 @@ export class MyStudiesComponent {
                 }
                 return prev;
             }, {});
-        const observationSeries = Object.values(aggregatedDatasetsByEnvName).map((obs: ObservationsMetadata) => {
-            return <NgChartsBarPlotMetadata>({
-                name: obs.instanceName,
-                series: [{
-                    name: 'confirmed',
-                    value: obs.confirmedCount
-                }, {
-                    name: 'pending',
-                    value: obs.pendingCount
-                }, {
-                    name: 'unobserved',
-                    value: obs.unobservedCount
-                }]
+        const hasMoreEnvironments = Object.values(aggregatedDatasetsByEnvName).length > this.MAX_ENVIRONMENTS_TO_SHOW;
+        const observationSeries = Object.values(aggregatedDatasetsByEnvName)
+            .slice(0, this.MAX_ENVIRONMENTS_TO_SHOW)
+            .map((obs: ObservationsMetadata) => {
+                return <NgChartsBarPlotMetadata>({
+                    name: obs.instanceName,
+                    series: [{
+                        name: 'confirmed',
+                        value: obs.confirmedCount
+                    }, {
+                        name: 'pending',
+                        value: obs.pendingCount
+                    }, {
+                        name: 'unobserved',
+                        value: obs.unobservedCount
+                    }]
+                });
             });
-        });
         return <MyStudyMetadata>({
-            observations: observationSeries
+            observations: observationSeries,
+            hasMoreEnvironments
         });
     }
 

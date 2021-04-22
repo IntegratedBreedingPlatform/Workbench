@@ -48,21 +48,33 @@
 			</div>
 		</div>
 		<!-- Workaround for right overlap (md-5) and min-height -->
-		<div class="col-md-5" style="min-height: 400px" *ngIf="study?.metadata?.observations">
-			<ngx-charts-bar-vertical-stacked
-				[view]="view"
-				[results]="study.metadata.observations"
-				[scheme]="colorScheme"
-				[gradient]="gradient"
-				[xAxis]="showXAxis"
-				[yAxis]="showYAxis"
-				[legend]="showLegend"
-				[showXAxisLabel]="showXAxisLabel"
-				[showYAxisLabel]="showYAxisLabel"
-				[xAxisLabel]="xAxisLabel"
-				[yAxisLabel]="yAxisLabel"
-				[animations]="animations">
-			</ngx-charts-bar-vertical-stacked>
+		<div class="col-md-5" *ngIf="study?.metadata?.observations">
+			<div class="row">
+				<div class="col" style="min-height: 400px" >
+					<ngx-charts-bar-vertical-stacked
+						[view]="view"
+						[results]="study.metadata.observations"
+						[scheme]="colorScheme"
+						[gradient]="gradient"
+						[xAxis]="showXAxis"
+						[yAxis]="showYAxis"
+						[legend]="showLegend"
+						[showXAxisLabel]="showXAxisLabel"
+						[showYAxisLabel]="showYAxisLabel"
+						[xAxisLabel]="xAxisLabel"
+						[yAxisLabel]="yAxisLabel"
+						[animations]="animations">
+					</ngx-charts-bar-vertical-stacked>
+				</div>
+			</div>
+			<div class="row mt-3">
+				<div class="col">
+					<div class="alert alert-warning" *ngIf="study.metadata.hasMoreEnvironments">
+						<i class="fa fa-warning"></i>&nbsp;
+						<span jhiTranslate="program.my.studies.max.env.warning" [translateValues]="{param: MAX_ENVIRONMENTS_TO_SHOW}"></span>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<ng-template #nodata>

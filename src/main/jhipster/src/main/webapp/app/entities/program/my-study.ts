@@ -13,7 +13,8 @@ export class MyStudy {
 
 export class MyStudyMetadata {
     constructor(
-        public observations?: (ObservationsMetadata| NgChartsBarPlotMetadata)[]
+        public observations?: (ObservationsMetadata| NgChartsBarPlotMetadata)[],
+        public hasMoreEnvironments?: boolean
     ) {
     }
 }
