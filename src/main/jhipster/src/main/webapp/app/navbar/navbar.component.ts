@@ -234,7 +234,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
                     this.program = program;
                     localStorage['selectedProjectId'] = this.program.id;
-                    localStorage['loggedInUserId'] = this.user.userId;
+                    localStorage['loggedInUserId'] = this.user.id;
                     localStorage['cropName'] = this.program.crop;
                     localStorage['programUUID'] = this.program.uniqueID;
 
