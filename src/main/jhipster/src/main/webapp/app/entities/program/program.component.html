@@ -48,16 +48,16 @@
 			<img [src]="instituteLogoPath" alt="" style="max-height: 100px;"/>
 		</div>
 	</div>
-	<div class="row mt-3" *ngIf="programModel">
-		<div class="col">
+	<div class="row mt-3" *ngIf="programModel" >
+		<div class="col" *jhiHasAnyAuthority="PERMISSIONS">
 			<nav>
 				<ul class="nav nav-tabs">
-					<li class="nav-item">
+					<li class="nav-item" *jhiHasAnyAuthority="MANAGE_STUDIES_VIEW_PERMISSIONS">
 						<a class="nav-link" jhiTranslate="program.my.studies.tab.name" [routerLink]="['my-studies']"
 						   [routerLinkActive]="['active']"
 						   [queryParams]="{ programUUID: programModel }"></a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" *jhiHasAnyAuthority="GERMPLASM_LISTS_PERMISSIONS">
 						<a class="nav-link" jhiTranslate="program.my.lists.tab.name" [routerLink]="['my-lists']"
 						   [routerLinkActive]="['active']"
 						   [queryParams]="{ programUUID: programModel }"></a>
