@@ -10,11 +10,11 @@ declare const currentProgramId: string;
 export class AccountService  {
     constructor(private http: HttpClient) { }
 
-    get(): Observable<Account> {
+    get(cropNameParam?, programUUIDParam?): Observable<Account> {
         return this.http.get<Account>(SERVER_API_URL + '/account', {
             params: {
-                cropName,
-                programUUID: currentProgramId
+                cropName: cropNameParam || cropName,
+                programUUID: programUUIDParam || currentProgramId
             }
         });
     }
