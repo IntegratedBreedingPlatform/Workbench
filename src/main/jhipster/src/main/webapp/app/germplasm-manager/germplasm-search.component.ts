@@ -46,6 +46,7 @@ export class GermplasmSearchComponent implements OnInit {
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
 
     eventSubscriber: Subscription;
+    germplasmDetailsEventSubscriber: Subscription;
     germplasmList: Germplasm[];
     error: any;
     currentSearch: string;
@@ -65,32 +66,8 @@ export class GermplasmSearchComponent implements OnInit {
     germplasmFilters: any;
     germplasmHiddenColumns = {};
 
-    get request() {
-        return this.germplasmSearchRequest;
-    }
-
-    set request(request) {
-        this.germplasmSearchRequest = request;
-    }
-
-    get filters() {
-        return this.germplasmFilters;
-    }
-
-    set filters(filters) {
-        this.germplasmFilters = filters;
-    }
-
-    get hiddenColumns() {
-        return this.germplasmHiddenColumns;
-    }
-
-    set hiddenColumns(hiddenColumns) {
-        this.germplasmHiddenColumns = hiddenColumns;
-    }
-
     // { <gid>: germplasm }
-    selectedItems: {[key: number]: Germplasm} = {};
+    selectedItems: { [key: number]: Germplasm } = {};
     isSelectAll = false;
     lastClickIndex: any;
 
@@ -124,10 +101,10 @@ export class GermplasmSearchComponent implements OnInit {
                 open(modal, request) {
                     return new Promise((resolve) => {
                         modal.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
-                            .result.then((germplasmList) => {
-                            if (germplasmList) {
-                                this.value = germplasmList.map((list) => list.name);
-                                request[this.key] = germplasmList.map((list) => list.id);
+                            .result.then((germplasmLists) => {
+                            if (germplasmLists && germplasmLists.length > 0) {
+                                this.value = germplasmLists.map((list) => list.name);
+                                request[this.key] = germplasmLists.map((list) => list.id);
                             }
                             resolve();
                         }, () => {
@@ -277,6 +254,30 @@ export class GermplasmSearchComponent implements OnInit {
         ];
     }
 
+    get request() {
+        return this.germplasmSearchRequest;
+    }
+
+    set request(request) {
+        this.germplasmSearchRequest = request;
+    }
+
+    get filters() {
+        return this.germplasmFilters;
+    }
+
+    set filters(filters) {
+        this.germplasmFilters = filters;
+    }
+
+    get hiddenColumns() {
+        return this.germplasmHiddenColumns;
+    }
+
+    set hiddenColumns(hiddenColumns) {
+        this.germplasmHiddenColumns = hiddenColumns;
+    }
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
@@ -366,6 +367,7 @@ export class GermplasmSearchComponent implements OnInit {
     ngOnInit() {
         this.registerColumnFiltersChaged();
         this.registerFilterBy();
+        this.registerGermplasmDetailsChanged();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
@@ -460,6 +462,14 @@ export class GermplasmSearchComponent implements OnInit {
             this.request.gids = event.content;
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
             this.resetTable();
+        });
+    }
+
+    registerGermplasmDetailsChanged() {
+        // E.g germplasm changed via import.
+        this.germplasmDetailsEventSubscriber = this.eventManager.subscribe('germplasmDetailsChanged', (event) => {
+            // Reload the table when a germplasm is updated via germplasm details popup.
+            this.transition();
         });
     }
 

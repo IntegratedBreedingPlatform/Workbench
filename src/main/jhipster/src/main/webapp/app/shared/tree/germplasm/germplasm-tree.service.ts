@@ -6,9 +6,8 @@ import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
 
-// TODO rename GermplasmTreeService
 @Injectable()
-export class GermplasmTreeTableService extends TreeService {
+export class GermplasmTreeService extends TreeService {
 
     private readonly resourceUrl: string;
 
@@ -33,6 +32,21 @@ export class GermplasmTreeTableService extends TreeService {
             params,
             observe: 'response'
         }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, parentKey))));
+    }
+
+    init(): any {
+        const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
+        const params = {};
+        if (this.paramContext.loggedInUserId) {
+            params['userId'] = this.paramContext.loggedInUserId;
+        }
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        return this.http.get<TreeNode[]>(url, {
+            params,
+            observe: 'response'
+        }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, null))));
     }
 
     move(source: string, target: string, isParentCropList: boolean): Observable<HttpResponse<number>> {
@@ -78,8 +92,21 @@ export class GermplasmTreeTableService extends TreeService {
         return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
     }
 
+    persist(foldersParam: string[]): any {
+        const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
+        const params = {};
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
+        const body = {
+            userId: this.paramContext.loggedInUserId,
+            folders: foldersParam
+        };
+        return this.http.post(url, body, {params});
+    }
+
     private toTreeNode(item: any, parentKey: any): TreeNode {
-        return <TreeNode>({
+        const treeNode = <TreeNode>({
             name: item.title,
             key: item.key,
             parentId: parentKey,
@@ -90,6 +117,13 @@ export class GermplasmTreeTableService extends TreeService {
             noOfEntries: item.noOfEntries,
             numOfChildren: item.numOfChildren,
             isFolder: item.isFolder,
+            children: []
         });
+        if (item.children) {
+            item.children.forEach((node) => {
+               treeNode.children.push(this.toTreeNode(node, treeNode.key));
+            });
+        }
+        return treeNode;
     }
 }

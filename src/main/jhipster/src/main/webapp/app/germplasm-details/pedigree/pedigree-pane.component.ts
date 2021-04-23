@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { PEDIGREE_DETAILS_URL } from '../../app.constants';
 import { ParamContext } from '../../shared/service/param.context';
@@ -9,6 +9,10 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 import { GermplasmProgenitorsDetails } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import { Router } from '@angular/router';
+import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitors/germplasm-progenitors.context';
+import { Subscription } from 'rxjs';
+import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-pedigree-pane',
@@ -16,19 +20,25 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 })
 export class PedigreePaneComponent implements OnInit {
 
+    MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
+
     @ViewChild('pedigreeIframe') pedigreeIframe: ElementRef;
 
+    eventSubscriber: Subscription;
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     safeUrl: SafeResourceUrl;
     isIframeLoaded: boolean;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
+                private eventManager: JhiEventManager,
                 private paramContext: ParamContext,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private sanitizer: DomSanitizer,
                 private germplasmService: GermplasmService,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+                private router: Router,
+                private germplasmProgenitorsContext: GermplasmProgenitorsContext) {
         const authParams = '?gid=' + this.germplasmDetailsContext.gid
             + '&cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
@@ -49,9 +59,27 @@ export class PedigreePaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.registerGermplasmNameChanged();
+        this.loadProgenitorDetails();
+    }
+
+    registerGermplasmNameChanged() {
+        this.eventSubscriber = this.eventManager.subscribe('progenitorsChanged', (event) => {
+            this.loadProgenitorDetails();
+            this.germplasmDetailsContext.notifyGermplasmDetailChanges();
+        });
+    }
+
+    loadProgenitorDetails() {
         this.germplasmService.getGermplasmProgenitorsDetails(this.germplasmDetailsContext.gid).toPromise().then((value) => {
             this.germplasmProgenitorsDetails = value;
         });
     }
 
+    editPedigree(progenitorsDetails: GermplasmProgenitorsDetails): void {
+        this.germplasmProgenitorsContext.germplasmProgenitorsDetails = progenitorsDetails;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-progenitors-dialog/' + this.germplasmDetailsContext.gid }, }], {
+            queryParamsHandling: 'merge'
+        });
+    }
 }
