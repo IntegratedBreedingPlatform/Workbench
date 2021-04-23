@@ -85,7 +85,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             return;
         }
 
-        const maleParentsNumbers = maleParentsList.map(item => Number(item));
+        const maleParentsNumbers = maleParentsList.map((item) => Number(item));
         if (!this.isGenerative && this.progenitorsDetails.numberOfDerivativeProgeny > 0
             && (this.progenitorsDetails.breedingMethodType === 'GEN' || this.hasProgenitorsChanges())) {
             const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
@@ -102,7 +102,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     hasProgenitorsChanges() {
-        //Compare the maleParentIds without splitting the string since only one germplasm is allowed as male parent for non-generative germplasm
+        // Compare the maleParentIds without splitting the string since only one germplasm is allowed as male parent for non-generative germplasm
         return this.getFemaleParentId(this.progenitorsDetails) !== this.femaleParent || this.getMaleParentId(this.progenitorsDetails) !== this.maleParent;
     }
 
@@ -123,7 +123,6 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             this.isLoading = false;
         });
     }
-
 
     isFormValid(f) {
         if (this.isMutation() && !this.femaleParent) {
@@ -200,16 +199,15 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                 loggedInUserId: this.paramContext.loggedInUserId,
                 programUUID: this.paramContext.programUUID,
                 authToken: this.paramContext.authToken,
-                selectMultiple: selectMultiple
+                selectMultiple
             }
         });
     }
 
     isNumberOutOfRange(numbersString: string[]) {
         const maxInteger = 2147483647; // Maxiumum 32 bit integer;
-        return numbersString.some(num => Number.isNaN(Number.parseInt(num)) || Number(num) > maxInteger);
+        return numbersString.some((num) => Number.isNaN(Number.parseInt(num)) || Number(num) > maxInteger);
     }
-
 
 }
 

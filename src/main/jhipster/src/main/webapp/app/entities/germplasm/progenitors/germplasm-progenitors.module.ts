@@ -1,12 +1,9 @@
-import {NgModule} from "@angular/core";
-import {BmsjHipsterSharedModule} from "../../../shared";
-import {RouterModule} from "@angular/router";
-import {germplasmProgenitorsRoutes} from "./germplasm-progenitors.route";
-import {
-    GermplasmProgenitorsModalComponent,
-    GermplasmProgenitorsPopupComponent
-} from "./germplasm-progenitors-modal.component";
-import {GermplasmProgenitorsContext} from "./germplasm-progenitors.context";
+import { NgModule } from '@angular/core';
+import { BmsjHipsterSharedModule } from '../../../shared';
+import { RouterModule } from '@angular/router';
+import { germplasmProgenitorsRoutes } from './germplasm-progenitors.route';
+import { GermplasmProgenitorsModalComponent, GermplasmProgenitorsPopupComponent } from './germplasm-progenitors-modal.component';
+import { GermplasmProgenitorsContext } from './germplasm-progenitors.context';
 
 @NgModule({
     imports: [
@@ -25,4 +22,5 @@ import {GermplasmProgenitorsContext} from "./germplasm-progenitors.context";
         GermplasmProgenitorsContext
     ]
 })
-export class GermplasmProgenitorsModule {}
+export class GermplasmProgenitorsModule {
+}
