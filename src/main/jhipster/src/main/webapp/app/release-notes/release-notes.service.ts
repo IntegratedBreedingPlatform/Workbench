@@ -13,8 +13,8 @@ export class ReleaseNotesService {
         this.resourceUrl = SERVER_API_URL + 'release-notes';
     }
 
-    getCurrent(): Observable<HttpResponse<ReleaseNote>> {
-        return this.http.get<ReleaseNote>(this.resourceUrl + `/current`, { observe: 'response' });
+    getLatest(): Observable<HttpResponse<ReleaseNote>> {
+        return this.http.get<ReleaseNote>(this.resourceUrl + `/latest`, { observe: 'response' });
     }
 
     getContent(version: string): Observable<HttpEvent<string>> {
