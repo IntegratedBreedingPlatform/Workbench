@@ -75,12 +75,12 @@ export class TreeComponent implements OnInit {
 
     async persistTreeState() {
         const expandedNodes = [];
-        this.nodes.forEach((rootNode) => {
-               this.collectExpandedNodes(expandedNodes, rootNode);
-        });
+        // Only nodes under Program Lists. Nodes under Crop Lists are not persisted
+        const programNode = this.nodes.find((node: PrimeNgTreeNode) => 'LISTS' === node.data.id);
+        this.collectExpandedNodes(expandedNodes, programNode);
         // Ensure that Program Lists node is always saved as expanded
         if (expandedNodes.length === 0) {
-            expandedNodes.push('LISTS');
+            expandedNodes.push(programNode.data.id);
         }
         await this.service.persist(expandedNodes).subscribe();
         return Promise.resolve()
