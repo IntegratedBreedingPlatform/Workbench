@@ -136,7 +136,7 @@
   dependencies:
     tslib "^1.9.0"
 
-"@asymmetrik/ngx-leaflet@^5.0.2":
+"@asymmetrik/ngx-leaflet@5.0.2":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@asymmetrik/ngx-leaflet/-/ngx-leaflet-5.0.2.tgz#307d7e99b6fd0e27f23601213aa5e696ab23a8da"
   integrity sha512-y4+U9nUnukdTTO2Z6fCt0V85U605bveERNIzrovjKELkHbxz70TvJSvCU7iSSc5ZwS5ZJI1a24SiBJ5sGt9WMQ==
@@ -5633,7 +5633,7 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
-leaflet@^1.7.1:
+leaflet@1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.7.1.tgz#10d684916edfe1bf41d688a3b97127c0322a2a19"
   integrity sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==

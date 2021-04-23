@@ -24,6 +24,15 @@ export class GermplasmDto {
     }
 }
 
+export class GermplasmBasicDetailsDto {
+    constructor(
+        public creationDate?: string,
+        public reference?: string,
+        public breedingLocationId?: number
+    ) {
+    }
+}
+
 export class GermplasmName {
     constructor(
         public id?: number,
@@ -42,6 +51,7 @@ export class GermplasmName {
 
 export class GermplasmAttribute {
     constructor(
+        public id?: number,
         public value?: string,
         public attributeCode?: string,
         public attributeDescription?: string,
@@ -95,7 +105,8 @@ export class GermplasmProgenitorsDetails {
         public femaleParent?: GermplasmDto,
         public maleParents?: GermplasmDto[],
         public groupSource?: GermplasmDto,
-        public immediateSource?: GermplasmDto
+        public immediateSource?: GermplasmDto,
+        public numberOfDerivativeProgeny?: number
     ) {
     }
 }

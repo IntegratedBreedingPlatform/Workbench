@@ -51,3 +51,10 @@ export const ADD_PROGRAM_PERMISSION = [
     'ADD_PROGRAM',
     'MANAGE_PROGRAMS'
 ];
+
+export const EDIT_GERMPLASM_PERMISSION = [
+    'ADMIN',
+    'GERMPLASM',
+    'MANAGE_GERMPLASM',
+    'EDIT_GERMPLASM'
+];

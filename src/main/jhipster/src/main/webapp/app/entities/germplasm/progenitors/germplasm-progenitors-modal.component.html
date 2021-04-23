@@ -1,0 +1,85 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold"><span jhiTranslate="germplasm-progenitors-modal.edit.header">Edit pedigree</span></h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="clear()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<span class="font-weight-bold" jhiTranslate="germplasm-progenitors-modal.header">Edit the germplasm progenitors</span>
+		<form name="form" #f="ngForm" class="pt-3">
+			<div class="form-group row required">
+				<label for="breedingMethod" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="germplasm-progenitors-modal.breeding.method"></label>
+				<div class="col-sm-8">
+					<select class="form-control" name="breedingMethod" id="breedingMethod" *ngIf="isGenerative" [(ngModel)]="breedingMethodSelected" width="100%" [compareWith]="compareById">
+						<option *ngFor="let breedingMethod of generativeBreedingMethods" [ngValue]="breedingMethod">{{breedingMethod.name}}</option>
+					</select>
+					<select class="form-control" name="breedingMethod" id="breedingMethod" *ngIf="!isGenerative" [(ngModel)]="breedingMethodSelected" width="100%" [compareWith]="compareById">
+						<option *ngFor="let breedingMethod of derivativeBreedingMethods" [ngValue]="breedingMethod">{{breedingMethod.name}}</option>
+					</select>
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="option-group" id="generative" [value]="true" [(ngModel)]="isGenerative" (change)="breedingMethodOptionChanged()">
+								<label class="form-check-label" for="generative" jhiTranslate="germplasm-progenitors-modal.breeding.method.generative"></label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="option-group" id="derivative" [value]="false" [(ngModel)]="isGenerative" (change)="breedingMethodOptionChanged()">
+								<label class="form-check-label" for="derivative" jhiTranslate="germplasm-progenitors-modal.breeding.method.der.man"></label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div *ngIf="!isMutation()" class="form-group row">
+				<label for="femaleparent" class="col-sm-4 col-form-label font-weight-bold">
+					<span>{{(isGenerative ? 'germplasm-progenitors-modal.female.parent' : 'germplasm-progenitors-modal.group.source') | translate}}</span><br/>
+					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span>
+				</label>
+				<div class="input-group col-sm-8">
+					<input jhiApplyOnlyNumbers type="text" class="form-control" name="femaleparent" id="femaleparent" [(ngModel)]="femaleParent" #femaleparent placeholder="Enter GID"/>
+					<div class="input-group-append" style="display: block;">
+						<button class="btn btn-outline-secondary" type="button" jhiTranslate="germplasm-progenitors-modal.search" (click)="openGermplasmSelector(false, 'female')">Search</button>
+					</div>
+				</div>
+			</div>
+			<div *ngIf="!isMutation()" class="form-group row">
+				<label for="maleparent" class="col-sm-4 col-form-label font-weight-bold">
+					<span>{{ (isGenerative ? (allowMultipleMaleParents() ? 'germplasm-progenitors-modal.male.parents' : 'germplasm-progenitors-modal.male.parent') : 'germplasm-progenitors-modal.immediate.source') | translate}}</span><br/>
+					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span></label>
+				<div class="input-group col-sm-8">
+					<input *ngIf="!allowMultipleMaleParents()" jhiApplyOnlyNumbers [allowComma]="false" type="text" class="form-control" name="maleparent" id="maleparent" [(ngModel)]="maleParent" #maleparent placeholder="Enter GID"/>
+					<input *ngIf="allowMultipleMaleParents()" jhiApplyOnlyNumbers [allowComma]="true" type="text" class="form-control" name="maleparent" id="maleparent" [(ngModel)]="maleParent" #maleparent placeholder="Enter GID/s separated by comma"/>
+					<div class="input-group-append" style="display: block;">
+						<button class="btn btn-outline-secondary" type="button" jhiTranslate="germplasm-progenitors-modal.search" (click)="openGermplasmSelector(allowMultipleMaleParents(), 'male')">Search</button>
+					</div>
+				</div>
+			</div>
+			<div *ngIf="isMutation()" class="form-group row">
+				<label for="origin" class="col-sm-4 col-form-label font-weight-bold">
+					<span jhiTranslate="germplasm-progenitors-modal.origin"></span><br/>
+					<span class="font-italic small" jhiTranslate="germplasm-progenitors-modal.parent.subtext"></span>
+				</label>
+				<div class="input-group col-sm-8">
+					<input jhiApplyOnlyNumbers [allowComma]="false" type="text" class="form-control" name="origin" id="origin" [(ngModel)]="femaleParent" #origin="ngModel" placeholder="Enter GID"/>
+					<div class="input-group-append" style="display: block;">
+						<button class="btn btn-outline-secondary" type="button" jhiTranslate="germplasm-progenitors-modal.search" (click)="openGermplasmSelector(false, 'female')">Search</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+		</button>
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary" [disabled]="isLoading">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="update"></span>
+		</button>
+	</div>
+</div>
