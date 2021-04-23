@@ -31,7 +31,6 @@ export class ObservationsMetadata {
     }
 }
 
-
 export class NgChartsBarPlotMetadata {
     constructor(
         public name: string,
