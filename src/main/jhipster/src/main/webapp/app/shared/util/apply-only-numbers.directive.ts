@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
-    selector: '[appOnlyNumbers]'
+    selector: '[jhiApplyOnlyNumbers]'
 })
 export class OnlyNumbersDirective {
 
@@ -34,12 +34,12 @@ export class OnlyNumbersDirective {
         const newValue = (txtInput.value.substring(0, txtInput.selectionStart)
             + text + txtInput.value.substring(txtInput.selectionEnd));
         if (!this.regex) {
-            this.regex = new RegExp('/^[' + (this.allowComma ? ',' : '') + '0-9]+$/g');
+            this.regex = new RegExp('^[' + (this.allowComma ? ',' : '') + '0-9]+$');
         }
         const lines = this.allowMultiLine ? newValue.split('\n') : [newValue];
         for (const line of lines) {
             const lineText = line.replace('\r', '');
-            if (this.maxLength && lineText.length > this.maxLength || !lineText.match(this.regex)) {
+            if (this.maxLength && lineText.length > this.maxLength || !this.regex.test(lineText)) {
                 event.preventDefault();
                 return;
             }

@@ -11,12 +11,15 @@ import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { ParamContext } from '../../../shared/service/param.context';
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
+import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-modal',
     templateUrl: './germplasm-progenitors-modal.component.html'
 })
 export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
+
+    private readonly UNKNOWN = '0';
 
     gid: number;
     progenitorsDetails: GermplasmProgenitorsDetails;
@@ -87,7 +90,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
         const maleParentsNumbers = maleParentsList.map((item) => Number(item));
         if (!this.isGenerative && this.progenitorsDetails.numberOfDerivativeProgeny > 0
-            && (this.progenitorsDetails.breedingMethodType === 'GEN' || this.hasProgenitorsChanges())) {
+            && (this.progenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE || this.hasProgenitorsChanges())) {
             const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
             confirmModalRef.componentInstance.title = 'Update Germplasm Progenitors';
             confirmModalRef.componentInstance.message = 'Germplasm has derivative progeny and the group source will change. ' +
@@ -132,7 +135,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     initializeForm() {
-        this.isGenerative = this.progenitorsDetails.breedingMethodType === 'GEN';
+        this.isGenerative = this.progenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
         this.femaleParent = this.getFemaleParentId(this.progenitorsDetails);
         this.maleParent = this.getMaleParentId(this.progenitorsDetails);
     }
@@ -153,7 +156,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             return String(this.progenitorsDetails.groupSource.gid);
         }
         // Return 0 if unknown
-        return '0';
+        return this.UNKNOWN;
     }
 
     getMaleParentId(progenitorsDetails: GermplasmProgenitorsDetails) {
@@ -163,7 +166,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
             return String(this.progenitorsDetails.immediateSource.gid);
         }
         // Return 0 if unknown
-        return '0';
+        return this.UNKNOWN;
     }
 
     isMutation(): boolean {
@@ -171,13 +174,13 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     allowMultipleMaleParents(): boolean {
-        return this.breedingMethodSelected && this.breedingMethodSelected.type === 'GEN' && this.breedingMethodSelected.numberOfProgenitors === 0;
+        return this.breedingMethodSelected && this.breedingMethodSelected.type === BreedingMethodTypeEnum.GENERATIVE && this.breedingMethodSelected.numberOfProgenitors === 0;
     }
 
     loadBreedingMethods() {
-        this.breedingMethodService.getBreedingMethods(false, ['GEN']).toPromise().then((result) => {
+        this.breedingMethodService.getBreedingMethods(false, [BreedingMethodTypeEnum.GENERATIVE]).toPromise().then((result) => {
             this.generativeBreedingMethods = result;
-            return this.breedingMethodService.getBreedingMethods(false, ['DER', 'MAN']).toPromise();
+            return this.breedingMethodService.getBreedingMethods(false, [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE]).toPromise();
         }).then((result) => {
             this.derivativeBreedingMethods = result;
             this.breedingMethodSelected = (this.isGenerative) ? this.generativeBreedingMethods.find((item) => item.mid === this.progenitorsDetails.breedingMethodId) :
