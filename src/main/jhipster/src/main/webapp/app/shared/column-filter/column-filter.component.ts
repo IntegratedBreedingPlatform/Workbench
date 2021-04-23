@@ -23,21 +23,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     private _filters;
 
-    @Input()
-    set filters(value) {
-        this._filters = value;
-
-        this.filtersAdded = [];
-        this._filters.filter((filter) => filter.default || filter.added).forEach((filter) => {
-            this.filtersAdded.push(filter);
-            ColumnFilterComponent.updateBadgeLabel(filter);
-        });
-    }
-
-    get filters() {
-        return this._filters;
-    }
-
     filtersAdded = [];
 
     FILTER_TYPES = FilterType;
@@ -249,6 +234,21 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return ColumnFilterComponent.updateBadgeLabel(filter);
             }));
         });
+    }
+
+    @Input()
+    set filters(value) {
+        this._filters = value;
+
+        this.filtersAdded = [];
+        this._filters.filter((filter) => filter.default || filter.added).forEach((filter) => {
+            this.filtersAdded.push(filter);
+            ColumnFilterComponent.updateBadgeLabel(filter);
+        });
+    }
+
+    get filters() {
+        return this._filters;
     }
 
     ngOnDestroy(): void {

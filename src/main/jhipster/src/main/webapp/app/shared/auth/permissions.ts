@@ -71,3 +71,10 @@ export const GERMPLASM_LISTS_PERMISSIONS = [
     'LISTS',
     'GERMPLASM_LISTS'
 ];
+
+export const EDIT_GERMPLASM_PERMISSION = [
+    'ADMIN',
+    'GERMPLASM',
+    'MANAGE_GERMPLASM',
+    'EDIT_GERMPLASM'
+];

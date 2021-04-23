@@ -62,6 +62,11 @@ import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { CropService } from './crop/service/crop.service';
 import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
 import { UrlService } from './service/url.service';
+import { LocationsSelectComponent } from './locations-select/locations-select.component';
+import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
+import { DateHelperService } from './service/date.helper.service';
+import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
+import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
 
 @NgModule({
     imports: [
@@ -98,13 +103,17 @@ import { UrlService } from './service/url.service';
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
+        NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
-        GeojsonMapComponent
+        GeojsonMapComponent,
+        LocationsSelectComponent,
+        OnlyNumbersDirective
     ],
     providers: [
         LoginService,
@@ -132,6 +141,7 @@ import { UrlService } from './service/url.service';
         ToolService,
         KeySequenceRegisterService,
         UserProgramInfoService,
+        DateHelperService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
@@ -157,6 +167,8 @@ import { UrlService } from './service/url.service';
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
+        NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -182,7 +194,9 @@ import { UrlService } from './service/url.service';
         GermplasmListCreationComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
-        GeojsonMapComponent
+        GeojsonMapComponent,
+        LocationsSelectComponent,
+        OnlyNumbersDirective
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -3,7 +3,7 @@
 		<span jhiTranslate="germplasm-list-creation.header"></span>
 	</h4>
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-			(click)="dismiss()" [disabled]="isLoading">&times;
+			(click)="closeModal()" [disabled]="isLoading">&times;
 	</button>
 </div>
 <div class="modal-body">
@@ -110,7 +110,7 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading">
 		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
 	</button>
 	<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
