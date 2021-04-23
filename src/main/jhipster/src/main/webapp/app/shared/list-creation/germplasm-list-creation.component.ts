@@ -84,13 +84,16 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
             listModel.searchComposite = this.germplasmManagerContext.searchComposite;
         }
         this._isLoading = true;
-        this.listService.save(listModel)
-            .pipe(finalize(() => {
-                this._isLoading = false;
-            })).subscribe(
-            (res) => this.onSaveSuccess(),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        const persistPromise = this.persistTreeState();
+        persistPromise.then(() => {
+            this.listService.save(listModel)
+                .pipe(finalize(() => {
+                    this._isLoading = false;
+                })).subscribe(
+                (res) => this.onSaveSuccess(),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        });
     }
 
     get isLoading() {

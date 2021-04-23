@@ -73,7 +73,7 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    private async persistTreeState() {
+    async persistTreeState() {
         const expandedNodes = [];
         this.nodes.forEach((rootNode) => {
                this.collectExpandedNodes(expandedNodes, rootNode);

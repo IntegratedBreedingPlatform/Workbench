@@ -78,7 +78,11 @@ export class GermplasmListAddComponent extends TreeComponent {
         confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list-add.header');
 
         confirmModalRef.result.then(() => {
-            this.submitAddEntries();
+            const persistPromise = this.persistTreeState();
+            persistPromise.then(() => {
+                this.submitAddEntries();
+            });
+
         }, () => confirmModalRef.dismiss());
     }
 

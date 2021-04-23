@@ -191,10 +191,6 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         }
     }
 
-    dismiss() {
-        this.modal.dismiss();
-    }
-
     submitDeleteFolder() {
         this.mode = this.FolderModes.None;
         this.treeService.delete(this.selectedNode.data.id).subscribe(() => {
