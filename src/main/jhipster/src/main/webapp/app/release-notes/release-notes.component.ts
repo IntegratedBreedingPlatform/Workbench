@@ -81,7 +81,7 @@ export class ReleaseNotesWrapperComponent implements OnInit {
                 private sanitizer: DomSanitizer,
                 private releaseNoteService: ReleaseNotesService) {
 
-        this.releaseNoteService.getLatest().subscribe((resp: HttpResponse<ReleaseNote>) => {
+        this.releaseNoteService.getCurrent().subscribe((resp: HttpResponse<ReleaseNote>) => {
             const releaseNote: ReleaseNote = resp.body;
             const url = '/ibpworkbench/main/#release-notes-dialog?' +
                 '&version=' + releaseNote.version +
