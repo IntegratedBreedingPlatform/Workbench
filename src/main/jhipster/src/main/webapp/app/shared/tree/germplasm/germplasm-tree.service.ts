@@ -36,9 +36,7 @@ export class GermplasmTreeService extends TreeService {
 
     init(): any {
         const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
-        const params = {
-            onlyFolders: '0'
-        };
+        const params = {};
         if (this.paramContext.loggedInUserId) {
             params['userId'] = this.paramContext.loggedInUserId;
         }
@@ -95,14 +93,16 @@ export class GermplasmTreeService extends TreeService {
     }
 
     persist(foldersParam: string[]): any {
-
         const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
+        const params = {};
+        if (this.paramContext.programUUID) {
+            params['programUUID'] = this.paramContext.programUUID;
+        }
         const body = {
-            programUUID: this.paramContext.programUUID,
             userId: this.paramContext.loggedInUserId,
             folders: foldersParam
         };
-        return this.http.post(url, body);
+        return this.http.post(url, body, {params});
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {
