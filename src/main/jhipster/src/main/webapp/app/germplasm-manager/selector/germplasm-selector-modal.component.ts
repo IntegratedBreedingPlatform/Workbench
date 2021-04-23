@@ -71,7 +71,7 @@ export class GermplasmSelectorPopupComponent implements OnInit {
 
     selectMultiple: boolean;
 
-    constructor(private popupService: PopupService, private activatedRoute: ActivatedRoute,) {
+    constructor(private popupService: PopupService, private activatedRoute: ActivatedRoute, ) {
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.selectMultiple = queryParams.selectMultiple === 'true';
     }

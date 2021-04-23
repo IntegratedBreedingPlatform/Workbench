@@ -9,7 +9,6 @@ import { GermplasmDetailsContext } from '../../../germplasm-details/germplasm-de
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
 
-
 @Component({
     selector: 'jhi-edit-basic-details-pane',
     templateUrl: './germplasm-basic-details-modal.component.html',
@@ -55,12 +54,11 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
         this.activeModal.dismiss('cancel');
     }
 
-    isFormValid(f){
+    isFormValid(f) {
         return f.form.valid && this.germplasmDetailsContext && this.germplasmDate && !this.isLoading && this.germplasm.breedingLocationId;
     }
 
 }
-
 
 @Component({
     selector: 'jhi-edit-basic-details-popup',

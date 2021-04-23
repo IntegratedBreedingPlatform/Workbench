@@ -206,7 +206,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
     isNumberOutOfRange(numbersString: string[]) {
         const maxInteger = 2147483647; // Maxiumum 32 bit integer;
-        return numbersString.some((num) => Number.isNaN(Number.parseInt(num)) || Number(num) > maxInteger);
+        return numbersString.some((num) => Number.isNaN(Number.parseInt(num, 10)) || Number(num) > maxInteger);
     }
 
 }

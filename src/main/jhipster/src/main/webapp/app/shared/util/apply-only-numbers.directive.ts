@@ -4,13 +4,13 @@ import { Directive, ElementRef, HostListener, Input } from '@angular/core';
     selector: '[appOnlyNumbers]'
 })
 export class OnlyNumbersDirective {
+
+    @Input() allowMultiLine = false;
+    @Input() allowComma = false;
+    @Input() maxLength = 0;
+    regex: RegExp;
     constructor(private el: ElementRef) {
     }
-
-    @Input() allowMultiLine: boolean = false;
-    @Input() allowComma: boolean = false;
-    @Input() maxLength: number = 0;
-    regex: RegExp;
 
     @HostListener('keypress', ['$event'])
     onKeyPress(event: KeyboardEvent) {
@@ -34,11 +34,11 @@ export class OnlyNumbersDirective {
         const newValue = (txtInput.value.substring(0, txtInput.selectionStart)
             + text + txtInput.value.substring(txtInput.selectionEnd));
         if (!this.regex) {
-            this.regex = <RegExp>eval('/^[' + (this.allowComma ? ',' : '') + '0-9]+$/g');
+            this.regex = new RegExp('/^[' + (this.allowComma ? ',' : '') + '0-9]+$/g');
         }
-        var lines = this.allowMultiLine ? newValue.split('\n') : [newValue];
-        for (let line of lines) {
-            let lineText = line.replace('\r', '');
+        const lines = this.allowMultiLine ? newValue.split('\n') : [newValue];
+        for (const line of lines) {
+            const lineText = line.replace('\r', '');
             if (this.maxLength && lineText.length > this.maxLength || !lineText.match(this.regex)) {
                 event.preventDefault();
                 return;

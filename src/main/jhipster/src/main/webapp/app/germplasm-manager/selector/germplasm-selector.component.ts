@@ -55,30 +55,6 @@ export class GermplasmSelectorComponent implements OnInit {
     germplasmFilters: any;
     germplasmHiddenColumns = {};
 
-    get request() {
-        return this.germplasmSearchRequest;
-    }
-
-    set request(request) {
-        this.germplasmSearchRequest = request;
-    }
-
-    get filters() {
-        return this.germplasmFilters;
-    }
-
-    set filters(filters) {
-        this.germplasmFilters = filters;
-    }
-
-    get hiddenColumns() {
-        return this.germplasmHiddenColumns;
-    }
-
-    set hiddenColumns(hiddenColumns) {
-        this.germplasmHiddenColumns = hiddenColumns;
-    }
-
     selectedItems: any[] = [];
 
     private static getInitialFilters() {
@@ -262,6 +238,30 @@ export class GermplasmSelectorComponent implements OnInit {
                 },
             }
         ];
+    }
+
+    get request() {
+        return this.germplasmSearchRequest;
+    }
+
+    set request(request) {
+        this.germplasmSearchRequest = request;
+    }
+
+    get filters() {
+        return this.germplasmFilters;
+    }
+
+    set filters(filters) {
+        this.germplasmFilters = filters;
+    }
+
+    get hiddenColumns() {
+        return this.germplasmHiddenColumns;
+    }
+
+    set hiddenColumns(hiddenColumns) {
+        this.germplasmHiddenColumns = hiddenColumns;
     }
 
     constructor(private activatedRoute: ActivatedRoute,

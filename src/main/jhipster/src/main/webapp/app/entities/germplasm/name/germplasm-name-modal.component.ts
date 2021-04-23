@@ -28,7 +28,6 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
     date: NgbDate;
     preferred: boolean;
 
-
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
                 private germplasmNameContext: GermplasmNameContext,

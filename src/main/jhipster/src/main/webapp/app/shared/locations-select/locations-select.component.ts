@@ -23,7 +23,6 @@ export class LocationsSelectComponent implements OnInit {
     locationsFilteredItemsCount;
     initialData: Select2OptionData[];
 
-
     constructor(private locationService: LocationService) {
 
     }
@@ -47,14 +46,14 @@ export class LocationsSelectComponent implements OnInit {
         this.locationsOptions = {
             ajax: {
                 delay: 500,
-                transport: function (params, success, failure) {
+                transport: function(params, success, failure) {
                     const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
                     this.locationService.queryLocationsByType(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
                         this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
                         success(res.body);
                     }, failure);
                 }.bind(this),
-                processResults: function (locations, params) {
+                processResults: function(locations, params) {
                     params.page = params.page || 1;
 
                     return {

@@ -12,10 +12,10 @@ export class DateHelperService {
     }
 
     convertStringToNgbDate(dateString: string): NgbDate {
-        if (dateString && dateString.length == 8) {
-            let year = Number(dateString.substring(0, 4));
-            let month = Number(dateString.substring(4, 6));
-            let day = Number(dateString.substring(6, 8));
+        if (dateString && dateString.length === 8) {
+            const year = Number(dateString.substring(0, 4));
+            const month = Number(dateString.substring(4, 6));
+            const day = Number(dateString.substring(6, 8));
             return new NgbDate(year, month, day);
         }
         return this.calendar.getToday();
@@ -26,6 +26,3 @@ export class DateHelperService {
     }
 
 }
-
-
-
