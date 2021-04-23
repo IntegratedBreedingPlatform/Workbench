@@ -225,7 +225,7 @@ public class StudyTree extends Tree implements InitializingBean, GermplasmStudyB
 	public void expandSavedTreeState() {
 		try {
 			final List<String> parsedState =
-					this.programStateManager.getUserProgramTreeStateByUserIdProgramUuidAndType(this.contextUtil.getCurrentWorkbenchUserId(),
+					this.programStateManager.getUserProgramTreeState(this.contextUtil.getCurrentWorkbenchUserId(),
 							this.contextUtil.getCurrentProgramUUID(), ListTreeState.STUDY_LIST.name());
 
 			this.expandNodes(parsedState);

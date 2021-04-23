@@ -101,10 +101,10 @@ export class GermplasmSearchComponent implements OnInit {
                 open(modal, request) {
                     return new Promise((resolve) => {
                         modal.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
-                            .result.then((germplasmList) => {
-                            if (germplasmList) {
-                                this.value = germplasmList.map((list) => list.name);
-                                request[this.key] = germplasmList.map((list) => list.id);
+                            .result.then((germplasmLists) => {
+                            if (germplasmLists && germplasmLists.length > 0) {
+                                this.value = germplasmLists.map((list) => list.name);
+                                request[this.key] = germplasmLists.map((list) => list.id);
                             }
                             resolve();
                         }, () => {
