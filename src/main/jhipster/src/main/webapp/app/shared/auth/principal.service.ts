@@ -29,7 +29,12 @@ export class Principal {
         return false;
     }
 
-    identity(force?: boolean): Promise<any> {
+    /**
+     * @param force retrieve identity again from server
+     * @param cropName retrieves authorities for crop
+     * @param programUUID retrieves authorities for program
+     */
+    identity(force = false, cropName?, programUUID?): Promise<any> {
         if (force === true) {
             this.userIdentity = undefined;
         }
@@ -41,7 +46,7 @@ export class Principal {
         }
 
         // retrieve the userIdentity data from the server, update the identity object, and then resolve.
-        return this.account.get().toPromise().then((account) => {
+        return this.account.get(cropName, programUUID).toPromise().then((account) => {
             if (account) {
                 this.userIdentity = account;
             } else {

@@ -1,0 +1,66 @@
+<div class="mb-3">
+	<span class="throbber" [style.visibility]="isLoading ? 'visible' : 'hidden'"></span>
+</div>
+<div *ngIf="lists">
+	<div class="row" *ngIf="lists.length else nodata">
+		<div class="col-md-6">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
+						<th jhiSortBy="name"><span jhiTranslate="program.my.lists.col.name"></span><span class="fa fa-sort"></span></th>
+						<th jhiSortBy="type"><span jhiTranslate="program.my.lists.col.type"></span><span class="fa fa-sort"></span></th>
+						<th jhiSortBy="date"><span jhiTranslate="program.my.lists.col.date"></span><span class="fa fa-sort"></span></th>
+						<th jhiSortBy="parent.name"><span jhiTranslate="program.my.lists.col.folder"></span><span class="fa fa-sort"></span></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let list of lists">
+						<td>
+							<a href (click)="urlService.openList(list.listId, context.program)">
+								{{list.name}}
+							</a>
+						</td>
+						<!-- easier to sort by type instead of typeName (udflds) -->
+						<td [title]="list.typeName">{{list.type}}</td>
+						<td>{{list.date}}</td>
+						<td>{{list.folder}}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div *ngIf="lists && lists.length">
+				<div class="row">
+					<div class="col">
+						<div class="pagination-container">
+							<div class="pagination-box pagination-box-left"></div>
+							<div class="pagination-box">
+								<ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" [disabled]="isLoading"
+												[maxSize]="5" [rotate]="true" (pageChange)="load()"></ngb-pagination>
+							</div>
+							<div class="pagination-box pagination-box-right"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<ng-template #nodata>
+		<div class="row">
+			<div class="col-md-6">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr>
+						<th></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</ng-template>
+</div>
