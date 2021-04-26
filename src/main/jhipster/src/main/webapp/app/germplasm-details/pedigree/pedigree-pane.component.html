@@ -10,7 +10,7 @@
 						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.group-source" style="width: 30%">Group Source</th>
 						<th *ngIf="germplasmProgenitorsDetails?.breedingMethodType !== 'GEN'" scope="col" jhiTranslate="pedigree.progenitors.immediate-source" style="width: 30%">Immediate Source</th>
 						<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method" style="width: 30%">Breeding Method</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" style="width: 10%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_PEDIGREE_PERMISSIONS" style="width: 10%">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -36,8 +36,8 @@
 							<a *ngIf="germplasmProgenitorsDetails?.immediateSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.immediateSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.immediateSource?.preferredName}}</a>
 						</td>
 						<td>{{germplasmProgenitorsDetails?.breedingMethodName}}</td>
-						<td class="text-center">
-							<button class="btn btn-info" *jhiHasAnyAuthority="MODIFY_PEDIGREE_PERMISSIONS" (click)="editPedigree(germplasmProgenitorsDetails)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
+						<td class="text-center" *jhiHasAnyAuthority="MODIFY_PEDIGREE_PERMISSIONS">
+							<button class="btn btn-info" (click)="editPedigree(germplasmProgenitorsDetails)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 					</tbody>
