@@ -27,6 +27,7 @@
             "name-description": "Name Description",
             "value": "Value",
             "location": "Location",
+            "date": "Date",
             "preferred": "Preferred"
         },
         "germplasm-origin": {

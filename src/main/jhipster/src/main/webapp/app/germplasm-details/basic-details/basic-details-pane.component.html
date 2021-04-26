@@ -70,6 +70,7 @@
 						<th scope="col" jhiTranslate="basic-details.names.name-description" style="width: 15%">Name Description</th>
 						<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
 						<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
+						<th scope="col" jhiTranslate="basic-details.names.date">Date</th>
 						<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
 						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS" style="width: 13%">Actions</th>
 					</tr>
@@ -80,6 +81,7 @@
 						<td>{{name.nameTypeDescription}}</td>
 						<td class="word-wrap">{{name.name}}</td>
 						<td>{{name.locationName}}</td>
+						<td>{{name.date}}</td>
 						<td>{{name.preferred ? 'Yes' : 'No'}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
 						<button class="btn btn-info" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
