@@ -17,6 +17,7 @@
         "gid": "GID:",
         "guid": "Germplasm UUID:",
         "group-id": "Group ID:",
+        "created-by": "Created By:",
         "created-date": "Created Date",
         "location": "Location",
         "reference": "Reference",

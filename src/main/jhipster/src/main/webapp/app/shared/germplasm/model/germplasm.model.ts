@@ -7,6 +7,8 @@ export class GermplasmDto {
         public germplasmUUID?: string,
         public preferredName?: string,
         public creationDate?: string,
+        public createdBy?: string,
+        public createdByUserId?: number,
         public reference?: string,
         public breedingLocationId?: number,
         public breedingLocation?: string,

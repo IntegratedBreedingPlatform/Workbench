@@ -25,6 +25,12 @@
 				</div>
 				<div class="col"><a *ngIf="germplasm && germplasm?.groupId !== 0" [href]="this.germplasmDetailsUrlService.getUrl(germplasm?.groupId)" target="_blank">{{germplasm?.groupId}}</a></div>
 			</div>
+			<div class="row">
+				<div class="col-3">
+					<label class="font-weight-bold" jhiTranslate="basic-details.created-by">Created By:</label>
+				</div>
+				<div class="col">{{germplasm?.createdBy}}</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved table-fixed">
 					<thead>
