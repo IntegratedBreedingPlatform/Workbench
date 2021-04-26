@@ -67,6 +67,10 @@
             "female-parent": "Female Parent",
             "group-source": "Group Source",
             "immediate-source": "Immediate Source",
+            "male-parent-gid": "Male Parent GID",
+            "female-parent-gid": "Female Parent GID",
+            "group-source-gid": "Group Source GID",
+            "immediate-source-gid": "Immediate Source GID",
             "breeding-method": "Breeding Method"
         }
     },
