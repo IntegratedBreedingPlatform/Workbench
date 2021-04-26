@@ -110,6 +110,7 @@ var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
 
 mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observationService', function ($scope, $uibModal, $http, observationService) {
 
+	$scope.nested = {};
 	$scope.flags = {
 		groupByAccession: false,
 		isDataLoaded: false,
@@ -120,14 +121,14 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		{id: 'graphical-filtering', name: 'Graphical Filtering'},
 		{id: 'study-comparison', name: 'Study Comparison'}
 	];
-	$scope.toolId = $scope.tools[0].id;
+	$scope.nested.toolId = $scope.tools[0].id;
 
 	$scope.filteredDataResult = [];
 
 	$scope.gid = null;
 
 	$scope.observationLevels = [];
-	$scope.selectedObservationModel = 'PLOT';
+	$scope.nested.selectedObservationModel = 'PLOT';
 
 	$scope.init = function () {
 
@@ -155,7 +156,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		}, {});
 		const phenotypesSearchPromise = $scope.phenotypesSearch(createSearchObject(form));
 
-		switch ($scope.toolId) {
+		switch ($scope.nested.toolId) {
 			case 'graphical-filtering':
 				phenotypesSearchPromise.then(function (response) {
 
@@ -342,12 +343,12 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 			return {
 				locationDbIds: locationDbIds || null,
 				germplasmDbIds: [$scope.gid],
-				observationLevel: $scope.selectedObservationModel || null
+				observationLevel: $scope.nested.selectedObservationModel || null
 			}
 		} else {
 			return {
 				locationDbIds: locationDbIds || null,
-				observationLevel: $scope.selectedObservationModel || null,
+				observationLevel: $scope.nested.selectedObservationModel || null,
 				programDbIds: [getUrlParameter('programUUID')],
 				trialDbIds: $('#trials select').val() || null,
 				observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
