@@ -59,6 +59,9 @@ import { CollapsibleComponent } from './component/collapsible.component';
 import { UserProgramInfoService } from './service/user-program-info.service';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
+import { CropService } from './crop/service/crop.service';
+import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
+import { UrlService } from './service/url.service';
 import { LocationsSelectComponent } from './locations-select/locations-select.component';
 import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 import { DateHelperService } from './service/date.helper.service';
@@ -99,6 +102,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
         ItemCountCustomComponent,
@@ -131,6 +135,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         BreedingMethodService,
         LocationService,
         ProgramService,
+        CropService,
         PopupService,
         AlertService,
         ToolService,
@@ -141,7 +146,8 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal
+        NgbActiveModal,
+        UrlService
     ],
     entryComponents: [
         ModalComponent,
@@ -160,6 +166,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         DatePipe,
         KeyValuePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
         ModalComponent,

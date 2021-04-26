@@ -26,6 +26,7 @@ export class GermplasmDetailsUrlService {
 
     }
 
+    // TODO IBP-4526, continues in shared/url.service.ts
     getStudyUrl(studyId: any): SafeResourceUrl {
         const queryParams = `?loggedInUserId=${this.paramContext.loggedInUserId}`
             + `&selectedProjectId=${this.paramContext.selectedProjectId}`;
