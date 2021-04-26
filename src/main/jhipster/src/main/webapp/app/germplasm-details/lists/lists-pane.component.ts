@@ -5,6 +5,7 @@ import { GermplasmService } from '../../shared/germplasm/service/germplasm.servi
 import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmList } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import { ParamContext } from '../../shared/service/param.context';
 
 @Component({
     selector: 'jhi-lists-pane',
@@ -18,13 +19,18 @@ export class ListsPaneComponent implements OnInit {
                 public translateService: TranslateService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 private germplasmService: GermplasmService,
-                private germplasmDetailsContext: GermplasmDetailsContext) {
+                private germplasmDetailsContext: GermplasmDetailsContext,
+                public paramContext: ParamContext) {
     }
 
     ngOnInit(): void {
         this.germplasmService.getGermplasmListsByGid(this.germplasmDetailsContext.gid).toPromise().then((value) => {
             this.germplasmLists = value;
         });
+    }
+
+    isClickable(germplasmList: GermplasmList) {
+        return this.paramContext.programUUID === germplasmList.programUUID;
     }
 
 }
