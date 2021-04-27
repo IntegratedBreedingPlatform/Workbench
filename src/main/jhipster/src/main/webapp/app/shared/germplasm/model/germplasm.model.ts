@@ -69,7 +69,8 @@ export class GermplasmList {
         public listId?: number,
         public listName?: string,
         public creationDate?: string,
-        public description?: string
+        public description?: string,
+        public programUUID?: string
     ) {
     }
 }
