@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitors/germplasm-progenitors.context';
 import { Subscription } from 'rxjs';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
 
 @Component({
     selector: 'jhi-pedigree-pane',
@@ -81,5 +82,9 @@ export class PedigreePaneComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'germplasm-progenitors-dialog/' + this.germplasmDetailsContext.gid }, }], {
             queryParamsHandling: 'merge'
         });
+    }
+
+    isGenerative(): boolean {
+        return this.germplasmProgenitorsDetails && this.germplasmProgenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
     }
 }

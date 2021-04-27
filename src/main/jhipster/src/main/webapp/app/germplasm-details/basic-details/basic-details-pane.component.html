@@ -25,6 +25,12 @@
 				</div>
 				<div class="col"><a *ngIf="germplasm && germplasm?.groupId !== 0" [href]="this.germplasmDetailsUrlService.getUrl(germplasm?.groupId)" target="_blank">{{germplasm?.groupId}}</a></div>
 			</div>
+			<div class="row">
+				<div class="col-3">
+					<label class="font-weight-bold" jhiTranslate="basic-details.created-by">Created By:</label>
+				</div>
+				<div class="col">{{germplasm?.createdBy}}</div>
+			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved table-fixed">
 					<thead>
@@ -32,7 +38,7 @@
 						<th scope="col" jhiTranslate="basic-details.created-date">Created Date</th>
 						<th scope="col" jhiTranslate="basic-details.location">Location</th>
 						<th scope="col" jhiTranslate="basic-details.reference">Reference</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" style="width: 13%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS" style="width: 13%">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -40,8 +46,8 @@
 						<td>{{germplasm?.creationDate}}</td>
 						<td>{{germplasm?.breedingLocation}}</td>
 						<td class="word-wrap">{{germplasm?.reference}}</td>
-						<td class="text-center">
-							<button class="btn btn-info" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS" (click)="editGermplasmBasicDetails()">
+						<td class="text-center" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">
+							<button class="btn btn-info" (click)="editGermplasmBasicDetails()">
 								<i class="fa fa-edit fa-fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
@@ -64,8 +70,9 @@
 						<th scope="col" jhiTranslate="basic-details.names.name-description" style="width: 15%">Name Description</th>
 						<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
 						<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
+						<th scope="col" jhiTranslate="basic-details.names.date">Date</th>
 						<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" style="width: 13%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS" style="width: 13%">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -74,10 +81,11 @@
 						<td>{{name.nameTypeDescription}}</td>
 						<td class="word-wrap">{{name.name}}</td>
 						<td>{{name.locationName}}</td>
+						<td>{{name.date}}</td>
 						<td>{{name.preferred ? 'Yes' : 'No'}}</td>
-						<td class="text-center">
-						<button class="btn btn-info" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS"  (click)="deleteGermplasmName(name)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
+						<td class="text-center" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
+						<button class="btn btn-info" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
+							<button class="btn btn-info" (click)="deleteGermplasmName(name)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 					</tbody>
