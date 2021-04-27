@@ -242,6 +242,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 }, (res: HttpErrorResponse) => this.onError(res)
             );
     }
+
+    openMyProfile() {
+        this.router.navigate(['/', { outlets: { popup: 'user-profile-update'}, }], {
+            replaceUrl: false,
+            skipLocationChange: true,
+            queryParamsHandling: 'merge'
+        });
+    }
 }
 
 interface Node {

@@ -31,8 +31,10 @@
 		</button>
 		<mat-menu #memberMenu="matMenu" yPosition="below" [overlapTrigger]="false">
 			<div class="container">
-				<div class="row">
-					<h6 class=col>{{user?.firstName}} {{user?.lastName}}</h6>
+				<div class="form-group" style="margin-bottom: 0px;">
+					<button mat-icon-button id="menu" (click)="openMyProfile()">
+						<i class="fa fa-pencil-square-o"></i><span style="margin-left: 5px">{{user?.firstName}} {{user?.lastName}}</span>
+					</button>
 				</div>
 				<div class="row">
 					<h6 class=col>{{user?.email}}</h6>
