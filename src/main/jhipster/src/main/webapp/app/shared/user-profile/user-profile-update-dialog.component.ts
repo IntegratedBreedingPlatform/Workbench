@@ -51,11 +51,11 @@ export class UserProfileUpdateDialogComponent implements OnInit {
             this.alertService.success('userProfile.home.messages.updated');
             this.activeModal.close();
         }, (response) => {
-          /*  if (response.error.errors[0].message) {
+            if (response.error.errors[0].message) {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             } else {
                 this.alertService.error('error.general');
-            }*/
+            }
         });
     }
 
