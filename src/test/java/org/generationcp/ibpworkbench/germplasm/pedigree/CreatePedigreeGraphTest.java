@@ -1,11 +1,9 @@
 
 package org.generationcp.ibpworkbench.germplasm.pedigree;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Random;
-
+import com.vaadin.Application;
+import com.vaadin.service.ApplicationContext;
+import com.vaadin.ui.Window;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.middleware.data.initializer.GermplasmPedigreeTreeTestDataInitializer;
@@ -22,9 +20,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.Application;
-import com.vaadin.service.ApplicationContext;
-import com.vaadin.ui.Window;
+import java.io.File;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Random;
 
 public class CreatePedigreeGraphTest {
 
@@ -113,6 +112,18 @@ public class CreatePedigreeGraphTest {
 		Assert.assertEquals(idString + " [label=\"" + display + "\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];", allValues.get(1));
 	}
 
+	@Test
+	public void testCreateUnkownMaleParentDerivative() {
+		this.createPedigreeGraph = new CreatePedigreeGraph(GID, LEVEL, true, false, this.window, this.qQuery, this.germplasmDataManager);
+		this.createPedigreeGraph.setGraphVizUtility(this.graphVizUtility);
+		this.germplasmPedigreeTree = this.germplasmPedigreeTreeTDI.createGermplasmPedigreeTreeDerivativeUnkownMale(GID, LEVEL);
+		Mockito.doReturn(this.germplasmPedigreeTree).when(this.qQuery).generatePedigreeTree(GID, LEVEL, true);
+
+		this.createPedigreeGraph.create(SAMPLE_GRAPH, this.graphVizUtility);
+		this.verifyIfEveryLinkedNodeHasBeenAdded(this.germplasmPedigreeTree.getRoot());
+
+	}
+
 	private void verifyIfEveryLinkedNodeHasBeenAdded(final GermplasmPedigreeTreeNode node) {
 		if (node.getLinkedNodes().isEmpty()) {
 			Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(node.getGermplasm().getGid() + ";");
@@ -124,9 +135,12 @@ public class CreatePedigreeGraphTest {
 				} else if(node.getGermplasm().getGpid1().equals(parentNode.getGermplasm().getGid())) {
 					Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
 						parentNode.getGermplasm().getGid() + "->" + node.getGermplasm().getGid() + " [color=\"RED\", arrowhead=\"odottee\"];");
-				} else {
+				} else if(node.getGermplasm().getGpid2().equals(parentNode.getGermplasm().getGid())) {
 					Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
 						parentNode.getGermplasm().getGid() + "->" + node.getGermplasm().getGid() + " [color=\"BLUE\", arrowhead=\"veeodot\"];");
+				} else if (node.getGermplasm().getGnpgs() == null){
+					Mockito.verify(this.graphVizUtility, Mockito.atLeast(1)).addln(
+							parentNode.getGermplasm().getGid() + "->" + node.getGermplasm().getGid() + ";");
 				}
 
 				this.verifyIfEveryLinkedNodeHasBeenAdded(parentNode);
