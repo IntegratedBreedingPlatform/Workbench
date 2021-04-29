@@ -6,6 +6,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../alert/alert.service';
 import { Principal } from '../auth/principal.service';
 import { UserProfileServices } from './service/user-profile-services.service';
+import { NavbarMessageEvent } from '../model/navbar-message.event';
 
 @Component({
     selector: 'jhi-user-profile-update-dialog',
@@ -44,7 +45,11 @@ export class UserProfileUpdateDialogComponent implements OnInit {
     }
 
     update(f) {
-        this.userProfileServices.update(this.model, this.user.userId).subscribe((res: void) => {
+        this.userProfileServices.update(this.model, this.user.id).subscribe((res: void) => {
+            const message: NavbarMessageEvent = { userProfileChanged: true };
+            window.parent.postMessage(message, '*');
+            this.alertService.success('userProfile.home.messages.updated');
+            this.activeModal.close();
         }, (response) => {
           /*  if (response.error.errors[0].message) {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -52,7 +57,6 @@ export class UserProfileUpdateDialogComponent implements OnInit {
                 this.alertService.error('error.general');
             }*/
         });
-        this.activeModal.close();
     }
 
     isFormValid(f) {
