@@ -122,7 +122,11 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 			this.setParent(parentNodeId, leafNodeId);
 			this.setChildrenAllowed(parentNodeId, true);
 
-			this.addNode(parent, level + 1);
+			if (gid.equals(0) && !parent.getLinkedNodes().isEmpty()) {
+				this.addNode(parent, parentNodeId);
+			}else {
+				this.addNode(parent, level + 1);
+			}
 		}
 	}
 
@@ -156,8 +160,12 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 	public void pedigreeTreeExpandAction(final String itemId) {
 		if (itemId.contains("@")) {
 			final String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
-			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);
-			this.addNode(this.germplasmPedigreeTree.getRoot(), itemId);
+			// Zero is UNKNOWN
+			if (!gidString.equals("0")) {
+				this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);
+				this.addNode(this.germplasmPedigreeTree.getRoot(), itemId);
+			}
+
 		} else {
 			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(itemId), 2, this.includeDerivativeLines);
 			this.addNode(this.germplasmPedigreeTree.getRoot(), 2);
