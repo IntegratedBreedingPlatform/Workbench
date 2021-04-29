@@ -170,6 +170,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         } else if (event.data.toolSelected) {
             this.openTool(event.data.toolSelected);
             this.expandParent();
+        } else if (event.data.userProfileChanged) {
+            this.principal.identity(true).then((identity) => {
+                this.user = identity;
+            });
         }
     }
 
