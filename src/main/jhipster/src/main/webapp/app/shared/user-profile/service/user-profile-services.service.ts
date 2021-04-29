@@ -13,8 +13,8 @@ export class UserProfileServices {
         this.resourceUrl = SERVER_API_URL
     }
 
-    update(userProfile: UserProfileModel, userId: number): Observable<void> {
-        return this.http.put<void>(this.resourceUrl + `users/${userId}/profile`, userProfile);
+    update(userProfile: UserProfileModel): Observable<void> {
+        return this.http.patch<void>(this.resourceUrl + `users/profile`, userProfile);
     }
 
 }
