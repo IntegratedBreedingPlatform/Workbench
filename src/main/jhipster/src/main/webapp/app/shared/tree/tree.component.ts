@@ -64,7 +64,7 @@ export class TreeComponent implements OnInit {
     }
 
     private collectExpandedNodes(expandedNodes: string[], node: PrimeNgTreeNode) {
-        if (!node.expanded) {
+        if (!node || !node.expanded) {
             return;
         }
         expandedNodes.push(node.data.id);
@@ -79,7 +79,7 @@ export class TreeComponent implements OnInit {
         const programNode = this.nodes.find((node: PrimeNgTreeNode) => 'LISTS' === node.data.id);
         this.collectExpandedNodes(expandedNodes, programNode);
         // Ensure that Program Lists node is always saved as expanded
-        if (expandedNodes.length === 0) {
+        if (programNode && expandedNodes.length === 0) {
             expandedNodes.push(programNode.data.id);
         }
         await this.service.persist(expandedNodes).subscribe();
