@@ -33,6 +33,7 @@ export class UserProfileUpdateDialogComponent implements OnInit {
         this.model = {};
         this.principal.identity().then((identity) => {
             this.user = identity;
+            this.model.userName = this.user.username;
             this.model.firstName = this.user.firstName;
             this.model.lastName = this.user.lastName;
             this.model.email = this.user.email;
@@ -45,11 +46,10 @@ export class UserProfileUpdateDialogComponent implements OnInit {
     }
 
     update(f) {
-        this.userProfileServices.update(this.model, this.user.id).subscribe((res: void) => {
+        this.userProfileServices.update(this.model).subscribe((res: void) => {
             const message: NavbarMessageEvent = { userProfileChanged: true };
             window.parent.postMessage(message, '*');
             this.alertService.success('userProfile.home.messages.updated');
-            this.activeModal.close();
         }, (response) => {
             if (response.error.errors[0].message) {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -57,6 +57,7 @@ export class UserProfileUpdateDialogComponent implements OnInit {
                 this.alertService.error('error.general');
             }
         });
+        this.activeModal.close();
     }
 
     isFormValid(f) {
