@@ -5,4 +5,5 @@ export interface NavbarMessageEvent {
     programUpdated?: Program,
     programDeleted?: any,
     toolSelected?: string,
+    userProfileChanged?: boolean
 }

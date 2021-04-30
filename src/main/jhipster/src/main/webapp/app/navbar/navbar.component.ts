@@ -170,6 +170,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         } else if (event.data.toolSelected) {
             this.openTool(event.data.toolSelected);
             this.expandParent();
+        } else if (event.data.userProfileChanged) {
+            this.user = await this.principal.identity(true)
         }
     }
 
@@ -241,6 +243,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                     this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
                 }, (res: HttpErrorResponse) => this.onError(res)
             );
+    }
+
+    openMyProfile() {
+        this.router.navigate(['/', { outlets: { popup: 'user-profile-update'}, }], {
+            replaceUrl: false,
+            skipLocationChange: true,
+            queryParamsHandling: 'merge'
+        });
     }
 }
 

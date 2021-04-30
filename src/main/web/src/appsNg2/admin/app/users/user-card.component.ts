@@ -11,6 +11,7 @@ import { UserRole } from '../shared/models/user-role.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CropService } from '../shared/services/crop.service';
 import { EMAIL_LOCAL_PART_REGEX } from '../shared/validators/email-validator.component';
+import { NavbarMessageEvent } from '../../../../../../jhipster/src/main/webapp/app/shared/model/navbar-message.event';
 
 @Component({
     selector: 'user-card',
@@ -142,6 +143,8 @@ export class UserCard implements OnInit {
                     this.userSaved = true;
                     this.errorUserMessage = '';
                     this.sendEmailToResetPassword(resp);
+                    const message: NavbarMessageEvent = { userProfileChanged: true };
+                    window.parent.postMessage(message, '*');
                 },
                 error => {
                     this.errorUserMessage = this.mapErrorUser(error.json().errors);
