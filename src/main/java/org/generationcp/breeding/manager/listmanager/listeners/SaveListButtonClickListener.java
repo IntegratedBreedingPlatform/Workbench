@@ -127,6 +127,8 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 							return;
 						}
 
+						SaveListButtonClickListener.this.updateListDataTableContent(listToSave);
+
 						SaveListButtonClickListener.this.saveListDataColumns(listToSave);
 					}
 
@@ -137,10 +139,6 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 					 */
 					if (listToSave.getId() != null) {
 						currentlySavedList = listToSave;
-
-						if (!listEntries.isEmpty()) {
-							SaveListButtonClickListener.this.updateListDataTableContent(currentlySavedList);
-						}
 
 						SaveListButtonClickListener.this.source.setCurrentlySavedGermplasmList(listToSave);
 
