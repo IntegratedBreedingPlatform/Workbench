@@ -378,6 +378,7 @@ mainApp.controller('SelectGermplasmController', ['$scope', '$q', '$uibModalInsta
 		$scope.url = '/ibpworkbench/controller/jhipster#/germplasm-selector?restartApplication' +
 			'&cropName=' + getUrlParameter("cropName") +
 			'&programUUID=' + getUrlParameter("programUUID") +
+			'&loggedInUserId=' + getUrlParameter("loggedInUserId") +
 			'&selectMultiple=true';
 
 		window.onGidsSelected = function (gids) {

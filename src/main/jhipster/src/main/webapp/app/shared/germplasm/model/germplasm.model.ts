@@ -79,7 +79,8 @@ export class GermplasmStudy {
     constructor(
         public studyId?: number,
         public name?: string,
-        public description?: string
+        public description?: string,
+        public programUUID?: string
     ) {
     }
 }
