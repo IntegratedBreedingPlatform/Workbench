@@ -52,6 +52,7 @@ export class GermplasmSelectorModalComponent implements OnInit {
             + '&programUUID=' + this.paramContext.programUUID
             + '&authToken=' + this.paramContext.authToken
             + '&selectedProjectId=' + this.paramContext.selectedProjectId
+            + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectMultiple=' + this.selectMultiple; // Tell the page that it is shown as a modal.
 
         this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_SEARCH_SELECTOR + queryParams);
