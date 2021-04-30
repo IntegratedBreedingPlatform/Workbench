@@ -30,6 +30,8 @@
             "plateId": "PLATE_ID",
             "well": "WELL",
             "importPlate": {
+                "title": "Import Plate information",
+                "select-file": "Choose the file you would like to import with the format: Excel or CSV",
                 "noSelectedFormat": "Please specify the format you are importing.",
                 "noFileSelected": "Please select the data file to be imported.",
                 "noContent": "The data file should have at least one row.",
