@@ -456,7 +456,7 @@ public class SaveListButtonClickListener implements Button.ClickListener, Initia
 
 	private boolean saveNewListEntries(final List<GermplasmListData> listEntries) {
 		try {
-			final List<Integer> savedEntryPKs = this.germplasmListManager.addGermplasmListData(listEntries);
+			final List<Integer> savedEntryPKs = this.germplasmListManager.addGermplasmListDataWithReadUncommittedIsolation(listEntries);
 
 			if (!(savedEntryPKs.size() == listEntries.size())) {
 				MessageNotifier.showError(this.source.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
