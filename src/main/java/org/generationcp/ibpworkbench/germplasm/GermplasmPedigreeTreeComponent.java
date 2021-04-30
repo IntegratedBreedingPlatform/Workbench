@@ -116,17 +116,19 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
 			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
-			final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
-			this.addItem(parentNodeId);
-			this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
-			this.setParent(parentNodeId, leafNodeId);
-			this.setChildrenAllowed(parentNodeId, true);
 
-			if (gid.equals(0) && !parent.getLinkedNodes().isEmpty()) {
-				this.addNode(parent, parentNodeId);
-			}else {
+			if (gid.equals(0)) {
+				this.addNode(parent, leafNodeId);
+			} else {
+				final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
+				this.addItem(parentNodeId);
+				this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
+				this.setParent(parentNodeId, leafNodeId);
+				this.setChildrenAllowed(parentNodeId, true);
+
 				this.addNode(parent, level + 1);
 			}
+
 		}
 	}
 
@@ -160,12 +162,8 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 	public void pedigreeTreeExpandAction(final String itemId) {
 		if (itemId.contains("@")) {
 			final String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
-			// Zero is UNKNOWN
-			if (!gidString.equals("0")) {
-				this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);
-				this.addNode(this.germplasmPedigreeTree.getRoot(), itemId);
-			}
-
+			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);
+			this.addNode(this.germplasmPedigreeTree.getRoot(), itemId);
 		} else {
 			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(itemId), 2, this.includeDerivativeLines);
 			this.addNode(this.germplasmPedigreeTree.getRoot(), 2);
