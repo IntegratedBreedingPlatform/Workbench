@@ -11,7 +11,8 @@
 					</thead>
 					<tbody>
 					<tr *ngFor="let study of studies">
-						<td><a *ngIf="germplasmDetailsContext.isModal" [href]="germplasmDetailsUrlService.getStudyUrl(study.studyId)" target="_parent">{{study.name}}</a>
+						<td><a *ngIf="germplasmDetailsContext.isModal && isClickable(study)" [href]="germplasmDetailsUrlService.getStudyUrl(study.studyId)" target="_parent">{{study.name}}</a>
+							<span *ngIf="germplasmDetailsContext.isModal && !isClickable(study)" class="btn btn-link disabled p-0">{{study.name}}</span>
 							<span *ngIf="!germplasmDetailsContext.isModal">{{study.name}}</span>
 						</td>
 						<td>{{study.description}}</td>
