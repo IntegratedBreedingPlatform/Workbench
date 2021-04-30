@@ -14,7 +14,7 @@ export class UserProfileServices {
     }
 
     update(userProfile: UserProfileModel): Observable<void> {
-        return this.http.patch<void>(this.resourceUrl + `users/profile`, userProfile);
+        return this.http.patch<void>(this.resourceUrl + `my-profile`, userProfile);
     }
 
 }

@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../modal/popup.service';
+import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
-import { AlertService } from '../alert/alert.service';
-import { Principal } from '../auth/principal.service';
+import { AlertService } from '../../shared/alert/alert.service';
+import { Principal } from '../../shared/auth/principal.service';
 import { UserProfileServices } from './service/user-profile-services.service';
-import { NavbarMessageEvent } from '../model/navbar-message.event';
+import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
 
 @Component({
     selector: 'jhi-user-profile-update-dialog',
@@ -33,7 +33,6 @@ export class UserProfileUpdateDialogComponent implements OnInit {
         this.model = {};
         this.principal.identity().then((identity) => {
             this.user = identity;
-            this.model.userName = this.user.username;
             this.model.firstName = this.user.firstName;
             this.model.lastName = this.user.lastName;
             this.model.email = this.user.email;

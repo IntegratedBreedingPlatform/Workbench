@@ -21,7 +21,7 @@ import { InventoryDetailsModule } from './germplasm-manager/inventory/details/in
 import { NavbarModule } from './navbar/navbar.module';
 import { GermplasmDetailsModule } from './germplasm-details/germplasm-details.module';
 import { ReleaseNotesModule } from './release-notes/release-notes.module';
-import { UserProfileModule } from './shared/user-profile/user-profile.module';
+import { UserProfileModule } from './entities/user-profile/user-profile.module';
 
 @NgModule({
     imports: [
