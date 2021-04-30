@@ -155,11 +155,11 @@ public class CreatePedigreeGraph {
 	}
 
 	public String getArrowStyleString(Germplasm nodeGermplasm, Germplasm parentGermplasm) {
-		if (nodeGermplasm.getGnpgs() != null) {
-			if (nodeGermplasm.getGnpgs() >= 2 && parentGermplasm.getGid().equals(nodeGermplasm.getGpid1())) {
+		if (nodeGermplasm.getGnpgs() != null && nodeGermplasm.getGnpgs() >= 2 ) {
+			if (parentGermplasm.getGid().equals(nodeGermplasm.getGpid1())) {
 				//Female Parent
 				return " [color=\"RED\", arrowhead=\"odottee\"];";
-			} else if (nodeGermplasm.getGnpgs() >= 2 && parentGermplasm.getGid().equals(nodeGermplasm.getGpid2())) {
+			} else if (parentGermplasm.getGid().equals(nodeGermplasm.getGpid2())) {
 				//Male Parent
 				return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
 			}
