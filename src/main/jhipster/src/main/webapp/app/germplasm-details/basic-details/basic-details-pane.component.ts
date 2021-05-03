@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { UrlService } from '../../shared/service/url.service';
 
 @Component({
     selector: 'jhi-basic-details-pane',
@@ -32,6 +33,7 @@ export class BasicDetailsPaneComponent implements OnInit {
                 private germplasmService: GermplasmService,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+                public urlService: UrlService,
                 private modalService: NgbModal,
                 private popupService: PopupService,
                 private router: Router,
