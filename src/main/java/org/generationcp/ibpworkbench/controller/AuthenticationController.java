@@ -200,8 +200,7 @@ public class AuthenticationController {
 		final Map<String, String> errors = new LinkedHashMap<>();
 
 		errors.put(UserAccountFields.USERNAME, this.messageSource
-			.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {},
-				"Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
+			.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 		out.put(AuthenticationController.ERRORS, errors);
