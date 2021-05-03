@@ -87,6 +87,7 @@ export class GermplasmStudy {
 
 export class GermplasmOrigin {
     constructor(
+        public programUUID?: string,
         public studyId?: number,
         public studyName?: string,
         public observationUnitId?: string,
