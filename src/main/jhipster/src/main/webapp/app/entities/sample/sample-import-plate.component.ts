@@ -3,11 +3,11 @@ import { ExcelService } from './excel.service';
 import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-sample-import-plate',
-    templateUrl: './sample-import-plate.component.html',
-    styleUrls: ['./sample-import-plate.component.css']
+    templateUrl: './sample-import-plate.component.html'
 })
 
 export class SampleImportPlateComponent {
@@ -29,7 +29,8 @@ export class SampleImportPlateComponent {
     constructor(private excelService: ExcelService,
                 private alertService: AlertService,
                 public activeModal: NgbActiveModal,
-                private modalService: NgbModal) {
+                private modalService: NgbModal,
+                private translateService: TranslateService) {
 
     }
 
@@ -68,6 +69,8 @@ export class SampleImportPlateComponent {
 
         const file = evt.target.files[0];
         this.fileName = file.name;
+
+        this.fileUpload.nativeElement.innerText = this.fileName;
 
         const target: DataTransfer = <DataTransfer>(evt.target);
         this.excelService.parse(target).subscribe((value) => {
