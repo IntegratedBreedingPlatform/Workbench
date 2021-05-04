@@ -3,7 +3,7 @@ import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipste
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { GermplasmDto, GermplasmName } from '../../shared/germplasm/model/germplasm.model';
+import { GermplasmDto, GermplasmName, GermplasmStudy } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 import { PopupService } from '../../shared/modal/popup.service';
 import { Router } from '@angular/router';
@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { UrlService } from '../../shared/service/url.service';
+import { ParamContext } from '../../shared/service/param.context';
 
 @Component({
     selector: 'jhi-basic-details-pane',
@@ -30,12 +32,14 @@ export class BasicDetailsPaneComponent implements OnInit {
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
-                private germplasmDetailsContext: GermplasmDetailsContext,
+                public germplasmDetailsContext: GermplasmDetailsContext,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+                public urlService: UrlService,
                 private modalService: NgbModal,
                 private popupService: PopupService,
                 private router: Router,
                 private germplasmNameContext: GermplasmNameContext,
+                public paramContext: ParamContext,
                 private alertService: JhiAlertService) {
     }
 
@@ -90,5 +94,9 @@ export class BasicDetailsPaneComponent implements OnInit {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }, () => confirmModalRef.dismiss());
+    }
+
+    isStudyClickable(studyProgramUUID: string) {
+        return this.paramContext.programUUID === studyProgramUUID;
     }
 }

@@ -8,7 +8,7 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 import { ParamContext } from '../../shared/service/param.context';
 import { GRAPHICAL_QUERIES_URL } from '../../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
-import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import { UrlService } from '../../shared/service/url.service';
 
 @Component({
     selector: 'jhi-observations-pane',
@@ -21,9 +21,9 @@ export class ObservationsPaneComponent implements OnInit {
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+                public urlService: UrlService,
                 private germplasmService: GermplasmService,
-                private germplasmDetailsContext: GermplasmDetailsContext,
+                public germplasmDetailsContext: GermplasmDetailsContext,
                 private paramContext: ParamContext,
                 private sanitizer: DomSanitizer) {
 
