@@ -154,7 +154,7 @@ public class CreatePedigreeGraph {
 		}
 	}
 
-	public String getArrowStyleString(Germplasm nodeGermplasm, Germplasm parentGermplasm) {
+	private String getArrowStyleString(final Germplasm nodeGermplasm, final Germplasm parentGermplasm) {
 		if (nodeGermplasm.getGnpgs() != null && nodeGermplasm.getGnpgs() >= 2 ) {
 			if (parentGermplasm.getGid().equals(nodeGermplasm.getGpid1())) {
 				//Female Parent
