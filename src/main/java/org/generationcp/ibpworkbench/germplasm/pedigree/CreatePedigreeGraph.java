@@ -159,7 +159,7 @@ public class CreatePedigreeGraph {
 			if (parentGermplasm.getGid().equals(nodeGermplasm.getGpid1())) {
 				//Female Parent
 				return " [color=\"RED\", arrowhead=\"odottee\"];";
-			} else if (parentGermplasm.getGid().equals(nodeGermplasm.getGpid2())) {
+			} else {
 				//Male Parent
 				return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
 			}
