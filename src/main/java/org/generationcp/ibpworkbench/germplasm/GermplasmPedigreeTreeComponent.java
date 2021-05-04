@@ -116,13 +116,19 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
 			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
-			final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
-			this.addItem(parentNodeId);
-			this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
-			this.setParent(parentNodeId, leafNodeId);
-			this.setChildrenAllowed(parentNodeId, true);
 
-			this.addNode(parent, level + 1);
+			if (gid.equals(0)) {
+				this.addNode(parent, leafNodeId);
+			} else {
+				final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
+				this.addItem(parentNodeId);
+				this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
+				this.setParent(parentNodeId, leafNodeId);
+				this.setChildrenAllowed(parentNodeId, true);
+
+				this.addNode(parent, level + 1);
+			}
+
 		}
 	}
 
