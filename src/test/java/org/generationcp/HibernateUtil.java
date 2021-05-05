@@ -134,20 +134,6 @@ public class HibernateUtil implements Serializable {
 
 			this.sessionFactory.withOptions().eventListeners();
 
-//			EventListenerRegistry listenerRegistry = serviceRegistry.getService( EventListenerRegistry.class );
-//			listenerRegistry.addDuplicationStrategy( EnversListenerDuplicationStrategy.INSTANCE );
-//
-//			enversConfiguration = AuditConfiguration.getFor( configuration, serviceRegistry.getService( ClassLoaderService.class ) );
-//
-//			if (enversConfiguration.getEntCfg().hasAuditedEntities()) {
-//				listenerRegistry.appendListeners( EventType.POST_DELETE, new EnversPostDeleteEventListenerImpl( enversConfiguration ) );
-//				listenerRegistry.appendListeners( EventType.POST_INSERT, new EnversPostInsertEventListenerImpl( enversConfiguration ) );
-//				listenerRegistry.appendListeners( EventType.POST_UPDATE, new EnversPostUpdateEventListenerImpl( enversConfiguration ) );
-//				listenerRegistry.appendListeners( EventType.POST_COLLECTION_RECREATE, new EnversPostCollectionRecreateEventListenerImpl( enversConfiguration ) );
-//				listenerRegistry.appendListeners( EventType.PRE_COLLECTION_REMOVE, new EnversPreCollectionRemoveEventListenerImpl( enversConfiguration ) );
-//				listenerRegistry.appendListeners( EventType.PRE_COLLECTION_UPDATE, new EnversPreCollectionUpdateEventListenerImpl( enversConfiguration ) );
-//			}
-
 			this.threadSession = new ThreadLocal<>();
 		} catch (FileNotFoundException e) {
 			throw new ConfigException(e.getMessage(), e);
