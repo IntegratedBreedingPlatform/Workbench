@@ -118,7 +118,7 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
 
-			if (gid.equals(0) && !Util.isEmpty(node.getLinkedNodes())) {
+			if (gid.equals(0) && !Util.isEmpty(parent.getLinkedNodes())) {
 				// If unknown with children
 				this.addNode(parent, leafNodeId);
 			} else {
