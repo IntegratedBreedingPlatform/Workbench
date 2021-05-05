@@ -120,7 +120,7 @@ public class ListViewActionMenuTest {
 	}
 
 	@Test
-	public void testLaddUngroupGermplasmLink() {
+	public void testAddAdminGermplasmLinks() {
 
 		final String removeSelectedGermplasmMessage = "removeSelectedGermplasm";
 	  final String ungroupMessage = "removeSelectedGermplasm";
