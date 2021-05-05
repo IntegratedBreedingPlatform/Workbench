@@ -62,7 +62,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		}
 		try {
 			this.addDeleteGermplasmLink();
-			this.layoutAdminLink();
+			this.addUngroupGermplasmLink();
 		} catch (final AccessDeniedException e) {
 			// do nothing if the user is not authorized to access Admin link
 		}
@@ -139,7 +139,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		}
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_SEARCH_GERMPLASM', 'ROLE_DELETE_GERMPLASM')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_DELETE_GERMPLASM')")
 	private void setRemoveSelectedGermplasmWhenListIsLocked(final boolean visible) {
 		if (this.removeSelectedGermplasm != null) {
 			this.removeSelectedGermplasm.setVisible(visible);
@@ -188,7 +188,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-	protected void layoutAdminLink() {
+	protected void addUngroupGermplasmLink() {
 		this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.UNGROUP));
 	}
 
