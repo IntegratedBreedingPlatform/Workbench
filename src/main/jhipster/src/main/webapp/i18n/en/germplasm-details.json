@@ -17,6 +17,7 @@
         "gid": "GID:",
         "guid": "Germplasm UUID:",
         "group-id": "Group ID:",
+        "created-by": "Created By:",
         "created-date": "Created Date",
         "location": "Location",
         "reference": "Reference",
@@ -26,6 +27,7 @@
             "name-description": "Name Description",
             "value": "Value",
             "location": "Location",
+            "date": "Date",
             "preferred": "Preferred"
         },
         "germplasm-origin": {
@@ -65,6 +67,10 @@
             "female-parent": "Female Parent",
             "group-source": "Group Source",
             "immediate-source": "Immediate Source",
+            "male-parent-gid": "Male Parent GID",
+            "female-parent-gid": "Female Parent GID",
+            "group-source-gid": "Group Source GID",
+            "immediate-source-gid": "Immediate Source GID",
             "breeding-method": "Breeding Method"
         }
     },
@@ -103,5 +109,12 @@
         "sampling-date": "Sampling Date",
         "dataset-type": "Dataset_Type",
         "obs_unit_id": "Obs_Unit_ID"
+    },
+    "edit-basic-details": {
+        "title": "Edit Germplasm Details",
+        "germplasm-location": "Germplasm Location:",
+        "germplasm-date": "Germplasm Date:",
+        "reference": "Reference:",
+        "success": "Germplasm Basic Details updated successfully."
     }
 }

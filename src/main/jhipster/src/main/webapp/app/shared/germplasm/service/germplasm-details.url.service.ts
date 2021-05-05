@@ -25,19 +25,4 @@ export class GermplasmDetailsUrlService {
         return this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + queryParams);
 
     }
-
-    getStudyUrl(studyId: any): SafeResourceUrl {
-        const queryParams = `?loggedInUserId=${this.paramContext.loggedInUserId}`
-            + `&selectedProjectId=${this.paramContext.selectedProjectId}`;
-        // Link to open Study
-        return this.sanitizer.bypassSecurityTrustResourceUrl(`${STUDY_URL}${studyId}` + queryParams);
-
-    }
-
-    getGermplasmListUrl(listId: any): SafeResourceUrl {
-        const queryParams = `?restartApplication`
-            + `&lists=${listId}`;
-        return this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_LIST_MANAGER_URL + queryParams);
-    }
-
 }

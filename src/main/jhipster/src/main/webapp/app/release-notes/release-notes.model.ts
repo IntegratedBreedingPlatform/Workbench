@@ -3,7 +3,8 @@ export class ReleaseNote {
         public id: number,
         public version: string,
         public releaseDate: string,
-        public hasComingSoon: boolean
+        public hasComingSoon: boolean,
+        public fileName: string
     ) {
     }
 }

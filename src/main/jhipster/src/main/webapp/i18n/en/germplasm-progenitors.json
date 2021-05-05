@@ -1,0 +1,22 @@
+{
+  "germplasm-progenitors-modal": {
+    "edit.header": "Edit Pedigree",
+    "header": "Edit the germplasm progenitors",
+    "breeding.method": "Breeding Method:",
+    "female.parent": "Female Parent:",
+    "male.parent": "Male Parent:",
+    "male.parents": "Male Parent/s:",
+    "group.source": "Group Source:",
+    "immediate.source": "Immediate Source:",
+    "origin": "Origin:",
+    "parent.subtext": "('0' if unknown):",
+    "breeding.method.generative": "Generative",
+    "breeding.method.der.man": "Derivative/Maintenance",
+    "update": "Update",
+    "cancel": "Cancel",
+    "search": "Search",
+    "validation.only.one.male.parent.is.allowed": "Only one male parent is allowed for this method: {{param}}",
+    "validation.gid.out.of.range": "GID specified in {{param}} is invalid or out of range.",
+    "edit.success": "Progenitor details updated successfully"
+  }
+}

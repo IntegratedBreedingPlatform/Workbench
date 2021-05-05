@@ -35,13 +35,13 @@ export class ReleaseNotesDialogComponent implements OnInit {
         private paramContext: ReleaseNoteContext
     ) {
         const queryParams = this.route.snapshot.queryParams;
-        this.paramContext.fileName = queryParams.version;
+        this.paramContext.fileName = queryParams.fileName;
 
-        this.releaseNoteFileName = queryParams.version;
+        this.releaseNoteFileName = queryParams.fileName;
         this.hasComingSoon = (queryParams.hasComingSoon === 'true') ? true : false;
 
         if (this.hasComingSoon) {
-            this.comingSoonFileName = `${queryParams.version}_coming_soon`;
+            this.comingSoonFileName = `${queryParams.fileName}_coming_soon`;
         }
     }
 
@@ -85,7 +85,8 @@ export class ReleaseNotesWrapperComponent implements OnInit {
             const releaseNote: ReleaseNote = resp.body;
             const url = '/ibpworkbench/main/#release-notes-dialog?' +
                 '&version=' + releaseNote.version +
-                '&hasComingSoon=' + releaseNote.hasComingSoon;
+                '&hasComingSoon=' + releaseNote.hasComingSoon +
+                '&fileName=' + releaseNote.fileName;
 
             this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
         });

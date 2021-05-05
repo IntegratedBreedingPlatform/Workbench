@@ -25,6 +25,13 @@ body, h1, h2, h3, h4 {
     margin-left: 0.25em;
 }
 
+/* make disabled links look like actual links. Transparency added automatically by bootstrap */
+.btn-link:disabled, .btn-link.disabled {
+    color: $link-color !important;
+    pointer-events: unset !important;
+    user-select: text;
+}
+
 /* ==========================================================================
 Browser Upgrade Prompt
 ========================================================================== */
@@ -541,4 +548,13 @@ tr.cdk-drag-preview {
 .cdk-drop-list-receiving,
 #listBuilderDrop.cdk-drop-list-dragging {
     border: 2px dashed olivedrab;
+}
+
+.table-fixed {
+    white-space: break-spaces !important;
+    border-spacing: 0;
+}
+
+.word-wrap {
+    word-break: break-all;
 }

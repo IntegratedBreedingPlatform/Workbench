@@ -6,7 +6,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     selector: 'jhi-modal-confirm',
     template: `
 		<jhi-modal [title]="title">
-			<div class="modal-body" [innerHTML]="message">
+			<div class="modal-body word-wrap" [innerHTML]="message">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
