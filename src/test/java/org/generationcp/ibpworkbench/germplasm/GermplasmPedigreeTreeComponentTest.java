@@ -113,13 +113,19 @@ public class GermplasmPedigreeTreeComponentTest {
 		Assert.assertEquals(pedigreeTreeComponentUnknownFemaleParent.getNodeLabel(nodeWithUnknownParent),caption);
 		Assert.assertEquals(2, nodeWithUnknownParent.getLinkedNodes().size());
 
+		// Unknown Female Parent
 		final GermplasmPedigreeTreeNode nodeFemaleParent = nodeWithUnknownParent.getLinkedNodes().get(0);
 		final Germplasm germplasmFemaleParent = nodeFemaleParent.getGermplasm();
 		final String keyFemaleParent = nodeWithUnknownParent.getGermplasm().getGid().toString() + "@" +
 				germplasmFemaleParent.getGid();
 		final Item maleParentItem = pedigreeTreeComponentUnknownFemaleParent.getItem(keyFemaleParent);
-		Assert.assertNotNull(maleParentItem);
+		final String femaleParentCaption = pedigreeTreeComponentUnknownFemaleParent.getItemCaption(keyFemaleParent);
 
+		Assert.assertNotNull(maleParentItem);
+		Assert.assertEquals(pedigreeTreeComponentUnknownFemaleParent.getNodeLabel(nodeFemaleParent), femaleParentCaption);
+
+
+		// Known Male Parent
 		final GermplasmPedigreeTreeNode nodeMaleParent = nodeWithUnknownParent.getLinkedNodes().get(1);
 		final Germplasm germplasmMaleParent = nodeMaleParent.getGermplasm();
 		final String keyMaleParent =  nodeWithUnknownParent.getGermplasm().getGid().toString() + "@" +
@@ -127,7 +133,7 @@ public class GermplasmPedigreeTreeComponentTest {
 		final String maleParentCaption = pedigreeTreeComponentUnknownFemaleParent.getItemCaption(keyMaleParent);
 		Assert.assertEquals(pedigreeTreeComponentUnknownFemaleParent.getNodeLabel(nodeMaleParent), maleParentCaption);
 
-		// Level 3
+		// Known Male Parent with Grand Parent Level 3
 		Mockito.doReturn(this.tree).when(this.germplasmQueries).generatePedigreeTree(nodeMaleParent.getGermplasm().getGid(), 2, false);
 		Mockito.doReturn(nodeMaleParent).when(this.tree).getRoot();
 		pedigreeTreeComponentUnknownFemaleParent.pedigreeTreeExpandAction(keyMaleParent);
@@ -151,21 +157,15 @@ public class GermplasmPedigreeTreeComponentTest {
 		Assert.assertEquals(pedigreeTreeComponentUnknownFemaleParent.getNodeLabel(nodeWithUnknownParent),caption);
 		Assert.assertEquals(2, nodeWithUnknownParent.getLinkedNodes().size());
 
-		final GermplasmPedigreeTreeNode nodeMaleParent = nodeWithUnknownParent.getLinkedNodes().get(0);
-		final Germplasm germplasmMaleParent = nodeMaleParent.getGermplasm();
-		final String keyMaleParent = nodeWithUnknownParent.getGermplasm().getGid().toString() + "@" +
-				germplasmMaleParent.getGid();
-		final Item maleParentItem = pedigreeTreeComponentUnknownFemaleParent.getItem(keyMaleParent);
-		Assert.assertNull(maleParentItem);
-
+		// Known Female
 		final GermplasmPedigreeTreeNode nodeFemaleParent = nodeWithUnknownParent.getLinkedNodes().get(0);
 		final Germplasm germplasmFemaleParent = nodeFemaleParent.getGermplasm();
-		final String keyFemaleParent = germplasmMaleParent.getGid().toString() + "@" +
+		final String keyFemaleParent = nodeWithUnknownParent.getGermplasm().getGid().toString() + "@" +
 				germplasmFemaleParent.getGid().toString();
 		final String femaleParentCaption = pedigreeTreeComponentUnknownFemaleParent.getItemCaption(keyFemaleParent);
 		Assert.assertEquals(pedigreeTreeComponentUnknownFemaleParent.getNodeLabel(nodeFemaleParent), femaleParentCaption);
 
-		// Level 3
+		// Known Female with Grand Parent Level 3
 		Mockito.doReturn(this.tree).when(this.germplasmQueries).generatePedigreeTree(nodeFemaleParent.getGermplasm().getGid(), 2, false);
 		Mockito.doReturn(nodeFemaleParent).when(this.tree).getRoot();
 		pedigreeTreeComponentUnknownFemaleParent.pedigreeTreeExpandAction(keyFemaleParent);
@@ -174,6 +174,18 @@ public class GermplasmPedigreeTreeComponentTest {
 				nodeFemaleParent.getLinkedNodes().get(0).getGermplasm().getGid().toString();
 		final Item itemGrandParent = pedigreeTreeComponentUnknownFemaleParent.getItem(keyFGrandParent);
 		Assert.assertNotNull(itemGrandParent);
+
+		// Uknown Male Parent
+		final GermplasmPedigreeTreeNode nodeMaleParent = nodeWithUnknownParent.getLinkedNodes().get(1);
+		final Germplasm germplasmMaleParent = nodeMaleParent.getGermplasm();
+		final String keyMaleParent = nodeWithUnknownParent.getGermplasm().getGid().toString() + "@" +
+				germplasmMaleParent.getGid();
+		final Item maleParentItem = pedigreeTreeComponentUnknownFemaleParent.getItem(keyMaleParent);
+		final String maleParentItemCaption = pedigreeTreeComponentUnknownFemaleParent.getItemCaption(keyMaleParent);
+		Assert.assertNotNull(maleParentItem);
+		Assert.assertEquals(pedigreeTreeComponentUnknownFemaleParent.getNodeLabel(nodeMaleParent), maleParentItemCaption);
+
+
 	}
 	
 	private GermplasmPedigreeTreeNode getTreeNode(int gid) {
