@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.CollectionUtils;
 
 @Configurable
 public class GermplasmPedigreeTreeComponent extends Tree {
@@ -117,7 +118,8 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
 
-			if (gid.equals(0)) {
+			if (gid.equals(0) && !CollectionUtils.isEmpty(parent.getLinkedNodes())) {
+				// If unknown with children
 				this.addNode(parent, leafNodeId);
 			} else {
 				final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
