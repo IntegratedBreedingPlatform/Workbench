@@ -16,6 +16,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.commons.util.Util;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmTreeExpandListener;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
@@ -117,7 +118,8 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
 
-			if (gid.equals(0)) {
+			if (gid.equals(0) && !Util.isEmpty(parent.getLinkedNodes())) {
+				// If unknown with children
 				this.addNode(parent, leafNodeId);
 			} else {
 				final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
