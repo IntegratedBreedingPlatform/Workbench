@@ -192,7 +192,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.UNGROUP));
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')")
 	private void addCreateInventoryLotsLink() {
 		this.createInventoryLots = this.addItem(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM));
 	}
