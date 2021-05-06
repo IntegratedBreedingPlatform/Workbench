@@ -24,14 +24,13 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         data: {
             authorities: [
                 'ADMIN',
-                'CROP_MANAGEMENT',
                 'STUDIES',
+                'MANAGE_STUDIES',
+                'MS_CREATE_LOTS',
                 'LISTS',
                 'GERMPLASM_LISTS',
                 'MG_MANAGE_INVENTORY',
-                'MG_CREATE_LOTS',
-                'MANAGE_STUDIES',
-                'MS_CREATE_LOTS'
+                'MG_CREATE_LOTS'
             ]
         },
         canActivate: [RouteAccessService]
