@@ -67,6 +67,7 @@ import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 import { DateHelperService } from './service/date.helper.service';
 import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
 import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
+import { SecureImagePipe } from './util/secure-image.pipe';
 
 @NgModule({
     imports: [
@@ -101,6 +102,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
@@ -119,6 +121,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         LoginService,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         Principal,
         AccountService,
         InventoryService,
@@ -165,6 +168,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         TableModule,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
