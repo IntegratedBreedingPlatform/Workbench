@@ -32,8 +32,10 @@
 						<ng-select2 name="programDropdown" id="programDropdown" width="100%"
 									*ngIf="crops?.length"
 									[(ngModel)]="programModel"
-									(ngModelChange)="onProgramChange()"
-									[options]="programDropdownOptions">
+									[value]="programModel"
+									[data]="initialData"
+									[options]="programDropdownOptions"
+									(valueChanged)="onProgramChange($event)">
 						</ng-select2>
 					</div>
 					<div class="col-sm-auto">
