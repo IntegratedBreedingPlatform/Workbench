@@ -6,12 +6,12 @@ import { ActivatedRoute, Route } from '@angular/router';
     templateUrl: './file-manager.component.html'
 })
 export class FileManagerComponent {
-    fileName: string;
+    fileKey: string;
 
     constructor(
         private route: ActivatedRoute
     ) {
         const routeParams = this.route.snapshot.paramMap;
-        this.fileName = routeParams.get('fileName');
+        this.fileKey = routeParams.get('fileKey');
     }
 }
