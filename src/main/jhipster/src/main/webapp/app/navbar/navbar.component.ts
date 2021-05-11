@@ -104,12 +104,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     openTool(url) {
         const hasParams = url.includes('?');
         this.toolLinkSelected = url;
-        const authParams = (hasParams ? '&' : '?') + 'cropName=' + localStorage['cropName']
-            + '&programUUID=' + localStorage['programUUID']
+        const authParams = (hasParams ? '&' : '?') + 'cropName=' + this.program.crop
+            + '&programUUID=' + this.program.uniqueID
             // Deprecated, not needed
             // + '&authToken=' + localStorage['authToken']
-            + '&selectedProjectId=' + localStorage['selectedProjectId']
-            + '&loggedInUserId=' + localStorage['loggedInUserId']
+            + '&selectedProjectId=' + this.program.id
+            + '&loggedInUserId=' + this.user.id
             + '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
     }
@@ -235,11 +235,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                     }
 
                     this.program = program;
-                    localStorage['selectedProjectId'] = this.program.id;
-                    localStorage['loggedInUserId'] = this.user.id;
-                    localStorage['cropName'] = this.program.crop;
-                    localStorage['programUUID'] = this.program.uniqueID;
-
                     this.dataSource.data = res.body.map((response: Tool) => this.toNode(response));
                 }, (res: HttpErrorResponse) => this.onError(res)
             );
