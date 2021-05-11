@@ -161,16 +161,6 @@ export class ProgramComponent implements OnInit {
         }
     }
 
-    /*
-     * FIXME
-     *  - not possible because of dropdown pagination?
-     *  - preselected crop -> easier -> no pagination
-     */
-    isPreSelected(program: Program) {
-        return program.uniqueID ===
-            (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
-    }
-
     onCropChange() {
         // workaround to trigger select2 ajax reload
         if (this.cropName) {
