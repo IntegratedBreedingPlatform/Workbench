@@ -53,7 +53,6 @@ import org.generationcp.breeding.manager.util.BreedingManagerUtil;
 import org.generationcp.commons.parsing.pojo.ImportedCross;
 import org.generationcp.commons.parsing.pojo.ImportedGermplasmParent;
 import org.generationcp.commons.ruleengine.generator.SeedSourceGenerator;
-import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.CollectionTransformationUtil;
 import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -165,9 +164,6 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
-	@Resource
-	private ContextUtil contextUtil;
 
 	private Label lblReviewCrosses;
 
