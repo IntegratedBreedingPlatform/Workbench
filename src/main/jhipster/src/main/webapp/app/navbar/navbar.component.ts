@@ -14,7 +14,7 @@ import { LoginService } from '../shared/login/login.service';
 import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
-import { UserProgramInfoService } from '../shared/service/user-program-info.service';
+import { ProgramUsageService } from '../shared/service/program-usage.service';
 import { Router } from '@angular/router';
 import { NavbarMessageEvent } from '../shared/model/navbar-message.event';
 
@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private jhiAlertService: JhiAlertService,
         private loginService: LoginService,
         private helpService: HelpService,
-        private userProgramInfoService: UserProgramInfoService,
+        private programUsageService: ProgramUsageService,
         private router: Router
     ) {
         this.version = VERSION ? `BMS ${VERSION}` : '';
@@ -144,7 +144,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         if (event.data.programSelected) {
             const program = event.data.programSelected;
             try {
-                await this.userProgramInfoService.setSelectedProgram(program.uniqueID).toPromise();
+                await this.programUsageService.save({ userId: this.user.id, projectId: program.id }).toPromise();
                 await this.getTools(program);
 
                 // Open program with specific tool (e.g a particular study in manage studies)
