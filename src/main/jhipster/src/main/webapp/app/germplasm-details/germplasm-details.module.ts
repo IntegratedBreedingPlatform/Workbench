@@ -13,6 +13,7 @@ import { BmsjHipsterSharedModule } from '../shared';
 import { GermplasmDetailsContext } from './germplasm-details.context';
 import { GermplasmDetailsModalComponent, GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
+import { PedigreeTreeComponent } from './pedigree/pedigree-tree.component';
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
         ObservationsPaneComponent,
         InventoryPaneComponent,
         ListsPaneComponent,
-        SamplesPaneComponent
+        SamplesPaneComponent,
+        PedigreeTreeComponent
     ],
     entryComponents: [
         GermplasmDetailsPopupComponent,
@@ -41,7 +43,8 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
         ObservationsPaneComponent,
         InventoryPaneComponent,
         ListsPaneComponent,
-        SamplesPaneComponent
+        SamplesPaneComponent,
+        PedigreeTreeComponent
     ],
     providers: [
         GermplasmDetailsContext,

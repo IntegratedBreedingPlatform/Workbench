@@ -34,7 +34,7 @@ export class PedigreePaneComponent implements OnInit {
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
                 private paramContext: ParamContext,
-                private germplasmDetailsContext: GermplasmDetailsContext,
+                public germplasmDetailsContext: GermplasmDetailsContext,
                 private sanitizer: DomSanitizer,
                 private germplasmService: GermplasmService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,

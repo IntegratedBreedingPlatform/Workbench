@@ -61,6 +61,8 @@
         }
     },
     "pedigree": {
+        "gid-column": "GID",
+        "preferred-name-column": "PREFERRED NAME",
         "progenitors": {
             "title": "PROGENITORS",
             "male-parent": "Male Parent",
@@ -72,6 +74,26 @@
             "group-source-gid": "Group Source GID",
             "immediate-source-gid": "Immediate Source GID",
             "breeding-method": "Breeding Method"
+        },
+        "tree": {
+            "title": "PEDIGREE TREE",
+            "include.derivative.lines": "Include derivative and maintenance lines",
+            "apply": "Apply"
+        },
+        "generation-history": {
+            "title": "GENERATION HISTORY"
+        },
+        "management-neighbors": {
+            "title": "MANAGEMENT NEIGHBORS"
+        },
+        "derivative-neighborhood": {
+            "title": "DERIVATIVE NEIGHBORHOOD"
+        },
+        "maintenance-neighborhood": {
+            "title": "MAINTENANCE NEIGHBORHOOD"
+        },
+        "group-relatives": {
+            "title": "GROUP RELATIVES"
         }
     },
     "observations": {
