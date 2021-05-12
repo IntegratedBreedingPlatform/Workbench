@@ -35,7 +35,6 @@ import java.net.URL;
  * @author klmanansala
  *
  */
-//TODO: this class is only used in test context -> move to test
 public class HibernateUtil implements Serializable {
 
 	private static final long serialVersionUID = -6399030839728425831L;
