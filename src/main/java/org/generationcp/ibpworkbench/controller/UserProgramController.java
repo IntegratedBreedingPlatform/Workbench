@@ -33,6 +33,11 @@ public class UserProgramController {
     @Resource
     private HttpServletRequest request;
 
+    //TODO:  this controller was implemented in IBP-4421 fixing an authentication issue.
+    //    After that in IBP-4397 was implemented the APIs to return the last project user selected and save the project selected by the user.
+    //    Also was implement ParamContext in AccountService and RouteAccessService
+    //    to set the crop and programUUID and recover the user authorities to validate the access.
+
     @RequestMapping(value = "/userProgramInfo", method = RequestMethod.POST)
     public ResponseEntity<String> setUserProgramInfo(@RequestBody final String programUUID) {
         final Project project = this.workbenchDataManager.getProjectByUuid(programUUID);
