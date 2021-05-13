@@ -104,11 +104,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     openTool(url) {
         const hasParams = url.includes('?');
         this.toolLinkSelected = url;
-        const authParams = (hasParams ? '&' : '?') + 'cropName=' + this.program.crop
-            + '&programUUID=' + this.program.uniqueID
+        const cropName = this.program ? this.program.crop : null;
+        const programUUID = this.program ? this.program.uniqueID : null;
+        const selectedProjectId = this.program ? this.program.id : null;
+        const authParams = (hasParams ? '&' : '?') + 'cropName=' + cropName
+            + '&programUUID=' + programUUID
             // Deprecated, not needed
             // + '&authToken=' + localStorage['authToken']
-            + '&selectedProjectId=' + this.program.id
+            + '&selectedProjectId=' + selectedProjectId
             + '&loggedInUserId=' + this.user.id
             + '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
