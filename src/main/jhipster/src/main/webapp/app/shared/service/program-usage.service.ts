@@ -16,8 +16,8 @@ export class ProgramUsageService {
         });
     }
 
-    save(programUsage: any): Observable<any> {
-        return this.http.post<any>(SERVER_API_URL + `program-usage`, programUsage, {
+    save(cropName: any, programUUID: any): Observable<any> {
+        return this.http.post<any>(SERVER_API_URL + `crops/${cropName}/program-usage?programUUID=${programUUID}`,null, {
             observe: 'response'
         });
     }
