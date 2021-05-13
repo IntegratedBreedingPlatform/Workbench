@@ -67,7 +67,6 @@ export class ProgramComponent implements OnInit {
     }
 
     async ngOnInit() {
-        // We get user last opened project ff programUUID is not present in the local storage
         const identity = await this.principal.identity();
         this.user = identity;
         this.crops = await this.cropService.getCrops().toPromise();
