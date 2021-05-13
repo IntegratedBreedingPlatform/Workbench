@@ -76,10 +76,11 @@ export class ProgramComponent implements OnInit {
             const userProgramSelected = response.body;
             if (userProgramSelected) {
                 this.getPrograms(1, undefined).subscribe((res) => {
-                    this.programModel = userProgramSelected.uniqueID;
-                    this.context.program = userProgramSelected;
-                    this.initialData = [{ id: userProgramSelected.uniqueID, text: userProgramSelected.name }]
-                    this.programsById[userProgramSelected.uniqueID] = userProgramSelected;
+                    if (this.programsById[userProgramSelected.uniqueID]) {
+                        this.programModel = userProgramSelected.uniqueID;
+                        this.context.program = userProgramSelected;
+                        this.initialData = [{ id: userProgramSelected.uniqueID, text: userProgramSelected.name }]
+                    }
                 }, (err) => {
                 });
             }
