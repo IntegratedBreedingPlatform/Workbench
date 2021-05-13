@@ -144,7 +144,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         if (event.data.programSelected) {
             const program = event.data.programSelected;
             try {
-                await this.programUsageService.save({ userId: this.user.id, projectId: program.id }).toPromise();
+                await this.programUsageService.save(program.crop, program.uniqueID).toPromise();
                 await this.getTools(program);
 
                 // Open program with specific tool (e.g a particular study in manage studies)
