@@ -4,7 +4,8 @@ export class GermplasmTreeNode {
         public preferredName?: string,
         public femaleParentNode?: GermplasmTreeNode,
         public maleParentNode?: GermplasmTreeNode,
-        public otherProgenitors?: GermplasmTreeNode[]
+        public otherProgenitors?: GermplasmTreeNode[],
+        public numberOfGenerations?: number
     ) {
     }
 }

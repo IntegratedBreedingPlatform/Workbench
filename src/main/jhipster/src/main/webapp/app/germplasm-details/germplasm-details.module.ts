@@ -14,6 +14,11 @@ import { GermplasmDetailsContext } from './germplasm-details.context';
 import { GermplasmDetailsModalComponent, GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
 import { PedigreeTreeComponent } from './pedigree/pedigree-tree.component';
+import { GenerationHistoryComponent } from './pedigree/generation-history.component';
+import { GermplasmTableComponent } from './pedigree/germplasm-table.component';
+import { ManagementNeighborsComponent } from './pedigree/management-neighbors.component';
+import { GroupRelativesComponent } from './pedigree/group-relatives.component';
+import { GermplasmNeighborhoodTreeComponent } from './pedigree/germplasm-neighborhood-tree.component';
 
 @NgModule({
     imports: [
@@ -31,7 +36,12 @@ import { PedigreeTreeComponent } from './pedigree/pedigree-tree.component';
         InventoryPaneComponent,
         ListsPaneComponent,
         SamplesPaneComponent,
-        PedigreeTreeComponent
+        PedigreeTreeComponent,
+        GermplasmTableComponent,
+        GenerationHistoryComponent,
+        ManagementNeighborsComponent,
+        GroupRelativesComponent,
+        GermplasmNeighborhoodTreeComponent
     ],
     entryComponents: [
         GermplasmDetailsPopupComponent,
@@ -44,7 +54,12 @@ import { PedigreeTreeComponent } from './pedigree/pedigree-tree.component';
         InventoryPaneComponent,
         ListsPaneComponent,
         SamplesPaneComponent,
-        PedigreeTreeComponent
+        PedigreeTreeComponent,
+        GermplasmTableComponent,
+        GenerationHistoryComponent,
+        ManagementNeighborsComponent,
+        GroupRelativesComponent,
+        GermplasmNeighborhoodTreeComponent
     ],
     providers: [
         GermplasmDetailsContext,

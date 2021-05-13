@@ -1,11 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
-import { PEDIGREE_DETAILS_URL } from '../../app.constants';
-import { ParamContext } from '../../shared/service/param.context';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { DomSanitizer } from '@angular/platform-browser';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { GermplasmProgenitorsDetails } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
@@ -27,27 +23,16 @@ export class PedigreePaneComponent implements OnInit {
 
     eventSubscriber: Subscription;
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
-    safeUrl: SafeResourceUrl;
     isIframeLoaded: boolean;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
-                private paramContext: ParamContext,
                 public germplasmDetailsContext: GermplasmDetailsContext,
-                private sanitizer: DomSanitizer,
                 private germplasmService: GermplasmService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 private router: Router,
                 private germplasmProgenitorsContext: GermplasmProgenitorsContext) {
-        const authParams = '?gid=' + this.germplasmDetailsContext.gid
-            + '&cropName=' + this.paramContext.cropName
-            + '&programUUID=' + this.paramContext.programUUID
-            + '&authToken=' + this.paramContext.authToken
-            + '&loggedInUserId=' + this.paramContext.loggedInUserId
-            + '&selectedProjectId=' + this.paramContext.selectedProjectId;
-
-        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(PEDIGREE_DETAILS_URL + authParams);
     }
 
     onIframeLoad(): void {

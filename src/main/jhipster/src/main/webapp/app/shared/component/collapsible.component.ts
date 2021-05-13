@@ -14,7 +14,7 @@ import { Component, Input } from '@angular/core';
     `
 })
 export class CollapsibleComponent {
-    isCollapsed = false;
+    @Input() isCollapsed = false;
     @Input() heading: string;
     @Input() collapsable = true;
 }

@@ -78,7 +78,7 @@
         "tree": {
             "title": "PEDIGREE TREE",
             "include.derivative.lines": "Include derivative and maintenance lines",
-            "apply": "Apply"
+            "view-pedigree-graph": "View Pedigree Graph"
         },
         "generation-history": {
             "title": "GENERATION HISTORY"

@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmTreeNode } from '../../shared/germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../../shared/germplasm/service/germplasm.pedigree.service';
-import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
@@ -13,6 +12,7 @@ export class PedigreeTreeComponent implements OnInit {
 
     @Input() gid: number;
     includeDerivativeLines = false;
+    numberOfGenerations: number;
     public nodes: PrimeNgTreeNode[] = [];
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
@@ -27,7 +27,9 @@ export class PedigreeTreeComponent implements OnInit {
         this.nodes = [];
         this.germplasmPedigreeService.getGermplasmTree(this.gid, 2, this.includeDerivativeLines)
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
+                this.numberOfGenerations = germplasmTreeNode.numberOfGenerations;
                 this.addNode(germplasmTreeNode);
+                this.addChildren(this.nodes[0], germplasmTreeNode);
                 this.redrawNodes();
             });
     }
@@ -87,7 +89,8 @@ export class PedigreeTreeComponent implements OnInit {
     }
 
     hasChildren(germplasmTreeNode: GermplasmTreeNode): boolean {
-        return germplasmTreeNode.femaleParentNode != null || germplasmTreeNode.maleParentNode != null || (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0);
+        return germplasmTreeNode.femaleParentNode != null || germplasmTreeNode.maleParentNode != null
+            || (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0);
     }
 
     private toPrimeNgNode(node: GermplasmTreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {

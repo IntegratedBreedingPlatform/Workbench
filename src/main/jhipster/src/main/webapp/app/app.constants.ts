@@ -10,7 +10,6 @@ export const GERMPLASM_BROWSER_DEFAULT_URL = '/ibpworkbench/maingpsb/germplasm-'
 export const GERMPLASM_LIST_MANAGER_URL = '/ibpworkbench/bm/list-manager';
 export const BREEDING_METHODS_BROWSER_DEFAULT_URL = '/ibpworkbench/content/ProgramMethods';
 export const GERMPLASM_DETAILS_URL = '/ibpworkbench/main/app/#/germplasm-details/';
-export const PEDIGREE_DETAILS_URL = '/ibpworkbench/maingpsb/pedigree-details/';
 export const GERMPLASM_SEARCH_SELECTOR = '/ibpworkbench/controller/jhipster#/germplasm-selector/';
 export const INVENTORY_DETAILS_URL = '/ibpworkbench/controller/jhipster#/inventory-details/';
 export const GRAPHICAL_QUERIES_URL = '/ibpworkbench/controller/graphical-queries/';
