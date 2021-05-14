@@ -125,10 +125,10 @@ export class ProgramComponent implements OnInit {
             size: this.pageSize
         }).pipe(map((res) => {
             this.itemCount = res.headers.get('X-Total-Count');
-            this.programsById = res.body.reduce((prev, curr) => {
+            Object.assign(this.programsById, res.body.reduce((prev, curr) => {
                 prev[curr.uniqueID] = curr;
                 return prev;
-            }, {});
+            }, {}));
             return res;
         })).pipe(
             finalize(() => this.isLoading = false)
