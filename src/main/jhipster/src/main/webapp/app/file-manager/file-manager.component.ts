@@ -26,4 +26,8 @@ export class FileManagerComponent {
             (<any>window.parent).closeModal();
         }
     }
+
+    getFileKeyEncoded() {
+        return encodeURIComponent(this.fileKey);
+    }
 }
