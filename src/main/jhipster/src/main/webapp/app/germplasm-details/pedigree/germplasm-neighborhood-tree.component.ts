@@ -33,16 +33,20 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
         if (this.type === 'derivative') {
             this.germplasmPedigreeService.getDerivativeNeighborhood(this.gid, this.numberOfStepsBackward, this.numberOfStepsForward)
                 .subscribe((germplasmNeighborhoodTreeNode: GermplasmNeighborhoodTreeNode) => {
-                    this.addNode(germplasmNeighborhoodTreeNode);
-                    this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
-                    this.redrawNodes();
+                    if (germplasmNeighborhoodTreeNode) {
+                        this.addNode(germplasmNeighborhoodTreeNode);
+                        this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
+                        this.redrawNodes();
+                    }
                 });
         } else {
             this.germplasmPedigreeService.getMaintenanceNeighborhood(this.gid, this.numberOfStepsBackward, this.numberOfStepsForward)
                 .subscribe((germplasmNeighborhoodTreeNode: GermplasmNeighborhoodTreeNode) => {
-                    this.addNode(germplasmNeighborhoodTreeNode);
-                    this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
-                    this.redrawNodes();
+                    if (germplasmNeighborhoodTreeNode) {
+                        this.addNode(germplasmNeighborhoodTreeNode);
+                        this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
+                        this.redrawNodes();
+                    }
                 });
         }
 
