@@ -23,9 +23,9 @@ export class PedigreeTreeComponent implements OnInit {
         this.loadTree();
     }
 
-    loadTree() {
+    loadTree(level?: number) {
         this.nodes = [];
-        this.germplasmPedigreeService.getGermplasmTree(this.gid, 2, this.includeDerivativeLines)
+        this.germplasmPedigreeService.getGermplasmTree(this.gid, (level) ? level : 2, this.includeDerivativeLines)
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
                 this.numberOfGenerations = germplasmTreeNode.numberOfGenerations;
                 this.addNode(germplasmTreeNode);
