@@ -1,11 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmProgenitorsDetails } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitors/germplasm-progenitors.context';
 import { Subscription } from 'rxjs';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
@@ -19,8 +19,6 @@ export class PedigreePaneComponent implements OnInit {
 
     MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
 
-    @ViewChild('pedigreeIframe') pedigreeIframe: ElementRef;
-
     eventSubscriber: Subscription;
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     isIframeLoaded: boolean;
@@ -32,16 +30,8 @@ export class PedigreePaneComponent implements OnInit {
                 private germplasmService: GermplasmService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 private router: Router,
+                private activatedRoute: ActivatedRoute,
                 private germplasmProgenitorsContext: GermplasmProgenitorsContext) {
-    }
-
-    onIframeLoad(): void {
-        if (this.pedigreeIframe.nativeElement.src) {
-            // Only display the iframe after the iframe page is loaded, this is to prevent the page from automatically scrolling down when iframe source is loaded.
-            setTimeout(() => {
-                this.isIframeLoaded = true;
-            }, 1000);
-        }
     }
 
     ngOnInit(): void {
@@ -72,4 +62,5 @@ export class PedigreePaneComponent implements OnInit {
     isGenerative(): boolean {
         return this.germplasmProgenitorsDetails && this.germplasmProgenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
     }
+
 }
