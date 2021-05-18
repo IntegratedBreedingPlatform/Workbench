@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
@@ -10,6 +10,7 @@ import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitor
 import { Subscription } from 'rxjs';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { PedigreeTreeComponent } from './pedigree-tree.component';
 
 @Component({
     selector: 'jhi-pedigree-pane',
@@ -19,6 +20,7 @@ export class PedigreePaneComponent implements OnInit {
 
     MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
 
+    @ViewChild(PedigreeTreeComponent) pedigreeTreeComponent: PedigreeTreeComponent;
     eventSubscriber: Subscription;
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     isIframeLoaded: boolean;
@@ -42,6 +44,7 @@ export class PedigreePaneComponent implements OnInit {
     registerGermplasmNameChanged() {
         this.eventSubscriber = this.eventManager.subscribe('progenitorsChanged', (event) => {
             this.loadProgenitorDetails();
+            this.pedigreeTreeComponent.loadTree();
             this.germplasmDetailsContext.notifyGermplasmDetailChanges();
         });
     }
