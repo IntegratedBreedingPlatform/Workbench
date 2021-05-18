@@ -14,7 +14,15 @@ export class GermplasmPedigreeService {
     }
 
     getGermplasmTree(gid: number, level: number, includeDerivativeLines: boolean): Observable<GermplasmTreeNode> {
-        return this.http.get<GermplasmTreeNode>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/tree/${level}?programUUID=${this.context.programUUID}&includeDerivativeLines=${includeDerivativeLines}`);
+        const params = {};
+        if (level) {
+            params['level'] = level;
+        }
+        params['programUUID'] = this.context.programUUID;
+        params['includeDerivativeLines'] = includeDerivativeLines;
+        return this.http.get<GermplasmTreeNode>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/tree`, {
+            params
+        });
     }
 
     getGenerationHistory(gid: number): Observable<GermplasmDto[]> {

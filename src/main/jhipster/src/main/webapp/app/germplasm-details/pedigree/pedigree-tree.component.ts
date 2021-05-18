@@ -3,6 +3,8 @@ import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode'
 import { GermplasmTreeNode } from '../../shared/germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../../shared/germplasm/service/germplasm.pedigree.service';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-pedigree-tree',
@@ -14,23 +16,28 @@ export class PedigreeTreeComponent implements OnInit {
     includeDerivativeLines = false;
     numberOfGenerations: number;
     public nodes: PrimeNgTreeNode[] = [];
+    isLoading = false;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+                private modalService: NgbModal,
+                private activeModal: NgbActiveModal) {
     }
 
     ngOnInit(): void {
-        this.loadTree();
+        this.loadTree(2);
     }
 
     loadTree(level?: number) {
+        this.isLoading = true;
         this.nodes = [];
-        this.germplasmPedigreeService.getGermplasmTree(this.gid, (level) ? level : 2, this.includeDerivativeLines)
+        this.germplasmPedigreeService.getGermplasmTree(this.gid, level, this.includeDerivativeLines)
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
                 this.numberOfGenerations = germplasmTreeNode.numberOfGenerations;
                 this.addNode(germplasmTreeNode);
                 this.addChildren(this.nodes[0], germplasmTreeNode);
                 this.redrawNodes();
+                this.isLoading = false;
             });
     }
 
@@ -53,6 +60,20 @@ export class PedigreeTreeComponent implements OnInit {
                 this.addChildren(parent, germplasmTreeNode);
                 this.redrawNodes();
             });
+    }
+
+    expandAll() {
+        if (this.numberOfGenerations > 5) {
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.message = 'The pedigree tree has more than 5 generations, this may take some time to generate. Do you want to proceeed?';
+            confirmModalRef.result.then(() => {
+                this.loadTree();
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
+        } else {
+            this.loadTree(this.numberOfGenerations);
+        }
+
     }
 
     addChildren(parent: PrimeNgTreeNode, germplasmTreeNode: GermplasmTreeNode) {

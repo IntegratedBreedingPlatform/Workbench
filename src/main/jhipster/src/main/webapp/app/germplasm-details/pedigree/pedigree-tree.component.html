@@ -2,13 +2,15 @@
 	<div class="col-xs-12 col-md-12">
 		<div class="row">
 			<div class="col-12">
-				<input type="checkbox" [(ngModel)]="includeDerivativeLines" (ngModelChange)="loadTree()"/><label class="ml-1" jhiTranslate="pedigree.tree.include.derivative.lines">Include derivative and maintenance lines </label>
-				<button class="btn btn-info ml-3"><span jhiTranslate="pedigree.tree.view-pedigree-graph"></span></button>
+				<input type="checkbox" [disabled]="isLoading" [(ngModel)]="includeDerivativeLines" (ngModelChange)="loadTree(2)"/><label class="ml-1" jhiTranslate="pedigree.tree.include.derivative.lines">Include derivative and maintenance lines </label>
+				<button class="btn btn-info ml-3" [disabled]="isLoading"><span jhiTranslate="pedigree.tree.view-pedigree-graph">View Pedigree Graph</span></button>
+				<button class="btn btn-info ml-3" *ngIf="numberOfGenerations > 5" (click)="expandAll()" [disabled]="isLoading"><span jhiTranslate="pedigree.tree.display-full-pedigree">Display Full Pedigree</span></button>
 			</div>
 		</div>
 		<div class="table-responsive pt-3">
-			<label *ngIf="numberOfGenerations">{{numberOfGenerations}} Generation{{numberOfGenerations > 1 ? 's' : ''}}</label>
-			<a class="pull-right" href="javascript: void(0)" (click)="loadTree(numberOfGenerations)">Expand All</a>
+			<label *ngIf="numberOfGenerations <= 5">{{numberOfGenerations}} Generation{{numberOfGenerations > 1 ? 's' : ''}}</label>
+			<label *ngIf="numberOfGenerations > 5">5+ Generations</label>
+			<span *ngIf="isLoading" class="ml-3 throbber throbber-btn"></span>
 			<p-tree [value]="nodes"
 					(onNodeExpand)="onNodeExpand($event)"
 					autoLayout="true"
