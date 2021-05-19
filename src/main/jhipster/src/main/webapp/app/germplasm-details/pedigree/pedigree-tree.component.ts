@@ -15,7 +15,7 @@ export class PedigreeTreeComponent implements OnInit {
     numberOfGenerations: number;
     public nodes: PrimeNgTreeNode[] = [];
     isLoading = false;
-    isDisplayAllPedigreeTree = false;
+    isExpandAll = false;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
@@ -26,8 +26,8 @@ export class PedigreeTreeComponent implements OnInit {
     }
 
     loadTree(level?: number) {
+        this.isExpandAll = level === undefined;
         this.isLoading = true;
-        this.isDisplayAllPedigreeTree = false;
         this.nodes = [];
         this.germplasmPedigreeService.getGermplasmTree(this.gid, level, this.includeDerivativeLines)
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
@@ -36,7 +36,6 @@ export class PedigreeTreeComponent implements OnInit {
                 this.addChildren(this.nodes[0], germplasmTreeNode);
                 this.redrawNodes();
                 this.isLoading = false;
-                this.isDisplayAllPedigreeTree = (level === undefined || this.numberOfGenerations > 5);
             });
     }
 
@@ -59,6 +58,11 @@ export class PedigreeTreeComponent implements OnInit {
                 this.addChildren(parent, germplasmTreeNode);
                 this.redrawNodes();
             });
+    }
+
+    expandAll() {
+        this.loadTree();
+        this.isExpandAll = true;
     }
 
     addChildren(parent: PrimeNgTreeNode, germplasmTreeNode: GermplasmTreeNode) {

@@ -3,13 +3,14 @@
 		<div class="row">
 			<div class="col-12">
 				<input type="checkbox" [disabled]="isLoading" [(ngModel)]="includeDerivativeLines" (ngModelChange)="loadTree(2)"/><label class="ml-1" jhiTranslate="pedigree.tree.include.derivative.lines">Include derivative and maintenance lines </label>
-				<button class="btn btn-info ml-3" [disabled]="isLoading" [routerLink]="['/', { outlets: { popup: 'germplasm-details/graphviz/' + gid } }]" queryParamsHandling="merge"><span jhiTranslate="pedigree.tree.view-pedigree-graph"></span></button>
-				<button class="btn btn-info ml-3" [disabled]="isLoading" *ngIf="isDisplayAllPedigreeTree" (click)="loadTree()"><span jhiTranslate="pedigree.tree.display-full-pedigree">Display Full Pedigree</span></button>
+				<button class="btn btn-info ml-2" [disabled]="isLoading" [routerLink]="['/', { outlets: { popup: 'germplasm-details/graphviz/' + gid } }]" queryParamsHandling="merge"><span jhiTranslate="pedigree.tree.view-pedigree-graph"></span></button>
+				<button class="btn btn-info ml-2" [disabled]="isLoading" *ngIf="this.numberOfGenerations > 5" (click)="expandAll()"><span jhiTranslate="pedigree.tree.display-full-pedigree">Display Full Pedigree</span></button>
 			</div>
 		</div>
 		<div class="table-responsive pt-3">
-			<label *ngIf="numberOfGenerations <= 5 || isDisplayAllPedigreeTree">{{numberOfGenerations}} Generation{{numberOfGenerations > 1 ? 's' : ''}}</label>
-			<label *ngIf="numberOfGenerations > 5 && !isDisplayAllPedigreeTree">5+ Generations</label>
+			<label *ngIf="!isExpandAll && numberOfGenerations <= 5">{{numberOfGenerations}} Generation{{numberOfGenerations > 1 ? 's' : ''}}</label>
+			<label *ngIf="!isExpandAll && numberOfGenerations > 5">5+ Generations</label>
+			<label *ngIf="isExpandAll">{{numberOfGenerations}} Generations</label>
 			<span *ngIf="isLoading" class="ml-3 throbber throbber-btn"></span>
 			<p-tree [value]="nodes"
 					(onNodeExpand)="onNodeExpand($event)"

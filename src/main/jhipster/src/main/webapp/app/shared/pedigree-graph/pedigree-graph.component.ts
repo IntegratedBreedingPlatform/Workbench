@@ -26,7 +26,9 @@ export class PedigreeGraphComponent implements OnInit {
         if (this.gid && this.level > 0) {
             this.isLoading = true;
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
-                graphviz('#pedigree-graph').fit(true)
+                graphviz('#pedigree-graph', {
+                    useWorker: false
+                }).fit(true)
                     .zoom(true).attributer((obj) => {
                     if (obj.tag === 'svg') {
                         // Make sure the svg render fits the container
