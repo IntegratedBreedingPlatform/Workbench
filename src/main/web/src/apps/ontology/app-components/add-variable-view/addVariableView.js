@@ -128,7 +128,7 @@
 			});
 
 			function isVariableTypeNotAllowed(variableType) {
-				return ['1807', '1808', '1802'].indexOf(variableType.id) === -1;
+				return ['1807', '1808', '1802', '1813', '1814'].indexOf(variableType.id) === -1;
 			}
 
 			$scope.formGroupClass = formUtilities.formGroupClassGenerator($scope, 'avForm');
