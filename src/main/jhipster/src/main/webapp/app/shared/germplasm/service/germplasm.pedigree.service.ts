@@ -15,6 +15,7 @@ export class GermplasmPedigreeService {
 
     getGermplasmTree(gid: number, level: number, includeDerivativeLines: boolean): Observable<GermplasmTreeNode> {
         const params = {};
+        // If level is not specified, the service will return all levels.
         if (level) {
             params['level'] = level;
         }

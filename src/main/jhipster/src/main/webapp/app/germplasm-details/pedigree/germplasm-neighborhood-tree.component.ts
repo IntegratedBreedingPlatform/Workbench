@@ -15,6 +15,7 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
     public nodes: PrimeNgTreeNode[] = [];
     numberOfStepsBackward = 2;
     numberOfStepsForward =  3;
+    isLoading = false;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
@@ -29,6 +30,7 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
     }
 
     loadTree() {
+        this.isLoading = true;
         this.nodes = [];
         if (this.type === 'derivative') {
             this.germplasmPedigreeService.getDerivativeNeighborhood(this.gid, this.numberOfStepsBackward, this.numberOfStepsForward)
@@ -37,6 +39,7 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
                         this.addNode(germplasmNeighborhoodTreeNode);
                         this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
                         this.redrawNodes();
+                        this.isLoading = false;
                     }
                 });
         } else {
@@ -46,6 +49,7 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
                         this.addNode(germplasmNeighborhoodTreeNode);
                         this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
                         this.redrawNodes();
+                        this.isLoading = false;
                     }
                 });
         }
