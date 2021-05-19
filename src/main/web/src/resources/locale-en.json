@@ -217,7 +217,9 @@
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
 			"studies": "Nurseries and Trials",
-		  	"datasets": "Datasets"
+		  	"datasets": "Datasets",
+			"germplasm": "Germplasm",
+			"breedingMethods": "BreedingMethods"
 		}
 	},
 
