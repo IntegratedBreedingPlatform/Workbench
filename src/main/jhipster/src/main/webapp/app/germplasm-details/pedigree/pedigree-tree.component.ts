@@ -27,6 +27,7 @@ export class PedigreeTreeComponent implements OnInit {
 
     loadTree(level?: number) {
         this.isLoading = true;
+        this.isDisplayAllPedigreeTree = false;
         this.nodes = [];
         this.germplasmPedigreeService.getGermplasmTree(this.gid, level, this.includeDerivativeLines)
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
@@ -35,7 +36,7 @@ export class PedigreeTreeComponent implements OnInit {
                 this.addChildren(this.nodes[0], germplasmTreeNode);
                 this.redrawNodes();
                 this.isLoading = false;
-                this.isDisplayAllPedigreeTree = level === undefined;
+                this.isDisplayAllPedigreeTree = (level === undefined || this.numberOfGenerations > 5);
             });
     }
 

@@ -19,6 +19,7 @@ import { GermplasmTableComponent } from './pedigree/germplasm-table.component';
 import { ManagementNeighborsComponent } from './pedigree/management-neighbors.component';
 import { GroupRelativesComponent } from './pedigree/group-relatives.component';
 import { GermplasmNeighborhoodTreeComponent } from './pedigree/germplasm-neighborhood-tree.component';
+import { GermplasmDetailsGraphvizModalComponent, GermplasmDetailsGraphvizModalPopupComponent } from './germplasm-details-graphviz-modal.component';
 
 @NgModule({
     imports: [
@@ -28,6 +29,8 @@ import { GermplasmNeighborhoodTreeComponent } from './pedigree/germplasm-neighbo
     declarations: [
         GermplasmDetailsPopupComponent,
         GermplasmDetailsModalComponent,
+        GermplasmDetailsGraphvizModalPopupComponent,
+        GermplasmDetailsGraphvizModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
         AttributesPaneComponent,
@@ -46,6 +49,8 @@ import { GermplasmNeighborhoodTreeComponent } from './pedigree/germplasm-neighbo
     entryComponents: [
         GermplasmDetailsPopupComponent,
         GermplasmDetailsModalComponent,
+        GermplasmDetailsGraphvizModalPopupComponent,
+        GermplasmDetailsGraphvizModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
         AttributesPaneComponent,

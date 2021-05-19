@@ -68,6 +68,7 @@ import { DateHelperService } from './service/date.helper.service';
 import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
 import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
 import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
+import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 
 @NgModule({
     imports: [
@@ -114,7 +115,8 @@ import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
-        OnlyNumbersDirective
+        OnlyNumbersDirective,
+        PedigreeGraphComponent
     ],
     providers: [
         LoginService,
@@ -198,7 +200,8 @@ import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
-        OnlyNumbersDirective
+        OnlyNumbersDirective,
+        PedigreeGraphComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

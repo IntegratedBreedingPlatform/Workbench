@@ -78,6 +78,7 @@
         "tree": {
             "title": "PEDIGREE TREE",
             "include.derivative.lines": "Include derivative and maintenance lines",
+            "include.breeding.method": "Include Breeding Method",
             "view-pedigree-graph": "View Pedigree Graph",
             "display-full-pedigree": "Display Full Pedigree"
         },
