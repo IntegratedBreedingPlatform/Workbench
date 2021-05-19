@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { graphviz } from 'd3-graphviz';
+import { Graphviz, graphviz } from 'd3-graphviz';
 import { GermplasmTreeNode } from '../germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../germplasm/service/germplasm.pedigree.service';
 
@@ -14,6 +14,7 @@ export class PedigreeGraphComponent implements OnInit {
     includeDerivativeLines = false;
     includeBreedingMethod = false;
     isLoading = false;
+    graphviz: Graphviz<any, any, any, any>;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService) {
     }
@@ -23,23 +24,30 @@ export class PedigreeGraphComponent implements OnInit {
     }
 
     showGraph() {
+        this.reset();
         if (this.gid && this.level > 0) {
             this.isLoading = true;
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
-                graphviz('#pedigree-graph', {
+                this.graphviz = graphviz('#pedigree-graph', {
                     useWorker: false
                 }).fit(true)
                     .zoom(true).attributer((obj) => {
-                    if (obj.tag === 'svg') {
-                        // Make sure the svg render fits the container
-                        obj.attributes.height = '100%';
-                        obj.attributes.width = '100%';
-                    }
-                }).renderDot(this.createDot(gemplasmTreeNode));
+                        if (obj.tag === 'svg') {
+                            // Make sure the svg render fits the container
+                            obj.attributes.height = '100%';
+                            obj.attributes.width = '100%';
+                        }
+                    }).renderDot(this.createDot(gemplasmTreeNode));
                 this.isLoading = false;
             });
         }
 
+    }
+
+    reset() {
+        if (this.graphviz) {
+            this.graphviz.resetZoom(null);
+        }
     }
 
     createDot(germplasmTreeNode: GermplasmTreeNode) {
