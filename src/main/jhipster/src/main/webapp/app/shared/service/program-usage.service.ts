@@ -11,13 +11,13 @@ export class ProgramUsageService {
     }
 
     getLastestSelectedProgram(userId?: number): Observable<HttpResponse<Program>> {
-        return this.http.get<Program>(SERVER_API_URL + `program-usage/last?userId=${userId}`, {
+        return this.http.get<Program>(SERVER_API_URL + `my-program-usage/last?userId=${userId}`, {
             observe: 'response'
         });
     }
 
     save(cropName: any, programUUID: any): Observable<any> {
-        return this.http.post<any>(SERVER_API_URL + `crops/${cropName}/program-usage?programUUID=${programUUID}`, null, {
+        return this.http.post<any>(SERVER_API_URL + `crops/${cropName}/my-program-usage?programUUID=${programUUID}`, null, {
             observe: 'response'
         });
     }
