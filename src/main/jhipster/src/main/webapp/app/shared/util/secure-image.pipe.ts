@@ -1,13 +1,19 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import { AlertService } from '../alert/alert.service';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Pipe({
     name: 'secureImage'
 })
 export class SecureImagePipe implements PipeTransform {
 
-    constructor(private http: HttpClient) {
+    constructor(
+        private http: HttpClient,
+        private jhiLanguageService: JhiLanguageService,
+        private alertService: AlertService
+    ) {
     }
 
     transform(url: string) {
@@ -28,12 +34,16 @@ export class SecureImagePipe implements PipeTransform {
                 reader.onloadend = () => {
                     observer.next(reader.result);
                 };
+            }, (err) => {
+                this.alertService.error('error.secure-image.generic');
+                // TODO add new pipe to show a more specific error without firing two calls (see hot/cold observables)
+                // observer.error(err)
             });
 
             return {
                 unsubscribe() {
                 }
             };
-        });
+        })
     }
 }
