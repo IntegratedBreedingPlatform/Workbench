@@ -2,43 +2,51 @@
 	<div class="col-xs-12 col-md-12">
 		<div class="row">
 			<div class="col-12">
-				<label>Number of Steps Backward</label>
-				<select [disabled]="isLoading" class="ml-1" [(ngModel)]="numberOfStepsBackward" (change)="numberOfStepsChanged()">
-					<option [value]="1">1</option>
-					<option [value]="2">2</option>
-					<option [value]="3">3</option>
-					<option [value]="4">4</option>
-					<option [value]="5">5</option>
-					<option [value]="6">6</option>
-					<option [value]="7">7</option>
-					<option [value]="8">8</option>
-					<option [value]="9">9</option>
-					<option [value]="10">10</option>
-				</select>
-				<label class="ml-3">Number of Steps Forward</label>
-				<select [disabled]="isLoading" class="ml-1" [(ngModel)]="numberOfStepsForward" (change)="numberOfStepsChanged()">
-					<option [value]="1">1</option>
-					<option [value]="2">2</option>
-					<option [value]="3">3</option>
-					<option [value]="4">4</option>
-					<option [value]="5">5</option>
-					<option [value]="6">6</option>
-					<option [value]="7">7</option>
-					<option [value]="8">8</option>
-					<option [value]="9">9</option>
-					<option [value]="10">10</option>
-				</select>
+				<form class="form-inline">
+					<div class="form-group">
+						<label>Number of Steps Backward</label>
+						<select [disabled]="isLoading" class="ml-1 form-control" name="numberOfStepsBackward" [(ngModel)]="numberOfStepsBackward" (change)="numberOfStepsChanged()">
+							<option [value]="1">1</option>
+							<option [value]="2">2</option>
+							<option [value]="3">3</option>
+							<option [value]="4">4</option>
+							<option [value]="5">5</option>
+							<option [value]="6">6</option>
+							<option [value]="7">7</option>
+							<option [value]="8">8</option>
+							<option [value]="9">9</option>
+							<option [value]="10">10</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label class="ml-3">Number of Steps Forward</label>
+						<select [disabled]="isLoading" class="ml-1 form-control" name="numberOfStepsBackward" [(ngModel)]="numberOfStepsForward" (change)="numberOfStepsChanged()">
+							<option [value]="1">1</option>
+							<option [value]="2">2</option>
+							<option [value]="3">3</option>
+							<option [value]="4">4</option>
+							<option [value]="5">5</option>
+							<option [value]="6">6</option>
+							<option [value]="7">7</option>
+							<option [value]="8">8</option>
+							<option [value]="9">9</option>
+							<option [value]="10">10</option>
+						</select>
+					</div>
+				</form>
 			</div>
 		</div>
 		<div class="table-responsive pt-3">
-			<span *ngIf="isLoading" class="ml-3 throbber throbber-btn"></span>
-			<p-tree *ngIf="nodes.length > 0" [value]="nodes"
+			<p-tree *ngIf="!isLoading else loading" [value]="nodes"
 					autoLayout="true"
 					styleClass="tree-table">
 				<ng-template pTemplate="default" let-node>
 					<a [href]="this.germplasmDetailsUrlService.getUrl(node.data.id)" target="_blank">{{node.data.name}} ({{node.data.id}})</a>
 				</ng-template>
 			</p-tree>
+			<ng-template #loading>
+				<div class="ui-tree d-flex align-items-center justify-content-center"><span class="throbber"></span></div>
+			</ng-template>
 		</div>
 	</div>
 </div>

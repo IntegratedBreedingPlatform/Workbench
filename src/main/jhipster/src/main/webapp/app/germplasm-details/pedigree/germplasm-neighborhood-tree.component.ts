@@ -39,8 +39,8 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
                         this.addNode(germplasmNeighborhoodTreeNode);
                         this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
                         this.redrawNodes();
-                        this.isLoading = false;
                     }
+                    this.isLoading = false;
                 });
         } else {
             this.germplasmPedigreeService.getMaintenanceNeighborhood(this.gid, this.numberOfStepsBackward, this.numberOfStepsForward)
@@ -49,8 +49,8 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
                         this.addNode(germplasmNeighborhoodTreeNode);
                         this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
                         this.redrawNodes();
-                        this.isLoading = false;
                     }
+                    this.isLoading = false;
                 });
         }
 

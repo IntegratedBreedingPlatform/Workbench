@@ -2,17 +2,29 @@
 	<div class="col-xs-12 col-md-12">
 		<div class="row">
 			<div class="col-12">
-				<label class="font-weight-bold">Level</label>
-				<input class="ml-2" [disabled]="isLoading" type="number" [(ngModel)]="level" (ngModelChange)="showGraph()" min="1" max="50"/>
-				<input class="ml-2" [disabled]="isLoading" type="checkbox" [(ngModel)]="includeDerivativeLines" (ngModelChange)="showGraph()"/><label class="ml-1" jhiTranslate="pedigree.tree.include.derivative.lines">Include derivative and maintenance lines </label>
-				<input class="ml-2" [disabled]="isLoading" type="checkbox" [(ngModel)]="includeBreedingMethod" (ngModelChange)="showGraph()"/><label class="ml-1" jhiTranslate="pedigree.tree.include.breeding.method">Include Breeding Method </label>
-				<span class="ml-2" *ngIf="isLoading" class="ml-3 throbber throbber-btn"></span>
+				<form class="form-inline">
+					<div class="form-group mb-2">
+						<label class="font-weight-bold">Level</label>
+						<input class="form-control ml-2" name="level" [disabled]="isLoading" type="number" [(ngModel)]="level" (ngModelChange)="levelFieldChanged($event)" min="1" max="50"/>
+					</div>
+					<div class="form-group mb-2">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input ml-2" id="includeDerivative" name="includeDerivative" [disabled]="isLoading" type="checkbox" [(ngModel)]="includeDerivativeLines" (ngModelChange)="showGraph()"/>
+							<label class="form-check-label" for="includeDerivative" jhiTranslate="pedigree.tree.include.derivative.lines">Include derivative and maintenance lines </label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input ml-2" id="includeBreedingMethod" name="includeBreedingMethod" [disabled]="isLoading" type="checkbox" [(ngModel)]="includeBreedingMethod" (ngModelChange)="showGraph()"/>
+							<label class="form-check-label" for="includeBreedingMethod" jhiTranslate="pedigree.tree.include.breeding.method">Include Breeding Method </label>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
 </div>
 <div class="row">
 	<div class="col-xs-12 col-md-12">
-		<div id="pedigree-graph" style="height: 700px; width: 100%; border: 1px solid #e3e3e3; border-radius: 4px;"></div>
+		<div [hidden]="isLoading" id="pedigree-graph" class="pedigree-graph"></div>
+		<div *ngIf="isLoading" class="pedigree-graph d-flex align-items-center justify-content-center"><span class="throbber"></span></div>
 	</div>
 </div>

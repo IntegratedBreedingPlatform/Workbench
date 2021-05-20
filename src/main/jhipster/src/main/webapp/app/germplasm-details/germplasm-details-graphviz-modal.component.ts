@@ -42,7 +42,7 @@ export class GermplasmDetailsGraphvizModalPopupComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        const modal = this.popupService.open(GermplasmDetailsGraphvizModalComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmDetailsGraphvizModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
         modal.then((modalRef) => {
             modalRef.componentInstance.gid = Number(this.route.snapshot.paramMap.get('gid'));
         });

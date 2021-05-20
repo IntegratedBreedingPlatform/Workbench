@@ -2,25 +2,38 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Graphviz, graphviz } from 'd3-graphviz';
 import { GermplasmTreeNode } from '../germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../germplasm/service/germplasm.pedigree.service';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'jhi-pedigree-graph',
-    templateUrl: './pedigree-graph.component.html'
+    templateUrl: './pedigree-graph.component.html',
+    styleUrls: ['./pedigree-graph.component.css']
 })
 export class PedigreeGraphComponent implements OnInit {
 
     @Input() gid: number;
     level = 3;
+    levelChanged: Subject<number> = new Subject<number>();
     includeDerivativeLines = false;
     includeBreedingMethod = false;
     isLoading = false;
     graphviz: Graphviz<any, any, any, any>;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService) {
+        this.levelChanged.debounceTime(500) // wait 500 milliseccond after the last event before emitting last event
+            .distinctUntilChanged() // only emit if value is different from previous value
+            .subscribe(model => {
+                this.level = model;
+                this.showGraph();
+            });
     }
 
     ngOnInit(): void {
         this.showGraph();
+    }
+
+    levelFieldChanged(query: number) {
+        this.levelChanged.next(query);
     }
 
     showGraph() {
