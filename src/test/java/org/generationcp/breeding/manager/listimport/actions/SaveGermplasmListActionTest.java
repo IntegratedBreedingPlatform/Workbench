@@ -8,6 +8,7 @@ import org.generationcp.breeding.manager.exception.BreedingManagerException;
 import org.generationcp.breeding.manager.pojos.ImportedGermplasm;
 import org.generationcp.breeding.manager.pojos.ImportedGermplasmList;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.GermplasmTestDataInitializer;
 import org.generationcp.middleware.data.initializer.NameTestDataInitializer;
@@ -47,10 +48,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SaveGermplasmListActionTest {
 
+	private final static Integer IBDB_USER_ID = new Random().nextInt();
 	private static final String DERIVED_NAME_CODE = "DRVNM";
 	private static final String MATURITY_NAME = "Maturity Name";
 	private static final String MATURITY_CODE = "MATURITY";
@@ -128,6 +131,8 @@ public class SaveGermplasmListActionTest {
 		for (int i = 1; i <= SaveGermplasmListActionTest.NO_OF_ENTRIES; i++) {
 			Mockito.doReturn(GermplasmTestDataInitializer.createGermplasm(i)).when(this.germplasmManager).getGermplasmByGID(i);
 		}
+
+		ContextHolder.setLoggedInUserId(IBDB_USER_ID);
 	}
 
 	@Test
@@ -250,7 +255,7 @@ public class SaveGermplasmListActionTest {
 		Assert.assertEquals("The gid should be " + germplasm.getGid(), germplasm.getGid(), resultName.getGermplasmId());
 		Assert.assertEquals("The typeid should be 0", 0, resultName.getTypeId().intValue());
 		Assert.assertEquals("The nstat should be 0", 0, resultName.getNstat().intValue());
-		Assert.assertEquals("The user id should be 1", 1, resultName.getUserId().intValue());
+		Assert.assertEquals("The user id should be 1", IBDB_USER_ID, resultName.getCreatedBy());
 		Assert.assertEquals("The nval should be 'DRVNM 1'", "DRVNM 1", resultName.getNval());
 		Assert.assertEquals("The ndate should be " + Util.getCurrentDateAsIntegerValue(), Util.getCurrentDateAsIntegerValue(),
 				resultName.getNdate());

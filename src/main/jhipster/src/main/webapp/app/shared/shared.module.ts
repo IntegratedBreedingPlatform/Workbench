@@ -56,7 +56,7 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 import { CollapsibleComponent } from './component/collapsible.component';
-import { UserProgramInfoService } from './service/user-program-info.service';
+import { ProgramUsageService } from './service/program-usage.service';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
 import { CropService } from './crop/service/crop.service';
@@ -143,7 +143,7 @@ import { SecureImagePipe } from './util/secure-image.pipe';
         AlertService,
         ToolService,
         KeySequenceRegisterService,
-        UserProgramInfoService,
+        ProgramUsageService,
         DateHelperService,
         /*
          * Workaround to reuse modal content outside ngb modals

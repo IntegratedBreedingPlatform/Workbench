@@ -164,8 +164,10 @@ export class MyStudiesComponent {
     }
 
     select(study: MyStudy) {
-        this.studies.forEach((s) => s.selected = false);
-        study.selected = true;
-        this.study = study;
+        if (study) {
+            this.studies.forEach((s) => s.selected = false);
+            study.selected = true;
+            this.study = study;
+        }
     }
 }
