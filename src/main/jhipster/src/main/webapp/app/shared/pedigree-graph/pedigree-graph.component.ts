@@ -3,6 +3,7 @@ import { Graphviz, graphviz } from 'd3-graphviz';
 import { GermplasmTreeNode } from '../germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../germplasm/service/germplasm.pedigree.service';
 import { Subject } from 'rxjs';
+import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-pedigree-graph',
@@ -19,7 +20,8 @@ export class PedigreeGraphComponent implements OnInit {
     isLoading = false;
     graphviz: Graphviz<any, any, any, any>;
 
-    constructor(public germplasmPedigreeService: GermplasmPedigreeService) {
+    constructor(public germplasmPedigreeService: GermplasmPedigreeService,
+                private alertService: JhiAlertService) {
         this.levelChanged.debounceTime(500) // wait 500 milliseccond after the last event before emitting last event
             .distinctUntilChanged() // only emit if value is different from previous value
             .subscribe(model => {
@@ -32,8 +34,12 @@ export class PedigreeGraphComponent implements OnInit {
         this.showGraph();
     }
 
-    levelFieldChanged(query: number) {
-        this.levelChanged.next(query);
+    levelFieldChanged(level: number) {
+        if (level > 20) {
+            this.alertService.error('pedigree.tree.max.level.error');
+        } else {
+            this.levelChanged.next(level);
+        }
     }
 
     showGraph() {
@@ -43,14 +49,17 @@ export class PedigreeGraphComponent implements OnInit {
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
                 this.graphviz = graphviz('#pedigree-graph', {
                     useWorker: false
-                }).fit(true)
-                    .zoom(true).attributer((obj) => {
+                }).totalMemory(Math.pow(2, 27)) // Increase memory available to avoid OOM
+                    .fit(true)
+                    .zoom(true)
+                    .attributer((obj) => {
                         if (obj.tag === 'svg') {
                             // Make sure the svg render fits the container
                             obj.attributes.height = '100%';
                             obj.attributes.width = '100%';
                         }
-                    }).renderDot(this.createDot(gemplasmTreeNode));
+                    })
+                    .renderDot(this.createDot(gemplasmTreeNode));
                 this.isLoading = false;
             });
         }

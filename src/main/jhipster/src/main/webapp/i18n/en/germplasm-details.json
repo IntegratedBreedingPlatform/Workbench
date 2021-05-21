@@ -80,7 +80,8 @@
             "include.derivative.lines": "Include derivative and maintenance lines",
             "include.breeding.method": "Include Breeding Method",
             "view-pedigree-graph": "View Pedigree Graph",
-            "display-full-pedigree": "Display Full Pedigree"
+            "display-full-pedigree": "Display Full Pedigree",
+            "max.level.error": "Level should not exceed 20."
         },
         "generation-history": {
             "title": "GENERATION HISTORY"
