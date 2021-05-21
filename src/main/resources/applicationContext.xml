@@ -71,16 +71,6 @@
 
 	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil" />
 
-	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil">
-		<property name="mysqlDriver" value="com.mysql.jdbc.Driver" />
-		<property name="mysqlHost" value="${db.host}" />
-		<property name="mysqlPort" value="${db.port}" />
-		<property name="username" value="${db.username}" />
-		<property name="password" value="${db.password}" />
-		<property name="mysqlDumpPath" value="${workbench.mysqlDumpPath}" />
-		<property name="mysqlPath" value="${workbench.mysqlExePath}" />
-	</bean>
-
 	<bean id="tomcatUtil" class="org.generationcp.commons.tomcat.util.TomcatUtil">
 		<property name="managerUrl" value="${tomcat.manager.url}" />
 		<property name="username" value="${tomcat.manager.username}" />
