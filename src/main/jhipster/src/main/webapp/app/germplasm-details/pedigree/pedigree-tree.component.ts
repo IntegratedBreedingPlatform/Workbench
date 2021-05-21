@@ -33,7 +33,7 @@ export class PedigreeTreeComponent implements OnInit {
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
                 this.numberOfGenerations = germplasmTreeNode.numberOfGenerations;
                 this.addNode(germplasmTreeNode);
-                this.addChildren(this.nodes[0], germplasmTreeNode);
+                this.addChildren(this.nodes[0], germplasmTreeNode, 1);
                 this.redrawNodes();
                 this.isLoading = false;
             });
@@ -55,7 +55,7 @@ export class PedigreeTreeComponent implements OnInit {
         }
         this.germplasmPedigreeService.getGermplasmTree(parent.data.id, 2, this.includeDerivativeLines)
             .subscribe((germplasmTreeNode: GermplasmTreeNode) => {
-                this.addChildren(parent, germplasmTreeNode);
+                this.addChildren(parent, germplasmTreeNode, 2);
                 this.redrawNodes();
             });
     }
@@ -65,16 +65,16 @@ export class PedigreeTreeComponent implements OnInit {
         this.isExpandAll = true;
     }
 
-    addChildren(parent: PrimeNgTreeNode, germplasmTreeNode: GermplasmTreeNode) {
+    addChildren(parent: PrimeNgTreeNode, germplasmTreeNode: GermplasmTreeNode, level:number) {
         parent.children = [];
-        const germplasmTreeNodeChildren = this.getChildren(germplasmTreeNode);
+        const germplasmTreeNodeChildren = this.getChildren(germplasmTreeNode, level);
         if (germplasmTreeNodeChildren.length > 0) {
             parent.expanded = true;
             // Recursively add "grand" children nodes as well
             germplasmTreeNodeChildren.forEach((germplasmTreeNodeChild) => {
                 const child = this.toPrimeNgNode(germplasmTreeNodeChild, parent);
                 parent.children.push(child);
-                this.addChildren(child, germplasmTreeNodeChild)
+                this.addChildren(child, germplasmTreeNodeChild, level + 1)
             });
         }
     }
@@ -84,18 +84,34 @@ export class PedigreeTreeComponent implements OnInit {
         this.nodes = Object.assign([], this.nodes);
     }
 
-    getChildren(germplasmTreeNode: GermplasmTreeNode): GermplasmTreeNode[] {
+    getChildren(germplasmTreeNode: GermplasmTreeNode, level: number): GermplasmTreeNode[] {
         let children = [];
-        if (germplasmTreeNode.femaleParentNode) {
-            children.push(germplasmTreeNode.femaleParentNode);
-        }
-        if (germplasmTreeNode.maleParentNode) {
-            children.push(germplasmTreeNode.maleParentNode);
-        }
-        if (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0) {
-            children = children.concat(germplasmTreeNode.otherProgenitors);
+
+        if (this.isUnknownImmediateSource(germplasmTreeNode)) {
+            // For unknown immediate source
+            if (level == 1) {
+                children.push(germplasmTreeNode.femaleParentNode);
+            } else {
+                children.push(germplasmTreeNode.maleParentNode);
+            }
+        } else {
+            if (germplasmTreeNode.femaleParentNode) {
+                children.push(germplasmTreeNode.femaleParentNode);
+            }
+            if (germplasmTreeNode.maleParentNode) {
+                children.push(germplasmTreeNode.maleParentNode);
+            }
+            if (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0) {
+                children = children.concat(germplasmTreeNode.otherProgenitors);
+            }
         }
         return children;
+    }
+
+    isUnknownImmediateSource(germplasmTreeNode) {
+        return germplasmTreeNode.numberOfProgenitors === -1 &&
+            germplasmTreeNode.femaleParentNode && germplasmTreeNode.femaleParentNode.gid !== 0 &&
+            germplasmTreeNode.maleParentNode && germplasmTreeNode.maleParentNode.gid === 0;
     }
 
     hasChildren(germplasmTreeNode: GermplasmTreeNode): boolean {
