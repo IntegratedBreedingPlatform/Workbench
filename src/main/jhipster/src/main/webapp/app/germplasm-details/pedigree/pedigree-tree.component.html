@@ -21,7 +21,8 @@
 					autoLayout="true"
 					styleClass="tree-table">
 				<ng-template pTemplate="default" let-node>
-					<a [href]="this.germplasmDetailsUrlService.getUrl(node.data.id)" target="_blank">{{node.data.name}} ({{node.data.id}})</a>
+					<a *ngIf="node.data.id !== 0" [href]="this.germplasmDetailsUrlService.getUrl(node.data.id)" target="_blank">{{node.data.name}} ({{node.data.id}})</a>
+					<span *ngIf="node.data.id === 0">{{node.data.name}} ({{node.data.id}})</span>
 				</ng-template>
 			</p-tree>
 			<ng-template #loading>
