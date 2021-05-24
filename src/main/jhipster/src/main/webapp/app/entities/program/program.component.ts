@@ -13,6 +13,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramContext } from './program.context';
 import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
 import { MANAGE_STUDIES_VIEW_PERMISSIONS, GERMPLASM_LISTS_PERMISSIONS } from '../../shared/auth/permissions';
+import { Select2OptionData } from 'ng-select2';
+import { ProgramUsageService } from '../../shared/service/program-usage.service';
 
 @Component({
     selector: 'jhi-program',
@@ -49,6 +51,8 @@ export class ProgramComponent implements OnInit {
     isLoading = false;
     helpLink: string;
 
+    initialData: Select2OptionData[];
+
     constructor(
         private programService: ProgramService,
         private cropService: CropService,
@@ -57,18 +61,29 @@ export class ProgramComponent implements OnInit {
         private languageService: JhiLanguageService,
         private router: Router,
         private route: ActivatedRoute,
-        public context: ProgramContext
+        public context: ProgramContext,
+        public programUsageService: ProgramUsageService,
     ) {
     }
 
     async ngOnInit() {
-        // We get user last opened project ff programUUID is not present in the local storage
-        if (!localStorage['programUUID']) {
-            const identity = await this.principal.identity();
-            this.user = identity;
-        }
-
+        const identity = await this.principal.identity();
+        this.user = identity;
         this.crops = await this.cropService.getCrops().toPromise();
+
+        this.programUsageService.getLastestSelectedProgram(this.user.id).toPromise().then((response) => {
+            const userProgramSelected = response.body;
+            if (userProgramSelected) {
+                this.getPrograms(1, undefined).subscribe((res) => {
+                    if (this.programsById[userProgramSelected.uniqueID]) {
+                        this.programModel = userProgramSelected.uniqueID;
+                        this.context.program = userProgramSelected;
+                        this.initialData = [{ id: userProgramSelected.uniqueID, text: userProgramSelected.name }]
+                    }
+                }, (err) => {
+                });
+            }
+        });
 
         /*
         if (!this.helpLink || !this.helpLink.length) {
@@ -146,16 +161,6 @@ export class ProgramComponent implements OnInit {
         }
     }
 
-    /*
-     * FIXME
-     *  - not possible because of dropdown pagination?
-     *  - preselected crop -> easier -> no pagination
-     */
-    isPreSelected(program: Program) {
-        return program.uniqueID ===
-            (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
-    }
-
     onCropChange() {
         // workaround to trigger select2 ajax reload
         if (this.cropName) {
@@ -163,9 +168,8 @@ export class ProgramComponent implements OnInit {
         }
     }
 
-    onProgramChange() {
-        this.context.program = this.programsById[this.programModel];
+    onProgramChange(programSelected: any): void {
+        this.context.program = this.programsById[programSelected];
         this.displayProgramInfo();
     }
-
 }
