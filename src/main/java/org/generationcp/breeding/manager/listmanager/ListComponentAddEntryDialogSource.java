@@ -1,19 +1,14 @@
 
 package org.generationcp.breeding.manager.listmanager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.annotation.Resource;
-
+import com.vaadin.data.Item;
+import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.listmanager.dialog.AddEntryDialogSource;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.middleware.api.germplasm.GermplasmService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -25,8 +20,12 @@ import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Table;
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 @Configurable
 public class ListComponentAddEntryDialogSource implements AddEntryDialogSource {
@@ -48,6 +47,9 @@ public class ListComponentAddEntryDialogSource implements AddEntryDialogSource {
 
 	@Resource
 	private CrossExpansionProperties crossExpansionProperties;
+
+	@Resource
+	private GermplasmService germplasmService;
 
 	private ListComponent listComponent;
 	private Table listDataTable;
@@ -112,7 +114,7 @@ public class ListComponentAddEntryDialogSource implements AddEntryDialogSource {
 		listData.setLocalRecordId(0);
 		listData.setStatus(0);
 		listData.setEntryCode(listData.getEntryId().toString());
-		listData.setSeedSource(this.germplasmDataManager.getPlotCodeValue(gid));
+		listData.setSeedSource(this.germplasmService.getPlotCodeValue(gid));
 		listData.setGroupId(germplasm.getMgid());
 
 		String groupName = "-";

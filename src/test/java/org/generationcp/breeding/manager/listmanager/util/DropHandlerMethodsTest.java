@@ -1,13 +1,18 @@
 package org.generationcp.breeding.manager.listmanager.util;
 
-import java.util.*;
-
+import com.google.common.collect.Lists;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.listmanager.AddedColumnsMapper;
 import org.generationcp.breeding.manager.listmanager.ListBuilderComponent;
 import org.generationcp.breeding.manager.listmanager.ListComponent;
 import org.generationcp.breeding.manager.listmanager.ListManagerMain;
 import org.generationcp.breeding.manager.listmanager.NewGermplasmEntriesFillColumnSource;
+import org.generationcp.middleware.api.germplasm.GermplasmService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.GermplasmTestDataInitializer;
@@ -32,12 +37,16 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.google.common.collect.Lists;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Table;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class DropHandlerMethodsTest {
 
@@ -81,6 +90,9 @@ public class DropHandlerMethodsTest {
 	private PedigreeService pedigreeService;
 
 	@Mock
+	private GermplasmService germplasmService;
+
+	@Mock
 	private InventoryDataManager inventoryDataManager;
 
 	@Mock
@@ -122,7 +134,7 @@ public class DropHandlerMethodsTest {
 		this.dropHandlerMethods.setInventoryDataManager(this.inventoryDataManager);
 		this.dropHandlerMethods.setCurrentColumnsInfo(this.currentColumnsInfo);
 
-		Mockito.doReturn(DropHandlerMethodsTest.SEED_SOURCE).when(this.germplasmDataManager).getPlotCodeValue(Matchers.anyInt());
+		Mockito.doReturn(DropHandlerMethodsTest.SEED_SOURCE).when(this.germplasmService).getPlotCodeValue(Matchers.anyInt());
 		Mockito.doReturn(this.listBuilderComponent).when(this.listManagerMain).getListBuilderComponent();
 
 		this.targetTable = this.createListDataTable();

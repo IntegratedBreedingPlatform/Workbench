@@ -23,6 +23,7 @@ import org.generationcp.breeding.manager.listmanager.ListManagerMain;
 import org.generationcp.breeding.manager.listmanager.ListSearchResultsComponent;
 import org.generationcp.breeding.manager.listmanager.NewGermplasmEntriesFillColumnSource;
 import org.generationcp.breeding.manager.listmanager.listeners.GidLinkButtonClickListener;
+import org.generationcp.middleware.api.germplasm.GermplasmService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.gms.GermplasmListNewColumnsInfo;
 import org.generationcp.middleware.domain.gms.ListDataColumnValues;
@@ -91,6 +92,9 @@ public class DropHandlerMethods {
 
 	@Resource
 	protected PlatformTransactionManager transactionManager;
+
+	@Resource
+	protected GermplasmService germplasmService;
 
 	private static final Logger LOG = LoggerFactory.getLogger(DropHandlerMethods.class);
 
@@ -295,7 +299,7 @@ public class DropHandlerMethods {
 				}
 
 				// TODO get plot code values in bulk for all GIDS to improve performance
-				newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(this.germplasmDataManager.getPlotCodeValue(gid));
+				newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(this.germplasmService.getPlotCodeValue(gid));
 				newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(designationButton);
 				newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(crossExpansion);
 
