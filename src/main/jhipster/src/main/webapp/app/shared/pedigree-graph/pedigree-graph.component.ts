@@ -24,7 +24,7 @@ export class PedigreeGraphComponent implements OnInit {
                 private alertService: JhiAlertService) {
         this.levelChanged.debounceTime(500) // wait 500 milliseccond after the last event before emitting last event
             .distinctUntilChanged() // only emit if value is different from previous value
-            .subscribe(model => {
+            .subscribe((model) => {
                 this.level = model;
                 this.showGraph();
             });
@@ -88,20 +88,24 @@ export class PedigreeGraphComponent implements OnInit {
 
         if (this.isUnknownImmediateSource(germplasmTreeNode)) {
             if (germplasmTreeNode.maleParentNode) {
-                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->' + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"BLUE\", arrowhead=\"odottee\"];'));
+                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->'
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"BLUE\", arrowhead=\"odottee\"];'));
                 this.addNode(dot, germplasmTreeNode.maleParentNode);
             }
             if (germplasmTreeNode.femaleParentNode) {
-                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->' + germplasmTreeNode.maleParentNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"RED\", arrowhead=\"odottee\"];'));
+                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->'
+                    + germplasmTreeNode.maleParentNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"RED\", arrowhead=\"odottee\"];'));
                 this.addNode(dot, germplasmTreeNode.femaleParentNode);
             }
         } else {
             if (germplasmTreeNode.femaleParentNode) {
-                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->' + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"RED\", arrowhead=\"odottee\"];'));
+                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->'
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"RED\", arrowhead=\"odottee\"];'));
                 this.addNode(dot, germplasmTreeNode.femaleParentNode);
             }
             if (germplasmTreeNode.maleParentNode) {
-                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->' + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"BLUE\", arrowhead=\"odottee\"];'));
+                dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->'
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"BLUE\", arrowhead=\"odottee\"];'));
                 this.addNode(dot, germplasmTreeNode.maleParentNode);
             }
             if (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0) {
@@ -111,8 +115,6 @@ export class PedigreeGraphComponent implements OnInit {
                 });
             }
         }
-
-
 
     }
 

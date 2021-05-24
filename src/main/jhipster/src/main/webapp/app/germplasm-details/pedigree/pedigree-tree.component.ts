@@ -65,7 +65,7 @@ export class PedigreeTreeComponent implements OnInit {
         this.isExpandAll = true;
     }
 
-    addChildren(parent: PrimeNgTreeNode, germplasmTreeNode: GermplasmTreeNode, level:number) {
+    addChildren(parent: PrimeNgTreeNode, germplasmTreeNode: GermplasmTreeNode, level: number) {
         parent.children = [];
         const germplasmTreeNodeChildren = this.getChildren(germplasmTreeNode, level);
         if (germplasmTreeNodeChildren.length > 0) {
@@ -89,7 +89,7 @@ export class PedigreeTreeComponent implements OnInit {
 
         if (this.isUnknownImmediateSource(germplasmTreeNode)) {
             // For unknown immediate source
-            if (level == 1) {
+            if (level === 1) {
                 children.push(germplasmTreeNode.femaleParentNode);
             } else {
                 children.push(germplasmTreeNode.maleParentNode);
