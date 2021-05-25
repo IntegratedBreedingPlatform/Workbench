@@ -235,6 +235,11 @@
         <aop:scoped-proxy proxy-target-class="false" />
     </bean>
 
+	<bean id="variableDataValidatorFactory" factory-bean="managerFactory"
+		  factory-method="getVariableDataValidatorFactory" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="experimentDesignService" factory-bean="managerFactory"
 		  factory-method="getExperimentDesignService" scope="request">
 		<aop:scoped-proxy proxy-target-class="false" />
