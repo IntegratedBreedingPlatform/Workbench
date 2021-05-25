@@ -84,33 +84,33 @@ export class PedigreeGraphComponent implements OnInit {
 
     addNode(dot: string[], germplasmTreeNode: GermplasmTreeNode) {
 
-        dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode) + ';');
+        dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode) + ';\n');
 
         if (this.isUnknownImmediateSource(germplasmTreeNode)) {
             if (germplasmTreeNode.maleParentNode) {
                 dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->'
-                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"BLUE\", arrowhead=\"odottee\"];'));
+                    + germplasmTreeNode.gid + ';\n');
                 this.addNode(dot, germplasmTreeNode.maleParentNode);
             }
             if (germplasmTreeNode.femaleParentNode) {
                 dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->'
-                    + germplasmTreeNode.maleParentNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"RED\", arrowhead=\"odottee\"];'));
+                    + germplasmTreeNode.maleParentNode.gid + ';\n');
                 this.addNode(dot, germplasmTreeNode.femaleParentNode);
             }
         } else {
             if (germplasmTreeNode.femaleParentNode) {
                 dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->'
-                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"RED\", arrowhead=\"odottee\"];'));
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';\n' : ' [color=\"RED\", arrowhead=\"odottee\"];\n'));
                 this.addNode(dot, germplasmTreeNode.femaleParentNode);
             }
             if (germplasmTreeNode.maleParentNode) {
                 dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->'
-                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';' : ' [color=\"BLUE\", arrowhead=\"odottee\"];'));
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';\n' : ' [color=\"BLUE\", arrowhead=\"veeodot\"];\n'));
                 this.addNode(dot, germplasmTreeNode.maleParentNode);
             }
             if (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0) {
                 germplasmTreeNode.otherProgenitors.forEach((otherProgenitorGermplasmTreeNode) => {
-                    dot.push(this.createNodeTextWithFormatting(dot, otherProgenitorGermplasmTreeNode) + '->' + germplasmTreeNode.gid + ' [color=\"BLUE\", arrowhead=\"odottee\"];');
+                    dot.push(this.createNodeTextWithFormatting(dot, otherProgenitorGermplasmTreeNode) + '->' + germplasmTreeNode.gid + ' [color=\"BLUE\", arrowhead=\"veeodot\"];\n');
                     this.addNode(dot, otherProgenitorGermplasmTreeNode);
                 });
             }
@@ -132,15 +132,15 @@ export class PedigreeGraphComponent implements OnInit {
             name.push(germplasmTreeNode.preferredName + '\n');
         }
         if (germplasmTreeNode.gid === 0) {
-            dot.push(germplasmTreeNode.gid + ' [shape=box, style=dashed];');
+            dot.push(germplasmTreeNode.gid + ' [shape=box, style=dashed];\n');
         } else {
             name.push('GID: ' + germplasmTreeNode.gid);
-            dot.push(`${germplasmTreeNode.gid} [shape=box];`);
+            dot.push(`${germplasmTreeNode.gid} [shape=box];\n`);
             if (this.includeBreedingMethod && germplasmTreeNode.methodName && germplasmTreeNode.methodCode) {
                 name.push(`\n\n${germplasmTreeNode.methodCode}: ${germplasmTreeNode.methodName}`);
             }
         }
-        dot.push(germplasmTreeNode.gid + ' [label=\"' + name.join('') + '\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];');
+        dot.push(germplasmTreeNode.gid + ' [label=\"' + name.join('') + '\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];\n');
 
         return germplasmTreeNode.gid;
     }
