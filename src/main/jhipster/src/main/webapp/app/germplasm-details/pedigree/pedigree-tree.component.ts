@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmTreeNode } from '../../shared/germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../../shared/germplasm/service/germplasm.pedigree.service';
@@ -6,7 +6,9 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 
 @Component({
     selector: 'jhi-pedigree-tree',
-    templateUrl: './pedigree-tree.component.html'
+    templateUrl: './pedigree-tree.component.html',
+    styleUrls: ['./pedigree-tree.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class PedigreeTreeComponent implements OnInit {
 

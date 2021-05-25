@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { GermplasmPedigreeService } from '../../shared/germplasm/service/germplasm.pedigree.service';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmNeighborhoodTreeNode } from '../../shared/germplasm/model/germplasm-neighborhood-tree-node.model';
@@ -6,7 +6,9 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 
 @Component({
     selector: 'jhi-germplasm-neighborhood-tree',
-    templateUrl: './germplasm-neighborhood-tree.component.html'
+    templateUrl: './germplasm-neighborhood-tree.component.html',
+    styleUrls: ['./germplasm-neighborhood-tree.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class GermplasmNeighborhoodTreeComponent implements OnInit {
 
