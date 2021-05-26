@@ -47,20 +47,26 @@ export class PedigreeGraphComponent implements OnInit {
         if (this.gid && this.level > 0) {
             this.isLoading = true;
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
-                this.graphviz = graphviz('#pedigree-graph', {
-                    useWorker: false
-                }).totalMemory(Math.pow(2, 27)) // Increase memory available to avoid OOM
-                    .fit(true)
-                    .zoom(true)
-                    .attributer((obj) => {
-                        if (obj.tag === 'svg') {
-                            // Make sure the svg render fits the container
-                            obj.attributes.height = '100%';
-                            obj.attributes.width = '100%';
-                        }
-                    })
-                    .renderDot(this.createDot(gemplasmTreeNode));
-                this.isLoading = false;
+                try {
+                    this.graphviz = graphviz('#pedigree-graph', {
+                        useWorker: false
+                    }).totalMemory(Math.pow(2, 27)) // Increase memory available to avoid OOM
+                        .fit(true)
+                        .zoom(true)
+                        .attributer((obj) => {
+                            if (obj.tag === 'svg') {
+                                // Make sure the svg render fits the container
+                                obj.attributes.height = '100%';
+                                obj.attributes.width = '100%';
+                            }
+                        })
+                        .renderDot(this.createDot(gemplasmTreeNode));
+                    throw "";
+                    this.isLoading = false;
+                } catch (e) {
+                    this.alertService.error('pedigree.tree.pedigree.graph.reached.maxixum.level.error');
+                    this.isLoading = false;
+                }
             });
         }
 
@@ -110,7 +116,8 @@ export class PedigreeGraphComponent implements OnInit {
             }
             if (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0) {
                 germplasmTreeNode.otherProgenitors.forEach((otherProgenitorGermplasmTreeNode) => {
-                    dot.push(this.createNodeTextWithFormatting(dot, otherProgenitorGermplasmTreeNode) + '->' + germplasmTreeNode.gid + ' [color=\"BLUE\", arrowhead=\"veeodot\"];\n');
+                    dot.push(this.createNodeTextWithFormatting(dot, otherProgenitorGermplasmTreeNode) + '->' + germplasmTreeNode.gid
+                        + ' [color=\"BLUE\", arrowhead=\"veeodot\"];\n');
                     this.addNode(dot, otherProgenitorGermplasmTreeNode);
                 });
             }
