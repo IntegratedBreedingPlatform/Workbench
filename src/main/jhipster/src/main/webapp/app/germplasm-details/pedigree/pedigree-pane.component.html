@@ -81,10 +81,10 @@
 		<jhi-management-neighbors [gid]="this.germplasmDetailsContext.gid"></jhi-management-neighbors>
 	</jhi-collapsible>
 	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.derivative-neighborhood.title')}}">
-		<jhi-germplasm-neighborhood-tree [type]="'derivative'" [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-neighborhood-tree>
+		<jhi-germplasm-derivative-neighborhood-tree [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-derivative-neighborhood-tree>
 	</jhi-collapsible>
 	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.maintenance-neighborhood.title')}}">
-		<jhi-germplasm-neighborhood-tree [type]="'maintenance'" [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-neighborhood-tree>
+		<jhi-germplasm-maintenance-neighborhood-tree [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-maintenance-neighborhood-tree>
 	</jhi-collapsible>
 	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.group-relatives.title')}}">
 		<jhi-group-relatives [gid]="this.germplasmDetailsContext.gid"></jhi-group-relatives>

@@ -1,26 +1,17 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { GermplasmPedigreeService } from '../../shared/germplasm/service/germplasm.pedigree.service';
+import { Input, OnInit } from '@angular/core';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { GermplasmNeighborhoodTreeNode } from '../../shared/germplasm/model/germplasm-neighborhood-tree-node.model';
-import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 
-@Component({
-    selector: 'jhi-germplasm-neighborhood-tree',
-    templateUrl: './germplasm-neighborhood-tree.component.html',
-    styleUrls: ['./germplasm-neighborhood-tree.component.css'],
-    encapsulation: ViewEncapsulation.None
-})
-export class GermplasmNeighborhoodTreeComponent implements OnInit {
+export abstract class GermplasmNeighborhoodTreeComponent implements OnInit {
 
     @Input() gid: number;
-    @Input() type: string;
     public nodes: PrimeNgTreeNode[] = [];
+    numberOfSteps = Array(10).fill(1).map((x, i) => i + 1);
     numberOfStepsBackward = 2;
-    numberOfStepsForward =  3;
+    numberOfStepsForward = 3;
     isLoading = false;
 
-    constructor(public germplasmPedigreeService: GermplasmPedigreeService,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
+    constructor() {
     }
 
     numberOfStepsChanged() {
@@ -31,30 +22,20 @@ export class GermplasmNeighborhoodTreeComponent implements OnInit {
         this.loadTree();
     }
 
+    abstract getGermplasmNeighborhoodTreeNode();
+
     loadTree() {
         this.isLoading = true;
         this.nodes = [];
-        if (this.type === 'derivative') {
-            this.germplasmPedigreeService.getDerivativeNeighborhood(this.gid, this.numberOfStepsBackward, this.numberOfStepsForward)
-                .subscribe((germplasmNeighborhoodTreeNode: GermplasmNeighborhoodTreeNode) => {
-                    if (germplasmNeighborhoodTreeNode) {
-                        this.addNode(germplasmNeighborhoodTreeNode);
-                        this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
-                        this.redrawNodes();
-                    }
-                    this.isLoading = false;
-                });
-        } else {
-            this.germplasmPedigreeService.getMaintenanceNeighborhood(this.gid, this.numberOfStepsBackward, this.numberOfStepsForward)
-                .subscribe((germplasmNeighborhoodTreeNode: GermplasmNeighborhoodTreeNode) => {
-                    if (germplasmNeighborhoodTreeNode) {
-                        this.addNode(germplasmNeighborhoodTreeNode);
-                        this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
-                        this.redrawNodes();
-                    }
-                    this.isLoading = false;
-                });
-        }
+        this.getGermplasmNeighborhoodTreeNode()
+            .subscribe((germplasmNeighborhoodTreeNode: GermplasmNeighborhoodTreeNode) => {
+                if (germplasmNeighborhoodTreeNode) {
+                    this.addNode(germplasmNeighborhoodTreeNode);
+                    this.addChildren(this.nodes[0], germplasmNeighborhoodTreeNode);
+                    this.redrawNodes();
+                }
+                this.isLoading = false;
+            });
 
     }
 
