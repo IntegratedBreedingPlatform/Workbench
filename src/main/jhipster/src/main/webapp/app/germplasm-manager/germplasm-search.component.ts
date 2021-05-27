@@ -690,7 +690,8 @@ export class GermplasmSearchComponent implements OnInit {
             window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
                 + '?programId=' + this.paramContext.programUUID
                 + '&printingLabelType=' + GERMPLASM_LABEL_PRINTING_TYPE
-                + '&searchRequestId=' + this.resultSearch.searchResultDbId ;
+                + '&searchRequestId=' + this.resultSearch.searchResultDbId
+                + '&cropName=' + this.paramContext.cropName ;
         });
     }
 

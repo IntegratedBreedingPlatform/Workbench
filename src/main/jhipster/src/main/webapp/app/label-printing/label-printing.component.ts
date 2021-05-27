@@ -58,6 +58,7 @@ export class LabelPrintingComponent implements OnInit {
 
     ngOnInit() {
         const params = this.route.snapshot.queryParams;
+        this.context.cropName = params['cropName'];
         this.context.datasetId = params['datasetId'];
         this.context.studyId = params['studyId'];
         this.context.programId = params['programId'];
