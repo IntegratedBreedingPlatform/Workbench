@@ -1,8 +1,7 @@
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.ibpworkbench.actions.HomeAction;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -27,7 +26,7 @@ public class AddProgramViewTest {
 	private ContextUtil contextUtil;
 	
 	@Mock
-	private WorkbenchMainView window;
+	private Window window;
 
 	private AddProgramView addProgramView = new AddProgramView();
 	
@@ -141,8 +140,7 @@ public class AddProgramViewTest {
 		// Verify Cancel button click listener
 		final Button cancelButton = this.addProgramView.getCancelButton();
 		Assert.assertNotNull(cancelButton.getListeners(ClickListener.class));
-		Assert.assertNotNull(cancelButton.getListeners(HomeAction.class));
-		
+
 		// Verify Finish button click listener
 		final Button finishButton = this.addProgramView.getFinishButton();
 		Assert.assertNotNull(finishButton.getListeners(Button.ClickListener.class));
@@ -179,7 +177,6 @@ public class AddProgramViewTest {
 		this.addProgramView.initializeLayout();
 		this.addProgramView.updateUIOnProgramSave(this.selectedProgram, this.window);
 		
-		Mockito.verify(this.window).addTitle(this.selectedProgram.getProjectName());
 		final TabSheet.Tab programLocations = this.addProgramView.getTabSheet().getTab(this.addProgramView.getProgramLocationsContainer());
 		Assert.assertNotNull(programLocations);
 		Assert.assertTrue(programLocations.isEnabled());

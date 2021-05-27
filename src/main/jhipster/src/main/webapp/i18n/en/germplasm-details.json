@@ -61,6 +61,8 @@
         }
     },
     "pedigree": {
+        "gid-column": "GID",
+        "preferred-name-column": "PREFERRED NAME",
         "progenitors": {
             "title": "PROGENITORS",
             "male-parent": "Male Parent",
@@ -72,6 +74,30 @@
             "group-source-gid": "Group Source GID",
             "immediate-source-gid": "Immediate Source GID",
             "breeding-method": "Breeding Method"
+        },
+        "tree": {
+            "title": "PEDIGREE TREE",
+            "include.derivative.lines": "Include derivative and maintenance lines",
+            "include.breeding.method": "Include Breeding Method",
+            "view-pedigree-graph": "View Pedigree Graph",
+            "display-full-pedigree": "Display Full Pedigree",
+            "max.level.error": "Level should not exceed 20.",
+            "pedigree.graph.reached.maxixum.level.error": "You've reached the maximum level of nodes that can be rendered in this pedigree graph. Please adjust the level."
+        },
+        "generation-history": {
+            "title": "GENERATION HISTORY"
+        },
+        "management-neighbors": {
+            "title": "MANAGEMENT NEIGHBORS"
+        },
+        "derivative-neighborhood": {
+            "title": "DERIVATIVE NEIGHBORHOOD"
+        },
+        "maintenance-neighborhood": {
+            "title": "MAINTENANCE NEIGHBORHOOD"
+        },
+        "group-relatives": {
+            "title": "GROUP RELATIVES"
         }
     },
     "observations": {
