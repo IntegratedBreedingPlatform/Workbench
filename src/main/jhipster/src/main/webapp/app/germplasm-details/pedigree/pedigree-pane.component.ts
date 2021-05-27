@@ -1,19 +1,16 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
-import { PEDIGREE_DETAILS_URL } from '../../app.constants';
-import { ParamContext } from '../../shared/service/param.context';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
-import { DomSanitizer } from '@angular/platform-browser';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { GermplasmProgenitorsDetails } from '../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitors/germplasm-progenitors.context';
 import { Subscription } from 'rxjs';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { PedigreeTreeComponent } from './pedigree-tree.component';
 
 @Component({
     selector: 'jhi-pedigree-pane',
@@ -23,40 +20,20 @@ export class PedigreePaneComponent implements OnInit {
 
     MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
 
-    @ViewChild('pedigreeIframe') pedigreeIframe: ElementRef;
-
+    @ViewChild(PedigreeTreeComponent) pedigreeTreeComponent: PedigreeTreeComponent;
     eventSubscriber: Subscription;
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
-    safeUrl: SafeResourceUrl;
     isIframeLoaded: boolean;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
-                private paramContext: ParamContext,
-                private germplasmDetailsContext: GermplasmDetailsContext,
-                private sanitizer: DomSanitizer,
+                public germplasmDetailsContext: GermplasmDetailsContext,
                 private germplasmService: GermplasmService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 private router: Router,
+                private activatedRoute: ActivatedRoute,
                 private germplasmProgenitorsContext: GermplasmProgenitorsContext) {
-        const authParams = '?gid=' + this.germplasmDetailsContext.gid
-            + '&cropName=' + this.paramContext.cropName
-            + '&programUUID=' + this.paramContext.programUUID
-            + '&authToken=' + this.paramContext.authToken
-            + '&loggedInUserId=' + this.paramContext.loggedInUserId
-            + '&selectedProjectId=' + this.paramContext.selectedProjectId;
-
-        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(PEDIGREE_DETAILS_URL + authParams);
-    }
-
-    onIframeLoad(): void {
-        if (this.pedigreeIframe.nativeElement.src) {
-            // Only display the iframe after the iframe page is loaded, this is to prevent the page from automatically scrolling down when iframe source is loaded.
-            setTimeout(() => {
-                this.isIframeLoaded = true;
-            }, 1000);
-        }
     }
 
     ngOnInit(): void {
@@ -67,6 +44,7 @@ export class PedigreePaneComponent implements OnInit {
     registerGermplasmNameChanged() {
         this.eventSubscriber = this.eventManager.subscribe('progenitorsChanged', (event) => {
             this.loadProgenitorDetails();
+            this.pedigreeTreeComponent.loadTree();
             this.germplasmDetailsContext.notifyGermplasmDetailChanges();
         });
     }
@@ -87,4 +65,5 @@ export class PedigreePaneComponent implements OnInit {
     isGenerative(): boolean {
         return this.germplasmProgenitorsDetails && this.germplasmProgenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
     }
+
 }

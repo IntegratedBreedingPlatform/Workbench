@@ -67,6 +67,8 @@ import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 import { DateHelperService } from './service/date.helper.service';
 import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
 import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
+import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
+import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 
 @NgModule({
     imports: [
@@ -113,7 +115,8 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
-        OnlyNumbersDirective
+        OnlyNumbersDirective,
+        PedigreeGraphComponent
     ],
     providers: [
         LoginService,
@@ -147,7 +150,8 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
         NgbActiveModal,
-        UrlService
+        UrlService,
+        GermplasmPedigreeService
     ],
     entryComponents: [
         ModalComponent,
@@ -196,7 +200,8 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
-        OnlyNumbersDirective
+        OnlyNumbersDirective,
+        PedigreeGraphComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -69,5 +69,24 @@
 			</div>
 		</div>
 	</jhi-collapsible>
+	<jhi-collapsible heading="{{translateService.instant('pedigree.tree.title')}}">
+		<div class="container-fluid">
+			<jhi-pedigree-tree [gid]="this.germplasmDetailsContext.gid"></jhi-pedigree-tree>
+		</div>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.generation-history.title')}}">
+		<jhi-generation-history [gid]="this.germplasmDetailsContext.gid"></jhi-generation-history>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.management-neighbors.title')}}">
+		<jhi-management-neighbors [gid]="this.germplasmDetailsContext.gid"></jhi-management-neighbors>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.derivative-neighborhood.title')}}">
+		<jhi-germplasm-derivative-neighborhood-tree [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-derivative-neighborhood-tree>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.maintenance-neighborhood.title')}}">
+		<jhi-germplasm-maintenance-neighborhood-tree [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-maintenance-neighborhood-tree>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.group-relatives.title')}}">
+		<jhi-group-relatives [gid]="this.germplasmDetailsContext.gid"></jhi-group-relatives>
+	</jhi-collapsible>
 </div>
-<iframe #pedigreeIframe [src]="safeUrl" style="border: 0" width="100%" height="600" (load)="onIframeLoad()" [style.display]="isIframeLoaded ? 'inline':'none'"></iframe>

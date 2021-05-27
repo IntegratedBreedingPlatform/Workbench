@@ -10,6 +10,7 @@ import { ListsPaneComponent } from './lists/lists-pane.component';
 import { SamplesPaneComponent } from './samples/samples-pane.component';
 import { GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 import { RouteAccessService } from '../shared';
+import { GermplasmDetailsGraphvizModalPopupComponent } from './germplasm-details-graphviz-modal.component';
 
 export const germplasmDetailsRoutes: Routes = [
     {
@@ -60,6 +61,11 @@ export const germplasmDetailsRoutes: Routes = [
         // Path for showing germplasm details as a dialog box in Angular.
         path: 'germplasm-details-dialog/:gid',
         component: GermplasmDetailsPopupComponent,
+        outlet: 'popup'
+    },
+    {
+        path: 'germplasm-details/graphviz/:gid',
+        component: GermplasmDetailsGraphvizModalPopupComponent,
         outlet: 'popup'
     }
 ];

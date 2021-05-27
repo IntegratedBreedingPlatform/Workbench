@@ -403,6 +403,13 @@ tr.selected {
     width: 400px;
     max-width: 400px;
 }
+.modal-fillview .modal-dialog {
+    width: 90vw;
+    max-width: 90vw;
+    height: 90vh;
+    max-height: 90vh;
+}
+
 
 #columnVisibility {
     width: 180px;
