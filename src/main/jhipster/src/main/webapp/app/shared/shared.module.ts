@@ -67,6 +67,7 @@ import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
 import { DateHelperService } from './service/date.helper.service';
 import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
 import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
+import { SecureImagePipe } from './util/secure-image.pipe';
 import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
 import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 
@@ -103,6 +104,7 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
@@ -122,6 +124,7 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
         LoginService,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         Principal,
         AccountService,
         InventoryService,
@@ -169,6 +172,7 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
         TableModule,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
