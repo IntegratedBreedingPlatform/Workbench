@@ -126,18 +126,13 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>ibpworkbench</servlet-name>
-		<url-pattern>/old/*</url-pattern>
+		<servlet-name>workbenchcontent</servlet-name>
+		<url-pattern>/content/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>ibpworkbench</servlet-name>
 		<url-pattern>/VAADIN/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>workbenchcontent</servlet-name>
-		<url-pattern>/content/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

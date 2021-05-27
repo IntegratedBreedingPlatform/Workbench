@@ -13,7 +13,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputInformation;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
-import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomUploadField;
@@ -133,7 +132,7 @@ public class UploadBreedingViewOutputActionTest {
 	@Test
 	public void testButtonClickUploadedZipIsInvalidFileOrNoFileSelected() {
 
-		Mockito.doThrow(new Validator.InvalidValueException(BackupAndRestoreView.NOT_VALID)).when(this.uploadZip).validate();
+		Mockito.doThrow(new Validator.InvalidValueException(FileUploadBreedingViewOutputWindow.NOT_VALID)).when(this.uploadZip).validate();
 
 		this.uploadBreedingViewOutputAction.buttonClick(this.event);
 
