@@ -11,6 +11,7 @@ import { HelpService } from '../shared/service/help.service';
 import { GERMPLASM_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { ParamContext } from '../shared/service/param.context';
 
 declare const $: any;
 
@@ -50,7 +51,9 @@ export class LabelPrintingComponent implements OnInit {
                 private alertService: AlertService,
                 public activeModal: NgbActiveModal,
                 private modalService: NgbModal,
+                private paramContext: ParamContext,
                 private helpService: HelpService) {
+        this.paramContext.readParams();
     }
 
     proceed(): void {
@@ -60,7 +63,6 @@ export class LabelPrintingComponent implements OnInit {
         const params = this.route.snapshot.queryParams;
         this.context.datasetId = params['datasetId'];
         this.context.studyId = params['studyId'];
-        this.context.programId = params['programId'];
         this.context.printingLabelType = params['printingLabelType'];
         this.context.searchRequestId = params['searchRequestId'];
 
@@ -369,7 +371,7 @@ export class LabelPrintingComponent implements OnInit {
 
         }
 
-        preset.programUUID = this.context.programId;
+        preset.programUUID = this.paramContext.programUUID;
         preset.toolSection = this.getToolSection();
         preset.toolId = 23;
         preset.name = this.labelPrintingData.settingsName;

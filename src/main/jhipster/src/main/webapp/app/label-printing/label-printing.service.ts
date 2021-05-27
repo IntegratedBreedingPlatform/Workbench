@@ -4,9 +4,7 @@ import { LabelPrintingContext } from './label-printing.context';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LabelType, OriginResourceMetadata, PresetSetting, Sortable } from './label-printing.model';
-
-declare const cropName: string;
-declare const currentProgramId: string;
+import { ParamContext } from '../shared/service/param.context';
 
 @Injectable()
 export class LabelPrintingService {
@@ -15,13 +13,14 @@ export class LabelPrintingService {
 
     constructor(
         private http: HttpClient,
-        private context: LabelPrintingContext
+        private context: LabelPrintingContext,
+        private paramContext: ParamContext
     ) {
     }
 
     getLabelsNeededSummary() {
         const printingLabelType = this.context.printingLabelType;
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/labels/summary`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/labels/summary`;
         return this.http.post(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
@@ -32,7 +31,7 @@ export class LabelPrintingService {
 
     getOriginResourceMetadada(): Observable<OriginResourceMetadata> {
         const printingLabelType = this.context.printingLabelType;
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/metadata`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/metadata`;
         return this.http.post<OriginResourceMetadata>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
@@ -42,7 +41,7 @@ export class LabelPrintingService {
 
     getAvailableLabelFields(): Observable<LabelType[]> {
         const printingLabelType = this.context.printingLabelType;
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/labelTypes`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/labelTypes`;
         return this.http.post<LabelType[]>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
@@ -52,7 +51,7 @@ export class LabelPrintingService {
 
     getSortableFields(): Observable<Sortable[]> {
         const printingLabelType = this.context.printingLabelType;
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/sortable-fields`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/sortable-fields`;
         return this.http.get<Sortable[]>(this.baseUrl + resourceUrl);
     }
 
@@ -63,7 +62,7 @@ export class LabelPrintingService {
         labelsGeneratorInput.searchRequestId = this.context.searchRequestId;
 
         const printingLabelType = this.context.printingLabelType;
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/labelPrinting/${printingLabelType}/labels/${fileExtension}`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/labels/${fileExtension}`;
         return this.http.post(`${this.baseUrl + resourceUrl}`, labelsGeneratorInput,
             {
                 responseType: 'blob',
@@ -77,26 +76,26 @@ export class LabelPrintingService {
             .append('toolId', '23')
             .append('toolSection', toolSection);
 
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets`;
         return this.http.get<PresetSetting[]>(this.baseUrl + resourceUrl, {
             params: options,
         });
     }
 
     addPreset(preset: PresetSetting): Observable<PresetSetting> {
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets`;
         return this.http.put<PresetSetting>(this.baseUrl + resourceUrl, preset);
     }
 
     updatePreset(preset: PresetSetting): Observable<void> {
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets/${preset.id}`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets/${preset.id}`;
         return this.http.put<void>(this.baseUrl + resourceUrl, preset);
     }
 
     deletePreset(presetId: number): Observable<PresetSetting> {
         const options: HttpParams = new HttpParams()
             .append('presetId', presetId.toString());
-        const resourceUrl = `crops/${cropName}/programs/${currentProgramId}/presets/${presetId}`;
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets/${presetId}`;
         return this.http.delete<PresetSetting>(this.baseUrl + resourceUrl);
     }
 }
