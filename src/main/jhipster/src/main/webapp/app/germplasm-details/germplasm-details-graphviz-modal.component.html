@@ -1,0 +1,16 @@
+<div class="container-fluid pl-0 pr-0">
+	<div class="modal-header" style="width: 90vw">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold word-wrap"><span>Pedigree Graph</span></h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="clear()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body" style="width: 90vw">
+		<jhi-pedigree-graph [gid]="gid"></jhi-pedigree-graph>
+	</div>
+</div>
+
