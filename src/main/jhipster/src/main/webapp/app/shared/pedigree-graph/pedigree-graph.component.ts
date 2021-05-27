@@ -61,7 +61,6 @@ export class PedigreeGraphComponent implements OnInit {
                             }
                         })
                         .renderDot(this.createDot(gemplasmTreeNode));
-                    throw "";
                     this.isLoading = false;
                 } catch (e) {
                     this.alertService.error('pedigree.tree.pedigree.graph.reached.maxixum.level.error');
