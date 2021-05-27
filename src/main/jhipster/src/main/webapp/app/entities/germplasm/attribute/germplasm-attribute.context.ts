@@ -3,6 +3,6 @@ import { GermplasmAttribute, GermplasmName } from '../../../shared/germplasm/mod
 
 @Injectable()
 export class GermplasmAttributeContext {
-    attributeType: string;
+    attributeType: number;
     attribute: GermplasmAttribute;
 }
