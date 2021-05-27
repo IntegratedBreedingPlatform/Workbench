@@ -2,7 +2,7 @@
 	<jhi-collapsible heading="{{translateService.instant('attributes.passport.title')}}">
 		<div class="container-fluid">
 			<div class="pull-right pb-3">
-				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute('PASSPORT')"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute(varibleType.GERMPLASM_PASSPORT)"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="passportAttributes.length else nodata">
@@ -24,7 +24,7 @@
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
-							<button class="btn btn-info" (click)="editGermplasmAttribute('PASSPORT', attribute)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
+							<button class="btn btn-info" (click)="editGermplasmAttribute(varibleType.GERMPLASM_PASSPORT, attribute)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
 							<button class="btn btn-info" (click)="deleteGermplasmAttribute(attribute)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
 						</td>
 
@@ -51,7 +51,7 @@
 	<jhi-collapsible heading="{{translateService.instant('attributes.attributes.title')}}">
 		<div class="container-fluid">
 			<div class="pull-right pb-3">
-				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute('ATTRIBUTE')"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute(varibleType.GERMPLASM_ATTRIBUTE)"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="attributes.length else nodata">
@@ -73,7 +73,7 @@
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
-							<button class="btn btn-info" (click)="editGermplasmAttribute('ATTRIBUTE', attribute)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
+							<button class="btn btn-info" (click)="editGermplasmAttribute(varibleType.GERMPLASM_ATTRIBUTE, attribute)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
 							<button class="btn btn-info" (click)="deleteGermplasmAttribute(attribute)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
 						</td>
 					</tr>

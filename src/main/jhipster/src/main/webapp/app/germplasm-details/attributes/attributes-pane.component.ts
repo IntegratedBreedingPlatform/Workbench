@@ -46,15 +46,15 @@ export class AttributesPaneComponent implements OnInit {
     }
 
     loadAttributes(): void {
-        this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'PASSPORT').toPromise().then((germplasmAttributes) => {
+        this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, VariableType.GERMPLASM_PASSPORT).toPromise().then((germplasmAttributes) => {
             this.passportAttributes = germplasmAttributes;
-            return this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'ATTRIBUTE').toPromise();
+            return this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, VariableType.GERMPLASM_ATTRIBUTE).toPromise();
         }).then((germplasmAttributes) => {
             this.attributes = germplasmAttributes;
         });
     }
 
-    editGermplasmAttribute(attributeType: string, germplasmAttribute: GermplasmAttribute): void {
+    editGermplasmAttribute(attributeType: number, germplasmAttribute: GermplasmAttribute): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {
@@ -62,7 +62,7 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    createGermplasmAttribute(attributeType: string): void {
+    createGermplasmAttribute(attributeType: number): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {
             queryParamsHandling: 'merge'
@@ -71,7 +71,7 @@ export class AttributesPaneComponent implements OnInit {
 
     deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.attributeCode });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.variableName });
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise().then((result) => {
@@ -84,4 +84,12 @@ export class AttributesPaneComponent implements OnInit {
         }, () => confirmModalRef.dismiss());
     }
 
+    public get varibleType(): typeof VariableType {
+        return VariableType;
+    }
+}
+
+export enum VariableType {
+    GERMPLASM_PASSPORT = 1813,
+    GERMPLASM_ATTRIBUTE = 1814
 }

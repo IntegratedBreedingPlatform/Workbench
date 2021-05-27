@@ -27,6 +27,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     value: string;
     locationId: number;
     date: NgbDate;
+    variableId: number;
 
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
@@ -42,10 +43,11 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
         this.date = this.calendar.getToday();
         if (this.germplasmAttributeContext.attribute) {
             this.attributeId = this.germplasmAttributeContext.attribute.id;
-            this.attributeCode = this.germplasmAttributeContext.attribute.attributeCode;
+            this.attributeCode = this.germplasmAttributeContext.attribute.variableName;
             this.value = this.germplasmAttributeContext.attribute.value;
             this.locationId = Number(this.germplasmAttributeContext.attribute.locationId);
             this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmAttributeContext.attribute.date);
+            this.variableId = this.germplasmAttributeContext.attribute.variableId;
         }
     }
 
@@ -59,8 +61,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             // if attribute id is available, we have to update the attribute
             this.isLoading = true;
             this.germplasmService.updateGermplasmAttribute(this.gid, this.attributeId, {
-                attributeCode: this.attributeCode,
-                attributeType: this.germplasmAttributeContext.attributeType,
+                variableId: this.variableId,
                 value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
@@ -75,9 +76,8 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
         } else {
             // If attribute id is not available, we have to create a new attribute
             this.isLoading = true;
-            this.germplasmService.createGermplasmAttribute(this.gid, {
-                attributeCode: this.attributeCode,
-                attributeType: this.germplasmAttributeContext.attributeType,
+            this.germplasmService.createGermplasmAttribute(this.gid, this.germplasmAttributeContext.attributeType, {
+                variableId: this.variableId,
                 value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
