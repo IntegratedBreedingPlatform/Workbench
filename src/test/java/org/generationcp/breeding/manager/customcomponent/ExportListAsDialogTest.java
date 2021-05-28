@@ -1,6 +1,8 @@
 package org.generationcp.breeding.manager.customcomponent;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 import java.io.FileOutputStream;
@@ -20,7 +22,6 @@ import org.generationcp.commons.exceptions.GermplasmListExporterException;
 import org.generationcp.commons.pojo.CustomReportType;
 import org.generationcp.commons.reports.service.JasperReportService;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -66,8 +67,6 @@ public class ExportListAsDialogTest {
 	private static List<GermplasmListData> listEntries;
 	private static GermplasmList germplasmList;
 
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("hhmmss");
 	@Mock
 	private Component source;
 
@@ -192,8 +191,7 @@ public class ExportListAsDialogTest {
 				.exportGermplasmListXLS(ExportListAsDialogTest.TEST_GERMPLASM_LIST_ID, TEMPORARY_FILE_PATH_XLS,
 						ExportListAsDialogTest.listDataTable);
 		verify(this.fileDownloaderUtility, Mockito.times(1))
-				.initiateFileDownload(TEMPORARY_FILE_PATH_XLS,  FileNameGenerator
-					.generateFileName( ExportListAsDialogTest.germplasmList.getName(), ExportListAsDialog.XLS_EXT), this.source);
+				.initiateFileDownload(eq(TEMPORARY_FILE_PATH_XLS), contains(ExportListAsDialogTest.germplasmList.getName()), eq(this.source));
 
 	}
 
@@ -221,8 +219,7 @@ public class ExportListAsDialogTest {
 				.exportGermplasmListCSV(TEMPORARY_FILE_PATH_CSV, ExportListAsDialogTest.listDataTable,
 						ExportListAsDialogTest.germplasmList.getId());
 		verify(this.fileDownloaderUtility, Mockito.times(1))
-				.initiateFileDownload(TEMPORARY_FILE_PATH_CSV, FileNameGenerator
-					.generateFileName( ExportListAsDialogTest.germplasmList.getName(), ExportListAsDialog.CSV_EXT), this.source);
+				.initiateFileDownload(eq(TEMPORARY_FILE_PATH_CSV), contains(ExportListAsDialogTest.germplasmList.getName()), eq(this.source));
 	}
 
 	@Test
@@ -263,14 +260,14 @@ public class ExportListAsDialogTest {
 
 	@Test
 	public void testExportListForGenotypingOrderAction() throws GermplasmListExporterException {
-		final String visibleFileName = ExportListAsDialogTest.germplasmList.getName().replace(" ", "_") + "ForGenotyping.xls";
+		final String visibleFileName = ExportListAsDialogTest.germplasmList.getName().replace(" ", "_") + "ForGenotyping";
 		ExportListAsDialogTest.germplasmList.setStatus(100);
 		this.dialog.exportListForGenotypingOrderAction();
 		verify(this.listExporter, Mockito.times(1))
 				.exportKBioScienceGenotypingOrderXLS(ExportListAsDialogTest.TEST_GERMPLASM_LIST_ID, TEMPORARY_FILE_PATH_CSV,
 						ExportListAsDialog.DEFAULT_PLATE_SIZE);
-		verify(this.fileDownloaderUtility, Mockito.times(1)).initiateFileDownload(TEMPORARY_FILE_PATH_CSV,
-				FileNameGenerator.generateFileName(visibleFileName), this.source);
+		verify(this.fileDownloaderUtility, Mockito.times(1)).initiateFileDownload(eq(TEMPORARY_FILE_PATH_CSV),
+				contains(visibleFileName), eq(this.source));
 	}
 
 	private static GermplasmList getGermplasmList() {

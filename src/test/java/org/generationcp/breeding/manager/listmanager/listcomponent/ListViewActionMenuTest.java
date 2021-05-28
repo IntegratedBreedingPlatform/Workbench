@@ -120,7 +120,7 @@ public class ListViewActionMenuTest {
 	}
 
 	@Test
-	public void testLayoutAdminLink() {
+	public void testAddAdminGermplasmLinks() {
 
 		final String removeSelectedGermplasmMessage = "removeSelectedGermplasm";
 	  final String ungroupMessage = "removeSelectedGermplasm";
@@ -135,7 +135,8 @@ public class ListViewActionMenuTest {
 
 	  	final ContextMenu.ContextMenuItem codingAndGroupingOptions = Mockito.mock(ContextMenu.ContextMenuItem.class);
 		this.menu.setCodingAndGroupingOptions(codingAndGroupingOptions);
-		this.menu.layoutAdminLink();
+		this.menu.addDeleteGermplasmLink();
+		this.menu.addUngroupGermplasmLink();
 
 		// Verify that removeSelectedGermplasmContextMenuItem is added inside listEditiongOptionsContextMenuItem
 		Mockito.verify(listEditiongOptionsContextMenuItem).addItem(removeSelectedGermplasmMessage);

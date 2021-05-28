@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>17.2</version>
+        <version>18.0</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -390,7 +390,8 @@
 		<dependency>
 			<groupId>uk.co.jemos.podam</groupId>
 			<artifactId>podam</artifactId>
-			<version>2.3.5.RELEASE</version>
+			<version>5.4.1.RELEASE</version>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>org.mortbay.jetty</groupId>

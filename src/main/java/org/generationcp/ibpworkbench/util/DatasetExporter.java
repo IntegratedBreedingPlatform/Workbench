@@ -321,7 +321,8 @@ public class DatasetExporter {
                                 || factorVariable.getVariableType().getStandardVariable().getPhenotypicType() == PhenotypicType.GERMPLASM) {
                             value = value.trim().replace(",", ";");
 
-                            if (value.isEmpty() && factorVariable.getVariableType().getLocalName()
+                            // breedingViewInput.getReplicates() is null if the study design is Augmented Design.
+                            if (value.isEmpty() && breedingViewInput.getReplicates() != null && factorVariable.getVariableType().getLocalName()
                                     .equalsIgnoreCase(breedingViewInput.getReplicates().getName())) {
                                 final Variable variable = factorsOfExperimentsMap.get(breedingViewInput.getBlocks().getName());
                                 if (variable != null) {

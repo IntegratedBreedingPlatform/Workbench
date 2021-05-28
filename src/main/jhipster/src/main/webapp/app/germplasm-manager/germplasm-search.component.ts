@@ -20,11 +20,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListEntry } from '../shared/list-builder/model/list.model';
 import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
+import { GERMPLASM_LABEL_PRINTING_TYPE } from '../app.constants';
+import { ParamContext } from '../shared/service/param.context';
+import { SearchResult } from '../shared/search-result.model';
 
 declare var $: any;
 
@@ -36,12 +39,15 @@ export class GermplasmSearchComponent implements OnInit {
 
     IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
+    GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
+    DELETE_GERMPLASM_PERMISSIONS = DELETE_GERMPLASM_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
 
     eventSubscriber: Subscription;
+    germplasmDetailsEventSubscriber: Subscription;
     germplasmList: Germplasm[];
     error: any;
     currentSearch: string;
@@ -53,41 +59,18 @@ export class GermplasmSearchComponent implements OnInit {
     predicate: any;
     previousPage: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
 
     germplasmSearchRequest = new GermplasmSearchRequest();
     germplasmFilters: any;
     germplasmHiddenColumns = {};
-    resultSearch: any = {};
 
-    get request() {
-        return this.germplasmSearchRequest;
-    }
-
-    set request(request) {
-        this.germplasmSearchRequest = request;
-    }
-
-    get filters() {
-        return this.germplasmFilters;
-    }
-
-    set filters(filters) {
-        this.germplasmFilters = filters;
-    }
-
-    get hiddenColumns() {
-        return this.germplasmHiddenColumns;
-    }
-
-    set hiddenColumns(hiddenColumns) {
-        this.germplasmHiddenColumns = hiddenColumns;
-    }
-
-    // TODO rewrite as map (see sample.component)
-    selectedItems: any[] = [];
+    // { <gid>: germplasm }
+    selectedItems: { [key: number]: Germplasm } = {};
     isSelectAll = false;
+    lastClickIndex: any;
 
     private static getInitialFilters() {
         return [
@@ -119,10 +102,10 @@ export class GermplasmSearchComponent implements OnInit {
                 open(modal, request) {
                     return new Promise((resolve) => {
                         modal.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
-                            .result.then((germplasmList) => {
-                            if (germplasmList) {
-                                this.value = germplasmList.map((list) => list.name);
-                                request[this.key] = germplasmList.map((list) => list.id);
+                            .result.then((germplasmLists) => {
+                            if (germplasmLists && germplasmLists.length > 0) {
+                                this.value = germplasmLists.map((list) => list.name);
+                                request[this.key] = germplasmLists.map((list) => list.id);
                             }
                             resolve();
                         }, () => {
@@ -272,6 +255,30 @@ export class GermplasmSearchComponent implements OnInit {
         ];
     }
 
+    get request() {
+        return this.germplasmSearchRequest;
+    }
+
+    set request(request) {
+        this.germplasmSearchRequest = request;
+    }
+
+    get filters() {
+        return this.germplasmFilters;
+    }
+
+    set filters(filters) {
+        this.germplasmFilters = filters;
+    }
+
+    get hiddenColumns() {
+        return this.germplasmHiddenColumns;
+    }
+
+    set hiddenColumns(hiddenColumns) {
+        this.germplasmHiddenColumns = hiddenColumns;
+    }
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
@@ -283,7 +290,8 @@ export class GermplasmSearchComponent implements OnInit {
                 private germplasmManagerContext: GermplasmManagerContext,
                 private modalService: NgbModal,
                 private activeModal: NgbActiveModal,
-                public listBuilderContext: ListBuilderContext
+                public listBuilderContext: ListBuilderContext,
+                private paramContext: ParamContext
     ) {
 
         this.predicate = '';
@@ -300,22 +308,41 @@ export class GermplasmSearchComponent implements OnInit {
             this.filters = GermplasmSearchComponent.getInitialFilters();
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
+        this.listBuilderContext.pageSize = this.itemsPerPage;
+        this.resultSearch = new SearchResult('');
+
+    }
+
+    search(request: GermplasmSearchRequest): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (!this.resultSearch.searchResultDbId) {
+                this.germplasmService.search(request).subscribe((response) => {
+                    this.resultSearch.searchResultDbId = response;
+                    resolve(this.resultSearch.searchResultDbId);
+                }, (error) => reject(error));
+                this.page = 1;
+            } else {
+                resolve(this.resultSearch.searchResultDbId);
+            }
+        });
     }
 
     loadAll(request: GermplasmSearchRequest) {
         this.isLoading = true;
-        this.germplasmService.searchGermplasm(request,
-            this.addSortParam({
-                page: this.page - 1,
-                size: this.itemsPerPage
-            })
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
-
+        this.search(request).then((searchId) => {
+            this.germplasmService.getSearchResults(
+                this.addSortParam({
+                    searchRequestId: searchId,
+                    page: this.page - 1,
+                    size: this.itemsPerPage
+                })
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
@@ -327,6 +354,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     transition() {
         this.router.navigate(['./'], {
+            queryParamsHandling: 'merge',
             queryParams:
                 this.addSortParam({
                     page: this.page,
@@ -340,6 +368,7 @@ export class GermplasmSearchComponent implements OnInit {
     ngOnInit() {
         this.registerColumnFiltersChaged();
         this.registerFilterBy();
+        this.registerGermplasmDetailsChanged();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
@@ -437,6 +466,14 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
+    registerGermplasmDetailsChanged() {
+        // E.g germplasm changed via import.
+        this.germplasmDetailsEventSubscriber = this.eventManager.subscribe('germplasmDetailsChanged', (event) => {
+            // Reload the table when a germplasm is updated via germplasm details popup.
+            this.transition();
+        });
+    }
+
     isExpensiveFilter() {
         return this.request && this.hasNameExpensiveFilters();
     }
@@ -468,11 +505,12 @@ export class GermplasmSearchComponent implements OnInit {
         this.page = 1;
         this.previousPage = 1;
         this.isSelectAll = false;
-        this.selectedItems = [];
+        this.selectedItems = {};
         this.loadAll(this.request);
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
+        this.resultSearch.searchResultDbId = '';
         this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);
@@ -501,46 +539,68 @@ export class GermplasmSearchComponent implements OnInit {
         this.filters = GermplasmSearchComponent.getInitialFilters();
         this.request = new GermplasmSearchRequest();
         this.request.addedColumnsPropertyIds = [];
+        this.resultSearch = new SearchResult('');
     }
 
     isSelected(germplasm: Germplasm) {
-        return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
+        return this.selectedItems[germplasm.gid];
     }
 
     onSelectPage() {
-        const isPageSelected = this.isPageSelected();
-        const pageGids = this.germplasmList.map((germplasm) => germplasm.gid);
-        if (isPageSelected) {
-            this.selectedItems = this.selectedItems.filter((item) =>
-                pageGids.indexOf(item) === -1);
+        if (this.isPageSelected()) {
+            // remove all items
+            this.germplasmList.forEach((g) => delete this.selectedItems[g.gid]);
         } else {
-            this.selectedItems = pageGids.filter((item) =>
-                this.selectedItems.indexOf(item) === -1
-            ).concat(this.selectedItems);
+            // check remaining items
+            this.germplasmList.forEach((g) => this.selectedItems[g.gid] = g);
         }
     }
 
     onSelectAll(isSelectAll) {
         this.isSelectAll = !isSelectAll;
-        if (this.isSelectAll) {
-            this.selectedItems = [];
-        }
+        this.selectedItems = {};
     }
 
-    toggleSelect(germplasm: Germplasm) {
-        if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
-            this.selectedItems = this.selectedItems.filter((item) => item !== germplasm.gid);
+    toggleSelect($event, index, germplasm: Germplasm, checkbox = false) {
+        if (this.isSelectAll) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
+        let items;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1,
+                min = Math.min(this.lastClickIndex, index);
+            items = this.germplasmList.slice(min, max);
         } else {
-            this.selectedItems.push(germplasm.gid);
+            items = [germplasm];
+            this.lastClickIndex = index;
+        }
+        const isClickedItemSelected = this.selectedItems[germplasm.gid];
+        for (const item of items) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[item.gid];
+            } else {
+                this.selectedItems[item.gid] = item;
+            }
         }
     }
 
     isPageSelected() {
-        return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
+        return this.size(this.selectedItems) && this.germplasmList.every((g) => Boolean(this.selectedItems[g.gid]));
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
+    }
+
+    private getSelectedItemIds() {
+        return Object.keys(this.selectedItems).map((gid) => Number(gid));
     }
 
     private validateSelection() {
-        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.selectedItems.length === 0)) {
+        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) === 0)) {
             this.alertService.error('error.custom', {
                 param: 'Please select at least one germplasm'
             });
@@ -551,8 +611,9 @@ export class GermplasmSearchComponent implements OnInit {
 
     dragStart($event, dragged: Germplasm) {
         let selected;
-        if (this.selectedItems.indexOf(dragged.gid) !== -1) {
-            selected = this.germplasmList.filter((germplasm) => this.selectedItems.indexOf(germplasm.gid) !== -1);
+        if (this.selectedItems[dragged.gid]) {
+            // TODO sort as in table
+            selected = Object.values(this.selectedItems).sort((a, b) => a.gid > b.gid ? 1 : -1);
         } else {
             selected = [dragged];
         }
@@ -588,7 +649,7 @@ export class GermplasmSearchComponent implements OnInit {
         if (this.isSelectAll) {
             searchComposite.searchRequest = this.request;
         } else {
-            searchComposite.itemIds = this.selectedItems;
+            searchComposite.itemIds = this.getSelectedItemIds();
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
 
@@ -607,13 +668,30 @@ export class GermplasmSearchComponent implements OnInit {
         if (this.isSelectAll) {
             searchComposite.searchRequest = this.request;
         } else {
-            searchComposite.itemIds = this.selectedItems;
+            searchComposite.itemIds = this.getSelectedItemIds();
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
 
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
+        });
+    }
+
+    exportDataAndLabels() {
+        this.paramContext.resetQueryParams().then(() => {
+            /*
+             * FIXME workaround for history.back() with base-href
+             *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href
+             *  or 'inventory-manager' string
+             */
+            window.history.pushState({}, '',  window.location.hash);
+
+            window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
+                + '?cropName=' + this.paramContext.cropName
+                + '&programUUID=' + this.paramContext.programUUID
+                + '&printingLabelType=' + GERMPLASM_LABEL_PRINTING_TYPE
+                + '&searchRequestId=' + this.resultSearch.searchResultDbId;
         });
     }
 
@@ -627,16 +705,17 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        if (this.selectedItems.length > 500) {
+        if (this.size(this.selectedItems) > 500) {
             this.alertService.error('germplasm-delete.too-many-selected-germplasm');
             return;
         }
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.title = 'Delete Germplasm';
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? The deletion will be permanent.';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? '
+            + 'The deletion will be permanent and can take a long time for germplasm included in lists - from which they will also be deleted.';
         confirmModalRef.result.then(() => {
-            this.germplasmService.deleteGermplasm(this.selectedItems).subscribe((response) => {
+            this.germplasmService.deleteGermplasm(this.getSelectedItemIds()).subscribe((response) => {
                 if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
                     this.alertService.warning('germplasm-delete.warning');
                     this.resetFilters();

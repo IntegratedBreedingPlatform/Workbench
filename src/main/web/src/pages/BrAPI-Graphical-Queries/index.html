@@ -57,7 +57,7 @@
 </head>
 <body ng-controller="MainController">
 <div style="margin:1em" class="container-fluid">
-	<div class="row">
+	<div class="row" ng-if="!gid">
 		<div class="col-xs-6">
 			<h2 style="margin-top: 0; margin-bottom: 20px">BrAPI Graphical Queries</h2>
 		</div>
@@ -65,7 +65,7 @@
 	<div class="row">
 		<div class="col-xs-6">
 			<form id="brapi-form" action="javascript:void(0);" class="form-horizontal">
-				<div class="form-group">
+				<div ng-if="!gid" class="form-group">
 					<label class="control-label col-sm-4">Study name</label>
 					<div class="col-sm-8" id="trials">
 					</div>
@@ -91,7 +91,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-group">
+				<div ng-if="!gid" class="form-group">
 					<label class="control-label col-sm-4">GIDs</label>
 					<div class="col-sm-6">
 						<input type="text" id="germplasmDbIds" class="form-control" name="germplasmDbIds"/>
@@ -102,22 +102,26 @@
 				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-4">Observation level</label>
-					<div class="col-sm-8" id="observationLevels"></div>
+					<div class="col-sm-8" id="observationLevels">
+						<select class="form-control" name="observationLevel" ng-model="nested.selectedObservationModel">
+							<option ng-repeat="observationLevel in observationLevels" ng-value="{{observationLevel}}">{{observationLevel}}</option>
+						</select>
+					</div>
 				</div>
-				<div class="form-group">
+				<div ng-if="!gid" class="form-group">
 					<label class="control-label col-sm-4">Observation timestamp range start</label>
 					<div class="col-sm-8">
 						<input type="text" class="form-control" name="observationTimeStampRangeStart"/>
 					</div>
 				</div>
-				<div class="form-group">
+				<div ng-if="!gid" class="form-group">
 					<label class="control-label col-sm-4">Observation timestamp range end</label>
 					<div class="col-sm-8">
 						<input type="text" class="form-control" name="observationTimeStampRangeEnd"/>
 					</div>
 				</div>
 
-				<div class="form-group">
+				<div ng-if="!gid" class="form-group">
 					<label class="control-label col-sm-4">Group By Accession</label>
 					<div class="col-sm-8">
 						<div class="checkbox">
@@ -127,10 +131,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="row">
+				<div ng-if="!gid" class="row">
 					<label class="control-label col-sm-4">Query type</label>
 					<div class="col-sm-8">
-						<select class="form-control" ng-model="toolId" ng-change="onQueryTypeChange()">
+						<select class="form-control" ng-model="nested.toolId" ng-change="onQueryTypeChange()">
 							<option ng-repeat="tool in tools" value="{{tool.id}}">{{tool.name}}</option>
 						</select>
 					</div>
@@ -155,9 +159,9 @@
 		</div>
 	</div>
 	<hr  ng-show="flags.isDataLoaded" />
-	<div ng-switch="toolId" ng-show="flags.isDataLoaded">
+	<div ng-switch="nested.toolId" ng-show="flags.isDataLoaded">
 		<div class="row" ng-switch-when="graphical-filtering">
-			<button id="export"
+			<button ng-if="!gid" id="export"
 					class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
 				Export
 			</button>

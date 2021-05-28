@@ -4,7 +4,6 @@ import { RouteAccessService } from '../shared';
 import { GermplasmManagerComponent } from './germplasm-manager.component';
 import { GermplasmSearchComponent } from './germplasm-search.component';
 import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-paging-params';
-import { germplasmRoutes } from '../entities/germplasm/germplasm.route';
 import { IMPORT_GERMPLASM_UPDATES_PERMISSIONS, SEARCH_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
 import { breedingMethodRoutes } from '../entities/breeding-method/breeding-method.route';
 import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
@@ -14,10 +13,9 @@ import { InventoryDetailsPopupComponent } from './inventory/details/inventory-de
 import { inventoryDetailsRoutes } from './inventory/details/inventory-details.route';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
-import { ListCreationComponent } from '../shared/list-creation/list-creation.component';
+import { GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
-    ...germplasmRoutes,
     ...breedingMethodRoutes,
     ...inventoryDetailsRoutes,
     {
@@ -26,14 +24,13 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         data: {
             authorities: [
                 'ADMIN',
-                'CROP_MANAGEMENT',
                 'STUDIES',
+                'MANAGE_STUDIES',
+                'MS_CREATE_LOTS',
                 'LISTS',
                 'GERMPLASM_LISTS',
                 'MG_MANAGE_INVENTORY',
-                'MG_CREATE_LOTS',
-                'MANAGE_STUDIES',
-                'MS_CREATE_LOTS'
+                'MG_CREATE_LOTS'
             ]
         },
         canActivate: [RouteAccessService]
@@ -46,6 +43,11 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         resolve: {
             'pagingParams': GermplasmSearchResolvePagingParams
         },
+    },
+    {
+        path: 'germplasm-selector-dialog',
+        component: GermplasmSelectorPopupComponent,
+        outlet: 'popup'
     },
     {
         path: 'germplasm-list-creation-dialog',

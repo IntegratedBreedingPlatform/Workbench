@@ -14,6 +14,8 @@ import { GermplasmImportUpdateDialogComponent, GermplasmImportUpdatePopupCompone
 import { GermplasmListAddComponent, GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
 import { TreeDragDropService } from 'primeng/api';
 import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
+import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
+import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 
 @NgModule({
     imports: [
@@ -30,6 +32,8 @@ import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-regis
         GermplasmImportUpdateDialogComponent,
         GermplasmImportUpdatePopupComponent,
         GermplasmSelectorComponent,
+        GermplasmSelectorModalComponent,
+        GermplasmSelectorPopupComponent,
         GermplasmListAddComponent,
         GermplasmListAddPopupComponent,
         KeySequenceRegisterDeletionDialogComponent
@@ -43,6 +47,8 @@ import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-regis
         GermplasmImportUpdateDialogComponent,
         GermplasmImportUpdatePopupComponent,
         GermplasmSelectorComponent,
+        GermplasmSelectorModalComponent,
+        GermplasmSelectorPopupComponent,
         GermplasmListAddComponent,
         GermplasmListAddPopupComponent,
         KeySequenceRegisterDeletionDialogComponent
@@ -50,6 +56,7 @@ import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-regis
     providers: [
         GermplasmSearchResolvePagingParams,
         GermplasmManagerContext,
+        GermplasmDetailsUrlService
     ]
 })
 export class GermplasmManagerModule {

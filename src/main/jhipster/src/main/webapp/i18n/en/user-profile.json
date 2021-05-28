@@ -1,0 +1,10 @@
+{
+  "userProfile": {
+    "home": {
+      "title": "Update user profile",
+      "messages": {
+        "updated": "The user profile has been updated successfully"
+      }
+    }
+  }
+}

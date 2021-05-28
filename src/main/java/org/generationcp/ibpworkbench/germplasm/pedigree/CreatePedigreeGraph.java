@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.germplasm.pedigree;
 import com.vaadin.ui.Window;
 import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.generationcp.middleware.pojos.Method;
@@ -138,35 +139,33 @@ public class CreatePedigreeGraph {
 			final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
 			this.graphVizUtility.addln(leafNodeGIDRoot + ";");
 		}
-
 		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			final boolean isFemaleParent = parent.getGermplasm().getGid().equals(node.getGermplasm().getGpid1())
-				&& node.getGermplasm().getGnpgs() >= 2;
-			final boolean isDerivative = node.getGermplasm().getGnpgs().equals(-1);
 			final String leafNodeGID = this.createNodeTextWithFormatting(parent);
 			final String parentNodeGID = this.createNodeTextWithFormatting(node);
 
 			if (level == 1) {
 				final String leafNodeGIDRoot = this.createNodeTextWithFormatting(node);
-				this.graphVizUtility.addln(leafNodeGID + "->" + leafNodeGIDRoot + this.getArrowStyleString(isFemaleParent, isDerivative));
+				this.graphVizUtility.addln(leafNodeGID + "->" + leafNodeGIDRoot + this.getArrowStyleString(node.getGermplasm(), parent.getGermplasm()));
 			} else {
-				this.graphVizUtility.addln(leafNodeGID + "->" + parentNodeGID + this.getArrowStyleString(isFemaleParent, isDerivative));
+				this.graphVizUtility.addln(leafNodeGID + "->" + parentNodeGID + this.getArrowStyleString(node.getGermplasm(), parent.getGermplasm()));
 			}
 
 			this.addNode(parent, level + 1);
 		}
 	}
 
-	String getArrowStyleString(final boolean isFemaleParent, final boolean isDerivative) {
-		if(isFemaleParent) {
-			return " [color=\"RED\", arrowhead=\"odottee\"];";
-		} else if(!isDerivative) {
-			return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
-		} else {
-			return  ";";
+	private String getArrowStyleString(final Germplasm nodeGermplasm, final Germplasm parentGermplasm) {
+		if (nodeGermplasm.getGnpgs() != null && nodeGermplasm.getGnpgs() >= 2 ) {
+			if (parentGermplasm.getGid().equals(nodeGermplasm.getGpid1())) {
+				//Female Parent
+				return " [color=\"RED\", arrowhead=\"odottee\"];";
+			} else {
+				//Male Parent
+				return " [color=\"BLUE\", arrowhead=\"veeodot\"];";
+			}
 		}
+		return ";";
 	}
-
 
 	protected void setGraphVizUtility(final GraphVizUtility graphVizUtility) {
 		this.graphVizUtility = graphVizUtility;

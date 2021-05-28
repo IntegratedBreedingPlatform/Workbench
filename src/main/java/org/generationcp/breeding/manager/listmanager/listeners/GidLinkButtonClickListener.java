@@ -21,17 +21,13 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 import org.generationcp.breeding.manager.application.BreedingManagerApplication;
 import org.generationcp.breeding.manager.constants.AppConstants;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
 import org.generationcp.breeding.manager.listmanager.ListManagerMain;
-import org.generationcp.breeding.manager.util.Util;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +48,9 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
 
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
+
 	private ListManagerMain listManagerMain;
 	private final String gid;
 	private final Boolean viaToolURL;
@@ -64,7 +63,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 	}
 
 	public GidLinkButtonClickListener(final ListManagerMain listManagerMain, final String gid, final Boolean viaToolURL,
-			final Boolean showAddToList) {
+		final Boolean showAddToList) {
 		this.listManagerMain = listManagerMain;
 		this.gid = gid;
 		this.viaToolURL = viaToolURL;
@@ -80,22 +79,8 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		} else {
 			mainWindow = event.getComponent().getApplication().getWindow(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME);
 		}
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		} catch (final MiddlewareQueryException qe) {
-			GidLinkButtonClickListener.LOG.error("QueryException", qe);
-		}
 
-		final String addtlParams = Util.getAdditionalParams(this.workbenchDataManager);
-		ExternalResource germplasmBrowserLink;
-		if (tool == null) {
-			germplasmBrowserLink = new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(
-					DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK + this.gid, "?restartApplication" + addtlParams));
-		} else {
-			germplasmBrowserLink = new ExternalResource(
-					WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(this.gid), "?restartApplication" + addtlParams));
-		}
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(Integer.parseInt(this.gid), true);
 
 		String preferredName = null;
 		try {
@@ -117,7 +102,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		layoutForGermplasm.setHeight("100%");
 		layoutForGermplasm.addStyleName("no-caption");
 
-		final Embedded germplasmInfo = new Embedded(null, germplasmBrowserLink);
+		final Embedded germplasmInfo = new Embedded(null, germplasmDetailsLink);
 		germplasmInfo.setDebugId("germplasmInfo");
 
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
@@ -144,7 +129,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 				@Override
 				public void buttonClick(final ClickEvent event) {
 					GidLinkButtonClickListener.this.listManagerMain.getListBuilderComponent().getBuildNewListDropHandler()
-							.addGermplasm(Arrays.asList(Integer.valueOf(GidLinkButtonClickListener.this.gid)));
+						.addGermplasm(Arrays.asList(Integer.valueOf(GidLinkButtonClickListener.this.gid)));
 					mainWindow.removeWindow(germplasmWindow);
 				}
 

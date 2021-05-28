@@ -4,6 +4,7 @@ import { TreeNode } from '../index';
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class StudyTreeService extends TreeService {
@@ -42,6 +43,15 @@ export class StudyTreeService extends TreeService {
 
     move(source: string, target: string, isParentCropList: boolean) {
         // TODO
+    }
+
+    init() {
+        return this.expand('');
+    }
+
+    persist(folders: string[]) {
+        // TODO
+        return Observable.empty();
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {

@@ -472,7 +472,7 @@ img[src$="leaf_16.png"] {
 .white-bg,
 .white-background,
 .white-bg div div,
-.white-background div div,
+.white-background div div
 {
     background: #ffffff !important;
 }
@@ -590,4 +590,19 @@ td.v-table-cell-content-accepted-value{
 
 .v-label-bold{
     font-weight: bold;
+}
+
+/* Pedigree details COMPONENT TREE */
+.pedigree-details-component-tree {
+    background-color: #f6f6f6;
+}
+
+.pedigree-details-page {
+    background-color: #f6f6f6;
+    overflow: scroll;
+}
+
+.v-tree-node-link span {
+    cursor: pointer;
+    color: #337ab7;
 }

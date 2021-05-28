@@ -1,6 +1,6 @@
 <div class="container">
     <div class="modal-header">
-        <h4 class="modal-title font-weight-bold" id="importSamplePlateHeader">Import Plate information</h4>
+        <h4 class="modal-title font-weight-bold" id="importSamplePlateHeader" jhitranslate="bmsjHipsterApp.sample.importPlate.title">Import Plate information</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="close()">&times;
         </button>
@@ -13,7 +13,7 @@
         <div class="col-2"></div>
         <div class="col-md-8">
             <input type="file" class="custom-file-input" multiple="false" id="importFile" (change)="onFileChange($event)" accept="{{selectedFileType}}">
-            <label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search"></i> Choose the file you would like to import with the format: Excel or CSV</label>
+            <label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search"></i><span jhiTranslate="bmsjHipsterApp.sample.importPlate.select-file"></span></label>
         </div>
     </div>
     <div class="modal-footer">

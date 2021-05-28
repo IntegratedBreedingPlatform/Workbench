@@ -47,70 +47,70 @@ public class BreedingViewTreeTableTest {
 	@Before
 	public void setUp() throws Exception {
 		final Project project = mock(Project.class);
-		when(contextUtil.getProjectInContext()).thenReturn(project);
+		when(this.contextUtil.getProjectInContext()).thenReturn(project);
 	}
 
 	@Test
 	public void testAddFolderReference() {
-		final FolderReference testReference = constructTestReference();
-		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final FolderReference testReference = this.constructTestReference();
+		this.treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-		assertTrue(treeTable.getNodeMap().containsKey(testReference.getId()));
-		assertNotNull(treeTable.getItem(testReference));
+		assertTrue(this.treeTable.getNodeMap().containsKey(testReference.getId()));
+		assertNotNull(this.treeTable.getItem(testReference));
 	}
 
 	@Test
 	public void testSetCollapsedTrue() {
-		final FolderReference testReference = constructTestReference();
-		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final FolderReference testReference = this.constructTestReference();
+		this.treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-		treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, true);
-		assertTrue(treeTable.isCollapsed(testReference));
+		this.treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, true);
+		assertTrue(this.treeTable.isCollapsed(testReference));
 	}
 
 	@Test
 	public void testSetCollapsedFalse() {
-		final FolderReference testReference = constructTestReference();
-		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final FolderReference testReference = this.constructTestReference();
+		this.treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
-		treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, false);
-		assertFalse(treeTable.isCollapsed(testReference));
+		this.treeTable.setCollapsedFolder(TEST_FOLDER_ITEM_ID, false);
+		assertFalse(this.treeTable.isCollapsed(testReference));
 	}
 
 	@Test
 	public void testReinitializeTreeExists() throws MiddlewareQueryException {
-		final FolderReference testReference = constructTestReference();
-		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final FolderReference testReference = this.constructTestReference();
+		this.treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 
 		final List<String> forExpansion = new ArrayList<>();
 		forExpansion.add("STUDY");
 		forExpansion.add(Integer.toString(TEST_FOLDER_ITEM_ID));
 
-		when(programStateDataManager.getUserProgramTreeStateByUserIdProgramUuidAndType(anyInt(), ArgumentMatchers.<String>isNull(), anyString()))
+		when(this.programStateDataManager.getUserProgramTreeState(anyInt(), ArgumentMatchers.<String>isNull(), anyString()))
 				.thenReturn(forExpansion);
 
-		treeTable.reinitializeTree();
+		this.treeTable.reinitializeTree();
 
-		assertFalse(treeTable.isCollapsed(testReference));
+		assertFalse(this.treeTable.isCollapsed(testReference));
 	}
 
 	@Test
 	public void testGetExpandedIds() {
-		final FolderReference testReference = constructTestReference();
-		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final FolderReference testReference = this.constructTestReference();
+		this.treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 		final List<Integer> ids = this.getIntegerIdsList();
-		treeTable.expandNodes(ids);
-		final List<Integer> expandedIds = treeTable.getExpandedIds();
+		this.treeTable.expandNodes(ids);
+		final List<Integer> expandedIds = this.treeTable.getExpandedIds();
 		assertTrue(expandedIds.contains(TEST_FOLDER_ITEM_ID));
 	}
 
 	@Test
 	public void testExpandNodes() {
-		final FolderReference testReference = constructTestReference();
-		treeTable.addFolderReferenceNode(new Object[] {}, testReference);
+		final FolderReference testReference = this.constructTestReference();
+		this.treeTable.addFolderReferenceNode(new Object[] {}, testReference);
 		final List<Integer> ids = this.getIntegerIdsList();
-		treeTable.expandNodes(ids);
-		assertFalse(treeTable.isCollapsed(testReference));
+		this.treeTable.expandNodes(ids);
+		assertFalse(this.treeTable.isCollapsed(testReference));
 	}
 
 	protected FolderReference constructTestReference() {

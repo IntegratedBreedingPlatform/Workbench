@@ -12,13 +12,15 @@
 package org.generationcp.ibpworkbench.germplasm;
 
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQuery;
 import org.generationcp.ibpworkbench.germplasm.containers.ManagementNeighborsQueryFactory;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -37,7 +39,10 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	public GermplasmManagementNeighborsComponent(Integer gid) {
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
+
+	public GermplasmManagementNeighborsComponent(final Integer gid) {
 		this.gid = gid;
 	}
 
@@ -48,8 +53,8 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 	}
 
 	private void initializeComponents() {
-		ManagementNeighborsQueryFactory factory = new ManagementNeighborsQueryFactory(this.gid);
-		LazyQueryContainer container = new LazyQueryContainer(factory, false, 50);
+		final ManagementNeighborsQueryFactory factory = new ManagementNeighborsQueryFactory(this.gid);
+		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 50);
 
 		if (container.size() > 0) {
 			this.managementNeighborsTable = new Table();
@@ -68,13 +73,26 @@ public class GermplasmManagementNeighborsComponent extends VerticalLayout implem
 			this.managementNeighborsTable.setSelectable(true);
 			this.managementNeighborsTable.setMultiSelect(false);
 			this.managementNeighborsTable.setImmediate(true); // react at once when something is selected turn on column reordering and
-																// collapsing
+			// collapsing
 			this.managementNeighborsTable.setColumnReorderingAllowed(true);
 			this.managementNeighborsTable.setColumnCollapsingAllowed(true);
 
 			this.managementNeighborsTable.setColumnHeader(ManagementNeighborsQuery.GID, this.messageSource.getMessage(Message.GID_LABEL));
 			this.managementNeighborsTable.setColumnHeader(ManagementNeighborsQuery.PREFERRED_NAME,
-					this.messageSource.getMessage(Message.PREFNAME_LABEL));
+				this.messageSource.getMessage(Message.PREFNAME_LABEL));
+
+			this.managementNeighborsTable.addGeneratedColumn(ManagementNeighborsQuery.GID, new Table.ColumnGenerator() {
+
+				@Override
+				public Object generateCell(final Table source, final Object itemId, final Object columnId) {
+					final String gid = source.getItem(itemId).getItemProperty(columnId).getValue().toString();
+					final Link link =
+						new Link(gid, GermplasmManagementNeighborsComponent.this.germplasmDetailsUrlService
+							.getExternalResource(Integer.parseInt(gid), false));
+					link.setTargetName("_blank");
+					return link;
+				}
+			});
 		} else {
 			this.noDataAvailableLabel = new Label("There is no Management Neighbors Information for this germplasm.");
 		}

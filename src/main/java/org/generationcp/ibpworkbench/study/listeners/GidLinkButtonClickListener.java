@@ -19,16 +19,12 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.ArrayUtils;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
 import org.generationcp.ibpworkbench.study.TableViewerComponent;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,51 +35,38 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 
 	private static final long serialVersionUID = -6751894969990825730L;
 	private final static Logger LOG = LoggerFactory.getLogger(GidLinkButtonClickListener.class);
-	private final String[] CHILD_WINDOWS = {TableViewerComponent.TABLE_VIEWER_WINDOW_NAME,
-			ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
-
-	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private final String[] CHILD_WINDOWS = {
+		TableViewerComponent.TABLE_VIEWER_WINDOW_NAME,
+		ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
 
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
+
 	private final String gid;
 
-	public GidLinkButtonClickListener(String gid) {
+	public GidLinkButtonClickListener(final String gid) {
 		this.gid = gid;
 	}
 
 	@Override
-	public void buttonClick(ClickEvent event) {
-		Window mainWindow;
-		Window eventWindow = event.getComponent().getWindow();
+	public void buttonClick(final ClickEvent event) {
+		final Window mainWindow;
+		final Window eventWindow = event.getComponent().getWindow();
 		if (ArrayUtils.contains(this.CHILD_WINDOWS, eventWindow.getName())) {
 			mainWindow = eventWindow.getParent();
 		} else {
 			mainWindow = eventWindow;
 		}
 
-		Tool tool = null;
-		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		} catch (MiddlewareQueryException qe) {
-			GidLinkButtonClickListener.LOG.error("QueryException", qe);
-		}
-
-		ExternalResource germplasmBrowserLink;
-		if (tool == null) {
-			germplasmBrowserLink =
-					new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK
-							+ this.gid));
-		} else {
-			germplasmBrowserLink = new ExternalResource(WorkbenchAppPathResolver.getWorkbenchAppPath(tool, this.gid));
-		}
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(Integer.parseInt(this.gid), true);
 
 		String preferredName = null;
 		try {
 			preferredName = this.germplasmDataManager.getPreferredNameValueByGID(Integer.valueOf(this.gid));
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			GidLinkButtonClickListener.LOG.error("Error with getting preferred name of " + this.gid, ex);
 		}
 
@@ -91,14 +74,14 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		if (preferredName != null) {
 			windowTitle = "Germplasm Details: " + preferredName + " (GID: " + this.gid + ")";
 		}
-		Window germplasmWindow = new BaseSubWindow(windowTitle);
+		final Window germplasmWindow = new BaseSubWindow(windowTitle);
 
-		VerticalLayout layoutForGermplasm = new VerticalLayout();
+		final VerticalLayout layoutForGermplasm = new VerticalLayout();
 		layoutForGermplasm.setMargin(false);
 		layoutForGermplasm.setWidth("98%");
 		layoutForGermplasm.setHeight("98%");
 
-		Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
+		final Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();
 		layoutForGermplasm.addComponent(germplasmInfo);

@@ -5,3 +5,9 @@ export class BreedingMethodType {
     ) {
     }
 }
+
+export enum BreedingMethodTypeEnum {
+    GENERATIVE = 'GEN',
+    DERIVATIVE = 'DER',
+    MAINTENANCE = 'MAN'
+}

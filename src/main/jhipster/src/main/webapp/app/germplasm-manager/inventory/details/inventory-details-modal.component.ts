@@ -20,11 +20,10 @@ export class InventoryDetailsModalComponent implements OnInit {
                 public activeModal: NgbActiveModal
     ) {
         const gid = this.route.snapshot.queryParams.gid;
-        const url = '/ibpworkbench/controller/jhipster#/inventory-details?restartApplication'
-            +
+        const url = '/ibpworkbench/controller/jhipster#/inventory-details?restartApplication' +
             '&cropName=' + context.cropName +
             '&programUUID=' + context.programUUID +
-            '&gid=' + gid;
+            '&gid=' + gid + '&modal';
         this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 

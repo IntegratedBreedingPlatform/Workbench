@@ -8,7 +8,7 @@ import { AlertService } from '../alert/alert.service';
 import { ParamContext } from '../service/param.context';
 import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
 import { Principal } from '../index';
-import { TreeNode } from '../tree';
+import { TreeComponent, TreeNode } from '../tree';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ModalConfirmComponent } from '../modal/modal-confirm.component';
 import { formatErrorList } from '../alert/format-error-list';
@@ -18,11 +18,10 @@ import { ListService } from './service/list.service';
 
 declare var $: any;
 
-export abstract class ListCreationComponent implements OnInit {
+export abstract class ListCreationComponent extends TreeComponent implements OnInit {
 
     readonly NAME_MAX_LENGTH: number = 50;
 
-    public nodes: PrimeNgTreeNode[] = [];
     selectedNode: PrimeNgTreeNode;
     listTypes: ListType[];
 
@@ -50,6 +49,7 @@ export abstract class ListCreationComponent implements OnInit {
                 public calendar: NgbCalendar,
                 public modalService: NgbModal,
                 public principal: Principal) {
+        super(treeService, modal);
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
@@ -64,24 +64,10 @@ export abstract class ListCreationComponent implements OnInit {
             this.loggedUserId = account.userId;
         });
 
-        this.treeService.expand('')
-            .subscribe((res: TreeNode[]) => {
-                res.forEach((node) => this.addNode(node));
-                this.redrawNodes();
-                // FIXME tableStyleClass not working on primeng treetable 6?
-                $('.ui-treetable-table').addClass('table table-striped table-bordered table-curved');
-                this.nodes.forEach((parent) => {
-                    this.expand(parent);
-                    parent.expanded = true;
-                });
-            });
+        super.ngOnInit();
 
         this.listService.getListTypes().subscribe((listTypes) => this.listTypes = listTypes);
         this.listService.getListType().subscribe((listType) => this.model.type = listType);
-    }
-
-    private addNode(node: TreeNode) {
-        return this.nodes.push(this.toPrimeNgNode(node));
     }
 
     onDrop(event, source: PrimeNgTreeNode, target: PrimeNgTreeNode) {
@@ -124,20 +110,6 @@ export abstract class ListCreationComponent implements OnInit {
                 this.expand(target);
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
             });
-    }
-
-    onNodeExpand(event) {
-        if (event.node) {
-            this.expand(event.node);
-        }
-    }
-
-    onNodeSelect(event) {
-        const node: PrimeNgTreeNode = event.node;
-        if (!node.expanded) {
-            this.expand(node);
-            node.expanded = true;
-        }
     }
 
     isFormValid(f) {
@@ -219,53 +191,10 @@ export abstract class ListCreationComponent implements OnInit {
         }
     }
 
-    dismiss() {
-        this.modal.dismiss();
-    }
-
-    private expand(parent) {
-        if (parent.leaf) {
-            return;
-        }
-        this.treeService.expand(parent.data.id)
-            .subscribe((res: TreeNode[]) => {
-                parent.children = [];
-                res.forEach((node) => {
-                    parent.children.push(this.toPrimeNgNode(node, parent));
-                });
-                this.redrawNodes();
-            });
-    }
-
-    private redrawNodes() {
-        // see primefaces/primeng/issues/5966#issuecomment-402498667
-        this.nodes = Object.assign([], this.nodes);
-    }
-
-    private toPrimeNgNode(node: TreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {
-        return {
-            label: node.name,
-            data: {
-                id: node.key,
-                name: node.name || '',
-                owner: node.owner || '',
-                ownerId: node.ownerId || '',
-                description: node.description || (parent && '-'), // omit for root folders
-                type: node.type || '',
-                noOfEntries: node.noOfEntries || ''
-            },
-            draggable: node.isFolder,
-            droppable: node.isFolder,
-            selectable: node.isFolder,
-            leaf: !node.isFolder,
-            parent,
-        };
-    }
-
     submitDeleteFolder() {
         this.mode = this.FolderModes.None;
         this.treeService.delete(this.selectedNode.data.id).subscribe(() => {
-                this.expand(this.selectedNode.parent);
+                super.expand(this.selectedNode.parent);
                 this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.delete.successfully');
             },
             (res: HttpErrorResponse) =>
@@ -307,6 +236,10 @@ export abstract class ListCreationComponent implements OnInit {
             return this.isParentCropList(node.parent);
         }
         return node.data.id === 'CROPLISTS';
+    }
+
+    isSelectable(node: TreeNode) {
+        return node.isFolder;
     }
 
 }

@@ -28,10 +28,6 @@
 		Mac and Linux users, add your path here. -->
 	<context:load-time-weaver />
 
-	<!-- The application class. -->
-	<bean id="workbenchMain" class="org.generationcp.ibpworkbench.IBPWorkbenchApplication"
-		scope="prototype" />
-
 	<bean id="workbenchContent" class="org.generationcp.ibpworkbench.WorkbenchContentApp"
 		scope="prototype" />
 	<!-- GPSB -->
@@ -74,16 +70,6 @@
 	</bean>
 
 	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil" />
-
-	<bean id="mysqlUtil" class="org.generationcp.commons.util.MySQLUtil">
-		<property name="mysqlDriver" value="com.mysql.jdbc.Driver" />
-		<property name="mysqlHost" value="${db.host}" />
-		<property name="mysqlPort" value="${db.port}" />
-		<property name="username" value="${db.username}" />
-		<property name="password" value="${db.password}" />
-		<property name="mysqlDumpPath" value="${workbench.mysqlDumpPath}" />
-		<property name="mysqlPath" value="${workbench.mysqlExePath}" />
-	</bean>
 
 	<bean id="tomcatUtil" class="org.generationcp.commons.tomcat.util.TomcatUtil">
 		<property name="managerUrl" value="${tomcat.manager.url}" />
@@ -234,6 +220,11 @@
 		  factory-method="getStudyService" scope="request">
         <aop:scoped-proxy proxy-target-class="false" />
     </bean>
+
+	<bean id="variableDataValidatorFactory" factory-bean="managerFactory"
+		  factory-method="getVariableDataValidatorFactory" scope="request">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="experimentDesignService" factory-bean="managerFactory"
 		  factory-method="getExperimentDesignService" scope="request">
@@ -426,6 +417,21 @@
 
 	<bean id="germplasmNamingService" class="org.generationcp.commons.service.impl.GermplasmNamingServiceImpl" />
 
+	<bean id="germplasmListService" factory-bean="managerFactory"
+		  factory-method="getGermplasmListService" scope="request">
+		<aop:scoped-proxy />
+    </bean>
+
+	<bean id="germplasmSearchService" factory-bean="managerFactory"
+		  factory-method="getGermplasmSearchService" scope="request">
+		<aop:scoped-proxy />
+    </bean>
+
+	<bean id="germplasmService" factory-bean="managerFactory"
+		  factory-method="getGermplasmService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="ruleService"
 		  class="org.generationcp.commons.ruleengine.impl.RulesServiceImpl" />
 
@@ -499,6 +505,14 @@
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 	</bean>
 
+	<bean id="germplasmDetailsUrlService"
+		  class="org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService">
+    </bean>
+
+	<bean id="releaseNoteService"
+			  class="org.generationcp.middleware.service.impl.releasenote.ReleaseNoteServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
-	
 </beans>

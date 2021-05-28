@@ -1,0 +1,92 @@
+<div class="container-fluid pt-3">
+	<jhi-collapsible heading="{{translateService.instant('pedigree.progenitors.title')}}">
+		<div class="container-fluid">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved table-fixed">
+					<thead>
+					<tr>
+						<th *ngIf="isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.female-parent" style="width: 20%">Female Parent</th>
+						<th *ngIf="isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.female-parent-gid" style="width: 20%">Female Parent GID</th>
+						<th *ngIf="isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.male-parent" style="width: 20%">Male Parent</th>
+						<th *ngIf="isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.male-parent-gid" style="width: 20%">Male Parent GID</th>
+						<th *ngIf="!isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.group-source" style="width: 20%">Group Source</th>
+						<th *ngIf="!isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.group-source-gid" style="width: 20%">Group Source GID</th>
+						<th *ngIf="!isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.immediate-source" style="width: 20%">Immediate Source</th>
+						<th *ngIf="!isGenerative()" scope="col" jhiTranslate="pedigree.progenitors.immediate-source-gid" style="width: 20%">Immediate Source GID</th>
+						<th scope="col" jhiTranslate="pedigree.progenitors.breeding-method" style="width: 30%">Breeding Method</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_PEDIGREE_PERMISSIONS" style="width: 10%">Actions</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td *ngIf="isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.femaleParent"> - </span>
+							<a *ngIf="germplasmProgenitorsDetails?.femaleParent" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.femaleParent.gid)" target="_blank">{{germplasmProgenitorsDetails?.femaleParent?.preferredName}}</a>
+						</td>
+						<td *ngIf="isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.femaleParent"> - </span>
+							<a *ngIf="germplasmProgenitorsDetails?.femaleParent" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.femaleParent.gid)" target="_blank">{{germplasmProgenitorsDetails?.femaleParent?.gid}}</a>
+						</td>
+						<td *ngIf="isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.maleParents || germplasmProgenitorsDetails?.maleParents.length === 0"> - </span>
+							<span *ngIf="germplasmProgenitorsDetails?.maleParents">
+								<span *ngFor="let maleParent of germplasmProgenitorsDetails?.maleParents; let last = last; let first = first;">
+									{{(first && germplasmProgenitorsDetails?.maleParents.length) > 1 ? '[' : ''}}<a [href]="this.germplasmDetailsUrlService.getUrl(maleParent.gid)" target="_blank">{{maleParent?.preferredName}}</a>{{(last && germplasmProgenitorsDetails?.maleParents.length > 1) ? ']' : ''}} {{last ? '' : ','}}
+								</span>
+							</span>
+						</td>
+						<td *ngIf="isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.maleParents || germplasmProgenitorsDetails?.maleParents.length === 0"> - </span>
+							<span *ngIf="germplasmProgenitorsDetails?.maleParents">
+								<span *ngFor="let maleParent of germplasmProgenitorsDetails?.maleParents; let last = last; let first = first;">
+									{{(first && germplasmProgenitorsDetails?.maleParents.length) > 1 ? '[' : ''}}<a [href]="this.germplasmDetailsUrlService.getUrl(maleParent.gid)" target="_blank">{{maleParent?.gid}}</a>{{(last && germplasmProgenitorsDetails?.maleParents.length > 1) ? ']' : ''}} {{last ? '' : ','}}
+								</span>
+							</span>
+						</td>
+						<td *ngIf="!isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.groupSource"> - </span>
+							<a *ngIf="germplasmProgenitorsDetails?.groupSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.groupSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.groupSource?.preferredName}}</a>
+						</td>
+						<td *ngIf="!isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.groupSource"> - </span>
+							<a *ngIf="germplasmProgenitorsDetails?.groupSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.groupSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.groupSource?.gid}}</a>
+						</td>
+						<td *ngIf="!isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.immediateSource"> - </span>
+							<a *ngIf="germplasmProgenitorsDetails?.immediateSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.immediateSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.immediateSource?.preferredName}}</a>
+						</td>
+						<td *ngIf="!isGenerative()">
+							<span *ngIf="!germplasmProgenitorsDetails?.immediateSource"> - </span>
+							<a *ngIf="germplasmProgenitorsDetails?.immediateSource" [href]="this.germplasmDetailsUrlService.getUrl(germplasmProgenitorsDetails?.immediateSource.gid)" target="_blank">{{germplasmProgenitorsDetails?.immediateSource?.gid}}</a>
+						</td>
+						<td>{{germplasmProgenitorsDetails?.breedingMethodName}}</td>
+						<td class="text-center" *jhiHasAnyAuthority="MODIFY_PEDIGREE_PERMISSIONS">
+							<button class="btn btn-info" (click)="editPedigree(germplasmProgenitorsDetails)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</jhi-collapsible>
+	<jhi-collapsible heading="{{translateService.instant('pedigree.tree.title')}}">
+		<div class="container-fluid">
+			<jhi-pedigree-tree [gid]="this.germplasmDetailsContext.gid"></jhi-pedigree-tree>
+		</div>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.generation-history.title')}}">
+		<jhi-generation-history [gid]="this.germplasmDetailsContext.gid"></jhi-generation-history>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.management-neighbors.title')}}">
+		<jhi-management-neighbors [gid]="this.germplasmDetailsContext.gid"></jhi-management-neighbors>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.derivative-neighborhood.title')}}">
+		<jhi-germplasm-derivative-neighborhood-tree [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-derivative-neighborhood-tree>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.maintenance-neighborhood.title')}}">
+		<jhi-germplasm-maintenance-neighborhood-tree [gid]="this.germplasmDetailsContext.gid"></jhi-germplasm-maintenance-neighborhood-tree>
+	</jhi-collapsible>
+	<jhi-collapsible [isCollapsed]="true" heading="{{translateService.instant('pedigree.group-relatives.title')}}">
+		<jhi-group-relatives [gid]="this.germplasmDetailsContext.gid"></jhi-group-relatives>
+	</jhi-collapsible>
+</div>

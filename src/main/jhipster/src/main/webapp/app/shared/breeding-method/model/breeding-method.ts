@@ -5,7 +5,9 @@ export class BreedingMethod {
         public description?: string,
         public type?: string,
         public group?: string,
-        public methodClass?: number
+        public methodClass?: number,
+        public mid?: number,
+        public numberOfProgenitors?: number,
     ) {
     }
 }

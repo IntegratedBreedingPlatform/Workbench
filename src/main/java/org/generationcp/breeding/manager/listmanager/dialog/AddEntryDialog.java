@@ -1,53 +1,6 @@
 
 package org.generationcp.breeding.manager.listmanager.dialog;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.generationcp.breeding.manager.application.BreedingManagerLayout;
-import org.generationcp.breeding.manager.application.Message;
-import org.generationcp.breeding.manager.customfields.BreedingLocationField;
-import org.generationcp.breeding.manager.customfields.BreedingLocationFieldSource;
-import org.generationcp.breeding.manager.customfields.BreedingMethodField;
-import org.generationcp.breeding.manager.customfields.ListDateField;
-import org.generationcp.breeding.manager.listmanager.GermplasmSearchBarComponent;
-import org.generationcp.breeding.manager.listmanager.GermplasmSearchResultsComponent;
-import org.generationcp.breeding.manager.listmanager.listeners.CloseWindowAction;
-import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListButtonClickListener;
-import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListItemClickListener;
-import org.generationcp.breeding.manager.service.BreedingManagerService;
-import org.generationcp.breeding.manager.util.Util;
-import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.DateUtil;
-import org.generationcp.commons.util.WorkbenchAppPathResolver;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.manager.api.GermplasmListManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Germplasm;
-import org.generationcp.middleware.pojos.Name;
-import org.generationcp.middleware.pojos.UserDefinedField;
-import org.generationcp.middleware.pojos.workbench.Tool;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -64,10 +17,50 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import org.generationcp.breeding.manager.application.BreedingManagerLayout;
+import org.generationcp.breeding.manager.application.Message;
+import org.generationcp.breeding.manager.customfields.BreedingLocationField;
+import org.generationcp.breeding.manager.customfields.BreedingLocationFieldSource;
+import org.generationcp.breeding.manager.customfields.BreedingMethodField;
+import org.generationcp.breeding.manager.customfields.ListDateField;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.breeding.manager.listmanager.GermplasmSearchBarComponent;
+import org.generationcp.breeding.manager.listmanager.GermplasmSearchResultsComponent;
+import org.generationcp.breeding.manager.listmanager.listeners.CloseWindowAction;
+import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListButtonClickListener;
+import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListItemClickListener;
+import org.generationcp.breeding.manager.service.BreedingManagerService;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.DateUtil;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.middleware.constant.ColumnLabels;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.Name;
+import org.generationcp.middleware.pojos.UserDefinedField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Configurable
 public class AddEntryDialog extends BaseSubWindow
-		implements InitializingBean, InternationalizableComponent, BreedingManagerLayout, BreedingLocationFieldSource {
+	implements InitializingBean, InternationalizableComponent, BreedingManagerLayout, BreedingLocationFieldSource {
 
 	private static final long serialVersionUID = -1627453790001229325L;
 
@@ -88,13 +81,13 @@ public class AddEntryDialog extends BaseSubWindow
 	private GermplasmListManager germplasmListManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Resource
 	private ContextUtil contextUtil;
+
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
 	private final Window parentWindow;
 	private VerticalLayout topPart;
@@ -279,18 +272,9 @@ public class AddEntryDialog extends BaseSubWindow
 	 */
 	public void resultTableItemDoubleClickAction(final Table sourceTable, final Object itemId, final Item item) {
 		sourceTable.select(itemId);
-		final int gid = Integer.valueOf(item.getItemProperty(ColumnLabels.GID.getName() + "_REF").getValue().toString());
+		final int gid = Integer.parseInt(item.getItemProperty(ColumnLabels.GID.getName() + "_REF").getValue().toString());
 
-		final Tool tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_BROWSER.toString());
-		final String addtlParams = Util.getAdditionalParams(this.workbenchDataManager);
-		final ExternalResource germplasmBrowserLink;
-		if (tool == null) {
-			germplasmBrowserLink = new ExternalResource(WorkbenchAppPathResolver
-					.getFullWebAddress(DefaultGermplasmStudyBrowserPath.GERMPLASM_BROWSER_LINK + gid, "?restartApplication" + addtlParams));
-		} else {
-			germplasmBrowserLink = new ExternalResource(
-					WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(gid), "?restartApplication" + addtlParams));
-		}
+		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(gid, true);
 
 		final Window germplasmWindow = new BaseSubWindow(this.messageSource.getMessage(Message.GERMPLASM_INFORMATION) + " - " + gid);
 
@@ -300,7 +284,7 @@ public class AddEntryDialog extends BaseSubWindow
 		layoutForGermplasm.setWidth("98%");
 		layoutForGermplasm.setHeight("98%");
 
-		final Embedded germplasmInfo = new Embedded("", germplasmBrowserLink);
+		final Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
 		germplasmInfo.setDebugId("germplasmInfo");
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();
@@ -345,13 +329,13 @@ public class AddEntryDialog extends BaseSubWindow
 		this.optionGroup.setDebugId("optionGroup");
 		this.optionGroup.addItem(AddEntryDialog.OPTION_1_ID);
 		this.optionGroup.setItemCaption(AddEntryDialog.OPTION_1_ID,
-				this.messageSource.getMessage(Message.USE_SELECTED_GERMPLASM_FOR_THE_LIST_ENTRY));
+			this.messageSource.getMessage(Message.USE_SELECTED_GERMPLASM_FOR_THE_LIST_ENTRY));
 		this.optionGroup.addItem(AddEntryDialog.OPTION_2_ID);
 		this.optionGroup.setItemCaption(AddEntryDialog.OPTION_2_ID, this.messageSource
-				.getMessage(Message.CREATE_A_NEW_GERMPLASM_RECORD_FOR_THE_LIST_ENTRY_AND_ASSIGN_THE_SELECTED_GERMPLASM_AS_ITS_SOURCE));
+			.getMessage(Message.CREATE_A_NEW_GERMPLASM_RECORD_FOR_THE_LIST_ENTRY_AND_ASSIGN_THE_SELECTED_GERMPLASM_AS_ITS_SOURCE));
 		this.optionGroup.addItem(AddEntryDialog.OPTION_3_ID);
 		this.optionGroup.setItemCaption(AddEntryDialog.OPTION_3_ID,
-				this.messageSource.getMessage(Message.CREATE_A_NEW_GERMPLASM_RECORD_FOR_THE_LIST_ENTRY));
+			this.messageSource.getMessage(Message.CREATE_A_NEW_GERMPLASM_RECORD_FOR_THE_LIST_ENTRY));
 		this.optionGroup.select(AddEntryDialog.OPTION_1_ID);
 		this.optionGroup.setImmediate(true);
 	}
@@ -423,7 +407,7 @@ public class AddEntryDialog extends BaseSubWindow
 			window.getParent().removeWindow(window);
 		} else {
 			MessageNotifier.showWarning(this, this.messageSource.getMessage(Message.WARNING),
-					this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_GERMPLASM_FROM_THE_SEARCH_RESULTS));
+				this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_GERMPLASM_FROM_THE_SEARCH_RESULTS));
 		}
 	}
 
@@ -433,7 +417,7 @@ public class AddEntryDialog extends BaseSubWindow
 
 		} else if (this.breedingLocationField.getBreedingLocationComboBox().getValue() == null) {
 			MessageNotifier.showRequiredFieldError(this,
-					this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_LOCATION_FOR_THE_GERMPLASM));
+				this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_LOCATION_FOR_THE_GERMPLASM));
 
 		} else if (this.isTableHasEntriesSelected()) {
 			if (this.saveNewGermplasm()) {
@@ -442,7 +426,7 @@ public class AddEntryDialog extends BaseSubWindow
 			}
 		} else {
 			MessageNotifier.showWarning(this, this.messageSource.getMessage(Message.WARNING),
-					this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_GERMPLASM_FROM_THE_SEARCH_RESULTS));
+				this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_GERMPLASM_FROM_THE_SEARCH_RESULTS));
 		}
 	}
 
@@ -453,7 +437,7 @@ public class AddEntryDialog extends BaseSubWindow
 
 		} else if (this.breedingLocationField.getBreedingLocationComboBox().getValue() == null) {
 			MessageNotifier.showRequiredFieldError(this,
-					this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_LOCATION_FOR_THE_GERMPLASM));
+				this.messageSource.getMessage(Message.YOU_MUST_SELECT_A_LOCATION_FOR_THE_GERMPLASM));
 
 		} else if (searchValue != null && searchValue.length() != 0) {
 			this.saveNewGermplasm();
@@ -461,7 +445,7 @@ public class AddEntryDialog extends BaseSubWindow
 			window.getParent().removeWindow(window);
 		} else {
 			MessageNotifier.showRequiredFieldError(this,
-					this.messageSource.getMessage(Message.YOU_MUST_ENTER_A_GERMPLASM_NAME_IN_THE_TEXTBOX));
+				this.messageSource.getMessage(Message.YOU_MUST_ENTER_A_GERMPLASM_NAME_IN_THE_TEXTBOX));
 		}
 	}
 
@@ -472,7 +456,7 @@ public class AddEntryDialog extends BaseSubWindow
 	 */
 	Boolean saveNewGermplasm() {
 		if (!this.optionGroup.getValue().equals(AddEntryDialog.OPTION_2_ID)
-				&& !this.optionGroup.getValue().equals(AddEntryDialog.OPTION_3_ID)) {
+			&& !this.optionGroup.getValue().equals(AddEntryDialog.OPTION_3_ID)) {
 			return false;
 		}
 		if (this.optionGroup.getValue().equals(AddEntryDialog.OPTION_2_ID)) {
@@ -500,8 +484,6 @@ public class AddEntryDialog extends BaseSubWindow
 			return null;
 		}
 
-		final Integer currentUserLocalId = this.getCurrentUserLocalId();
-
 		final Map<Germplasm, Name> germplasmNamesMap = new HashMap<>();
 		if (!selectedGids.isEmpty()) {
 			// One-off DB retrieval for germplasm and preferred names for selected germplasm
@@ -516,16 +498,16 @@ public class AddEntryDialog extends BaseSubWindow
 					germplasmName = preferredName;
 				}
 
-				final Germplasm germplasm = this.createGermplasm(selectedGermplasm, date, locationId, breedingMethodId, currentUserLocalId);
-				final Name name = this.createName(germplasmName, locationId, date, nameTypeId, currentUserLocalId);
+				final Germplasm germplasm = this.createGermplasm(selectedGermplasm, date, locationId, breedingMethodId);
+				final Name name = this.createName(germplasmName, locationId, date, nameTypeId);
 				germplasmNamesMap.put(germplasm, name);
 			}
 
 			// If no selected GIDs, add new germplasm with name equals to search string
 		} else {
-			final Germplasm germplasm = this.createGermplasm(null, date, locationId, breedingMethodId, currentUserLocalId);
+			final Germplasm germplasm = this.createGermplasm(null, date, locationId, breedingMethodId);
 			final String germplasmName = this.searchBarComponent.getSearchField().getValue().toString();
-			final Name name = this.createName(germplasmName, locationId, date, nameTypeId, currentUserLocalId);
+			final Name name = this.createName(germplasmName, locationId, date, nameTypeId);
 			germplasmNamesMap.put(germplasm, name);
 		}
 
@@ -548,18 +530,8 @@ public class AddEntryDialog extends BaseSubWindow
 		return Integer.parseInt(parsedDate);
 	}
 
-	private Integer getCurrentUserLocalId() {
-		int currentUserLocalId = -1;
-		try {
-			currentUserLocalId = this.contextUtil.getCurrentWorkbenchUserId();
-		} catch (final MiddlewareQueryException e) {
-			AddEntryDialog.LOG.error(e.getMessage(), e);
-		}
-		return currentUserLocalId;
-	}
-
 	private Germplasm createGermplasm(final Germplasm selectedGermplasm, final Integer date, final Integer locationId,
-			final Integer breedingMethodId, final Integer currentUserLocalId) {
+		final Integer breedingMethodId) {
 
 		final Germplasm germplasm = new Germplasm();
 		germplasm.setGdate(date);
@@ -572,7 +544,6 @@ public class AddEntryDialog extends BaseSubWindow
 		germplasm.setMethodId(breedingMethodId);
 		germplasm.setMgid(0);
 		germplasm.setReferenceId(0);
-		germplasm.setCreatedBy(currentUserLocalId);
 
 		if (selectedGermplasm != null) {
 			// temporarily set GID so that it can be used as key in map for saving
@@ -588,8 +559,7 @@ public class AddEntryDialog extends BaseSubWindow
 		return germplasm;
 	}
 
-	private Name createName(final String germplasmName, final Integer locationId, final Integer date, final Integer nameTypeId,
-			final Integer currentUserLocalId) {
+	private Name createName(final String germplasmName, final Integer locationId, final Integer date, final Integer nameTypeId) {
 		final Name name = new Name();
 		name.setNval(germplasmName);
 		name.setLocationId(locationId);
@@ -597,7 +567,6 @@ public class AddEntryDialog extends BaseSubWindow
 		name.setNstat(1);
 		name.setReferenceId(0);
 		name.setTypeId(nameTypeId);
-		name.setCreatedBy(currentUserLocalId);
 		return name;
 	}
 
@@ -607,8 +576,8 @@ public class AddEntryDialog extends BaseSubWindow
 		} catch (final MiddlewareQueryException ex) {
 			AddEntryDialog.LOG.error("Error with saving germplasm and name records!", ex);
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_WITH_SAVING_GERMPLASM_AND_NAME_RECORDS)
-							+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
+				this.messageSource.getMessage(Message.ERROR_WITH_SAVING_GERMPLASM_AND_NAME_RECORDS)
+					+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
 			return null;
 		}
 	}
@@ -629,8 +598,8 @@ public class AddEntryDialog extends BaseSubWindow
 		} catch (final MiddlewareQueryException ex) {
 			AddEntryDialog.LOG.error("Error with getting germplasm name types!", ex);
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
-					this.messageSource.getMessage(Message.ERROR_WITH_GETTING_GERMPLASM_NAME_TYPES)
-							+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
+				this.messageSource.getMessage(Message.ERROR_WITH_GETTING_GERMPLASM_NAME_TYPES)
+					+ this.messageSource.getMessage(Message.ERROR_REPORT_TO));
 			final Integer unknownId = 0;
 			this.nameTypeComboBox.addItem(unknownId);
 			this.nameTypeComboBox.setItemCaption(unknownId, this.messageSource.getMessage(Message.UNKNOWN));
@@ -659,7 +628,7 @@ public class AddEntryDialog extends BaseSubWindow
 		for (final Integer itemId : itemIds) {
 			if (selectedItemIds.contains(itemId)) {
 				final Integer selectedGid =
-						Integer.valueOf(table.getItem(itemId).getItemProperty(ColumnLabels.GID.getName() + "_REF").getValue().toString());
+					Integer.valueOf(table.getItem(itemId).getItemProperty(ColumnLabels.GID.getName() + "_REF").getValue().toString());
 				trueOrderedSelectedItemIds.add(selectedGid);
 			}
 		}
@@ -702,7 +671,7 @@ public class AddEntryDialog extends BaseSubWindow
 	@Override
 	public void updateAllLocationFields() {
 		if (this.breedingLocationField != null && this.breedingLocationField.getBreedingLocationComboBox() != null
-				&& this.breedingLocationField.getBreedingLocationComboBox().getValue() != null) {
+			&& this.breedingLocationField.getBreedingLocationComboBox().getValue() != null) {
 			final Object lastValue = this.breedingLocationField.getBreedingLocationComboBox().getValue();
 			this.breedingLocationField.populateHarvestLocation(Integer.valueOf(lastValue.toString()), this.programUniqueId);
 		}

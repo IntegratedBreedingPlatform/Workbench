@@ -11,20 +11,17 @@
 
 package org.generationcp.ibpworkbench.actions;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.exceptions.InternationalizableException;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Component.Event;
-import com.vaadin.ui.Window;
 
 @Configurable
 public class OpenNewProjectAction implements ClickListener, ActionListener {
@@ -66,11 +63,6 @@ public class OpenNewProjectAction implements ClickListener, ActionListener {
 			newProjectPanel.setDebugId("newProjectPanel");
 
 			w.showContent(newProjectPanel);
-
-			if (w instanceof WorkbenchMainView) {
-				((WorkbenchMainView) w).addTitle("");
-			}
-
 		} catch (Exception e) {
 			OpenNewProjectAction.LOG.error("Exception", e);
 			if (e.getCause() instanceof InternationalizableException) {

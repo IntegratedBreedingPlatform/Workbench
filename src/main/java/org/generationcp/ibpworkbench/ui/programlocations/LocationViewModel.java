@@ -1,8 +1,6 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
 import org.generationcp.middleware.pojos.BeanFormState;
-import uk.co.jemos.podam.api.PodamFactory;
-import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,6 @@ public class LocationViewModel implements BeanFormState {
 	private Boolean lDefault;
 
 	public LocationViewModel() {
-		// for unit testing only
 	}
 
 	public Integer getLtype() {
@@ -110,18 +107,6 @@ public class LocationViewModel implements BeanFormState {
 
 	public void setAltitude(final Double altitude) {
 		this.altitude = altitude;
-	}
-
-	public static List<LocationViewModel> generateRandomData(final int itemCount) {
-		final List<LocationViewModel> list = new ArrayList<>();
-
-		final PodamFactory factory = new PodamFactoryImpl();
-
-		for (int i = 0; i < itemCount; i++) {
-			list.add(factory.manufacturePojo(LocationViewModel.class));
-		}
-
-		return list;
 	}
 
 	@Override

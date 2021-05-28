@@ -1,0 +1,46 @@
+<div class="container-fluid pt-3">
+	<jhi-collapsible heading="{{translateService.instant('samples.title')}}">
+		<div class="container-fluid">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved" *ngIf="samples.length else nodata">
+					<thead>
+					<tr>
+						<th scope="col" jhiTranslate="samples.sampleid">Sample ID</th>
+						<th scope="col" jhiTranslate="samples.sample-list">Sample List</th>
+						<th scope="col" jhiTranslate="samples.study-name">Study Name</th>
+						<th scope="col" jhiTranslate="samples.taken-by">Taken By</th>
+						<th scope="col" jhiTranslate="samples.sampling-date">Sampling Date</th>
+						<th scope="col" jhiTranslate="samples.dataset-type">Dataset_Type</th>
+						<th scope="col" jhiTranslate="samples.obs_unit_id">Obs_Unit_ID</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let sample of samples">
+						<td>{{sample.sampleId}}</td>
+						<td>{{sample.sampleList}}</td>
+						<td>{{sample.studyName}}</td>
+						<td>{{sample.takenBy}}</td>
+						<td>{{sample.samplingDate}}</td>
+						<td>{{sample.datasetType}}</td>
+						<td>{{sample.observationUnitId}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<ng-template #nodata>
+					<table class="table table-striped table-bordered table-curved">
+						<thead>
+						<tr>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td jhiTranslate="no.data"></td>
+						</tr>
+						</tbody>
+					</table>
+				</ng-template>
+			</div>
+		</div>
+	</jhi-collapsible>
+</div>

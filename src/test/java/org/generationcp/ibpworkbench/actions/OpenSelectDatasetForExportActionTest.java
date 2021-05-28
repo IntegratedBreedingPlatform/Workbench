@@ -44,10 +44,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.when;
 
@@ -206,10 +210,8 @@ public class OpenSelectDatasetForExportActionTest {
 
 		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
 				breedingViewInput.getBreedingViewProjectName());
-		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "xml"),
-				breedingViewInput.getDestXMLFilePath());
-		Assert.assertEquals(FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
-				breedingViewInput.getSourceXLSFilePath());
+		Assert.assertTrue("XML has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
+		Assert.assertTrue("CSV has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getSourceXLSFilePath(), FileNameGenerator.CSV_DATE_TIME_PATTERN));
 	}
 
 	@Test
@@ -383,5 +385,4 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.verifyZeroInteractions(this.messageSource);
 
 	}
-
 }

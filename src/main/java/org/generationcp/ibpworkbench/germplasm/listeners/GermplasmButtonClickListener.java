@@ -17,7 +17,6 @@ import org.generationcp.ibpworkbench.germplasm.GermplasmDerivativeNeighborhoodCo
 import org.generationcp.ibpworkbench.germplasm.GermplasmDetail;
 import org.generationcp.ibpworkbench.germplasm.GermplasmMaintenanceNeighborhoodComponent;
 import org.generationcp.ibpworkbench.germplasm.SaveGermplasmListDialog;
-import org.generationcp.ibpworkbench.germplasm.dialogs.SelectAGermplasmDialog;
 import org.generationcp.ibpworkbench.germplasm.pedigree.GermplasmPedigreeGraphComponent;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -89,13 +88,6 @@ public class GermplasmButtonClickListener implements Button.ClickListener {
 			}
 		} else if (this.source instanceof GermplasmDetail && event.getButton().getData().equals(GermplasmDetail.REFRESH_BUTTON_ID)) {
 			((GermplasmDetail) this.source).refreshPedigreeTree();
-
-		} else if (this.source instanceof SelectAGermplasmDialog
-				&& event.getButton().getData().equals(SelectAGermplasmDialog.SEARCH_BUTTON_ID)) {
-			((SelectAGermplasmDialog) this.source).searchButtonClickAction();
-		} else if (this.source instanceof SelectAGermplasmDialog
-				&& event.getButton().getData().equals(SelectAGermplasmDialog.DONE_BUTTON_ID)) {
-			((SelectAGermplasmDialog) this.source).doneButtonClickAction();
 		} else {
 			GermplasmButtonClickListener.LOG.error("GermplasmButtonClickListener: Error with buttonClick action. Source not identified.");
 		}

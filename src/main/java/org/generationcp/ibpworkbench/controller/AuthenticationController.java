@@ -172,11 +172,14 @@ public class AuthenticationController {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		this.userAccountValidator.validateUserActive(model, result);
+		if (this.workbenchUserService.isValidUserLogin(model)) {
 
-		if (result.hasErrors()) {
-			this.generateErrors(result, out);
-		} else if (this.workbenchUserService.isValidUserLogin(model)) {
+			this.userAccountValidator.validateUserActive(model, result);
+			if (result.hasErrors()) {
+				this.generateErrors(result, out);
+				return new ResponseEntity<>(out, isSuccess);
+			}
+
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
@@ -191,16 +194,16 @@ public class AuthenticationController {
 				out.put("expires", apiAuthToken.getExpires());
 			}
 
-		} else {
-			final Map<String, String> errors = new LinkedHashMap<>();
-
-			errors.put(UserAccountFields.USERNAME, this.messageSource
-					.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {},
-							"Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
-
-			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, errors);
+			return new ResponseEntity<>(out, isSuccess);
 		}
+
+		final Map<String, String> errors = new LinkedHashMap<>();
+
+		errors.put(UserAccountFields.USERNAME, this.messageSource
+			.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
+
+		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+		out.put(AuthenticationController.ERRORS, errors);
 
 		return new ResponseEntity<>(out, isSuccess);
 	}

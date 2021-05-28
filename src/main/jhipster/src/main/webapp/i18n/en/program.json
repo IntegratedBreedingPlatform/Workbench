@@ -1,6 +1,26 @@
 {
     "program": {
         "open": "Click on a program to open it",
-        "no-data": "No records found or you don't have the proper permissions."
+        "no-data": "No records found or you don't have the proper permissions.",
+        "crop": "Crop",
+        "program": "Program",
+        "launch": "Launch",
+        "my.studies": {
+            "tab.name": "My Studies",
+            "col.name": "Name",
+            "col.type": "Type",
+            "col.date": "Date",
+            "col.folder": "Folder",
+            "plot.title": "Observations",
+            "max.env.warning": "Only {{param}} environments are shown here, but there are more.",
+            "no.observations": "There are no observations for this study."
+        },
+        "my.lists": {
+            "tab.name": "My Lists",
+            "col.name": "Name",
+            "col.type": "Type",
+            "col.date": "Date",
+            "col.folder": "Folder"
+        }
     }
 }

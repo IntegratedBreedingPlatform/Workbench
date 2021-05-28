@@ -29,6 +29,8 @@
 						<div ngbDropdownMenu aria-labelledby="actionMenu">
 							<button class="dropdown-item" type="submit" (click)="deleteSelected()" jhiTranslate="list-builder.delete.selected.items">
 							</button>
+							<button class="dropdown-item" type="submit" (click)="deleteDuplicates()" jhiTranslate="list-builder.delete.duplicated.items">
+							</button>
 						</div>
 					</div>
 				</div>
@@ -49,11 +51,12 @@
 						</th>
 					</thead>
 					<tbody>
-						<tr *ngFor="let row of data | slice: pageOffset() : page * pageSize; let index = index"
+						<tr *ngFor="let row of data | slice: pageOffset() : page * context.pageSize; let index = index"
 							[class.selected]="isSelected(row.internal_id)"
+							(click)="toggleSelect($event, index, row.internal_id)"
 							cdkDrag >
 							<td *ngIf="!isSelectAllPages">
-								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect(row.internal_id)">
+								<input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect($event, index, row.internal_id, true); $event.stopPropagation()">
 							</td>
 							<td>{{pageOffset() + index + 1}}</td>
 							<td *ngFor="let header of headers()">
@@ -71,11 +74,11 @@
 					<div class="pagination-container">
 						<div class="pagination-box pagination-box-left">
 							<div>
-								<jhi-item-count [page]="page" [total]="data.length" [itemsPerPage]="pageSize"></jhi-item-count>
+								<jhi-item-count [page]="page" [total]="data.length" [itemsPerPage]="context.pageSize"></jhi-item-count>
 							</div>
 						</div>
 						<div class="pagination-box pagination-wrap">
-							<ngb-pagination [collectionSize]="data.length" [(page)]="page" [pageSize]="pageSize"
+							<ngb-pagination [collectionSize]="data.length" [(page)]="page" [pageSize]="context.pageSize"
 											[maxSize]="5" [rotate]="true" [boundaryLinks]="true"></ngb-pagination>
 						</div>
 						<div class="pagination-box pagination-box-right">

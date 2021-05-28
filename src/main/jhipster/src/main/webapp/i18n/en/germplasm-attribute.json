@@ -1,0 +1,14 @@
+{
+    "germplasm-attribute-modal": {
+        "edit.header": "Edit Attribute",
+        "create.header": "Create Attribute",
+        "variable": "Variable:",
+        "value": "Value:",
+        "date": "Date:",
+        "location": "Location:",
+        "edit.success": "Germplasm Attribute updated successfully.",
+        "add.success": "Germplasm Attribute added successfully.",
+        "delete.success": "Germplasm Attribute deleted successfully.",
+        "delete.warning": "Are you sure you want to delete the attribute {{param}}?"
+    }
+}

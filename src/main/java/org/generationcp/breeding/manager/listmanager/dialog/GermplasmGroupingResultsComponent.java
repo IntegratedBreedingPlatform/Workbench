@@ -1,9 +1,13 @@
 
 package org.generationcp.breeding.manager.listmanager.dialog;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -17,17 +21,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configurable
 public class GermplasmGroupingResultsComponent extends BaseSubWindow implements InitializingBean, InternationalizableComponent,
-		BreedingManagerLayout, Window.CloseListener {
+	BreedingManagerLayout, Window.CloseListener {
 
 	private Map<Integer, GermplasmGroup> groupingResults = new HashMap<Integer, GermplasmGroup>();
 
@@ -111,10 +110,11 @@ public class GermplasmGroupingResultsComponent extends BaseSubWindow implements 
 			}
 
 			final String notes =
-					groupingResult.getFounder().getMethod().isGenerative() ? this.messageSource
-							.getMessage(Message.GENERATIVE_GERMPLASM_NOT_GROUPED) : "";
-			this.groupingResultsTable.addItem(new Object[] {groupingResult.getFounder().getGid(), groupingResult.getGroupId(),
-					groupingResult.getGroupMembers().size(), memberString.toString(), notes}, rowId++);
+				groupingResult.getFounder().getMethod().isGenerative() ? this.messageSource
+					.getMessage(Message.GENERATIVE_GERMPLASM_NOT_GROUPED) : "";
+			this.groupingResultsTable.addItem(new Object[] {
+				groupingResult.getFounder().getGid(), groupingResult.getGroupId(),
+				groupingResult.getGroupMembers().size(), memberString.toString(), notes}, rowId++);
 		}
 		this.groupingResultsTable.setPageLength(rowId);
 	}

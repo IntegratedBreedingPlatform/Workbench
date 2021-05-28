@@ -15,7 +15,10 @@ export class Sample implements BaseEntity {
         public samplingDate?: any,
         public sampleList?: string,
         public plateId?: string,
-        public well?: string
+        public well?: string,
+        public studyName?: string,
+        public datasetType?: string,
+        public observationUnitId?: string
     ) {
     }
 }

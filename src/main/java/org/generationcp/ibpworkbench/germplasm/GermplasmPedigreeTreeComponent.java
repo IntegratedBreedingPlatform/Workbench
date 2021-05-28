@@ -11,20 +11,20 @@
 
 package org.generationcp.ibpworkbench.germplasm;
 
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Tree;
+import com.vaadin.ui.VerticalLayout;
+import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.commons.util.Util;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.germplasm.listeners.GermplasmTreeExpandListener;
-import org.generationcp.ibpworkbench.util.Util;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
 import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
-import com.vaadin.ui.Tree;
-import com.vaadin.ui.VerticalLayout;
 
 @Configurable
 public class GermplasmPedigreeTreeComponent extends Tree {
@@ -38,8 +38,12 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 	private GermplasmIndexContainer dataIndexContainer;
 	private Boolean includeDerivativeLines;
 
-	public GermplasmPedigreeTreeComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet) {
+	@Autowired
+	private GermplasmDetailsUrlService germplasmDetailsUrlService;
+
+	public GermplasmPedigreeTreeComponent(final int gid, final GermplasmQueries qQuery,
+		final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet) {
 
 		super();
 
@@ -47,16 +51,17 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 
 	}
 
-	public GermplasmPedigreeTreeComponent(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet, Boolean includeDerivativeLines) {
+	public GermplasmPedigreeTreeComponent(final int gid, final GermplasmQueries qQuery,
+		final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet, final Boolean includeDerivativeLines) {
 
 		super();
 
 		this.initializeTree(gid, qQuery, dataResultIndexContainer, mainLayout, tabSheet, includeDerivativeLines);
 	}
 
-	private void initializeTree(int gid, GermplasmQueries qQuery, GermplasmIndexContainer dataResultIndexContainer,
-			VerticalLayout mainLayout, TabSheet tabSheet, Boolean includeDerivativeLines) {
+	private void initializeTree(final int gid, final GermplasmQueries qQuery, final GermplasmIndexContainer dataResultIndexContainer,
+		final VerticalLayout mainLayout, final TabSheet tabSheet, final Boolean includeDerivativeLines) {
 		this.mainLayout = mainLayout;
 		this.tabSheet = tabSheet;
 		this.qQuery = qQuery;
@@ -69,19 +74,29 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		this.addNode(this.germplasmPedigreeTree.getRoot(), 1);
 		this.setImmediate(false);
 
+		this.setSelectable(false);
+		this.setItemStyleGenerator(new ItemStyleGenerator() {
+
+			@Override
+			public String getStyle(final Object itemId) {
+				return "link";
+			}
+		});
+
 		this.addListener(new ItemClickEvent.ItemClickListener() {
 
 			private static final long serialVersionUID = -6626097251439208783L;
 
 			@Override
-			public void itemClick(ItemClickEvent event) {
-				String item = event.getItemId().toString();
-				if (GermplasmPedigreeTreeComponent.this.isExpanded(item)) {
-					GermplasmPedigreeTreeComponent.this.collapseItem(item);
-				} else {
-					GermplasmPedigreeTreeComponent.this.expandItem(item);
-					GermplasmPedigreeTreeComponent.this.pedigreeTreeExpandAction(item);
-				}
+			public void itemClick(final ItemClickEvent event) {
+				final String[] itemGids = event.getItemId().toString().split("@");
+
+				// TODO: check if we can avoid to concatenate the parent gid and child gid for itemId
+				// If the itemId contains both the parent gid and child gid (i.e. [parentGid]@[childGid]), then only get the child Id
+				final String gid = itemGids.length == 1 ? itemGids[0] : itemGids[1];
+				GermplasmPedigreeTreeComponent.this
+					.getWindow().open(GermplasmPedigreeTreeComponent.this.germplasmDetailsUrlService
+					.getExternalResource(Integer.parseInt(gid), false), "_blank", false);
 			}
 		});
 
@@ -89,9 +104,9 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 
 	}
 
-	private void addNode(GermplasmPedigreeTreeNode node, int level) {
+	private void addNode(final GermplasmPedigreeTreeNode node, final int level) {
 		if (level == 1) {
-			String leafNodeId = node.getGermplasm().getGid().toString();
+			final String leafNodeId = node.getGermplasm().getGid().toString();
 			this.addItem(leafNodeId);
 			this.setItemCaption(leafNodeId, this.getNodeLabel(node));
 			this.setParent(leafNodeId, leafNodeId);
@@ -99,39 +114,46 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 
 		}
 
-		for (GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			String leafNodeId = node.getGermplasm().getGid().toString();
+		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			final String leafNodeId = node.getGermplasm().getGid().toString();
 			final Integer gid = parent.getGermplasm().getGid();
-			String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
-			this.addItem(parentNodeId);
-			this.setItemCaption(parentNodeId,  this.getNodeLabel(parent));
-			this.setParent(parentNodeId, leafNodeId);
-			this.setChildrenAllowed(parentNodeId, true);
 
-			this.addNode(parent, level + 1);
+			if (gid.equals(0) && !Util.isEmpty(parent.getLinkedNodes())) {
+				// If unknown with children
+				this.addNode(parent, leafNodeId);
+			} else {
+				final String parentNodeId = node.getGermplasm().getGid() + "@" + gid;
+				this.addItem(parentNodeId);
+				this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
+				this.setParent(parentNodeId, leafNodeId);
+				this.setChildrenAllowed(parentNodeId, true);
+
+				this.addNode(parent, level + 1);
+			}
+
 		}
 	}
-	
+
 	String getNodeLabel(final GermplasmPedigreeTreeNode node) {
 		String preferredName = "";
 		final Integer gid = node.getGermplasm().getGid();
 		try {
 			preferredName = node.getGermplasm().getPreferredName().getNval();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error(e.getMessage(), e);
 			preferredName = String.valueOf(gid);
 		}
 		final StringBuilder sb = new StringBuilder(preferredName);
 		if (gid != 0) {
 			sb.append("(" + gid + ")");
-			
+
 		}
 		return sb.toString();
 	}
 
-	private void addNode(GermplasmPedigreeTreeNode node, String itemIdOfParent) {
-		for (GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
-			String parentNodeId = node.getGermplasm().getGid() + "@" + parent.getGermplasm().getGid();
+	private void addNode(final GermplasmPedigreeTreeNode node, final String itemIdOfParent) {
+		for (final GermplasmPedigreeTreeNode parent : node.getLinkedNodes()) {
+			final String parentNodeId = node.getGermplasm().getGid() + "@" + parent.getGermplasm().getGid();
 			this.addItem(parentNodeId);
 			this.setItemCaption(parentNodeId, this.getNodeLabel(parent));
 			this.setParent(parentNodeId, itemIdOfParent);
@@ -139,9 +161,9 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 		}
 	}
 
-	public void pedigreeTreeExpandAction(String itemId) {
+	public void pedigreeTreeExpandAction(final String itemId) {
 		if (itemId.contains("@")) {
-			String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
+			final String gidString = itemId.substring(itemId.indexOf("@") + 1, itemId.length());
 			this.germplasmPedigreeTree = this.qQuery.generatePedigreeTree(Integer.valueOf(gidString), 2, this.includeDerivativeLines);
 			this.addNode(this.germplasmPedigreeTree.getRoot(), itemId);
 		} else {
@@ -149,27 +171,6 @@ public class GermplasmPedigreeTreeComponent extends Tree {
 			this.addNode(this.germplasmPedigreeTree.getRoot(), 2);
 		}
 
-	}
-
-	public void displayNewGermplasmDetailTab(int gid) {
-		if (this.mainLayout != null && this.tabSheet != null) {
-			VerticalLayout detailLayout = new VerticalLayout();
-			detailLayout.setSpacing(true);
-
-			if (!Util.isTabExist(this.tabSheet, String.valueOf(gid))) {
-				detailLayout.addComponent(new GermplasmDetail(gid, this.qQuery, this.dataIndexContainer, this.mainLayout, this.tabSheet,
-						false));
-				Tab tab = this.tabSheet.addTab(detailLayout, String.valueOf(gid), null);
-				tab.setDescription(String.valueOf(gid));
-				tab.setClosable(true);
-				this.tabSheet.setSelectedTab(detailLayout);
-				this.mainLayout.addComponent(this.tabSheet);
-
-			} else {
-				Tab tab = Util.getTabAlreadyExist(this.tabSheet, String.valueOf(gid));
-				this.tabSheet.setSelectedTab(tab.getComponent());
-			}
-		}
 	}
 
 }

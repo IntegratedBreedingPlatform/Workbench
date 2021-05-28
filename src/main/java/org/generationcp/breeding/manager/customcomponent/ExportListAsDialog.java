@@ -15,6 +15,7 @@ import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.listmanager.listeners.CloseWindowAction;
 import org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter;
 import org.generationcp.breeding.manager.util.FileDownloaderUtility;
+import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.constant.ToolSection;
 import org.generationcp.commons.exceptions.GermplasmListExporterException;
 import org.generationcp.commons.pojo.CustomReportType;
@@ -242,14 +243,14 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 	protected void exportListAsCSV(final Table table) {
 		try {
 
-			final String visibleFileName = this.germplasmList.getName() + ExportListAsDialog.CSV_EXT;
+			final String visibleFileName = FileNameGenerator.generateFileName(this.germplasmList.getName(),ExportListAsDialog.CSV_EXT);
 			final String temporaryFilePath = this.installationDirectoryUtil
 					.getTempFileInOutputDirectoryForProjectAndTool(this.germplasmList.getName(),  ExportListAsDialog.CSV_EXT,
 						this.contextUtil.getProjectInContext(),
 							ToolName.BM_LIST_MANAGER_MAIN);
 			this.germplasmListExporter.exportGermplasmListCSV(temporaryFilePath, table, this.germplasmList.getId());
 
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
+			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, visibleFileName, this.source);
 
 		} catch (final GermplasmListExporterException | IOException e) {
 			ExportListAsDialog.LOG.error(this.messageSource.getMessage(Message.ERROR_EXPORTING_LIST), e);
@@ -282,9 +283,9 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 					.getTempFileInOutputDirectoryForProjectAndTool(this.germplasmList.getName(), ExportListAsDialog.XLS_EXT, this.contextUtil.getProjectInContext(),
 							ToolName.BM_LIST_MANAGER_MAIN);
 			this.germplasmListExporter.exportGermplasmListXLS(this.germplasmList.getId(), temporaryFilePath, table);
-			final String visibleFileName = this.germplasmList.getName() + ExportListAsDialog.XLS_EXT;
+			final String visibleFileName = FileNameGenerator.generateFileName(this.germplasmList.getName(),ExportListAsDialog.XLS_EXT);
 
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
+			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, visibleFileName, this.source);
 			// must figure out other way to clean-up file because deleting it here makes it unavailable for download
 		} catch (final GermplasmListExporterException | IOException e) {
 			ExportListAsDialog.LOG.error(this.messageSource.getMessage(Message.ERROR_EXPORTING_LIST), e);
@@ -302,8 +303,8 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 			this.germplasmListExporter
 				.exportKBioScienceGenotypingOrderXLS(this.germplasmList.getId(), temporaryFilePath, DEFAULT_PLATE_SIZE);
 
-			final String visibleFileName = this.germplasmList.getName().replace(" ", "_") + "ForGenotyping.xls";
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName), this.source);
+			final String visibleFileName = this.germplasmList.getName().replace(" ", "_") + "ForGenotyping";
+			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, FileNameGenerator.generateFileName(visibleFileName, AppConstants.EXPORT_XLS_SUFFIX.getString()), this.source);
 
 		} catch (final GermplasmListExporterException | IOException e) {
 			ExportListAsDialog.LOG.error(e.getMessage(), e);

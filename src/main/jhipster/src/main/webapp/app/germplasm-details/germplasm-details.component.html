@@ -1,0 +1,36 @@
+<jhi-alert></jhi-alert>
+<div class="pull-right pt-1" *ngIf="germplasmDetailsContext.isModal">
+	<a [href]="safeUrl" target="_blank" class="btn btn-outline-info"><i class="fa fa-external-link fa-lg" aria-hidden="true"></i></a>
+</div>
+<div class="container-fluid pt-3">
+	<ul class="nav nav-tabs">
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['germplasm-basic-details']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.germplasm">Germplasm</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['attributes']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.attributes">Attributes</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['pedigree']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.pedigree">Pedigree</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['observations']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.observations">Observations</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['inventory']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.inventory">Inventory</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['lists']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.lists">Lists</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" [routerLink]="['samples']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.samples">Samples</a>
+		</li>
+	</ul>
+	<!-- Tab panes -->
+	<div class="tab-content">
+		<div class="tab-pane container-fluid active">
+			<router-outlet></router-outlet>
+		</div>
+	</div>
+</div>
+

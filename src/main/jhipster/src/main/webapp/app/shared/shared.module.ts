@@ -55,6 +55,21 @@ import { SampleListCreationComponent } from './list-creation/sample-list-creatio
 import { KeySequenceRegisterService } from './key-sequence-register/service/key-sequence-register.service';
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
+import { CollapsibleComponent } from './component/collapsible.component';
+import { ProgramUsageService } from './service/program-usage.service';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
+import { CropService } from './crop/service/crop.service';
+import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
+import { UrlService } from './service/url.service';
+import { LocationsSelectComponent } from './locations-select/locations-select.component';
+import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
+import { DateHelperService } from './service/date.helper.service';
+import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
+import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
+import { SecureImagePipe } from './util/secure-image.pipe';
+import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
+import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 
 @NgModule({
     imports: [
@@ -64,7 +79,8 @@ import { ToolService } from './tool/service/tool.service';
         TableModule,
         TreeModule,
         DragDropModule,
-        CdkDragDropModule
+        CdkDragDropModule,
+        LeafletModule
     ],
     declarations: [
         ModalComponent,
@@ -88,17 +104,27 @@ import { ToolService } from './tool/service/tool.service';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
+        NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        CollapsibleComponent,
+        GeojsonMapComponent,
+        LocationsSelectComponent,
+        OnlyNumbersDirective,
+        PedigreeGraphComponent
     ],
     providers: [
         LoginService,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         Principal,
         AccountService,
         InventoryService,
@@ -115,15 +141,20 @@ import { ToolService } from './tool/service/tool.service';
         BreedingMethodService,
         LocationService,
         ProgramService,
+        CropService,
         PopupService,
         AlertService,
         ToolService,
         KeySequenceRegisterService,
+        ProgramUsageService,
+        DateHelperService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal
+        NgbActiveModal,
+        UrlService,
+        GermplasmPedigreeService
     ],
     entryComponents: [
         ModalComponent,
@@ -141,7 +172,11 @@ import { ToolService } from './tool/service/tool.service';
         TableModule,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
+        NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -165,7 +200,12 @@ import { ToolService } from './tool/service/tool.service';
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        CollapsibleComponent,
+        GeojsonMapComponent,
+        LocationsSelectComponent,
+        OnlyNumbersDirective,
+        PedigreeGraphComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

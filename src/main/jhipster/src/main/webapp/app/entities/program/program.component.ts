@@ -2,11 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { ProgramService } from '../../shared/program/service/program.service';
 import { Program } from '../../shared/program/model/program';
 import { HttpResponse } from '@angular/common/http';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { Principal } from '../../shared';
-import { HELP_DASHBOARD } from '../../app.constants';
+import { INSTITUTE_LOGO_PATH } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 import { JhiLanguageService } from 'ng-jhipster';
+import { CropService } from '../../shared/crop/service/crop.service';
+import { of, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProgramContext } from './program.context';
+import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
+import { MANAGE_STUDIES_VIEW_PERMISSIONS, GERMPLASM_LISTS_PERMISSIONS } from '../../shared/auth/permissions';
+import { Select2OptionData } from 'ng-select2';
+import { ProgramUsageService } from '../../shared/service/program-usage.service';
 
 @Component({
     selector: 'jhi-program',
@@ -17,59 +25,151 @@ import { JhiLanguageService } from 'ng-jhipster';
 })
 export class ProgramComponent implements OnInit {
 
+    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
+    GERMPLASM_LISTS_PERMISSIONS = GERMPLASM_LISTS_PERMISSIONS;
+    PERMISSIONS = [
+        ...MANAGE_STUDIES_VIEW_PERMISSIONS,
+        ...GERMPLASM_LISTS_PERMISSIONS
+    ];
+
+    instituteLogoPath = '/ibpworkbench/controller/' + INSTITUTE_LOGO_PATH;
+
     user?: any;
 
-    programs: Program[];
+    crops: string[];
+    cropName: string;
+    cropChanged = new Subject<string>();
+
+    programsById: { [key: string]: Program } = {};
+    programModel: string;
+    programChanged = new Subject<string>();
+    programDropdownOptions: any;
+
     itemCount: any;
     pageSize = 20;
-    page = 1;
+
     isLoading = false;
     helpLink: string;
 
+    initialData: Select2OptionData[];
+
     constructor(
         private programService: ProgramService,
+        private cropService: CropService,
         private principal: Principal,
         private helpService: HelpService,
-        private languageService: JhiLanguageService
+        private languageService: JhiLanguageService,
+        private router: Router,
+        private route: ActivatedRoute,
+        public context: ProgramContext,
+        public programUsageService: ProgramUsageService,
     ) {
     }
 
     async ngOnInit() {
-        // We get user last opened project ff programUUID is not present in the local storage
-        if (!localStorage['programUUID']) {
-            const identity = await this.principal.identity();
-            this.user = identity;
-        }
+        const identity = await this.principal.identity();
+        this.user = identity;
+        this.crops = await this.cropService.getCrops().toPromise();
 
-        this.loadPage();
+        this.programUsageService.getLastestSelectedProgram(this.user.id).toPromise().then((response) => {
+            const userProgramSelected = response.body;
+            if (userProgramSelected) {
+                this.getPrograms(1, undefined).subscribe((res) => {
+                    if (this.programsById[userProgramSelected.uniqueID]) {
+                        this.programModel = userProgramSelected.uniqueID;
+                        this.context.program = userProgramSelected;
+                        this.initialData = [{ id: userProgramSelected.uniqueID, text: userProgramSelected.name }]
+                    }
+                }, (err) => {
+                });
+            }
+        });
 
+        /*
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_DASHBOARD).toPromise().then((response) => {
                 this.helpLink = response.body;
             }).catch((error) => {});
         }
+         */
+
+        this.programDropdownOptions = {
+            ajax: {
+                delay: 500,
+                transport: function(params, success, failure) {
+                    params.data.page = params.data.page || 1;
+                    this.getPrograms(params.data.page, params.data.term).subscribe((res) => success(res.body), failure);
+                }.bind(this),
+                processResults: function(programs: Program[], params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: programs.map((program) => {
+                            return {
+                                id: program.uniqueID,
+                                text: program.name
+                            };
+                        }),
+                        pagination: {
+                            more: (params.page * this.pageSize) < this.itemCount
+                        }
+                    }
+                }.bind(this)
+            }
+        };
     }
 
-    onProgramSelect(program: Program) {
-        window.parent.postMessage({ programSelected: program }, '*');
-    }
-
-    isSelected(program: Program) {
-        return program.uniqueID ===
-            (localStorage['programUUID'] ? localStorage['programUUID'] : this.user.selectedProgramUUID);
-    }
-
-    loadPage() {
+    private getPrograms(page: number, query = '') {
         this.isLoading = true;
-        this.programService.getPrograms({
-            page: this.page - 1,
+        return  this.programService.getPrograms(this.cropName, query, {
+            page: page - 1,
             size: this.pageSize
-        }).pipe(
+        }).pipe(map((res) => {
+            this.itemCount = res.headers.get('X-Total-Count');
+            Object.assign(this.programsById, res.body.reduce((prev, curr) => {
+                prev[curr.uniqueID] = curr;
+                return prev;
+            }, {}));
+            return res;
+        })).pipe(
             finalize(() => this.isLoading = false)
-        ).subscribe((resp: HttpResponse<Program[]>) => {
-            this.programs = resp.body;
-            this.itemCount = resp.headers.get('X-Total-Count');
-        });
+        );
     }
 
+    onOpenProgram() {
+        const message: NavbarMessageEvent = { programSelected: this.context.program };
+        window.parent.postMessage(message, '*');
+    }
+
+    async displayProgramInfo() {
+        const program = this.context.program;
+        // force authority retrieval for specific program
+        await this.principal.identity(true, program.crop, program.uniqueID)
+        if (this.principal.hasAnyAuthorityDirect(MANAGE_STUDIES_VIEW_PERMISSIONS)) {
+            this.router.navigate(['my-studies'], {
+                relativeTo: this.route,
+                queryParams: {
+                    programUUID: this.programModel
+                }
+            })
+        } else if (this.principal.hasAnyAuthorityDirect(GERMPLASM_LISTS_PERMISSIONS)) {
+            this.router.navigate(['my-lists'], {
+                relativeTo: this.route,
+                queryParams: {
+                    programUUID: this.programModel
+                }
+            })
+        }
+    }
+
+    onCropChange() {
+        // workaround to trigger select2 ajax reload
+        if (this.cropName) {
+            this.programModel = null;
+        }
+    }
+
+    onProgramChange(programSelected: any): void {
+        this.context.program = this.programsById[programSelected];
+        this.displayProgramInfo();
+    }
 }

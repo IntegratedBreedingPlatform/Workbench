@@ -31,6 +31,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -85,7 +87,7 @@ public class MultiSiteDataExporterTest {
 		// Need to spy so that actual writing of CSV files won't be performed during tests execution
 		this.multiSiteDataExporter = Mockito.spy(new MultiSiteDataExporter());
 		this.multiSiteDataExporter.setInstallationDirectoryUtil(this.installationDirectoryUtil);
-		this.multiSiteDataExporter.setStudyDataManager(studyDataManager);
+		this.multiSiteDataExporter.setStudyDataManager(this.studyDataManager);
 
 		this.createMultiSiteParameters();
 		this.setupFileUtilMocks();
@@ -125,7 +127,7 @@ public class MultiSiteDataExporterTest {
 						ArgumentMatchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
-		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
+		Assert.assertEquals(1 + ((long) GIDS.length * environmentNames.size()), csvRows.size());
 		final Iterator<String[]> rowsIterator = csvRows.iterator();
 
 		// Verify the header row
@@ -183,7 +185,7 @@ public class MultiSiteDataExporterTest {
 						ArgumentMatchers.eq(false));
 		final List<String[]> csvRows = this.meansRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
-		Assert.assertEquals(1 + (GIDS.length * environmentNames.size()), csvRows.size());
+		Assert.assertEquals(1 + ((long) GIDS.length * environmentNames.size()), csvRows.size());
 		final Iterator<String[]> rowsIterator = csvRows.iterator();
 
 		// Verify the header row
@@ -220,7 +222,7 @@ public class MultiSiteDataExporterTest {
 						ArgumentMatchers.eq(true));
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
-		Assert.assertEquals(1 + (this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
+		Assert.assertEquals(1 + ((long) this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
 		final Iterator<String[]> rowsIterator = csvRows.iterator();
 
 		// Verify the header row
@@ -326,7 +328,7 @@ public class MultiSiteDataExporterTest {
 
 		final List<String[]> csvRows = this.summaryRowsCaptor.getValue();
 		Assert.assertNotNull(csvRows);
-		Assert.assertEquals(1 + (this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
+		Assert.assertEquals(1 + ((long) this.meansTraits.size() * ENVIRONMENTS.length), csvRows.size());
 		final Iterator<String[]> rowsIterator = csvRows.iterator();
 
 		// Verify the header row
@@ -385,20 +387,66 @@ public class MultiSiteDataExporterTest {
 
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForMeans() {
-		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, false);
+		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(this.project, BASIC_FILE_NAME, false);
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + ".csv").getAbsolutePath(),
-				meansFile.getAbsolutePath());
+
+		final File expectedFile = new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv");
+		final String expectedFileName = BASIC_FILE_NAME + "_";
+
+		Assert.assertEquals(meansFile.getParent(), expectedFile.getParent());
+		Assert.assertTrue(meansFile.getName().contains(expectedFileName));
+
+		// Check for date time
+		final String[] generatedFileName = meansFile.getName().split("_");
+		Assert.assertTrue("File contains 3 or more underscore",generatedFileName.length > 3);
+		try {
+			Assert.assertNotNull("File contains date", new SimpleDateFormat("yyyyMMdd").parse(generatedFileName[generatedFileName.length - 2]));
+		} catch (final ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Date with format yyyyMMdd");
+		}
+
+		try {
+			Assert.assertNotNull("File contains time", new SimpleDateFormat("hhmmss").parse(generatedFileName[generatedFileName.length - 1]));
+		} catch (final ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Time with format hhmmss");
+
+		}
+
+
 	}
 
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForSummaryStats() {
-		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(project, BASIC_FILE_NAME, true);
+		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(this.project, BASIC_FILE_NAME, true);
 		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
-		Assert.assertEquals(new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv")
-				.getAbsolutePath(), meansFile.getAbsolutePath());
+
+		final File expectedFile = new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv");
+		final String expectedFileName = BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + "_";
+
+		Assert.assertEquals(meansFile.getParent(), expectedFile.getParent());
+		Assert.assertTrue(meansFile.getName().contains(expectedFileName));
+
+		// Check for date time
+		final String[] generatedFileName = meansFile.getName().split("_");
+		Assert.assertTrue("File contains 3 or more underscore",generatedFileName.length > 3);
+		try {
+			Assert.assertNotNull("File contains date", new SimpleDateFormat("yyyyMMdd").parse(generatedFileName[generatedFileName.length - 2]));
+		} catch (final ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Date with format yyyyMMdd");
+		}
+
+		try {
+			Assert.assertNotNull("File contains time", new SimpleDateFormat("hhmmss").parse(generatedFileName[generatedFileName.length - 1]));
+		} catch (final ParseException e) {
+			e.printStackTrace();
+			Assert.fail("File must contain Time with format hhmmss");
+
+		}
 	}
 
 	private List<Experiment> createMeansExperiments(final String environmentFactor, final List<String> environmentNames) {
@@ -492,10 +540,10 @@ public class MultiSiteDataExporterTest {
 		this.project = ProjectTestDataInitializer.createProject();
 		final Study study = new Study();
 		study.setId(STUDY_ID);
-		multiSiteParameters.setProject(this.project);
-		multiSiteParameters.setSelectedEnvGroupFactorName(ENV_GROUP_FACTOR);
-		multiSiteParameters.setSelectedGenotypeFactorName(GENOTYPE_FACTOR);
-		multiSiteParameters.setStudy(study);
+		this.multiSiteParameters.setProject(this.project);
+		this.multiSiteParameters.setSelectedEnvGroupFactorName(ENV_GROUP_FACTOR);
+		this.multiSiteParameters.setSelectedGenotypeFactorName(GENOTYPE_FACTOR);
+		this.multiSiteParameters.setStudy(study);
 	}
 
 }

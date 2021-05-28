@@ -9,7 +9,13 @@ import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
-import { GermplasmDto } from '../model/germplasm.model';
+import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy, GermplasmBasicDetailsDto} from '../model/germplasm.model';
+import { Sample } from '../../../entities/sample';
+import { GermplasmNameRequestModel } from '../model/germplasm-name-request.model';
+import { GernplasmAttributeRequestModel } from '../model/gernplasm-attribute-request.model';
+import { GermplasmProgenitorsUpdateRequestModel } from '../model/germplasm-progenitors-update-request.model';
+import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class GermplasmService {
@@ -17,10 +23,15 @@ export class GermplasmService {
                 private context: ParamContext) {
     }
 
-    searchGermplasm(germplasmSearchRequest, pageable): Observable<HttpResponse<Germplasm[]>> {
-        const options = createRequestOption(pageable);
-        return this.http.post<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
-            germplasmSearchRequest, { params: options, observe: 'response' });
+    getSearchResults(req?: any): Observable<HttpResponse<Germplasm[]>> {
+        const options = createRequestOption(req);
+        return this.http.get<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
+            { params: options, observe: 'response' });
+    }
+
+    search(req?: GermplasmSearchRequest): Observable<string> {
+        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID, req, { observe: 'response' })
+            .pipe(map((res: any) => res.body.result.searchResultDbId));
     }
 
     downloadGermplasmTemplate(isGermplasmUpdateFormat: boolean): Observable<HttpResponse<Blob>> {
@@ -48,12 +59,12 @@ export class GermplasmService {
         });
     }
 
-    getGermplasmById(gid: number): Observable<HttpResponse<Germplasm>> {
+    getGermplasmById(gid: number): Observable<HttpResponse<GermplasmDto>> {
         const params = {};
         if (this.context.programUUID) {
             params['programUUID'] = this.context.programUUID;
         }
-        return this.http.get<Germplasm>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
+        return this.http.get<GermplasmDto>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}`,
             { params, observe: 'response' });
     }
 
@@ -61,6 +72,37 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
             '?programUUID=' + this.context.programUUID + '&codes=' + codes;
         return this.http.get<Attribute[]>(url);
+    }
+
+    getGermplasmAttributesByType(attributeType: string): Observable<Attribute[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
+            '?programUUID=' + this.context.programUUID + '&type=' + attributeType;
+        return this.http.get<Attribute[]>(url);
+    }
+
+    getGermplasmAttributesByGidAndType(gid: number, type: string): Observable<GermplasmAttribute[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?type=${type}`;
+        return this.http.get<GermplasmAttribute[]>(url);
+    }
+
+    getGermplasmListsByGid(gid: number): Observable<GermplasmList[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/lists`;
+        return this.http.get<GermplasmList[]>(url);
+    }
+
+    getGermplasmSamplesByGid(gid: number): Observable<Sample[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/samples`;
+        return this.http.get<Sample[]>(url);
+    }
+
+    getGermplasmStudiesByGid(gid: number): Observable<GermplasmStudy[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/studies`;
+        return this.http.get<GermplasmStudy[]>(url);
+    }
+
+    getGermplasmProgenitorsDetails(gid: number): Observable<GermplasmProgenitorsDetails> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details`;
+        return this.http.get<GermplasmProgenitorsDetails>(url);
     }
 
     getGermplasmNameTypes(codes: string[]): Observable<NameType[]> {
@@ -81,12 +123,60 @@ export class GermplasmService {
         return this.http.post<ImportGermplasmResultType>(url, germplasmList);
     }
 
+    updateGermplasmBasicDetails(germplasm: GermplasmDto) {
+        const germplasmBasicDetailsDto: GermplasmBasicDetailsDto = new GermplasmBasicDetailsDto(germplasm.creationDate, germplasm.reference, germplasm.breedingLocationId);
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${germplasm.gid}/basic-details?programUUID=` + this.context.programUUID;
+        return this.http.patch(url, germplasmBasicDetailsDto);
+    }
+
     deleteGermplasm(gids: number[]): Observable<DeleteGermplasmResultType> {
         const params = {};
         params['gids'] = gids;
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
             '?programUUID=' + this.context.programUUID;
         return this.http.delete<DeleteGermplasmResultType>(url, { params });
+    }
+
+    createGermplasmName(gid: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<number> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/names` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<number>(url, germplasmNameRequestModel);
+    }
+
+    updateGermplasmName(gid: number, nameId: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/names/${nameId}` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.patch<any>(url, germplasmNameRequestModel);
+    }
+
+    deleteGermplasmName(gid: number, nameId: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/names/${nameId}` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.delete<any>(url);
+    }
+
+    createGermplasmAttribute(gid: number, gernplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<number> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<number>(url, gernplasmAttributeRequestModel);
+    }
+
+    updateGermplasmAttribute(gid: number, attributeId: number, gernplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.patch<any>(url, gernplasmAttributeRequestModel);
+    }
+
+    deleteGermplasmAttribute(gid: number, attributeId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.delete<any>(url);
+    }
+
+    updateGermplasmProgenitors(gid: number, germplasmProgenitorsUpdateRequestModel: GermplasmProgenitorsUpdateRequestModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.patch<any>(url, germplasmProgenitorsUpdateRequestModel);
     }
 }
 

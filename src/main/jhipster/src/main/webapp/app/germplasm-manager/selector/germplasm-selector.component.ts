@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Germplasm } from '../../entities/germplasm/germplasm.model';
 import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,8 +6,8 @@ import { ColumnFilterComponent, FilterType } from '../../shared/column-filter/co
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { NgbActiveModal, NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { GermplasmTreeTableComponent } from '../../shared/tree/germplasm/germplasm-tree-table.component';
 import { StudyTreeComponent } from '../../shared/tree/study/study-tree.component';
@@ -16,10 +16,12 @@ import { PedigreeType } from '../../shared/column-filter/column-filter-pedigree-
 import { SORT_PREDICATE_NONE } from '.././germplasm-search-resolve-paging-params';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import {ParamContext} from '../../shared/service/param.context';
+import { ParamContext } from '../../shared/service/param.context';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
+import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
+import { SearchResult } from '../../shared/search-result.model';
 
 declare var $: any;
 
@@ -44,6 +46,7 @@ export class GermplasmSelectorComponent implements OnInit {
     predicate: any;
     previousPage: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
     selectMultiple: any = false;
@@ -51,31 +54,6 @@ export class GermplasmSelectorComponent implements OnInit {
     germplasmSearchRequest = new GermplasmSearchRequest();
     germplasmFilters: any;
     germplasmHiddenColumns = {};
-    resultSearch: any = {};
-
-    get request() {
-        return this.germplasmSearchRequest;
-    }
-
-    set request(request) {
-        this.germplasmSearchRequest = request;
-    }
-
-    get filters() {
-        return this.germplasmFilters;
-    }
-
-    set filters(filters) {
-        this.germplasmFilters = filters;
-    }
-
-    get hiddenColumns() {
-        return this.germplasmHiddenColumns;
-    }
-
-    set hiddenColumns(hiddenColumns) {
-        this.germplasmHiddenColumns = hiddenColumns;
-    }
 
     selectedItems: any[] = [];
 
@@ -109,10 +87,10 @@ export class GermplasmSelectorComponent implements OnInit {
                 open(modal, request) {
                     return new Promise((resolve) => {
                         modal.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
-                            .result.then((germplasmList) => {
-                            if (germplasmList) {
-                                this.value = germplasmList.map((list) => list.name);
-                                request[this.key] = germplasmList.map((list) => list.id);
+                            .result.then((germplasmLists) => {
+                            if (germplasmLists && germplasmLists.length > 0) {
+                                this.value = germplasmLists.map((list) => list.name);
+                                request[this.key] = germplasmLists.map((list) => list.id);
                             }
                             resolve();
                         }, () => {
@@ -262,6 +240,30 @@ export class GermplasmSelectorComponent implements OnInit {
         ];
     }
 
+    get request() {
+        return this.germplasmSearchRequest;
+    }
+
+    set request(request) {
+        this.germplasmSearchRequest = request;
+    }
+
+    get filters() {
+        return this.germplasmFilters;
+    }
+
+    set filters(filters) {
+        this.germplasmFilters = filters;
+    }
+
+    get hiddenColumns() {
+        return this.germplasmHiddenColumns;
+    }
+
+    set hiddenColumns(hiddenColumns) {
+        this.germplasmHiddenColumns = hiddenColumns;
+    }
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
@@ -269,8 +271,10 @@ export class GermplasmSelectorComponent implements OnInit {
                 private router: Router,
                 private alertService: AlertService,
                 private modal: NgbModal,
+                private activeModal: NgbActiveModal,
                 private translateService: TranslateService,
-                private paramContext: ParamContext) {
+                private paramContext: ParamContext,
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
 
         this.predicate = '';
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -290,22 +294,40 @@ export class GermplasmSelectorComponent implements OnInit {
             this.filters = GermplasmSelectorComponent.getInitialFilters();
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
+        this.resultSearch = new SearchResult('');
+
+    }
+
+    search(request: GermplasmSearchRequest): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (!this.resultSearch.searchResultDbId) {
+                this.germplasmService.search(request).subscribe((response) => {
+                    this.resultSearch.searchResultDbId = response;
+                    resolve(this.resultSearch.searchResultDbId);
+                }, (error) => reject(error));
+                this.page = 1;
+            } else {
+                resolve(this.resultSearch.searchResultDbId);
+            }
+        });
     }
 
     loadAll(request: GermplasmSearchRequest) {
         this.isLoading = true;
-        this.germplasmService.searchGermplasm(request,
-            this.addSortParam({
-                page: this.page - 1,
-                size: this.itemsPerPage
-            })
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
-
+        this.search(request).then((searchId) => {
+            this.germplasmService.getSearchResults(
+                this.addSortParam({
+                    searchRequestId: searchId,
+                    page: this.page - 1,
+                    size: this.itemsPerPage
+                })
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
@@ -328,9 +350,9 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.loadAll(this.request);
         this.registerChangeInGermplasm();
         this.request.addedColumnsPropertyIds = [];
-        this.loadAll(this.request);
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
         this.hiddenColumns[ColumnLabels['GERMPLASM DATE']] = true;
         this.hiddenColumns[ColumnLabels['METHOD ABBREV']] = true;
@@ -444,6 +466,7 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
+        this.resultSearch.searchResultDbId = '';
         this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);
@@ -519,14 +542,28 @@ export class GermplasmSelectorComponent implements OnInit {
     private resetFilters() {
         this.filters = GermplasmSelectorComponent.getInitialFilters();
         this.request = new GermplasmSearchRequest();
+        this.resultSearch = new SearchResult('');
     }
 
     selectGermplasm() {
-        (<any>window.parent).onGidsSelected(this.selectedItems);
+
+        // Handle selection when this page is loaded outside Angular.
+        if ((<any>window.parent).onGidsSelected) {
+            (<any>window.parent).onGidsSelected(this.selectedItems);
+        }
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'selector-changed', 'value': this.selectedItems }, '*');
+        }
     }
 
     cancel() {
-        (<any>window.parent).closeModal();
+        // Handle closing of modal when this page is loaded outside of Angular.
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
+        }
     }
 
 }

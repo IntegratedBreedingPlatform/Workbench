@@ -8,6 +8,8 @@
         "no.data": "Drag items here",
         "delete.selected.items": "Remove selected entries from list",
         "delete.confirm": "Do you want to remove the <strong>selected</strong> items from the list builder?",
+        "delete.duplicated.items": "Remove duplicated entries from list",
+        "delete.duplicates.confirm": "Do you want to remove <strong>duplicated</strong> items from the list builder? <i>(Leaves only one copy)</i>",
         "reset.confirm": "Do you want to remove <strong>all</strong> items from the list builder?"
     }
 }

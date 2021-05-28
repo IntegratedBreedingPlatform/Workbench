@@ -1,0 +1,146 @@
+{
+    "germplasm-details": {
+        "header": "Germplasm Details: ",
+        "germplasm": "Germplasm",
+        "attributes": "Attributes",
+        "pedigree": "Pedigree",
+        "observations": "Observations",
+        "inventory": "Inventory",
+        "lists": "Lists",
+        "samples": "Samples",
+        "actions": "Actions",
+        "new": "New"
+    },
+    "basic-details": {
+        "title": "BASIC DETAILS",
+        "preferred-name": "Preferred Name:",
+        "gid": "GID:",
+        "guid": "Germplasm UUID:",
+        "group-id": "Group ID:",
+        "created-by": "Created By:",
+        "created-date": "Created Date",
+        "location": "Location",
+        "reference": "Reference",
+        "names": {
+            "title": "NAMES",
+            "name-type": "Name Type",
+            "name-description": "Name Description",
+            "value": "Value",
+            "location": "Location",
+            "date": "Date",
+            "preferred": "Preferred"
+        },
+        "germplasm-origin": {
+            "title": "GERMPLASM ORIGIN",
+            "study": "Study",
+            "obs-unit": "Obs_Unit_ID",
+            "plot": "Plot",
+            "rep": "Rep",
+            "block": "Block",
+            "x": "X",
+            "y": "Y"
+        },
+        "no-germplasm-origin": "Imported germplasm. Origin observation unit id is undefined."
+    },
+    "attributes": {
+        "passport": {
+            "title": "PASSPORT",
+            "variable": "Variable",
+            "variable-description": "Variable Desc",
+            "value": "Value",
+            "date": "Date",
+            "location": "Location"
+        },
+        "attributes": {
+            "title": "ATTRIBUTES",
+            "variable": "Variable",
+            "variable-description": "Variable Desc",
+            "value": "Value",
+            "date": "Date",
+            "location": "Location"
+        }
+    },
+    "pedigree": {
+        "gid-column": "GID",
+        "preferred-name-column": "PREFERRED NAME",
+        "progenitors": {
+            "title": "PROGENITORS",
+            "male-parent": "Male Parent",
+            "female-parent": "Female Parent",
+            "group-source": "Group Source",
+            "immediate-source": "Immediate Source",
+            "male-parent-gid": "Male Parent GID",
+            "female-parent-gid": "Female Parent GID",
+            "group-source-gid": "Group Source GID",
+            "immediate-source-gid": "Immediate Source GID",
+            "breeding-method": "Breeding Method"
+        },
+        "tree": {
+            "title": "PEDIGREE TREE",
+            "include.derivative.lines": "Include derivative and maintenance lines",
+            "include.breeding.method": "Include Breeding Method",
+            "view-pedigree-graph": "View Pedigree Graph",
+            "display-full-pedigree": "Display Full Pedigree",
+            "max.level.error": "Level should not exceed 20.",
+            "pedigree.graph.reached.maxixum.level.error": "You've reached the maximum level of nodes that can be rendered in this pedigree graph. Please adjust the level."
+        },
+        "generation-history": {
+            "title": "GENERATION HISTORY"
+        },
+        "management-neighbors": {
+            "title": "MANAGEMENT NEIGHBORS"
+        },
+        "derivative-neighborhood": {
+            "title": "DERIVATIVE NEIGHBORHOOD"
+        },
+        "maintenance-neighborhood": {
+            "title": "MAINTENANCE NEIGHBORHOOD"
+        },
+        "group-relatives": {
+            "title": "GROUP RELATIVES"
+        }
+    },
+    "observations": {
+        "studies": {
+            "title": "STUDIES",
+            "study-name": "Study Name",
+            "description": "Description"
+        },
+        "observations.title": "OBSERVATIONS"
+    },
+    "inventory": {
+        "inventory-information": {
+            "title": "INVENTORY INFORMATION",
+            "location": "Location",
+            "actual-balance": "Actual Balance",
+            "available": "Available",
+            "lot-status": "Lot Status",
+            "comment": "Comment",
+            "stockid": "StockID",
+            "lot_id": "Lot_ID"
+        }
+    },
+    "lists": {
+        "title": "LISTS",
+        "name": "Name",
+        "date": "Date",
+        "description": "Description"
+    },
+    "samples": {
+        "title": "SAMPLES",
+        "sampleid": "Sample ID",
+        "sample-list": "Sample List",
+        "study-name": "Study Name",
+        "taken-by": "Taken By",
+        "sampling-date": "Sampling Date",
+        "dataset-type": "Dataset_Type",
+        "obs_unit_id": "Obs_Unit_ID"
+    },
+    "edit-basic-details": {
+        "title": "Edit Germplasm Details",
+        "germplasm-location": "Germplasm Location:",
+        "germplasm-date": "Germplasm Date:",
+        "reference": "Reference:",
+        "success": "Germplasm Basic Details updated successfully."
+    }
+}
