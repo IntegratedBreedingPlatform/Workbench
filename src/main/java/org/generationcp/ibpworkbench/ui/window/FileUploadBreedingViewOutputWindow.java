@@ -11,27 +11,6 @@
 
 package org.generationcp.ibpworkbench.ui.window;
 
-import java.io.File;
-import java.util.Map;
-
-import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.commons.util.InstallationDirectoryUtil;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.actions.UploadBreedingViewOutputAction;
-import org.generationcp.ibpworkbench.ui.common.UploadField;
-import org.generationcp.ibpworkbench.ui.recovery.BackupAndRestoreView;
-import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.vaadin.easyuploads.FileFactory;
-
 import com.vaadin.data.Validator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -44,6 +23,25 @@ import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
+import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.actions.UploadBreedingViewOutputAction;
+import org.generationcp.ibpworkbench.ui.common.UploadField;
+import org.generationcp.middleware.pojos.workbench.Project;
+import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.vaadin.easyuploads.FileFactory;
+
+import java.io.File;
+import java.util.Map;
 
 /**
  * @author Aldrin Batac
@@ -51,6 +49,8 @@ import com.vaadin.ui.themes.Reindeer;
  */
 @Configurable
 public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements InitializingBean {
+
+	public static final String NOT_VALID = "NOT_VALID";
 
 	private static final String BMS_UPLOAD_CONTAINER = "bms-upload-container";
 
@@ -233,7 +233,7 @@ public class FileUploadBreedingViewOutputWindow extends BaseSubWindow implements
 		@Override
 		public void validate() {
 			if (!this.isValid()) {
-				throw new Validator.InvalidValueException(BackupAndRestoreView.NOT_VALID);
+				throw new Validator.InvalidValueException(NOT_VALID);
 			}
 		}
 
