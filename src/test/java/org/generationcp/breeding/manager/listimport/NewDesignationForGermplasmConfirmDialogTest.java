@@ -54,7 +54,7 @@ public class NewDesignationForGermplasmConfirmDialogTest {
 		Mockito.verify(this.processImportedGermplasmAction).addNameToGermplasm(nameCaptor.capture(), gidCaptor.capture(),
 				indexCaptor.capture());
 		Assert.assertEquals("Expecting correct GID to be set in name to be added.", NewDesignationForGermplasmConfirmDialogTest.GID,
-			nameCaptor.getValue().getGermplasm());
+			nameCaptor.getValue().getGermplasm().getGid());
 		Assert.assertEquals("Expecting correct Designation to be set in name to be added.",
 				NewDesignationForGermplasmConfirmDialogTest.DESIGNATION, nameCaptor.getValue().getNval());
 		Assert.assertEquals("Expecting correct GID parameter sent back to ProcessImportedGermplasmAction.",

@@ -252,7 +252,7 @@ public class SaveGermplasmListActionTest {
 
 		Assert.assertTrue("The imported name is not existing in the database so the names list should not be empty", !names.isEmpty());
 		final Name resultName = names.get(0);
-		Assert.assertEquals("The gid should be " + germplasm.getGid(), germplasm.getGid(), resultName.getGermplasm());
+		Assert.assertEquals("The gid should be " + germplasm.getGid(), germplasm.getGid(), resultName.getGermplasm().getGid());
 		Assert.assertEquals("The typeid should be 0", 0, resultName.getTypeId().intValue());
 		Assert.assertEquals("The nstat should be 0", 0, resultName.getNstat().intValue());
 		Assert.assertEquals("The user id should be 1", IBDB_USER_ID, resultName.getCreatedBy());
