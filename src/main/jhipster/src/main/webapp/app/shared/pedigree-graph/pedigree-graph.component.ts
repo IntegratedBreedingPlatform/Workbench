@@ -1,14 +1,17 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Graphviz, graphviz } from 'd3-graphviz';
 import { GermplasmTreeNode } from '../germplasm/model/germplasm-tree-node.model';
 import { GermplasmPedigreeService } from '../germplasm/service/germplasm.pedigree.service';
 import { Subject } from 'rxjs';
 import { JhiAlertService } from 'ng-jhipster';
+import * as d3 from 'd3';
+import { GermplasmDetailsUrlService } from '../germplasm/service/germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-pedigree-graph',
     templateUrl: './pedigree-graph.component.html',
-    styleUrls: ['./pedigree-graph.component.css']
+    styleUrls: ['./pedigree-graph.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class PedigreeGraphComponent implements OnInit {
 
@@ -21,17 +24,19 @@ export class PedigreeGraphComponent implements OnInit {
     graphviz: Graphviz<any, any, any, any>;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 private alertService: JhiAlertService) {
         this.levelChanged.debounceTime(500) // wait 500 milliseccond after the last event before emitting last event
             .distinctUntilChanged() // only emit if value is different from previous value
             .subscribe((model) => {
                 this.level = model;
-                this.showGraph();
+                this.render();
             });
     }
 
     ngOnInit(): void {
-        this.showGraph();
+        this.initializeGraph();
+        this.render();
     }
 
     levelFieldChanged(level: number) {
@@ -42,25 +47,15 @@ export class PedigreeGraphComponent implements OnInit {
         }
     }
 
-    showGraph() {
-        this.reset();
-        if (this.gid && this.level > 0) {
+    render() {
+        if (this.graphviz && this.gid && this.level > 0) {
             this.isLoading = true;
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
                 try {
-                    this.graphviz = graphviz('#pedigree-graph', {
-                        useWorker: false
-                    }).totalMemory(Math.pow(2, 27)) // Increase memory available to avoid OOM
-                        .fit(true)
-                        .zoom(true)
-                        .attributer((obj) => {
-                            if (obj.tag === 'svg') {
-                                // Make sure the svg render fits the container
-                                obj.attributes.height = '100%';
-                                obj.attributes.width = '100%';
-                            }
-                        })
-                        .renderDot(this.createDot(gemplasmTreeNode));
+                    this.graphviz
+                        .renderDot(this.createDot(gemplasmTreeNode), () => {
+                            this.initializeNodes();
+                        });
                     this.isLoading = false;
                 } catch (e) {
                     this.alertService.error('pedigree.tree.pedigree.graph.reached.maxixum.level.error');
@@ -68,13 +63,63 @@ export class PedigreeGraphComponent implements OnInit {
                 }
             });
         }
-
     }
 
-    reset() {
-        if (this.graphviz) {
-            this.graphviz.resetZoom(null);
-        }
+    initializeGraph() {
+
+        this.graphviz = graphviz('#pedigree-graph', {
+            useWorker: false
+        }).totalMemory(Math.pow(2, 27)) // Increase memory available to avoid OOM
+            .fit(true)
+            .zoom(true)
+            .attributer((obj) => {
+                if (obj.tag === 'svg') {
+                    // Make sure the svg render fits the container
+                    obj.attributes.height = '100%';
+                    obj.attributes.width = '100%';
+                }
+            })
+            .transition(d3.transition().delay(750).duration(1000).ease(d3.easeLinear));
+    }
+
+    initializeNodes() {
+        const nodes = d3.selectAll('.node');
+        // click and mousedown on nodes
+        nodes.on('click', (datum, i, group) => {
+            this.stopPropagation();
+            if (!this.isUnknown(datum)) {
+                const gid = datum.key;
+                window.open(this.germplasmDetailsUrlService.getUrlAsString(gid), '_blank');
+            }
+        });
+        nodes.on('mouseover', (datum, i, group) => {
+            this.stopPropagation();
+            if (!this.isUnknown(datum)) {
+                const node = group[i];
+                const selection = d3.select(node);
+                selection.selectAll('polygon').attr('fill', '#337ab7');
+                selection.selectAll('text').attr('fill', 'white');
+            }
+        });
+        nodes.on('mouseout', (datum, i, group) => {
+            this.stopPropagation();
+            if (!this.isUnknown(datum)) {
+                const node = group[i];
+                const selection = d3.select(node);
+                selection.selectAll('polygon').attr('fill', 'none');
+                selection.selectAll('text').attr('fill', '#000000');
+            }
+        });
+    }
+
+    isUnknown(datum): boolean {
+        return datum.key === '0';
+    }
+
+    stopPropagation() {
+        const event = d3.event;
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     createDot(germplasmTreeNode: GermplasmTreeNode) {

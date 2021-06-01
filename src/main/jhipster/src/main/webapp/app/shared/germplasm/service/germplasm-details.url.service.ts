@@ -25,4 +25,17 @@ export class GermplasmDetailsUrlService {
         return this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + queryParams);
 
     }
+
+    getUrlAsString(gid: any): string {
+
+        const queryParams = '?cropName=' + this.paramContext.cropName
+            + '&programUUID=' + this.paramContext.programUUID
+            + '&authToken=' + this.paramContext.authToken
+            + '&loggedInUserId=' + this.paramContext.loggedInUserId
+            + '&selectedProjectId=' + this.paramContext.selectedProjectId;
+
+        // Link to open Germplasm Details page to a new tab.
+        return GERMPLASM_DETAILS_URL + gid + queryParams;
+
+    }
 }
