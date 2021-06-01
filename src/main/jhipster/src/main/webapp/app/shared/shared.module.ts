@@ -70,6 +70,7 @@ import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
 import { SecureImagePipe } from './util/secure-image.pipe';
 import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
 import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
+import { VariableService } from './ontology/service/variable.service';
 
 @NgModule({
     imports: [
@@ -154,7 +155,8 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
          */
         NgbActiveModal,
         UrlService,
-        GermplasmPedigreeService
+        GermplasmPedigreeService,
+        VariableService
     ],
     entryComponents: [
         ModalComponent,
