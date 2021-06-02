@@ -1,4 +1,4 @@
-import { FormulaVariable } from "./formula-variable";
+import { FormulaVariable } from './formula-variable';
 
 export class Formula {
     constructor(
