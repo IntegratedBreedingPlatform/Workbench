@@ -5,7 +5,7 @@ import { DataType } from './data-type';
 
 export class ScaleDetails extends TermSummary {
     constructor(
-        public datatype?: DataType,
+        public dataType?: DataType,
         public validValues?: ValidValues,
         public metadata?: MetadataDetails
     ) {
