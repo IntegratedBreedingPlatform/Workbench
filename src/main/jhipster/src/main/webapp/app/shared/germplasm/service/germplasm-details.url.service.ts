@@ -22,7 +22,7 @@ export class GermplasmDetailsUrlService {
 
     getUrl(gid: any): SafeResourceUrl {
         // Link to open Germplasm Details page to a new tab.
-        return this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + this.queryParams);
+        return this.sanitizer.bypassSecurityTrustResourceUrl(this.getUrlAsString(gid));
     }
 
     getUrlAsString(gid: any): string {
