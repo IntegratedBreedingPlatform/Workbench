@@ -87,14 +87,14 @@ export class PedigreeGraphComponent implements OnInit {
         // click and mousedown on nodes
         nodes.on('click', (datum, i, group) => {
             this.stopPropagation();
-            if (!this.isUnknown(datum)) {
+            if (!this.isUnknownGermplasm(datum)) {
                 const gid = datum.key;
                 window.open(this.germplasmDetailsUrlService.getUrlAsString(gid), '_blank');
             }
         });
         nodes.on('mouseover', (datum, i, group) => {
             this.stopPropagation();
-            if (!this.isUnknown(datum)) {
+            if (!this.isUnknownGermplasm(datum)) {
                 const node = group[i];
                 const selection = d3.select(node);
                 selection.selectAll('polygon').attr('fill', '#337ab7');
@@ -103,7 +103,7 @@ export class PedigreeGraphComponent implements OnInit {
         });
         nodes.on('mouseout', (datum, i, group) => {
             this.stopPropagation();
-            if (!this.isUnknown(datum)) {
+            if (!this.isUnknownGermplasm(datum)) {
                 const node = group[i];
                 const selection = d3.select(node);
                 selection.selectAll('polygon').attr('fill', 'none');
@@ -112,7 +112,7 @@ export class PedigreeGraphComponent implements OnInit {
         });
     }
 
-    isUnknown(datum): boolean {
+    isUnknownGermplasm(datum): boolean {
         return datum.key === '0';
     }
 
