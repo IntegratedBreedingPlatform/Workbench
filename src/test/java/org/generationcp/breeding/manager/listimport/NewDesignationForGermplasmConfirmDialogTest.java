@@ -1,9 +1,11 @@
 
 package org.generationcp.breeding.manager.listimport;
 
+import com.vaadin.ui.Window;
 import org.generationcp.breeding.manager.listimport.actions.ProcessImportedGermplasmAction;
 import org.generationcp.middleware.data.initializer.NameTestDataInitializer;
 import org.generationcp.middleware.pojos.Name;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,10 +13,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import com.vaadin.ui.Window;
-
-import org.junit.Assert;
 
 public class NewDesignationForGermplasmConfirmDialogTest {
 
@@ -56,7 +54,7 @@ public class NewDesignationForGermplasmConfirmDialogTest {
 		Mockito.verify(this.processImportedGermplasmAction).addNameToGermplasm(nameCaptor.capture(), gidCaptor.capture(),
 				indexCaptor.capture());
 		Assert.assertEquals("Expecting correct GID to be set in name to be added.", NewDesignationForGermplasmConfirmDialogTest.GID,
-				nameCaptor.getValue().getGermplasmId());
+			nameCaptor.getValue().getGermplasm().getGid());
 		Assert.assertEquals("Expecting correct Designation to be set in name to be added.",
 				NewDesignationForGermplasmConfirmDialogTest.DESIGNATION, nameCaptor.getValue().getNval());
 		Assert.assertEquals("Expecting correct GID parameter sent back to ProcessImportedGermplasmAction.",

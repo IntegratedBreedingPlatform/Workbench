@@ -685,7 +685,6 @@ public class MakeCrossesTableComponentTest {
 		Assert.assertEquals(1, crossesList.size());
 		final Triple<Germplasm, Name, List<Progenitor>> triple = crossesList.get(0);
 		final Germplasm germplasm = triple.getLeft();
-		Assert.assertEquals("1", germplasm.getGid().toString());
 		Assert.assertEquals(femaleGid, germplasm.getGpid1().toString());
 		Assert.assertEquals("1", germplasm.getGpid2().toString());
 
