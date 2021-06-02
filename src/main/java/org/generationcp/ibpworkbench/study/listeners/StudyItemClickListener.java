@@ -12,7 +12,6 @@ package org.generationcp.ibpworkbench.study.listeners;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.study.StudySearchMainComponent;
 import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.slf4j.Logger;
