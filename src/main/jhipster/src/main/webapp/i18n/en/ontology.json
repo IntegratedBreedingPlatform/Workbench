@@ -1,0 +1,21 @@
+{
+    "ontology": {
+        "variable-details": {
+            "title": "Details for {{name}}",
+            "nav": {
+                "detail": "Details",
+                "valid-values": "Valid Values"
+            },
+            "details": {
+                "description": "Description:",
+                "classes": "Classes:",
+                "property": "Property:",
+                "method": "Method:",
+                "scale": "Scale:",
+                "data-type": "Data Type:",
+                "role": "Role:",
+                "crop-ontology-id": "Crop Ontology ID:"
+            }
+        }
+    }
+}
