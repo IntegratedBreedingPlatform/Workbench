@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ParamContext } from '../shared/service/param.context';
 import { ActivatedRoute } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-var-test',
@@ -13,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 									 [variableTypeIds]="variableTypeIds"></jhi-variable-select>
 			</div>
 		</div>
+        <jhi-alert></jhi-alert>
     `
 })
 export class VariableSelectTestComponent {
@@ -21,7 +23,8 @@ export class VariableSelectTestComponent {
 
     constructor(
         private paramContext: ParamContext,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private jhiLanguageService: JhiLanguageService
     ) {
         this.paramContext.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;

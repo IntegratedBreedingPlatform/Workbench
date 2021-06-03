@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { VariableDetails } from '../ontology/model/variable-details';
 import { VariableService } from '../ontology/service/variable.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../alert/format-error-list';
+import { AlertService } from '../alert/alert.service';
+import { finalize } from 'rxjs/operators';
 
 declare const $: any;
 
@@ -44,12 +48,18 @@ export class VariableSelectComponent implements OnInit {
     value: any;
 
     variableById: { [key: string]: VariableDetails } = {};
+    isLoading = true;
 
     constructor(
-        private variableService: VariableService
+        private variableService: VariableService,
+        private alertService: AlertService
     ) {
-        this.variableService.getVariables().subscribe((variables) => {
+        this.variableService.getVariables().pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe((variables) => {
             this.variables = this.transform(variables)
+        }, (error) => {
+            this.onError(error);
         });
     }
 
@@ -95,4 +105,12 @@ export class VariableSelectComponent implements OnInit {
         this.onVariableSelectedChange.emit(event);
     }
 
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general', null, null);
+        }
+    }
 }

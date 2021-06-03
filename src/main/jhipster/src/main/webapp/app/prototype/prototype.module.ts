@@ -3,7 +3,6 @@
  * Clean up components after integration to avoid cluttering.
  */
 import { NgModule } from '@angular/core';
-import { VariableSelectComponent } from '../shared/variable-select/variable-select.component';
 import { BmsjHipsterSharedModule } from '../shared';
 import { RouterModule } from '@angular/router';
 import { prototypeRoutes } from './prototype.route';
