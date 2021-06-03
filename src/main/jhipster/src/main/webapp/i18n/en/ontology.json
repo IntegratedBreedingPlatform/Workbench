@@ -15,6 +15,30 @@
                 "data-type": "Data Type:",
                 "role": "Role:",
                 "crop-ontology-id": "Crop Ontology ID:"
+            },
+            "valid-values": {
+                "numeric": {
+                    "min-value": "Minimum Value:",
+                    "max-value": "Maximum Value:",
+                    "no-values": "This numeric variable has no mininum and maximum value constraint.",
+                    "expected": {
+                        "title": "Variable Expected Range"
+                    },
+                    "scale": {
+                        "title": "Variable Scale Range",
+                        "name": "Scale Name:"
+                    }
+                },
+                "categorical": {
+                    "no-values": "This categorical variable has no pre-defined set of valid values.",
+                    "table": {
+                        "label": "Label",
+                        "description": "Description"
+                    }
+                },
+                "character": {
+                    "no-values": "Character variables have no pre-defined selection of values"
+                }
             }
         }
     }

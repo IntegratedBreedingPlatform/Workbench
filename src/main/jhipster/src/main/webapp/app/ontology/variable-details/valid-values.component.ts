@@ -1,7 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageService } from 'ng-jhipster';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
+import { VariableDetailsContext } from './variable-details.context';
+
+enum DataType {
+    NUMERIC = 'Numeric',
+    CATEGORICAL = 'Categorical',
+    CHARACTER = 'Character'
+}
 
 @Component({
     selector: 'jhi-valid-values',
@@ -9,19 +15,13 @@ import { VariableDetails } from '../../shared/ontology/model/variable-details';
 })
 export class ValidValuesComponent implements OnInit {
 
+    dataType = DataType;
     variableDetails: VariableDetails;
 
-    private variableId: number;
-
-    private isLoading: boolean;
-
-    constructor(private activatedRoute: ActivatedRoute,
-                private jhiAlertService: JhiAlertService,
-                private jhiLanguageService: JhiLanguageService,
-                private router: Router
+    constructor(private jhiLanguageService: JhiLanguageService,
+                private variableDetailsContext: VariableDetailsContext
     ) {
-        const queryParams = this.activatedRoute.snapshot.queryParams;
-        this.variableId = queryParams.variableId;
+        this.variableDetails = this.variableDetailsContext.variableDetails;
     }
 
     ngOnInit(): void {
