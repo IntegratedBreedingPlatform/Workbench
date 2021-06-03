@@ -221,7 +221,7 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 			if (excludeGermplasmCreateIds.contains(gid) && germplasmName.isGidMatched()) {
 				germplasm = this.germplasmManager.getGermplasmByGID(gid);
 				germplasmName.setGermplasm(germplasm);
-				name.setGermplasmId(gid);
+				name.setGermplasm(germplasm);
 				finalGid = gid;
 
 				// Save new germplasm record
@@ -605,7 +605,7 @@ public class SaveGermplasmListAction implements Serializable, InitializingBean {
 				if (value != null && !"".equals(value.trim())) {
 					// Create New Name Object
 					final Name newName = new Name();
-					newName.setGermplasmId(germplasm.getGid());
+					newName.setGermplasm(germplasm);
 					newName.setTypeId(this.getUserDefinedFieldId(existingUdflds, code));
 					newName.setNstat(0);
 					newName.setNval(value);

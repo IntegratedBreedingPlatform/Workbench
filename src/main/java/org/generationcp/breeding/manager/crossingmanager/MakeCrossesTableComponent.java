@@ -617,7 +617,6 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		final Integer crossingNameTypeId =
 				BreedingManagerUtil.getIDForUserDefinedFieldCrossingName(this.germplasmListManager, this.getWindow(), this.messageSource);
 
-		int ctr = 1;
 		for (final Object itemId : this.tableCrossesMade.getItemIds()) {
 			final Property crossSourceProp = this.tableCrossesMade.getItem(itemId).getItemProperty(ColumnLabels.SEED_SOURCE.getName());
 			final String crossSource = String.valueOf(crossSourceProp.toString());
@@ -630,7 +629,6 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			final Integer gpId2 =	maleParent.getGid();
 
 			final Germplasm germplasm = new Germplasm();
-			germplasm.setGid(ctr);
 			germplasm.setGpid1(gpId1);
 			germplasm.setGpid2(gpId2);
 
@@ -655,7 +653,6 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 			}
 			crossesList.add(ImmutableTriple.of(germplasm, name, progenitors));
-			ctr++;
 		}
 
 		return crossesList;
