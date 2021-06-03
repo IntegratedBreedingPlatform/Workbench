@@ -13,7 +13,6 @@ package org.generationcp.ibpworkbench.germplasm.listeners;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.MouseEvents.ClickEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
@@ -27,15 +26,9 @@ public class GermplasmItemClickListener implements ItemClickEvent.ItemClickListe
 	private static final long serialVersionUID = -1095503156046245812L;
 
 	private final Object sourceClass;
-	private Component sourceComponent;
 
 	public GermplasmItemClickListener(final Object sourceClass) {
 		this.sourceClass = sourceClass;
-	}
-
-	public GermplasmItemClickListener(final Object sourceClass, final Component sourceComponent) {
-		this(sourceClass);
-		this.sourceComponent = sourceComponent;
 	}
 
 	@Override

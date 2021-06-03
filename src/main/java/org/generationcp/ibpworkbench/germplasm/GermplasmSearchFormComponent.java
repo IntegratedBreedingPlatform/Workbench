@@ -43,8 +43,8 @@ public class GermplasmSearchFormComponent extends VerticalLayout implements Prop
 	public static final String SEARCH_OPTION_GID = "GID";
 	public static final String SEARCH_OPTION_NAME = "Names";
 
-	private static final List<String> SEARCH_OPTION = Arrays.asList(new String[] {SEARCH_OPTION_GID,
-			SEARCH_OPTION_NAME});
+	private static final List<String> SEARCH_OPTION = Arrays.asList(SEARCH_OPTION_GID,
+			SEARCH_OPTION_NAME);
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;

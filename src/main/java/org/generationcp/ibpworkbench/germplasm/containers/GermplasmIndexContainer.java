@@ -25,9 +25,6 @@ public final class GermplasmIndexContainer {
 	public static final String STUDY_ID = "studyid";
 	public static final String STUDY_NAME = "studyname";
 
-	public GermplasmIndexContainer() {
-	}
-
 	public LazyQueryContainer getGermplasmResultLazyContainer(final GermplasmDataManager germplasmDataManager, final String searchChoice,
 			final String searchValue) {
 
