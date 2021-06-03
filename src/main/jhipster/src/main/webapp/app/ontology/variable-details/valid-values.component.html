@@ -5,19 +5,19 @@
 			 Variable Expected Range
 		</div>
 
-		<div class="row pl-4 pt-2" *ngIf="!variableDetails?.expectedRange?.min && !variableDetails?.expectedRange.max"
+		<div class="row pl-4 pt-2" *ngIf="variableDetails?.expectedRange?.min == null && variableDetails?.expectedRange?.max == null"
 			 jhiTranslate="ontology.variable-details.valid-values.numeric.no-values">
 			This numeric variable has no mininum and maximum value constraint.
 		</div>
 
-		<div *ngIf="variableDetails?.expectedRange?.min && variableDetails?.expectedRange.max">
+		<div *ngIf="variableDetails?.expectedRange?.min != null && variableDetails?.expectedRange?.max != null">
 			<div class="row pl-4 pt-2">
-				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.numeric.min-value">Minimum Value:</div>
+				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.min-value">Minimum Value:</div>
 				<div class="col pl-4">{{variableDetails?.expectedRange?.min}}</div>
 			</div>
 
 			<div class="row pl-4 pt-2">
-				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.numeric.max-value">Maximum Value:</div>
+				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.max-value">Maximum Value:</div>
 				<div class="col pl-4">{{variableDetails?.expectedRange?.max}}</div>
 			</div>
 		</div>
@@ -31,20 +31,20 @@
 			<div class="col pl-4">{{variableDetails?.scale?.name}}</div>
 		</div>
 
-		<div class="row pl-4 pt-2" *ngIf="!variableDetails?.scale?.validValues?.min && !variableDetails?.scale.validValues?.max"
+		<div class="row pl-4 pt-2" *ngIf="variableDetails?.scale?.validValues?.min == null && variableDetails?.scale?.validValues?.max == null"
 			 jhiTranslate="ontology.variable-details.valid-values.numeric.no-values">
 			This numeric variable has no mininum and maximum value constraint.
 		</div>
 
-		<div *ngIf="variableDetails?.scale?.validValues?.min && variableDetails?.scale.validValues?.max">
+		<div *ngIf="variableDetails?.scale?.validValues?.min != null && variableDetails?.scale?.validValues?.max != null">
 			<div class="row pl-4 pt-2">
-				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.numeric.min-value">Minimum Value:</div>
+				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.min-value">Minimum Value:</div>
 				<div class="col pl-4">{{variableDetails?.scale?.validValues?.min}}</div>
 			</div>
 
 			<div class="row pl-4 pt-2">
-				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.numeric.max-value">Maximum Value:</div>
-				<div class="col pl-4">{{variableDetails?.scale.validValues?.max}}</div>
+				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.max-value">Maximum Value:</div>
+				<div class="col pl-4">{{variableDetails?.scale?.validValues?.max}}</div>
 			</div>
 		</div>
 	</div>

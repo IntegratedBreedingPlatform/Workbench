@@ -17,9 +17,9 @@
                 "crop-ontology-id": "Crop Ontology ID:"
             },
             "valid-values": {
+                "min-value": "Minimum Value:",
+                "max-value": "Maximum Value:",
                 "numeric": {
-                    "min-value": "Minimum Value:",
-                    "max-value": "Maximum Value:",
                     "no-values": "This numeric variable has no mininum and maximum value constraint.",
                     "expected": {
                         "title": "Variable Expected Range"
