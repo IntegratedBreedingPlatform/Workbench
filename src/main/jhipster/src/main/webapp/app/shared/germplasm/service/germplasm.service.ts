@@ -178,6 +178,11 @@ export class GermplasmService {
             '?programUUID=' + this.context.programUUID;
         return this.http.patch<any>(url, germplasmProgenitorsUpdateRequestModel);
     }
+
+    searchAttributes(query): Observable<HttpResponse<Attribute[]>> {
+        return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes/search?query=` + query
+            + '&programUUID=' + this.context.programUUID, { observe: 'response' });
+    }
 }
 
 export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };

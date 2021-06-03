@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
-import { AttributesService } from '../attributes/service/attributes.service';
+import { GermplasmService } from '../germplasm/service/germplasm.service';
 
 @Component({
     selector: 'jhi-column-filter-attributes',
@@ -51,14 +51,14 @@ export class ColumnFilterAttributesComponent implements OnInit {
     @Output() onApply = new EventEmitter();
     @Output() onReset = new EventEmitter();
 
-    constructor(private attributesService: AttributesService) {
+    constructor(private germplasmService: GermplasmService) {
     }
 
     ngOnInit(): void {
         this.queryField.valueChanges
             .debounceTime(500)
             .distinctUntilChanged()
-            .switchMap((query) => this.attributesService.searchAttributes(query))
+            .switchMap((query) => this.germplasmService.searchAttributes(query))
             .subscribe((result) => {
                 if (result.status === 400) {
                     return;
