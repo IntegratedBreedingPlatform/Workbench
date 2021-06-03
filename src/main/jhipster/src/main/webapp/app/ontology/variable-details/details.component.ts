@@ -14,10 +14,11 @@ export class DetailsComponent implements OnInit {
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private variableDetailsContext: VariableDetailsContext) {
-        this.variableDetails = this.variableDetailsContext.variableDetails;
+
     }
 
     ngOnInit(): void {
+        this.variableDetailsContext.variableDetails.subscribe((variableDetails: VariableDetails) => this.variableDetails = variableDetails);
     }
 
     formatRoles(): string {

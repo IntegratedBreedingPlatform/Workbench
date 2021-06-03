@@ -45,7 +45,7 @@ export class VariableDetailsComponent implements OnInit {
     private onSuccess(variableDetails: VariableDetails) {
         this.title = this.translateService.instant('ontology.variable-details.title',
             { name: variableDetails.name });
-        this.variableDetailsContext.variableDetails = variableDetails;
+        this.variableDetailsContext.variableDetails.next(variableDetails);
     }
 
     private onError(response: HttpErrorResponse) {
