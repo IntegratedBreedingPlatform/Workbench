@@ -34,7 +34,7 @@ export class VariableDetailsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        (<any>window).onCloseModal = this.cancel;
+        (<any>window).onCloseModal = this.dismiss;
 
         this.variableService.getVariableById(this.variableId).subscribe(
             (res: VariableDetails) => this.onSuccess(res),
@@ -57,7 +57,7 @@ export class VariableDetailsComponent implements OnInit {
         }
     }
 
-    cancel() {
+    dismiss() {
         this.activeModal.dismiss();
         if ((<any>window.parent).closeModal) {
             (<any>window.parent).closeModal();
