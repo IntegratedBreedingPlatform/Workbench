@@ -178,6 +178,10 @@ public class ListComponentAddEntryDialogSource implements AddEntryDialogSource {
 		this.pedigreeService = pedigreeService;
 	}
 
+	public void setGermplasmService(final GermplasmService germplasmService) {
+		this.germplasmService = germplasmService;
+	}
+
 	public void setInventoryDataManager(final InventoryDataManager inventoryDataManager) {
 		this.inventoryDataManager = inventoryDataManager;
 	}
