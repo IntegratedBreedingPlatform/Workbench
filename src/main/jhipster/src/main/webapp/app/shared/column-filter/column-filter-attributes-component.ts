@@ -15,16 +15,18 @@ import { GermplasmService } from '../germplasm/service/germplasm.service';
 				</div>
 				<ul class="filter-select">
 					<li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result)">
-						<label class="label-info">Code:</label> {{result.code}} - <label class="label-info">Name:</label> {{result.name}}</li>
+						<label class="label-info">Name:</label> {{result.name}} - <label class="label-info">Definition:</label> {{result.definition}}
+					</li>
 				</ul>
 			</section>
 			<div *ngIf="this.filter.attributes.length === 0"><span>Search for attributes that you want to filter</span></div>
 			<br/>
 			<div *ngFor="let attribute of filter.attributes">
 				<div class="form-group">
-					<label for="{{attribute.code}}">{{attribute.name}}</label>
+					<label *ngIf="attribute.alias" for="{{attribute.name}}">{{attribute.name}} ({{attribute.alias}})</label>
+					<label *ngIf="!attribute.alias" for="{{attribute.name}}">{{attribute.name}}</label>
 					<div class="input-group">
-						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.code}}">
+						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.name}}">
 						<div class="input-group-append">
 							<button class="btn btn-default float-right fa fa-minus" (click)="deleteAttribute(attribute)"></button>
 						</div>
