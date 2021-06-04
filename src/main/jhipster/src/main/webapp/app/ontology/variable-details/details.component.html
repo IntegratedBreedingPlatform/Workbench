@@ -1,48 +1,48 @@
-<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="details-tab" style="height: 350px">
+<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="details-tab" style="height: 300px">
 	<div class="row">
-		<div class="col-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.description">Description:</label>
 		</div>
 		<div class="col word-wrap">{{variableDetails?.description}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.classes">Classes:</label>
 		</div>
 		<div class="col word-wrap">{{variableDetails?.property?.classes.join(", ")}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.property">Property:</label>
 		</div>
 		<div class="col word-wrap">{{variableDetails?.property?.name}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.method">Method:</label>
 		</div>
 		<div class="col word-wrap">{{variableDetails?.method?.name}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.scale">Scale:</label>
 		</div>
 		<div class="col word-wrap">{{variableDetails?.scale?.name}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.data-type">Data Type:</label>
 		</div>
 		<div class="col word-wrap">{{variableDetails?.scale?.dataType?.name}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.role">Role:</label>
 		</div>
 		<div class="col word-wrap">{{formatRoles()}}</div>
 	</div>
-	<div class="row pt-3">
-		<div class="col-2">
+	<div class="row pt-2">
+		<div class="col-3">
 			<label class="font-weight-bold" jhiTranslate="ontology.variable-details.details.crop-ontology-id">Crop Ontology ID:</label>
 		</div>
 		<div class="col word-wrap"><a href="{{formatCropOntologyURL()}}" target="_blank">{{variableDetails?.property?.cropOntologyId}}</a></div>
