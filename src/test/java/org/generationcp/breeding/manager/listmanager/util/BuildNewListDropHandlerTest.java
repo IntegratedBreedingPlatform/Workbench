@@ -1,15 +1,20 @@
 
 package org.generationcp.breeding.manager.listmanager.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.event.Transferable;
+import com.vaadin.event.dd.DragAndDropEvent;
+import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.TableTransferable;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.listmanager.ListBuilderComponent;
 import org.generationcp.breeding.manager.listmanager.ListComponent;
 import org.generationcp.breeding.manager.listmanager.ListManagerMain;
+import org.generationcp.middleware.api.germplasm.GermplasmService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.GermplasmTestDataInitializer;
@@ -22,6 +27,7 @@ import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -31,17 +37,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.vaadin.data.Container;
-import com.vaadin.data.Item;
-import com.vaadin.data.Property;
-import com.vaadin.event.Transferable;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.ui.AbstractSelect.AbstractSelectTargetDetails;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.TableTransferable;
-
-import org.junit.Assert;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class BuildNewListDropHandlerTest {
 	
@@ -93,6 +91,8 @@ public class BuildNewListDropHandlerTest {
 	private TableWithSelectAllLayout tableWithSelectAllLayout;
 	@Mock
 	private ListComponent listComponent;
+	@Mock
+	private GermplasmService germplasmService;
 
 	private BuildNewListDropHandler dropHandler;
 
@@ -191,6 +191,7 @@ public class BuildNewListDropHandlerTest {
 		this.dropHandler.setGermplasmDataManager(this.germplasmDataManager);
 		this.dropHandler.setGermplasmListManager(this.germplasmListManager);
 		this.dropHandler.setPedigreeService(this.pedigreeService);
+		this.dropHandler.setGermplasmService(this.germplasmService);
 
 		// other mock injections
 		this.dropHandler.setCurrentColumnsInfo(this.currentColumnsInfo);

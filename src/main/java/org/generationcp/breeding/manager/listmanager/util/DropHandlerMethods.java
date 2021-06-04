@@ -894,6 +894,10 @@ public class DropHandlerMethods {
 		this.pedigreeService = pedigreeService;
 	}
 
+	public void setGermplasmService(final GermplasmService germplasmService) {
+		this.germplasmService = germplasmService;
+	}
+
 	void setCrossExpansionProperties(final CrossExpansionProperties crossExpansionProperties) {
 		this.crossExpansionProperties = crossExpansionProperties;
 	}
