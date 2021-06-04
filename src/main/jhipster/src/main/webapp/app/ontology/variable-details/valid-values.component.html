@@ -5,18 +5,18 @@
 			 Variable Expected Range
 		</div>
 
-		<div class="row pl-4 pt-2" *ngIf="variableDetails?.expectedRange?.min == null && variableDetails?.expectedRange?.max == null"
+		<div class="row pl-4 pt-3" *ngIf="variableDetails?.expectedRange?.min == null && variableDetails?.expectedRange?.max == null"
 			 jhiTranslate="ontology.variable-details.valid-values.numeric.no-values">
 			This numeric variable has no mininum and maximum value constraint.
 		</div>
 
 		<div *ngIf="variableDetails?.expectedRange?.min != null && variableDetails?.expectedRange?.max != null">
-			<div class="row pl-4 pt-2">
+			<div class="row pl-4 pt-3">
 				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.min-value">Minimum Value:</div>
 				<div class="col pl-4">{{variableDetails?.expectedRange?.min}}</div>
 			</div>
 
-			<div class="row pl-4 pt-2">
+			<div class="row pl-4 pt-3">
 				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.max-value">Maximum Value:</div>
 				<div class="col pl-4">{{variableDetails?.expectedRange?.max}}</div>
 			</div>
@@ -26,23 +26,23 @@
 			Variable Scale Range
 		</div>
 
-		<div class="row pl-4 pt-2">
+		<div class="row pl-4 pt-3">
 			<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.numeric.scale.name">Scale Name:</div>
 			<div class="col pl-4">{{variableDetails?.scale?.name}}</div>
 		</div>
 
-		<div class="row pl-4 pt-2" *ngIf="variableDetails?.scale?.validValues?.min == null && variableDetails?.scale?.validValues?.max == null"
+		<div class="row pl-4 pt-3" *ngIf="variableDetails?.scale?.validValues?.min == null && variableDetails?.scale?.validValues?.max == null"
 			 jhiTranslate="ontology.variable-details.valid-values.numeric.no-values">
 			This numeric variable has no mininum and maximum value constraint.
 		</div>
 
 		<div *ngIf="variableDetails?.scale?.validValues?.min != null && variableDetails?.scale?.validValues?.max != null">
-			<div class="row pl-4 pt-2">
+			<div class="row pl-4 pt-3">
 				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.min-value">Minimum Value:</div>
 				<div class="col pl-4">{{variableDetails?.scale?.validValues?.min}}</div>
 			</div>
 
-			<div class="row pl-4 pt-2">
+			<div class="row pl-4 pt-3">
 				<div class="mx-auto font-weight-bold" style="width: 120px;" jhiTranslate="ontology.variable-details.valid-values.max-value">Maximum Value:</div>
 				<div class="col pl-4">{{variableDetails?.scale?.validValues?.max}}</div>
 			</div>
@@ -50,7 +50,7 @@
 	</div>
 
 	<div *ngIf="variableDetails?.scale?.dataType?.name === dataType.CATEGORICAL">
-		<div class="row pl-4 pt-2" *ngIf="!variableDetails?.scale?.validValues?.categories"
+		<div class="row pl-4" *ngIf="!variableDetails?.scale?.validValues?.categories"
 			 jhiTranslate="ontology.variable-details.valid-values.categorical.no-values">
 			This categorical variable has no pre-defined set of valid values.
 		</div>
@@ -75,7 +75,7 @@
 	</div>
 
 	<div *ngIf="variableDetails?.scale?.dataType?.name === dataType.CHARACTER">
-		<div class="row pl-4 pt-2" *ngIf="!variableDetails?.scale?.validValues?.categories"
+		<div class="row pl-4" *ngIf="!variableDetails?.scale?.validValues?.categories"
 			 jhiTranslate="ontology.variable-details.valid-values.character.no-values">
 			Character variables have no pre-defined selection of values
 		</div>
