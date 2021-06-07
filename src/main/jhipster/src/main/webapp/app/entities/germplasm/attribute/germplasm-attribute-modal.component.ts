@@ -39,8 +39,8 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        // FIXME into  IBP-4560 (using jhi-variable-select)
-        //this.attributeCodes = this.germplasmService.getGermplasmAttributesByType(this.germplasmAttributeContext.attributeType).toPromise();
+        // FIXME in to IBP-4560 (using jhi-variable-select)
+        // this.attributeCodes = this.germplasmService.getGermplasmAttributesByType(this.germplasmAttributeContext.attributeType).toPromise();
         this.date = this.calendar.getToday();
         if (this.germplasmAttributeContext.attribute) {
             this.attributeId = this.germplasmAttributeContext.attribute.id;
