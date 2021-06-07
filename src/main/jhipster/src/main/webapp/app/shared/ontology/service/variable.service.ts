@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ParamContext } from '../../service/param.context';
 import { VariableDetails } from '../model/variable-details';
 import { SERVER_API_URL } from '../../../app.constants';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class VariableService {
@@ -16,6 +17,11 @@ export class VariableService {
     getVariables() {
         const params = { programUUID: this.paramContext.programUUID };
         return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables`, { params });
+    }
+
+    getVariableById(variableId: number): Observable<VariableDetails> {
+        const params = { programUUID: this.paramContext.programUUID };
+        return this.http.get<VariableDetails>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables/${variableId}`, { params });
     }
 
 }
