@@ -1,4 +1,4 @@
-export class GernplasmAttributeRequestModel {
+export class GermplasmAttributeRequestModel {
     constructor(
         public variableId?: number,
         public value?: string,

@@ -12,7 +12,7 @@ import { getAllRecords } from '../../util/get-all-records';
 import { GermplasmAttribute, GermplasmBasicDetailsDto, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy } from '../model/germplasm.model';
 import { Sample } from '../../../entities/sample';
 import { GermplasmNameRequestModel } from '../model/germplasm-name-request.model';
-import { GernplasmAttributeRequestModel } from '../model/gernplasm-attribute-request.model';
+import { GermplasmAttributeRequestModel } from '../model/germplasm-attribute-request.model';
 import { GermplasmProgenitorsUpdateRequestModel } from '../model/germplasm-progenitors-update-request.model';
 import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
 import { map } from 'rxjs/operators';
@@ -150,13 +150,13 @@ export class GermplasmService {
         return this.http.delete<any>(url);
     }
 
-    createGermplasmAttribute(gid: number, germplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<number> {
+    createGermplasmAttribute(gid: number, germplasmAttributeRequestModel: GermplasmAttributeRequestModel): Observable<number> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes` +
             '?programUUID=' + this.context.programUUID;
         return this.http.post<number>(url, germplasmAttributeRequestModel);
     }
 
-    updateGermplasmAttribute(gid: number, attributeId: number, gernplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<any> {
+    updateGermplasmAttribute(gid: number, attributeId: number, gernplasmAttributeRequestModel: GermplasmAttributeRequestModel): Observable<any> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}` +
             '?programUUID=' + this.context.programUUID;
         return this.http.patch<any>(url, gernplasmAttributeRequestModel);
