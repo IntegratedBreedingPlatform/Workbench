@@ -22,7 +22,6 @@ export class DetailsComponent implements OnInit {
     }
 
     formatRoles(): string {
-        // TODO: check
         if (this.variableDetails && this.variableDetails.variableTypes) {
             return this.variableDetails.variableTypes.map((value: VariableType) => value.name).join(', ' );
         }
