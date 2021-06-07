@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -21,6 +22,7 @@ export class AttributesPaneComponent implements OnInit {
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
     attributes: GermplasmAttribute[] = [];
+    VariableTypeEnum = VariableTypeEnum;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
@@ -46,9 +48,9 @@ export class AttributesPaneComponent implements OnInit {
     }
 
     loadAttributes(): void {
-        this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, VariableType.GERMPLASM_PASSPORT).toPromise().then((germplasmAttributes) => {
+        this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, VariableTypeEnum.GERMPLASM_PASSPORT).toPromise().then((germplasmAttributes) => {
             this.passportAttributes = germplasmAttributes;
-            return this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, VariableType.GERMPLASM_ATTRIBUTE).toPromise();
+            return this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, VariableTypeEnum.GERMPLASM_ATTRIBUTE).toPromise();
         }).then((germplasmAttributes) => {
             this.attributes = germplasmAttributes;
         });
@@ -83,13 +85,4 @@ export class AttributesPaneComponent implements OnInit {
             });
         }, () => confirmModalRef.dismiss());
     }
-
-    public get varibleType(): typeof VariableType {
-        return VariableType;
-    }
-}
-
-export enum VariableType {
-    GERMPLASM_PASSPORT = 1813,
-    GERMPLASM_ATTRIBUTE = 1814
 }
