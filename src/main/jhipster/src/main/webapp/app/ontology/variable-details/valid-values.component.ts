@@ -2,12 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableDetailsContext } from './variable-details.context';
-
-enum DataType {
-    NUMERIC = 'Numeric',
-    CATEGORICAL = 'Categorical',
-    CHARACTER = 'Character'
-}
+import { DataType } from '../../shared/ontology/data-type';
 
 @Component({
     selector: 'jhi-valid-values',
