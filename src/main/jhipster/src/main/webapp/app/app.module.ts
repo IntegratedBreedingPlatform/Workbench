@@ -24,6 +24,7 @@ import { ReleaseNotesModule } from './release-notes/release-notes.module';
 import { UserProfileModule } from './entities/user-profile/user-profile.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
 import { PrototypeModule } from './prototype/prototype.module';
+import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
 
 @NgModule({
     imports: [
@@ -41,7 +42,8 @@ import { PrototypeModule } from './prototype/prototype.module';
         ReleaseNotesModule,
         UserProfileModule,
         FileManagerModule,
-        PrototypeModule
+        PrototypeModule,
+        VariableDetailsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
