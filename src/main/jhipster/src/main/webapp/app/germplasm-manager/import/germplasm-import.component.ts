@@ -123,6 +123,7 @@ export class GermplasmImportComponent implements OnInit {
             return false;
         }
         this.context.nameTypes = await this.germplasmService.getGermplasmNameTypes(Object.keys(this.codes)).toPromise();
+        // FIXME into IBP-4659 (using Resource /variables/filter)
         this.context.attributes = await this.germplasmService.getGermplasmAttributes(Object.keys(this.codes)).toPromise();
         if (!this.context.nameTypes || !this.context.nameTypes.length) {
             this.alertService.error('germplasm.import.file.validation.names.no.column');

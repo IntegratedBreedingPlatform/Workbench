@@ -146,7 +146,8 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
             );
 
             // Determine which of the codes are names and attributes
-            forkJoin(this.germplasmService.getGermplasmAttributes(codes), this.germplasmService.getGermplasmNameTypes(codes))
+            forkJoin(this.germplasmService.getGermplasmAttributes(codes) // <-- FIXME into IBP-4659 (Remove it and using Resource /variables/filter)
+                , this.germplasmService.getGermplasmNameTypes(codes))
                 .subscribe((values) => {
                     this.attributes = values[0];
                     this.names = values[1];
