@@ -150,10 +150,10 @@ export class GermplasmService {
         return this.http.delete<any>(url);
     }
 
-    createGermplasmAttribute(gid: number, variableTypeId: number, gernplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<number> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${variableTypeId}` +
+    createGermplasmAttribute(gid: number, germplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<number> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes` +
             '?programUUID=' + this.context.programUUID;
-        return this.http.post<number>(url, gernplasmAttributeRequestModel);
+        return this.http.post<number>(url, germplasmAttributeRequestModel);
     }
 
     updateGermplasmAttribute(gid: number, attributeId: number, gernplasmAttributeRequestModel: GernplasmAttributeRequestModel): Observable<any> {

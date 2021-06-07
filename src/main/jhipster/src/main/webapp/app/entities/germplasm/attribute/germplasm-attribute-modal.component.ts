@@ -77,7 +77,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
         } else {
             // If attribute id is not available, we have to create a new attribute
             this.isLoading = true;
-            this.germplasmService.createGermplasmAttribute(this.gid, this.germplasmAttributeContext.attributeType, {
+            this.germplasmService.createGermplasmAttribute(this.gid, {
                 variableId: this.variableId,
                 value: this.value,
                 locationId: this.locationId,
