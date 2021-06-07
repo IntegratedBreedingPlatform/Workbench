@@ -57,7 +57,8 @@
             "add-to-list": "Add to existing list",
             "import": "Import germplasm",
             "delete-germplasm": "Delete selected germplasm records",
-            "export-data-and-labels": "Export data and labels"
+            "export-data-and-labels": "Export data and labels",
+            "code-germplasm": "Code germplasm"
         },
         "included-gids": "(+ included germplasm)"
     },

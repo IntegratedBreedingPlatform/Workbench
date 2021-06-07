@@ -1,0 +1,17 @@
+{
+    "germplasm-coding": {
+        "title": "Specify Codes",
+        "coding.level": "Coding Level",
+        "naming": "Naming",
+        "automatic.naming.generation": "Automatic Naming Generation",
+        "specify.code.manually": "Specify Code Manually",
+        "prefix": "Code Prefix",
+        "number.of.digits": "Number of digits in sequence number",
+        "suffix": "Code Suffix",
+        "add.space.prefix": "Add space between pefix and code?",
+        "add.space.suffix": "Add space between suffix and code?",
+        "next.name.in.sequence": "Next name in the sequence:",
+        "starting.sequence.number": "Starting sequence number",
+        "success": "Success!"
+    }
+}

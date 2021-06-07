@@ -9,13 +9,15 @@ import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
-import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy, GermplasmBasicDetailsDto} from '../model/germplasm.model';
+import { GermplasmAttribute, GermplasmBasicDetailsDto, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy } from '../model/germplasm.model';
 import { Sample } from '../../../entities/sample';
 import { GermplasmNameRequestModel } from '../model/germplasm-name-request.model';
 import { GernplasmAttributeRequestModel } from '../model/gernplasm-attribute-request.model';
 import { GermplasmProgenitorsUpdateRequestModel } from '../model/germplasm-progenitors-update-request.model';
 import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
 import { map } from 'rxjs/operators';
+import { GermplasmNameBatchRequestModel } from '../model/germplasm-name-batch-request.model';
+import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
 
 @Injectable()
 export class GermplasmService {
@@ -135,6 +137,18 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
             '?programUUID=' + this.context.programUUID;
         return this.http.delete<DeleteGermplasmResultType>(url, { params });
+    }
+
+    createGermplasmNames(germplasmNameBatchRequestModel: GermplasmNameBatchRequestModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<any>(url, germplasmNameBatchRequestModel);
+    }
+
+    getNextNameInSequence(germplasmNameSettingModel: GermplasmNameSettingModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names/sequence` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<any>(url, germplasmNameSettingModel);
     }
 
     createGermplasmName(gid: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<number> {
