@@ -12,8 +12,6 @@ package org.generationcp.ibpworkbench.study.listeners;
 
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.ibpworkbench.germplasm.GermplasmStudyInfoComponent;
-import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
 import org.generationcp.ibpworkbench.study.StudySearchMainComponent;
 import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.slf4j.Logger;
@@ -49,19 +47,6 @@ public class StudyItemClickListener implements ItemClickEvent.ItemClickListener 
 			} catch (final InternationalizableException e) {
 				StudyItemClickListener.LOG.error(e.getMessage(), e);
 				MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-			}
-		}
-
-		if (this.source instanceof GermplasmStudyInfoComponent) {
-			final int studyId = Integer.valueOf(event.getItem().getItemProperty(GermplasmIndexContainer.STUDY_ID).getValue().toString());
-			if (event.getButton() == ClickEvent.BUTTON_LEFT) {
-				try {
-					((GermplasmStudyInfoComponent) this.source).studyItemClickAction(event, studyId);
-				} catch (final InternationalizableException e) {
-					StudyItemClickListener.LOG.error(e.toString() + "\n" + e.getStackTrace());
-					e.printStackTrace();
-					MessageNotifier.showError(event.getComponent().getWindow(), e.getCaption(), e.getDescription());
-				}
 			}
 		}
 	}
