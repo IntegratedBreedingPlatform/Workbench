@@ -27,6 +27,7 @@ export class ParamContext {
      * Workaround until https://github.com/angular/angular/issues/12664
      */
     resetQueryParams() {
+        // FIXME this.router.navigate(['./'], { relativeTo: this.activatedRoute } not working
         return this.router.navigate(['/germplasm-manager/germplasm-search/'], {
             queryParams: {
                 programUUID: this.programUUID,

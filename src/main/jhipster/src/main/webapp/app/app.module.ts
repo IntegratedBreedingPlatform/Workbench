@@ -23,6 +23,8 @@ import { GermplasmDetailsModule } from './germplasm-details/germplasm-details.mo
 import { ReleaseNotesModule } from './release-notes/release-notes.module';
 import { UserProfileModule } from './entities/user-profile/user-profile.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
+import { PrototypeModule } from './prototype/prototype.module';
+import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
 
 @NgModule({
     imports: [
@@ -39,7 +41,9 @@ import { FileManagerModule } from './file-manager/file-manager.module';
         GermplasmDetailsModule,
         ReleaseNotesModule,
         UserProfileModule,
-        FileManagerModule
+        FileManagerModule,
+        PrototypeModule,
+        VariableDetailsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [
