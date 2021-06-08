@@ -14,7 +14,6 @@ package org.generationcp.ibpworkbench;
 import com.vaadin.terminal.Terminal;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
-import org.apache.commons.lang3.StringUtils;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.hibernate.util.HttpRequestAwareUtil;
@@ -60,8 +59,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	private static final String HTML_BREAK = "</br>";
 
 	private Window window;
-
-	private Integer gid;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -120,8 +117,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					this.addWindow(studyBrowserWindow);
 				}
 
-				BrowseStudyTreeComponent studyTreeComponent = null;
-
 				try {
 					studyId = Integer.parseInt(studyIdPart);
 				} catch (final NumberFormatException e) {
@@ -131,7 +126,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					return studyBrowserWindow;
 				}
 
-				studyTreeComponent = studyBrowserMain.getBrowseTreeComponent();
+				BrowseStudyTreeComponent studyTreeComponent = studyBrowserMain.getBrowseTreeComponent();
 				studyTreeComponent.openStudy(studyId);
 
 				return studyBrowserWindow;
@@ -235,9 +230,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	protected void doOnRequestStart(final HttpServletRequest request, final HttpServletResponse response) {
 		GermplasmStudyBrowserApplication.LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
 		synchronized (this) {
-			if (StringUtils.isNotEmpty(request.getParameter("gid"))) {
-				this.gid = Integer.valueOf(request.getParameter("gid"));
-			}
 			HttpRequestAwareUtil.onRequestStart(this.applicationContext, request, response);
 		}
 		super.doOnRequestStart(request, response);
