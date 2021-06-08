@@ -147,7 +147,7 @@
 
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect($event, index, germplasm, true); $event.stopPropagation()"></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
-				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.names}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{germplasm.unit}}</td>
