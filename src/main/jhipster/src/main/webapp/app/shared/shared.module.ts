@@ -69,7 +69,9 @@ import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.p
 import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
 import { SecureImagePipe } from './util/secure-image.pipe';
 import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
+import { VariableSelectComponent } from './variable-select/variable-select.component';
 import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
+import { VariableService } from './ontology/service/variable.service';
 
 @NgModule({
     imports: [
@@ -118,7 +120,8 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
         GeojsonMapComponent,
         LocationsSelectComponent,
         OnlyNumbersDirective,
-        PedigreeGraphComponent
+        PedigreeGraphComponent,
+        VariableSelectComponent
     ],
     providers: [
         LoginService,
@@ -154,7 +157,8 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
          */
         NgbActiveModal,
         UrlService,
-        GermplasmPedigreeService
+        GermplasmPedigreeService,
+        VariableService
     ],
     entryComponents: [
         ModalComponent,
@@ -205,7 +209,8 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
         GeojsonMapComponent,
         LocationsSelectComponent,
         OnlyNumbersDirective,
-        PedigreeGraphComponent
+        PedigreeGraphComponent,
+        VariableSelectComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

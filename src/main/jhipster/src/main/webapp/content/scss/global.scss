@@ -556,7 +556,16 @@ tr.cdk-drag-preview {
 #listBuilderDrop.cdk-drop-list-dragging {
     border: 2px dashed olivedrab;
 }
-
+/* ==========================================================================
+Variable select
+========================================================================== */
+.variable-select-icon {
+    width: 13px;
+    height: 13px;
+}
+/* ==========================================================================
+Other
+========================================================================== */
 .table-fixed {
     white-space: break-spaces !important;
     border-spacing: 0;

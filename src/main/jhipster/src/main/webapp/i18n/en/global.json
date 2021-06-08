@@ -151,6 +151,7 @@
     "next": "Next",
     "finish": "Finish",
     "actions": "Actions",
+    "ok": "Ok",
     "template.download": {
         "description": "You can download a template",
         "here": "here"
