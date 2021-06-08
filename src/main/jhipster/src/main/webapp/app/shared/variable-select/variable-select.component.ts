@@ -95,12 +95,15 @@ export class VariableSelectComponent implements OnInit {
             const displayName = copy.alias
                 ? copy.alias + ' (' + copy.name + ')'
                 : copy.name;
+            const classes = copy.property && copy.property.classes && copy.property.classes.length
+                ? '(' + copy.property.classes.join(', ') + ')'
+                : '';
             return Object.assign(copy, {
                 id: copy.id,
                 text: copy.alias || copy.name,
                 displayName,
                 propertyName: copy.property ? copy.property.name : '',
-                classes: copy.property ? '(' + copy.property.classes.join(', ') + ')' : '',
+                classes,
                 alias: copy.alias ? copy.alias + '(' + copy.name + ')' : ''
             });
         });
