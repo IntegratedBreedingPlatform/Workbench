@@ -8,6 +8,7 @@ import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
 import { GermplasmAttributeContext } from './germplasm-attribute.context';
 import { Attribute } from '../../../shared/attributes/model/attribute.model';
+import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 
 @Component({
     selector: 'jhi-germplasm-attribute-modal',
@@ -21,9 +22,10 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     attributeCodes: Promise<Attribute[]>;
     locations: LocationModel[];
     isLoading: boolean;
+    VariableType = VariableTypeEnum;
 
     attributeId: number;
-    attributeCode: string;
+    attributeTypeId: number;
     value: string;
     locationId: number;
     date: NgbDate;
@@ -39,17 +41,15 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        // FIXME in to IBP-4560 (using jhi-variable-select)
-        // this.attributeCodes = this.germplasmService.getGermplasmAttributesByType(this.germplasmAttributeContext.attributeType).toPromise();
         this.date = this.calendar.getToday();
         if (this.germplasmAttributeContext.attribute) {
             this.attributeId = this.germplasmAttributeContext.attribute.id;
-            this.attributeCode = this.germplasmAttributeContext.attribute.variableName;
             this.value = this.germplasmAttributeContext.attribute.value;
             this.locationId = Number(this.germplasmAttributeContext.attribute.locationId);
             this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmAttributeContext.attribute.date);
             this.variableId = this.germplasmAttributeContext.attribute.variableId;
         }
+        this.attributeTypeId = this.germplasmAttributeContext.attributeType;
     }
 
     clear() {
@@ -100,7 +100,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.attributeCode
+        return f.form.valid && !this.isLoading && this.variableId
             && this.value && this.locationId && this.date;
     }
 

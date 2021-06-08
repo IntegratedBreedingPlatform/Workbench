@@ -17,9 +17,12 @@
 			<div class="form-group row required">
 				<label for="dropdownvariable" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-attribute-modal.variable">Variable</label>
 				<div class="col-sm-9">
-					<ng-select2 name="dropdownvariable" id="dropdownvariable" width="100%" [(ngModel)]="attributeCode" [disabled]="attributeId"
-								[data]="attributeCodes | async | AttributeSelect2Data">
-					</ng-select2>
+					<jhi-variable-select name="dropdownvariable" id="dropdownvariable"
+										 (onVariableSelectedChange)="variableId = $event.id"
+										 [value]="variableId"
+										 [variableTypeIds]="[attributeTypeId]"
+										 [disabled]="attributeId">
+					</jhi-variable-select>
 				</div>
 			</div>
 			<div class="form-group row required">
