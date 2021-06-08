@@ -17,6 +17,7 @@ import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-regis
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
 import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
+import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 
 @NgModule({
     imports: [
@@ -38,7 +39,8 @@ import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog
         GermplasmListAddComponent,
         GermplasmListAddPopupComponent,
         KeySequenceRegisterDeletionDialogComponent,
-        GermplasmCodingDialogComponent
+        GermplasmCodingDialogComponent,
+        GermplasmCodingResultDialogComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -54,7 +56,8 @@ import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog
         GermplasmListAddComponent,
         GermplasmListAddPopupComponent,
         KeySequenceRegisterDeletionDialogComponent,
-        GermplasmCodingDialogComponent
+        GermplasmCodingDialogComponent,
+        GermplasmCodingResultDialogComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,

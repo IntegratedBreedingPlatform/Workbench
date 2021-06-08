@@ -29,6 +29,8 @@ import { GERMPLASM_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { SearchResult } from '../shared/search-result.model';
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
+import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
+import { GermplasmNameBatchResultModel } from '../shared/germplasm/model/germplasm-name-batch-result.model';
 
 declare var $: any;
 
@@ -696,12 +698,22 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
-    codeGermplasm() {
+    openGermplasmCoding() {
         if (!this.validateSelection()) {
             return;
         }
-        const confirmModalRef = this.modalService.open(GermplasmCodingDialogComponent as Component, { size: 'lg', backdrop: 'static' });
-        confirmModalRef.componentInstance.gids = this.getSelectedItemIds();
+        const germplasmCodingDialog = this.modalService.open(GermplasmCodingDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+        germplasmCodingDialog.componentInstance.gids = this.getSelectedItemIds();
+        germplasmCodingDialog.result.then((results) => {
+            this.openGermplasmCodingResult(results);
+        });
+    }
+
+    openGermplasmCodingResult(results: GermplasmNameBatchResultModel[]) {
+        if (results) {
+            const germplasmCodingResultDialog = this.modalService.open(GermplasmCodingResultDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+            germplasmCodingResultDialog.componentInstance.results = results;
+        }
     }
 
     deleteGermplasm() {

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { GermplasmNameSettingModel } from '../../shared/germplasm/model/germplasm-name-setting.model';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { JhiAlertService } from 'ng-jhipster';
+import { GermplasmCodingResultDialogComponent } from './germplasm-coding-result-dialog.component';
 
 @Component({
     selector: 'jhi-germplasm-coding',
@@ -18,7 +19,10 @@ export class GermplasmCodingDialogComponent implements OnInit {
     numberOfDigits = Array(9).fill(1).map((x, i) => i + 1);
     nextNameSequence: string;
 
-    constructor(private modal: NgbActiveModal, private germplasmService: GermplasmService, private alertService: JhiAlertService) {
+    constructor(private modal: NgbActiveModal,
+                private germplasmService: GermplasmService,
+                private alertService: JhiAlertService,
+                private modalService: NgbModal) {
         this.automaticNaming = true;
         this.germplasmNameSetting.addSpaceBetweenPrefixAndCode = false;
         this.germplasmNameSetting.addSpaceBetweenSuffixAndCode = false;
@@ -38,7 +42,7 @@ export class GermplasmCodingDialogComponent implements OnInit {
             nameType: this.nameType,
             germplasmNameSetting: this.automaticNaming ? null : this.germplasmNameSetting
         }).subscribe((result) => {
-            this.alertService.success('germplasm-coding.success');
+            this.modal.close(result);
         });
     }
 
