@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../alert/format-error-list';
 import { AlertService } from '../alert/alert.service';
 import { finalize } from 'rxjs/operators';
+import { Select2OptionData } from 'ng-select2';
 
 declare const $: any;
 
@@ -13,8 +14,15 @@ declare const $: any;
     templateUrl: './variable-select.component.html'
 })
 export class VariableSelectComponent implements OnInit {
+    @Input() name: string;
+    @Input() id: string;
+
+    @Input() value: any;
+    initialData: Select2OptionData[];
+
+    @Input() disabled: boolean;
     @Input() multiple: boolean;
-    @Input() variableTypeIds: string[];
+    @Input() variableTypeIds: number[];
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
 
     options = {
@@ -45,7 +53,6 @@ export class VariableSelectComponent implements OnInit {
         multiple: false
     }
     variables: any[];
-    value: any;
 
     variableById: { [key: string]: VariableDetails } = {};
     isLoading = true;
@@ -58,6 +65,10 @@ export class VariableSelectComponent implements OnInit {
             finalize(() => this.isLoading = false)
         ).subscribe((variables) => {
             this.variables = this.transform(variables)
+            if (this.value) {
+                const variable = this.variableById[this.value];
+                this.initialData = [{ id: variable.id, text: variable.alias || variable.name }]
+            }
         }, (error) => {
             this.onError(error);
         });
@@ -73,7 +84,7 @@ export class VariableSelectComponent implements OnInit {
                 return variable.variableTypes
                     && variable.variableTypes.length
                     && variable.variableTypes.some(
-                        (variableType) => this.variableTypeIds.includes(variableType.id)
+                        (variableType) => this.variableTypeIds.includes(Number(variableType.id))
                     );
             }
             return true;
