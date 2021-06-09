@@ -1,4 +1,4 @@
-export class GermplasmNameSettingModel {
+export class GermplasmCodeNameSettingModel {
     constructor(
         public prefix?: string,
         public suffix?: string,

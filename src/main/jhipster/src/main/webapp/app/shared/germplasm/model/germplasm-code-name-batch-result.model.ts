@@ -1,4 +1,4 @@
-export class GermplasmNameBatchResultModel {
+export class GermplasmCodeNameBatchResultModel {
     constructor(
         public gid?: number,
         public messages?: string[]

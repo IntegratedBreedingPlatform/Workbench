@@ -30,7 +30,7 @@ import { ParamContext } from '../shared/service/param.context';
 import { SearchResult } from '../shared/search-result.model';
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
-import { GermplasmNameBatchResultModel } from '../shared/germplasm/model/germplasm-name-batch-result.model';
+import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
 
 declare var $: any;
 
@@ -709,7 +709,7 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
-    openGermplasmCodingResult(results: GermplasmNameBatchResultModel[]) {
+    openGermplasmCodingResult(results: GermplasmCodeNameBatchResultModel[]) {
         if (results) {
             const germplasmCodingResultDialog = this.modalService.open(GermplasmCodingResultDialogComponent as Component, { size: 'lg', backdrop: 'static' });
             germplasmCodingResultDialog.componentInstance.results = results;

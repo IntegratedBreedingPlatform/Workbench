@@ -53,7 +53,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<input class="form-control" [(ngModel)]="germplasmNameSetting.prefix" id="prefix" name="prefix" (change)="getNextNameSequence()"/>
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.prefix" id="prefix" name="prefix" (change)="getNextNameSequence()"/>
 								</div>
 							</div>
 						</div>
@@ -63,7 +63,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<select class="form-control" name="numOfDigits" [(ngModel)]="germplasmNameSetting.numOfDigits" (change)="getNextNameSequence()">
+									<select class="form-control" name="numOfDigits" [(ngModel)]="germplasmCodeNameSetting.numOfDigits" (change)="getNextNameSequence()">
 										<option *ngFor="let digit of numberOfDigits" [value]="digit">{{digit}}</option>
 									</select>
 								</div>
@@ -75,7 +75,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<input class="form-control" [(ngModel)]="germplasmNameSetting.suffix" id="suffix" name="suffix" (change)="getNextNameSequence()"/>
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.suffix" id="suffix" name="suffix" (change)="getNextNameSequence()"/>
 								</div>
 							</div>
 						</div>
@@ -85,11 +85,11 @@
 						<div class="col-sm-7">
 							<div class="form-inline">
 								<div class="form-group">
-									<input type="radio" id="addSpacePrefixYes" name="addSpacePrefixYes" [value]="true" [(ngModel)]="germplasmNameSetting.addSpaceBetweenPrefixAndCode" (change)="getNextNameSequence()"/>
+									<input type="radio" id="addSpacePrefixYes" name="addSpacePrefixYes" [value]="true" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenPrefixAndCode" (change)="getNextNameSequence()"/>
 									<label class="ml-1" for="addSpacePrefixYes">Yes</label>
 								</div>
 								<div class="form-group">
-									<input class="ml-3" type="radio" id="addSpacePrefixNo" name="addSpacePrefixNo" [value]="false" [(ngModel)]="germplasmNameSetting.addSpaceBetweenPrefixAndCode" (change)="getNextNameSequence()"/>
+									<input class="ml-3" type="radio" id="addSpacePrefixNo" name="addSpacePrefixNo" [value]="false" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenPrefixAndCode" (change)="getNextNameSequence()"/>
 									<label class="ml-1" for="addSpacePrefixNo">No</label>
 								</div>
 							</div>
@@ -100,11 +100,11 @@
 						<div class="col-sm-7">
 							<div class="form-inline">
 								<div class="form-group">
-									<input type="radio" id="addSpaceSuffixYes" name="addSpaceSuffixYes" [value]="true" [(ngModel)]="germplasmNameSetting.addSpaceBetweenSuffixAndCode" (change)="getNextNameSequence()"/>
+									<input type="radio" id="addSpaceSuffixYes" name="addSpaceSuffixYes" [value]="true" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenSuffixAndCode" (change)="getNextNameSequence()"/>
 									<label class="ml-1" for="addSpaceSuffixYes">Yes</label>
 								</div>
 								<div class="form-group">
-									<input class="ml-3" type="radio" id="addSpaceSuffixNo" name="addSpaceSuffixNo" [value]="false" [(ngModel)]="germplasmNameSetting.addSpaceBetweenSuffixAndCode" (change)="getNextNameSequence()"/>
+									<input class="ml-3" type="radio" id="addSpaceSuffixNo" name="addSpaceSuffixNo" [value]="false" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenSuffixAndCode" (change)="getNextNameSequence()"/>
 									<label class="ml-1" for="addSpaceSuffixNo">No</label>
 								</div>
 							</div>
@@ -113,8 +113,7 @@
 					<div class="form-group row">
 						<label class="col-sm-5"></label>
 						<div class="col-sm-7">
-							<label class="pl-0 col-sm-6 font-italic" jhiTranslate="germplasm-coding.next.name.in.sequence"></label>
-							<label class="col-sm-6">{{nextNameSequence}}</label>
+							<span class="font-italic" jhiTranslate="germplasm-coding.next.name.in.sequence"></span> <span class="col-sm-6">{{nextCodeNameSequence}}</span>
 						</div>
 					</div>
 					<div class="form-group row">
@@ -122,7 +121,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<input class="form-control" [(ngModel)]="germplasmNameSetting.startNumber" id="startNumber" name="startNumber" (change)="getNextNameSequence()"/>
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.startNumber" id="startNumber" name="startNumber" (change)="getNextNameSequence()"/>
 								</div>
 							</div>
 						</div>

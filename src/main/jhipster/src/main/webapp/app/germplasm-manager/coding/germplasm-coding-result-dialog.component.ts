@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GermplasmNameBatchResultModel } from '../../shared/germplasm/model/germplasm-name-batch-result.model';
+import { GermplasmCodeNameBatchResultModel } from '../../shared/germplasm/model/germplasm-code-name-batch-result.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -8,7 +8,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class GermplasmCodingResultDialogComponent implements OnInit {
 
-    results: GermplasmNameBatchResultModel[];
+    results: GermplasmCodeNameBatchResultModel[];
 
     constructor(private modal: NgbActiveModal) {
     }
