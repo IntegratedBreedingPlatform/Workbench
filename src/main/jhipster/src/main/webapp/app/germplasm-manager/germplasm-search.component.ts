@@ -706,6 +706,8 @@ export class GermplasmSearchComponent implements OnInit {
         germplasmCodingDialog.componentInstance.gids = this.getSelectedItemIds();
         germplasmCodingDialog.result.then((results) => {
             this.openGermplasmCodingResult(results);
+            // Refresh the germplasm search table
+            this.transition();
         });
     }
 

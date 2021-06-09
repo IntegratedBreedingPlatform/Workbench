@@ -53,7 +53,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.prefix" id="prefix" name="prefix" (change)="getNextNameSequence()"/>
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.prefix" autocomplete="off" id="prefix" name="prefix" (change)="getNextNameSequence()" maxlength="49"/>
 								</div>
 							</div>
 						</div>
@@ -75,7 +75,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.suffix" id="suffix" name="suffix" (change)="getNextNameSequence()"/>
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.suffix" autocomplete="off" id="suffix" name="suffix" (change)="getNextNameSequence()" maxlength="49"/>
 								</div>
 							</div>
 						</div>
@@ -121,7 +121,7 @@
 						<div class="col-sm-7">
 							<div class="row">
 								<div class="input-group col-xs-12 col-md-12">
-									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.startNumber" id="startNumber" name="startNumber" (change)="getNextNameSequence()"/>
+									<input type="number" min="0" class="form-control" [(ngModel)]="germplasmCodeNameSetting.startNumber" autocomplete="off" id="startNumber" name="startNumber" (change)="getNextNameSequence()"/>
 								</div>
 							</div>
 						</div>
@@ -134,7 +134,8 @@
 		<button type="button" class="btn btn-secondary" [disabled]="isProcessing ? 'disabled' : null" data-dismiss="modal" (click)="close()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 		</button>
-		<button (click)="applyCodes()" class="btn btn-primary" [disabled]="isProcessing ? 'disabled' : null">
+		<button (click)="applyCodes()" class="btn btn-primary" [disabled]="(isProcessing || !validate()) ? 'disabled' : null">
+			<span *ngIf="isProcessing" class="throbber throbber-btn"></span>
 			<span class="fa fa-save"></span>&nbsp;<span jhitranslate="germplasm-coding.apply-codes">Apply Codes</span>
 		</button>
 	</div>

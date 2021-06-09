@@ -36,13 +36,21 @@ export class GermplasmCodingDialogComponent implements OnInit {
     }
 
     applyCodes() {
+        this.isProcessing = true;
         this.germplasmService.createGermplasmCodeNames({
             gids: this.gids,
             nameType: this.nameType,
             germplasmCodeNameSetting: this.automaticNaming ? null : this.germplasmCodeNameSetting
-        }).subscribe((result) => {
+        }).toPromise().then((result) => {
             this.modal.close(result);
+            this.isProcessing = false;
+        }).catch((response) => {
+            this.alertService.error('error.custom', { param: response.error.errors[0].message });
         });
+    }
+
+    validate() {
+        return this.automaticNaming || (this.germplasmCodeNameSetting.prefix && this.germplasmCodeNameSetting.numOfDigits);
     }
 
     getNextNameSequence() {
