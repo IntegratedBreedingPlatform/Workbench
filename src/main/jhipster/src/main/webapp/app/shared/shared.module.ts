@@ -72,6 +72,7 @@ import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree
 import { VariableSelectComponent } from './variable-select/variable-select.component';
 import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 import { VariableService } from './ontology/service/variable.service';
+import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
 
 @NgModule({
     imports: [
@@ -158,7 +159,8 @@ import { VariableService } from './ontology/service/variable.service';
         NgbActiveModal,
         UrlService,
         GermplasmPedigreeService,
-        VariableService
+        VariableService,
+        GermplasmGroupingService
     ],
     entryComponents: [
         ModalComponent,

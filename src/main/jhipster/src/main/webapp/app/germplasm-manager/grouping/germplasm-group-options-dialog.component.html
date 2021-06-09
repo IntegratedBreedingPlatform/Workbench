@@ -1,0 +1,40 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="germplasm-grouping.grouping-results"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div class="form-group row">
+		<div class="col">
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="preserveExistingGroup" id="preserveExistingGroup"
+					   [(ngModel)]="preserveExistingGroup">
+				<label class="form-check-label" for="preserveExistingGroup" jhiTranslate="germplasm-grouping.preserve.existing.group">
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col">
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="includeDescendants" id="includeDescendants"
+					   [(ngModel)]="includeDescendants">
+				<label class="form-check-label" for="includeDescendants" jhiTranslate="germplasm-grouping.include.descendants">
+				</label>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+		<span class="fa fa-ban"></span>&nbsp;
+		<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="group()" class="btn btn-primary">
+		<span class="fa fa-save"></span>&nbsp;
+		<span jhiTranslate="germplasm-grouping.continue"></span>
+	</button>
+</div>

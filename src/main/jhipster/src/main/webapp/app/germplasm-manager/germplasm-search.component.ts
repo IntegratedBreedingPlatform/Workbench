@@ -28,6 +28,9 @@ import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-regis
 import { GERMPLASM_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { SearchResult } from '../shared/search-result.model';
+import { GermplasmGroupOptionsDialogComponent } from './grouping/germplasm-group-options-dialog-component';
+import { GermplasmGroupingService } from '../shared/germplasm/service/germplasm-grouping.service';
+import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-result.component';
 
 declare var $: any;
 
@@ -283,6 +286,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
+                private germplasmGroupingService: GermplasmGroupingService,
                 private router: Router,
                 private alertService: AlertService,
                 private translateService: TranslateService,
@@ -740,6 +744,51 @@ export class GermplasmSearchComponent implements OnInit {
     openKeySequenceDeletionDialog(gids: number[]) {
         const confirmModalRef = this.modalService.open(KeySequenceRegisterDeletionDialogComponent as Component);
         confirmModalRef.componentInstance.gids = gids;
+    }
+
+    groupGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        const groupGermplasmModal = this.modalService.open(GermplasmGroupOptionsDialogComponent as Component);
+        groupGermplasmModal.componentInstance.gids = this.getSelectedItemIds();
+        groupGermplasmModal.result.then(((germplasmGroupList) => {
+            this.openGermplasmGroupingResult(germplasmGroupList)
+        }));
+    }
+
+    openGermplasmGroupingResult(results) {
+        if (results) {
+            const germplasmGroupingResultComponent = this.modalService.open(GermplasmGroupingResultComponent as Component, { size: 'lg', backdrop: 'static' });
+            germplasmGroupingResultComponent.componentInstance.results = results;
+            germplasmGroupingResultComponent.result.then(() => {
+                    this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
+                    this.resetTable();
+                }
+            );
+        } else {
+            this.alertService.warning('germplasm-grouping.grouping.warning');
+        }
+    }
+
+    ungroupGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        this.germplasmGroupingService.ungroup(this.getSelectedItemIds()).subscribe((response) => {
+            if (response.unfixedGids && response.unfixedGids.length > 0) {
+                if (response.numberOfGermplasmWithoutGroup === 0) {
+                    this.alertService.success('germplasm-grouping.ungrouping.success');
+                } else {
+                    this.alertService.warning('germplasm-grouping.ungrouping.warning', { param1: response.unfixedGids.length, param2: response.numberOfGermplasmWithoutGroup });
+                }
+                this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
+                this.resetTable();
+            } else {
+                this.alertService.warning('germplasm-grouping.ungrouping.none.successful');
+            }
+        });
+
     }
 }
 
