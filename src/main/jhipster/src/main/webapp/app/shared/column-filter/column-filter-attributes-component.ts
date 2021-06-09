@@ -15,7 +15,15 @@ import { GermplasmService } from '../germplasm/service/germplasm.service';
 				</div>
 				<ul class="filter-select">
 					<li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result)">
-						<label class="label-info">Name:</label> {{result.name}} - <label class="label-info">Definition:</label> {{result.definition}}
+						<div>
+							<img class="variable-select-icon" alt="Property" src="/ibpworkbench/controller/static/images/property.svg">
+							<span> {{result.property.name}} </span>
+						</div>
+						<div>
+							<img class="variable-select-icon" alt="Variable" src="/ibpworkbench/controller/static/images/variable.png">
+							<span *ngIf="result.alias"  class="label-info"> {{result.alias}} ({{result.name}})</span>
+							<span *ngIf="!result.alias" class="label-info"> {{result.name}}</span>
+						</div>
 					</li>
 				</ul>
 			</section>
