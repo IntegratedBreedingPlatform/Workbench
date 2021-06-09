@@ -3,16 +3,19 @@ import { GermplasmCodeNameSettingModel } from '../../shared/germplasm/model/germ
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { JhiAlertService } from 'ng-jhipster';
+import { GermplasmCodeNameType } from '../../shared/germplasm/model/germplasm-code-name-batch-request.model';
 
 @Component({
     selector: 'jhi-germplasm-coding',
     templateUrl: './germplasm-coding-dialog.component.html'
 })
-export class GermplasmCodingDialogComponent implements OnInit {
+export class GermplasmCodingDialogComponent {
+
+    GermplasmCodeNameType = GermplasmCodeNameType;
 
     gids: number[];
     automaticNaming: boolean;
-    nameType: string = 'CODE1';
+    nameType: GermplasmCodeNameType = GermplasmCodeNameType.CODE1;
     isProcessing: boolean;
     germplasmCodeNameSetting: GermplasmCodeNameSettingModel = new GermplasmCodeNameSettingModel();
     numberOfDigits = Array(9).fill(1).map((x, i) => i + 1);
@@ -26,9 +29,6 @@ export class GermplasmCodingDialogComponent implements OnInit {
         this.germplasmCodeNameSetting.addSpaceBetweenPrefixAndCode = false;
         this.germplasmCodeNameSetting.addSpaceBetweenSuffixAndCode = false;
         this.germplasmCodeNameSetting.numOfDigits = 1;
-    }
-
-    ngOnInit(): void {
     }
 
     close() {
@@ -46,6 +46,7 @@ export class GermplasmCodingDialogComponent implements OnInit {
             this.isProcessing = false;
         }).catch((response) => {
             this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.isProcessing = false;
         });
     }
 

@@ -18,16 +18,16 @@
 					<div class="col-sm-7">
 						<div class="form-inline">
 							<div class="form-group">
-								<input type="radio" id="code1" name="code1" [value]="'CODE1'" [(ngModel)]="nameType"/>
-								<label class="ml-1" for="code1">CODE1</label>
+								<input type="radio" id="code1" name="code1" [value]="GermplasmCodeNameType.CODE1" [(ngModel)]="nameType"/>
+								<label class="ml-1" for="code1">{{GermplasmCodeNameType.CODE1.toString()}}</label>
 							</div>
 							<div class="form-group">
-								<input class="ml-3" type="radio" id="code2" name="code2" [value]="'CODE2'" [(ngModel)]="nameType"/>
-								<label class="ml-1" for="code2">CODE2</label>
+								<input class="ml-3" type="radio" id="code2" name="code2" [value]="GermplasmCodeNameType.CODE2" [(ngModel)]="nameType"/>
+								<label class="ml-1" for="code2">{{GermplasmCodeNameType.CODE2.toString()}}</label>
 							</div>
 							<div class="form-group">
-								<input class="ml-3" type="radio" id="code3" name="code3" [value]="'CODE3'" [(ngModel)]="nameType"/>
-								<label class="ml-1" for="code3">CODE3</label>
+								<input class="ml-3" type="radio" id="code3" name="code3" [value]="GermplasmCodeNameType.CODE3" [(ngModel)]="nameType"/>
+								<label class="ml-1" for="code3">{{GermplasmCodeNameType.CODE3.toString()}}</label>
 							</div>
 						</div>
 					</div>
