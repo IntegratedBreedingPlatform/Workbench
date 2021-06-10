@@ -20,5 +20,4 @@ export class GermplasmCodingResultDialogComponent implements OnInit {
         this.modal.close();
     }
 
-
 }
