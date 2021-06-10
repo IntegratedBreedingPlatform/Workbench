@@ -3,7 +3,7 @@
 			[id]="id"
 			width="100%"
 			[placeholder]="'Select variable' + (multiple ? 's' : '')"
-			[allowClear]="true"
+			[allowClear]="allowClear"
 			[(ngModel)]="value"
 			[disabled]="disabled"
 			(ngModelChange)="onNgModelChange()"

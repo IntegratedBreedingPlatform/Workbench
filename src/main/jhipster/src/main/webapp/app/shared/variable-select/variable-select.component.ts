@@ -20,9 +20,11 @@ export class VariableSelectComponent implements OnInit {
     @Input() value: any;
     initialData: Select2OptionData[];
 
-    @Input() disabled: boolean;
-    @Input() multiple: boolean;
+    @Input() disabled = false;
+    @Input() multiple = false;
     @Input() variableTypeIds: number[];
+    @Input() allowClear = false;
+
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
 
     options = {
