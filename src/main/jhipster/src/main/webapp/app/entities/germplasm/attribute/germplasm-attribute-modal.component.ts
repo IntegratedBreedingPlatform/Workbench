@@ -9,6 +9,9 @@ import { DateHelperService } from '../../../shared/service/date.helper.service';
 import { GermplasmAttributeContext } from './germplasm-attribute.context';
 import { Attribute } from '../../../shared/attributes/model/attribute.model';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
+import { VariableDetails } from '../../../shared/ontology/model/variable-details';
+import { VariableService } from '../../../shared/ontology/service/variable.service';
+import { DataType } from '../../../shared/ontology/data-type';
 
 @Component({
     selector: 'jhi-germplasm-attribute-modal',
@@ -23,31 +26,35 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     locations: LocationModel[];
     isLoading: boolean;
     VariableType = VariableTypeEnum;
+    DataType = DataType;
 
     attributeId: number;
     attributeTypeId: number;
     value: string;
+    dateValue: NgbDate;
     locationId: number;
     date: NgbDate;
-    variableId: number;
+    variable: VariableDetails;
 
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
                 private germplasmAttributeContext: GermplasmAttributeContext,
                 private germplasmService: GermplasmService,
+                private variableService: VariableService,
                 private calendar: NgbCalendar,
-                private dateHelperService: DateHelperService,
+                public dateHelperService: DateHelperService,
                 private alertService: JhiAlertService) {
     }
 
-    ngOnInit(): void {
+    async ngOnInit() {
         this.date = this.calendar.getToday();
         if (this.germplasmAttributeContext.attribute) {
             this.attributeId = this.germplasmAttributeContext.attribute.id;
             this.value = this.germplasmAttributeContext.attribute.value;
+            this.dateValue = this.dateHelperService.convertStringToNgbDate(this.value);
             this.locationId = Number(this.germplasmAttributeContext.attribute.locationId);
             this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmAttributeContext.attribute.date);
-            this.variableId = this.germplasmAttributeContext.attribute.variableId;
+            this.variable = await this.variableService.getVariableById(this.germplasmAttributeContext.attribute.variableId).toPromise();
         }
         this.attributeTypeId = this.germplasmAttributeContext.attributeType;
     }
@@ -62,7 +69,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             // if attribute id is available, we have to update the attribute
             this.isLoading = true;
             this.germplasmService.updateGermplasmAttribute(this.gid, this.attributeId, {
-                variableId: this.variableId,
+                variableId: Number(this.variable.id),
                 value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
@@ -78,7 +85,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             // If attribute id is not available, we have to create a new attribute
             this.isLoading = true;
             this.germplasmService.createGermplasmAttribute(this.gid, {
-                variableId: this.variableId,
+                variableId: Number(this.variable.id),
                 value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
@@ -100,13 +107,18 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.variableId
+        return f.form.valid && !this.isLoading && this.variable
             && this.value && this.locationId && this.date;
     }
 
     ngOnDestroy(): void {
         this.germplasmAttributeContext.attributeType = null;
         this.germplasmAttributeContext.attribute = null;
+    }
+
+    selectVariable(variable: VariableDetails) {
+        this.value = null;
+        this.variable = variable;
     }
 }
 
