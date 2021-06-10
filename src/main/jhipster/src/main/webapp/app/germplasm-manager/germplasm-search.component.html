@@ -36,8 +36,8 @@
 					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GERMPLASM_LABEL_PRINTING_PERMISSIONS" jhiTranslate="search-germplasm.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()">
 					</button>
-					<button class="dropdown-item" type="submit" jhiTranslate="search-germplasm.actions.code-germplasm"
-							(click)="openGermplasmCoding()" >
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CODE_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.code-germplasm"
+							(click)="openGermplasmCoding()">
 					</button>
 				</div>
 			</div>

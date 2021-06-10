@@ -20,7 +20,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { DELETE_GERMPLASM_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS } from '../shared/auth/permissions';
+import {
+    CODE_GERMPLASM_PERMISSIONS,
+    DELETE_GERMPLASM_PERMISSIONS,
+    GERMPLASM_LABEL_PRINTING_PERMISSIONS,
+    IMPORT_GERMPLASM_PERMISSIONS,
+    IMPORT_GERMPLASM_UPDATES_PERMISSIONS
+} from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListEntry } from '../shared/list-builder/model/list.model';
@@ -44,6 +50,7 @@ export class GermplasmSearchComponent implements OnInit {
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
     GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
     DELETE_GERMPLASM_PERMISSIONS = DELETE_GERMPLASM_PERMISSIONS;
+    CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
