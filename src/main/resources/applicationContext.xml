@@ -514,5 +514,10 @@
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 
+	<bean id="jobService"
+			  class="org.generationcp.middleware.service.impl.job.JobServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>
