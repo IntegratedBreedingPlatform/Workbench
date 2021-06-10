@@ -19,6 +19,14 @@ export class VariableService {
         return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables`, { params });
     }
 
+    filterVariables(variableIds) {
+        const params = {
+            programUUID: this.paramContext.programUUID,
+            variableIds
+        };
+        return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables/filter`, { params });
+    }
+
     getVariableById(variableId: number): Observable<VariableDetails> {
         const params = { programUUID: this.paramContext.programUUID };
         return this.http.get<VariableDetails>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables/${variableId}`, { params });
