@@ -19,8 +19,8 @@
 				<div class="col-sm-9">
 					<jhi-variable-select name="dropdownvariable" id="dropdownvariable"
 										 (onVariableSelectedChange)="selectVariable($event)"
-										 *ngIf="variable"
-										 [value]="variable.id"
+										 *ngIf="variable || !attributeId"
+										 [value]="variable?.id"
 										 [variableTypeIds]="[attributeTypeId]"
 										 [disabled]="attributeId">
 					</jhi-variable-select>
