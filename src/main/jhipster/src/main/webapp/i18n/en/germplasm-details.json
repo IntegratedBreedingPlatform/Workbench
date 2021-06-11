@@ -2,7 +2,7 @@
     "germplasm-details": {
         "header": "Germplasm Details: ",
         "germplasm": "Germplasm",
-        "germplasmDescriptors": "Germplasm Descriptors",
+        "descriptors": "Descriptors",
         "pedigree": "Pedigree",
         "observations": "Observations",
         "inventory": "Inventory",
