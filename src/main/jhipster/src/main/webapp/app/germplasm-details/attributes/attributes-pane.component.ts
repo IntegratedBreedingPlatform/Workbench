@@ -71,6 +71,7 @@ export class AttributesPaneComponent implements OnInit {
     }
 
     editGermplasmAttribute(attributeType: number, germplasmAttribute: GermplasmAttribute): void {
+        this.germplasmAttributesContext.variable = this.variableByAttributeId[germplasmAttribute.id];
         this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {

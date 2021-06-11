@@ -46,7 +46,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
                 private alertService: JhiAlertService) {
     }
 
-    async ngOnInit() {
+    ngOnInit() {
         this.date = this.calendar.getToday();
         if (this.germplasmAttributeContext.attribute) {
             this.attributeId = this.germplasmAttributeContext.attribute.id;
@@ -54,7 +54,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             this.dateValue = this.dateHelperService.convertStringToNgbDate(this.value);
             this.locationId = Number(this.germplasmAttributeContext.attribute.locationId);
             this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmAttributeContext.attribute.date);
-            this.variable = await this.variableService.getVariableById(this.germplasmAttributeContext.attribute.variableId).toPromise();
+            this.variable = this.germplasmAttributeContext.variable;
         }
         this.attributeTypeId = this.germplasmAttributeContext.attributeType;
     }
@@ -112,6 +112,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.germplasmAttributeContext.variable = null;
         this.germplasmAttributeContext.attributeType = null;
         this.germplasmAttributeContext.attribute = null;
     }
