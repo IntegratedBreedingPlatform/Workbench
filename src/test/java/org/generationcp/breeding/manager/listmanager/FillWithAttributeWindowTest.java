@@ -79,7 +79,7 @@ public class FillWithAttributeWindowTest {
 	
 	@Test
 	public void testPopulateAttributeTypesWithAddedColumnAlready() {
-		Mockito.doReturn(true).when(this.addColumnSource).columnExists(ATTRIBUTE_VARIABLE_NAME3);
+		Mockito.doReturn(true).when(this.addColumnSource).columnExists(ATTRIBUTE_VARIABLE_NAME3.toUpperCase());
 		this.fillWithAttributeWindow.instantiateComponents();
 		this.fillWithAttributeWindow.initializeValues();
 
