@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { GermplasmCodeNameSettingModel } from '../../shared/germplasm/model/germplasm-name-setting.model';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
@@ -55,8 +55,14 @@ export class GermplasmCodingDialogComponent {
     }
 
     getNextNameSequence() {
-        this.germplasmService.getNextGermplasmCodeNameInSequence(this.germplasmCodeNameSetting).subscribe((nextCodeNameSequence) => {
-            this.nextCodeNameSequence = nextCodeNameSequence;
+        this.germplasmService.getNextGermplasmCodeNameInSequence(this.germplasmCodeNameSetting).toPromise().then((response) => {
+            if (response.body) {
+                this.nextCodeNameSequence = response.body;
+            }
+        }).catch((response) => {
+            if (response.error) {
+                this.alertService.error('error.custom', { param: JSON.parse(response.error).errors[0].message });
+            }
         });
     }
 

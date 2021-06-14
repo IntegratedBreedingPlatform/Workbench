@@ -146,10 +146,10 @@ export class GermplasmService {
         return this.http.post<GermplasmCodeNameBatchResultModel[]>(url, germplasmCodeNameBatchRequestModel);
     }
 
-    getNextGermplasmCodeNameInSequence(germplasmCodeNameSettingModel: GermplasmCodeNameSettingModel): Observable<string> {
+    getNextGermplasmCodeNameInSequence(germplasmCodeNameSettingModel: GermplasmCodeNameSettingModel) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/coding/sequence` +
             '?programUUID=' + this.context.programUUID;
-        return this.http.post<string>(url, germplasmCodeNameSettingModel, {responseType: 'text' as 'json'});
+        return this.http.post(url, germplasmCodeNameSettingModel, { observe: 'response', responseType: 'text'});
     }
 
     createGermplasmName(gid: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<number> {
