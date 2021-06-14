@@ -76,7 +76,7 @@ export class GermplasmService {
     }
 
     getGermplasmAttributesByGidAndType(gid: number, variableTypeId: number): Observable<GermplasmAttribute[]> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?variableTypeId=${variableTypeId}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?variableTypeId=${variableTypeId}&programUUID=${this.context.programUUID}`;
         return this.http.get<GermplasmAttribute[]>(url);
     }
 
