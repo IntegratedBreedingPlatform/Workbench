@@ -1,8 +1,8 @@
 export class GermplasmGroup {
     constructor(
-        public founder?: GermplasmGroupMember,
+        public founderGid?: number,
         public groupId?: number,
-        public isGenerative?: boolean,
+        public generative?: boolean,
         public groupMembers?: GermplasmGroupMember[]
     ) {
     }

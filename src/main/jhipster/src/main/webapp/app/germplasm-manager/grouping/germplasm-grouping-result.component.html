@@ -21,16 +21,16 @@
 				</thead>
 				<tbody>
 				<tr *ngFor="let groupResult of results">
-					<td>{{groupResult.founder.gid}}</td>
+					<td>{{groupResult.founderGid}}</td>
 					<td>{{groupResult.groupId}}</td>
 					<td>{{groupResult.groupMembers.length}}</td>
 					<td>
 						{{displayMembers(groupResult.groupMembers)}}
 					</td>
-					<td *ngIf="groupResult.isGenerative">
+					<td *ngIf="groupResult.generative">
 						<span jhiTranslate="germplasm-grouping.grouping-result-generative"></span>
 					</td>
-					<td *ngIf="!groupResult.isGenerative">
+					<td *ngIf="!groupResult.generative">
 					</td>
 				</tr>
 				</tbody>
