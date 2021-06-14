@@ -30,6 +30,12 @@
             "date": "Date",
             "preferred": "Preferred"
         },
+        "audit-changes": {
+            "title": "{{entity}} {{entityValue}} - View history of changes",
+            "event-type": "Event Type",
+            "event-date": "Event Date",
+            "user": "User"
+        },
         "germplasm-origin": {
             "title": "GERMPLASM ORIGIN",
             "study": "Study",

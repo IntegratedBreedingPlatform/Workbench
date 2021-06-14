@@ -11,7 +11,7 @@ import { GermplasmNameContext } from '../../entities/germplasm/name/germplasm-na
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION, MODIFY_NAMES_PERMISSIONS } from '../../shared/auth/permissions';
 import { UrlService } from '../../shared/service/url.service';
 import { ParamContext } from '../../shared/service/param.context';
 
@@ -22,7 +22,9 @@ import { ParamContext } from '../../shared/service/param.context';
 export class BasicDetailsPaneComponent implements OnInit {
 
     EDIT_BASIC_DETAILS_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_BASIC_DETAILS'];
-    MODIFY_NAMES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_NAMES'];
+    NAMES_ACTIONS_PERMISSIONS = [...MODIFY_NAMES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION]
+    MODIFY_NAMES_PERMISSIONS = MODIFY_NAMES_PERMISSIONS;
+    GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
 
     eventSubscriber: Subscription;
     germplasm: GermplasmDto;
@@ -99,4 +101,13 @@ export class BasicDetailsPaneComponent implements OnInit {
     isStudyClickable(studyProgramUUID: string) {
         return this.paramContext.programUUID === studyProgramUUID;
     }
+
+    getGermplasmNameChanges(germplasmName: GermplasmName): void {
+        this.germplasmNameContext.germplasmName = germplasmName;
+        // germplasm/:gid/name/:nameId/changes-dialog
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/name/${germplasmName.id}/changes-dialog`}, }], {
+            queryParamsHandling: 'merge'
+        });
+    }
+
 }

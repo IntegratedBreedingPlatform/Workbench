@@ -1,0 +1,47 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">{{title}}</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="dismiss()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered table-curved table-fixed">
+				<thead>
+				<tr>
+					<th scope="col" jhiTranslate="basic-details.names.name-type" style="width: 13%">Name type</th>
+					<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
+					<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
+					<th scope="col" jhiTranslate="basic-details.names.date">Date</th>
+					<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
+					<th scope="col" jhiTranslate="basic-details.audit-changes.event-type">Event Type</th>
+					<th scope="col" jhiTranslate="basic-details.audit-changes.event-date">Event Date</th>
+					<th scope="col" jhiTranslate="basic-details.audit-changes.user">User</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let change of germplasmNameChanges">
+					<td>{{change.nameType}}</td>
+					<td class="word-wrap">{{change.value}}</td>
+					<td>{{change.locationName}}</td>
+					<td>{{change.creationDate}}</td>
+					<td>{{change.preferred ? 'Yes' : 'No'}}</td>
+					<td>{{change.revisionType}}</td>
+					<td>{{getEventDate(change)}}</td>
+					<td>{{getUser(change)}}</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary" data-dismiss="modal" (click)="dismiss()">
+			<span jhiTranslate="ok"></span>
+		</button>
+	</div>
+</div>
