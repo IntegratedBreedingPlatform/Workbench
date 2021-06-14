@@ -12,10 +12,8 @@
 package org.generationcp.ibpworkbench;
 
 import com.vaadin.terminal.Terminal;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
-import org.apache.commons.lang3.StringUtils;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.hibernate.util.HttpRequestAwareUtil;
@@ -24,9 +22,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.HeadToHeadCrossStudyMain;
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
-import org.generationcp.ibpworkbench.germplasm.GermplasmDetailsComponentTree;
-import org.generationcp.ibpworkbench.germplasm.GermplasmPedigreeDetailsComponent;
-import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.study.StudyAccordionMenu;
 import org.generationcp.ibpworkbench.study.StudyBrowserMain;
 import org.generationcp.ibpworkbench.study.StudyDetailComponent;
@@ -56,18 +51,14 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	public static final String STUDY_WINDOW_NAME = "study";
 	public static final String STUDY_DETAILS_PREFIX = "study-";
 	public static final String STUDY_BROWSER_PREFIX = "studybrowser-";
-	public static final String GERMPLASM_DETAILS_PREFIX = "germplasm-";
 	public static final String HEAD_TO_HEAD_COMPARISON_WINDOW_NAME = "Head_to_head_comparison";
 	public static final String QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME = "Query_For_Adapted_Germplasm";
 	public static final String TRAIT_DONORS_QUERY_NAME = "Trait_Donors_Query";
 	public static final String AWHERE_WINDOW_NAME = "awheretool";
 
 	private static final String HTML_BREAK = "</br>";
-	public static final String PEDIGREE_DETAILS_NAME = "pedigree-details";
 
 	private Window window;
-
-	private Integer gid;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -126,8 +117,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					this.addWindow(studyBrowserWindow);
 				}
 
-				BrowseStudyTreeComponent studyTreeComponent = null;
-
 				try {
 					studyId = Integer.parseInt(studyIdPart);
 				} catch (final NumberFormatException e) {
@@ -137,7 +126,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					return studyBrowserWindow;
 				}
 
-				studyTreeComponent = studyBrowserMain.getBrowseTreeComponent();
+				BrowseStudyTreeComponent studyTreeComponent = studyBrowserMain.getBrowseTreeComponent();
 				studyTreeComponent.openStudy(studyId);
 
 				return studyBrowserWindow;
@@ -165,32 +154,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 					this.addWindow(emptyStudyDetailsWindow);
 					return emptyStudyDetailsWindow;
 				}
-			} else if (name.startsWith(GermplasmStudyBrowserApplication.GERMPLASM_DETAILS_PREFIX)) {
-				final String gidPart = name.substring(name.indexOf("-") + 1);
-				try {
-					final int gid = Integer.parseInt(gidPart);
-					final Window germplasmDetailsWindow =
-						new Window(this.messageSource.getMessage(Message.GERMPLASM_DETAILS_TEXT) + " " + gid);
-					germplasmDetailsWindow.setSizeUndefined();
-					germplasmDetailsWindow.setSizeFull();
-
-					final GermplasmQueries queries = new GermplasmQueries();
-					germplasmDetailsWindow.addComponent(new GermplasmDetailsComponentTree(gid, queries));
-
-					this.addWindow(germplasmDetailsWindow);
-					return germplasmDetailsWindow;
-				} catch (final Exception ex) {
-					GermplasmStudyBrowserApplication.LOG.error(
-						this.messageSource.getMessage(Message.ERROR_IN_CREATING_GERMPLASM_DETAILS_WINDOW) + " " + name + ex.toString()
-							+ "\n" + ex.getStackTrace(), ex);
-					final Window emptyGermplasmDetailsWindow = new Window(this.messageSource.getMessage(Message.GERMPLASM_DETAILS_TEXT));
-					emptyGermplasmDetailsWindow.setSizeUndefined();
-					emptyGermplasmDetailsWindow.addComponent(new Label(this.messageSource.getMessage(Message.NULL_GERMPLASM_DETAILS) + " "
-						+ gidPart));
-					this.addWindow(emptyGermplasmDetailsWindow);
-					return emptyGermplasmDetailsWindow;
-				}
-			} else if (GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME.equals(name)) {
+			}else if (GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME.equals(name)) {
 				final Window headToHeadQueryToolWindow = new Window("Cross Study: Head-to-Head Comparison");
 				// Browser
 				headToHeadQueryToolWindow.setName(GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME);
@@ -222,20 +186,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 				awhereWindow.setHeight("100%");
 				this.addWindow(awhereWindow);
 				return awhereWindow;
-			} else if (PEDIGREE_DETAILS_NAME.equals(name)) {
-				final CssLayout cssLayout = new CssLayout();
-				cssLayout.setMargin(false);
-				cssLayout.setSizeFull();
-				cssLayout.setStyleName("pedigree-details-page");
-				cssLayout.addComponent(new GermplasmPedigreeDetailsComponent(this.gid, new GermplasmQueries()));
-
-				final Window pedigreeDetailsWindow = new Window();
-				pedigreeDetailsWindow.setSizeUndefined();
-				pedigreeDetailsWindow.setSizeFull();
-				pedigreeDetailsWindow.setContent(cssLayout);
-
-				this.addWindow(pedigreeDetailsWindow);
-				return pedigreeDetailsWindow;
 			}
 		}
 		return super.getWindow(name);
@@ -280,9 +230,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	protected void doOnRequestStart(final HttpServletRequest request, final HttpServletResponse response) {
 		GermplasmStudyBrowserApplication.LOG.trace("Request started " + request.getRequestURI() + "?" + request.getQueryString());
 		synchronized (this) {
-			if (StringUtils.isNotEmpty(request.getParameter("gid"))) {
-				this.gid = Integer.valueOf(request.getParameter("gid"));
-			}
 			HttpRequestAwareUtil.onRequestStart(this.applicationContext, request, response);
 		}
 		super.doOnRequestStart(request, response);

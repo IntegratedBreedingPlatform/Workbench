@@ -15,11 +15,10 @@ package org.generationcp.ibpworkbench.germplasm.containers;
 import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
+import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultModel;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -52,7 +51,8 @@ public class GermplasmSearchQuery implements Query {
 	private final String searchChoice;
 	private final String searchValue;
 	private int size;
-
+	public static final String SEARCH_OPTION_GID = "GID";
+	public static final String SEARCH_OPTION_NAME = "Names";
 	/**
 	 * These parameters are passed by the QueryFactory which instantiates objects of this class.
 	 * 
@@ -88,14 +88,14 @@ public class GermplasmSearchQuery implements Query {
 	 */
 	@Override
 	public List<Item> loadItems(int start, int numOfRows) {
-		List<Item> items = new ArrayList<Item>();
+		List<Item> items = new ArrayList<>();
 
-		List<GermplasmSearchResultModel> germplasms = new ArrayList<GermplasmSearchResultModel>();
+		List<GermplasmSearchResultModel> germplasms = new ArrayList<>();
 
 		try {
 			List<Germplasm> germplasmList;
 
-			if (this.searchChoice.equals(GermplasmQueries.SEARCH_OPTION_NAME)) {
+			if (this.searchChoice.equals(SEARCH_OPTION_NAME)) {
 				if (this.searchValue.contains("%")) {
 					germplasmList = this.germplasmDataManager.getGermplasmByName(this.searchValue, start, numOfRows, Operation.LIKE);
 				} else {
@@ -169,7 +169,7 @@ public class GermplasmSearchQuery implements Query {
 	private String getGermplasmNames(int gid) {
 
 		try {
-			List<Name> names = this.germplasmDataManager.getNamesByGID(new Integer(gid), null, null);
+			List<Name> names = this.germplasmDataManager.getNamesByGID(gid, null, null);
 			StringBuilder germplasmNames = new StringBuilder("");
 			int i = 0;
 			for (Name n : names) {
@@ -199,7 +199,7 @@ public class GermplasmSearchQuery implements Query {
 	public int size() {
 		try {
 			if (this.size == -1) {
-				if (this.searchChoice.equals(GermplasmQueries.SEARCH_OPTION_NAME)) {
+				if (this.searchChoice.equals(SEARCH_OPTION_NAME)) {
 					if (this.searchValue.contains("%")) {
 						this.size = (int) this.germplasmDataManager.countGermplasmByName(this.searchValue, Operation.LIKE);
 					} else {
