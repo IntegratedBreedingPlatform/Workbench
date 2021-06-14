@@ -10,8 +10,9 @@
 
 package org.generationcp.breeding.manager.listmanager;
 
-import java.util.List;
-
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.HorizontalLayout;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.listmanager.api.AddColumnSource;
@@ -19,15 +20,14 @@ import org.generationcp.breeding.manager.listmanager.listeners.FillWithAttribute
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
-import org.generationcp.middleware.pojos.UserDefinedField;
+import org.generationcp.middleware.api.germplasm.search.GermplasmSearchRequest;
+import org.generationcp.middleware.api.germplasm.search.GermplasmSearchService;
+import org.generationcp.middleware.domain.ontology.Variable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
+import java.util.List;
 
 /**
  * This class opens a pop-up window for selecting attribute types available for
@@ -51,11 +51,11 @@ public class FillWithAttributeWindow extends BaseSubWindow
 	private HorizontalLayout attributeLayout;
 	private ComboBox attributeBox;
 	private Button okButton;
-	private List<UserDefinedField> attributeTypeList;
+	private List<Variable> attributeVariables;
 	private final boolean isFromGermplasmSearchWindow;
 
 	@Autowired
-	private GermplasmDataManager germplasmDataManager;
+	private GermplasmSearchService germplasmSearchService;
 
 	public FillWithAttributeWindow(final AddColumnSource addColumnSource, final String targetPropertyId,
 			final boolean isFromGermplasmSearchWindow) {
@@ -83,13 +83,14 @@ public class FillWithAttributeWindow extends BaseSubWindow
 
 	@Override
 	public void initializeValues() {
-		final List<Integer> gids = this.addColumnSource.getAllGids();
-		this.attributeTypeList = this.germplasmDataManager.getAttributeTypesByGIDList(gids);
+		final GermplasmSearchRequest germplasmSearchRequest = new GermplasmSearchRequest();
+		germplasmSearchRequest.setGids(this.addColumnSource.getAllGids());
+		this.attributeVariables = this.germplasmSearchService.getGermplasmAttributeVariables(germplasmSearchRequest, null);
 
-		for (final UserDefinedField attributeType : this.attributeTypeList) {
-			if(!this.addColumnSource.columnExists(attributeType.getFcode())){
-				this.attributeBox.addItem(attributeType.getFldno());
-				this.attributeBox.setItemCaption(attributeType.getFldno(), attributeType.getFcode());
+		for (final Variable variable : this.attributeVariables) {
+			if (!this.addColumnSource.columnExists(variable.getName().toUpperCase())) {
+				this.attributeBox.addItem(variable.getId());
+				this.attributeBox.setItemCaption(variable.getId(), variable.getName());
 			}
 		}
 	}
@@ -135,10 +136,6 @@ public class FillWithAttributeWindow extends BaseSubWindow
 
 	public AddColumnSource getAddColumnSource() {
 		return this.addColumnSource;
-	}
-
-	public void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
-		this.germplasmDataManager = germplasmDataManager;
 	}
 
 	public ComboBox getAttributeBox() {
