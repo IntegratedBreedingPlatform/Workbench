@@ -37,10 +37,10 @@
 							(click)="exportDataAndLabels()">
 					</button>
 					<!-- TODO: consolidate into one main Grouping menu item -->
-					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.group"
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.group"
 							(click)="groupGermplasm()" >
 					</button>
-					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.ungroup"
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="UNGROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.ungroup"
 							(click)="ungroupGermplasm()" >
 					</button>
 				</div>
