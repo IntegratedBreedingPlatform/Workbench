@@ -17,7 +17,6 @@ describe('isValidValue', () => {
         expect(isValidValue(9, <VariableDetails>({ expectedRange: { max: 9, min: 5 } }))).toBe(true);
         expect(isValidValue(4, <VariableDetails>({ expectedRange: { max: 9, min: 5 } }))).toBe(false);
 
-
         // scale
         expect(isValidValue(10, <VariableDetails>({ scale: { validValues: { max: 9 } } }))).toBe(false);
         expect(isValidValue(8, <VariableDetails>({ scale: { validValues: { max: 9 } } }))).toBe(true);
