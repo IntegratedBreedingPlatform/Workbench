@@ -2,7 +2,7 @@ import { ValidValues } from '../model/valid-values';
 import { VariableDetails } from '../model/variable-details';
 
 export function isValidValue(value, variable: VariableDetails) {
-    if (!variable) {
+    if (!variable || !value) {
         return true;
     }
     let isValid = true;
