@@ -18,6 +18,10 @@ import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
+import { isValidValue } from '../../shared/ontology/util/is-valid-value';
+import { DataType } from '../../shared/ontology/data-type';
+import { toUpper } from '../../shared/util/to-upper';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -31,9 +35,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     detailsForm: ElementRef;
 
     hasEmptyPreferredName: boolean;
-    // Codes that are both attributes
+    // Codes that are both attributes and names
     unmapped = [];
     draggedCode: string;
+    attributeStatusById: { [key: number]: boolean; } = {};
 
     breedingMethods: Promise<BreedingMethod[]>;
     favoriteBreedingMethods: Promise<BreedingMethod[]>;
@@ -78,8 +83,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
         for (const attribute of this.context.attributes) {
             for (const nameType of this.context.nameTypes) {
-                if (attribute.code === nameType.code) {
-                    this.unmapped.push(attribute.code);
+                const attributeName = attribute.alias || attribute.name;
+                if (attributeName === nameType.code) {
+                    this.unmapped.push(attributeName);
                 }
             }
         }
@@ -87,8 +93,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
             return this.context.nameColumnsWithData[name.code] && this.unmapped.indexOf(name.code) === -1;
         });
         this.context.attributesCopy = this.context.attributes.filter((attribute) => {
-            return this.unmapped.indexOf(attribute.code) === -1;
+            return this.unmapped.indexOf(attribute.alias || attribute.name) === -1;
         });
+        this.computeAttributeStatus();
+
         if (this.context.data.some((row) => row[HEADERS['PROGENITOR 1']] || row[HEADERS['PROGENITOR 2']])) {
             if (this.context.data.some((row) =>
                 row[HEADERS['PROGENITOR 1']] && !isNumeric(row[HEADERS['PROGENITOR 1']]) ||
@@ -250,9 +258,42 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         if (type === 'names') {
             this.context.nametypesCopy.push(this.context.nameTypes.find((n) => n.code === this.draggedCode));
         } else {
-            this.context.attributesCopy.push(this.context.attributes.find((a) => a.code === this.draggedCode));
+            this.context.attributesCopy.push(this.context.attributes.find((a) => a.alias === this.draggedCode || a.name === this.draggedCode));
+            this.computeAttributeStatus();
         }
         this.unmapped = this.unmapped.filter((u) => u !== this.draggedCode);
     }
 
+    computeAttributeStatus() {
+        this.context.attributesCopy.forEach((attribute) => {
+            const hasSomeInvalid = this.context.data.some((row) => {
+                const value = row[toUpper(attribute.alias)] || row[toUpper(attribute.name)];
+                return !isValidValue(value, attribute);
+            });
+            this.attributeStatusById[attribute.id] = hasSomeInvalid;
+        })
+    }
+
+    getStatus(attribute: VariableDetails) {
+        const hasSomeInvalid = this.attributeStatusById[attribute.id];
+        if (!hasSomeInvalid) {
+            return '<span class="fa fa-lg fa-check-circle text-success"></span>'
+        } else if (attribute.scale.dataType.name === DataType.CATEGORICAL) {
+            const scale = attribute.scale.name;
+            const dataType = attribute.scale.dataType.name;
+            const title = this.translateService.instant('germplasm.import.basicDetails.attributes.tooltip.invalid', { scale, dataType });
+            return '<span class="fa fa-lg fa-times-circle text-danger" title="' + title + '"></span>'
+        } else if (attribute.scale.dataType.name === DataType.NUMERIC) {
+            const min = attribute.scale.validValues && (
+                attribute.scale.validValues.min || attribute.scale.validValues.min === 0)
+                ? attribute.scale.validValues.min
+                : attribute.expectedRange.min;
+            const max = attribute.scale.validValues && (
+                attribute.scale.validValues.max || attribute.scale.validValues.max === 0)
+                ? attribute.scale.validValues.max
+                : attribute.expectedRange.max;
+            const title = this.translateService.instant('germplasm.import.basicDetails.attributes.tooltip.outOfExpected', { min, max });
+            return '<span class="fa fa-lg fa-warning text-warning" title="' + title + '"></span>'
+        }
+    }
 }

@@ -14,6 +14,7 @@ import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { GermplasmImportValidationPayload } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { listPreview } from '../../shared/util/list-preview';
 import { GermplasmImportContext } from './germplasm-import.context';
+import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
     selector: 'jhi-germplasm-import',
@@ -40,6 +41,7 @@ export class GermplasmImportComponent implements OnInit {
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
+        private variableService: VariableService,
         public context: GermplasmImportContext
     ) {
     }
@@ -123,8 +125,7 @@ export class GermplasmImportComponent implements OnInit {
             return false;
         }
         this.context.nameTypes = await this.germplasmService.getGermplasmNameTypes(Object.keys(this.codes)).toPromise();
-        // FIXME into IBP-4659 (using Resource /variables/filter)
-        this.context.attributes = await this.germplasmService.getGermplasmAttributes(Object.keys(this.codes)).toPromise();
+        this.context.attributes = await this.variableService.filterVariables({ variableNames: Object.keys(this.codes)}).toPromise();
         if (!this.context.nameTypes || !this.context.nameTypes.length) {
             this.alertService.error('germplasm.import.file.validation.names.no.column');
             return false;
