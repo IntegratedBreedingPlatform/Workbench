@@ -61,8 +61,8 @@ export class AttributesPaneComponent implements OnInit {
         const attributesByVariableId: {[key: number]: GermplasmAttribute} =
             [...this.passportAttributes, ...this.attributes]
             .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
-        this.variableByAttributeId = await this.variableService.filterVariables(Object.keys(attributesByVariableId)).toPromise()
-            .then((variables) => {
+        this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId) })
+            .toPromise().then((variables) => {
                 return variables.reduce((prev: any, variable) => {
                     prev[attributesByVariableId[Number(variable.id)].id] = variable;
                     return prev;
