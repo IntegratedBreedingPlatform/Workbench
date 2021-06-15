@@ -1,7 +1,7 @@
 import { isValidValue } from '../../../../../../../main/webapp/app/shared/ontology/util/is-valid-value';
 import { ValidValues } from '../../../../../../../main/webapp/app/shared/ontology/model/valid-values';
 import { Category } from '../../../../../../../main/webapp/app/shared/ontology/model/category';
-import { VariableDetails } from 'src/main/webapp/app/shared/ontology/model/variable-details';
+import { VariableDetails } from '../../../../../../../main/webapp/app/shared/ontology/model/variable-details';
 
 describe('isValidValue', () => {
     it('should validate', () => {
