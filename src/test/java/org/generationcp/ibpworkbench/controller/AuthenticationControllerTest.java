@@ -1,18 +1,5 @@
 package org.generationcp.ibpworkbench.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.mail.MessagingException;
-import javax.servlet.ServletContext;
-
 import org.apache.commons.lang.math.RandomUtils;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
@@ -22,17 +9,15 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
-import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -42,6 +27,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+
+import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationControllerTest {
@@ -79,9 +76,6 @@ public class AuthenticationControllerTest {
 
 	@InjectMocks
 	private AuthenticationController controller;
-
-	@Mock
-	private UserService userService;
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
@@ -259,7 +253,6 @@ public class AuthenticationControllerTest {
 		UserAccountModel userAccountModel = new UserAccountModel();
 		userAccountModel.setUsername("naymesh");
 		userAccountModel.setPassword("b");
-		Mockito.when(this.userService.getUserInfoByUsername(ArgumentMatchers.anyString())).thenReturn(Mockito.mock(UserInfo.class));
 		ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(userAccountModel, this.result);
 
 		Mockito.verify(this.workbenchUserService, Mockito.times(1)).updateUserPassword(userAccountModel.getUsername(), userAccountModel.getPassword());
