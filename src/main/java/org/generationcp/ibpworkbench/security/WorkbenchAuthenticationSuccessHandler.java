@@ -58,15 +58,7 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		// The projectId and token will be populated later when a program is opened/loaded.
 		ContextUtil.setContextInfo(request, user.getUserid(), null, null, shouldShowReleaseNote);
 
-		UserInfo userInfo = this.userService.getUserInfo(user.getUserid());
-		if (userInfo == null) {
-			userInfo = new UserInfo();
-			userInfo.setUserId(user.getUserid());
-			userInfo.setLoginCount(0);
-			this.userService.insertOrUpdateUserInfo(userInfo);
-		}
-		userInfo.setLoginCount(userInfo.getLoginCount() + 1);
-		this.userService.insertOrUpdateUserInfo(userInfo);
+		this.userService.incrementUserLogInCount(user.getUserid());
 
 		this.clearAuthenticationAttributes(request);
 
