@@ -11,6 +11,7 @@ import { GermplasmNameContext } from '../../entities/germplasm/name/germplasm-na
 import { finalize } from 'rxjs/operators';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
+import * as moment from 'moment';
 
 @Component({
     selector: 'jhi-germplasm-name-changes-modal',
@@ -60,7 +61,7 @@ export class GermplasmNameChangesModalComponent implements OnInit {
     }
 
     transition() {
-        this.router.navigate(['./'], {
+        this.router.navigate(['germplasm/:gid/name/:nameId/changes-dialog'], {
             queryParams:
                 {
                     page: this.page,
@@ -77,17 +78,12 @@ export class GermplasmNameChangesModalComponent implements OnInit {
     }
 
     getEventDate(germplasmNameChange: GermplasmNameChange): string {
-        if (germplasmNameChange.revisionType ===  RevisionType.CREATION) {
-            return germplasmNameChange.createdDate;
-        }
-        return germplasmNameChange.modifiedDate;
+        const date: number = (germplasmNameChange.revisionType ===  RevisionType.CREATION) ? germplasmNameChange.createdDate : germplasmNameChange.modifiedDate;
+        return moment(date).format('YYYY-MM-DD HH:mm:ss');
     }
 
     getUser(germplasmNameChange: GermplasmNameChange): string {
-        if (germplasmNameChange.revisionType ===  RevisionType.CREATION) {
-            return germplasmNameChange.createdBy;
-        }
-        return germplasmNameChange.modifiedBy;
+        return (germplasmNameChange.revisionType ===  RevisionType.CREATION) ? germplasmNameChange.createdBy : germplasmNameChange.modifiedBy;
     }
 
     private loadAll() {

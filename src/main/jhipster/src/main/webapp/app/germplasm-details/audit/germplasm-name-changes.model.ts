@@ -6,10 +6,10 @@ export class GermplasmNameChange {
         public creationDate: string,
         public locationName: string,
         public createdBy: string,
-        public createdDate: string, // TODO: check should be date?
+        public createdDate: number,
         public modifiedBy: string,
-        public modifiedDate: string, // TODO: check should be date?
-        public preferred: boolean, // TODO: check should be date?
+        public modifiedDate: number,
+        public preferred: boolean,
         public nameTypeChanged: boolean,
         public locationChanged: boolean,
         public creationDateChanged: boolean,
