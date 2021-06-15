@@ -8,7 +8,6 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.breeding.manager.containers.GermplasmQuery;
@@ -114,12 +113,9 @@ public class DropHandlerMethods {
 
 	@SuppressWarnings("unchecked")
 	protected Boolean hasSelectedItems(final Table table) {
-		final List<Integer> selectedItemIds = new ArrayList<Integer>();
+		final List<Integer> selectedItemIds = new ArrayList<>();
 		selectedItemIds.addAll((Collection<? extends Integer>) table.getValue());
-		if (!selectedItemIds.isEmpty()) {
-			return true;
-		}
-		return false;
+		return !selectedItemIds.isEmpty();
 	}
 
 	protected void addSelectedGermplasmListsFromTable(final Table sourceTable) {
@@ -145,9 +141,9 @@ public class DropHandlerMethods {
 
 				// Load currentColumnsInfo if cached list info is null or not matching the needed list id
 				if (DropHandlerMethods.this.currentColumnsInfo == null
-						|| !DropHandlerMethods.this.currentColumnsInfo.getListId().equals(listId)) {
+					|| !DropHandlerMethods.this.currentColumnsInfo.getListId().equals(listId)) {
 					DropHandlerMethods.this.currentColumnsInfo =
-							DropHandlerMethods.this.germplasmListManager.getAdditionalColumnsForList(listId);
+						DropHandlerMethods.this.germplasmListManager.getAdditionalColumnsForList(listId);
 				}
 
 				final GermplasmList germplasmList = DropHandlerMethods.this.getGermplasmList(listId);
@@ -207,13 +203,13 @@ public class DropHandlerMethods {
 				final Item newItem = this.targetTable.getContainerDataSource().addItem(newItemId);
 
 				final Button gidButton = new SortableButton(String.format("%s", gid),
-						new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
+					new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
 				gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 
 				final String crossExpansion = crossExpansions.get(gid);
 				final String preferredName = preferredNames.get(gid);
 				final Button designationButton =
-						new SortableButton(preferredName, new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
+					new SortableButton(preferredName, new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
 				designationButton.setStyleName(BaseTheme.BUTTON_LINK);
 				designationButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
 
@@ -227,7 +223,7 @@ public class DropHandlerMethods {
 					@Override
 					public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
 						final CheckBox itemCheckBox = (CheckBox) event.getButton();
-						if (((Boolean) itemCheckBox.getValue()).equals(true)) {
+						if (itemCheckBox.getValue().equals(true)) {
 							DropHandlerMethods.this.targetTable.select(newItemId);
 						} else {
 							DropHandlerMethods.this.targetTable.unselect(newItemId);
@@ -250,7 +246,7 @@ public class DropHandlerMethods {
 				}
 
 				final Button inventoryButton =
-						new SortableButton(availInv, new InventoryLinkButtonClickListener(this.listManagerMain, gid));
+					new SortableButton(availInv, new InventoryLinkButtonClickListener(this.listManagerMain, gid));
 				inventoryButton.setDebugId("inventoryButton");
 				inventoryButton.setStyleName(BaseTheme.BUTTON_LINK);
 				inventoryButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_INVENTORY_DETAILS);
@@ -287,7 +283,7 @@ public class DropHandlerMethods {
 				}
 
 				final Button availableButton =
-						new SortableButton(available.toString(), new InventoryLinkButtonClickListener(this.listManagerMain, gid));
+					new SortableButton(available.toString(), new InventoryLinkButtonClickListener(this.listManagerMain, gid));
 				availableButton.setDebugId("availableButton");
 				availableButton.setStyleName(BaseTheme.BUTTON_LINK);
 				availableButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_INVENTORY_DETAILS);
@@ -360,7 +356,7 @@ public class DropHandlerMethods {
 	}
 
 	protected Integer getAvailInvForGID(final Integer gid) {
-		Integer availInv;
+		final Integer availInv;
 		try {
 			availInv = this.inventoryDataManager.countLotsWithAvailableBalanceForGermplasm(gid);
 			return availInv;
@@ -415,7 +411,7 @@ public class DropHandlerMethods {
 				final Item newItem = this.targetTable.getContainerDataSource().addItem(newItemId);
 
 				final Button gidButton = new SortableButton(String.format("%s", gid),
-						new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
+					new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
 				gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 
 				final CheckBox tagCheckBox = new CheckBox();
@@ -428,7 +424,7 @@ public class DropHandlerMethods {
 					@Override
 					public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
 						final CheckBox itemCheckBox = (CheckBox) event.getButton();
-						if (((Boolean) itemCheckBox.getValue()).equals(true)) {
+						if (itemCheckBox.getValue().equals(true)) {
 							DropHandlerMethods.this.targetTable.select(newItemId);
 						} else {
 							DropHandlerMethods.this.targetTable.unselect(newItemId);
@@ -438,7 +434,7 @@ public class DropHandlerMethods {
 				});
 
 				final Button designationButton = new SortableButton(germplasmListData.getDesignation(),
-						new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
+					new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
 				designationButton.setStyleName(BaseTheme.BUTTON_LINK);
 				designationButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
 
@@ -459,14 +455,14 @@ public class DropHandlerMethods {
 
 				// Lots
 				final Button lotButton =
-						ListCommonActionsUtil.getLotCountButton(germplasmListData.getInventoryInfo().getLotCount().intValue(),
-								germplasmListData.getGid(), germplasmListData.getDesignation(), this.listManagerMain, null);
+					ListCommonActionsUtil.getLotCountButton(germplasmListData.getInventoryInfo().getLotCount().intValue(),
+						germplasmListData.getGid(), germplasmListData.getDesignation(), this.listManagerMain, null);
 				newItem.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).setValue(lotButton);
 
 				final String available = germplasmListData.getInventoryInfo().getAvailable();
 
-				final Button availableButton = new SortableButton(available.toString(),
-						new InventoryLinkButtonClickListener(this.listManagerMain, germplasmListData.getGid()));
+				final Button availableButton = new SortableButton(available,
+					new InventoryLinkButtonClickListener(this.listManagerMain, germplasmListData.getGid()));
 				availableButton.setStyleName(BaseTheme.BUTTON_LINK);
 				availableButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_INVENTORY_DETAILS);
 				newItem.getItemProperty(ColumnLabels.TOTAL.getName()).setValue(availableButton);
@@ -478,7 +474,7 @@ public class DropHandlerMethods {
 				newItem.getItemProperty(ColumnLabels.STOCKID.getName()).setValue(stockIDs);
 
 				for (final Entry<String, List<ListDataColumnValues>> columnEntry : this.currentColumnsInfo.getColumnValuesMap()
-						.entrySet()) {
+					.entrySet()) {
 					final String column = columnEntry.getKey();
 					for (final ListDataColumnValues columnValue : columnEntry.getValue()) {
 						if (columnValue.getListDataId().equals(germplasmListData.getId())) {
@@ -565,7 +561,7 @@ public class DropHandlerMethods {
 
 			final Integer gid = this.getGidFromButtonCaption(sourceTable, itemId);
 			final Button gidButton = new SortableButton(String.format("%s", gid),
-					new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
+				new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
 			gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 			gidButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
 
@@ -580,7 +576,7 @@ public class DropHandlerMethods {
 				@Override
 				public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
 					final CheckBox itemCheckBox = (CheckBox) event.getButton();
-					if (((Boolean) itemCheckBox.getValue()).equals(true)) {
+					if (itemCheckBox.getValue().equals(true)) {
 						DropHandlerMethods.this.targetTable.select(itemCheckBox.getData());
 					} else {
 						DropHandlerMethods.this.targetTable.unselect(itemCheckBox.getData());
@@ -590,9 +586,9 @@ public class DropHandlerMethods {
 			});
 
 			final String designation =
-					preferredNames.get(gid) != null ? preferredNames.get(gid) : this.getDesignationFromButtonCaption(sourceTable, itemId);
+				preferredNames.get(gid) != null ? preferredNames.get(gid) : this.getDesignationFromButtonCaption(sourceTable, itemId);
 			final Button designationButton =
-					new SortableButton(designation, new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
+				new SortableButton(designation, new GidLinkButtonClickListener(this.listManagerMain, gid.toString(), true, true));
 			designationButton.setStyleName(BaseTheme.BUTTON_LINK);
 			designationButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
 
@@ -748,16 +744,8 @@ public class DropHandlerMethods {
 	public Integer getGidFromButtonCaption(final Table table, final Integer itemId) {
 		final Item item = table.getItem(itemId);
 		if (item != null) {
-			final String buttonCaption = ((Button) item.getItemProperty(ColumnLabels.GID.getName()).getValue()).getCaption().toString();
+			final String buttonCaption = ((Button) item.getItemProperty(ColumnLabels.GID.getName()).getValue()).getCaption();
 			return Integer.valueOf(buttonCaption);
-		}
-		return null;
-	}
-
-	public String getStockIDFromStockIDLabel(final Table table, final Integer itemId) {
-		final Item item = table.getItem(itemId);
-		if (item != null) {
-			return ((Label) item.getItemProperty(ColumnLabels.STOCKID.getName()).getValue()).getValue().toString();
 		}
 		return null;
 	}
@@ -765,7 +753,7 @@ public class DropHandlerMethods {
 	protected String getAvailInvFromButtonCaption(final Table table, final Integer itemId) {
 		final Item item = table.getItem(itemId);
 		if (item != null) {
-			return ((Button) item.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).getValue()).getCaption().toString();
+			return ((Button) item.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).getValue()).getCaption();
 
 		}
 		return null;
@@ -779,7 +767,7 @@ public class DropHandlerMethods {
 		}
 
 		final Button availableButton =
-				new SortableButton(availableButtonCaption, new InventoryLinkButtonClickListener(this.listManagerMain, gid));
+			new SortableButton(availableButtonCaption, new InventoryLinkButtonClickListener(this.listManagerMain, gid));
 		availableButton.setDebugId("availableButton");
 		availableButton.setStyleName(BaseTheme.BUTTON_LINK);
 		availableButton.setDescription(DropHandlerMethods.CLICK_TO_VIEW_INVENTORY_DETAILS);
@@ -790,7 +778,7 @@ public class DropHandlerMethods {
 	protected String getDesignationFromButtonCaption(final Table table, final Integer itemId) {
 		final Item item = table.getItem(itemId);
 		if (item != null) {
-			return ((Button) item.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue()).getCaption().toString();
+			return ((Button) item.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue()).getCaption();
 
 		}
 		return null;
@@ -844,8 +832,9 @@ public class DropHandlerMethods {
 
 	public interface ListUpdatedListener {
 
-		public void listUpdated(final ListUpdatedEvent event);
+		void listUpdated(final ListUpdatedEvent event);
 	}
+
 
 	public class ListUpdatedEvent {
 
