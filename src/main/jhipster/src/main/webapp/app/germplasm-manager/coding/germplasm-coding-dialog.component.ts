@@ -55,15 +55,17 @@ export class GermplasmCodingDialogComponent {
     }
 
     getNextNameSequence() {
-        this.germplasmService.getNextGermplasmCodeNameInSequence(this.germplasmCodeNameSetting).toPromise().then((response) => {
-            if (response.body) {
-                this.nextCodeNameSequence = response.body;
-            }
-        }).catch((response) => {
-            if (response.error) {
-                this.alertService.error('error.custom', { param: JSON.parse(response.error).errors[0].message });
-            }
-        });
+        if (this.germplasmCodeNameSetting.prefix) {
+            this.germplasmService.getNextGermplasmCodeNameInSequence(this.germplasmCodeNameSetting).toPromise().then((response) => {
+                if (response.body) {
+                    this.nextCodeNameSequence = response.body;
+                }
+            }).catch((response) => {
+                if (response.error) {
+                    this.alertService.error('error.custom', { param: JSON.parse(response.error).errors[0].message });
+                }
+            });
+        }
     }
 
 }
