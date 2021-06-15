@@ -14,7 +14,10 @@ import { JhiAlertService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-germplasm-name-changes-modal',
-    templateUrl: './germplasm-name-changes-modal.component.html'
+    templateUrl: './germplasm-name-changes-modal.component.html',
+    styleUrls: [
+        'germplasm-name-changes-modal.scss'
+    ]
 })
 export class GermplasmNameChangesModalComponent implements OnInit {
 
