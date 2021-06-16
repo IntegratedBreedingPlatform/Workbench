@@ -23,7 +23,8 @@
         "delete-all-germplasm-not-supported": "Deletion of germplasm in all pages is not supported. Please select individual germplasm to delete."
     },
     "germplasm-code": {
-        "code-all-germplasm-not-supported": "Creation of germplasm code in all pages is not supported. Please select individual germplasm to code."
+        "code-all-germplasm-not-supported": "Creation of germplasm code in all pages is not supported. Please select individual germplasm to code.",
+        "too-many-selected-germplasm": "You can only code 500 germplasm records at a time."
     },
     "search-germplasm" : {
         "column" : {

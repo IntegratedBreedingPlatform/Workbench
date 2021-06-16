@@ -713,6 +713,10 @@ export class GermplasmSearchComponent implements OnInit {
             this.alertService.error('germplasm-code.code-all-germplasm-not-supported');
             return;
         }
+        if (this.size(this.selectedItems) > 500) {
+            this.alertService.error('germplasm-code.too-many-selected-germplasm');
+            return;
+        }
         const germplasmCodingDialog = this.modalService.open(GermplasmCodingDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         germplasmCodingDialog.componentInstance.gids = this.getSelectedItemIds();
         germplasmCodingDialog.result.then((results) => {
