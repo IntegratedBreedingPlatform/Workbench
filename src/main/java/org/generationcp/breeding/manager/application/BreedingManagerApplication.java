@@ -86,13 +86,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 		// these windows are the jumping on points to parts of the application
 		if (super.getWindow(name) == null) {
 
-			if (name.equals(BreedingManagerWindowGenerator.GERMPLASM_IMPORT_WINDOW_NAME)) {
-
-				Window germplasmImportWindow = breedingManagerWindowGenerator.createGermplasmImportWindow();
-				this.addWindow(germplasmImportWindow);
-				return germplasmImportWindow;
-
-			} else if (name.equals(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME)) {
+			if (name.equals(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME)) {
 
 				final Window listManagerWindow = this.instantiateListManagerWindow(name);
 				listManagerWindow.setDebugId("listManagerWindow");

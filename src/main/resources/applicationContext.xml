@@ -392,9 +392,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="germplasmExportedWorkbook" class="org.generationcp.commons.parsing.GermplasmExportedWorkbook" scope="request">
-		<aop:scoped-proxy />
-	</bean>
 	<bean id="fileService" class="org.generationcp.commons.service.impl.FileServiceImpl"
 		  init-method="init">
 	</bean>
@@ -468,11 +465,6 @@
 	<bean id="derivedVariableService" factory-bean="managerFactory"
 		  factory-method="getDerivedVariableService" scope="request">
 		<aop:scoped-proxy proxy-target-class="false" />
-	</bean>
-
-	<bean id="stockIDValidator" class="org.generationcp.breeding.manager.listimport.validator.StockIDValidator"
-		scope="request">
-		<aop:scoped-proxy />
 	</bean>
 
 	<bean id="stockService" class="org.generationcp.commons.service.impl.StockServiceImpl"
