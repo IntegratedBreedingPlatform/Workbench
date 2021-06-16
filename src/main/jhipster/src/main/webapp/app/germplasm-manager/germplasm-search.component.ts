@@ -709,6 +709,10 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-code.code-all-germplasm-not-supported');
+            return;
+        }
         const germplasmCodingDialog = this.modalService.open(GermplasmCodingDialogComponent as Component, { size: 'lg', backdrop: 'static' });
         germplasmCodingDialog.componentInstance.gids = this.getSelectedItemIds();
         germplasmCodingDialog.result.then((results) => {
