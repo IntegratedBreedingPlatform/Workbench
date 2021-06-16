@@ -2,6 +2,7 @@ package org.generationcp.ibpworkbench.security;
 
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.middleware.manager.Operation;
+import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.releasenote.ReleaseNoteService;
 import org.generationcp.middleware.service.api.user.UserService;
@@ -56,6 +57,8 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		// Initialize the ContextInfo to set the userId of the authenticated user.
 		// The projectId and token will be populated later when a program is opened/loaded.
 		ContextUtil.setContextInfo(request, user.getUserid(), null, null, shouldShowReleaseNote);
+
+		this.userService.incrementUserLogInCount(user.getUserid());
 
 		this.clearAuthenticationAttributes(request);
 
