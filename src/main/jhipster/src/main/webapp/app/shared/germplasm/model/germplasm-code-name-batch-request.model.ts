@@ -1,10 +1,10 @@
-import { GermplasmCodeNameSettingModel } from './germplasm-name-setting.model';
+import { GermplasmNameSettingModel } from './germplasm-name-setting.model';
 
 export class GermplasmCodeNameBatchRequestModel {
     constructor(
         public gids?: number[],
         public nameType?: GermplasmCodeNameType,
-        public germplasmCodeNameSetting?: GermplasmCodeNameSettingModel
+        public germplasmCodeNameSetting?: GermplasmNameSettingModel
     ) {
     }
 }

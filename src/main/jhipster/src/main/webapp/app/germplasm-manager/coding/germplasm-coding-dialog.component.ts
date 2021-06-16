@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GermplasmCodeNameSettingModel } from '../../shared/germplasm/model/germplasm-name-setting.model';
+import { GermplasmNameSettingModel } from '../../shared/germplasm/model/germplasm-name-setting.model';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { JhiAlertService } from 'ng-jhipster';
@@ -17,7 +17,7 @@ export class GermplasmCodingDialogComponent {
     automaticNaming: boolean;
     nameType: GermplasmCodeNameType = GermplasmCodeNameType.CODE1;
     isProcessing: boolean;
-    germplasmCodeNameSetting: GermplasmCodeNameSettingModel = new GermplasmCodeNameSettingModel();
+    germplasmCodeNameSetting: GermplasmNameSettingModel = new GermplasmNameSettingModel();
     numberOfDigits = Array(9).fill(1).map((x, i) => i + 1);
     nextCodeNameSequence: string;
 
@@ -56,7 +56,7 @@ export class GermplasmCodingDialogComponent {
 
     getNextNameSequence() {
         if (this.germplasmCodeNameSetting.prefix) {
-            this.germplasmService.getNextGermplasmCodeNameInSequence(this.germplasmCodeNameSetting).toPromise().then((response) => {
+            this.germplasmService.getNextNameInSequence(this.germplasmCodeNameSetting).toPromise().then((response) => {
                 if (response.body) {
                     this.nextCodeNameSequence = response.body;
                 }

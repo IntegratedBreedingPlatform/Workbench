@@ -17,7 +17,7 @@ import { GermplasmProgenitorsUpdateRequestModel } from '../model/germplasm-proge
 import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
 import { map } from 'rxjs/operators';
 import { GermplasmCodeNameBatchRequestModel } from '../model/germplasm-code-name-batch-request.model';
-import { GermplasmCodeNameSettingModel } from '../model/germplasm-name-setting.model';
+import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
 import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
 
 @Injectable()
@@ -146,10 +146,10 @@ export class GermplasmService {
         return this.http.post<GermplasmCodeNameBatchResultModel[]>(url, germplasmCodeNameBatchRequestModel);
     }
 
-    getNextGermplasmCodeNameInSequence(germplasmCodeNameSettingModel: GermplasmCodeNameSettingModel) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/coding/sequence` +
+    getNextNameInSequence(germplasmNameSettingModel: GermplasmNameSettingModel) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names/next-name-generation` +
             '?programUUID=' + this.context.programUUID;
-        return this.http.post(url, germplasmCodeNameSettingModel, { observe: 'response', responseType: 'text'});
+        return this.http.post(url, germplasmNameSettingModel, { observe: 'response', responseType: 'text'});
     }
 
     createGermplasmName(gid: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<number> {
