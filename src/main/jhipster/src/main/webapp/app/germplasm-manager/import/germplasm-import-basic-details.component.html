@@ -163,7 +163,12 @@
 						</ng-template>
 						<ng-template pTemplate="body" let-rowData>
 							<tr>
-								<td >{{rowData.alias || rowData.name}}</td>
+								<td>
+									<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
+									   [queryParams]="{ variableId: rowData.id }">
+									{{rowData.alias || rowData.name}}
+									</a>
+								</td>
 								<td>{{rowData.description}}</td>
 								<td>{{rowData.variableTypes[0].name}}</td>
 								<td [innerHTML]="getStatus(rowData)"></td>
