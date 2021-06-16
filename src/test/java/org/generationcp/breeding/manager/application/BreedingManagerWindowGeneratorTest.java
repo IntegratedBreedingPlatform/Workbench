@@ -51,7 +51,6 @@ public class BreedingManagerWindowGeneratorTest {
 				.thenReturn(locationManagerTool);
 		Mockito.when(workbenchDataManager.getToolWithName(BreedingManagerWindowGenerator.METHOD_MANAGER_TOOL_NAME))
 				.thenReturn(methodManagerTool);
-		Mockito.when(messageSource.getMessage(Message.IMPORT_GERMPLASM_LIST_TAB_LABEL)).thenReturn(CAPTION);
 	}
 
 	@Test
