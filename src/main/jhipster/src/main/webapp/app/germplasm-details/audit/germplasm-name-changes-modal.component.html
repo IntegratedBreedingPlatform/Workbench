@@ -29,11 +29,11 @@
 				</thead>
 				<tbody>
 				<tr *ngFor="let nameChange of germplasmNameChanges">
-					<td [ngClass]="{ 'font-weight-bold': nameChange.nameTypeChanged }">{{nameChange.nameType}}</td>
-					<td class="word-wrap" [ngClass]="{ 'font-weight-bold': nameChange.valueChanged }">{{nameChange.value}}</td>
-					<td [ngClass]="{ 'font-weight-bold': nameChange.locationChanged }">{{nameChange.locationName}}</td>
-					<td [ngClass]="{ 'font-weight-bold': nameChange.creationDateChanged }">{{nameChange.creationDate}}</td>
-					<td [ngClass]="{ 'font-weight-bold': nameChange.preferredChanged }">{{nameChange.preferred ? 'Yes' : 'No'}}</td>
+					<td [ngClass]="{ 'text-success': nameChange.nameTypeChanged }">{{nameChange.nameType}}</td>
+					<td class="word-wrap" [ngClass]="{ 'text-success': nameChange.valueChanged }">{{nameChange.value}}</td>
+					<td [ngClass]="{ 'text-success': nameChange.locationChanged }">{{nameChange.locationName}}</td>
+					<td [ngClass]="{ 'text-success': nameChange.creationDateChanged }">{{nameChange.creationDate}}</td>
+					<td [ngClass]="{ 'text-success': nameChange.preferredChanged }">{{nameChange.preferred ? 'Yes' : 'No'}}</td>
 					<td>{{nameChange.revisionType}}</td>
 					<td>{{getEventDate(nameChange)}}</td>
 					<td>{{getUser(nameChange)}}</td>
