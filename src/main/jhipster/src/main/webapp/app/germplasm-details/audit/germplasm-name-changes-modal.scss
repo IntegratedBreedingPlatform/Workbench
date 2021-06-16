@@ -1,5 +1,9 @@
-.table.table-bordered > thead > tr > th.fixed-width {
+.table.table-bordered > thead > tr > th.fixed-width-80 {
   width: 80px;
+}
+
+.table.table-bordered > thead > tr > th.fixed-width-100 {
+  width: 100px;
 }
 
 .modal-body .table-responsive {

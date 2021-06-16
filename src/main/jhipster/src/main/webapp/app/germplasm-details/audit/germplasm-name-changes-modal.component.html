@@ -14,13 +14,16 @@
 			<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmNameChanges.length else nodata">
 				<thead>
 				<tr>
-					<th scope="col" jhiTranslate="basic-details.names.name-type" class="fixed-width">Name type</th>
+					<th scope="col" jhiTranslate="basic-details.names.name-type">Name type</th>
 					<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
-					<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
-					<th scope="col" jhiTranslate="basic-details.names.date" class="fixed-width">Date</th>
+					<th scope="col" jhiTranslate="basic-details.names.location" class="fixed-width-80">Location</th>
+					<th scope="col" jhiTranslate="basic-details.names.date" class="fixed-width-80">Date</th>
 					<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
 					<th scope="col" jhiTranslate="basic-details.audit-changes.event-type">Event Type</th>
-					<th scope="col" jhiTranslate="basic-details.audit-changes.event-date">Event Date</th>
+					<th scope="col" class="fixed-width-100">
+						<span jhiTranslate="basic-details.audit-changes.event-date">Timestamp</span>
+						<span class="fa fa-sort fa-sort-down"></span>
+					</th>
 					<th scope="col" jhiTranslate="basic-details.audit-changes.user">User</th>
 				</tr>
 				</thead>

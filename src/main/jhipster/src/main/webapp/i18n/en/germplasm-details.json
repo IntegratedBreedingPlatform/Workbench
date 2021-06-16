@@ -33,7 +33,7 @@
         "audit-changes": {
             "title": "{{entity}} {{entityValue}} - View history of changes",
             "event-type": "Event Type",
-            "event-date": "Event Date",
+            "event-date": "Timestamp",
             "user": "User"
         },
         "germplasm-origin": {
