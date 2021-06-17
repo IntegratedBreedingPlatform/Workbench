@@ -12,10 +12,13 @@ import { GermplasmManagerContext } from './germplasm-manager.context';
 import { GermplasmImportModule } from './import/germplasm-import.module';
 import { GermplasmImportUpdateDialogComponent, GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddComponent, GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
-import { TreeDragDropService } from 'primeng/api';
 import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-register/key-sequence-register-deletion-dialog.component';
+import { GermplasmGroupOptionsDialogComponent } from './grouping/germplasm-group-options-dialog-component';
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
 import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
+import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-result.component';
+import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
+import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 
 @NgModule({
     imports: [
@@ -36,7 +39,11 @@ import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from
         GermplasmSelectorPopupComponent,
         GermplasmListAddComponent,
         GermplasmListAddPopupComponent,
-        KeySequenceRegisterDeletionDialogComponent
+        KeySequenceRegisterDeletionDialogComponent,
+        GermplasmGroupOptionsDialogComponent,
+        GermplasmGroupingResultComponent,
+        GermplasmCodingDialogComponent,
+        GermplasmCodingResultDialogComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -51,7 +58,11 @@ import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from
         GermplasmSelectorPopupComponent,
         GermplasmListAddComponent,
         GermplasmListAddPopupComponent,
-        KeySequenceRegisterDeletionDialogComponent
+        KeySequenceRegisterDeletionDialogComponent,
+        GermplasmGroupOptionsDialogComponent,
+        GermplasmGroupingResultComponent,
+        GermplasmCodingDialogComponent,
+        GermplasmCodingResultDialogComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,
