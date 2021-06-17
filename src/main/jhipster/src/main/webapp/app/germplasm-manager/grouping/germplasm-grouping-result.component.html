@@ -12,11 +12,11 @@
 			<table class="table table-striped table-bordered table-curved table-fixed">
 				<thead>
 				<tr>
-					<th scope="col" style="width: 20%">GID</th>
-					<th scope="col" style="width: 20%">Group ID (MGID)</th>
-					<th scope="col" style="width: 20%">Total Members</th>
-					<th scope="col" style="width: 20%">Group Members</th>
-					<th scope="col" style="width: 20%">Notes</th>
+					<th scope="col" style="width: 15%">GID</th>
+					<th scope="col" style="width: 15%">Group ID (MGID)</th>
+					<th scope="col" style="width: 10%">Total Members</th>
+					<th scope="col" style="width: 30%">Group Members</th>
+					<th scope="col" style="width: 25%">Notes</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -24,7 +24,7 @@
 					<td>{{groupResult.founderGid}}</td>
 					<td>{{groupResult.groupId}}</td>
 					<td>{{groupResult.groupMembers.length}}</td>
-					<td>
+					<td class="col word-wrap">
 						{{displayMembers(groupResult.groupMembers)}}
 					</td>
 					<td *ngIf="groupResult.generative">

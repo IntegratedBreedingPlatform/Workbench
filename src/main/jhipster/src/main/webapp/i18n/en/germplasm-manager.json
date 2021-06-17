@@ -22,6 +22,10 @@
         "too-many-selected-germplasm": "You can only delete 500 germplasm records at a time.",
         "delete-all-germplasm-not-supported": "Deletion of germplasm in all pages is not supported. Please select individual germplasm to delete."
     },
+    "germplasm-code": {
+        "code-all-germplasm-not-supported": "Creation of germplasm code in all pages is not supported. Please select individual germplasm to code.",
+        "too-many-selected-germplasm": "You can only code 500 germplasm records at a time."
+    },
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
@@ -60,7 +64,8 @@
             "export-data-and-labels": "Export data and labels",
             "grouping" : "Grouping Options",
             "group" : "Group",
-            "ungroup": "Ungroup"
+            "ungroup": "Ungroup",
+            "code-germplasm": "Code germplasm"
         },
         "included-gids": "(+ included germplasm)"
     },
@@ -197,8 +202,11 @@
        "preserve.existing.group": "Preserve existing group",
        "include.descendants": "Include descendants",
        "continue": "Continue",
+       "too-many-selected-germplasm": "You can only group 500 germplasm records at a time.",
+       "group-all-germplasm-not-supported": "Grouping of germplasm in all pages is not supported. Please select individual germplasm to group.",
+       "ungroup-all-germplasm-not-supported": "Ungrouping of germplasm in all pages is not supported. Please select individual germplasm to ungroup.",
        "grouping.success": "Successfully marked selected germplasm as fixed.",
-       "grouping.warning": "No germplasm was fixed.",
+       "grouping.warning": "Grouping was not applied to any entries.",
        "ungrouping.success": "All selected germplasm were successfully unfixed.",
        "ungrouping.warning": "Successfully unfixed {{param1}} germplasm  while {{param2}} not-fixed germplasm is/are not modified.",
        "ungrouping.none.successful": "All selected germplasm were not modified because they are not fixed.",

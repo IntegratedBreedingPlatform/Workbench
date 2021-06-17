@@ -29,11 +29,12 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">
 		<span class="fa fa-ban"></span>&nbsp;
 		<span jhiTranslate="cancel"></span>
 	</button>
-	<button (click)="group()" class="btn btn-primary">
+	<button (click)="group()" class="btn btn-primary" [disabled]="isLoading">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;
 		<span jhiTranslate="germplasm-grouping.continue"></span>
 	</button>

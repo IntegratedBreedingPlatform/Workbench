@@ -20,7 +20,12 @@ export class GermplasmGroupingResultComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.alertService.success('germplasm-grouping.grouping.success');
+        const germplasmGrouped = this.results.find((g) => g.groupMembers.length > 0);
+        if (germplasmGrouped) {
+            this.alertService.success('germplasm-grouping.grouping.success');
+        } else {
+            this.alertService.warning('germplasm-grouping.grouping.warning');
+        }
     }
 
     displayMembers(groupMembers: GermplasmGroupMember[]) {
