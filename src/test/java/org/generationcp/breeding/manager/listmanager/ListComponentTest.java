@@ -13,13 +13,10 @@ import org.generationcp.breeding.manager.customcomponent.ControllableRefreshTabl
 import org.generationcp.breeding.manager.customcomponent.SaveListAsDialog;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.customcomponent.ViewListHeaderWindow;
-import org.generationcp.breeding.manager.listmanager.dialog.AssignCodesDialog;
-import org.generationcp.breeding.manager.listmanager.dialog.GermplasmGroupingComponent;
 import org.generationcp.breeding.manager.listmanager.util.FillWith;
 import org.generationcp.breeding.manager.listmanager.util.ListDataPropertiesRenderer;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.ui.ConfirmDialog;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer;
@@ -35,12 +32,12 @@ import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.service.api.GermplasmGroupingService;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -52,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +75,6 @@ public class ListComponentTest {
 	private static final String UPDATED_GERMPLASM_LIST_TYPE = "F1 LST";
 	private static final Integer TEST_GERMPLASM_LIST_ID = 111;
 	private static final Integer TEST_GERMPLASM_NO_OF_ENTRIES = 5;
-	private static final String INVENTORY_VIEW = "Inventory View";
 	private static final String LIST_ENTRIES_VIEW = "List Entries View";
 
 	@Mock
@@ -126,9 +121,6 @@ public class ListComponentTest {
 
 	@Mock
 	private UserService userService;
-
-	@Mock
-	private GermplasmGroupingService germplasmGroupingService;
 
 	@InjectMocks
 	private final ListComponent listComponent = new ListComponent();
@@ -197,7 +189,7 @@ public class ListComponentTest {
 		try {
 			Mockito.doNothing().when(this.source).closeList(germplasmListToBeSaved);
 			Mockito.doReturn(germplasmListToBeSaved).when(this.germplasmListManager)
-				.getGermplasmListById(Matchers.anyInt());
+				.getGermplasmListById(ArgumentMatchers.anyInt());
 
 			// this will overwrite the list entries of the current germplasm
 			// list. Germplasm List Details will not be updated.
@@ -281,8 +273,8 @@ public class ListComponentTest {
 	public void testLockGermplasmList() {
 		final ContextUtil contextUtil = Mockito.mock(ContextUtil.class);
 		this.listComponent.setContextUtil(contextUtil);
-		Mockito.doNothing().when(contextUtil).logProgramActivity(Matchers.anyString(), Matchers.anyString());
-		Mockito.doReturn("Test").when(this.messageSource).getMessage(Matchers.any(Message.class));
+		Mockito.doNothing().when(contextUtil).logProgramActivity(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
+		Mockito.doReturn("Test").when(this.messageSource).getMessage(ArgumentMatchers.any(Message.class));
 		Mockito.doReturn(this.germplasmList).when(this.germplasmListManager)
 			.getGermplasmListById(this.germplasmList.getId());
 		final FillWith fillWith = Mockito.mock(FillWith.class);
@@ -309,7 +301,7 @@ public class ListComponentTest {
 	@Test
 	public void testUnlockGermplasmList() {
 
-		Mockito.when(this.messageSource.getMessage(Matchers.any(Message.class))).thenReturn("");
+		Mockito.when(this.messageSource.getMessage(ArgumentMatchers.any(Message.class))).thenReturn("");
 
 		this.germplasmList.setStatus(101);
 		this.listComponent.setListDataTable(new Table());
@@ -338,7 +330,7 @@ public class ListComponentTest {
 
 	@Test
 	public void testSaveChangesAction() {
-		Mockito.when(this.messageSource.getMessage(Matchers.any(Message.class))).thenReturn("");
+		Mockito.when(this.messageSource.getMessage(ArgumentMatchers.any(Message.class))).thenReturn("");
 
 		final Table listDataTable = Mockito.mock(Table.class);
 		this.listComponent.setListDataTable(listDataTable);
@@ -355,7 +347,7 @@ public class ListComponentTest {
 			.thenReturn(listDataInfo);
 
 		this.listComponent.saveChangesAction(this.window, false);
-		Mockito.verify(this.germplasmListManager).updateGermplasmListData(Matchers.anyListOf(GermplasmListData.class));
+		Mockito.verify(this.germplasmListManager).updateGermplasmListData(ArgumentMatchers.anyListOf(GermplasmListData.class));
 		Mockito.verify(this.germplasmListManager).saveListDataColumns(listDataInfo);
 		Mockito.verify(listDataTable).requestRepaint();
 		Mockito.verify(this.breedingManagerApplication).refreshListManagerTree();
@@ -404,73 +396,12 @@ public class ListComponentTest {
 
 		// deleteGermplasmListDataByListIdLrecId should only be called once
 		Mockito.verify(this.germplasmListManager, Mockito.times(1)).deleteGermplasmListDataByListIdLrecId(
-			Matchers.eq(ListComponentTest.TEST_GERMPLASM_LIST_ID), Matchers.anyInt());
+			Matchers.eq(ListComponentTest.TEST_GERMPLASM_LIST_ID), ArgumentMatchers.anyInt());
 
 		Assert.assertTrue(this.listComponent.getItemsToDelete().isEmpty());
 
 	}
 
-	@Test
-	public void testMarkLinesAsFixedActionWithSelectedEntries() {
-
-		this.initializeTableWithTestData();
-
-		// This selects all items in the table
-		final Table table = this.listComponent.getListDataTable();
-		table.setValue(table.getItemIds());
-
-		this.listComponent.markLinesAsFixedAction();
-
-		Mockito.verify(this.window).addWindow(Matchers.any(GermplasmGroupingComponent.class));
-
-	}
-
-	@Test
-	public void testMarkLinesAsFixedActionWithoutSelectedEntries() {
-
-		this.initializeTableWithTestData();
-
-		// This removes the selected items in the table
-		final Table table = this.listComponent.getListDataTable();
-		table.setValue(null);
-
-		this.listComponent.markLinesAsFixedAction();
-
-		Mockito.verify(this.messageSource).getMessage(Message.ERROR_MARK_LINES_AS_FIXED_NOTHING_SELECTED);
-		Mockito.verify(this.window).showNotification(Matchers.any(Window.Notification.class));
-
-	}
-
-	@Test
-	public void testAssignCodesActionWithSelectedEntries() {
-
-		this.initializeTableWithTestData();
-
-		// This selects all items in the table
-		final Table table = this.listComponent.getListDataTable();
-		table.setValue(table.getItemIds());
-
-		this.listComponent.assignCodesAction();
-
-		Mockito.verify(this.window).addWindow(Matchers.any(AssignCodesDialog.class));
-
-	}
-
-	@Test
-	public void testAssignCodesActionWithoutSelectedEntries() {
-
-		this.initializeTableWithTestData();
-
-		// This removes the selected items in the table
-		final Table table = this.listComponent.getListDataTable();
-		table.setValue(null);
-
-		this.listComponent.assignCodesAction();
-
-		Mockito.verify(this.messageSource).getMessage(Message.ERROR_ASSIGN_CODES_NOTHING_SELECTED);
-		Mockito.verify(this.window).showNotification(Matchers.any(Window.Notification.class));
-
-	}
 
 	@Test
 	public void testExtractGidListFromListDataTable() {
@@ -595,18 +526,17 @@ public class ListComponentTest {
 		Mockito.when(this.germplasmListManager.getGermplasmListById(ListComponentTest.TEST_GERMPLASM_LIST_ID))
 			.thenReturn(this.germplasmList);
 
-		Mockito.when(this.parentComponent.getWindow()).thenReturn(this.window);
 		Mockito.when(this.source.getListSelectionComponent()).thenReturn(this.listSelectionComponent);
 		Mockito.when(this.source.getWindow()).thenReturn(this.window);
 		Mockito.when(this.listSelectionComponent.getListDetailsLayout()).thenReturn(this.listDetailsLayout);
 
-		Mockito.when(this.messageSource.getMessage(Matchers.any(Message.class))).thenReturn("");
+		Mockito.when(this.messageSource.getMessage(ArgumentMatchers.any(Message.class))).thenReturn("");
 		Mockito.when(this.messageSource.getMessage(Message.CHECK_ICON)).thenReturn(ListComponentTest.CHECK);
 		Mockito.when(this.messageSource.getMessage(Message.HASHTAG)).thenReturn(ListComponentTest.HASH);
 		Mockito.doReturn(LIST_ENTRIES_VIEW).when(this.messageSource).getMessage(Message.LIST_ENTRIES_LABEL);
 
 
-		Mockito.doNothing().when(this.contextUtil).logProgramActivity(Matchers.anyString(), Matchers.anyString());
+		Mockito.doNothing().when(this.contextUtil).logProgramActivity(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
 
 	}
 
@@ -615,143 +545,10 @@ public class ListComponentTest {
 		this.initializeTableWithTestData();
 		this.listComponent.removeSelectedGermplasmButtonClickAction();
 		Mockito.verify(this.messageSource).getMessage(Message.ERROR_REMOVING_GERMPLASM);
-		Mockito.verify(this.window).showNotification(Matchers.any(Window.Notification.class));
+		Mockito.verify(this.window).showNotification(ArgumentMatchers.any(Window.Notification.class));
 
 	}
 
-	@Test
-	public void testUnfixLinesAllGermplasmAreFixed() {
-
-		final int gid1 = 1;
-		final int gid2 = 2;
-		final int gid3 = 3;
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(gid1, gid2, gid3));
-		final List<Germplasm> listOfGermplasm = new ArrayList<>();
-		Mockito.when(this.germplasmDataManager.getGermplasmWithoutGroup(new ArrayList<Integer>(gidsToProcess)))
-			.thenReturn(listOfGermplasm);
-
-		this.listComponent.unfixLines(gidsToProcess);
-
-		Mockito.verify(this.messageSource, Mockito.never()).getMessage(Message.WARNING_UNFIX_LINES);
-		Mockito.verify(this.germplasmGroupingService).unfixLines(gidsToProcess);
-		Mockito.verify(this.messageSource).getMessage(Message.SUCCESS_UNFIX_LINES, gidsToProcess.size());
-
-	}
-
-	@Test
-	public void testUnfixLinesOnlyOneGermplasmIsFixed() {
-
-		final int gid1 = 1;
-		final int gid2 = 2;
-		final int gid3 = 3;
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(gid1, gid2, gid3));
-		final List<Germplasm> listOfGermplasmWithoutGroup = new ArrayList<>();
-
-		final Germplasm germplasm1 = this.createGermplasm(gid1, 0);
-		final Germplasm germplasm3 = this.createGermplasm(gid3, 0);
-
-		listOfGermplasmWithoutGroup.add(germplasm1);
-		listOfGermplasmWithoutGroup.add(germplasm3);
-
-		Mockito.when(this.germplasmDataManager.getGermplasmWithoutGroup(new ArrayList<Integer>(gidsToProcess)))
-			.thenReturn(listOfGermplasmWithoutGroup);
-
-		this.listComponent.unfixLines(gidsToProcess);
-
-		Mockito.verify(this.messageSource).getMessage(Message.WARNING_UNFIX_LINES);
-		Mockito.verify(this.germplasmGroupingService).unfixLines(gidsToProcess);
-		Mockito.verify(this.messageSource).getMessage(Message.SUCCESS_UNFIX_LINES, 1);
-
-	}
-
-	@Test
-	public void testUnfixLinesNoGermplasmAreFixed() {
-
-		final int gid1 = 1;
-		final int gid2 = 2;
-		final int gid3 = 3;
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(gid1, gid2, gid3));
-		final List<Germplasm> listOfGermplasm = new ArrayList<>();
-
-		final Germplasm germplasm1 = this.createGermplasm(gid1, 0);
-		listOfGermplasm.add(germplasm1);
-		final Germplasm germplasm2 = this.createGermplasm(gid2, 0);
-		listOfGermplasm.add(germplasm2);
-		final Germplasm germplasm3 = this.createGermplasm(gid3, 0);
-		listOfGermplasm.add(germplasm3);
-
-		Mockito.when(this.germplasmDataManager.getGermplasmWithoutGroup(new ArrayList<Integer>(gidsToProcess)))
-			.thenReturn(listOfGermplasm);
-
-		this.listComponent.unfixLines(gidsToProcess);
-
-		Mockito.verify(this.messageSource).getMessage(Message.WARNING_UNFIX_LINES);
-		Mockito.verify(this.germplasmGroupingService).unfixLines(gidsToProcess);
-		Mockito.verify(this.messageSource).getMessage(Message.SUCCESS_UNFIX_LINES, 0);
-
-	}
-
-	@Test
-	public void testCountGermplasmWithoutGroup() {
-
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(1, 2, 3));
-		final List<Germplasm> listOfGermplasm = new ArrayList<>();
-		listOfGermplasm.add(this.createGermplasm(1, 0));
-		listOfGermplasm.add(this.createGermplasm(2, 0));
-
-		Mockito.when(this.germplasmDataManager.getGermplasmWithoutGroup(new ArrayList<Integer>(gidsToProcess)))
-			.thenReturn(listOfGermplasm);
-
-		Assert.assertEquals("There are only 2 ungrouped germplasm in the list", 2,
-			this.listComponent.countGermplasmWithoutGroup(gidsToProcess));
-
-	}
-
-	@Test
-	public void testConfirmUnfixLinesListener() {
-
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(1, 2, 3));
-		final ListComponent listComponent = Mockito.mock(ListComponent.class);
-
-		final ListComponent.ConfirmUnfixLinesListener listener = this.listComponent.new ConfirmUnfixLinesListener(
-			gidsToProcess, listComponent);
-
-		final ConfirmDialog confirmDialog = ConfirmDialog.show(this.window, "", "", "", "", listener);
-		confirmDialog.getOkButton().click();
-
-		Mockito.verify(listComponent).unfixLines(gidsToProcess);
-		Mockito.verify(listComponent).updateGermplasmListTable(gidsToProcess);
-
-	}
-
-	@Test
-	public void testConfirmUnfixLinesAction() {
-
-		this.initializeTableWithTestData();
-
-		// This selects all items in the table
-		final Table table = this.listComponent.getListDataTable();
-		table.setValue(table.getItemIds());
-
-		this.listComponent.confirmUnfixLinesAction();
-
-		Mockito.verify(this.messageSource).getMessage(Message.CONFIRM_UNFIX_LINES);
-
-	}
-
-	@Test
-	public void testConfirmUnfixLinesActionNoSelectedGermplasm() {
-
-		this.initializeTableWithTestData();
-		// This selects all items in the table
-		final Table table = this.listComponent.getListDataTable();
-		table.setValue(null);
-
-		this.listComponent.confirmUnfixLinesAction();
-
-		Mockito.verify(this.messageSource).getMessage(Message.ERROR_UNFIX_LINES_NOTHING_SELECTED);
-
-	}
 
 	@Test
 	public void testUpdateGermplasmListStatusLocked() {
@@ -795,68 +592,6 @@ public class ListComponentTest {
 		Mockito.verify(fillWith).setContextMenuEnabled(this.listComponent.getListDataTable(), true);
 	}
 
-	@Test
-	public void testUpdateGermplasmListTableGermplasmHasNoMGID() {
-
-		this.initializeTableWithTestData();
-
-		final Table table = this.listComponent.getListDataTable();
-
-		final int gid1 = 1;
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(gid1));
-		final List<Germplasm> listOfGermplasm = new ArrayList<>();
-		final List<GermplasmListData> listOfGermplasmListData = new ArrayList<>();
-		listOfGermplasm.add(this.createGermplasm(gid1, 0));
-		final GermplasmListData germplasmListData = new GermplasmListData();
-		germplasmListData.setGid(gid1);
-		final int germplasmListDataId = 1;
-		germplasmListData.setId(germplasmListDataId);
-		listOfGermplasmListData.add(germplasmListData);
-
-		Mockito.when(this.germplasmDataManager.getGermplasms(new ArrayList<Integer>(gidsToProcess)))
-			.thenReturn(listOfGermplasm);
-		Mockito.when(this.germplasmListManager.getGermplasmListDataByListId(this.germplasmList.getId()))
-			.thenReturn(listOfGermplasmListData);
-
-		this.listComponent.updateGermplasmListTable(gidsToProcess);
-
-		final Item selectedRowItem = table.getItem(gid1);
-		Assert.assertEquals("-", selectedRowItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).getValue());
-
-	}
-
-	@Test
-	public void testUpdateGermplasmListTableGermplasmHasGID() {
-
-		this.initializeTableWithTestData();
-
-		final Table table = this.listComponent.getListDataTable();
-
-		final int gid1 = 1;
-		final int mgid = 1234;
-		final Set<Integer> gidsToProcess = new HashSet<>(Arrays.asList(gid1));
-		final List<Germplasm> listOfGermplasm = new ArrayList<>();
-		final List<GermplasmListData> listOfGermplasmListData = new ArrayList<>();
-		listOfGermplasm.add(this.createGermplasm(gid1, mgid));
-		final GermplasmListData germplasmListData = new GermplasmListData();
-		germplasmListData.setGid(gid1);
-		final int germplasmListDataId = 1;
-		germplasmListData.setId(germplasmListDataId);
-		listOfGermplasmListData.add(germplasmListData);
-
-		Mockito.when(this.germplasmDataManager.getGermplasms(new ArrayList<Integer>(gidsToProcess)))
-			.thenReturn(listOfGermplasm);
-		Mockito.when(this.germplasmListManager.getGermplasmListDataByListId(this.germplasmList.getId()))
-			.thenReturn(listOfGermplasmListData);
-
-		this.listComponent.updateGermplasmListTable(gidsToProcess);
-
-		final Item selectedRowItem = table.getItem(gid1);
-		Assert.assertEquals(
-			String.valueOf(mgid),
-			selectedRowItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).getValue());
-
-	}
 
 	@Test
 	public void testAddAttributeAndNameTypeColumn() {
@@ -882,13 +617,6 @@ public class ListComponentTest {
 		Mockito.doReturn(false).when(this.addColumnContextMenu).hasAddedColumn(table, attributeAndNameTypes);
 		Assert.assertFalse(this.listComponent.listHasAddedColumns());
 
-	}
-
-	private Germplasm createGermplasm(final int gid, final int mgid) {
-		final Germplasm germplasm = new Germplasm();
-		germplasm.setMgid(mgid);
-		germplasm.setGid(gid);
-		return germplasm;
 	}
 
 }

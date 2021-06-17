@@ -52,9 +52,6 @@ import org.generationcp.breeding.manager.customcomponent.ViewListHeaderWindow;
 import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListener;
 import org.generationcp.breeding.manager.listmanager.dialog.AddEntryDialog;
 import org.generationcp.breeding.manager.listmanager.dialog.AddEntryDialogSource;
-import org.generationcp.breeding.manager.listmanager.dialog.AssignCodesDialog;
-import org.generationcp.breeding.manager.listmanager.dialog.GermplasmGroupingComponent;
-import org.generationcp.breeding.manager.listmanager.dialog.GermplasmGroupingComponentSource;
 import org.generationcp.breeding.manager.listmanager.dialog.ListManagerCopyToListDialog;
 import org.generationcp.breeding.manager.listmanager.listcomponent.GermplasmListTableContextMenu;
 import org.generationcp.breeding.manager.listmanager.listcomponent.ListViewActionMenu;
@@ -85,14 +82,12 @@ import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.SearchRequestService;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
-import org.generationcp.middleware.service.api.GermplasmGroupingService;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
@@ -124,7 +119,7 @@ import static org.generationcp.commons.util.ContextUtil.addQueryParameter;
 
 @Configurable
 public class ListComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent, BreedingManagerLayout,
-		SaveListAsDialogSource, GermplasmGroupingComponentSource {
+		SaveListAsDialogSource {
 
 	public static final String DATABASE_ERROR = "Database Error!";
 	private static final String ERROR_WITH_DELETING_LIST_ENTRIES = "Error with deleting list entries.";
@@ -201,10 +196,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 
 	private static final String LOCK_TOOLTIP = "Click to lock or unlock this germplasm list.";
 
-	private static final String CLOSE_LOT_VALID = "CloseLotValid";
-	private static final String CLOSE_LOT_UNCOMMITTED = "CloseLotUnCommitted";
-	private static final String CLOSE_LOT_AVAILABLE_BALANCE = "CloseLotAvailableBalance";
-
 	// Value change event is fired when table is populated, so we need a flag
 	private Boolean doneInitializing = false;
 
@@ -231,9 +222,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
-
-	@Autowired
-	private GermplasmGroupingService germplasmGroupingService;
 
 	@Autowired
 	private UserService userService;
@@ -891,12 +879,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 						ListComponent.this.saveChangesAction();
 					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.DELETE_SELECTED_ENTRIES))) {
 						ListComponent.this.deleteEntriesButtonClickAction();
-					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.GROUP))) {
-						ListComponent.this.markLinesAsFixedAction();
-					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.UNGROUP))) {
-						ListComponent.this.confirmUnfixLinesAction();
-					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.ASSIGN_CODES))) {
-						ListComponent.this.assignCodesAction();
 					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.EDIT_LIST))) {
 						ListComponent.this.editListButtonClickAction();
 					} else if (clickedItem.getName().equals(ListComponent.this.messageSource.getMessage(Message.DELETE_LIST))) {
@@ -1219,82 +1201,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 		} else {
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DELETING_LIST_ENTRIES),
 					this.messageSource.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
-		}
-	}
-
-	public void markLinesAsFixedAction() {
-
-		final Set<Integer> gidsToProcess = this.extractGidListFromListDataTable(this.listDataTable);
-
-		if (!gidsToProcess.isEmpty()) {
-			this.getWindow().addWindow(new GermplasmGroupingComponent(this, gidsToProcess));
-		} else {
-			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.GROUP),
-					this.messageSource.getMessage(Message.ERROR_MARK_LINES_AS_FIXED_NOTHING_SELECTED));
-		}
-	}
-
-	public void confirmUnfixLinesAction() {
-
-		final Set<Integer> gidsToProcess = this.extractGidListFromListDataTable(this.listDataTable);
-
-		if (!gidsToProcess.isEmpty()) {
-
-			ConfirmDialog.show(this.getWindow(), this.messageSource.getMessage(Message.UNGROUP),
-					this.messageSource.getMessage(Message.CONFIRM_UNFIX_LINES), this.messageSource.getMessage(Message.YES),
-					this.messageSource.getMessage(Message.NO), new ConfirmUnfixLinesListener(gidsToProcess, this));
-
-		} else {
-			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_UNFIX_LINES),
-					this.messageSource.getMessage(Message.ERROR_UNFIX_LINES_NOTHING_SELECTED));
-		}
-
-	}
-
-	protected void unfixLines(final Set<Integer> gidsToProcess) {
-
-		final int numberOfGermplasmWithoutGroup = this.countGermplasmWithoutGroup(gidsToProcess);
-
-		if (numberOfGermplasmWithoutGroup > 0) {
-			MessageNotifier.showWarning(this.getWindow(), "", this.messageSource.getMessage(Message.WARNING_UNFIX_LINES));
-		}
-
-		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
-		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
-			@Override
-			protected void doInTransactionWithoutResult(final TransactionStatus status) {
-
-				ListComponent.this.germplasmGroupingService.unfixLines(gidsToProcess);
-
-			}
-		});
-
-		final int numberOfUnfixedGermplasm = gidsToProcess.size() - numberOfGermplasmWithoutGroup;
-		MessageNotifier.showMessage(this.getWindow(), this.messageSource.getMessage(Message.UNGROUP),
-				this.messageSource.getMessage(Message.SUCCESS_UNFIX_LINES, numberOfUnfixedGermplasm));
-
-	}
-
-	protected int countGermplasmWithoutGroup(final Set<Integer> gidsToProcess) {
-
-		final List<Germplasm> listOfGermplasmWithoutGroup =
-				this.germplasmDataManager.getGermplasmWithoutGroup(new ArrayList<Integer>(gidsToProcess));
-
-		return listOfGermplasmWithoutGroup.size();
-
-	}
-
-	public void assignCodesAction() {
-
-		final Set<Integer> gidsToProcess = this.extractGidListFromListDataTable(this.listDataTable);
-
-		if (!gidsToProcess.isEmpty()) {
-			this.getWindow().addWindow(new AssignCodesDialog(gidsToProcess));
-
-		} else {
-			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ASSIGN_CODES),
-					this.messageSource.getMessage(Message.ERROR_ASSIGN_CODES_NOTHING_SELECTED));
 		}
 	}
 
@@ -1912,32 +1818,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 		return this.itemsToDelete;
 	}
 
-	@Override
-	public void updateGermplasmListTable(final Set<Integer> gidsProcessed) {
-		// created map of gid and germplasm as a preparation for the retrieval for mgid
-		final List<Germplasm> germplasms = this.germplasmDataManager.getGermplasms(new ArrayList<Integer>(gidsProcessed));
-		final Map<Integer, Germplasm> germplasmMap = new HashMap<Integer, Germplasm>();
-		for (final Germplasm germplasm : germplasms) {
-			germplasmMap.put(germplasm.getGid(), germplasm);
-		}
-
-		// update the MGID(Group Id) of the specific rows marked as fixed lines
-		// Note we are refetching the list data as we cannot lazy load the list data in the germplasm list
-		// This is because the lazy load might be across transactions.
-		// This is not ideal but something we must do for an interim solution
-		final List<GermplasmListData> germplasmListData =
-				this.germplasmListManager.getGermplasmListDataByListId(this.germplasmList.getId());
-		for (final GermplasmListData listEntry : germplasmListData) {
-			final Integer gid = listEntry.getGid();
-			final Germplasm germplasm = germplasmMap.get(gid);
-			if (gidsProcessed.contains(gid)) {
-				final Item selectedRowItem = this.listDataTable.getItem(listEntry.getId());
-				selectedRowItem.getItemProperty(ColumnLabels.GROUP_ID.getName())
-						.setValue(germplasm.getMgid() == 0 ? "-" : germplasm.getMgid());
-			}
-		}
-	}
-
 	public ListManagerMain getListManagerMain() {
 		return this.source;
 	}
@@ -1952,27 +1832,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 
 	public void setDoneInitializing(final Boolean doneInitializing) {
 		this.doneInitializing = doneInitializing;
-	}
-
-	protected class ConfirmUnfixLinesListener implements ConfirmDialog.Listener {
-
-		private static final long serialVersionUID = 1L;
-		private final Set<Integer> gidsToProcess;
-		private final ListComponent listComponent;
-
-		public ConfirmUnfixLinesListener(final Set<Integer> gidsToProcess, final ListComponent listComponent) {
-			this.gidsToProcess = gidsToProcess;
-			this.listComponent = listComponent;
-		}
-
-		@Override
-		public void onClose(final ConfirmDialog dialog) {
-			if (dialog.isConfirmed()) {
-				this.listComponent.unfixLines(this.gidsToProcess);
-				this.listComponent.updateGermplasmListTable(this.gidsToProcess);
-			}
-		}
-
 	}
 
 	protected void addAttributeAndNameTypeColumn(final String column) {

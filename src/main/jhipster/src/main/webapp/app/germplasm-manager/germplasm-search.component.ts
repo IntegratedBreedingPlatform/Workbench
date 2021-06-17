@@ -20,7 +20,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
+import {
+    IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS,
+    UNGROUP_GERMPLASM_PERMISSIONS, CODE_GERMPLASM_PERMISSIONS
+} from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListEntry } from '../shared/list-builder/model/list.model';
@@ -28,6 +31,12 @@ import { KeySequenceRegisterDeletionDialogComponent } from './key-sequence-regis
 import { GERMPLASM_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { SearchResult } from '../shared/search-result.model';
+import { GermplasmGroupOptionsDialogComponent } from './grouping/germplasm-group-options-dialog-component';
+import { GermplasmGroupingService } from '../shared/germplasm/service/germplasm-grouping.service';
+import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-result.component';
+import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
+import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
+import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
 
 declare var $: any;
 
@@ -41,6 +50,9 @@ export class GermplasmSearchComponent implements OnInit {
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
     GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
     DELETE_GERMPLASM_PERMISSIONS = DELETE_GERMPLASM_PERMISSIONS;
+    GROUP_GERMPLASM_PERMISSIONS = GROUP_GERMPLASM_PERMISSIONS;
+    UNGROUP_GERMPLASM_PERMISSIONS = UNGROUP_GERMPLASM_PERMISSIONS;
+    CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
@@ -283,6 +295,7 @@ export class GermplasmSearchComponent implements OnInit {
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private germplasmService: GermplasmService,
+                private germplasmGroupingService: GermplasmGroupingService,
                 private router: Router,
                 private alertService: AlertService,
                 private translateService: TranslateService,
@@ -685,7 +698,7 @@ export class GermplasmSearchComponent implements OnInit {
              *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href
              *  or 'inventory-manager' string
              */
-            window.history.pushState({}, '',  window.location.hash);
+            window.history.pushState({}, '', window.location.hash);
 
             window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
                 + '?cropName=' + this.paramContext.cropName
@@ -693,6 +706,34 @@ export class GermplasmSearchComponent implements OnInit {
                 + '&printingLabelType=' + GERMPLASM_LABEL_PRINTING_TYPE
                 + '&searchRequestId=' + this.resultSearch.searchResultDbId;
         });
+    }
+
+    openGermplasmCoding() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-code.code-all-germplasm-not-supported');
+            return;
+        }
+        if (this.size(this.selectedItems) > 500) {
+            this.alertService.error('germplasm-code.too-many-selected-germplasm');
+            return;
+        }
+        const germplasmCodingDialog = this.modalService.open(GermplasmCodingDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+        germplasmCodingDialog.componentInstance.gids = this.getSelectedItemIds();
+        germplasmCodingDialog.result.then((results) => {
+            this.openGermplasmCodingResult(results);
+            // Refresh the germplasm search table
+            this.transition();
+        });
+    }
+
+    openGermplasmCodingResult(results: GermplasmCodeNameBatchResultModel[]) {
+        if (results) {
+            const germplasmCodingResultDialog = this.modalService.open(GermplasmCodingResultDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+            germplasmCodingResultDialog.componentInstance.results = results;
+        }
     }
 
     deleteGermplasm() {
@@ -740,6 +781,71 @@ export class GermplasmSearchComponent implements OnInit {
     openKeySequenceDeletionDialog(gids: number[]) {
         const confirmModalRef = this.modalService.open(KeySequenceRegisterDeletionDialogComponent as Component);
         confirmModalRef.componentInstance.gids = gids;
+    }
+
+    groupGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-grouping.group-all-germplasm-not-supported');
+            return;
+        }
+        if (this.size(this.selectedItems) > 500) {
+            this.alertService.error('germplasm-grouping.too-many-selected-germplasm');
+            return;
+        }
+        const groupGermplasmModal = this.modalService.open(GermplasmGroupOptionsDialogComponent as Component);
+        groupGermplasmModal.componentInstance.gids = this.getSelectedItemIds();
+        groupGermplasmModal.result.then(((germplasmGroupList) => {
+            this.openGermplasmGroupingResult(germplasmGroupList)
+        }));
+    }
+
+    openGermplasmGroupingResult(results) {
+        if (results) {
+            const germplasmGroupingResultComponent = this.modalService.open(GermplasmGroupingResultComponent as Component, { size: 'lg', backdrop: 'static' });
+            germplasmGroupingResultComponent.componentInstance.results = results;
+            germplasmGroupingResultComponent.result.then(() => {
+                    this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
+                    this.transition();
+                }
+            );
+        }
+    }
+
+    ungroupGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-grouping.ungroup-all-germplasm-not-supported');
+            return;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { size: 'lg', backdrop: 'static' });
+        confirmModalRef.componentInstance.title = 'Ungroup Germplasm';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to unfix/ungroup the selected germplasm? '
+            + 'Ungrouping only applies to the the selected lines; other members of the group will not be affected.';
+        confirmModalRef.result.then(() => {
+            this.isLoading = true;
+            this.germplasmGroupingService.ungroup(this.getSelectedItemIds()).subscribe((response) => {
+                if (response.unfixedGids && response.unfixedGids.length > 0) {
+                    if (response.numberOfGermplasmWithoutGroup === 0) {
+                        this.alertService.success('germplasm-grouping.ungrouping.success');
+                    } else {
+                        this.alertService.warning('germplasm-grouping.ungrouping.warning', { param1: response.unfixedGids.length, param2: response.numberOfGermplasmWithoutGroup });
+                    }
+                    this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
+                    this.transition();
+                } else {
+                    this.alertService.warning('germplasm-grouping.ungrouping.none.successful');
+                }
+                this.isLoading = false;
+            });
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 }
 

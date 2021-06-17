@@ -1,0 +1,143 @@
+<div class="container">
+	<div class="modal-header">
+		<h4 class="modal-title font-weight-bold" id="importLotHeader" jhitranslate="germplasm-coding.title">Specify Codes</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+				(click)="close()">&times;
+		</button>
+	</div>
+	<div class="modal-body">
+		<div>
+			<form name="codingForm" #codingForm="ngForm">
+				<div class="form-group">
+					<div class="pl-0 col-sm-12">
+						<span class="mandatory-asterisk"></span> Indicates a mandatory field
+					</div>
+				</div>
+				<div class="form-group row required">
+					<label class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="germplasm-coding.coding.level"></label>
+					<div class="col-sm-7">
+						<div class="form-inline">
+							<div class="form-group">
+								<input type="radio" id="code1" name="code1" [value]="GermplasmCodeNameType.CODE1" [(ngModel)]="nameType"/>
+								<label class="ml-1" for="code1">{{GermplasmCodeNameType.CODE1.toString()}}</label>
+							</div>
+							<div class="form-group">
+								<input class="ml-3" type="radio" id="code2" name="code2" [value]="GermplasmCodeNameType.CODE2" [(ngModel)]="nameType"/>
+								<label class="ml-1" for="code2">{{GermplasmCodeNameType.CODE2.toString()}}</label>
+							</div>
+							<div class="form-group">
+								<input class="ml-3" type="radio" id="code3" name="code3" [value]="GermplasmCodeNameType.CODE3" [(ngModel)]="nameType"/>
+								<label class="ml-1" for="code3">{{GermplasmCodeNameType.CODE3.toString()}}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row required">
+					<label class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="germplasm-coding.naming"></label>
+					<div class="col-sm-7">
+						<div class="form-inline">
+							<div class="form-group">
+								<input type="radio" id="automaticNaming" name="automaticNaming" [value]="true" [(ngModel)]="automaticNaming"/>
+								<label class="ml-1" for="automaticNaming" jhiTranslate="germplasm-coding.automatic.naming.generation">Automatic Naming Generation</label>
+							</div>
+							<div class="form-group">
+								<input class="ml-3" type="radio" id="manualNaming" name="manualNaming" [value]="false" [(ngModel)]="automaticNaming"/>
+								<label class="ml-1" for="manualNaming" jhiTranslate="germplasm-coding.specify.code.manually">Specify Code Manually</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="!automaticNaming">
+					<div class="form-group row required">
+						<label for="prefix" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="germplasm-coding.prefix"></label>
+						<div class="col-sm-7">
+							<div class="row">
+								<div class="input-group col-xs-12 col-md-12">
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.prefix" autocomplete="off" id="prefix" name="prefix" (change)="getNextNameSequence()" maxlength="49"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row required">
+						<label for="numOfDigits" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="germplasm-coding.number.of.digits"></label>
+						<div class="col-sm-7">
+							<div class="row">
+								<div class="input-group col-xs-12 col-md-12">
+									<select class="form-control" name="numOfDigits" [(ngModel)]="germplasmCodeNameSetting.numOfDigits" (change)="getNextNameSequence()">
+										<option *ngFor="let digit of numberOfDigits" [value]="digit">{{digit}}</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="suffix" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="germplasm-coding.suffix"></label>
+						<div class="col-sm-7">
+							<div class="row">
+								<div class="input-group col-xs-12 col-md-12">
+									<input class="form-control" [(ngModel)]="germplasmCodeNameSetting.suffix" autocomplete="off" id="suffix" name="suffix" (change)="getNextNameSequence()" maxlength="49"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-5 font-weight-bold" jhiTranslate="germplasm-coding.add.space.prefix"></label>
+						<div class="col-sm-7">
+							<div class="form-inline">
+								<div class="form-group">
+									<input type="radio" id="addSpacePrefixYes" name="addSpacePrefixYes" [value]="true" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenPrefixAndCode" (change)="getNextNameSequence()"/>
+									<label class="ml-1" for="addSpacePrefixYes">Yes</label>
+								</div>
+								<div class="form-group">
+									<input class="ml-3" type="radio" id="addSpacePrefixNo" name="addSpacePrefixNo" [value]="false" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenPrefixAndCode" (change)="getNextNameSequence()"/>
+									<label class="ml-1" for="addSpacePrefixNo">No</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-5 font-weight-bold" jhiTranslate="germplasm-coding.add.space.suffix"></label>
+						<div class="col-sm-7">
+							<div class="form-inline">
+								<div class="form-group">
+									<input type="radio" id="addSpaceSuffixYes" name="addSpaceSuffixYes" [value]="true" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenSuffixAndCode" (change)="getNextNameSequence()"/>
+									<label class="ml-1" for="addSpaceSuffixYes">Yes</label>
+								</div>
+								<div class="form-group">
+									<input class="ml-3" type="radio" id="addSpaceSuffixNo" name="addSpaceSuffixNo" [value]="false" [(ngModel)]="germplasmCodeNameSetting.addSpaceBetweenSuffixAndCode" (change)="getNextNameSequence()"/>
+									<label class="ml-1" for="addSpaceSuffixNo">No</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-5"></label>
+						<div class="col-sm-7">
+							<span class="font-italic" jhiTranslate="germplasm-coding.next.name.in.sequence"></span> <span class="col-sm-6">{{nextCodeNameSequence}}</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="startNumber" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="germplasm-coding.starting.sequence.number"></label>
+						<div class="col-sm-7">
+							<div class="row">
+								<div class="input-group col-xs-12 col-md-12">
+									<input type="number" min="0" class="form-control" [(ngModel)]="germplasmCodeNameSetting.startNumber" autocomplete="off" id="startNumber" name="startNumber" (change)="getNextNameSequence()"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" [disabled]="isProcessing ? 'disabled' : null" data-dismiss="modal" (click)="close()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+		</button>
+		<button (click)="applyCodes()" class="btn btn-primary" [disabled]="(isProcessing || !validate()) ? 'disabled' : null">
+			<span *ngIf="isProcessing" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;<span jhitranslate="germplasm-coding.apply-codes">Apply Codes</span>
+		</button>
+	</div>
+</div>
+
