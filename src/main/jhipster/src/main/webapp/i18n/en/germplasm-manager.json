@@ -199,7 +199,7 @@
        "continue": "Continue",
        "too-many-selected-germplasm": "You can only group 500 germplasm records at a time.",
        "group-all-germplasm-not-supported": "Grouping of germplasm in all pages is not supported. Please select individual germplasm to group.",
-       "ungroup-all-germplasm-not-supported": "Ungrouping of germplasm in all pages is not supported. Please select individual germplasm to un  group.",
+       "ungroup-all-germplasm-not-supported": "Ungrouping of germplasm in all pages is not supported. Please select individual germplasm to ungroup.",
        "grouping.success": "Successfully marked selected germplasm as fixed.",
        "grouping.warning": "Grouping was not applied to any entries.",
        "ungrouping.success": "All selected germplasm were successfully unfixed.",

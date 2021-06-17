@@ -776,7 +776,7 @@ export class GermplasmSearchComponent implements OnInit {
             germplasmGroupingResultComponent.componentInstance.results = results;
             germplasmGroupingResultComponent.result.then(() => {
                     this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
-                    this.resetTable();
+                    this.transition();
                 }
             );
         }
