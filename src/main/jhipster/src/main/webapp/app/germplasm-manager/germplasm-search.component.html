@@ -36,6 +36,16 @@
 					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GERMPLASM_LABEL_PRINTING_PERMISSIONS" jhiTranslate="search-germplasm.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()">
 					</button>
+					<!-- TODO: consolidate into one main Grouping menu item -->
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.group"
+							(click)="groupGermplasm()" >
+					</button>
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="UNGROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.ungroup"
+							(click)="ungroupGermplasm()" >
+					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CODE_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.code-germplasm"
+							(click)="openGermplasmCoding()">
+					</button>
 				</div>
 			</div>
 		</div>
