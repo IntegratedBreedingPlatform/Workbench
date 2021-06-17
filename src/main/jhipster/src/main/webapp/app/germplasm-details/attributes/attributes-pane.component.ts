@@ -13,7 +13,7 @@ import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableService } from '../../shared/ontology/service/variable.service';
-import { isValidValue } from '../../shared/ontology/util/is-valid-value';
+import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -34,6 +34,7 @@ export class AttributesPaneComponent implements OnInit {
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private germplasmService: GermplasmService,
                 private variableService: VariableService,
+                private variableValidationService: VariableValidationService,
                 private alertService: JhiAlertService,
                 private modalService: NgbModal,
                 private router: Router,
@@ -103,6 +104,6 @@ export class AttributesPaneComponent implements OnInit {
 
     isValidValue(attribute: GermplasmAttribute) {
         const variable = this.variableByAttributeId[attribute.id];
-        return isValidValue(attribute.value, variable);
+        return this.variableValidationService.isValidValue(attribute.value, variable);
     }
 }

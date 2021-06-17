@@ -5,23 +5,22 @@ import { GermplasmImportComponent, HEADERS } from './germplasm-import.component'
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { BREEDING_METHODS_BROWSER_DEFAULT_URL, SERVER_API_URL } from '../../app.constants';
+import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
 import { BreedingMethodManagerComponent } from '../../entities/breeding-method/breeding-method-manager.component';
 import { ParamContext } from '../../shared/service/param.context';
 import { PopupService } from '../../shared/modal/popup.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportContext } from './germplasm-import.context';
-import { Location } from '../../shared/location/model/location';
 import { LocationService } from '../../shared/location/service/location.service';
 import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
-import { isValidValue } from '../../shared/ontology/util/is-valid-value';
 import { DataType } from '../../shared/ontology/data-type';
 import { toUpper } from '../../shared/util/to-upper';
+import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -70,7 +69,8 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         private paramContext: ParamContext,
         private popupService: PopupService,
         public context: GermplasmImportContext,
-        private calendar: NgbCalendar
+        private calendar: NgbCalendar,
+        private variableValidationService: VariableValidationService
     ) {
         this.creationDateSelected = calendar.getToday();
     }
@@ -268,32 +268,13 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.context.attributesCopy.forEach((attribute) => {
             const hasSomeInvalid = this.context.data.some((row) => {
                 const value = row[toUpper(attribute.alias)] || row[toUpper(attribute.name)];
-                return !isValidValue(value, attribute);
+                return !this.variableValidationService.isValidValue(value, attribute);
             });
             this.attributeStatusById[attribute.id] = hasSomeInvalid;
         })
     }
 
     getStatus(attribute: VariableDetails) {
-        const hasSomeInvalid = this.attributeStatusById[attribute.id];
-        if (!hasSomeInvalid) {
-            return '<span class="fa fa-lg fa-check-circle text-success"></span>'
-        } else if (attribute.scale.dataType.name === DataType.CATEGORICAL) {
-            const scale = attribute.scale.name;
-            const dataType = attribute.scale.dataType.name;
-            const title = this.translateService.instant('germplasm.import.basicDetails.attributes.tooltip.invalid', { scale, dataType });
-            return '<span class="fa fa-lg fa-times-circle text-danger" title="' + title + '"></span>'
-        } else if (attribute.scale.dataType.name === DataType.NUMERIC) {
-            const min = attribute.scale.validValues && (
-                attribute.scale.validValues.min || attribute.scale.validValues.min === 0)
-                ? attribute.scale.validValues.min
-                : attribute.expectedRange.min;
-            const max = attribute.scale.validValues && (
-                attribute.scale.validValues.max || attribute.scale.validValues.max === 0)
-                ? attribute.scale.validValues.max
-                : attribute.expectedRange.max;
-            const title = this.translateService.instant('germplasm.import.basicDetails.attributes.tooltip.outOfExpected', { min, max });
-            return '<span class="fa fa-lg fa-warning text-warning" title="' + title + '"></span>'
-        }
+        return this.variableValidationService.getStatus(attribute, this.attributeStatusById);
     }
 }

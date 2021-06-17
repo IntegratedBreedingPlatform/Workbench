@@ -72,6 +72,7 @@ import { VariableSelectComponent } from './variable-select/variable-select.compo
 import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 import { VariableService } from './ontology/service/variable.service';
 import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
+import { VariableValidationService } from './ontology/service/variable-validation.service';
 
 @NgModule({
     imports: [
@@ -158,6 +159,7 @@ import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping
         UrlService,
         GermplasmPedigreeService,
         VariableService,
+        VariableValidationService,
         GermplasmGroupingService
     ],
     entryComponents: [
