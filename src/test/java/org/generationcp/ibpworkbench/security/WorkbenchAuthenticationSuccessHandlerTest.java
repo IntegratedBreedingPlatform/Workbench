@@ -15,7 +15,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 
@@ -29,6 +28,9 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class WorkbenchAuthenticationSuccessHandlerTest {
 
@@ -56,41 +58,41 @@ public class WorkbenchAuthenticationSuccessHandlerTest {
 	public void testOnAuthenticationSuccessWorkbenchSpecificDataIsPopulated()
 			throws IOException, ServletException, MiddlewareQueryException {
 
-		final HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-		final HttpSession httpSession = Mockito.mock(HttpSession.class);
-		Mockito.when(request.getSession()).thenReturn(httpSession);
+		final HttpServletRequest request = mock(HttpServletRequest.class);
+		final HttpSession httpSession = mock(HttpSession.class);
+		when(request.getSession()).thenReturn(httpSession);
 
-		final HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+		final HttpServletResponse response = mock(HttpServletResponse.class);
 
-		final Authentication authentication = Mockito.mock(Authentication.class);
-		Mockito.when(authentication.getName()).thenReturn(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER);
+		final Authentication authentication = mock(Authentication.class);
+		when(authentication.getName()).thenReturn(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER);
 
-		Mockito.when(this.releaseNoteService.shouldShowReleaseNote(USER_ID)).thenReturn(true);
+		when(this.releaseNoteService.shouldShowReleaseNote(USER_ID)).thenReturn(true);
 
 		final List<WorkbenchUser> matchingUsers = new ArrayList();
-		final WorkbenchUser testUserWorkbench = Mockito.mock(WorkbenchUser.class);
-		Mockito.when(testUserWorkbench.getName()).thenReturn(TEST_USER);
-		Mockito.when(testUserWorkbench.getUserid()).thenReturn(USER_ID);
+		final WorkbenchUser testUserWorkbench = mock(WorkbenchUser.class);
+		when(testUserWorkbench.getName()).thenReturn(TEST_USER);
+		when(testUserWorkbench.getUserid()).thenReturn(USER_ID);
 
-		final Person person = Mockito.mock(Person.class);
-		Mockito.when(person.getId()).thenReturn(USER_ID);
-		Mockito.when(testUserWorkbench.getPerson()).thenReturn(person);
+		final Person person = mock(Person.class);
+		when(person.getId()).thenReturn(USER_ID);
+		when(testUserWorkbench.getPerson()).thenReturn(person);
 
 		matchingUsers.add(testUserWorkbench);
-		Mockito.when(this.userService.getUserByName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER, 0, 1, Operation.EQUAL))
+		when(this.userService.getUserByName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER, 0, 1, Operation.EQUAL))
 				.thenReturn(matchingUsers);
 
 		this.handler.setUserService(userService);
 		this.handler.onAuthenticationSuccess(request, response, authentication);
 
 		// Just make sure following methods are invoked to populate session data for now.
-		Mockito.verify(this.userService).getUserByName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER, 0, 1, Operation.EQUAL);
-		Mockito.verify(httpSession).setAttribute(ArgumentMatchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), this.contextInfoArgumentCaptor.capture());
+		verify(this.userService).getUserByName(WorkbenchAuthenticationSuccessHandlerTest.TEST_USER, 0, 1, Operation.EQUAL);
+		verify(httpSession).setAttribute(ArgumentMatchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO), this.contextInfoArgumentCaptor.capture());
 
 		final ContextInfo actualContextInfo = this.contextInfoArgumentCaptor.getValue();
 		assertTrue(actualContextInfo.shouldShowReleaseNotes());
 
-		Mockito.verify(this.releaseNoteService).shouldShowReleaseNote(USER_ID);
+		verify(this.releaseNoteService).shouldShowReleaseNote(USER_ID);
 	}
 
 }
