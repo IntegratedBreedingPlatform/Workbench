@@ -141,15 +141,15 @@ export class GermplasmService {
     }
 
     createGermplasmCodeNames(germplasmCodeNameBatchRequestModel: GermplasmCodeNameBatchRequestModel): Observable<GermplasmCodeNameBatchResultModel[]> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/coding` +
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/codes` +
             '?programUUID=' + this.context.programUUID;
         return this.http.post<GermplasmCodeNameBatchResultModel[]>(url, germplasmCodeNameBatchRequestModel);
     }
 
     getNextNameInSequence(germplasmNameSettingModel: GermplasmNameSettingModel) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names/next-name-generation` +
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names/next-generation` +
             '?programUUID=' + this.context.programUUID;
-        return this.http.post(url, germplasmNameSettingModel, { observe: 'response', responseType: 'text'});
+        return this.http.post(url, germplasmNameSettingModel, { observe: 'response', responseType: 'text' });
     }
 
     createGermplasmName(gid: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<number> {
