@@ -1,26 +1,20 @@
 package org.generationcp.breeding.manager.customcomponent;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.vaadin.Application;
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.BaseTheme;
 import org.generationcp.breeding.manager.application.Message;
-import org.generationcp.breeding.manager.data.initializer.GermplasmExportDataInitializer;
 import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListener;
 import org.generationcp.breeding.manager.listmanager.listeners.GidLinkButtonClickListener;
 import org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter;
 import org.generationcp.breeding.manager.util.FileDownloaderUtility;
-import org.generationcp.commons.constant.ToolSection;
 import org.generationcp.commons.exceptions.GermplasmListExporterException;
-import org.generationcp.commons.pojo.CustomReportType;
-import org.generationcp.commons.reports.service.JasperReportService;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.util.VaadinFileDownloadResource;
@@ -31,7 +25,6 @@ import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.reports.Reporter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,15 +36,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.vaadin.Application;
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.BaseTheme;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 
 public class ExportListAsDialogTest {
 
@@ -84,9 +77,6 @@ public class ExportListAsDialogTest {
 
 	@Mock
 	private PlatformTransactionManager transactionManager;
-
-	@Mock
-	private JasperReportService jasperReportService;
 
 	@Mock
 	private FileDownloaderUtility fileDownloaderUtility;
@@ -122,7 +112,6 @@ public class ExportListAsDialogTest {
 		this.dialog.setListExporter(this.listExporter);
 		this.dialog.setMessageSource(this.messageSource);
 		this.dialog.setTransactionManager(this.transactionManager);
-		this.dialog.setJasperReportService(this.jasperReportService);
 		this.dialog.setFileDownloaderUtility(this.fileDownloaderUtility);
 		this.dialog.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.dialog.setContextUtil(this.contextUtil);
@@ -133,8 +122,6 @@ public class ExportListAsDialogTest {
 		Mockito.doReturn("Export Format").when(this.messageSource).getMessage(Message.EXPORT_FORMAT);
 		Mockito.doReturn("Genotyping Order").when(this.messageSource).getMessage(Message.EXPORT_LIST_FOR_GENOTYPING_ORDER);
 		Mockito.doReturn(ERROR_EXPORTING_LIST).when(this.messageSource).getMessage(Message.ERROR_EXPORTING_LIST);
-		Mockito.doReturn(GermplasmExportDataInitializer.createCustomReportTypeList()).when(this.jasperReportService)
-				.getCustomReportTypes(ToolSection.BM_LIST_MGR_CUSTOM_REPORT.name(), ToolName.LIST_MANAGER.getName());
 
 		Mockito.doReturn(this.window).when(this.source).getWindow();
 		Mockito.doNothing().when(this.window).open(this.fileDownloadResource);
@@ -220,27 +207,6 @@ public class ExportListAsDialogTest {
 						ExportListAsDialogTest.germplasmList.getId());
 		verify(this.fileDownloaderUtility, Mockito.times(1))
 				.initiateFileDownload(eq(TEMPORARY_FILE_PATH_CSV), contains(ExportListAsDialogTest.germplasmList.getName()), eq(this.source));
-	}
-
-	@Test
-	public void testExportListAsCustomReport() throws GermplasmListExporterException {
-
-		// set the drop down so that it simulates selection of the user of a custom report type
-		final List<CustomReportType> customReportTypes = GermplasmExportDataInitializer.createCustomReportTypeList();
-		final CustomReportType customReport = customReportTypes.get(0);
-		this.dialog.setExportOptionValue(this.dialog.formatCustomReportString(customReport));
-
-		final Reporter reporter = Mockito.mock(Reporter.class);
-		Mockito.doReturn(reporter).when(this.listExporter)
-				.exportGermplasmListCustomReport(ExportListAsDialogTest.TEST_GERMPLASM_LIST_ID, TEMPORARY_FILE_PATH_XLS,
-						customReport.getCode());
-
-		this.dialog.exportListAction(new Table());
-
-		// verify that custom report generation is triggered when executing the current export action
-		verify(this.listExporter)
-				.exportGermplasmListCustomReport(ExportListAsDialogTest.TEST_GERMPLASM_LIST_ID, TEMPORARY_FILE_PATH_XLS,
-						customReport.getCode());
 	}
 
 	@Test
