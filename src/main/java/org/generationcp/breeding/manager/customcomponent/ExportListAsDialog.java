@@ -16,10 +16,8 @@ import org.generationcp.breeding.manager.listmanager.listeners.CloseWindowAction
 import org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter;
 import org.generationcp.breeding.manager.util.FileDownloaderUtility;
 import org.generationcp.commons.constant.AppConstants;
-import org.generationcp.commons.constant.ToolSection;
 import org.generationcp.commons.exceptions.GermplasmListExporterException;
 import org.generationcp.commons.pojo.CustomReportType;
-import org.generationcp.commons.reports.service.JasperReportService;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
@@ -43,7 +41,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.List;
 
 @Configurable
 public class ExportListAsDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent, BreedingManagerLayout {
@@ -85,9 +82,6 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 
 	@Resource
 	private PlatformTransactionManager transactionManager;
-
-	@Resource
-	private JasperReportService jasperReportService;
 
 	@Resource
 	private GermplasmListExporter germplasmListExporter;
@@ -147,20 +141,9 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 		this.formatOptionsCbx.addItem(ExportListAsDialog.XLS_FORMAT);
 		this.formatOptionsCbx.addItem(ExportListAsDialog.CSV_FORMAT);
 		this.formatOptionsCbx.addItem(this.messageSource.getMessage(Message.EXPORT_LIST_FOR_GENOTYPING_ORDER));
-		this.addCustomReports(this.formatOptionsCbx);
 
 		// default value
 		this.formatOptionsCbx.setValue(ExportListAsDialog.XLS_FORMAT);
-	}
-
-	private void addCustomReports(final ComboBox formatOptions) {
-
-		final List<CustomReportType> customReports = this.jasperReportService
-				.getCustomReportTypes(ToolSection.BM_LIST_MGR_CUSTOM_REPORT.name(), ToolName.LIST_MANAGER.getName());
-		for (final CustomReportType customReport : customReports) {
-			formatOptions.addItem(customReport.getCode().concat(" - ").concat(customReport.getName()));
-		}
-
 	}
 
 	@Override
@@ -351,10 +334,6 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 
 	public void setTransactionManager(final PlatformTransactionManager transactionManager) {
 		this.transactionManager = transactionManager;
-	}
-
-	public void setJasperReportService(final JasperReportService jasperReportService) {
-		this.jasperReportService = jasperReportService;
 	}
 
 	public void setFileDownloaderUtility(final FileDownloaderUtility fileDownloaderUtility) {
