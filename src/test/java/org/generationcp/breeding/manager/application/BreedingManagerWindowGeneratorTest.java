@@ -8,7 +8,6 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.junit.Assert;
-import org.generationcp.breeding.manager.listimport.GermplasmImportMain;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
@@ -52,21 +51,6 @@ public class BreedingManagerWindowGeneratorTest {
 				.thenReturn(locationManagerTool);
 		Mockito.when(workbenchDataManager.getToolWithName(BreedingManagerWindowGenerator.METHOD_MANAGER_TOOL_NAME))
 				.thenReturn(methodManagerTool);
-		Mockito.when(messageSource.getMessage(Message.IMPORT_GERMPLASM_LIST_TAB_LABEL)).thenReturn(CAPTION);
-	}
-
-	@Test
-	public void testCreateGermplasmImportWindow() {
-
-		final Window window = this.breedingManagerWindowGenerator.createGermplasmImportWindow();
-
-		Assert.assertEquals("germplasmImportWindow", window.getDebugId());
-		Assert.assertEquals(BreedingManagerWindowGenerator.GERMPLASM_IMPORT_WINDOW_NAME, window.getName());
-		Assert.assertTrue(window.getContent() instanceof GermplasmImportMain);
-		Assert.assertTrue(window.isImmediate());
-		Assert.assertTrue(window.isResizeLazy());
-		Assert.assertFalse(window.getListeners(Window.ResizeEvent.class).isEmpty());
-
 	}
 
 	@Test
