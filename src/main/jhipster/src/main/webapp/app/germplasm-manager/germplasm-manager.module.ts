@@ -19,6 +19,7 @@ import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from
 import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-result.component';
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
+import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
 
 @NgModule({
     imports: [
@@ -33,6 +34,7 @@ import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-
         GermplasmListCreationPopupComponent,
         GermplasmSelectorComponent,
         GermplasmImportUpdateDialogComponent,
+        GermplasmImportUpdateDescriptorsConfirmationDialogComponent,
         GermplasmImportUpdatePopupComponent,
         GermplasmSelectorComponent,
         GermplasmSelectorModalComponent,
@@ -52,6 +54,7 @@ import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-
         GermplasmListCreationPopupComponent,
         GermplasmSelectorComponent,
         GermplasmImportUpdateDialogComponent,
+        GermplasmImportUpdateDescriptorsConfirmationDialogComponent,
         GermplasmImportUpdatePopupComponent,
         GermplasmSelectorComponent,
         GermplasmSelectorModalComponent,
