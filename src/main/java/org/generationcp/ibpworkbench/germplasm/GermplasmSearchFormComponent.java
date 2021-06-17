@@ -40,16 +40,14 @@ public class GermplasmSearchFormComponent extends VerticalLayout implements Prop
 	private String searchValue;
 	private final TextField txtSearchValue = new TextField();
 	private OptionGroup searchSelect;
+	public static final String SEARCH_OPTION_GID = "GID";
+	public static final String SEARCH_OPTION_NAME = "Names";
 
-	private static final List<String> SEARCH_OPTION = Arrays.asList(new String[] {GermplasmQueries.SEARCH_OPTION_GID,
-			GermplasmQueries.SEARCH_OPTION_NAME});
+	private static final List<String> SEARCH_OPTION = Arrays.asList(SEARCH_OPTION_GID,
+			SEARCH_OPTION_NAME);
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
-
-	public GermplasmSearchFormComponent() {
-
-	}
 
 	@Override
 	public void valueChange(ValueChangeEvent event) {
@@ -72,7 +70,7 @@ public class GermplasmSearchFormComponent extends VerticalLayout implements Prop
 		this.setSpacing(true);
 
 		this.searchSelect = new OptionGroup("Search for", GermplasmSearchFormComponent.SEARCH_OPTION);
-		this.searchSelect.select(GermplasmQueries.SEARCH_OPTION_NAME);
+		this.searchSelect.select(SEARCH_OPTION_NAME);
 		this.searchSelect.setImmediate(true);
 		this.searchSelect.addListener(this);
 		grid.addComponent(this.searchSelect, 1, 1);
@@ -84,7 +82,7 @@ public class GermplasmSearchFormComponent extends VerticalLayout implements Prop
 		grid.addComponent(this.txtSearchValue, 2, 1);
 		this.addComponent(grid);
 
-		this.choice = GermplasmQueries.SEARCH_OPTION_NAME;
+		this.choice = SEARCH_OPTION_NAME;
 		this.searchValue = "";
 	}
 
