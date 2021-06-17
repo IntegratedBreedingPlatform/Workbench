@@ -392,6 +392,9 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="germplasmExportedWorkbook" class="org.generationcp.commons.parsing.GermplasmExportedWorkbook" scope="request">
+		<aop:scoped-proxy />
+	</bean>
 	<bean id="fileService" class="org.generationcp.commons.service.impl.FileServiceImpl"
 		  init-method="init">
 	</bean>
