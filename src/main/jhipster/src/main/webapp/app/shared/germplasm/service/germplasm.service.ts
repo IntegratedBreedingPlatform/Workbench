@@ -9,13 +9,16 @@ import { Attribute } from '../../attributes/model/attribute.model';
 import { NameType } from '../model/name-type.model';
 import { GermplasmImportRequest, GermplasmImportValidationPayload } from '../model/germplasm-import-request.model';
 import { getAllRecords } from '../../util/get-all-records';
-import { GermplasmAttribute, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy, GermplasmBasicDetailsDto} from '../model/germplasm.model';
+import { GermplasmAttribute, GermplasmBasicDetailsDto, GermplasmDto, GermplasmList, GermplasmProgenitorsDetails, GermplasmStudy } from '../model/germplasm.model';
 import { Sample } from '../../../entities/sample';
 import { GermplasmNameRequestModel } from '../model/germplasm-name-request.model';
 import { GernplasmAttributeRequestModel } from '../model/gernplasm-attribute-request.model';
 import { GermplasmProgenitorsUpdateRequestModel } from '../model/germplasm-progenitors-update-request.model';
 import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
 import { map } from 'rxjs/operators';
+import { GermplasmCodeNameBatchRequestModel } from '../model/germplasm-code-name-batch-request.model';
+import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
+import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
 
 @Injectable()
 export class GermplasmService {
@@ -135,6 +138,18 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
             '?programUUID=' + this.context.programUUID;
         return this.http.delete<DeleteGermplasmResultType>(url, { params });
+    }
+
+    createGermplasmCodeNames(germplasmCodeNameBatchRequestModel: GermplasmCodeNameBatchRequestModel): Observable<GermplasmCodeNameBatchResultModel[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/codes` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<GermplasmCodeNameBatchResultModel[]>(url, germplasmCodeNameBatchRequestModel);
+    }
+
+    getNextNameInSequence(germplasmNameSettingModel: GermplasmNameSettingModel) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names/next-generation` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post(url, germplasmNameSettingModel, { observe: 'response', responseType: 'text' });
     }
 
     createGermplasmName(gid: number, germplasmNameRequestModel: GermplasmNameRequestModel): Observable<number> {

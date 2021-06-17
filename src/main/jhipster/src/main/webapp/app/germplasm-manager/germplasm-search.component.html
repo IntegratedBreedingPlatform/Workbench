@@ -43,6 +43,9 @@
 					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="UNGROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.ungroup"
 							(click)="ungroupGermplasm()" >
 					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CODE_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.code-germplasm"
+							(click)="openGermplasmCoding()">
+					</button>
 				</div>
 			</div>
 		</div>

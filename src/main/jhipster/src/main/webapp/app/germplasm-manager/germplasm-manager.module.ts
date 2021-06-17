@@ -17,6 +17,8 @@ import { GermplasmGroupOptionsDialogComponent } from './grouping/germplasm-group
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
 import { GermplasmSelectorModalComponent, GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-result.component';
+import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
+import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 
 @NgModule({
     imports: [
@@ -39,7 +41,9 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
         GermplasmListAddPopupComponent,
         KeySequenceRegisterDeletionDialogComponent,
         GermplasmGroupOptionsDialogComponent,
-        GermplasmGroupingResultComponent
+        GermplasmGroupingResultComponent,
+        GermplasmCodingDialogComponent,
+        GermplasmCodingResultDialogComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -56,7 +60,9 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
         GermplasmListAddPopupComponent,
         KeySequenceRegisterDeletionDialogComponent,
         GermplasmGroupOptionsDialogComponent,
-        GermplasmGroupingResultComponent
+        GermplasmGroupingResultComponent,
+        GermplasmCodingDialogComponent,
+        GermplasmCodingResultDialogComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,
