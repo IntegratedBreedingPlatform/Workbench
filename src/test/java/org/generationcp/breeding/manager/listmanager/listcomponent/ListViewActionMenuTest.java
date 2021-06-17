@@ -42,10 +42,8 @@ public class ListViewActionMenuTest {
 		Assert.assertTrue(this.menu.getMenuEditList().isVisible());
 		Assert.assertTrue(this.menu.getMenuDeleteEntries().isVisible());
 		Assert.assertTrue(this.menu.getMenuDeleteList().isVisible());
-		Assert.assertTrue(this.menu.getMenuGroupLines().isVisible());
 		Assert.assertTrue(this.menu.getMenuSaveChanges().isVisible());
 		Assert.assertTrue(this.menu.getMenuAddEntry().isVisible());
-		Assert.assertTrue(this.menu.getMenuAssignCodes().isVisible());
 		Assert.assertTrue(this.menu.getRemoveSelectedGermplasm().isVisible());
 	}
 
@@ -58,10 +56,8 @@ public class ListViewActionMenuTest {
 		Assert.assertTrue(this.menu.getMenuDeleteEntries().isVisible());
 		// User can't delete a list which he doesn't owned so the option for delete list will be hidden
 		Assert.assertFalse(this.menu.getMenuDeleteList().isVisible());
-		Assert.assertTrue(this.menu.getMenuGroupLines().isVisible());
 		Assert.assertTrue(this.menu.getMenuSaveChanges().isVisible());
 		Assert.assertTrue(this.menu.getMenuAddEntry().isVisible());
-		Assert.assertTrue(this.menu.getMenuAssignCodes().isVisible());
 		Assert.assertTrue(this.menu.getRemoveSelectedGermplasm().isVisible());
 	}
 
@@ -73,10 +69,8 @@ public class ListViewActionMenuTest {
 		Assert.assertFalse(this.menu.getMenuEditList().isVisible());
 		Assert.assertFalse(this.menu.getMenuDeleteEntries().isVisible());
 		Assert.assertFalse(this.menu.getMenuDeleteList().isVisible());
-		Assert.assertFalse(this.menu.getMenuGroupLines().isVisible());
 		Assert.assertFalse(this.menu.getMenuSaveChanges().isVisible());
 		Assert.assertFalse(this.menu.getMenuAddEntry().isVisible());
-		Assert.assertFalse(this.menu.getMenuAssignCodes().isVisible());
 		Assert.assertFalse(this.menu.getRemoveSelectedGermplasm().isVisible());
 	}
 
@@ -123,25 +117,19 @@ public class ListViewActionMenuTest {
 	public void testAddAdminGermplasmLinks() {
 
 		final String removeSelectedGermplasmMessage = "removeSelectedGermplasm";
-	  final String ungroupMessage = "removeSelectedGermplasm";
 
 		Mockito.when(this.messageSource.getMessage(Message.REMOVE_SELECTED_GERMPLASM)).thenReturn(removeSelectedGermplasmMessage);
-	  	Mockito.when(this.messageSource.getMessage(Message.UNGROUP)).thenReturn(ungroupMessage);
 
 		final ContextMenu.ContextMenuItem removeSelectedGermplasmContextMenuItem = Mockito.mock(ContextMenu.ContextMenuItem.class);
 		final ContextMenu.ContextMenuItem listEditiongOptionsContextMenuItem = Mockito.mock(ContextMenu.ContextMenuItem.class);
 		Mockito.when(listEditiongOptionsContextMenuItem.addItem(removeSelectedGermplasmMessage)).thenReturn(removeSelectedGermplasmContextMenuItem);
 		this.menu.setListEditingOptions(listEditiongOptionsContextMenuItem);
 
-	  	final ContextMenu.ContextMenuItem codingAndGroupingOptions = Mockito.mock(ContextMenu.ContextMenuItem.class);
-		this.menu.setCodingAndGroupingOptions(codingAndGroupingOptions);
 		this.menu.addDeleteGermplasmLink();
-		this.menu.addUngroupGermplasmLink();
 
 		// Verify that removeSelectedGermplasmContextMenuItem is added inside listEditiongOptionsContextMenuItem
 		Mockito.verify(listEditiongOptionsContextMenuItem).addItem(removeSelectedGermplasmMessage);
 		Assert.assertSame(removeSelectedGermplasmContextMenuItem, this.menu.getRemoveSelectedGermplasm());
-	  	Mockito.verify(codingAndGroupingOptions).addItem(ungroupMessage);
 	}
 
 }
