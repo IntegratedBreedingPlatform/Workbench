@@ -755,6 +755,14 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-grouping.group-all-germplasm-not-supported');
+            return;
+        }
+        if (this.size(this.selectedItems) > 500) {
+            this.alertService.error('germplasm-grouping.too-many-selected-germplasm');
+            return;
+        }
         const groupGermplasmModal = this.modalService.open(GermplasmGroupOptionsDialogComponent as Component);
         groupGermplasmModal.componentInstance.gids = this.getSelectedItemIds();
         groupGermplasmModal.result.then(((germplasmGroupList) => {
@@ -771,8 +779,6 @@ export class GermplasmSearchComponent implements OnInit {
                     this.resetTable();
                 }
             );
-        } else {
-            this.alertService.warning('germplasm-grouping.grouping.warning');
         }
     }
 
@@ -780,20 +786,34 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
-        this.germplasmGroupingService.ungroup(this.getSelectedItemIds()).subscribe((response) => {
-            if (response.unfixedGids && response.unfixedGids.length > 0) {
-                if (response.numberOfGermplasmWithoutGroup === 0) {
-                    this.alertService.success('germplasm-grouping.ungrouping.success');
-                } else {
-                    this.alertService.warning('germplasm-grouping.ungrouping.warning', { param1: response.unfixedGids.length, param2: response.numberOfGermplasmWithoutGroup });
-                }
-                this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
-                this.resetTable();
-            } else {
-                this.alertService.warning('germplasm-grouping.ungrouping.none.successful');
-            }
-        });
 
+        if (this.isSelectAll) {
+            this.alertService.error('germplasm-grouping.ungroup-all-germplasm-not-supported');
+            return;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { size: 'lg', backdrop: 'static' });
+        confirmModalRef.componentInstance.title = 'Ungroup Germplasm';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to unfix/ungroup the selected germplasm? '
+            + 'Ungrouping only applies to the the selected lines; other members of the group will not be affected.';
+        confirmModalRef.result.then(() => {
+            this.isLoading = true;
+            this.germplasmGroupingService.ungroup(this.getSelectedItemIds()).subscribe((response) => {
+                if (response.unfixedGids && response.unfixedGids.length > 0) {
+                    if (response.numberOfGermplasmWithoutGroup === 0) {
+                        this.alertService.success('germplasm-grouping.ungrouping.success');
+                    } else {
+                        this.alertService.warning('germplasm-grouping.ungrouping.warning', { param1: response.unfixedGids.length, param2: response.numberOfGermplasmWithoutGroup });
+                    }
+                    this.hiddenColumns[ColumnLabels['GROUP ID']] = false;
+                    this.resetTable();
+                } else {
+                    this.alertService.warning('germplasm-grouping.ungrouping.none.successful');
+                }
+                this.isLoading = false;
+            });
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 }
 

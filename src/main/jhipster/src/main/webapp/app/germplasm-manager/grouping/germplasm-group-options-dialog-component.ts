@@ -24,10 +24,15 @@ export class GermplasmGroupOptionsDialogComponent {
     }
 
     group() {
+        this.isLoading = true;
         this.germplasmGroupingService.group({ gids: this.gids, includeDescendants: this.includeDescendants, preserveExistingGroup: this.preserveExistingGroup })
-            .subscribe((response) => {
-                this.modal.close(response);
-            });
+            .toPromise().then((response) => {
+            this.modal.close(response);
+            this.isLoading = false;
+        }).catch((response) => {
+            this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.isLoading = false;
+        });
     }
 
     dismiss() {
