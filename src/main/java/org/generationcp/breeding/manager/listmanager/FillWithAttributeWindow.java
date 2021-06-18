@@ -20,6 +20,7 @@ import org.generationcp.breeding.manager.listmanager.listeners.FillWithAttribute
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.middleware.api.germplasm.GermplasmService;
 import org.generationcp.middleware.api.germplasm.search.GermplasmSearchRequest;
 import org.generationcp.middleware.api.germplasm.search.GermplasmSearchService;
 import org.generationcp.middleware.domain.ontology.Variable;
@@ -57,6 +58,9 @@ public class FillWithAttributeWindow extends BaseSubWindow
 	@Autowired
 	private GermplasmSearchService germplasmSearchService;
 
+	@Autowired
+	private GermplasmService germplasmService;
+
 	public FillWithAttributeWindow(final AddColumnSource addColumnSource, final String targetPropertyId,
 			final boolean isFromGermplasmSearchWindow) {
 		this.addColumnSource = addColumnSource;
@@ -83,10 +87,7 @@ public class FillWithAttributeWindow extends BaseSubWindow
 
 	@Override
 	public void initializeValues() {
-		final GermplasmSearchRequest germplasmSearchRequest = new GermplasmSearchRequest();
-		germplasmSearchRequest.setGids(this.addColumnSource.getAllGids());
-		this.attributeVariables = this.germplasmSearchService.getGermplasmAttributeVariables(germplasmSearchRequest, null);
-
+		this.attributeVariables = this.germplasmService.getGermplasmAttributeVariables(this.addColumnSource.getAllGids(), null);
 		for (final Variable variable : this.attributeVariables) {
 			if (!this.addColumnSource.columnExists(variable.getName().toUpperCase())) {
 				this.attributeBox.addItem(variable.getId());
