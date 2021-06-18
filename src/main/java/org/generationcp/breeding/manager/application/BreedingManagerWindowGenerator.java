@@ -7,7 +7,6 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.breeding.manager.listimport.GermplasmImportMain;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -37,40 +36,6 @@ public class BreedingManagerWindowGenerator {
 
 	@Resource
 	private SimpleResourceBundleMessageSource messageSource;
-
-	public Window createGermplasmImportWindow() {
-
-		final Window germplasmImportWindow = new Window(this.messageSource.getMessage(Message.IMPORT_GERMPLASM_LIST_TAB_LABEL));
-		germplasmImportWindow.setDebugId("germplasmImportWindow");
-		germplasmImportWindow.setName(GERMPLASM_IMPORT_WINDOW_NAME);
-		germplasmImportWindow.setSizeUndefined();
-		germplasmImportWindow.setContent(new GermplasmImportMain(germplasmImportWindow));
-
-		// Resize the popup windows (SubWindow) when the parent window is resized
-		germplasmImportWindow.addListener(new Window.ResizeListener() {
-
-			@Override
-			public void windowResized(final Window.ResizeEvent resizeEvent) {
-				final Set<Window> childWindows = germplasmImportWindow.getChildWindows();
-				for (final Window childWindow : childWindows) {
-					childWindow.setWidth(POPUP_WINDOW_WIDTH);
-					childWindow.setHeight(POPUP_WINDOW_HEIGHT);
-
-					adjustWindowContentBasedOnBrowserScreenSize(childWindow);
-				}
-			}
-		});
-
-		// Set immediate as true so that everytime the browser resizes,
-		// it will fire the ResizeEvent Listener
-		germplasmImportWindow.setImmediate(true);
-
-		// Set ResizeLazy to true so that only one event is fired when resizing
-		germplasmImportWindow.setResizeLazy(true);
-
-		return germplasmImportWindow;
-
-	}
 
 	/**
 	 * Opens and attaches a modal popup containing the location manager to a parent window
