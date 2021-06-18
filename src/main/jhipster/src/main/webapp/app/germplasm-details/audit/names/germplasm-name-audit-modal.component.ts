@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PopupService } from '../../shared/modal/popup.service';
-import { GermplasmChangesService } from './germplasm-changes.service';
+import { PopupService } from '../../../shared/modal/popup.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { GermplasmNameChange } from './germplasm-name-changes.model';
-import { RevisionType } from './revision-type';
+import { RevisionType } from '../revision-type';
 import { TranslateService } from '@ngx-translate/core';
-import { GermplasmNameContext } from '../../entities/germplasm/name/germplasm-name.context';
+import { GermplasmNameContext } from '../../../entities/germplasm/name/germplasm-name.context';
 import { finalize } from 'rxjs/operators';
-import { formatErrorList } from '../../shared/alert/format-error-list';
+import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import * as moment from 'moment';
+import { GermplasmAuditService } from '../germplasm-audit.service';
+import { GermplasmNameAudit } from './germplasm-name-audit.model';
 
 @Component({
-    selector: 'jhi-germplasm-name-changes-modal',
-    templateUrl: './germplasm-name-changes-modal.component.html',
+    selector: 'jhi-germplasm-name-audit-modal',
+    templateUrl: './germplasm-name-audit-modal.component.html',
     styleUrls: [
-        'germplasm-name-changes-modal.scss'
+        'germplasm-name-audit-modal.scss'
     ]
 })
-export class GermplasmNameChangesModalComponent implements OnInit {
+export class GermplasmNameAuditModalComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
@@ -34,10 +34,10 @@ export class GermplasmNameChangesModalComponent implements OnInit {
     queryCount: number;
     isLoading: boolean;
 
-    germplasmNameChanges: GermplasmNameChange[];
+    germplasmNameAuditChanges: GermplasmNameAudit[];
 
     constructor(public activeModal: NgbActiveModal,
-                private germplasmChangesService: GermplasmChangesService,
+                private germplasmChangesService: GermplasmAuditService,
                 private translateService: TranslateService,
                 private germplasmNameContext: GermplasmNameContext,
                 private jhiAlertService: JhiAlertService,
@@ -61,7 +61,7 @@ export class GermplasmNameChangesModalComponent implements OnInit {
     }
 
     transition() {
-        this.router.navigate(['germplasm/:gid/name/:nameId/changes-dialog'], {
+        this.router.navigate(['germplasm/:gid/name/:nameId/audit-dialog  '], {
             queryParams:
                 {
                     page: this.page,
@@ -77,12 +77,12 @@ export class GermplasmNameChangesModalComponent implements OnInit {
         this.activeModal.dismiss('cancel');
     }
 
-    getEventDate(germplasmNameChange: GermplasmNameChange): string {
+    getEventDate(germplasmNameChange: GermplasmNameAudit): string {
         const date: number = (germplasmNameChange.revisionType ===  RevisionType.CREATION) ? germplasmNameChange.createdDate : germplasmNameChange.modifiedDate;
         return moment(date).format('YYYY-MM-DD HH:mm:ss');
     }
 
-    getUser(germplasmNameChange: GermplasmNameChange): string {
+    getUser(germplasmNameChange: GermplasmNameAudit): string {
         return (germplasmNameChange.revisionType ===  RevisionType.CREATION) ? germplasmNameChange.createdBy : germplasmNameChange.modifiedBy;
     }
 
@@ -94,15 +94,15 @@ export class GermplasmNameChangesModalComponent implements OnInit {
         }).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
-            (res: HttpResponse<GermplasmNameChange[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<GermplasmNameAudit[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
 
-    private onSuccess(data: GermplasmNameChange[], headers) {
+    private onSuccess(data: GermplasmNameAudit[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
-        this.germplasmNameChanges = data;
+        this.germplasmNameAuditChanges = data;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -116,17 +116,17 @@ export class GermplasmNameChangesModalComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-germplasm-name-changes-popup',
+    selector: 'jhi-germplasm-name-audit-popup',
     template: ``
 })
-export class GermplasmNameChangesPopupComponent implements OnInit {
+export class GermplasmNameAuditPopupComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService) {
     }
 
     ngOnInit(): void {
-        const modal = this.popupService.open(GermplasmNameChangesModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmNameAuditModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
         modal.then((modalRef) => {
             modalRef.componentInstance.gid = Number(this.route.snapshot.paramMap.get('gid'));
             modalRef.componentInstance.nameId = Number(this.route.snapshot.paramMap.get('nameId'));

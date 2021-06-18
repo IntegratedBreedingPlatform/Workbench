@@ -1,4 +1,4 @@
-export class GermplasmNameChange {
+export class GermplasmNameAudit {
     constructor(
         public revisionType: string,
         public nameType: string,

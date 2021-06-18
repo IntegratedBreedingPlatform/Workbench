@@ -10,8 +10,8 @@
 		</div>
 	</div>
 	<div class="modal-body">
-		<div class="table-responsive" *ngIf="germplasmNameChanges">
-			<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmNameChanges.length else nodata">
+		<div class="table-responsive" *ngIf="germplasmNameAuditChanges">
+			<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmNameAuditChanges.length else nodata">
 				<thead>
 				<tr>
 					<th scope="col" jhiTranslate="basic-details.names.name-type">Name type</th>
@@ -28,7 +28,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr *ngFor="let nameChange of germplasmNameChanges">
+				<tr *ngFor="let nameChange of germplasmNameAuditChanges">
 					<td [ngClass]="{ 'text-success': nameChange.nameTypeChanged }">{{nameChange.nameType}}</td>
 					<td class="word-wrap" [ngClass]="{ 'text-success': nameChange.valueChanged }">{{nameChange.value}}</td>
 					<td [ngClass]="{ 'text-success': nameChange.locationChanged }">{{nameChange.locationName}}</td>
@@ -54,7 +54,7 @@
 					</tbody>
 				</table>
 			</ng-template>
-			<div *ngIf="germplasmNameChanges && germplasmNameChanges.length">
+			<div *ngIf="germplasmNameAuditChanges && germplasmNameAuditChanges.length">
 				<div class="row">
 					<div class="col">
 						<div class="pagination-container">

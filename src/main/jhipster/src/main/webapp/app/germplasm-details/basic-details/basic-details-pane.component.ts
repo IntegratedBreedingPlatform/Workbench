@@ -104,7 +104,7 @@ export class BasicDetailsPaneComponent implements OnInit {
 
     getGermplasmNameChanges(germplasmName: GermplasmName): void {
         this.germplasmNameContext.germplasmName = germplasmName;
-        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/name/${germplasmName.id}/changes-dialog`}, }], {
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/name/${germplasmName.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
         });
     }
