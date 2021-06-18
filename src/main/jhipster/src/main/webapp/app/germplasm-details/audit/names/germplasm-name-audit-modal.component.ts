@@ -9,9 +9,9 @@ import { GermplasmNameContext } from '../../../entities/germplasm/name/germplasm
 import { finalize } from 'rxjs/operators';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
-import * as moment from 'moment';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { GermplasmNameAudit } from './germplasm-name-audit.model';
+import { parseDate } from '../../../shared/util/date-utils';
 
 @Component({
     selector: 'jhi-germplasm-name-audit-modal',
@@ -79,7 +79,7 @@ export class GermplasmNameAuditModalComponent implements OnInit {
 
     getEventDate(germplasmNameAudit: GermplasmNameAudit): string {
         const date: number = (germplasmNameAudit.revisionType ===  RevisionType.CREATION) ? germplasmNameAudit.createdDate : germplasmNameAudit.modifiedDate;
-        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+        return parseDate(date);
     }
 
     getUser(germplasmNameAudit: GermplasmNameAudit): string {

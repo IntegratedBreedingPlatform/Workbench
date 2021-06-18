@@ -8,10 +8,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
-import * as moment from 'moment';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { GermplasmAttributeAudit } from './germplasm-attribute-audit.model';
 import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
+import { parseDate } from '../../../shared/util/date-utils';
 
 @Component({
     selector: 'jhi-germplasm-attribute-audit-modal',
@@ -79,7 +79,7 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
 
     getEventDate(germplasmAttributeAudit: GermplasmAttributeAudit): string {
         const date: number = (germplasmAttributeAudit.revisionType ===  RevisionType.CREATION) ? germplasmAttributeAudit.createdDate : germplasmAttributeAudit.modifiedDate;
-        return moment(date).format('YYYY-MM-DD HH:mm:ss');
+        return parseDate(date);
     }
 
     getUser(germplasmAttributeAudit: GermplasmAttributeAudit): string {
