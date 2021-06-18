@@ -3,7 +3,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { RevisionType } from '../revision-type';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/operators';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
@@ -11,7 +10,7 @@ import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { GermplasmAttributeAudit } from './germplasm-attribute-audit.model';
 import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
-import { parseDate } from '../../../shared/util/date-utils';
+import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 
 @Component({
     selector: 'jhi-germplasm-attribute-audit-modal',
@@ -35,6 +34,9 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
     isLoading: boolean;
 
     germplasmAttributeAuditChanges: GermplasmAttributeAudit[];
+
+    getEventDate = getEventDate;
+    getEventUser = getEventUser;
 
     constructor(public activeModal: NgbActiveModal,
                 private germplasmChangesService: GermplasmAuditService,
@@ -75,15 +77,6 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
 
     dismiss() {
         this.activeModal.dismiss('cancel');
-    }
-
-    getEventDate(germplasmAttributeAudit: GermplasmAttributeAudit): string {
-        const date: number = (germplasmAttributeAudit.revisionType ===  RevisionType.CREATION) ? germplasmAttributeAudit.createdDate : germplasmAttributeAudit.modifiedDate;
-        return parseDate(date);
-    }
-
-    getUser(germplasmAttributeAudit: GermplasmAttributeAudit): string {
-        return (germplasmAttributeAudit.revisionType ===  RevisionType.CREATION) ? germplasmAttributeAudit.createdBy : germplasmAttributeAudit.modifiedBy;
     }
 
     private loadAll() {

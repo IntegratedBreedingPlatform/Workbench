@@ -36,7 +36,7 @@
 					<td [ngClass]="{ 'text-success': nameChange.preferredChanged }">{{nameChange.preferred ? 'Yes' : 'No'}}</td>
 					<td>{{nameChange.revisionType}}</td>
 					<td>{{getEventDate(nameChange)}}</td>
-					<td>{{getUser(nameChange)}}</td>
+					<td>{{getEventUser(nameChange)}}</td>
 				</tr>
 				</tbody>
 			</table>

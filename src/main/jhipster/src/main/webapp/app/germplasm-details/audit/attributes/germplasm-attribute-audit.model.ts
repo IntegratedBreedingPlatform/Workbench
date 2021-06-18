@@ -1,4 +1,6 @@
-export class GermplasmAttributeAudit {
+import { GermplasmAudit } from '../germplasm-audit.model';
+
+export class GermplasmAttributeAudit extends GermplasmAudit {
     constructor(
         public revisionType: string,
         public attributeType: string,
@@ -14,5 +16,7 @@ export class GermplasmAttributeAudit {
         public creationDateChanged: boolean,
         public valueChanged: boolean
 ) {
+        super(revisionType, createdBy, createdDate, modifiedBy, modifiedDate);
     }
+
 }

@@ -3,7 +3,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { RevisionType } from '../revision-type';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmNameContext } from '../../../entities/germplasm/name/germplasm-name.context';
 import { finalize } from 'rxjs/operators';
@@ -11,7 +10,7 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { GermplasmNameAudit } from './germplasm-name-audit.model';
-import { parseDate } from '../../../shared/util/date-utils';
+import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 
 @Component({
     selector: 'jhi-germplasm-name-audit-modal',
@@ -35,6 +34,9 @@ export class GermplasmNameAuditModalComponent implements OnInit {
     isLoading: boolean;
 
     germplasmNameAuditChanges: GermplasmNameAudit[];
+
+    getEventDate = getEventDate;
+    getEventUser = getEventUser;
 
     constructor(public activeModal: NgbActiveModal,
                 private germplasmChangesService: GermplasmAuditService,
@@ -75,15 +77,6 @@ export class GermplasmNameAuditModalComponent implements OnInit {
 
     dismiss() {
         this.activeModal.dismiss('cancel');
-    }
-
-    getEventDate(germplasmNameAudit: GermplasmNameAudit): string {
-        const date: number = (germplasmNameAudit.revisionType ===  RevisionType.CREATION) ? germplasmNameAudit.createdDate : germplasmNameAudit.modifiedDate;
-        return parseDate(date);
-    }
-
-    getUser(germplasmNameAudit: GermplasmNameAudit): string {
-        return (germplasmNameAudit.revisionType ===  RevisionType.CREATION) ? germplasmNameAudit.createdBy : germplasmNameAudit.modifiedBy;
     }
 
     private loadAll() {
