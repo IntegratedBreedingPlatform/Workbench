@@ -10,15 +10,14 @@
 		</div>
 	</div>
 	<div class="modal-body">
-		<div class="table-responsive" *ngIf="germplasmNameAuditChanges">
-			<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmNameAuditChanges.length else nodata">
+		<div class="table-responsive" *ngIf="germplasmAttributeAuditChanges">
+			<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmAttributeAuditChanges.length else nodata">
 				<thead>
 				<tr>
-					<th scope="col" jhiTranslate="basic-details.names.name-type">Name type</th>
-					<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
-					<th scope="col" jhiTranslate="basic-details.names.location" class="fixed-width-80">Location</th>
-					<th scope="col" jhiTranslate="basic-details.names.date" class="fixed-width-80">Date</th>
-					<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
+					<th scope="col" jhiTranslate="attributes.attributes.variable">Name type</th>
+					<th scope="col" jhiTranslate="attributes.attributes.value">Value</th>
+					<th scope="col" jhiTranslate="attributes.attributes.location" class="fixed-width-80">Location</th>
+					<th scope="col" jhiTranslate="attributes.attributes.date" class="fixed-width-80">Date</th>
 					<th scope="col" jhiTranslate="audit.event-type">Event Type</th>
 					<th scope="col" class="fixed-width-100">
 						<span jhiTranslate="audit.event-date">Timestamp</span>
@@ -28,15 +27,14 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr *ngFor="let nameChange of germplasmNameAuditChanges">
-					<td [ngClass]="{ 'text-success': nameChange.nameTypeChanged }">{{nameChange.nameType}}</td>
-					<td class="word-wrap" [ngClass]="{ 'text-success': nameChange.valueChanged }">{{nameChange.value}}</td>
-					<td [ngClass]="{ 'text-success': nameChange.locationChanged }">{{nameChange.locationName}}</td>
-					<td [ngClass]="{ 'text-success': nameChange.creationDateChanged }">{{nameChange.creationDate}}</td>
-					<td [ngClass]="{ 'text-success': nameChange.preferredChanged }">{{nameChange.preferred ? 'Yes' : 'No'}}</td>
-					<td>{{nameChange.revisionType}}</td>
-					<td>{{getEventDate(nameChange)}}</td>
-					<td>{{getUser(nameChange)}}</td>
+				<tr *ngFor="let attributeChange of germplasmAttributeAuditChanges">
+					<td [ngClass]="{ 'text-success': attributeChange.attributeTypeChanged }">{{attributeChange.attributeType}}</td>
+					<td class="word-wrap" [ngClass]="{ 'text-success': attributeChange.valueChanged }">{{attributeChange.value}}</td>
+					<td [ngClass]="{ 'text-success': attributeChange.locationChanged }">{{attributeChange.locationName}}</td>
+					<td [ngClass]="{ 'text-success': attributeChange.creationDateChanged }">{{attributeChange.creationDate}}</td>
+					<td>{{attributeChange.revisionType}}</td>
+					<td>{{getEventDate(attributeChange)}}</td>
+					<td>{{getUser(attributeChange)}}</td>
 				</tr>
 				</tbody>
 			</table>
@@ -54,7 +52,7 @@
 					</tbody>
 				</table>
 			</ng-template>
-			<div *ngIf="germplasmNameAuditChanges && germplasmNameAuditChanges.length">
+			<div *ngIf="germplasmAttributeAuditChanges && germplasmAttributeAuditChanges.length">
 				<div class="row">
 					<div class="col">
 						<div class="pagination-container">

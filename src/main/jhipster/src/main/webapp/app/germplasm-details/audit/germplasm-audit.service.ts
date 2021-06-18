@@ -5,6 +5,7 @@ import { SERVER_API_URL } from '../../app.constants';
 import { ParamContext } from '../../shared/service/param.context';
 import { createRequestOption } from '../../shared';
 import { GermplasmNameAudit } from './names/germplasm-name-audit.model';
+import { GermplasmAttributeAudit } from './attributes/germplasm-attribute-audit.model';
 
 @Injectable()
 export class GermplasmAuditService {
@@ -16,6 +17,12 @@ export class GermplasmAuditService {
     getNamesChanges(gid: number, nameId: number, request: any): Observable<HttpResponse<GermplasmNameAudit[]>> {
         const params = createRequestOption(request);
         return this.http.get<GermplasmNameAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/name/${nameId}/changes`,
+            { params, observe: 'response' });
+    }
+
+    getAttributesChanges(gid: number, attributeId: number, request: any): Observable<HttpResponse<GermplasmAttributeAudit[]>> {
+        const params = createRequestOption(request);
+        return this.http.get<GermplasmAttributeAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attribute/${attributeId}/changes`,
             { params, observe: 'response' });
     }
 

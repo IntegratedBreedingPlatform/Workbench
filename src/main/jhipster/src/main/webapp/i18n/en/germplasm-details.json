@@ -30,12 +30,6 @@
             "date": "Date",
             "preferred": "Preferred"
         },
-        "audit-changes": {
-            "title": "{{entity}} {{entityValue}} - View history of changes",
-            "event-type": "Event Type",
-            "event-date": "Timestamp",
-            "user": "User"
-        },
         "germplasm-origin": {
             "title": "GERMPLASM ORIGIN",
             "study": "Study",
@@ -148,5 +142,15 @@
         "germplasm-date": "Germplasm Date:",
         "reference": "Reference:",
         "success": "Germplasm Basic Details updated successfully."
+    },
+    "audit": {
+        "entities": {
+            "name": "Name",
+            "attribute": "Attribute"
+        },
+        "title": "{{entity}} {{entityValue}} - View history of changes",
+        "event-type": "Event Type",
+        "event-date": "Timestamp",
+        "user": "User"
     }
 }

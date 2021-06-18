@@ -9,6 +9,7 @@ import { GermplasmNameModule } from './germplasm/name/germplasm-name.module';
 import { GermplasmAttributeModule } from './germplasm/attribute/germplasm-attribute.module';
 import { GermplasmBasicDetailsModule } from './germplasm/basic-details/germplasm-basic-details.module';
 import { GermplasmNameAuditModule } from '../germplasm-details/audit/names/germplasm-name-audit.module';
+import { GermplasmAttributeAuditModule } from '../germplasm-details/audit/attributes/germplasm-attribute-audit.module';
 
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -22,7 +23,8 @@ import { GermplasmNameAuditModule } from '../germplasm-details/audit/names/germp
         GermplasmNameModule,
         GermplasmAttributeModule,
         GermplasmProgenitorsModule,
-        GermplasmNameAuditModule
+        GermplasmNameAuditModule,
+        GermplasmAttributeAuditModule
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

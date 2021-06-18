@@ -9,7 +9,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -18,6 +18,9 @@ import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
 export class AttributesPaneComponent implements OnInit {
 
     MODIFY_ATTRIBUTES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_ATTRIBUTES'];
+    ATTRIBUTES_ACTIONS_PERMISSIONS = [...this.MODIFY_ATTRIBUTES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
+    GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
+
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
     attributes: GermplasmAttribute[] = [];
@@ -82,6 +85,13 @@ export class AttributesPaneComponent implements OnInit {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }, () => confirmModalRef.dismiss());
+    }
+
+    openGermplasmAttributeAuditChanges(germplasmAttribute: GermplasmAttribute): void {
+        this.germplasmAttributesContext.attribute = germplasmAttribute;
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attribute/${germplasmAttribute.id}/audit-dialog`}, }], {
+            queryParamsHandling: 'merge'
+        });
     }
 
 }
