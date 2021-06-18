@@ -86,7 +86,7 @@
 						<td class="text-center" *jhiHasAnyAuthority="NAMES_ACTIONS_PERMISSIONS">
 							<button class="btn btn-info" (click)="editGermplasmName(name)" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
 							<button class="btn btn-info" (click)="deleteGermplasmName(name)" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" (click)="getGermplasmNameChanges(name)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION"><i class="fa fa-list fa-md" aria-hidden="true"></i></button>
+							<button class="btn btn-info" (click)="openGermplasmNameAuditModal(name)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION"><i class="fa fa-list fa-md" aria-hidden="true"></i></button>
 						</td>
 					</tr>
 					</tbody>

@@ -22,7 +22,7 @@ import { ParamContext } from '../../shared/service/param.context';
 export class BasicDetailsPaneComponent implements OnInit {
 
     EDIT_BASIC_DETAILS_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_BASIC_DETAILS'];
-    NAMES_ACTIONS_PERMISSIONS = [...MODIFY_NAMES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION]
+    NAMES_ACTIONS_PERMISSIONS = [...MODIFY_NAMES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
     MODIFY_NAMES_PERMISSIONS = MODIFY_NAMES_PERMISSIONS;
     GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
 
@@ -102,7 +102,7 @@ export class BasicDetailsPaneComponent implements OnInit {
         return this.paramContext.programUUID === studyProgramUUID;
     }
 
-    getGermplasmNameChanges(germplasmName: GermplasmName): void {
+    openGermplasmNameAuditModal(germplasmName: GermplasmName): void {
         this.germplasmNameContext.germplasmName = germplasmName;
         this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/name/${germplasmName.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
