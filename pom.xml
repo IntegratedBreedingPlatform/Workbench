@@ -15,8 +15,8 @@
 		<spring.version>4.1.6.RELEASE</spring.version>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<modelmapper.version>0.7.3</modelmapper.version>
-		<node.version>v8.11.3</node.version>
-		<yarn.version>v1.21.1</yarn.version>
+		<node.version>v14.17.0</node.version>
+		<yarn.version>v1.22.10</yarn.version>
 		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
 		<envConfig>${user.name}</envConfig>
 	</properties>
