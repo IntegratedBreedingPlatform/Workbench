@@ -47,8 +47,9 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
                 private router: Router) {
         this.page = 1;
 
+        const entity = this.germplasmAttributesContext.attributeType.toLowerCase();
         this.title = this.translateService.instant('audit.title',
-            { entity: this.translateService.instant('audit.entities.attribute'), entityValue: this.germplasmAttributesContext.attribute.value });
+            { entity: this.translateService.instant('audit.entities.' + entity), entityValue: this.germplasmAttributesContext.attribute.value });
     }
 
     ngOnInit(): void {

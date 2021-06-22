@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
+import { GermplasmAttributeType } from '../../entities/germplasm/attribute/germplasm-attribute-type';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -24,6 +25,8 @@ export class AttributesPaneComponent implements OnInit {
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
     attributes: GermplasmAttribute[] = [];
+
+    GermplasmAttributeType = GermplasmAttributeType;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
@@ -57,7 +60,7 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    editGermplasmAttribute(attributeType: string, germplasmAttribute: GermplasmAttribute): void {
+    editGermplasmAttribute(attributeType: GermplasmAttributeType, germplasmAttribute: GermplasmAttribute): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {
@@ -65,7 +68,7 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    createGermplasmAttribute(attributeType: string): void {
+    createGermplasmAttribute(attributeType: GermplasmAttributeType): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {
             queryParamsHandling: 'merge'
@@ -87,7 +90,8 @@ export class AttributesPaneComponent implements OnInit {
         }, () => confirmModalRef.dismiss());
     }
 
-    openGermplasmAttributeAuditChanges(germplasmAttribute: GermplasmAttribute): void {
+    openGermplasmAttributeAuditChanges(attributeType: GermplasmAttributeType, germplasmAttribute: GermplasmAttribute): void {
+        this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attribute/${germplasmAttribute.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'

@@ -146,7 +146,8 @@
     "audit": {
         "entities": {
             "name": "Name",
-            "attribute": "Attribute"
+            "attribute": "Attribute",
+            "passport": "Passport"
         },
         "title": "{{entity}} {{entityValue}} - View history of changes",
         "event-type": "Event Type",
