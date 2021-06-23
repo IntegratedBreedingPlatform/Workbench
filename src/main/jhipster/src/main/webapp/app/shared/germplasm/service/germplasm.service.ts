@@ -71,13 +71,6 @@ export class GermplasmService {
             { params, observe: 'response' });
     }
 
-    // FIXME into IBP-4659 (Replace by Resource /variables/filter)
-    getGermplasmAttributes(codes: string[]): Observable<Attribute[]> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes` +
-            '?programUUID=' + this.context.programUUID + '&codes=' + codes;
-        return this.http.get<Attribute[]>(url);
-    }
-
     getGermplasmAttributesByGidAndType(gid: number, variableTypeId: number): Observable<GermplasmAttribute[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?variableTypeId=${variableTypeId}&programUUID=${this.context.programUUID}`;
         return this.http.get<GermplasmAttribute[]>(url);
