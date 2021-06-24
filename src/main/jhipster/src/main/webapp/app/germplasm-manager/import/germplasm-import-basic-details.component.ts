@@ -20,7 +20,7 @@ import { isNumeric } from '../../shared/util/is-numeric';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { toUpper } from '../../shared/util/to-upper';
 import { VariableValidationStatusType, VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
-import { DataType } from '../../shared/ontology/data-type';
+import { DataTypeEnum } from '../../shared/ontology/data-type.enum';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',

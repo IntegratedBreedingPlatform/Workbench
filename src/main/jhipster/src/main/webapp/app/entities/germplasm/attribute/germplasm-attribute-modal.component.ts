@@ -11,7 +11,7 @@ import { Attribute } from '../../../shared/attributes/model/attribute.model';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../../shared/ontology/model/variable-details';
 import { VariableService } from '../../../shared/ontology/service/variable.service';
-import { DataType } from '../../../shared/ontology/data-type';
+import { DataTypeEnum } from '../../../shared/ontology/data-type.enum';
 import { VariableValidationService } from '../../../shared/ontology/service/variable-validation.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -28,7 +28,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     locations: LocationModel[];
     isLoading: boolean;
     VariableType = VariableTypeEnum;
-    DataType = DataType;
+    DataType = DataTypeEnum;
 
     attributeId: number;
     attributeTypeId: number;

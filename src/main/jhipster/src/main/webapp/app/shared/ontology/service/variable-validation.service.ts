@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { VariableDetails } from '../model/variable-details';
-import { DataType } from '../data-type';
+import { DataTypeEnum } from '../data-type.enum';
 import { isNumeric } from '../../util/is-numeric';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class VariableValidationService {
 
         if (variable.scale && variable.scale.dataType) {
             const dataType = variable.scale.dataType;
-            if (dataType && dataType.name === DataType.NUMERIC) {
+            if (dataType && dataType.name === DataTypeEnum.NUMERIC) {
                 isValid = isValid && isNumeric(value);
             }
         }

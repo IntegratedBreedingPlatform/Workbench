@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableDetailsContext } from './variable-details.context';
-import { DataType } from '../../shared/ontology/data-type';
+import { DataTypeEnum } from '../../shared/ontology/data-type.enum';
 
 @Component({
     selector: 'jhi-valid-values',
@@ -10,7 +10,7 @@ import { DataType } from '../../shared/ontology/data-type';
 })
 export class ValidValuesComponent implements OnInit {
 
-    dataType = DataType;
+    dataType = DataTypeEnum;
     variableDetails: VariableDetails;
 
     constructor(private jhiLanguageService: JhiLanguageService,

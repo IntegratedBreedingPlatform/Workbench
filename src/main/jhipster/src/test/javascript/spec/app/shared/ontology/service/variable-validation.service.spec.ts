@@ -3,7 +3,7 @@ import { VariableDetails } from '../../../../../../../main/webapp/app/shared/ont
 import { VariableValidationService, VariableValidationStatusType } from '../../../../../../../main/webapp/app/shared/ontology/service/variable-validation.service';
 import { TestBed } from '@angular/core/testing';
 import { BmsjHipsterTestModule } from '../../../../test.module';
-import { DataType } from '../../../../../../../main/webapp/app/shared/ontology/data-type';
+import { DataTypeEnum } from '../../../../../../../main/webapp/app/shared/ontology/data-type.enum';
 
 describe('VariableValidationService', () => {
     let variableValidationService: VariableValidationService;
@@ -61,14 +61,14 @@ describe('VariableValidationService', () => {
     });
 
     it('should validate non numerical values for numeric types', () => {
-        const inRange = variableValidationService.isValidValue(10, <VariableDetails>({ scale: { dataType: { name: DataType.NUMERIC } } }));
+        const inRange = variableValidationService.isValidValue(10, <VariableDetails>({ scale: { dataType: { name: DataTypeEnum.NUMERIC } } }));
         expect(inRange).toEqual(jasmine.objectContaining(IN_RANGE));
         expect(inRange).toEqual(jasmine.objectContaining(VALID));
         const outOfRange = variableValidationService.isValidValue(10,
-            <VariableDetails>({ expectedRange: { max: 9, min: 5 }, scale: { dataType: { name: DataType.NUMERIC } } }));
+            <VariableDetails>({ expectedRange: { max: 9, min: 5 }, scale: { dataType: { name: DataTypeEnum.NUMERIC } } }));
         expect(outOfRange).toEqual(jasmine.objectContaining(OUT_OF_RANGE))
         expect(outOfRange).toEqual(jasmine.objectContaining(VALID))
-        expect(variableValidationService.isValidValue('a', <VariableDetails>({ scale: { dataType: { name: DataType.NUMERIC } } }))).toEqual(jasmine.objectContaining(INVALID));
-        expect(variableValidationService.isValidValue('a', <VariableDetails>({ scale: { dataType: { name: DataType.CHARACTER } } }))).toEqual(jasmine.objectContaining(VALID));
+        expect(variableValidationService.isValidValue('a', <VariableDetails>({ scale: { dataType: { name: DataTypeEnum.NUMERIC } } }))).toEqual(jasmine.objectContaining(INVALID));
+        expect(variableValidationService.isValidValue('a', <VariableDetails>({ scale: { dataType: { name: DataTypeEnum.CHARACTER } } }))).toEqual(jasmine.objectContaining(VALID));
     });
 });

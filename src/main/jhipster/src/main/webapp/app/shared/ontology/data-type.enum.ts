@@ -1,4 +1,4 @@
-export enum DataType {
+export enum DataTypeEnum {
     NUMERIC = 'Numeric',
     CATEGORICAL = 'Categorical',
     CHARACTER = 'Character',
