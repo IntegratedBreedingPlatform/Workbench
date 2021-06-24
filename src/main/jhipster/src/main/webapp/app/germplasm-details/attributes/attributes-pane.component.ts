@@ -104,6 +104,7 @@ export class AttributesPaneComponent implements OnInit {
 
     isValidValue(attribute: GermplasmAttribute) {
         const variable = this.variableByAttributeId[attribute.id];
-        return this.variableValidationService.isValidValue(attribute.value, variable);
+        const validationStatus = this.variableValidationService.isValidValue(attribute.value, variable);
+        return validationStatus.isValid && validationStatus.isInRange;
     }
 }

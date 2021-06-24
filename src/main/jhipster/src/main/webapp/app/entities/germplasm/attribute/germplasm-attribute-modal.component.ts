@@ -12,6 +12,8 @@ import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../../shared/ontology/model/variable-details';
 import { VariableService } from '../../../shared/ontology/service/variable.service';
 import { DataType } from '../../../shared/ontology/data-type';
+import { VariableValidationService } from '../../../shared/ontology/service/variable-validation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-germplasm-attribute-modal',
@@ -37,10 +39,12 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     variable: VariableDetails;
 
     constructor(public activeModal: NgbActiveModal,
+                public translateService: TranslateService,
                 private eventManager: JhiEventManager,
                 private germplasmAttributeContext: GermplasmAttributeContext,
                 private germplasmService: GermplasmService,
                 private variableService: VariableService,
+                private validationService: VariableValidationService,
                 private calendar: NgbCalendar,
                 public dateHelperService: DateHelperService,
                 private alertService: JhiAlertService) {
@@ -109,6 +113,28 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     isFormValid(f) {
         return f.form.valid && !this.isLoading && this.variable
             && this.value && this.locationId && this.date;
+    }
+
+    isNumericOutOfRange() {
+        return !this.validationService.isValidValue(this.value, this.variable).isInRange;
+    }
+
+    getNumericOutOfRangeWarning() {
+        const isOutOfrange = !this.validationService.isValidValue(this.value, this.variable).isInRange;
+        if (isOutOfrange) {
+            const min = this.variable.scale.validValues && (
+                this.variable.scale.validValues.min || this.variable.scale.validValues.min === 0)
+                ? this.variable.scale.validValues.min
+                : this.variable.expectedRange.min;
+            const max = this.variable.scale.validValues && (
+                this.variable.scale.validValues.max || this.variable.scale.validValues.max === 0)
+                ? this.variable.scale.validValues.max
+                : this.variable.expectedRange.max;
+            const title = this.translateService.instant('germplasm-attribute-modal.outOfRange', { min, max });
+            return title;
+        } else {
+            return '';
+        }
     }
 
     ngOnDestroy(): void {

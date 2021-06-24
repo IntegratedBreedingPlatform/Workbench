@@ -47,7 +47,9 @@
 					</div>
 				</div>
 				<div class="col-sm-9" *ngSwitchCase="DataType.NUMERIC" >
-					<input type="number" class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="255"/>
+					<input type="number" class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="255"
+						   [title]="getNumericOutOfRangeWarning()"
+						   [class.accepted-value]="isNumericOutOfRange()" />
 				</div>
 				<div class="col-sm-9" *ngSwitchDefault >
 					<input type="text" class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="255"/>
