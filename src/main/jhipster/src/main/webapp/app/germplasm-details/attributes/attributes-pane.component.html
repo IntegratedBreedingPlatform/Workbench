@@ -13,7 +13,7 @@
 						<th scope="col" jhiTranslate="attributes.passport.value">Value</th>
 						<th scope="col" jhiTranslate="attributes.passport.date">Date</th>
 						<th scope="col" jhiTranslate="attributes.passport.location" style="width: 20%">Location</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" style="width: 20%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -24,9 +24,15 @@
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
-							<button class="btn btn-info" (click)="editGermplasmAttribute(GermplasmAttributeType.PASSPORT, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(GermplasmAttributeType.PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION"><i class="fa fa-list fa-md" aria-hidden="true"></i></button>
+							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(GermplasmAttributeType.PASSPORT, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
+								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info mr-2" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
+								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(GermplasmAttributeType.PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
 						</td>
 
 					</tr>
@@ -63,7 +69,7 @@
 						<th scope="col" jhiTranslate="attributes.attributes.value">Value</th>
 						<th scope="col" jhiTranslate="attributes.attributes.date">Date</th>
 						<th scope="col" jhiTranslate="attributes.attributes.location" style="width: 20%">Location</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" style="width: 20%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -74,9 +80,15 @@
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
-							<button class="btn btn-info" (click)="editGermplasmAttribute(GermplasmAttributeType.ATTRIBUTE, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(GermplasmAttributeType.ATTRIBUTE, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION"><i class="fa fa-list fa-md" aria-hidden="true"></i></button>
+							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(GermplasmAttributeType.ATTRIBUTE, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
+								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info mr-2" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
+								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(GermplasmAttributeType.ATTRIBUTE, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
 						</td>
 					</tr>
 					</tbody>
