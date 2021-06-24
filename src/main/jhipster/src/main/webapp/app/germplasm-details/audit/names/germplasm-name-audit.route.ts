@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { GermplasmNameAuditPopupComponent } from './germplasm-name-audit-modal.component';
+import { GermplasmNameAuditPopupComponent } from './germplasm-name-audit.component';
 
 export const germplasmNameAuditRoutes: Routes = [
     {

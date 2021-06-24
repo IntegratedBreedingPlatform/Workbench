@@ -4,7 +4,7 @@ import { BmsjHipsterSharedModule } from '../../../shared';
 import { GermplasmNameContext } from '../../../entities/germplasm/name/germplasm-name.context';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { germplasmNameAuditRoutes } from './germplasm-name-audit.route';
-import { GermplasmNameAuditModalComponent, GermplasmNameAuditPopupComponent } from './germplasm-name-audit-modal.component';
+import { GermplasmNameAuditComponent, GermplasmNameAuditPopupComponent } from './germplasm-name-audit.component';
 
 @NgModule({
     imports: [
@@ -12,11 +12,11 @@ import { GermplasmNameAuditModalComponent, GermplasmNameAuditPopupComponent } fr
         RouterModule.forChild([...germplasmNameAuditRoutes]),
     ],
     declarations: [
-        GermplasmNameAuditModalComponent,
+        GermplasmNameAuditComponent,
         GermplasmNameAuditPopupComponent
     ],
     entryComponents: [
-        GermplasmNameAuditModalComponent,
+        GermplasmNameAuditComponent,
         GermplasmNameAuditPopupComponent
     ],
     providers: [

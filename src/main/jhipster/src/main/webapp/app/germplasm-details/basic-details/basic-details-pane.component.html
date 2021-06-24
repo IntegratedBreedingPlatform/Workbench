@@ -38,7 +38,7 @@
 						<th scope="col" jhiTranslate="basic-details.created-date">Created Date</th>
 						<th scope="col" jhiTranslate="basic-details.location">Location</th>
 						<th scope="col" jhiTranslate="basic-details.reference">Reference</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_ACTIONS_PERMISSIONS">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -46,9 +46,12 @@
 						<td>{{germplasm?.creationDate}}</td>
 						<td>{{germplasm?.breedingLocation}}</td>
 						<td class="word-wrap">{{germplasm?.reference}}</td>
-						<td class="text-center" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">
-							<button class="btn btn-info" (click)="editGermplasmBasicDetails()">
+						<td class="text-center">
+							<button class="btn btn-info" (click)="editGermplasmBasicDetails()" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">
 								<i class="fa fa-edit fa-fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmBasicDetailsAuditModal()" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
 					</tr>

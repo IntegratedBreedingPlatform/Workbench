@@ -4,27 +4,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { GermplasmNameContext } from '../../../entities/germplasm/name/germplasm-name.context';
 import { finalize } from 'rxjs/operators';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
-import { GermplasmAttributeAudit } from './germplasm-attribute-audit.model';
-import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
+import { GermplasmNameAudit } from './germplasm-name-audit.model';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 
 @Component({
-    selector: 'jhi-germplasm-attribute-audit-modal',
-    templateUrl: './germplasm-attribute-audit-modal.component.html',
+    selector: 'jhi-germplasm-name-audit',
+    templateUrl: './germplasm-name-audit.component.html',
     styleUrls: [
-        '../germplasm-audit-modal.scss'
+        '../germplasm-audit.scss'
     ]
 })
-export class GermplasmAttributeAuditModalComponent implements OnInit {
+export class GermplasmNameAuditComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
     gid: number;
-    attributeId: number;
+    nameId: number;
     title: string;
 
     page: number;
@@ -33,7 +33,7 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
     queryCount: number;
     isLoading: boolean;
 
-    germplasmAttributeAuditChanges: GermplasmAttributeAudit[];
+    germplasmNameAuditChanges: GermplasmNameAudit[];
 
     getEventDate = getEventDate;
     getEventUser = getEventUser;
@@ -41,15 +41,14 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
     constructor(public activeModal: NgbActiveModal,
                 private germplasmChangesService: GermplasmAuditService,
                 private translateService: TranslateService,
-                private germplasmAttributesContext: GermplasmAttributeContext,
+                private germplasmNameContext: GermplasmNameContext,
                 private jhiAlertService: JhiAlertService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
         this.page = 1;
 
-        const entity = this.germplasmAttributesContext.attributeType.toLowerCase();
         this.title = this.translateService.instant('audit.title',
-            { entity: this.translateService.instant('audit.entities.' + entity), entityValue: this.germplasmAttributesContext.attribute.value });
+            { entity: this.translateService.instant('audit.entities.name'), entityValue: this.germplasmNameContext.germplasmName.name });
     }
 
     ngOnInit(): void {
@@ -64,7 +63,7 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
     }
 
     transition() {
-        this.router.navigate(['germplasm/:gid/attribute/:attributeId/audit-dialog'], {
+        this.router.navigate(['germplasm/:gid/name/:nameId/audit-dialog'], {
             queryParams:
                 {
                     page: this.page,
@@ -82,21 +81,21 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
 
     private loadAll() {
         this.isLoading = true;
-        this.germplasmChangesService.getAttributesChanges(this.gid, this.attributeId, {
+        this.germplasmChangesService.getNamesChanges(this.gid, this.nameId, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
-            (res: HttpResponse<GermplasmAttributeAudit[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<GermplasmNameAudit[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
 
-    private onSuccess(data: GermplasmAttributeAudit[], headers) {
+    private onSuccess(data: GermplasmNameAudit[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
-        this.germplasmAttributeAuditChanges = data;
+        this.germplasmNameAuditChanges = data;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -110,20 +109,20 @@ export class GermplasmAttributeAuditModalComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-germplasm-attribute-audit-popup',
+    selector: 'jhi-germplasm-name-audit-popup',
     template: ``
 })
-export class GermplasmAttributeAuditPopupComponent implements OnInit {
+export class GermplasmNameAuditPopupComponent implements OnInit {
 
     constructor(private route: ActivatedRoute,
                 private popupService: PopupService) {
     }
 
     ngOnInit(): void {
-        const modal = this.popupService.open(GermplasmAttributeAuditModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmNameAuditComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
         modal.then((modalRef) => {
             modalRef.componentInstance.gid = Number(this.route.snapshot.paramMap.get('gid'));
-            modalRef.componentInstance.attributeId = Number(this.route.snapshot.paramMap.get('attributeId'));
+            modalRef.componentInstance.nameId = Number(this.route.snapshot.paramMap.get('nameId'));
         });
 
     }

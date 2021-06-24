@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { BmsjHipsterSharedModule } from '../../../shared';
 import { GermplasmAuditService } from '../germplasm-audit.service';
-import { GermplasmAttributeAuditModalComponent, GermplasmAttributeAuditPopupComponent } from './germplasm-attribute-audit-modal.component';
+import { GermplasmAttributeAuditComponent, GermplasmAttributeAuditPopupComponent } from './germplasm-attribute-audit.component';
 import { germplasmAttributeAuditRoutes } from './germplasm-attribute-audit.route';
 import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
 
@@ -12,11 +12,11 @@ import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute
         RouterModule.forChild([...germplasmAttributeAuditRoutes]),
     ],
     declarations: [
-        GermplasmAttributeAuditModalComponent,
+        GermplasmAttributeAuditComponent,
         GermplasmAttributeAuditPopupComponent
     ],
     entryComponents: [
-        GermplasmAttributeAuditModalComponent,
+        GermplasmAttributeAuditComponent,
         GermplasmAttributeAuditPopupComponent
     ],
     providers: [
