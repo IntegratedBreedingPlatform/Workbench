@@ -15,7 +15,7 @@ import { NameType } from '../shared/germplasm/model/name-type.model';
 import { VariableService } from '../shared/ontology/service/variable.service';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { toUpper } from '../shared/util/to-upper';
-import { VariableValidationService } from '../shared/ontology/service/variable-validation.service';
+import { VariableValidationStatusType, VariableValidationService } from '../shared/ontology/service/variable-validation.service';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
 import { ancestorWhere } from 'tslint';
 
@@ -34,7 +34,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     data: Array<any>;
     names: NameType[] = [];
     attributes: VariableDetails[] = [];
-    attributeStatusById: { [key: number]: boolean; } = {};
+    attributeStatusById: { [key: number]: VariableValidationStatusType; } = {};
     importFormats = [
         { name: 'Excel', extension: '.xls,.xlsx' }
     ];
@@ -266,11 +266,15 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     computeAttributeStatus() {
         this.attributeStatusById = {};
         this.attributes.forEach((attribute) => {
-            const hasSomeInvalid = this.data.some((row) => {
+            this.data.some((row) => {
                 const value = row[toUpper(attribute.alias)] || row[toUpper(attribute.name)];
-                return !this.variableValidationService.isValidValue(value, attribute);
+                const validationStatus = this.variableValidationService.isValidValue(value, attribute);
+                if (!validationStatus.isValid || !validationStatus.isInRange) {
+                    this.attributeStatusById[attribute.id] = validationStatus;
+                }
+                // continue processing each row unless we found some invalid, in which case the whole column is invalid
+                return !validationStatus.isValid;
             });
-            this.attributeStatusById[attribute.id] = hasSomeInvalid;
         })
     }
 }

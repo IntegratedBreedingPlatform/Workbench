@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
-import { VariableValidationService } from '../shared/ontology/service/variable-validation.service';
+import { VariableValidationStatusType, VariableValidationService } from '../shared/ontology/service/variable-validation.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -8,7 +8,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     templateUrl: './germplasm-import-update-descriptors-confirmation-dialog.component.html'
 })
 export class GermplasmImportUpdateDescriptorsConfirmationDialogComponent {
-    attributeStatusById: { [key: number]: boolean; } = {};
+    attributeStatusById: { [key: number]: VariableValidationStatusType; } = {};
     attributes: VariableDetails[] = [];
 
     constructor(
@@ -17,8 +17,8 @@ export class GermplasmImportUpdateDescriptorsConfirmationDialogComponent {
     ) {
     }
 
-    getStatus(attribute) {
-        return this.variableValidationService.getStatus(attribute, this.attributeStatusById)
+    getStatusIcon(attribute) {
+        return this.variableValidationService.getStatusIcon(attribute, this.attributeStatusById)
     }
 
     dismiss() {

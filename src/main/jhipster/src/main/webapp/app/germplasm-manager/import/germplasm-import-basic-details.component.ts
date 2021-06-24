@@ -18,9 +18,9 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
-import { DataType } from '../../shared/ontology/data-type';
 import { toUpper } from '../../shared/util/to-upper';
-import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
+import { VariableValidationStatusType, VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
+import { DataType } from '../../shared/ontology/data-type';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -37,7 +37,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     // Codes that are both attributes and names
     unmapped = [];
     draggedCode: string;
-    attributeStatusById: { [key: number]: boolean; } = {};
+    attributeStatusById: { [key: number]: VariableValidationStatusType } = {};
 
     breedingMethods: Promise<BreedingMethod[]>;
     favoriteBreedingMethods: Promise<BreedingMethod[]>;
@@ -266,15 +266,19 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     computeAttributeStatus() {
         this.context.attributesCopy.forEach((attribute) => {
-            const hasSomeInvalid = this.context.data.some((row) => {
+            this.context.data.some((row) => {
                 const value = row[toUpper(attribute.alias)] || row[toUpper(attribute.name)];
-                return !this.variableValidationService.isValidValue(value, attribute);
+                const validationStatus = this.variableValidationService.isValidValue(value, attribute);
+                if (!validationStatus.isValid || !validationStatus.isInRange) {
+                    this.attributeStatusById[attribute.id] = validationStatus;
+                }
+                // continue processing each row unless we found some invalid, in which case the whole column is invalid
+                return !validationStatus.isValid;
             });
-            this.attributeStatusById[attribute.id] = hasSomeInvalid;
         })
     }
 
-    getStatus(attribute: VariableDetails) {
-        return this.variableValidationService.getStatus(attribute, this.attributeStatusById);
+    getStatusIcon(attribute: VariableDetails) {
+        return this.variableValidationService.getStatusIcon(attribute, this.attributeStatusById);
     }
 }
