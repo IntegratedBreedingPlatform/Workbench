@@ -113,7 +113,6 @@ export class BasicDetailsPaneComponent implements OnInit {
     }
 
     openGermplasmBasicDetailsAuditModal(): void {
-        this.germplasmDetailsContext.germplasm = this.germplasm;
         this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/basic-details/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
         });

@@ -149,9 +149,16 @@
             "attribute": "Attribute",
             "passport": "Passport"
         },
-        "title": "{{entity}} {{entityValue}} - View history of changes",
+        "title": "{{entity}}: {{entityValue}} - View history of changes",
         "event-type": "Event Type",
         "event-date": "Timestamp",
-        "user": "User"
+        "user": "User",
+        "germplasm-basic-details": {
+            "title": "Germplasm - View history of changes",
+            "nav": {
+                "basic-details": "Basic details",
+                "reference": "Reference"
+            }
+        }
     }
 }
