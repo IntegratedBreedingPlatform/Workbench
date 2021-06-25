@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
@@ -19,7 +19,7 @@ import { getEventDate, getEventUser } from '../germplasm-audit-utils';
         '../germplasm-audit.scss'
     ]
 })
-export class GermplasmAttributeAuditComponent implements OnInit {
+export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
 
     private readonly itemsPerPage: number = 10;
 
@@ -41,15 +41,15 @@ export class GermplasmAttributeAuditComponent implements OnInit {
     constructor(public activeModal: NgbActiveModal,
                 private germplasmChangesService: GermplasmAuditService,
                 private translateService: TranslateService,
-                private germplasmAttributesContext: GermplasmAttributeContext,
+                private germplasmAttributeContext: GermplasmAttributeContext,
                 private jhiAlertService: JhiAlertService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
         this.page = 1;
 
-        const entity = this.germplasmAttributesContext.attributeType.toLowerCase();
+        const entity = this.germplasmAttributeContext.attributeType.toLowerCase();
         this.title = this.translateService.instant('audit.title',
-            { entity: this.translateService.instant('audit.entities.' + entity), entityValue: this.germplasmAttributesContext.attribute.value });
+            { entity: this.translateService.instant('audit.entities.' + entity), entityValue: this.germplasmAttributeContext.attribute.value });
     }
 
     ngOnInit(): void {
@@ -106,6 +106,11 @@ export class GermplasmAttributeAuditComponent implements OnInit {
         } else {
             this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
         }
+    }
+
+    ngOnDestroy(): void {
+        this.germplasmAttributeContext.attributeType = null;
+        this.germplasmAttributeContext.attribute = null;
     }
 }
 
