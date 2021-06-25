@@ -15,7 +15,7 @@ export class GermplasmAttributeAudit extends GermplasmAudit {
         public locationChanged: boolean,
         public creationDateChanged: boolean,
         public valueChanged: boolean
-) {
+    ) {
         super(revisionType, createdBy, createdDate, modifiedBy, modifiedDate);
     }
 

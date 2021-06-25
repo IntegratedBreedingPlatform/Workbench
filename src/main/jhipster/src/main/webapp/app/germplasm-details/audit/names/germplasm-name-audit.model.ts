@@ -17,7 +17,7 @@ export class GermplasmNameAudit extends GermplasmAudit {
         public creationDateChanged: boolean,
         public valueChanged: boolean,
         public preferredChanged: boolean
-) {
+    ) {
         super(revisionType, createdBy, createdDate, modifiedBy, modifiedDate);
     }
 }
