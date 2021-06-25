@@ -33,7 +33,7 @@ export class GermplasmNameAuditComponent implements OnInit, OnDestroy {
     queryCount: number;
     isLoading: boolean;
 
-    germplasmNameAuditChanges: GermplasmNameAudit[];
+    auditChanges: GermplasmNameAudit[];
 
     getEventDate = getEventDate;
     getEventUser = getEventUser;
@@ -95,7 +95,7 @@ export class GermplasmNameAuditComponent implements OnInit, OnDestroy {
     private onSuccess(data: GermplasmNameAudit[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
-        this.germplasmNameAuditChanges = data;
+        this.auditChanges = data;
     }
 
     private onError(response: HttpErrorResponse) {
