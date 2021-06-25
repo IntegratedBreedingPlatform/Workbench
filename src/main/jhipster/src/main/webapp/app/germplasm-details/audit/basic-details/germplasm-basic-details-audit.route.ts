@@ -3,6 +3,7 @@ import { BasicDetailsAuditComponent } from './basic-details-audit.component';
 import { RouteAccessService } from '../../../shared';
 import { GermplasmBasicDetailsAuditComponent } from './germplasm-basic-details-audit.component';
 import { GermplasmBasicDetailsAuditPopupComponent } from './germplasm-basic-details-audit-modal.component';
+import { ReferenceAuditComponent } from './reference-audit.component';
 
 export const germplasmBasicDetailsAuditRoutes: Routes = [
     {
@@ -23,6 +24,10 @@ export const germplasmBasicDetailsAuditRoutes: Routes = [
             {
                 path: 'basic-details',
                 component: BasicDetailsAuditComponent
+            },
+            {
+                path: 'reference',
+                component: ReferenceAuditComponent
             }
         ]
     }

@@ -81,7 +81,7 @@ export class GermplasmNameAuditComponent implements OnInit, OnDestroy {
 
     private loadAll() {
         this.isLoading = true;
-        this.germplasmChangesService.getNamesChanges(this.gid, this.nameId, {
+        this.germplasmChangesService.getNameChanges(this.gid, this.nameId, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {

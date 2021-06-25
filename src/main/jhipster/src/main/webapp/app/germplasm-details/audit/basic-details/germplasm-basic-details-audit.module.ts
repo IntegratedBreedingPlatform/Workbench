@@ -7,6 +7,7 @@ import { germplasmBasicDetailsAuditRoutes } from './germplasm-basic-details-audi
 import { BasicDetailsAuditComponent } from './basic-details-audit.component';
 import { GermplasmBasicDetailsAuditModalComponent, GermplasmBasicDetailsAuditPopupComponent } from './germplasm-basic-details-audit-modal.component';
 import { GermplasmDetailsContext } from '../../germplasm-details.context';
+import { ReferenceAuditComponent } from './reference-audit.component';
 
 @NgModule({
     imports: [
@@ -17,13 +18,15 @@ import { GermplasmDetailsContext } from '../../germplasm-details.context';
         GermplasmBasicDetailsAuditComponent,
         GermplasmBasicDetailsAuditModalComponent,
         GermplasmBasicDetailsAuditPopupComponent,
-        BasicDetailsAuditComponent
+        BasicDetailsAuditComponent,
+        ReferenceAuditComponent
     ],
     entryComponents: [
         GermplasmBasicDetailsAuditComponent,
         GermplasmBasicDetailsAuditModalComponent,
         GermplasmBasicDetailsAuditPopupComponent,
-        BasicDetailsAuditComponent
+        BasicDetailsAuditComponent,
+        ReferenceAuditComponent
     ],
     providers: [
         GermplasmAuditService,

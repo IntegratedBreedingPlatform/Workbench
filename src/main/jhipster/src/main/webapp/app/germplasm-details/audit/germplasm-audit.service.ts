@@ -7,6 +7,7 @@ import { createRequestOption } from '../../shared';
 import { GermplasmNameAudit } from './names/germplasm-name-audit.model';
 import { GermplasmAttributeAudit } from './attributes/germplasm-attribute-audit.model';
 import { GermplasmBasicDetailsAudit } from './basic-details/germplasm-basic-details-audit.model';
+import { GermplasmReferenceAudit } from './basic-details/germplasm-reference-audit.model';
 
 @Injectable()
 export class GermplasmAuditService {
@@ -15,13 +16,13 @@ export class GermplasmAuditService {
                 private context: ParamContext) {
     }
 
-    getNamesChanges(gid: number, nameId: number, request: any): Observable<HttpResponse<GermplasmNameAudit[]>> {
+    getNameChanges(gid: number, nameId: number, request: any): Observable<HttpResponse<GermplasmNameAudit[]>> {
         const params = createRequestOption(request);
         return this.http.get<GermplasmNameAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/name/${nameId}/changes`,
             { params, observe: 'response' });
     }
 
-    getAttributesChanges(gid: number, attributeId: number, request: any): Observable<HttpResponse<GermplasmAttributeAudit[]>> {
+    getAttributeChanges(gid: number, attributeId: number, request: any): Observable<HttpResponse<GermplasmAttributeAudit[]>> {
         const params = createRequestOption(request);
         return this.http.get<GermplasmAttributeAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attribute/${attributeId}/changes`,
             { params, observe: 'response' });
@@ -30,6 +31,12 @@ export class GermplasmAuditService {
     getBasicDetailsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmBasicDetailsAudit[]>> {
         const params = createRequestOption(request);
         return this.http.get<GermplasmBasicDetailsAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/basic-details/changes`,
+            { params, observe: 'response' });
+    }
+
+    getReferenceChanges(gid: number, request: any): Observable<HttpResponse<GermplasmReferenceAudit[]>> {
+        const params = createRequestOption(request);
+        return this.http.get<GermplasmReferenceAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/reference/changes`,
             { params, observe: 'response' });
     }
 
