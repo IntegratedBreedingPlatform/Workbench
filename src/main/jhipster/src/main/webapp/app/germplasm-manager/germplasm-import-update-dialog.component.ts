@@ -18,6 +18,8 @@ import { toUpper } from '../shared/util/to-upper';
 import { VariableValidationStatusType, VariableValidationService } from '../shared/ontology/service/variable-validation.service';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
 import { ancestorWhere } from 'tslint';
+import { VariableType } from '../shared/ontology/model/variable-type';
+import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
@@ -165,7 +167,10 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
         // Determine which of the codes are names and attributes
 
-        this.attributes = await this.variableService.filterVariables({ variableNames: codes }).toPromise();
+        this.attributes = await this.variableService.filterVariables({
+            variableNames: codes,
+            variableTypeIds: [VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString(), VariableTypeEnum.GERMPLASM_PASSPORT.toString()]
+        }).toPromise();
         this.names = await this.germplasmService.getGermplasmNameTypes(codes).toPromise();
 
         if (!this.rawData || this.rawData.filter((row) => row.some((column) => Boolean(column.trim()))).length <= 1) {

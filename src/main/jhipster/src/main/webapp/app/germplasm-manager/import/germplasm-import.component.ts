@@ -15,6 +15,8 @@ import { GermplasmImportValidationPayload } from '../../shared/germplasm/model/g
 import { listPreview } from '../../shared/util/list-preview';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { VariableService } from '../../shared/ontology/service/variable.service';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { toUpper } from '../../shared/util/to-upper';
 
 @Component({
     selector: 'jhi-germplasm-import',
@@ -125,7 +127,10 @@ export class GermplasmImportComponent implements OnInit {
             return false;
         }
         this.context.nameTypes = await this.germplasmService.getGermplasmNameTypes(Object.keys(this.codes)).toPromise();
-        this.context.attributes = await this.variableService.filterVariables({ variableNames: Object.keys(this.codes)}).toPromise();
+        this.context.attributes = await this.variableService.filterVariables({
+            variableNames: Object.keys(this.codes),
+            variableTypeIds: [VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString(), VariableTypeEnum.GERMPLASM_PASSPORT.toString()]
+        }).toPromise();
         if (!this.context.nameTypes || !this.context.nameTypes.length) {
             this.alertService.error('germplasm.import.file.validation.names.no.column');
             return false;
