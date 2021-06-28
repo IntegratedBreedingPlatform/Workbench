@@ -169,9 +169,9 @@
 
 		<!-- java mail for smtp implem -->
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.7</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.6</version>
 		</dependency>
 
 		<!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
