@@ -85,6 +85,7 @@ export class GermplasmImportComponent implements OnInit {
     next() {
         this.isLoading = true;
         this.validateFile().then((valid) => {
+            this.showUnknownColumnsWarning();
             this.isLoading = false;
             if (valid) {
                 this.sortNameTypes();
@@ -96,6 +97,20 @@ export class GermplasmImportComponent implements OnInit {
             this.isLoading = false;
             this.onError(res);
         });
+    }
+
+    showUnknownColumnsWarning(): any {
+        const codeKeys = Object.keys(this.codes);
+        if (!codeKeys.length) {
+            return;
+        }
+        const unknown = codeKeys.filter((code) =>
+            this.context.attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
+            && this.context.nameTypes.every((name) => name.code !== code)
+        );
+        if (unknown.length) {
+            this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)});
+        }
     }
 
     private async validateFile() {
