@@ -20,9 +20,7 @@ import org.generationcp.breeding.manager.listmanager.listeners.FillWithAttribute
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.middleware.api.germplasm.GermplasmService;
-import org.generationcp.middleware.api.germplasm.search.GermplasmSearchRequest;
-import org.generationcp.middleware.api.germplasm.search.GermplasmSearchService;
+import org.generationcp.middleware.api.germplasm.GermplasmAttributeService;
 import org.generationcp.middleware.domain.ontology.Variable;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,7 @@ public class FillWithAttributeWindow extends BaseSubWindow
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	private AddColumnSource addColumnSource;
+	private final AddColumnSource addColumnSource;
 	private final String targetPropertyId;
 	private HorizontalLayout attributeLayout;
 	private ComboBox attributeBox;
@@ -56,10 +54,7 @@ public class FillWithAttributeWindow extends BaseSubWindow
 	private final boolean isFromGermplasmSearchWindow;
 
 	@Autowired
-	private GermplasmSearchService germplasmSearchService;
-
-	@Autowired
-	private GermplasmService germplasmService;
+	private GermplasmAttributeService germplasmAttributeService;
 
 	public FillWithAttributeWindow(final AddColumnSource addColumnSource, final String targetPropertyId,
 			final boolean isFromGermplasmSearchWindow) {
@@ -87,7 +82,7 @@ public class FillWithAttributeWindow extends BaseSubWindow
 
 	@Override
 	public void initializeValues() {
-		this.attributeVariables = this.germplasmService.getGermplasmAttributeVariables(this.addColumnSource.getAllGids(), null);
+		this.attributeVariables = this.germplasmAttributeService.getGermplasmAttributeVariables(this.addColumnSource.getAllGids(), null);
 		for (final Variable variable : this.attributeVariables) {
 			if (!this.addColumnSource.columnExists(variable.getName().toUpperCase())) {
 				this.attributeBox.addItem(variable.getId());

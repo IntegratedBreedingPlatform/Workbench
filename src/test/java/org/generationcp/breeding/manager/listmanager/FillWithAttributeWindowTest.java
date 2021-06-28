@@ -6,8 +6,7 @@ import com.vaadin.ui.ComboBox;
 import org.generationcp.breeding.manager.containers.GermplasmQuery;
 import org.generationcp.breeding.manager.listmanager.api.AddColumnSource;
 import org.generationcp.breeding.manager.listmanager.listeners.FillWithAttributeButtonClickListener;
-import org.generationcp.middleware.api.germplasm.GermplasmService;
-import org.generationcp.middleware.api.germplasm.search.GermplasmSearchService;
+import org.generationcp.middleware.api.germplasm.GermplasmAttributeService;
 import org.generationcp.middleware.domain.ontology.Variable;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,13 +39,10 @@ public class FillWithAttributeWindowTest {
 	private static final List<Integer> GID_LIST = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
 	@Mock
-	private GermplasmSearchService germplasmSearchService;
-
-	@Mock
-	private GermplasmService germplasmService;
-
-	@Mock
 	private AddColumnSource addColumnSource;
+
+	@Mock
+	private GermplasmAttributeService germplasmAttributeService;
 
 	@InjectMocks
 	private final FillWithAttributeWindow fillWithAttributeWindow = new FillWithAttributeWindow(this.addColumnSource,
@@ -60,7 +55,7 @@ public class FillWithAttributeWindowTest {
 
 		Mockito.doReturn(FillWithAttributeWindowTest.GID_LIST).when(this.addColumnSource).getAllGids();
 		this.attributeTypes = this.getAttributeTypesVariables();
-		Mockito.doReturn(this.attributeTypes).when(this.germplasmService)
+		Mockito.doReturn(this.attributeTypes).when(this.germplasmAttributeService)
 			.getGermplasmAttributeVariables(Mockito.any(), Mockito.isNull());
 	}
 
@@ -70,7 +65,7 @@ public class FillWithAttributeWindowTest {
 		this.fillWithAttributeWindow.initializeValues();
 
 		Mockito.verify(this.addColumnSource).getAllGids();
-		Mockito.verify(this.germplasmService)
+		Mockito.verify(this.germplasmAttributeService)
 			.getGermplasmAttributeVariables(Mockito.any(), Mockito.isNull());
 		final ComboBox attributeTypesComboBox = this.fillWithAttributeWindow.getAttributeBox();
 		Assert.assertNotNull(attributeTypesComboBox);
@@ -89,7 +84,7 @@ public class FillWithAttributeWindowTest {
 		this.fillWithAttributeWindow.initializeValues();
 
 		Mockito.verify(this.addColumnSource).getAllGids();
-		Mockito.verify(this.germplasmService)
+		Mockito.verify(this.germplasmAttributeService)
 			.getGermplasmAttributeVariables(Mockito.any(), Mockito.isNull());
 		final ComboBox attributeTypesComboBox = this.fillWithAttributeWindow.getAttributeBox();
 		Assert.assertNotNull(attributeTypesComboBox);
