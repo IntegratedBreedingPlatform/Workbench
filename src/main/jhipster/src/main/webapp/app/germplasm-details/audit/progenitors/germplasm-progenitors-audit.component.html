@@ -1,0 +1,28 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold" jhiTranslate="audit.germplasm-progenitors.title">Progenitors - View history of changes</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<nav>
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link" jhiTranslate="audit.germplasm-progenitors.nav.details"
+				   [routerLink]="['details']" [routerLinkActive]="['active']" queryParamsHandling="merge">Details</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" jhiTranslate="audit.germplasm-progenitors.nav.progenitors"
+				   [routerLink]="['progenitors']" [routerLinkActive]="['active']" queryParamsHandling="merge">Progenitors</a>
+			</li>
+		</ul>
+	</nav>
+	<div class="tab-content p-3">
+		<router-outlet></router-outlet>
+		<jhi-alert></jhi-alert>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary" data-dismiss="modal" (click)="dismiss()">
+		<span jhiTranslate="ok"></span>
+	</button>
+</div>

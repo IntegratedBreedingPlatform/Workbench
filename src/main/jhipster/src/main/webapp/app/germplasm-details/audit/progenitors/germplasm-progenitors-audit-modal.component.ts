@@ -8,10 +8,10 @@ import { ParamContext } from '../../../shared/service/param.context';
 import { GermplasmDetailsContext } from '../../germplasm-details.context';
 
 @Component({
-    selector: 'jhi-germplasm-basic-details-audit-modal',
-    templateUrl: './germplasm-basic-details-audit-modal.component.html',
+    selector: 'jhi-germplasm-progenitors-audit-modal',
+    templateUrl: './germplasm-progenitors-audit-modal.component.html',
 })
-export class GermplasmBasicDetailsAuditModalComponent implements OnInit {
+export class GermplasmProgenitorsAuditModalComponent implements OnInit {
 
     gid: number;
 
@@ -23,7 +23,7 @@ export class GermplasmBasicDetailsAuditModalComponent implements OnInit {
                 private context: ParamContext,
                 private germplasmDetailsContext: GermplasmDetailsContext
     ) {
-        const url = '/ibpworkbench/controller/jhipster#/germplasm/audit?restartApplication&modal' +
+        const url = '/ibpworkbench/controller/jhipster#/germplasm/progenitors/audit?restartApplication&modal' +
         '&cropName=' + context.cropName +
         '&gid=' + this.germplasmDetailsContext.gid;
         this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -38,7 +38,7 @@ export class GermplasmBasicDetailsAuditModalComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-germplasm-basic-details-popup',
+    selector: 'jhi-germplasm-progenitors-popup',
     template: ''
 })
 export class GermplasmBasicDetailsAuditPopupComponent implements OnInit {
@@ -50,7 +50,7 @@ export class GermplasmBasicDetailsAuditPopupComponent implements OnInit {
 
     ngOnInit(): void {
         this.germplasmDetailsContext.gid = Number(this.route.snapshot.paramMap.get('gid'));
-        const modal = this.popupService.open(GermplasmBasicDetailsAuditModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmProgenitorsAuditModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
     }
 
 }

@@ -35,7 +35,7 @@ export class BasicDetailsAuditComponent implements OnInit {
     getEventUser = getEventUser;
 
     constructor(public activeModal: NgbActiveModal,
-                private germplasmChangesService: GermplasmAuditService,
+                private  germplasmAuditService: GermplasmAuditService,
                 private translateService: TranslateService,
                 private jhiAlertService: JhiAlertService,
                 private activatedRoute: ActivatedRoute,
@@ -70,7 +70,7 @@ export class BasicDetailsAuditComponent implements OnInit {
 
     private loadAll() {
         this.isLoading = true;
-        this.germplasmChangesService.getBasicDetailsChanges(this.gid, {
+        this. germplasmAuditService.getBasicDetailsChanges(this.gid, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {

@@ -39,7 +39,7 @@ export class GermplasmNameAuditComponent implements OnInit, OnDestroy {
     getEventUser = getEventUser;
 
     constructor(public activeModal: NgbActiveModal,
-                private germplasmChangesService: GermplasmAuditService,
+                private  germplasmAuditService: GermplasmAuditService,
                 private translateService: TranslateService,
                 private germplasmNameContext: GermplasmNameContext,
                 private jhiAlertService: JhiAlertService,
@@ -81,7 +81,7 @@ export class GermplasmNameAuditComponent implements OnInit, OnDestroy {
 
     private loadAll() {
         this.isLoading = true;
-        this.germplasmChangesService.getNameChanges(this.gid, this.nameId, {
+        this. germplasmAuditService.getNameChanges(this.gid, this.nameId, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {

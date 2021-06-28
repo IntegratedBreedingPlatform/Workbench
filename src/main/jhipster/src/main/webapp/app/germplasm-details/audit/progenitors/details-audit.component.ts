@@ -8,16 +8,16 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
-import { GermplasmReferenceAudit } from './germplasm-reference-audit.model';
+import { GermplasmProgenitorDetailsAudit } from './germplasm-progenitor-details-audit.model';
 
 @Component({
-    selector: 'jhi-germplasm-reference-audit',
-    templateUrl: './reference-audit.component.html',
+    selector: 'jhi-germplasm-progenitors-details-audit',
+    templateUrl: './details-audit.component.html',
     styleUrls: [
         '../germplasm-audit.scss'
     ]
 })
-export class ReferenceAuditComponent implements OnInit {
+export class DetailsAuditComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
@@ -29,7 +29,7 @@ export class ReferenceAuditComponent implements OnInit {
     queryCount: number;
     isLoading: boolean;
 
-    auditChanges: GermplasmReferenceAudit[];
+    auditChanges: GermplasmProgenitorDetailsAudit[];
 
     getEventDate = getEventDate;
     getEventUser = getEventUser;
@@ -70,18 +70,18 @@ export class ReferenceAuditComponent implements OnInit {
 
     private loadAll() {
         this.isLoading = true;
-        this. germplasmAuditService.getReferenceChanges(this.gid, {
+        this. germplasmAuditService.getProgenitorDetailsChanges(this.gid, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
-            (res: HttpResponse<GermplasmReferenceAudit[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<GermplasmProgenitorDetailsAudit[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
 
-    private onSuccess(data: GermplasmReferenceAudit[], headers) {
+    private onSuccess(data: GermplasmProgenitorDetailsAudit[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
         this.auditChanges = data;

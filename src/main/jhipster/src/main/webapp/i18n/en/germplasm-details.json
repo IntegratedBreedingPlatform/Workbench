@@ -159,6 +159,14 @@
                 "basic-details": "Basic details",
                 "reference": "Reference"
             }
+        },
+        "germplasm-progenitors": {
+            "title": "Progenitors - View history of changes",
+            "progenitors-number": "Number of Progenitors",
+            "nav": {
+                "details": "Details",
+                "progenitors": "Progenitors"
+            }
         }
     }
 }
