@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -44,15 +43,15 @@ public class FillWithAttributeWindowTest {
 	@Mock
 	private GermplasmAttributeService germplasmAttributeService;
 
-	@InjectMocks
-	private final FillWithAttributeWindow fillWithAttributeWindow = new FillWithAttributeWindow(this.addColumnSource,
-			GermplasmQuery.GID_REF_PROPERTY, false);
+	private FillWithAttributeWindow fillWithAttributeWindow;
 
 	private List<Variable> attributeTypes;
 
 	@Before
 	public void setup() {
-
+		fillWithAttributeWindow = new FillWithAttributeWindow(this.addColumnSource,
+			GermplasmQuery.GID_REF_PROPERTY, false);
+		fillWithAttributeWindow.setGermplasmAttributeService(germplasmAttributeService);
 		Mockito.doReturn(FillWithAttributeWindowTest.GID_LIST).when(this.addColumnSource).getAllGids();
 		this.attributeTypes = this.getAttributeTypesVariables();
 		Mockito.doReturn(this.attributeTypes).when(this.germplasmAttributeService)
@@ -66,7 +65,7 @@ public class FillWithAttributeWindowTest {
 
 		Mockito.verify(this.addColumnSource).getAllGids();
 		Mockito.verify(this.germplasmAttributeService)
-			.getGermplasmAttributeVariables(Mockito.any(), Mockito.isNull());
+			.getGermplasmAttributeVariables(Mockito.eq(FillWithAttributeWindowTest.GID_LIST), Mockito.isNull());
 		final ComboBox attributeTypesComboBox = this.fillWithAttributeWindow.getAttributeBox();
 		Assert.assertNotNull(attributeTypesComboBox);
 		Assert.assertEquals(3, attributeTypesComboBox.size());
@@ -76,7 +75,7 @@ public class FillWithAttributeWindowTest {
 			Assert.assertEquals(variable.getName(), attributeTypesComboBox.getItemCaption(id));
 		}
 	}
-	
+
 	@Test
 	public void testPopulateAttributeTypesWithAddedColumnAlready() {
 		Mockito.doReturn(true).when(this.addColumnSource).columnExists(ATTRIBUTE_VARIABLE_NAME3.toUpperCase());
@@ -96,7 +95,6 @@ public class FillWithAttributeWindowTest {
 			Assert.assertEquals(attributeType.getName(), attributeTypesComboBox.getItemCaption(id));
 		}
 	}
-
 
 	@Test
 	public void testAddListeners() {

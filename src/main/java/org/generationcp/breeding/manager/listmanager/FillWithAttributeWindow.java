@@ -82,7 +82,7 @@ public class FillWithAttributeWindow extends BaseSubWindow
 
 	@Override
 	public void initializeValues() {
-		this.attributeVariables = this.germplasmAttributeService.getGermplasmAttributeVariables(this.addColumnSource.getAllGids(), null);
+		this.attributeVariables = this.germplasmAttributeService.getGermplasmAttributeVariables(addColumnSource.getAllGids(), null);
 		for (final Variable variable : this.attributeVariables) {
 			if (!this.addColumnSource.columnExists(variable.getName().toUpperCase())) {
 				this.attributeBox.addItem(variable.getId());
@@ -140,5 +140,9 @@ public class FillWithAttributeWindow extends BaseSubWindow
 
 	public Button getOkButton() {
 		return this.okButton;
+	}
+
+	public void setGermplasmAttributeService(final GermplasmAttributeService germplasmAttributeService) {
+		this.germplasmAttributeService = germplasmAttributeService;
 	}
 }
