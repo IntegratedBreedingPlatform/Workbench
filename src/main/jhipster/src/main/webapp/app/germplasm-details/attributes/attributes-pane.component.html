@@ -20,9 +20,7 @@
 					<tr *ngFor="let attribute of passportAttributes">
 						<td>
 							<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-							   [queryParams]="{ variableId: attribute.variableId }">
-								{{attribute.variableName}}
-							</a>
+							   [queryParams]="{ variableId: attribute.variableId }">{{attribute.variableName}}</a>
 						</td>
 						<td>{{attribute.variableDescription}}</td>
 						<td class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value}}</td>
@@ -74,9 +72,7 @@
 					<tr *ngFor="let attribute of attributes">
 						<td>
 							<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-							   [queryParams]="{ variableId: attribute.variableId }">
-								{{attribute.variableName}}
-							</a>
+							   [queryParams]="{ variableId: attribute.variableId }">{{attribute.variableName}}</a>
 						</td>
 						<td>{{attribute.variableDescription}}</td>
 						<td class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value}}</td>
