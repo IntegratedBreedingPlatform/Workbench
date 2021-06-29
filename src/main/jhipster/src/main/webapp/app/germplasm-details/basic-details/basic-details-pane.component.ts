@@ -107,7 +107,7 @@ export class BasicDetailsPaneComponent implements OnInit {
 
     openGermplasmNameAuditModal(germplasmName: GermplasmName): void {
         this.germplasmNameContext.germplasmName = germplasmName;
-        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/name/${germplasmName.id}/audit-dialog`}, }], {
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasm.gid}/names/${germplasmName.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
         });
     }

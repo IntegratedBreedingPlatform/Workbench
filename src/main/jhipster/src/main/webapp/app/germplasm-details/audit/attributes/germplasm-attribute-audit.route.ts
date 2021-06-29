@@ -3,7 +3,7 @@ import { GermplasmAttributeAuditPopupComponent } from './germplasm-attribute-aud
 
 export const germplasmAttributeAuditRoutes: Routes = [
     {
-        path: 'germplasm/:gid/attribute/:attributeId/audit-dialog',
+        path: 'germplasm/:gid/attributes/:attributeId/audit-dialog',
         component: GermplasmAttributeAuditPopupComponent,
         outlet: 'popup'
     }

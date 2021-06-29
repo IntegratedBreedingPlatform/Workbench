@@ -20,13 +20,13 @@ export class GermplasmAuditService {
 
     getNameChanges(gid: number, nameId: number, request: any): Observable<HttpResponse<GermplasmNameAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmNameAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/name/${nameId}/changes`,
+        return this.http.get<GermplasmNameAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/names/${nameId}/changes`,
             { params, observe: 'response' });
     }
 
     getAttributeChanges(gid: number, attributeId: number, request: any): Observable<HttpResponse<GermplasmAttributeAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmAttributeAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attribute/${attributeId}/changes`,
+        return this.http.get<GermplasmAttributeAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}/changes`,
             { params, observe: 'response' });
     }
 

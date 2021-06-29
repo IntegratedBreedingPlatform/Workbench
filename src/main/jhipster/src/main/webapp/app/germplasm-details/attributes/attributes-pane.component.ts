@@ -93,7 +93,7 @@ export class AttributesPaneComponent implements OnInit {
     openGermplasmAttributeAuditChanges(attributeType: GermplasmAttributeType, germplasmAttribute: GermplasmAttribute): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
-        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attribute/${germplasmAttribute.id}/audit-dialog`}, }], {
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attributes/${germplasmAttribute.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
         });
     }

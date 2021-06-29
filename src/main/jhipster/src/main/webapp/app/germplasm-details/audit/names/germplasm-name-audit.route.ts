@@ -3,7 +3,7 @@ import { GermplasmNameAuditPopupComponent } from './germplasm-name-audit.compone
 
 export const germplasmNameAuditRoutes: Routes = [
     {
-        path: 'germplasm/:gid/name/:nameId/audit-dialog',
+        path: 'germplasm/:gid/names/:nameId/audit-dialog',
         component: GermplasmNameAuditPopupComponent,
         outlet: 'popup'
     }
