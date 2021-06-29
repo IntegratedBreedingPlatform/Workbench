@@ -6,6 +6,7 @@ import { formatErrorList } from '../alert/format-error-list';
 import { AlertService } from '../alert/alert.service';
 import { finalize } from 'rxjs/operators';
 import { Select2OptionData } from 'ng-select2';
+import { VariableTypeEnum } from '../ontology/variable-type.enum';
 
 declare const $: any;
 
@@ -22,7 +23,7 @@ export class VariableSelectComponent implements OnInit {
 
     @Input() disabled = false;
     @Input() multiple = false;
-    @Input() variableTypeIds: number[];
+    @Input() variableTypeIds: VariableTypeEnum[];
     @Input() allowClear = false;
 
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()

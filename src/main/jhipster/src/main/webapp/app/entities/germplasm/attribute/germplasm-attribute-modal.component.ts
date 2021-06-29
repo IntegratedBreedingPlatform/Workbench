@@ -24,7 +24,6 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 
     isEditMode: boolean;
     gid: number;
-    attributeCodes: Promise<Attribute[]>;
     locations: LocationModel[];
     isLoading: boolean;
     VariableType = VariableTypeEnum;

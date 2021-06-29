@@ -19,6 +19,7 @@ import { map } from 'rxjs/operators';
 import { GermplasmCodeNameBatchRequestModel } from '../model/germplasm-code-name-batch-request.model';
 import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
 import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
+import { VariableTypeEnum } from '../../ontology/variable-type.enum';
 
 @Injectable()
 export class GermplasmService {
@@ -71,7 +72,7 @@ export class GermplasmService {
             { params, observe: 'response' });
     }
 
-    getGermplasmAttributesByGidAndType(gid: number, variableTypeId: number): Observable<GermplasmAttribute[]> {
+    getGermplasmAttributesByGidAndType(gid: number, variableTypeId: VariableTypeEnum): Observable<GermplasmAttribute[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes?variableTypeId=${variableTypeId}&programUUID=${this.context.programUUID}`;
         return this.http.get<GermplasmAttribute[]>(url);
     }
