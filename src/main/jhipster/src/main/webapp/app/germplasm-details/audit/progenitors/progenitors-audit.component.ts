@@ -8,17 +8,17 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
-import { GermplasmProgenitorDetailsAudit } from './germplasm-progenitor-details-audit.model';
+import { GermplasmProgenitorAudit } from './germplasm-progenitors-audit.model';
 import { GermplasmDetailsUrlService } from '../../../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
-    selector: 'jhi-germplasm-progenitors-details-audit',
-    templateUrl: './details-audit.component.html',
+    selector: 'jhi-germplasm-progenitors-audit',
+    templateUrl: './progenitors-audit.component.html',
     styleUrls: [
         '../germplasm-audit.scss'
     ]
 })
-export class DetailsAuditComponent implements OnInit {
+export class ProgenitorsAuditComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
@@ -30,7 +30,7 @@ export class DetailsAuditComponent implements OnInit {
     queryCount: number;
     isLoading: boolean;
 
-    auditChanges: GermplasmProgenitorDetailsAudit[];
+    auditChanges: GermplasmProgenitorAudit[];
 
     getEventDate = getEventDate;
     getEventUser = getEventUser;
@@ -72,18 +72,18 @@ export class DetailsAuditComponent implements OnInit {
 
     private loadAll() {
         this.isLoading = true;
-        this. germplasmAuditService.getProgenitorDetailsChanges(this.gid, {
+        this. germplasmAuditService.getProgenitorsChanges(this.gid, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
-            (res: HttpResponse<GermplasmProgenitorDetailsAudit[]>) => this.onSuccess(res.body, res.headers),
+            (res: HttpResponse<GermplasmProgenitorAudit[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
 
-    private onSuccess(data: GermplasmProgenitorDetailsAudit[], headers) {
+    private onSuccess(data: GermplasmProgenitorAudit[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
         this.auditChanges = data;

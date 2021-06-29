@@ -1,14 +1,13 @@
 import { GermplasmAudit } from '../germplasm-audit.model';
 
-export class GermplasmReferenceAudit extends GermplasmAudit {
+export class GermplasmProgenitorAudit extends GermplasmAudit {
     constructor(
         public revisionType: string,
-        public value: string,
         public createdBy: string,
         public createdDate: number,
         public modifiedBy: string,
         public modifiedDate: number,
-        public valueChanged: boolean
+        public progenitorGid: number
     ) {
         super(revisionType, createdBy, createdDate, modifiedBy, modifiedDate);
     }
