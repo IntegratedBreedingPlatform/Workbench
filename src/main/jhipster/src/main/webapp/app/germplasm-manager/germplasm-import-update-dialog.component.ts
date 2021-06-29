@@ -204,6 +204,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
             errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: duplicateColumns.join(', ') }));
         }
 
+        // TODO See GermplasmImportComponent.showUnknownColumnsWarning
         const invalidCodes = codes.filter((code) =>
             attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
             && names.every((name) => name.code !== code)

@@ -109,7 +109,7 @@ export class GermplasmImportComponent implements OnInit {
             && this.context.nameTypes.every((name) => name.code !== code)
         );
         if (unknown.length) {
-            this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)});
+            this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)}, 5000);
         }
     }
 
