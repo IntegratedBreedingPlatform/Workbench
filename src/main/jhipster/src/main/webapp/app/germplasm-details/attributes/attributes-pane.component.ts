@@ -10,6 +10,10 @@ import { Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
+import { VariableService } from '../../shared/ontology/service/variable.service';
+import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -21,12 +25,16 @@ export class AttributesPaneComponent implements OnInit {
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
     attributes: GermplasmAttribute[] = [];
+    variableByAttributeId: { [key: number]: VariableDetails } = {};
+    VariableTypeEnum = VariableTypeEnum;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private germplasmService: GermplasmService,
+                private variableService: VariableService,
+                private variableValidationService: VariableValidationService,
                 private alertService: JhiAlertService,
                 private modalService: NgbModal,
                 private router: Router,
@@ -45,16 +53,26 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    loadAttributes(): void {
-        this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'PASSPORT').toPromise().then((germplasmAttributes) => {
-            this.passportAttributes = germplasmAttributes;
-            return this.germplasmService.getGermplasmAttributesByGidAndType(this.germplasmDetailsContext.gid, 'ATTRIBUTE').toPromise();
-        }).then((germplasmAttributes) => {
-            this.attributes = germplasmAttributes;
-        });
+    async loadAttributes() {
+        const gid = this.germplasmDetailsContext.gid;
+        this.passportAttributes = await this.germplasmService.getGermplasmAttributesByGidAndType(gid, VariableTypeEnum.GERMPLASM_PASSPORT).toPromise();
+        this.attributes = await this.germplasmService.getGermplasmAttributesByGidAndType(gid, VariableTypeEnum.GERMPLASM_ATTRIBUTE).toPromise();
+
+        // Get extra info not available in the attribute entity (e.g valid values)
+        const attributesByVariableId: {[key: number]: GermplasmAttribute} =
+            [...this.passportAttributes, ...this.attributes]
+            .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
+        this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId) })
+            .toPromise().then((variables) => {
+                return variables.reduce((prev: any, variable) => {
+                    prev[attributesByVariableId[Number(variable.id)].id] = variable;
+                    return prev;
+                }, {});
+            });
     }
 
-    editGermplasmAttribute(attributeType: string, germplasmAttribute: GermplasmAttribute): void {
+    editGermplasmAttribute(attributeType: number, germplasmAttribute: GermplasmAttribute): void {
+        this.germplasmAttributesContext.variable = this.variableByAttributeId[germplasmAttribute.id];
         this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {
@@ -62,7 +80,7 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    createGermplasmAttribute(attributeType: string): void {
+    createGermplasmAttribute(attributeType: number): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-attribute-dialog/' + this.germplasmDetailsContext.gid }, }], {
             queryParamsHandling: 'merge'
@@ -71,7 +89,7 @@ export class AttributesPaneComponent implements OnInit {
 
     deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.attributeCode });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.variableName });
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise().then((result) => {
@@ -84,4 +102,9 @@ export class AttributesPaneComponent implements OnInit {
         }, () => confirmModalRef.dismiss());
     }
 
+    isValidValue(attribute: GermplasmAttribute) {
+        const variable = this.variableByAttributeId[attribute.id];
+        const validationStatus = this.variableValidationService.isValidValue(attribute.value, variable);
+        return validationStatus.isValid && validationStatus.isInRange;
+    }
 }

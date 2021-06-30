@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const TerserPlugin = require('terser-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
 const path = require('path');
@@ -71,6 +71,7 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
             }
         },
         minimizer: [
+        	/* TODO Review IBP-4719, potential performance bottleneck
             new TerserPlugin({
             parallel: true,
                 cache: true,
@@ -99,6 +100,7 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
                 }
             }
             })
+        	 */
         ]
     },
     plugins: [

@@ -29,7 +29,6 @@ import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/colum
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
 import { ColumnFilterNameTypesComponent } from './column-filter/column-filter-name-types-component';
-import { AttributesService } from './attributes/service/attributes.service';
 import { NameTypeService } from './name-type/service/name-type.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
@@ -73,6 +72,7 @@ import { VariableSelectComponent } from './variable-select/variable-select.compo
 import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
 import { VariableService } from './ontology/service/variable.service';
 import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
+import { VariableValidationService } from './ontology/service/variable-validation.service';
 
 @NgModule({
     imports: [
@@ -140,7 +140,6 @@ import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping
         SampleListBuilderService,
         HelpService,
         GermplasmService,
-        AttributesService,
         NameTypeService,
         BreedingMethodService,
         LocationService,
@@ -160,6 +159,7 @@ import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping
         UrlService,
         GermplasmPedigreeService,
         VariableService,
+        VariableValidationService,
         GermplasmGroupingService
     ],
     entryComponents: [

@@ -196,7 +196,7 @@
 			"variableTypeEmpty": "Please select at least one variable type.",
 			"variableTypeAppending": "Once saved, variable types cannot be removed for variables in use",
 			"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page.",
-			"alias": "The alias will be available only for Traits, Selection methods and Study conditions."
+			"alias": "The alias will be available only for Traits, Selection methods, Study conditions, Germplasm Passport and Germplasm Attributes"
 		},
 
 		"filter": {
@@ -217,7 +217,9 @@
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
 			"studies": "Nurseries and Trials",
-		  	"datasets": "Datasets"
+		  	"datasets": "Datasets",
+			"germplasm": "Germplasm",
+			"breedingMethods": "BreedingMethods"
 		}
 	},
 

@@ -1,8 +1,7 @@
-export class GernplasmAttributeRequestModel {
+export class GermplasmAttributeRequestModel {
     constructor(
+        public variableId?: number,
         public value?: string,
-        public attributeCode?: string,
-        public attributeType?: string,
         public date?: string,
         public locationId?: number,
     ) {

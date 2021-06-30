@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
-import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
 
 @Injectable()
 export class GermplasmImportContext {
@@ -13,13 +13,13 @@ export class GermplasmImportContext {
 
     // data recovered from the server
     nameTypes: NameType[] = [];
-    attributes: Attribute[] = [];
+    attributes: VariableDetails[] = [];
 
     // processed column data
     nameColumnsWithData = {};
     // data-bound to priority table -> sorted automatically by priority
     nametypesCopy: NameType[] = [];
-    attributesCopy: Attribute[] = [];
+    attributesCopy: VariableDetails[] = [];
 
     // inventory
     stockIdPrefix: string;

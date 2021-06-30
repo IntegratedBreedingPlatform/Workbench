@@ -1,16 +1,11 @@
 
 package org.generationcp.breeding.manager.listmanager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import org.generationcp.breeding.manager.listmanager.api.FillColumnSource;
 import org.generationcp.breeding.manager.listmanager.util.FillWithOption;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.domain.ontology.Variable;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.manager.ontology.api.OntologyVariableDataManager;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +15,11 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class AddedColumnsMapperTest {
 
@@ -42,9 +42,6 @@ public class AddedColumnsMapperTest {
 	private static final String[] STANDARD_COLUMNS =
 			{ColumnLabels.GID.getName(), ColumnLabels.DESIGNATION.getName(), ColumnLabels.SEED_SOURCE.getName(),
 					ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.GROUP_ID.getName(), ColumnLabels.STOCKID.getName()};
-
-	@Mock
-	private GermplasmDataManager germplasmDataManager;
 	
 	@Mock
 	private GermplasmListManager germplasmListManager;
@@ -53,7 +50,7 @@ public class AddedColumnsMapperTest {
 	private GermplasmColumnValuesGenerator valuesGenerator;
 
 	@Mock
-	private FillColumnSource fillColumnSource;
+	private OntologyVariableDataManager ontologyVariableDataManager;
 
 	@InjectMocks
 	private AddedColumnsMapper addedColumnsMapper;
@@ -62,10 +59,10 @@ public class AddedColumnsMapperTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.addedColumnsMapper.setValuesGenerator(this.valuesGenerator);
-		this.addedColumnsMapper.setGermplasmDataManager(this.germplasmDataManager);
+		this.addedColumnsMapper.setOntologyVariableDataManager(this.ontologyVariableDataManager);
 		this.addedColumnsMapper.setGermplasmListManager(this.germplasmListManager);
-		
-		Mockito.doReturn(this.getAttributeTypes()).when(this.germplasmDataManager).getAllAttributesTypes();
+
+		Mockito.doReturn(this.getAttributeVariables()).when(this.ontologyVariableDataManager).getWithFilter(Mockito.any());
 		Mockito.doReturn(this.getNameTypes()).when(this.germplasmListManager).getGermplasmNameTypes();
 		
 	}
@@ -137,12 +134,12 @@ public class AddedColumnsMapperTest {
 	
 	@Test
 	public void testGetAttributeTypesMap() {
-		final List<UserDefinedField> expectedAttributeTypes = this.getAttributeTypes();
+		final List<Variable> expectedAttributeVariables = this.getAttributeVariables();
 		final Map<String, Integer> attributeTypesMap = this.addedColumnsMapper.getAllAttributeTypesMap();
-		for (final UserDefinedField attributeType : expectedAttributeTypes) {
-			final String fieldCode = attributeType.getFcode().toUpperCase();
-			Assert.assertTrue(attributeTypesMap.containsKey(fieldCode));
-			Assert.assertEquals(attributeType.getFldno(), attributeTypesMap.get(fieldCode));
+		for (final Variable variable : expectedAttributeVariables) {
+			final String name = variable.getName().toUpperCase();
+			Assert.assertTrue(attributeTypesMap.containsKey(name));
+			Assert.assertEquals(Integer.valueOf(variable.getId()), attributeTypesMap.get(name));
 		}
 	}
 	
@@ -156,18 +153,24 @@ public class AddedColumnsMapperTest {
 			Assert.assertEquals(nameType.getFldno(), nameTypesMap.get(fieldName));
 		}
 	}
-	
-	private List<UserDefinedField> getAttributeTypes() {
-		final UserDefinedField attributeType1 = new UserDefinedField(AddedColumnsMapperTest.ATTRIBUTE_TYPE_ID1);
-		attributeType1.setFname(AddedColumnsMapperTest.ATTRIBUTE_TYPE_NAME1);
-		attributeType1.setFcode(AddedColumnsMapperTest.ATTRIBUTE_TYPE_CODE1);
-		final UserDefinedField attributeType2 = new UserDefinedField(AddedColumnsMapperTest.ATTRIBUTE_TYPE_ID2);
-		attributeType2.setFname(AddedColumnsMapperTest.ATTRIBUTE_TYPE_NAME2);
-		attributeType2.setFcode(AddedColumnsMapperTest.ATTRIBUTE_TYPE_CODE2);
-		final UserDefinedField attributeType3 = new UserDefinedField(3);
-		attributeType3.setFname("Grower");
-		attributeType3.setFcode("Grow");
-		return Arrays.asList(attributeType1, attributeType2, attributeType3);
+
+	private List<Variable> getAttributeVariables() {
+		final Variable variable1 = new Variable();
+		variable1.setId(ATTRIBUTE_TYPE_ID1);
+		variable1.setName(AddedColumnsMapperTest.ATTRIBUTE_TYPE_CODE1);
+		variable1.setDefinition(AddedColumnsMapperTest.ATTRIBUTE_TYPE_NAME1);
+
+		final Variable variable2 = new Variable();
+		variable2.setId(ATTRIBUTE_TYPE_ID2);
+		variable2.setName(AddedColumnsMapperTest.ATTRIBUTE_TYPE_CODE2);
+		variable2.setDefinition(AddedColumnsMapperTest.ATTRIBUTE_TYPE_NAME2);
+
+		final Variable variable3 = new Variable();
+		variable3.setId(3);
+		variable3.setName("Grow");
+		variable3.setDefinition("Grower");
+
+		return Arrays.asList(variable1, variable2, variable3);
 	}
 	
 	private List<UserDefinedField> getNameTypes() {

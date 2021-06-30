@@ -1,0 +1,46 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold" jhiTranslate="confirm"></h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body word-wrap" >
+	<form>
+		<div class="form-group row">
+			<label for="attributes" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.attributes"></label>
+			<div class="col-sm-9">
+				<table class="table table-striped table-bordered table-curved table-fixed">
+					<thead>
+					<tr>
+						<th>VARIABLE NAME</th>
+						<th>DESCRIPTION</th>
+						<th>TYPE</th>
+						<th>STATUS</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let attribute of attributes">
+						<td>
+							<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
+							   [queryParams]="{ variableId: attribute.id }">
+								{{attribute.alias || attribute.name}}
+							</a>
+						</td>
+						<td>{{attribute.description}}</td>
+						<td>{{attribute.variableTypes[0].name}}</td>
+						<td [innerHTML]="getStatusIcon(attribute)"></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="confirm()" class="btn btn-primary">
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="confirm"></span>
+	</button>
+</div>

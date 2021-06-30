@@ -2,7 +2,7 @@
     "germplasm-details": {
         "header": "Germplasm Details: ",
         "germplasm": "Germplasm",
-        "attributes": "Attributes",
+        "descriptors": "Descriptors",
         "pedigree": "Pedigree",
         "observations": "Observations",
         "inventory": "Inventory",
@@ -46,7 +46,7 @@
         "passport": {
             "title": "PASSPORT",
             "variable": "Variable",
-            "variable-description": "Variable Desc",
+            "variable-description": "Description",
             "value": "Value",
             "date": "Date",
             "location": "Location"
@@ -54,7 +54,7 @@
         "attributes": {
             "title": "ATTRIBUTES",
             "variable": "Variable",
-            "variable-description": "Variable Desc",
+            "variable-description": "Description",
             "value": "Value",
             "date": "Date",
             "location": "Location"

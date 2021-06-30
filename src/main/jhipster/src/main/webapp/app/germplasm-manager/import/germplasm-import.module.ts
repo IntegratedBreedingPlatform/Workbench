@@ -4,7 +4,7 @@ import { BmsjHipsterSharedModule } from '../../shared';
 import { GermplasmImportBasicDetailsComponent } from './germplasm-import-basic-details.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
-import { GermplasmImportReviewComponent, NameAttributeColumnPipe } from './germplasm-import-review.component';
+import { GermplasmImportReviewComponent, NameColumnPipePipe } from './germplasm-import-review.component';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
 
@@ -20,7 +20,7 @@ import { GermplasmImportMatchesComponent } from './germplasm-import-matches.comp
         GermplasmImportInventoryComponent,
         GermplasmImportMatchesComponent,
         GermplasmImportReviewComponent,
-        NameAttributeColumnPipe
+        NameColumnPipePipe
     ],
     entryComponents: [
         GermplasmImportComponent,

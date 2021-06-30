@@ -6,6 +6,7 @@ import { variableDetailsRoutes } from './variable-details.route';
 import { DetailsComponent } from './details.component';
 import { ValidValuesComponent } from './valid-values.component';
 import { VariableDetailsContext } from './variable-details.context';
+import { VariableDetailsModalComponent, VariableDetailsPopupComponent } from './variable-details-modal.component';
 
 @NgModule({
     imports: [
@@ -15,12 +16,16 @@ import { VariableDetailsContext } from './variable-details.context';
     declarations: [
         VariableDetailsComponent,
         DetailsComponent,
-        ValidValuesComponent
+        ValidValuesComponent,
+        VariableDetailsModalComponent,
+        VariableDetailsPopupComponent
     ],
     entryComponents: [
         VariableDetailsComponent,
         DetailsComponent,
-        ValidValuesComponent
+        ValidValuesComponent,
+        VariableDetailsModalComponent,
+        VariableDetailsPopupComponent
     ],
     providers: [
         VariableDetailsContext

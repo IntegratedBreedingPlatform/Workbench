@@ -8,6 +8,8 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { TranslateService } from '@ngx-translate/core';
 import { JhiAlertService } from 'ng-jhipster';
 import { VariableDetailsContext } from './variable-details.context';
+import { PopupService } from '../../shared/modal/popup.service';
+import { InventoryDetailsModalComponent } from '../../germplasm-manager/inventory/details/inventory-details-modal.component';
 
 @Component({
     selector: 'jhi-variable-details',
