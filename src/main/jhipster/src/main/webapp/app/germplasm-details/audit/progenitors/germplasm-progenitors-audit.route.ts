@@ -3,7 +3,7 @@ import { DetailsAuditComponent } from './details-audit.component';
 import { RouteAccessService } from '../../../shared';
 import { GermplasmProgenitorsAuditComponent } from './germplasm-progenitors-audit.component';
 import { GermplasmBasicDetailsAuditPopupComponent } from './germplasm-progenitors-audit-modal.component';
-import { ProgenitorsAuditComponent } from './progenitors-audit.component';
+import { OtherProgenitorsAuditComponent } from './other-progenitors-audit.component';
 
 export const germplasmProgenitorDetailsAuditRoutes: Routes = [
     {
@@ -26,8 +26,8 @@ export const germplasmProgenitorDetailsAuditRoutes: Routes = [
                 component: DetailsAuditComponent
             },
             {
-                path: 'progenitors',
-                component: ProgenitorsAuditComponent
+                path: 'other-progenitors',
+                component: OtherProgenitorsAuditComponent
             }
         ]
     }

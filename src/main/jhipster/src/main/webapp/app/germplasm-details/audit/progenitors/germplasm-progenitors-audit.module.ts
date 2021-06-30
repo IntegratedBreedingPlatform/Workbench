@@ -7,8 +7,7 @@ import { germplasmProgenitorDetailsAuditRoutes } from './germplasm-progenitors-a
 import { DetailsAuditComponent } from './details-audit.component';
 import { GermplasmBasicDetailsAuditPopupComponent, GermplasmProgenitorsAuditModalComponent } from './germplasm-progenitors-audit-modal.component';
 import { GermplasmDetailsContext } from '../../germplasm-details.context';
-import { ProgenitorsAuditComponent } from './progenitors-audit.component';
-import { GermplasmManagerContext } from '../../../germplasm-manager/germplasm-manager.context';
+import { OtherProgenitorsAuditComponent } from './other-progenitors-audit.component';
 import { GermplasmDetailsUrlService } from '../../../shared/germplasm/service/germplasm-details.url.service';
 
 @NgModule({
@@ -21,14 +20,14 @@ import { GermplasmDetailsUrlService } from '../../../shared/germplasm/service/ge
         GermplasmProgenitorsAuditModalComponent,
         GermplasmBasicDetailsAuditPopupComponent,
         DetailsAuditComponent,
-        ProgenitorsAuditComponent
+        OtherProgenitorsAuditComponent
     ],
     entryComponents: [
         GermplasmProgenitorsAuditComponent,
         GermplasmProgenitorsAuditModalComponent,
         GermplasmBasicDetailsAuditPopupComponent,
         DetailsAuditComponent,
-        ProgenitorsAuditComponent
+        OtherProgenitorsAuditComponent
     ],
     providers: [
         GermplasmAuditService,

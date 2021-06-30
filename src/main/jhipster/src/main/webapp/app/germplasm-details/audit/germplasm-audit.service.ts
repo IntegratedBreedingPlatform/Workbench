@@ -9,7 +9,7 @@ import { GermplasmAttributeAudit } from './attributes/germplasm-attribute-audit.
 import { GermplasmBasicDetailsAudit } from './basic-details/germplasm-basic-details-audit.model';
 import { GermplasmReferenceAudit } from './basic-details/germplasm-reference-audit.model';
 import { GermplasmProgenitorDetailsAudit } from './progenitors/germplasm-progenitor-details-audit.model';
-import { GermplasmProgenitorAudit } from './progenitors/germplasm-progenitors-audit.model';
+import { GermplasmOtherProgenitorAudit } from './progenitors/germplasm-other-progenitors-audit.model';
 
 @Injectable()
 export class GermplasmAuditService {
@@ -48,9 +48,9 @@ export class GermplasmAuditService {
             { params, observe: 'response' });
     }
 
-    getProgenitorsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmProgenitorAudit[]>> {
+    getOtherProgenitorsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmOtherProgenitorAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmProgenitorAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitors/changes`,
+        return this.http.get<GermplasmOtherProgenitorAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitors-other/changes`,
             { params, observe: 'response' });
     }
 

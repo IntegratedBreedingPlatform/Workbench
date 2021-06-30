@@ -166,7 +166,7 @@
             "progenitor-gid": "Progenitor GID",
             "nav": {
                 "details": "Details",
-                "progenitors": "Progenitors"
+                "other-progenitors": "Other Progenitors"
             }
         }
     }

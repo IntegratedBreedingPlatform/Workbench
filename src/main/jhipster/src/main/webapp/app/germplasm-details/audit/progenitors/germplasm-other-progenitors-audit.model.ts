@@ -1,6 +1,6 @@
 import { GermplasmAudit } from '../germplasm-audit.model';
 
-export class GermplasmProgenitorAudit extends GermplasmAudit {
+export class GermplasmOtherProgenitorAudit extends GermplasmAudit {
     constructor(
         public revisionType: string,
         public createdBy: string,
