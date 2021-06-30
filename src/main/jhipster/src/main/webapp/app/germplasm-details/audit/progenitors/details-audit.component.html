@@ -22,26 +22,26 @@
 				<td [ngClass]="{ 'diff-new': change.breedingMethodChanged }">{{change.breedingMethodName}}</td>
 				<td [ngClass]="{ 'diff-new': isGenerative(change) && change.femaleParentChanged }">
 					<span *ngIf="isGenerative(change) && change.femaleParentChanged">
-						<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">{{change.femaleParent}}</a>
+						<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">GID{{change.femaleParent}}</a>
 					</span>
 					<span *ngIf="!change.femaleParentChanged"> - </span>
 				</td>
 
 				<td [ngClass]="{ 'diff-new': isGenerative(change) && change.maleParentChanged }">
 					<span *ngIf="isGenerative(change) && change.maleParentChanged">
-						<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">{{change.maleParent}}</a>
+						<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">GID{{change.maleParent}}</a>
 					</span>
 					<span *ngIf="!change.maleParentChanged"> - </span>
 				</td>
 				<td [ngClass]="{ 'diff-new': !isGenerative(change) && change.femaleParentChanged }">
 					<span *ngIf="!isGenerative(change) && change.femaleParentChanged">
-						<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">{{change.femaleParent}}</a>
+						<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">GID{{change.femaleParent}}</a>
 					</span>
 					<span *ngIf="!change.femaleParentChanged"> - </span>
 				</td>
 				<td [ngClass]="{ 'diff-new': !isGenerative(change) && change.maleParentChanged }">
 					<span *ngIf="!isGenerative(change) && change.maleParentChanged">
-						<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">{{change.maleParent}}</a>
+						<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">GID{{change.maleParent}}</a>
 					</span>
 					<span *ngIf="!change.maleParentChanged"> - </span>
 				</td>

@@ -163,7 +163,8 @@
         "germplasm-progenitors": {
             "title": "Progenitors - View history of changes",
             "progenitors-number": "Number of Progenitors",
-            "progenitor-gid": "Progenitor GID",
+            "progenitor-number": "Progenitor Number",
+            "progenitor": "Progenitor",
             "nav": {
                 "details": "Details",
                 "other-progenitors": "Other Progenitors"

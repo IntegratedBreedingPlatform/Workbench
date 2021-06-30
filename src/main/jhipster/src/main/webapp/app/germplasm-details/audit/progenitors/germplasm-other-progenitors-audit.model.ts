@@ -7,7 +7,8 @@ export class GermplasmOtherProgenitorAudit extends GermplasmAudit {
         public createdDate: number,
         public modifiedBy: string,
         public modifiedDate: number,
-        public progenitorGid: number
+        public progenitorGid: number,
+        public progenitorsNumber: number
     ) {
         super(revisionType, createdBy, createdDate, modifiedBy, modifiedDate);
     }
