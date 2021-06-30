@@ -1,5 +1,5 @@
 import { RevisionType } from './revision-type';
-import { parseDate } from '../../shared/util/date-utils';
+import { DateFormatEnum, formatDate } from '../../shared/util/date-utils';
 import { GermplasmAudit } from './germplasm-audit.model';
 
 export function getEventUser(germplasmAudit: GermplasmAudit): string {
@@ -8,5 +8,5 @@ export function getEventUser(germplasmAudit: GermplasmAudit): string {
 
 export function getEventDate(germplasmAudit: GermplasmAudit): string {
     const date: number = (germplasmAudit.revisionType ===  RevisionType.CREATION) ? germplasmAudit.createdDate : germplasmAudit.modifiedDate;
-    return parseDate(date);
+    return formatDate(date, DateFormatEnum.ISO_8601_AND_TIME);
 }
