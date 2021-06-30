@@ -1,13 +1,11 @@
 
 package org.generationcp.breeding.manager.listmanager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.data.initializer.GermplasmListDataTestDataInitializer;
-import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.api.germplasm.GermplasmService;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.GermplasmTestDataInitializer;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -25,7 +23,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.ui.Table;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ListComponentAddEntryDialogSourceTest {
 
@@ -67,6 +67,9 @@ public class ListComponentAddEntryDialogSourceTest {
 	@Mock
 	private Table table;
 
+	@Mock
+	private GermplasmService germplasmService;
+
 	@InjectMocks
 	private ListComponentAddEntryDialogSource addEntrySource;
 
@@ -79,6 +82,7 @@ public class ListComponentAddEntryDialogSourceTest {
 		this.addEntrySource.setInventoryDataManager(this.inventoryDataManager);
 		this.addEntrySource.setNewEntriesSource(this.newEntriesSource);
 		this.addEntrySource.setAddedColumnsMapper(this.addedColumnsMapper);
+		this.addEntrySource.setGermplasmService(germplasmService);
 
 		Mockito.doReturn(GermplasmTestDataInitializer.createGermplasm(ListComponentAddEntryDialogSourceTest.GID))
 				.when(this.germplasmDataManager).getGermplasmWithPrefName(Matchers.eq(ListComponentAddEntryDialogSourceTest.GID));

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { GermplasmAttribute } from '../../../shared/germplasm/model/germplasm.model';
-import { GermplasmAttributeType } from './germplasm-attribute-type';
+import { GermplasmAttribute, GermplasmName } from '../../../shared/germplasm/model/germplasm.model';
+import { VariableDetails } from '../../../shared/ontology/model/variable-details';
 
 @Injectable()
 export class GermplasmAttributeContext {
-    attributeType: GermplasmAttributeType;
+    variable: VariableDetails;
+    attributeType: number;
     attribute: GermplasmAttribute;
 }

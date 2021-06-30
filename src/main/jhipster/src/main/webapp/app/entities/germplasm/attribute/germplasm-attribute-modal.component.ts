@@ -8,6 +8,12 @@ import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
 import { GermplasmAttributeContext } from './germplasm-attribute.context';
 import { Attribute } from '../../../shared/attributes/model/attribute.model';
+import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
+import { VariableDetails } from '../../../shared/ontology/model/variable-details';
+import { VariableService } from '../../../shared/ontology/service/variable.service';
+import { DataTypeEnum } from '../../../shared/ontology/data-type.enum';
+import { VariableValidationService } from '../../../shared/ontology/service/variable-validation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-germplasm-attribute-modal',
@@ -18,35 +24,42 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 
     isEditMode: boolean;
     gid: number;
-    attributeCodes: Promise<Attribute[]>;
     locations: LocationModel[];
     isLoading: boolean;
+    VariableType = VariableTypeEnum;
+    DataType = DataTypeEnum;
 
     attributeId: number;
-    attributeCode: string;
+    attributeTypeId: number;
     value: string;
+    dateValue: NgbDate;
     locationId: number;
     date: NgbDate;
+    variable: VariableDetails;
 
     constructor(public activeModal: NgbActiveModal,
+                public translateService: TranslateService,
                 private eventManager: JhiEventManager,
                 private germplasmAttributeContext: GermplasmAttributeContext,
                 private germplasmService: GermplasmService,
+                private variableService: VariableService,
+                private validationService: VariableValidationService,
                 private calendar: NgbCalendar,
-                private dateHelperService: DateHelperService,
+                public dateHelperService: DateHelperService,
                 private alertService: JhiAlertService) {
     }
 
-    ngOnInit(): void {
-        this.attributeCodes = this.germplasmService.getGermplasmAttributesByType(this.germplasmAttributeContext.attributeType).toPromise();
+    ngOnInit() {
         this.date = this.calendar.getToday();
         if (this.germplasmAttributeContext.attribute) {
             this.attributeId = this.germplasmAttributeContext.attribute.id;
-            this.attributeCode = this.germplasmAttributeContext.attribute.attributeCode;
             this.value = this.germplasmAttributeContext.attribute.value;
+            this.dateValue = this.dateHelperService.convertStringToNgbDate(this.value);
             this.locationId = Number(this.germplasmAttributeContext.attribute.locationId);
             this.date = this.dateHelperService.convertStringToNgbDate(this.germplasmAttributeContext.attribute.date);
+            this.variable = this.germplasmAttributeContext.variable;
         }
+        this.attributeTypeId = this.germplasmAttributeContext.attributeType;
     }
 
     clear() {
@@ -59,8 +72,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             // if attribute id is available, we have to update the attribute
             this.isLoading = true;
             this.germplasmService.updateGermplasmAttribute(this.gid, this.attributeId, {
-                attributeCode: this.attributeCode,
-                attributeType: this.germplasmAttributeContext.attributeType,
+                variableId: Number(this.variable.id),
                 value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
@@ -76,8 +88,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
             // If attribute id is not available, we have to create a new attribute
             this.isLoading = true;
             this.germplasmService.createGermplasmAttribute(this.gid, {
-                attributeCode: this.attributeCode,
-                attributeType: this.germplasmAttributeContext.attributeType,
+                variableId: Number(this.variable.id),
                 value: this.value,
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
@@ -99,13 +110,41 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.attributeCode
+        return f.form.valid && !this.isLoading && this.variable
             && this.value && this.locationId && this.date;
     }
 
+    isNumericOutOfRange() {
+        return !this.validationService.isValidValue(this.value, this.variable).isInRange;
+    }
+
+    getNumericOutOfRangeWarning() {
+        const isOutOfrange = !this.validationService.isValidValue(this.value, this.variable).isInRange;
+        if (isOutOfrange) {
+            const min = this.variable.scale.validValues && (
+                this.variable.scale.validValues.min || this.variable.scale.validValues.min === 0)
+                ? this.variable.scale.validValues.min
+                : this.variable.expectedRange.min;
+            const max = this.variable.scale.validValues && (
+                this.variable.scale.validValues.max || this.variable.scale.validValues.max === 0)
+                ? this.variable.scale.validValues.max
+                : this.variable.expectedRange.max;
+            const title = this.translateService.instant('germplasm-attribute-modal.outOfRange', { min, max });
+            return title;
+        } else {
+            return '';
+        }
+    }
+
     ngOnDestroy(): void {
+        this.germplasmAttributeContext.variable = null;
         this.germplasmAttributeContext.attributeType = null;
         this.germplasmAttributeContext.attribute = null;
+    }
+
+    selectVariable(variable: VariableDetails) {
+        this.value = null;
+        this.variable = variable;
     }
 }
 

@@ -33,11 +33,11 @@
 						<th *ngFor="let header of keys(HEADERS)">
 							<span>{{header}}</span>
 						</th>
-						<th *ngFor="let nameType of context.nametypesCopy | NameAttributeColumnPipe">
+						<th *ngFor="let nameType of context.nametypesCopy | NameColumnPipe">
 							<span>{{nameType.code}}</span>
 						</th>
-						<th *ngFor="let attributeType of context.attributesCopy | NameAttributeColumnPipe">
-							<span>{{attributeType.code}}</span>
+						<th *ngFor="let attributeType of context.attributesCopy">
+							<span>{{attributeType.alias || attributeType.name}}</span>
 						</th>
 						</thead>
 						<tbody>
@@ -45,11 +45,11 @@
 							<td *ngFor="let header of keys(HEADERS)">
 								{{row[header]}}
 							</td>
-							<td *ngFor="let nameType of context.nametypesCopy | NameAttributeColumnPipe">
-								<span>{{row[nameType.code]}}</span>
+							<td *ngFor="let nameType of context.nametypesCopy | NameColumnPipe">
+								<span>{{row[toUpper(nameType.code)]}}</span>
 							</td>
-							<td *ngFor="let attributeType of context.attributesCopy | NameAttributeColumnPipe">
-								<span>{{row[attributeType.code]}}</span>
+							<td *ngFor="let attributeType of context.attributesCopy">
+								<span>{{row[toUpper(attributeType.alias)] || row[toUpper(attributeType.name)]}}</span>
 							</td>
 						</tr>
 						</tbody>

@@ -11,6 +11,7 @@ import { GermplasmAuditService } from '../germplasm-audit.service';
 import { GermplasmAttributeAudit } from './germplasm-attribute-audit.model';
 import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
+import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 
 @Component({
     selector: 'jhi-germplasm-attribute-audit',
@@ -47,7 +48,12 @@ export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
                 private router: Router) {
         this.page = 1;
 
-        const entity = this.germplasmAttributeContext.attributeType.toLowerCase();
+        let entity;
+        if (this.germplasmAttributeContext.attributeType === VariableTypeEnum.GERMPLASM_PASSPORT) {
+            entity = 'passport';
+        } else if (this.germplasmAttributeContext.attributeType === VariableTypeEnum.GERMPLASM_ATTRIBUTE) {
+            entity = 'attribute';
+        }
         this.title = this.translateService.instant('audit.title',
             { entity: this.translateService.instant('audit.entities.' + entity), entityValue: this.germplasmAttributeContext.attribute.value });
     }

@@ -13,6 +13,8 @@ import { MockEventManager } from './helpers/mock-event-manager.service';
 import { MockAlertService, MockJhiAlertService } from './helpers/mock-alert.service';
 import { AlertService } from '../../../main/webapp/app/shared/alert/alert.service';
 import {ParamContext} from '../../../main/webapp/app/shared/service/param.context';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from './helpers/mock-translate.service';
 
 @NgModule({
     providers: [
@@ -28,6 +30,10 @@ import {ParamContext} from '../../../main/webapp/app/shared/service/param.contex
         {
             provide: JhiLanguageHelper,
             useClass: MockLanguageHelper
+        },
+        {
+            provide: TranslateService,
+            useClass: MockTranslateService
         },
         {
             provide: JhiEventManager,

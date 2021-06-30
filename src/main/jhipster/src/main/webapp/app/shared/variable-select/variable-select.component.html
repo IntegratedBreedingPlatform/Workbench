@@ -1,8 +1,11 @@
 <ng-select2 *ngIf="!isLoading else loading"
+			[name]="name"
+			[id]="id"
 			width="100%"
 			[placeholder]="'Select variable' + (multiple ? 's' : '')"
-			[allowClear]="true"
+			[allowClear]="allowClear"
 			[(ngModel)]="value"
+			[disabled]="disabled"
 			(ngModelChange)="onNgModelChange()"
 			[data]="variables"
 			[options]="options">

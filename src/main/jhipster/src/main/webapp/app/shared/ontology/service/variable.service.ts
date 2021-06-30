@@ -4,6 +4,7 @@ import { ParamContext } from '../../service/param.context';
 import { VariableDetails } from '../model/variable-details';
 import { SERVER_API_URL } from '../../../app.constants';
 import { Observable } from 'rxjs';
+import { VariableFilterRequest } from '../model/variable-filter-request';
 
 @Injectable()
 export class VariableService {
@@ -17,6 +18,13 @@ export class VariableService {
     getVariables() {
         const params = { programUUID: this.paramContext.programUUID };
         return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables`, { params });
+    }
+
+    filterVariables(request: VariableFilterRequest) {
+        const params = Object.assign({
+            programUUID: this.paramContext.programUUID,
+        }, request);
+        return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables/filter`, { params });
     }
 
     getVariableById(variableId: number): Observable<VariableDetails> {

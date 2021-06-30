@@ -22,7 +22,6 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
 import { GermplasmListEntry } from '../../shared/model/germplasm-list';
 import { toUpper } from '../../shared/util/to-upper';
-import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 
@@ -195,14 +194,16 @@ export class GermplasmImportReviewComponent implements OnInit {
                         progenitor1: row[HEADERS['PROGENITOR 1']],
                         progenitor2: row[HEADERS['PROGENITOR 2']],
                         names: this.context.nametypesCopy.reduce((map, name) => {
-                            if (row[name.code]) {
-                                map[name.code] = row[name.code];
+                            if (row[toUpper(name.code)]) {
+                                map[name.code] = row[toUpper(name.code)];
                             }
                             return map;
                         }, {}),
                         attributes: this.context.attributesCopy.reduce((map, attribute) => {
-                            if (row[attribute.code]) {
-                                map[attribute.code] = row[attribute.code];
+                            if (row[toUpper(attribute.name)]) {
+                                map[attribute.name] = row[toUpper(attribute.name)];
+                            } else if (row[toUpper(attribute.alias)]) {
+                                map[attribute.alias] = row[toUpper(attribute.alias)];
                             }
                             return map;
                         }, {})
@@ -408,6 +409,10 @@ export class GermplasmImportReviewComponent implements OnInit {
         return Object.keys(obj).length;
     }
 
+    toUpper(param) {
+        return toUpper(param);
+    }
+
     onShowMatchesOptionChange() {
         switch (this.showMatchesOption) {
             case SHOW_MATCHES_OPTIONS.ALL:
@@ -435,12 +440,12 @@ enum CREATION_OPTIONS {
 }
 
 @Pipe({
-    name: 'NameAttributeColumnPipe'
+    name: 'NameColumnPipe'
 })
-export class NameAttributeColumnPipe implements PipeTransform {
+export class NameColumnPipePipe implements PipeTransform {
     transform(items: any[]): any {
         // exclude common headers
-        return items.filter((item: NameType | Attribute) =>
+        return items.filter((item: NameType) =>
             [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(item.code) === -1);
     }
 

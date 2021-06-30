@@ -2,7 +2,7 @@
 	<jhi-collapsible heading="{{translateService.instant('attributes.passport.title')}}">
 		<div class="container-fluid">
 			<div class="pull-right pb-3">
-				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute(GermplasmAttributeType.PASSPORT)"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute(VariableTypeEnum.GERMPLASM_PASSPORT)"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="passportAttributes.length else nodata">
@@ -18,19 +18,22 @@
 					</thead>
 					<tbody>
 					<tr *ngFor="let attribute of passportAttributes">
-						<td>{{attribute.attributeCode}}</td>
-						<td>{{attribute.attributeDescription}}</td>
-						<td class="word-wrap">{{attribute.value}}</td>
+						<td>
+							<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
+							   [queryParams]="{ variableId: attribute.variableId }">{{attribute.variableName}}</a>
+						</td>
+						<td>{{attribute.variableDescription}}</td>
+						<td class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value}}</td>
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
-							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(GermplasmAttributeType.PASSPORT, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
+							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(VariableTypeEnum.GERMPLASM_PASSPORT, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
 							</button>
 							<button class="btn btn-info mr-2" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
 							</button>
-							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(GermplasmAttributeType.PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
 								<i class="fa fa-list fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
@@ -58,14 +61,14 @@
 	<jhi-collapsible heading="{{translateService.instant('attributes.attributes.title')}}">
 		<div class="container-fluid">
 			<div class="pull-right pb-3">
-				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute(GermplasmAttributeType.ATTRIBUTE)"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+				<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" (click)="createGermplasmAttribute(VariableTypeEnum.GERMPLASM_ATTRIBUTE)"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="attributes.length else nodata">
 					<thead>
 					<tr>
 						<th scope="col" jhiTranslate="attributes.attributes.variable">Variable</th>
-						<th scope="col" jhiTranslate="attributes.attributes.variable-description" style="width: 15%">Variable Desc</th>
+						<th scope="col" jhiTranslate="attributes.attributes.variable-description" style="width: 15%">Description</th>
 						<th scope="col" jhiTranslate="attributes.attributes.value">Value</th>
 						<th scope="col" jhiTranslate="attributes.attributes.date">Date</th>
 						<th scope="col" jhiTranslate="attributes.attributes.location" style="width: 20%">Location</th>
@@ -74,19 +77,22 @@
 					</thead>
 					<tbody>
 					<tr *ngFor="let attribute of attributes">
-						<td>{{attribute.attributeCode}}</td>
-						<td>{{attribute.attributeDescription}}</td>
-						<td class="word-wrap">{{attribute.value}}</td>
+						<td>
+							<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
+							   [queryParams]="{ variableId: attribute.variableId }">{{attribute.variableName}}</a>
+						</td>
+						<td>{{attribute.variableDescription}}</td>
+						<td class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value}}</td>
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="text-center" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
-							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(GermplasmAttributeType.ATTRIBUTE, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
+							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(VariableTypeEnum.GERMPLASM_ATTRIBUTE, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
 							</button>
 							<button class="btn btn-info mr-2" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
 							</button>
-							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(GermplasmAttributeType.ATTRIBUTE, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_ATTRIBUTE, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
 								<i class="fa fa-list fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
