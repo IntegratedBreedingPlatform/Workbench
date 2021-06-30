@@ -17,14 +17,14 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let change of auditChanges">
-				<td [ngClass]="{ 'text-success': change.breedingMethodChanged }">{{change.breedingMethodName}}</td>
-				<td [ngClass]="{ 'text-success': change.femaleParentChanged }">
+				<td [ngClass]="{ 'diff-new': change.breedingMethodChanged }">{{change.breedingMethodName}}</td>
+				<td [ngClass]="{ 'diff-new': change.femaleParentChanged }">
 					<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">{{change.femaleParent}}</a>
 				</td>
-				<td [ngClass]="{ 'text-success': change.maleParentChanged }">
+				<td [ngClass]="{ 'diff-new': change.maleParentChanged }">
 					<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">{{change.maleParent}}</a>
 				</td>
-				<td [ngClass]="{ 'text-success': change.progenitorsNumberChanged }">{{change.progenitorsNumber}}</td>
+				<td [ngClass]="{ 'diff-new': change.progenitorsNumberChanged }">{{change.progenitorsNumber}}</td>
 				<td>{{change.revisionType}}</td>
 				<td>{{getEventDate(change)}}</td>
 				<td>{{getEventUser(change)}}</td>

@@ -15,8 +15,8 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let change of auditChanges">
-				<td [ngClass]="{ 'text-success': change.creationDateChanged }">{{change.creationDate}}</td>
-				<td [ngClass]="{ 'text-success': change.locationChanged }">{{change.locationName}}</td>
+				<td [ngClass]="{ 'diff-new': change.creationDateChanged }">{{change.creationDate}}</td>
+				<td [ngClass]="{ 'diff-new': change.locationChanged }">{{change.locationName}}</td>
 				<td>{{change.revisionType}}</td>
 				<td>{{getEventDate(change)}}</td>
 				<td>{{getEventUser(change)}}</td>
