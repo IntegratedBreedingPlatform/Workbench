@@ -10,6 +10,7 @@ import { GermplasmAuditService } from '../germplasm-audit.service';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 import { GermplasmProgenitorDetailsAudit } from './germplasm-progenitor-details-audit.model';
 import { GermplasmDetailsUrlService } from '../../../shared/germplasm/service/germplasm-details.url.service';
+import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-details-audit',
@@ -68,6 +69,10 @@ export class DetailsAuditComponent implements OnInit {
             queryParamsHandling: 'merge'
         });
         this.loadAll();
+    }
+
+    isGenerative(change: GermplasmProgenitorDetailsAudit): boolean {
+        return change.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
     }
 
     private loadAll() {

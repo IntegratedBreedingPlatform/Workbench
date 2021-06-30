@@ -8,6 +8,7 @@ export class GermplasmProgenitorDetailsAudit extends GermplasmAudit {
         public modifiedBy: string,
         public modifiedDate: number,
         public breedingMethodName: string,
+        public breedingMethodType: string,
         public femaleParent: number,
         public maleParent: number,
         public progenitorsNumber: number,
