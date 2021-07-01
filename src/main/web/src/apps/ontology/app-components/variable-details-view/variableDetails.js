@@ -211,6 +211,9 @@
 
 						if ($scope.vdForm.$valid) {
 							$scope.submitted = true;
+							// Reset server errors
+							$scope.serverErrors = {};
+
 							$timeout(function() {
 								if ($scope.submitted) {
 									$scope.showThrobber = true;
