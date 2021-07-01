@@ -38,7 +38,7 @@ export class GermplasmAuditService {
 
     getReferenceChanges(gid: number, request: any): Observable<HttpResponse<GermplasmReferenceAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmReferenceAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/reference/changes`,
+        return this.http.get<GermplasmReferenceAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/references/changes`,
             { params, observe: 'response' });
     }
 
@@ -50,7 +50,7 @@ export class GermplasmAuditService {
 
     getOtherProgenitorsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmOtherProgenitorAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmOtherProgenitorAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitors-other/changes`,
+        return this.http.get<GermplasmOtherProgenitorAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/other-progenitors/changes`,
             { params, observe: 'response' });
     }
 
