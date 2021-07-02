@@ -20,30 +20,45 @@
 			<tbody>
 			<tr *ngFor="let change of auditChanges">
 				<td [ngClass]="{ 'diff-new': change.breedingMethodChanged }">{{change.breedingMethodName}}</td>
-				<td [ngClass]="{ 'diff-new': isGenerative(change) && change.femaleParentChanged }">
-					<span *ngIf="isGenerative(change) && change.femaleParentChanged">
+				<!-- Female parent  -->
+				<td *ngIf="isGenerative(change)" [ngClass]="{ 'diff-new': change.femaleParentChanged }">
+					<span *ngIf="change.femaleParent">
 						<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">GID{{change.femaleParent}}</a>
 					</span>
-					<span *ngIf="!change.femaleParentChanged"> - </span>
+					<span *ngIf="!change.femaleParent"> - </span>
 				</td>
-
-				<td [ngClass]="{ 'diff-new': isGenerative(change) && change.maleParentChanged }">
-					<span *ngIf="isGenerative(change) && change.maleParentChanged">
+				<td *ngIf="!isGenerative(change)">
+					<span> - </span>
+				</td>
+				<!-- Male parent -->
+				<td *ngIf="isGenerative(change)" [ngClass]="{ 'diff-new': change.maleParentChanged }">
+					<span *ngIf="change.maleParent">
 						<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">GID{{change.maleParent}}</a>
 					</span>
-					<span *ngIf="!change.maleParentChanged"> - </span>
+					<span *ngIf="!change.maleParent"> - </span>
 				</td>
-				<td [ngClass]="{ 'diff-new': !isGenerative(change) && change.femaleParentChanged }">
-					<span *ngIf="!isGenerative(change) && change.femaleParentChanged">
+				<td *ngIf="!isGenerative(change)">
+					<span> - </span>
+				</td>
+				<!-- Group source -->
+				<td *ngIf="isGenerative(change)">
+					<span> - </span>
+				</td>
+				<td *ngIf="!isGenerative(change)" [ngClass]="{ 'diff-new': change.femaleParentChanged }">
+					<span *ngIf="change.femaleParent">
 						<a [href]="this.germplasmDetailsUrlService.getUrl(change.femaleParent)" target="_blank">GID{{change.femaleParent}}</a>
 					</span>
-					<span *ngIf="!change.femaleParentChanged"> - </span>
+					<span *ngIf="!change.femaleParent"> - </span>
 				</td>
-				<td [ngClass]="{ 'diff-new': !isGenerative(change) && change.maleParentChanged }">
-					<span *ngIf="!isGenerative(change) && change.maleParentChanged">
+				<!-- Inmediate source -->
+				<td *ngIf="isGenerative(change)">
+					<span> - </span>
+				</td>
+				<td *ngIf="!isGenerative(change)" [ngClass]="{ 'diff-new': change.maleParentChanged }">
+					<span *ngIf="change.maleParent">
 						<a [href]="this.germplasmDetailsUrlService.getUrl(change.maleParent)" target="_blank">GID{{change.maleParent}}</a>
 					</span>
-					<span *ngIf="!change.maleParentChanged"> - </span>
+					<span *ngIf="!change.maleParent"> - </span>
 				</td>
 				<td [ngClass]="{ 'diff-new': change.progenitorsNumberChanged }">{{change.progenitorsNumber}}</td>
 				<td>{{change.revisionType}}</td>
