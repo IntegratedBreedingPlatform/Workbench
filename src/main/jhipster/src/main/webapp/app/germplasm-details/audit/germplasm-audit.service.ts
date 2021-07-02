@@ -20,37 +20,43 @@ export class GermplasmAuditService {
 
     getNameChanges(gid: number, nameId: number, request: any): Observable<HttpResponse<GermplasmNameAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmNameAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/names/${nameId}/changes`,
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/names/${nameId}/changes?programUUID=${this.context.programUUID}`;
+        return this.http.get<GermplasmNameAudit[]>(url,
             { params, observe: 'response' });
     }
 
     getAttributeChanges(gid: number, attributeId: number, request: any): Observable<HttpResponse<GermplasmAttributeAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmAttributeAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}/changes`,
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/attributes/${attributeId}/changes?programUUID=${this.context.programUUID}`;
+        return this.http.get<GermplasmAttributeAudit[]>(url,
             { params, observe: 'response' });
     }
 
     getBasicDetailsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmBasicDetailsAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmBasicDetailsAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/basic-details/changes`,
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/basic-details/changes?programUUID=${this.context.programUUID}`;
+        return this.http.get<GermplasmBasicDetailsAudit[]>(url,
             { params, observe: 'response' });
     }
 
     getReferenceChanges(gid: number, request: any): Observable<HttpResponse<GermplasmReferenceAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmReferenceAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/references/changes`,
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/references/changes?programUUID=${this.context.programUUID}`;
+        return this.http.get<GermplasmReferenceAudit[]>(url,
             { params, observe: 'response' });
     }
 
     getProgenitorDetailsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmProgenitorDetailsAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmProgenitorDetailsAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details/changes`,
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenitor-details/changes?programUUID=${this.context.programUUID}`;
+        return this.http.get<GermplasmProgenitorDetailsAudit[]>(url,
             { params, observe: 'response' });
     }
 
     getOtherProgenitorsChanges(gid: number, request: any): Observable<HttpResponse<GermplasmOtherProgenitorAudit[]>> {
         const params = createRequestOption(request);
-        return this.http.get<GermplasmOtherProgenitorAudit[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/other-progenitors/changes`,
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/other-progenitors/changes?programUUID=${this.context.programUUID}`;
+        return this.http.get<GermplasmOtherProgenitorAudit[]>(url,
             { params, observe: 'response' });
     }
 

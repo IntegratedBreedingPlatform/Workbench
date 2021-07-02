@@ -25,6 +25,7 @@ export class GermplasmBasicDetailsAuditModalComponent implements OnInit {
     ) {
         const url = '/ibpworkbench/controller/jhipster#/germplasm/audit?restartApplication&modal' +
         '&cropName=' + context.cropName +
+        '&programUUID=' + context.programUUID +
         '&gid=' + this.germplasmDetailsContext.gid;
         this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
