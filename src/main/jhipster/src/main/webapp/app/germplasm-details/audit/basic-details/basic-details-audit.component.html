@@ -5,6 +5,7 @@
 			<tr>
 				<th scope="col" jhiTranslate="basic-details.created-date" class="fixed-width-100">Created Date</th>
 				<th scope="col" jhiTranslate="basic-details.location">Location</th>
+				<th scope="col" jhiTranslate="audit.germplasm-basic-details.group-id">Group ID</th>
 				<th scope="col" jhiTranslate="audit.event-type">Event Type</th>
 				<th scope="col" class="fixed-width-100">
 					<span jhiTranslate="audit.event-date">Timestamp</span>
@@ -17,6 +18,10 @@
 			<tr *ngFor="let change of auditChanges">
 				<td [ngClass]="{ 'diff-new': change.creationDateChanged }">{{change.creationDate}}</td>
 				<td [ngClass]="{ 'diff-new': change.locationChanged }">{{change.locationName}}</td>
+				<td [ngClass]="{ 'diff-new': change.groupIdChanged }">
+					<span *ngIf="change.groupId">{{change.groupId}}</span>
+					<span *ngIf="!change.groupId"> - </span>
+				</td>
 				<td>{{change.revisionType}}</td>
 				<td>{{getEventDate(change)}}</td>
 				<td>{{getEventUser(change)}}</td>

@@ -155,6 +155,7 @@
         "user": "User",
         "germplasm-basic-details": {
             "title": "Germplasm - View history of changes",
+            "group-id": "Group ID",
             "nav": {
                 "basic-details": "Basic details",
                 "reference": "Reference"
