@@ -189,7 +189,7 @@
 			"nameRequired": "Please name your variable.",
 			"noneditableCategories": "Some categories cannot be edited because there are recorded study measurements associated to them",
 			"noneditableFields": "Some fields cannot be edited as this variable is already in use.",
-			"pattern": "Name must start with a letter and may only contain letters, numbers or underscores.",
+			"pattern": "{{field}} must start with a letter and may only contain letters, numbers or underscores.",
 			"propertyRequired": "Property is required.",
 			"scaleRequired": "Scale is required.",
 			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",

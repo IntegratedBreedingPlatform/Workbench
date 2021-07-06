@@ -85,6 +85,8 @@
 
 				if ($scope.avForm.$valid) {
 					$scope.submitted = true;
+					// Reset server errors
+					$scope.serverErrors = {};
 
 					variablesService.addVariable(variable).then(function() {
 						variableStateService.reset();
