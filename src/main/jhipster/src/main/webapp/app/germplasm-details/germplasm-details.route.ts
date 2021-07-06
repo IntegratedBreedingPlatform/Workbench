@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { GermplasmDetailsComponent } from './germplasm-details.component';
 import { BasicDetailsPaneComponent } from './basic-details/basic-details-pane.component';
-import { EditGermplasmBasicDetailsPopupComponent } from '../entities/germplasm/basic-details/germplasm-basic-details-modal.component';
 import { AttributesPaneComponent } from './attributes/attributes-pane.component';
 import { PedigreePaneComponent } from './pedigree/pedigree-pane.component';
 import { ObservationsPaneComponent } from './observations/observations-pane.component';

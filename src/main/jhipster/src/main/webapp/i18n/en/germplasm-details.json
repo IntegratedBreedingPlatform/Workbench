@@ -142,5 +142,34 @@
         "germplasm-date": "Germplasm Date:",
         "reference": "Reference:",
         "success": "Germplasm Basic Details updated successfully."
+    },
+    "audit": {
+        "entities": {
+            "name": "Name",
+            "attribute": "Attribute",
+            "passport": "Passport"
+        },
+        "title": "{{entity}}: {{entityValue}} - View history of changes",
+        "event-type": "Event Type",
+        "event-date": "Timestamp",
+        "user": "User",
+        "germplasm-basic-details": {
+            "title": "Germplasm - View history of changes",
+            "group-id": "Group ID",
+            "nav": {
+                "basic-details": "Basic details",
+                "reference": "Reference"
+            }
+        },
+        "germplasm-progenitors": {
+            "title": "Progenitors - View history of changes",
+            "progenitors-number": "Number of Progenitors",
+            "progenitor-number": "Progenitor Number",
+            "progenitor": "Progenitor",
+            "nav": {
+                "details": "Details",
+                "other-progenitors": "Other Progenitors"
+            }
+        }
     }
 }

@@ -38,7 +38,7 @@
 						<th scope="col" jhiTranslate="basic-details.created-date">Created Date</th>
 						<th scope="col" jhiTranslate="basic-details.location">Location</th>
 						<th scope="col" jhiTranslate="basic-details.reference">Reference</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS" style="width: 13%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_ACTIONS_PERMISSIONS" style="width: 150px" >Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -46,9 +46,12 @@
 						<td>{{germplasm?.creationDate}}</td>
 						<td>{{germplasm?.breedingLocation}}</td>
 						<td class="word-wrap">{{germplasm?.reference}}</td>
-						<td class="text-center" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">
-							<button class="btn btn-info" (click)="editGermplasmBasicDetails()">
+						<td class="text-center">
+							<button class="btn btn-info mr-2" (click)="editGermplasmBasicDetails()" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">
 								<i class="fa fa-edit fa-fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmBasicDetailsAuditModal()" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
 					</tr>
@@ -72,7 +75,7 @@
 						<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
 						<th scope="col" jhiTranslate="basic-details.names.date">Date</th>
 						<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS" style="width: 13%">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="NAMES_ACTIONS_PERMISSIONS" style="width: 150px">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -83,9 +86,16 @@
 						<td>{{name.locationName}}</td>
 						<td>{{name.date}}</td>
 						<td>{{name.preferred ? 'Yes' : 'No'}}</td>
-						<td class="text-center" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
-						<button class="btn btn-info" (click)="editGermplasmName(name)"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;
-							<button class="btn btn-info" (click)="deleteGermplasmName(name)"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>
+						<td class="text-center" *jhiHasAnyAuthority="NAMES_ACTIONS_PERMISSIONS">
+							<button class="btn btn-info mr-2" (click)="editGermplasmName(name)" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
+								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info mr-2" (click)="deleteGermplasmName(name)" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
+								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmNameAuditModal(name)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
 						</td>
 					</tr>
 					</tbody>

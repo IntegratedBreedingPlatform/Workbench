@@ -9,7 +9,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableService } from '../../shared/ontology/service/variable.service';
@@ -22,6 +22,9 @@ import { VariableValidationService } from '../../shared/ontology/service/variabl
 export class AttributesPaneComponent implements OnInit {
 
     MODIFY_ATTRIBUTES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_ATTRIBUTES'];
+    ATTRIBUTES_ACTIONS_PERMISSIONS = [...this.MODIFY_ATTRIBUTES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
+    GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
+
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
     attributes: GermplasmAttribute[] = [];
@@ -61,7 +64,7 @@ export class AttributesPaneComponent implements OnInit {
         // Get extra info not available in the attribute entity (e.g valid values)
         const attributesByVariableId: {[key: number]: GermplasmAttribute} =
             [...this.passportAttributes, ...this.attributes]
-            .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
+                .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
         this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId) })
             .toPromise().then((variables) => {
                 return variables.reduce((prev: any, variable) => {
@@ -107,4 +110,13 @@ export class AttributesPaneComponent implements OnInit {
         const validationStatus = this.variableValidationService.isValidValue(attribute.value, variable);
         return validationStatus.isValid && validationStatus.isInRange;
     }
+
+    openGermplasmAttributeAuditChanges(attributeType: number, germplasmAttribute: GermplasmAttribute): void {
+        this.germplasmAttributesContext.attributeType = attributeType;
+        this.germplasmAttributesContext.attribute = germplasmAttribute;
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attributes/${germplasmAttribute.id}/audit-dialog`}, }], {
+            queryParamsHandling: 'merge'
+        });
+    }
+
 }

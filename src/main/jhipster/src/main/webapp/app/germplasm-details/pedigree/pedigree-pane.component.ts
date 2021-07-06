@@ -8,7 +8,7 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmProgenitorsContext } from '../../entities/germplasm/progenitors/germplasm-progenitors.context';
 import { Subscription } from 'rxjs';
-import { EDIT_GERMPLASM_PERMISSION } from '../../shared/auth/permissions';
+import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
 import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
 import { PedigreeTreeComponent } from './pedigree-tree.component';
 
@@ -18,7 +18,9 @@ import { PedigreeTreeComponent } from './pedigree-tree.component';
 })
 export class PedigreePaneComponent implements OnInit {
 
+    GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
     MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
+    PEDIGREE_ACTIONS_PERMISSIONS = [...this.MODIFY_PEDIGREE_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
 
     @ViewChild(PedigreeTreeComponent) pedigreeTreeComponent: PedigreeTreeComponent;
     eventSubscriber: Subscription;
@@ -64,6 +66,12 @@ export class PedigreePaneComponent implements OnInit {
 
     isGenerative(): boolean {
         return this.germplasmProgenitorsDetails && this.germplasmProgenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
+    }
+
+    openProgenitorsAuditChanges(): void {
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/progenitors/audit-dialog`}, }], {
+            queryParamsHandling: 'merge'
+        });
     }
 
 }
