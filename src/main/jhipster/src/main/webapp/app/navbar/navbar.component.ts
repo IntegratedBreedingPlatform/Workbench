@@ -109,7 +109,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             // Deprecated, not needed
             // + '&authToken=' + localStorage['authToken']
             + '&selectedProjectId=' + localStorage['selectedProjectId']
-            + '&loggedInUserId=' + localStorage['loggedInUserId']
+            + '&loggedInUserId=' + this.user.id
             + '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
     }
