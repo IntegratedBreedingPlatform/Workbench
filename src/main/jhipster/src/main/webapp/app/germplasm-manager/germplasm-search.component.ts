@@ -712,7 +712,7 @@ export class GermplasmSearchComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
-        if(this.isSelectAll) {
+        if (this.isSelectAll) {
             this.alertService.error('germplasm-filter-by-selected-records.filter-all-germplasm-not-supported');
             return;
         }
