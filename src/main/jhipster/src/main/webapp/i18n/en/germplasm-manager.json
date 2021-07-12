@@ -65,7 +65,8 @@
             "grouping" : "Grouping Options",
             "group" : "Group",
             "ungroup": "Ungroup",
-            "code-germplasm": "Code germplasm"
+            "code-germplasm": "Code germplasm",
+            "filter-by-selected-gids": "Filter by selected GIDs"
         },
         "included-gids": "(+ included germplasm)"
     },

@@ -708,6 +708,13 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
+    filterBySelectedGids() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        this.eventManager.broadcast({ name: 'filterByGid', content: this.getSelectedItemIds() });
+    }
+
     openGermplasmCoding() {
         if (!this.validateSelection()) {
             return;
