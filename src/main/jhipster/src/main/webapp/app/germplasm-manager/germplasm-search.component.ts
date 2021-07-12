@@ -708,8 +708,12 @@ export class GermplasmSearchComponent implements OnInit {
         });
     }
 
-    filterBySelectedGids() {
+    filterBySelectedRecords() {
         if (!this.validateSelection()) {
+            return;
+        }
+        if(this.isSelectAll) {
+            this.alertService.error('germplasm-filter-by-selected-records.filter-all-germplasm-not-supported');
             return;
         }
         this.eventManager.broadcast({ name: 'filterByGid', content: this.getSelectedItemIds() });
