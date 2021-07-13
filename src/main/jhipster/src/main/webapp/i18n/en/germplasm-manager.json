@@ -70,7 +70,7 @@
             "group" : "Group",
             "ungroup": "Ungroup",
             "code-germplasm": "Code germplasm",
-            "filter-by-selected-records": "Filter by selected records"
+            "filter-by-selected-records": "Filter by selected records",
             "create-inventory-lots": "Create inventory lots"
         },
         "included-gids": "(+ included germplasm)"
