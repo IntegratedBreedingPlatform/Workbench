@@ -19,9 +19,16 @@
     },
     "germplasm-delete": {
         "success": "Germplasm are deleted successfully.",
-        "warning": "Some germplasm can not be deleted due to internal validations (has inventory, is fixed, has descendants, present in one or more list, or it is associated with a study). For further information please contact support.",
+        "warning": "Some germplasm can not be deleted due to internal validations (has inventory, is fixed, has descendants, present in a locked list, or it is associated with a study). For further information please contact support.",
         "too-many-selected-germplasm": "You can only delete 500 germplasm records at a time.",
         "delete-all-germplasm-not-supported": "Deletion of germplasm in all pages is not supported. Please select individual germplasm to delete."
+    },
+    "germplasm-code": {
+        "code-all-germplasm-not-supported": "Creation of germplasm code in all pages is not supported. Please select individual germplasm to code.",
+        "too-many-selected-germplasm": "You can only code 500 germplasm records at a time."
+    },
+    "germplasm-filter-by-selected-records": {
+        "filter-all-germplasm-not-supported": "Filtering of germplasm in all pages is not supported. Please select individual germplasm to filter."
     },
     "search-germplasm" : {
         "column" : {
@@ -58,6 +65,12 @@
             "add-to-list": "Add to existing list",
             "import": "Import germplasm",
             "delete-germplasm": "Delete selected germplasm records",
+            "export-data-and-labels": "Export data and labels",
+            "grouping" : "Grouping Options",
+            "group" : "Group",
+            "ungroup": "Ungroup",
+            "code-germplasm": "Code germplasm",
+            "filter-by-selected-records": "Filter by selected records"
             "create-inventory-lots": "Create inventory lots"
         },
         "included-gids": "(+ included germplasm)"
@@ -108,7 +121,8 @@
                     "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again",
                     "names.preferred.invalid": "The name type {{param}} does not exist as a column or has an empty value.",
                     "progenitors.both": "You need to specify both progenitors",
-                    "reference": "Reference length can not exceed 255 characters. Please check"
+                    "reference": "Reference length can not exceed 255 characters. Please check",
+                    "unknown.column": "Some columns were not recognized in the system or are not relevant to the germplasm import and were thus ignored ({{param}})"
                 }
             },
             "basicDetails": {
@@ -119,7 +133,9 @@
                 "names.and.attributes.header": "Names and Attributes",
                 "names": "Names",
                 "unmapped": "Unmapped",
-                "attributes": "Attributes",
+                "attributes": "Descriptors",
+                "attributes.tooltip.outOfExpected": "One or more values will be flagged as they are outside of the numeric expected range for this variable. Expected range is {{min}} to {{max}}",
+                "attributes.tooltip.invalid": "One or more values do not match the variable scale, so the variable will not be processed. Please review. Scale: '{{scale}}' Data Type: '{{dataType}}' ",
                 "locations": "Germplasm locations",
                 "breeding.and.country.locations": "Breeding and Country locations",
                 "all.locations": "All locations",
@@ -189,5 +205,21 @@
         "no.existing.name.with.prefix": "The deleted germplasm has no names with the specified prefix(es).",
         "prefix.delete.success":"The cache was cleared for all prefixes.",
         "prefix.delete.warning": "Cache for {{param1}} prefixes was successfully cleared and the cache for following prefixes: {{param2}} cannot be cleared because they are not used by the names of the deleted germplasm."
-    }
+    },
+   "germplasm-grouping" : {
+       "title": "Group",
+       "preserve.existing.group": "Preserve existing group",
+       "include.descendants": "Include descendants",
+       "continue": "Continue",
+       "too-many-selected-germplasm": "You can only group 500 germplasm records at a time.",
+       "group-all-germplasm-not-supported": "Grouping of germplasm in all pages is not supported. Please select individual germplasm to group.",
+       "ungroup-all-germplasm-not-supported": "Ungrouping of germplasm in all pages is not supported. Please select individual germplasm to ungroup.",
+       "grouping.success": "Successfully marked selected germplasm as fixed.",
+       "grouping.warning": "Grouping was not applied to any entries.",
+       "ungrouping.success": "All selected germplasm were successfully unfixed.",
+       "ungrouping.warning": "Successfully unfixed {{param1}} germplasm  while {{param2}} not-fixed germplasm is/are not modified.",
+       "ungrouping.none.successful": "All selected germplasm were not modified because they are not fixed.",
+       "grouping-results" : "Grouping Results",
+       "grouping-result-generative" : "Grouping was not applied as this is a generative germplasm."
+   }
 }

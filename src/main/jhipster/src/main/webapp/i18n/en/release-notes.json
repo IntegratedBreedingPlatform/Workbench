@@ -1,0 +1,11 @@
+{
+    "release-notes": {
+        "title": "Upgrade Notification",
+        "description": "BMS has been upgraded recently. See more information below.",
+        "nav": {
+            "notes": "Release notes",
+            "coming-soon": "Coming Soon"
+        },
+        "dont-show-again-checkbox": "Don't show again"
+    }
+}

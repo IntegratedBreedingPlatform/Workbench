@@ -13,6 +13,15 @@ import { BmsjHipsterSharedModule } from '../shared';
 import { GermplasmDetailsContext } from './germplasm-details.context';
 import { GermplasmDetailsModalComponent, GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
+import { PedigreeTreeComponent } from './pedigree/pedigree-tree.component';
+import { GenerationHistoryComponent } from './pedigree/generation-history.component';
+import { GermplasmTableComponent } from './pedigree/germplasm-table.component';
+import { ManagementNeighborsComponent } from './pedigree/management-neighbors.component';
+import { GroupRelativesComponent } from './pedigree/group-relatives.component';
+import { GermplasmNeighborhoodTreeComponent } from './pedigree/germplasm-neighborhood-tree.component';
+import { GermplasmDetailsGraphvizModalComponent, GermplasmDetailsGraphvizModalPopupComponent } from './germplasm-details-graphviz-modal.component';
+import { GermplasmDerivativeNeighborhoodTreeComponent } from './pedigree/germplasm-derivative-neighborhood-tree.component';
+import { GermplasmMaintenanceNeighborhoodTreeComponent } from './pedigree/germplasm-maintenance-neighborhood-tree.component';
 
 @NgModule({
     imports: [
@@ -22,6 +31,8 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
     declarations: [
         GermplasmDetailsPopupComponent,
         GermplasmDetailsModalComponent,
+        GermplasmDetailsGraphvizModalPopupComponent,
+        GermplasmDetailsGraphvizModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
         AttributesPaneComponent,
@@ -29,11 +40,20 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
         ObservationsPaneComponent,
         InventoryPaneComponent,
         ListsPaneComponent,
-        SamplesPaneComponent
+        SamplesPaneComponent,
+        PedigreeTreeComponent,
+        GermplasmTableComponent,
+        GenerationHistoryComponent,
+        ManagementNeighborsComponent,
+        GroupRelativesComponent,
+        GermplasmDerivativeNeighborhoodTreeComponent,
+        GermplasmMaintenanceNeighborhoodTreeComponent
     ],
     entryComponents: [
         GermplasmDetailsPopupComponent,
         GermplasmDetailsModalComponent,
+        GermplasmDetailsGraphvizModalPopupComponent,
+        GermplasmDetailsGraphvizModalComponent,
         GermplasmDetailsComponent,
         BasicDetailsPaneComponent,
         AttributesPaneComponent,
@@ -41,7 +61,14 @@ import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplas
         ObservationsPaneComponent,
         InventoryPaneComponent,
         ListsPaneComponent,
-        SamplesPaneComponent
+        SamplesPaneComponent,
+        PedigreeTreeComponent,
+        GermplasmTableComponent,
+        GenerationHistoryComponent,
+        ManagementNeighborsComponent,
+        GroupRelativesComponent,
+        GermplasmDerivativeNeighborhoodTreeComponent,
+        GermplasmMaintenanceNeighborhoodTreeComponent
     ],
     providers: [
         GermplasmDetailsContext,

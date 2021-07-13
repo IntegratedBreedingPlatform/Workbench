@@ -104,7 +104,8 @@
             "view": "View",
             "select" : "Select",
             "import" : "Import",
-            "proceed": "Proceed"
+            "proceed": "Proceed",
+            "update": "Update"
         },
         "detail": {
             "field": "Field",
@@ -145,9 +146,12 @@
     "reset": "Reset",
     "back": "Back",
     "save": "Save",
+    "create": "Create",
+    "update": "Update",
     "next": "Next",
     "finish": "Finish",
     "actions": "Actions",
+    "ok": "Ok",
     "template.download": {
         "description": "You can download a template",
         "here": "here"

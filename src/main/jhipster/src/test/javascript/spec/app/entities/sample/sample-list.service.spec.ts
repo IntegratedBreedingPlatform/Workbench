@@ -5,8 +5,8 @@ import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants'
 import {SampleListService} from '../../../../../../main/webapp/app/entities/sample/sample-list.service';
 import {SampleList} from '../../../../../../main/webapp/app/entities/sample/sample-list.model';
 import {ParamContext} from '../../../../../../main/webapp/app/shared/service/param.context';
-import {ActivatedRoute} from '@angular/router';
-import {MockActivatedRoute} from '../../../helpers/mock-route.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MockActivatedRoute, MockRouter } from '../../../helpers/mock-route.service';
 
 declare const cropName: string;
 declare const currentProgramId: string;
@@ -30,7 +30,8 @@ describe('Service Tests', () => {
                         useValue: new MockActivatedRoute({id: 123})
                     },
                     ParamContext,
-                    SampleListService
+                    SampleListService,
+                    { provide: Router, useClass: MockRouter }
                 ]
 
             });

@@ -7,23 +7,26 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Injectable()
 export class GermplasmDetailsUrlService {
 
+    queryParams: string;
+
     constructor(
         private paramContext: ParamContext,
         private sanitizer: DomSanitizer
     ) {
-    }
-
-    getUrl(gid: any): SafeResourceUrl {
-
-        const queryParams = '?cropName=' + this.paramContext.cropName
+        this.queryParams = '?cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
             + '&authToken=' + this.paramContext.authToken
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectedProjectId=' + this.paramContext.selectedProjectId;
-
-        // Link to open Germplasm Details page to a new tab.
-        return this.sanitizer.bypassSecurityTrustResourceUrl(GERMPLASM_DETAILS_URL + gid + queryParams);
-
     }
 
+    getUrl(gid: any): SafeResourceUrl {
+        // Link to open Germplasm Details page to a new tab.
+        return this.sanitizer.bypassSecurityTrustResourceUrl(this.getUrlAsString(gid));
+    }
+
+    getUrlAsString(gid: any): string {
+        // Link to open Germplasm Details page to a new tab.
+        return GERMPLASM_DETAILS_URL + gid + this.queryParams;
+    }
 }

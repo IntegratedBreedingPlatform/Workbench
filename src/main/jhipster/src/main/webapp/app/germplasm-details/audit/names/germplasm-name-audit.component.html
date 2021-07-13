@@ -1,0 +1,83 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">{{title}}</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="dismiss()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<div class="table-responsive" *ngIf="auditChanges">
+			<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="auditChanges.length else nodata">
+				<thead>
+				<tr>
+					<th scope="col" jhiTranslate="basic-details.names.name-type">Name type</th>
+					<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
+					<th scope="col" jhiTranslate="basic-details.names.location" class="fixed-width-80">Location</th>
+					<th scope="col" jhiTranslate="basic-details.names.date" class="fixed-width-80">Date</th>
+					<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
+					<th scope="col" jhiTranslate="audit.event-type">Event Type</th>
+					<th scope="col" class="fixed-width-100">
+						<span jhiTranslate="audit.event-date">Timestamp</span>
+						<span class="fa fa-sort fa-sort-down"></span>
+					</th>
+					<th scope="col" jhiTranslate="audit.user">User</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let change of auditChanges">
+					<td [ngClass]="{ 'diff-new': change.nameTypeChanged }">{{change.nameType}}</td>
+					<td class="word-wrap" [ngClass]="{ 'diff-new': change.valueChanged }">{{change.value}}</td>
+					<td [ngClass]="{ 'diff-new': change.locationChanged }">{{change.locationName}}</td>
+					<td [ngClass]="{ 'diff-new': change.creationDateChanged }">{{change.creationDate}}</td>
+					<td [ngClass]="{ 'diff-new': change.preferredChanged }">{{change.preferred ? 'Yes' : 'No'}}</td>
+					<td>{{change.revisionType}}</td>
+					<td>{{getEventDate(change)}}</td>
+					<td>{{getEventUser(change)}}</td>
+				</tr>
+				</tbody>
+			</table>
+			<ng-template #nodata>
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr>
+						<th></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</table>
+			</ng-template>
+			<div *ngIf="auditChanges && auditChanges.length">
+				<div class="row">
+					<div class="col">
+						<div class="pagination-container">
+							<div class="pagination-box pagination-box-left">
+								<div>
+									<jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+								</div>
+							</div>
+							<div class="pagination-box">
+								<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
+												[maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+							</div>
+							<div class="pagination-box pagination-box-right">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary" data-dismiss="modal" (click)="dismiss()">
+			<span jhiTranslate="ok"></span>
+		</button>
+	</div>
+</div>

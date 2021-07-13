@@ -205,7 +205,7 @@ public class SaveListButtonClickListenerTest {
 		final List<Integer> listDataIds = Lists.newArrayList();
 		listDataIds.add(germplasmListData.getId());
 
-		Mockito.when(this.dataManager.addGermplasmListData(Mockito.isA(List.class))).thenReturn(listDataIds);
+		Mockito.when(this.dataManager.addGermplasmListDataWithReadUncommittedIsolation(Mockito.isA(List.class))).thenReturn(listDataIds);
 
 		Mockito.when(this.inventoryDataManager.getLotCountsForList(Mockito.isA(Integer.class), Mockito.anyInt(), Mockito.anyInt()))
 				.thenReturn(Lists.newArrayList(germplasmListData));

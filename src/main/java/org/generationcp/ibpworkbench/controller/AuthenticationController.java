@@ -1,15 +1,8 @@
 package org.generationcp.ibpworkbench.controller;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.servlet.ServletContext;
-
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
 import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
@@ -19,10 +12,8 @@ import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Role;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
-import org.generationcp.middleware.service.api.user.UserService;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.servlet.ServletContext;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 @Controller
 @RequestMapping(AuthenticationController.URL)
@@ -65,9 +61,6 @@ public class AuthenticationController {
 
 	@Resource
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Resource
-	private UserService userService;
 
 	@Resource
 	private UserAccountValidator userAccountValidator;
@@ -172,11 +165,14 @@ public class AuthenticationController {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		this.userAccountValidator.validateUserActive(model, result);
+		if (this.workbenchUserService.isValidUserLogin(model)) {
 
-		if (result.hasErrors()) {
-			this.generateErrors(result, out);
-		} else if (this.workbenchUserService.isValidUserLogin(model)) {
+			this.userAccountValidator.validateUserActive(model, result);
+			if (result.hasErrors()) {
+				this.generateErrors(result, out);
+				return new ResponseEntity<>(out, isSuccess);
+			}
+
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
@@ -191,16 +187,16 @@ public class AuthenticationController {
 				out.put("expires", apiAuthToken.getExpires());
 			}
 
-		} else {
-			final Map<String, String> errors = new LinkedHashMap<>();
-
-			errors.put(UserAccountFields.USERNAME, this.messageSource
-					.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {},
-							"Your login attempt was not successful. Please try again.", LocaleContextHolder.getLocale()));
-
-			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-			out.put(AuthenticationController.ERRORS, errors);
+			return new ResponseEntity<>(out, isSuccess);
 		}
+
+		final Map<String, String> errors = new LinkedHashMap<>();
+
+		errors.put(UserAccountFields.USERNAME, this.messageSource
+			.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
+
+		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+		out.put(AuthenticationController.ERRORS, errors);
 
 		return new ResponseEntity<>(out, isSuccess);
 	}
@@ -328,19 +324,6 @@ public class AuthenticationController {
 
 			// 2. remove token
 			this.workbenchEmailSenderService.deleteToken(model);
-
-			// 3. Create user info
-
-			UserInfo userInfo = this.userService.getUserInfoByUsername(model.getUsername());
-
-			if (userInfo == null) {
-				final WorkbenchUser user = this.userService.getUserByUsername(model.getUsername());
-				userInfo = new UserInfo();
-				userInfo.setUserId(user.getUserid());
-			}
-
-			userInfo.setLoginCount(userInfo.getLoginCount() + 1);
-			this.userService.insertOrUpdateUserInfo(userInfo);
 
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);

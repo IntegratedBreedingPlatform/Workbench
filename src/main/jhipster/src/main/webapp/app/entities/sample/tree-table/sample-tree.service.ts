@@ -5,6 +5,7 @@ import { TreeNode } from './tree-node.model';
 import { map } from 'rxjs/operators';
 import { TreeService } from '../../../shared/tree/tree.service';
 import { ParamContext } from '../../../shared/service/param.context';
+import 'rxjs-compat/add/observable/empty';
 
 @Injectable()
 export class SampleTreeService implements TreeService {
@@ -80,5 +81,14 @@ export class SampleTreeService implements TreeService {
                 return copy;
             });
         }));
+    }
+
+    init() {
+        return this.expand('');
+    }
+
+    persist(folders: string[]) {
+        // TODO
+        return Observable.empty();
     }
 }

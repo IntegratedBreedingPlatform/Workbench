@@ -15,7 +15,6 @@ import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.ibpworkbench.common.WebClientInfo;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -102,7 +101,7 @@ public class IBPWorkbenchApplication extends SpringContextApplication {
 
 	protected void assemble() {
 		this.initialize();
-		this.setMainWindow(new WorkbenchMainView());
+		this.setMainWindow(new Window());
 	}
 
 	public void toggleScripts() {

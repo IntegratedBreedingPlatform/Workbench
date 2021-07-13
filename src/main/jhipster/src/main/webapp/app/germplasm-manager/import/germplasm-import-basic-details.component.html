@@ -90,7 +90,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- TODO finish basic details -->
 		</form>
 	</div>
 	<br/>
@@ -98,8 +97,8 @@
 		<h3 jhiTranslate="germplasm.import.basicDetails.names.and.attributes.header"></h3>
 		<form name="namesAndAttributesForm" #namesAndAttributesForm="ngForm">
 			<div class="form-group row required" *ngIf="unmapped.length">
-				<label for="unmapped" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.unmapped"></label>
-				<div class="col-sm-8">
+				<label for="unmapped" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.unmapped"></label>
+				<div class="col-sm-9">
 					<p-table styleClass="table table-striped table-bordered table-curved"
 							 [autoLayout]="true"
 							 [value]="unmapped">
@@ -118,8 +117,8 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="names" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.names"></label>
-				<div class="col-sm-8">
+				<label for="names" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.names"></label>
+				<div class="col-sm-9">
 					<p-table styleClass="table table-striped table-bordered table-curved"
 							 [autoLayout]="true"
 							 [value]="context.nametypesCopy"
@@ -147,23 +146,32 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="attributes" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.attributes"></label>
-				<div class="col-sm-8">
-					<p-table styleClass="table table-striped table-bordered table-curved"
+				<label for="attributes" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.attributes"></label>
+				<div class="col-sm-9">
+					<p-table styleClass="table table-striped table-bordered table-curved table-fixed"
 							 [autoLayout]="true"
 							 [value]="context.attributesCopy"
 							 pDroppable="dd" (onDrop)="drop($event, 'attributes')">
 
 						<ng-template pTemplate="header">
 							<tr>
-								<th>VARIABLE</th>
+								<th>VARIABLE NAME</th>
 								<th>DESCRIPTION</th>
+								<th>TYPE</th>
+								<th>STATUS</th>
 							</tr>
 						</ng-template>
 						<ng-template pTemplate="body" let-rowData>
 							<tr>
-								<td>{{rowData.code}}</td>
-								<td>{{rowData.name}}</td>
+								<td>
+									<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
+									   [queryParams]="{ variableId: rowData.id }">
+									{{rowData.alias || rowData.name}}
+									</a>
+								</td>
+								<td>{{rowData.description}}</td>
+								<td>{{rowData.variableTypes[0].name}}</td>
+								<td [innerHTML]="getStatusIcon(rowData)"></td>
 							</tr>
 						</ng-template>
 					</p-table>
@@ -175,7 +183,7 @@
 		<h3 jhiTranslate="germplasm.import.basicDetails.progenitors.header"></h3>
 		<form name="progenitorsForm" #progenitorsForm="ngForm">
 			<div class="form-group row" >
-				<label for="progenitorsDropdown" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.progenitors.label"></label>
+				<label for="progenitorsDropdown" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.progenitors.label"></label>
 				<div class="col-sm-6">
 					<select class="form-control" [(ngModel)]="context.pedigreeConnectionType" #progenitorsDropdown="ngModel" name="progenitorsDropdown">
 						<option [value]="PedigreeConnectionType.GID">GID</option>

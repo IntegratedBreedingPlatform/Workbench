@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../shared/modal/popup.service';
 import { ParamContext } from '../shared/service/param.context';
@@ -9,6 +9,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
+import { JhiEventManager } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-germplasm-details-modal',
@@ -16,12 +17,22 @@ import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
 })
 export class GermplasmDetailsModalComponent implements OnInit {
 
-    germplasm: GermplasmDto
+    hasChanges: boolean;
+    germplasm: GermplasmDto;
     safeUrl: SafeResourceUrl;
     gid: number;
 
+    @HostListener('window:message', ['$event'])
+    onMessage(event) {
+        if (event.data === 'germplasm-details-changed') {
+            this.hasChanges = true;
+            this.loadGermplasm();
+        }
+    }
+
     constructor(private route: ActivatedRoute, private router: Router,
                 private germplasmDetailsContext: GermplasmDetailsContext,
+                private eventManager: JhiEventManager,
                 public activeModal: NgbActiveModal,
                 private paramContext: ParamContext,
                 private sanitizer: DomSanitizer,
@@ -37,6 +48,10 @@ export class GermplasmDetailsModalComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadGermplasm();
+    }
+
+    loadGermplasm() {
         this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((value) => {
             this.germplasm = value.body;
         })
@@ -44,6 +59,13 @@ export class GermplasmDetailsModalComponent implements OnInit {
 
     clear() {
         this.activeModal.dismiss('cancel');
+
+        // hasChanges is true when any germplasm details information has changed/deleted/added (basic details, name, attributes, pedigree)
+        if (this.hasChanges) {
+            // Refresh the Germplasm Manager search germplasm table to reflect the changes made in a germplasm.
+            this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+        }
+
     }
 
 }

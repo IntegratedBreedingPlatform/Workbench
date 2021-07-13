@@ -8,6 +8,7 @@ import { AlertService } from '../../../../../../main/webapp/app/shared/alert/ale
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateMappingComponent } from '../../../../../../main/webapp/app/entities/sample/sample-import-plate-mapping.component';
 import { MockNgbModalRef } from '../../../helpers/mock-ngb-modal-ref';
+import { TranslateModule, TranslateService, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 
 describe('Component Tests', () => {
 
@@ -18,10 +19,17 @@ describe('Component Tests', () => {
         let modalService: NgbModal;
         let alertService: AlertService;
         let mockActiveModal: any;
+        let translateService: TranslateService;
 
         beforeEach(async(() => {
             TestBed.configureTestingModule({
-                imports: [BmsjHipsterTestModule],
+                imports: [BmsjHipsterTestModule,
+                    TranslateModule.forRoot({
+                        loader: {
+                            provide: TranslateLoader,
+                            useClass: TranslateFakeLoader
+                        }
+                    })],
                 declarations: [SampleImportPlateComponent],
                 providers: [
                     FileDownloadHelper,
@@ -43,6 +51,7 @@ describe('Component Tests', () => {
             excelService = fixture.debugElement.injector.get(ExcelService);
             alertService = fixture.debugElement.injector.get(AlertService);
             mockActiveModal = fixture.debugElement.injector.get(NgbActiveModal);
+            translateService = fixture.debugElement.injector.get(TranslateService);
 
             spyOn(alertService, 'error').and.callThrough();
 

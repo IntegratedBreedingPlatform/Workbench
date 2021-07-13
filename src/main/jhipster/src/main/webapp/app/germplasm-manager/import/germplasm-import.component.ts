@@ -14,6 +14,9 @@ import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { GermplasmImportValidationPayload } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { listPreview } from '../../shared/util/list-preview';
 import { GermplasmImportContext } from './germplasm-import.context';
+import { VariableService } from '../../shared/ontology/service/variable.service';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { toUpper } from '../../shared/util/to-upper';
 
 @Component({
     selector: 'jhi-germplasm-import',
@@ -40,6 +43,7 @@ export class GermplasmImportComponent implements OnInit {
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
+        private variableService: VariableService,
         public context: GermplasmImportContext
     ) {
     }
@@ -81,6 +85,7 @@ export class GermplasmImportComponent implements OnInit {
     next() {
         this.isLoading = true;
         this.validateFile().then((valid) => {
+            this.showUnknownColumnsWarning();
             this.isLoading = false;
             if (valid) {
                 this.sortNameTypes();
@@ -92,6 +97,20 @@ export class GermplasmImportComponent implements OnInit {
             this.isLoading = false;
             this.onError(res);
         });
+    }
+
+    showUnknownColumnsWarning(): any {
+        const codeKeys = Object.keys(this.codes);
+        if (!codeKeys.length) {
+            return;
+        }
+        const unknown = codeKeys.filter((code) =>
+            this.context.attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
+            && this.context.nameTypes.every((name) => name.code !== code)
+        );
+        if (unknown.length) {
+            this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)}, 5000);
+        }
     }
 
     private async validateFile() {
@@ -123,7 +142,10 @@ export class GermplasmImportComponent implements OnInit {
             return false;
         }
         this.context.nameTypes = await this.germplasmService.getGermplasmNameTypes(Object.keys(this.codes)).toPromise();
-        this.context.attributes = await this.germplasmService.getGermplasmAttributes(Object.keys(this.codes)).toPromise();
+        this.context.attributes = await this.variableService.filterVariables({
+            variableNames: Object.keys(this.codes),
+            variableTypeIds: [VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString(), VariableTypeEnum.GERMPLASM_PASSPORT.toString()]
+        }).toPromise();
         if (!this.context.nameTypes || !this.context.nameTypes.length) {
             this.alertService.error('germplasm.import.file.validation.names.no.column');
             return false;

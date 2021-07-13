@@ -1,6 +1,6 @@
-import { Component, OnInit, Pipe, PipeTransform, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting } from './label-printing.model';
+import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting, Sortable } from './label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
@@ -8,9 +8,10 @@ import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../shared/alert/alert.service';
 import { HelpService } from '../shared/service/help.service';
-import { HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { GERMPLASM_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { ParamContext } from '../shared/service/param.context';
 
 declare const $: any;
 
@@ -20,6 +21,7 @@ declare const $: any;
     styleUrls: ['./label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
+    GERMPLASM_LABEL_PRINTING_TYPE = GERMPLASM_LABEL_PRINTING_TYPE;
     initComplete: boolean;
 
     labelPrintingData: LabelPrintingData = new LabelPrintingData();
@@ -38,6 +40,9 @@ export class LabelPrintingComponent implements OnInit {
     modalMessage: string;
     helpLink: string;
 
+    sortableFields: Sortable[];
+    sortBySelected: any = '';
+
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
                 private service: LabelPrintingService,
@@ -46,7 +51,9 @@ export class LabelPrintingComponent implements OnInit {
                 private alertService: AlertService,
                 public activeModal: NgbActiveModal,
                 private modalService: NgbModal,
+                private paramContext: ParamContext,
                 private helpService: HelpService) {
+        this.paramContext.readParams();
     }
 
     proceed(): void {
@@ -56,7 +63,6 @@ export class LabelPrintingComponent implements OnInit {
         const params = this.route.snapshot.queryParams;
         this.context.datasetId = params['datasetId'];
         this.context.studyId = params['studyId'];
-        this.context.programId = params['programId'];
         this.context.printingLabelType = params['printingLabelType'];
         this.context.searchRequestId = params['searchRequestId'];
 
@@ -83,11 +89,17 @@ export class LabelPrintingComponent implements OnInit {
 
         const presetPromise = this.loadPresets();
 
+        const sorteableFieldsPromise = this.service.getSortableFields().toPromise();
+        sorteableFieldsPromise.then((sortables) => {
+            this.sortableFields = sortables;
+        });
+
         Promise.all([
             labelsNeededPromise,
             metadataPromise,
             fieldsPromise,
-            presetPromise
+            presetPromise,
+            sorteableFieldsPromise
         ]).then(() => {
             this.initDragAndDrop();
             this.initComplete = true;
@@ -222,6 +234,7 @@ export class LabelPrintingComponent implements OnInit {
         this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
         this.labelPrintingData.barcodeNeeded = false;
         this.labelPrintingData.includeHeadings = true;
+        this.sortBySelected = '';
         $('#leftSelectedFields').empty();
         $('#rightSelectedFields').empty();
         this.initDragAndDrop();
@@ -283,7 +296,8 @@ export class LabelPrintingComponent implements OnInit {
             includeHeadings: this.labelPrintingData.includeHeadings,
             fileName: this.labelPrintingData.filename,
             datasetId: undefined,
-            studyId: undefined
+            studyId: undefined,
+            sortBy: !this.sortBySelected ? undefined : this.sortBySelected
         };
 
         this.proceed = function donwloadPrintingLabel(): void {
@@ -333,9 +347,9 @@ export class LabelPrintingComponent implements OnInit {
 
         fileConfiguration.outputType = this.fileType.toString();
 
-        selectedFields.push($('#leftSelectedFields').sortable('toArray'));
+        selectedFields.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
         if (this.fileType === FileType.PDF) {
-            selectedFields.push($('#rightSelectedFields').sortable('toArray'));
+            selectedFields.push($('#rightSelectedFields').sortable('toArray').map((i) => Number(i)));
             fileConfiguration.sizeOfLabelSheet = this.labelPrintingData.sizeOfLabelSheet;
             fileConfiguration.numberOfRowsPerPage = this.labelPrintingData.numberOfRowsPerPage;
         }
@@ -357,7 +371,7 @@ export class LabelPrintingComponent implements OnInit {
 
         }
 
-        preset.programUUID = this.context.programId;
+        preset.programUUID = this.paramContext.programUUID;
         preset.toolSection = this.getToolSection();
         preset.toolId = 23;
         preset.name = this.labelPrintingData.settingsName;
@@ -367,17 +381,45 @@ export class LabelPrintingComponent implements OnInit {
         preset.fileConfiguration = fileConfiguration;
         preset.includeHeadings = this.labelPrintingData.includeHeadings;
 
-        this.service.addPreset(preset).subscribe((presetSetting) => {
-            this.presetSettings.push(presetSetting);
-            this.presetSettingId = presetSetting.id;
-            this.alertService.success('label-printing.save.preset.success');
-        }, (response) => {
-            if (response.error.errors[0].message) {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-            } else {
-                this.alertService.error('error.general');
-            }
-        });
+        const presetSetting = this.presetSettings.filter((x) => x.name === preset.name)[0];
+
+        if (!presetSetting) {
+            this.service.addPreset(preset).subscribe((presetCreated) => {
+                this.presetSettings.push(presetCreated);
+                this.presetSettingId = presetCreated.id;
+                this.alertService.success('label-printing.save.preset.success');
+            }, (response) => {
+                if (response.error.errors[0].message) {
+                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                } else {
+                    this.alertService.error('error.general');
+                }
+            });
+        } else {
+            this.modalTitle = 'Confirmation';
+            this.modalMessage = '"' + presetSetting.name + '" already exists, do you wish to overwrite the preset? ';
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.title = this.modalTitle;
+            confirmModalRef.componentInstance.message = this.modalMessage;
+            confirmModalRef.result.then(() => {
+                preset.id = presetSetting.id
+                this.service.updatePreset(preset).subscribe((res: void) => {
+                    presetSetting.selectedFields = preset.selectedFields;
+                    presetSetting.barcodeSetting = preset.barcodeSetting;
+                    presetSetting.fileConfiguration = preset.fileConfiguration;
+                    presetSetting.includeHeadings = preset.includeHeadings;
+                    this.alertService.success('label-printing.update.preset.success');
+                }, (response) => {
+                    if (response.error.errors[0].message) {
+                        this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                    } else {
+                        this.alertService.error('error.general');
+                    }
+                });
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
+        }
+
     }
 
     private getToolSection() {
@@ -387,6 +429,8 @@ export class LabelPrintingComponent implements OnInit {
                 return 'DATASET_LABEL_PRINTING_PRESET';
             case LabelPrintingType.LOT:
                 return 'LOT_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.GERMPLASM:
+                return 'GERMPLASM_LABEL_PRINTING_PRESET';
             default:
                 return;
         }
@@ -454,7 +498,8 @@ export enum FileType {
 export enum LabelPrintingType {
     OBSERVATION_DATASET = 'ObservationDataset',
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
-    LOT = 'Lot'
+    LOT = 'Lot',
+    GERMPLASM = 'Germplasm'
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [

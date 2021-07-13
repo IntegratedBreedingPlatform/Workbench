@@ -13,6 +13,7 @@ import { InventoryDetailsPopupComponent } from './inventory/details/inventory-de
 import { inventoryDetailsRoutes } from './inventory/details/inventory-details.route';
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
+import { GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...breedingMethodRoutes,
@@ -23,12 +24,14 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         data: {
             authorities: [
                 ...CREATE_INVENTORY_LOT_PERMISSIONS,
-                'CROP_MANAGEMENT',
                 'STUDIES',
+                'MANAGE_STUDIES',
+                'MS_CREATE_LOTS',
                 'LISTS',
                 'GERMPLASM_LISTS',
+                'MG_MANAGE_INVENTORY',
                 'MG_CREATE_LOTS',
-                'MANAGE_STUDIES',
+                'MANAGE_STUDIES'
             ]
         },
         canActivate: [RouteAccessService]
@@ -46,6 +49,11 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
         resolve: {
             'pagingParams': GermplasmSearchResolvePagingParams
         },
+    },
+    {
+        path: 'germplasm-selector-dialog',
+        component: GermplasmSelectorPopupComponent,
+        outlet: 'popup'
     },
     {
         path: 'germplasm-list-creation-dialog',

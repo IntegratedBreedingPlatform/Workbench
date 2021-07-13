@@ -32,8 +32,8 @@
 							[class.selected]="selectMatchesResult[dataRow[HEADERS.ENTRY_NO]] == germplasm.gid || guidMatch?.gid == germplasm.gid"
 							[class.selectable]="!guidMatch"
 							(click)="!guidMatch && onSelectMatch(germplasm)">
-							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
-							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
+							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
+							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
 							<td><span *ngFor="let name of germplasm.names; let last = last">{{name.name}}<span *ngIf="!last">, </span></span></td>
 							<td>{{germplasm.breedingLocation}}</td>
 							<td>{{germplasm.breedingMethod}}</td>

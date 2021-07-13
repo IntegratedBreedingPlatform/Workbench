@@ -1,24 +1,28 @@
 
 package org.generationcp.breeding.manager.listmanager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.generationcp.breeding.manager.listmanager.api.FillColumnSource;
 import org.generationcp.breeding.manager.listmanager.util.FillWithOption;
 import org.generationcp.middleware.constant.ColumnLabels;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.domain.ontology.Variable;
+import org.generationcp.middleware.domain.ontology.VariableType;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.manager.ontology.api.OntologyVariableDataManager;
+import org.generationcp.middleware.manager.ontology.daoElements.VariableFilter;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configurable
 public class AddedColumnsMapper {
 
 	@Autowired
-	private GermplasmDataManager germplasmDataManager;
+	private OntologyVariableDataManager ontologyVariableDataManager;
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
@@ -108,13 +112,12 @@ public class AddedColumnsMapper {
 	}
 
 	Map<String, Integer> getAllAttributeTypesMap() {
-		final Map<String, Integer> attributeTypesMap = new HashMap<>();
-		// Add all attribute types as add-able columns
-		final List<UserDefinedField> attributesTypes = this.germplasmDataManager.getAllAttributesTypes();
-		for (final UserDefinedField attributeType : attributesTypes) {
-			attributeTypesMap.put(attributeType.getFcode().toUpperCase(), attributeType.getFldno());
-		}
-		return attributeTypesMap;
+		final VariableFilter variableFilter = new VariableFilter();
+		variableFilter.addVariableType(VariableType.GERMPLASM_ATTRIBUTE);
+		variableFilter.addVariableType(VariableType.GERMPLASM_PASSPORT);
+		return this.ontologyVariableDataManager.getWithFilter(variableFilter).stream()
+			.collect(Collectors.toMap(v -> v.getName().toUpperCase(),
+				Variable::getId));
 	}
 
 	Map<String, Integer> getAllNameTypesMap() {
@@ -135,12 +138,13 @@ public class AddedColumnsMapper {
 		return false;
 	}
 
-	public void setValuesGenerator(final GermplasmColumnValuesGenerator valuesGenerator) {
-		this.valuesGenerator = valuesGenerator;
+	public void setOntologyVariableDataManager(
+		final OntologyVariableDataManager ontologyVariableDataManager) {
+		this.ontologyVariableDataManager = ontologyVariableDataManager;
 	}
 
-	public void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
-		this.germplasmDataManager = germplasmDataManager;
+	public void setValuesGenerator(final GermplasmColumnValuesGenerator valuesGenerator) {
+		this.valuesGenerator = valuesGenerator;
 	}
 
 	public void setGermplasmListManager(final GermplasmListManager germplasmListManager) {

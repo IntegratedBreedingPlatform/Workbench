@@ -27,7 +27,7 @@
 				<ng-messages for="vdForm.omName.$error" ng-if="vdForm.$submitted || vdForm.omName.$touched">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.nameRequired' | translate}}</p></ng-message>
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
-					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate:'{field: "Name"}'}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="vdForm.omName.$touched" ng-repeat="error in serverErrors.name">{{error}}</p>
 			</div>
@@ -40,7 +40,7 @@
 				<small ng-show="isAliasDisabled && editing">{{'validation.variable.alias' | translate}}</small>
 				<ng-messages for="vdForm.omAlias.$error" ng-if="editing && vdForm.$submitted || vdForm.omAlias.$touched">
 					<ng-message when="maxlength"><p class="text-danger">{{'validation.tooLong' | translate:'{maxLength: "32"}'}}</p></ng-message>
-					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate}}</p></ng-message>
+					<ng-message when="pattern"><p class="text-danger">{{'validation.variable.pattern' | translate:'{field: "Alias"}'}}</p></ng-message>
 				</ng-messages>
 				<p class="text-danger" ng-hide="vdForm.omAlias.$touched" ng-repeat="error in serverErrors.alias">{{error}}</p>
 			</div>
@@ -274,6 +274,18 @@
 					<label for="omObservations" class="col-sm-3 control-label">{{'variablesList.details.observations' | translate}}</label>
 					<div class="col-sm-9">
 						<div class="form-control-static">{{model.metadata.usage.observations}}</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="omDatasets" class="col-sm-3 control-label">{{'variablesList.details.germplasm' | translate}}</label>
+					<div class="col-sm-9">
+						<div class="form-control-static">{{model.metadata.usage.germplasm}}</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="omObservations" class="col-sm-3 control-label">{{'variablesList.details.breedingMethods' | translate}}</label>
+					<div class="col-sm-9">
+						<div class="form-control-static">{{model.metadata.usage.breedingMethods}}</div>
 					</div>
 				</div>
 				<div class="form-group">

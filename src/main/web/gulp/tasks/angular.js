@@ -20,7 +20,7 @@ var gulp = require('gulp'),
 	minifyCSS = require('gulp-minify-css'),
 	prefix = require('gulp-autoprefixer'),
 	pixrem = require('gulp-pixrem'),
-	sass = require('gulp-sass'),
+	sass = require('gulp-dart-sass'),
 
 	jshint = require('gulp-jshint');
 

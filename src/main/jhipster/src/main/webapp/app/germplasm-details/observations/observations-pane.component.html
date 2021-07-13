@@ -11,7 +11,10 @@
 					</thead>
 					<tbody>
 					<tr *ngFor="let study of studies">
-						<td>{{study.name}}</td>
+						<td><a *ngIf="germplasmDetailsContext.isModal && isClickable(study)" href (click)="urlService.openStudy(study.studyId)">{{study.name}}</a>
+							<span *ngIf="germplasmDetailsContext.isModal && !isClickable(study)" class="btn btn-link disabled p-0">{{study.name}}</span>
+							<span *ngIf="!germplasmDetailsContext.isModal">{{study.name}}</span>
+						</td>
 						<td>{{study.description}}</td>
 					</tr>
 					</tbody>
@@ -32,5 +35,8 @@
 				</ng-template>
 			</div>
 		</div>
+	</jhi-collapsible>
+	<jhi-collapsible heading="{{translateService.instant('observations.observations.title')}}">
+		<iframe [src]="graphicalQueryUrl" style="border: 0" width="100%" height="600"></iframe>
 	</jhi-collapsible>
 </div>

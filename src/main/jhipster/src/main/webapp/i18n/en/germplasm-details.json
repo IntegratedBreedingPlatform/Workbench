@@ -2,7 +2,7 @@
     "germplasm-details": {
         "header": "Germplasm Details: ",
         "germplasm": "Germplasm",
-        "attributes": "Attributes",
+        "descriptors": "Descriptors",
         "pedigree": "Pedigree",
         "observations": "Observations",
         "inventory": "Inventory",
@@ -17,6 +17,7 @@
         "gid": "GID:",
         "guid": "Germplasm UUID:",
         "group-id": "Group ID:",
+        "created-by": "Created By:",
         "created-date": "Created Date",
         "location": "Location",
         "reference": "Reference",
@@ -26,6 +27,7 @@
             "name-description": "Name Description",
             "value": "Value",
             "location": "Location",
+            "date": "Date",
             "preferred": "Preferred"
         },
         "germplasm-origin": {
@@ -44,7 +46,7 @@
         "passport": {
             "title": "PASSPORT",
             "variable": "Variable",
-            "variable-description": "Variable Desc",
+            "variable-description": "Description",
             "value": "Value",
             "date": "Date",
             "location": "Location"
@@ -52,20 +54,50 @@
         "attributes": {
             "title": "ATTRIBUTES",
             "variable": "Variable",
-            "variable-description": "Variable Desc",
+            "variable-description": "Description",
             "value": "Value",
             "date": "Date",
             "location": "Location"
         }
     },
     "pedigree": {
+        "gid-column": "GID",
+        "preferred-name-column": "PREFERRED NAME",
         "progenitors": {
             "title": "PROGENITORS",
             "male-parent": "Male Parent",
             "female-parent": "Female Parent",
             "group-source": "Group Source",
             "immediate-source": "Immediate Source",
+            "male-parent-gid": "Male Parent GID",
+            "female-parent-gid": "Female Parent GID",
+            "group-source-gid": "Group Source GID",
+            "immediate-source-gid": "Immediate Source GID",
             "breeding-method": "Breeding Method"
+        },
+        "tree": {
+            "title": "PEDIGREE TREE",
+            "include.derivative.lines": "Include derivative and maintenance lines",
+            "include.breeding.method": "Include Breeding Method",
+            "view-pedigree-graph": "View Pedigree Graph",
+            "display-full-pedigree": "Display Full Pedigree",
+            "max.level.error": "Level should not exceed 20.",
+            "pedigree.graph.reached.maxixum.level.error": "You've reached the maximum level of nodes that can be rendered in this pedigree graph. Please adjust the level."
+        },
+        "generation-history": {
+            "title": "GENERATION HISTORY"
+        },
+        "management-neighbors": {
+            "title": "MANAGEMENT NEIGHBORS"
+        },
+        "derivative-neighborhood": {
+            "title": "DERIVATIVE NEIGHBORHOOD"
+        },
+        "maintenance-neighborhood": {
+            "title": "MAINTENANCE NEIGHBORHOOD"
+        },
+        "group-relatives": {
+            "title": "GROUP RELATIVES"
         }
     },
     "observations": {
@@ -103,5 +135,41 @@
         "sampling-date": "Sampling Date",
         "dataset-type": "Dataset_Type",
         "obs_unit_id": "Obs_Unit_ID"
+    },
+    "edit-basic-details": {
+        "title": "Edit Germplasm Details",
+        "germplasm-location": "Germplasm Location:",
+        "germplasm-date": "Germplasm Date:",
+        "reference": "Reference:",
+        "success": "Germplasm Basic Details updated successfully."
+    },
+    "audit": {
+        "entities": {
+            "name": "Name",
+            "attribute": "Attribute",
+            "passport": "Passport"
+        },
+        "title": "{{entity}}: {{entityValue}} - View history of changes",
+        "event-type": "Event Type",
+        "event-date": "Timestamp",
+        "user": "User",
+        "germplasm-basic-details": {
+            "title": "Germplasm - View history of changes",
+            "group-id": "Group ID",
+            "nav": {
+                "basic-details": "Basic details",
+                "reference": "Reference"
+            }
+        },
+        "germplasm-progenitors": {
+            "title": "Progenitors - View history of changes",
+            "progenitors-number": "Number of Progenitors",
+            "progenitor-number": "Progenitor Number",
+            "progenitor": "Progenitor",
+            "nav": {
+                "details": "Details",
+                "other-progenitors": "Other Progenitors"
+            }
+        }
     }
 }

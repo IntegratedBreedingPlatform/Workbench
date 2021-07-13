@@ -13,7 +13,7 @@ import { ListCreationComponent } from './list-creation.component';
 import { ColumnLabels } from '../../germplasm-manager/germplasm-search.component';
 import { NgbActiveModal, NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../tree/tree.service';
-import { GermplasmTreeTableService } from '../tree/germplasm/germplasm-tree-table.service';
+import { GermplasmTreeService } from '../tree/germplasm/germplasm-tree.service';
 import { JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../alert/alert.service';
@@ -29,7 +29,7 @@ import { GermplasmListService } from './service/germplasm-list.service';
     selector: 'jhi-germplasm-list-creation',
     templateUrl: './list-creation.component.html',
     providers: [
-        { provide: TreeService, useClass: GermplasmTreeTableService },
+        { provide: TreeService, useClass: GermplasmTreeService },
         { provide: ListService, useClass: GermplasmListService }
     ]
 })
@@ -84,13 +84,16 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
             listModel.searchComposite = this.germplasmManagerContext.searchComposite;
         }
         this._isLoading = true;
-        this.listService.save(listModel)
-            .pipe(finalize(() => {
-                this._isLoading = false;
-            })).subscribe(
-            (res) => this.onSaveSuccess(),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        const persistPromise = this.persistTreeState();
+        persistPromise.then(() => {
+            this.listService.save(listModel)
+                .pipe(finalize(() => {
+                    this._isLoading = false;
+                })).subscribe(
+                (res) => this.onSaveSuccess(),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        });
     }
 
     get isLoading() {

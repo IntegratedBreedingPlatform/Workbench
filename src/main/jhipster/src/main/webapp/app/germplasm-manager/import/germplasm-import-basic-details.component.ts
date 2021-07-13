@@ -5,19 +5,22 @@ import { GermplasmImportComponent, HEADERS } from './germplasm-import.component'
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { BREEDING_METHODS_BROWSER_DEFAULT_URL, SERVER_API_URL } from '../../app.constants';
+import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
 import { BreedingMethodManagerComponent } from '../../entities/breeding-method/breeding-method-manager.component';
 import { ParamContext } from '../../shared/service/param.context';
 import { PopupService } from '../../shared/modal/popup.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportContext } from './germplasm-import.context';
-import { Location } from '../../shared/location/model/location';
 import { LocationService } from '../../shared/location/service/location.service';
 import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
+import { toUpper } from '../../shared/util/to-upper';
+import { VariableValidationStatusType, VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
+import { DataTypeEnum } from '../../shared/ontology/data-type.enum';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -31,9 +34,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     detailsForm: ElementRef;
 
     hasEmptyPreferredName: boolean;
-    // Codes that are both attributes
+    // Codes that are both attributes and names
     unmapped = [];
     draggedCode: string;
+    attributeStatusById: { [key: number]: VariableValidationStatusType } = {};
 
     breedingMethods: Promise<BreedingMethod[]>;
     favoriteBreedingMethods: Promise<BreedingMethod[]>;
@@ -65,7 +69,8 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         private paramContext: ParamContext,
         private popupService: PopupService,
         public context: GermplasmImportContext,
-        private calendar: NgbCalendar
+        private calendar: NgbCalendar,
+        private variableValidationService: VariableValidationService
     ) {
         this.creationDateSelected = calendar.getToday();
     }
@@ -78,8 +83,9 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
         for (const attribute of this.context.attributes) {
             for (const nameType of this.context.nameTypes) {
-                if (attribute.code === nameType.code) {
-                    this.unmapped.push(attribute.code);
+                const attributeName = attribute.alias || attribute.name;
+                if (attributeName === nameType.code) {
+                    this.unmapped.push(attributeName);
                 }
             }
         }
@@ -87,8 +93,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
             return this.context.nameColumnsWithData[name.code] && this.unmapped.indexOf(name.code) === -1;
         });
         this.context.attributesCopy = this.context.attributes.filter((attribute) => {
-            return this.unmapped.indexOf(attribute.code) === -1;
+            return this.unmapped.indexOf(attribute.alias || attribute.name) === -1;
         });
+        this.computeAttributeStatus();
+
         if (this.context.data.some((row) => row[HEADERS['PROGENITOR 1']] || row[HEADERS['PROGENITOR 2']])) {
             if (this.context.data.some((row) =>
                 row[HEADERS['PROGENITOR 1']] && !isNumeric(row[HEADERS['PROGENITOR 1']]) ||
@@ -104,8 +112,15 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
             ajax: {
                 delay: 500,
                 transport: function(params, success, failure) {
+                    params.data.page = params.data.page || 1;
                     const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    this.locationService.queryLocationsByType(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
+                    this.locationService.queryLocationsByType(
+                        locationTypes,
+                        this.useFavoriteLocations,
+                        params.data.term,
+                        (params.data.page - 1),
+                        300
+                    ).subscribe((res) => {
                         this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
                         success(res.body);
                     }, failure);
@@ -243,9 +258,27 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         if (type === 'names') {
             this.context.nametypesCopy.push(this.context.nameTypes.find((n) => n.code === this.draggedCode));
         } else {
-            this.context.attributesCopy.push(this.context.attributes.find((a) => a.code === this.draggedCode));
+            this.context.attributesCopy.push(this.context.attributes.find((a) => a.alias === this.draggedCode || a.name === this.draggedCode));
+            this.computeAttributeStatus();
         }
         this.unmapped = this.unmapped.filter((u) => u !== this.draggedCode);
     }
 
+    computeAttributeStatus() {
+        this.context.attributesCopy.forEach((attribute) => {
+            this.context.data.some((row) => {
+                const value = row[toUpper(attribute.alias)] || row[toUpper(attribute.name)];
+                const validationStatus = this.variableValidationService.isValidValue(value, attribute);
+                if (!validationStatus.isValid || !validationStatus.isInRange) {
+                    this.attributeStatusById[attribute.id] = validationStatus;
+                }
+                // continue processing each row unless we found some invalid, in which case the whole column is invalid
+                return !validationStatus.isValid;
+            });
+        })
+    }
+
+    getStatusIcon(attribute: VariableDetails) {
+        return this.variableValidationService.getStatusIcon(attribute, this.attributeStatusById);
+    }
 }

@@ -35,6 +35,14 @@
 
 	var display_name = getUrlParameter("display_name");
 	var return_url = getUrlParameter("return_url");
+	// oauth
+	var client_id = getUrlParameter("client_id");
+	var redirect_uri = getUrlParameter("redirect_uri");
+
+	// Reset the authentication token when login page is loaded.
+	// TODO: Handle null bms.xAuthToken in all code that uses this localStorage item, so that we can just remove
+	// this item from localStorage rathen than resetting its value.
+	localStorage['bms.xAuthToken'] = JSON.stringify({success: false, token: '', expires: 0});
 
 	var failedLoginAttemptCount = 0;
 
@@ -118,7 +126,7 @@
 	}
 
 	function toggleAuthorizeScreen() {
-		$('#displayName').text(display_name);
+		$('#displayName').text(display_name || client_id);
 		$loginForm.hide();
 		$authorizeForm.show();
 	}
@@ -215,8 +223,13 @@
 
 	function doAuthorizeSubmit() {
 
-		// Append status=200 to the query string to notify KSU Fieldbook that the authentication is successful.
-		window.location.href = return_url + '?token=' + JSON.parse(localStorage['bms.xAuthToken']).token + '&status=200';
+		const token = JSON.parse(localStorage['bms.xAuthToken']).token;
+		if (client_id && redirect_uri) {
+			window.location.href = redirect_uri + '?access_token=' + token;
+		} else {
+			// Append status=200 to the query string to notify KSU Fieldbook that the authentication is successful.
+			window.location.href = return_url + '?token=' + token + '&status=200';
+		}
 		return false;
 	}
 
@@ -332,7 +345,7 @@
 					 *     localStorageServiceProvider.setPrefix('bms');
 					 */
 					localStorage['bms.xAuthToken'] = JSON.stringify(data);
-					if (display_name && return_url) {
+					if ((display_name && return_url) || (client_id && redirect_uri)) {
 						toggleAuthorizeScreen()
 					} else {
 						// no login problems! submit

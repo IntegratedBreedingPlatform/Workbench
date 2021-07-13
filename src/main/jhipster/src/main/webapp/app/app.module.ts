@@ -20,6 +20,11 @@ import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interc
 import { InventoryDetailsModule } from './germplasm-manager/inventory/details/inventory-details.module';
 import { NavbarModule } from './navbar/navbar.module';
 import { GermplasmDetailsModule } from './germplasm-details/germplasm-details.module';
+import { ReleaseNotesModule } from './release-notes/release-notes.module';
+import { UserProfileModule } from './entities/user-profile/user-profile.module';
+import { FileManagerModule } from './file-manager/file-manager.module';
+import { PrototypeModule } from './prototype/prototype.module';
+import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
 
 @NgModule({
     imports: [
@@ -33,7 +38,12 @@ import { GermplasmDetailsModule } from './germplasm-details/germplasm-details.mo
         LabelPrintingModule,
         GermplasmManagerModule,
         InventoryDetailsModule,
-        GermplasmDetailsModule
+        GermplasmDetailsModule,
+        ReleaseNotesModule,
+        UserProfileModule,
+        FileManagerModule,
+        PrototypeModule,
+        VariableDetailsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

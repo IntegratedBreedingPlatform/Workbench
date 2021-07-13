@@ -30,12 +30,28 @@
 							replaceUrl="true"
 							queryParamsHandling="merge" jhiTranslate="germplasm-import-updates.title">
 					</button>
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="DELETE_GERMPLASM_PERMISSIONS"  jhiTranslate="search-germplasm.actions.delete-germplasm"
+							(click)="deleteGermplasm()" >
+					</button>
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GERMPLASM_LABEL_PRINTING_PERMISSIONS" jhiTranslate="search-germplasm.actions.export-data-and-labels"
+							(click)="exportDataAndLabels()">
+					</button>
+					<!-- TODO: consolidate into one main Grouping menu item -->
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.group"
+							(click)="groupGermplasm()" >
+					</button>
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="UNGROUP_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.ungroup"
+							(click)="ungroupGermplasm()" >
+					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CODE_GERMPLASM_PERMISSIONS" jhiTranslate="search-germplasm.actions.code-germplasm"
+							(click)="openGermplasmCoding()">
+					</button>
+					<button class="dropdown-item" type="submit" jhiTranslate="search-germplasm.actions.filter-by-selected-records"
+							(click)="filterBySelectedRecords()">
+					</button>
 					<button class="dropdown-item" type="submit" jhiTranslate="search-germplasm.actions.create-inventory-lots"
 							*jhiHasAnyAuthority="CREATE_INVENTORY_LOT_PERMISSIONS"
 							(click)="openCreateLots()">
-					</button>
-					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.delete-germplasm"
-							(click)="deleteGermplasm()" >
 					</button>
 				</div>
 			</div>
@@ -84,7 +100,7 @@
 				<span style="margin-left: 20px;">Selected:</span>
 				<span style="padding-left: 5px;" class="font-weight-bold">
 					<!-- includes gids not counted in filteredItems (e.g pedigree, group members)  -->
-					{{isSelectAll ? (+filteredItems + (germplasmList.length > filteredItems ? germplasmList.length - filteredItems : 0)) : selectedItems.length}}
+					{{isSelectAll ? (+filteredItems + (germplasmList.length > filteredItems ? germplasmList.length - filteredItems : 0)) : size(selectedItems)}}
 				</span>
 				<!-- An message indicating that there could be more items not included in this page  -->
 				<span style="padding-left: 5px;" class="font-italic" *ngIf="hasIncludedGids() && isSelectAll && filteredItems > itemsPerPage"
@@ -140,26 +156,28 @@
 			</tr>
 			</thead>
 			<tbody cdkDropList cdkDropListConnectedTo="listBuilderDrop" >
-			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId"
+			<tr *ngFor="let germplasm of germplasmList; trackBy: trackId; index as index"
 				[class.selected]="isSelected(germplasm)"
+				(click)="toggleSelect($event, index, germplasm)"
 				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, germplasm)">
+				<div *cdkDragPlaceholder>&nbsp;</div>
 
-				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)"></td>
-				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]">{{germplasm.gid}}</a></td>
-				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" [routerLink]="['/', { outlets: { popup: 'germplasm/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
-				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.germplasmPeferredName}">{{germplasm.names}}</a></td>
+				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect($event, index, germplasm, true); $event.stopPropagation()"></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.names}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{germplasm.unit}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOTS]">
-					<a *ngIf="germplasm.lotCount" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}">{{germplasm.lotCount}}</a>
+					<a *ngIf="germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">{{germplasm.lotCount}}</a>
 					<span *ngIf="germplasm.lotCount === 0">-</span>
 				</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.CROSS]">{{germplasm.pedigreeString}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]">{{germplasm.germplasmPeferredId}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]">{{germplasm.germplasmPeferredName}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]">{{germplasm.germplasmDate}}</td>
-				<td [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><a [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]">{{germplasm.locationName}}</a></td>
-				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><a [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]">{{germplasm.methodName}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]" queryParamsHandling="merge">{{germplasm.locationName}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]" queryParamsHandling="merge">{{germplasm.methodName}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD ABBREV']]">{{germplasm.methodCode}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NUMBER']]">{{germplasm.methodNumber}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD GROUP']]">{{germplasm.methodGroup}}</td>
@@ -208,7 +226,7 @@
 					<div class="pagination-box pagination-box-right">
 						<div class="form-inline">
 							<label for="itemsPerPage" class="control-label control-label-left">Items Per Page</label>
-							<select [(ngModel)]="itemsPerPage" class="form-control ml-2" id="itemsPerPage" [disabled]="isLoading" (change)="resetTable()" style="width:95px">
+							<select [(ngModel)]="itemsPerPage" class="form-control ml-2" id="itemsPerPage" [disabled]="isLoading" (change)="resetTable(); listBuilderContext.pageSize = itemsPerPage" style="width:95px">
 								<option value="20">20</option>
 								<option value="50">50</option>
 								<option value="75">75</option>

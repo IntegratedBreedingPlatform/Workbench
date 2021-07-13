@@ -12,7 +12,10 @@
 					</thead>
 					<tbody>
 					<tr *ngFor="let germplasmList of germplasmLists">
-						<td>{{germplasmList.listName}}</td>
+						<td><a *ngIf="germplasmDetailsContext.isModal && isClickable(germplasmList)" href (click)="urlService.openList(germplasmList.listId)">{{germplasmList.listName}}</a>
+							<span *ngIf="germplasmDetailsContext.isModal && !isClickable(germplasmList)" class="btn btn-link disabled p-0">{{germplasmList.listName}}</span>
+							<span *ngIf="!germplasmDetailsContext.isModal">{{germplasmList.listName}}</span>
+						</td>
 						<td>{{germplasmList.creationDate}}</td>
 						<td>{{germplasmList.description}}</td>
 					</tr>

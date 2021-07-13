@@ -18,7 +18,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.SpecifyGermplasmsComponent;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.HeadToHeadCrossStudyMainButtonClickListener;
-import org.generationcp.ibpworkbench.germplasm.GermplasmQueries;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchFormComponent;
 import org.generationcp.ibpworkbench.germplasm.GermplasmSearchResultComponent;
 import org.generationcp.ibpworkbench.germplasm.containers.GermplasmIndexContainer;
@@ -70,7 +69,6 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 	private GermplasmSearchFormComponent searchComponent;
 	private GermplasmSearchResultComponent resultComponent;
 	private final GermplasmIndexContainer dataResultIndexContainer;
-	private final GermplasmQueries gQuery;
 
 	private Integer selectedGid;
 	private final boolean isTestEntry;
@@ -81,8 +79,7 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 		this.source = source;
 		this.parentWindow = parentWindow;
 		this.isTestEntry = isTestEntry;
-		this.gQuery = new GermplasmQueries();
-		this.dataResultIndexContainer = new GermplasmIndexContainer(this.gQuery);
+		this.dataResultIndexContainer = new GermplasmIndexContainer();
 	}
 
 	@Override

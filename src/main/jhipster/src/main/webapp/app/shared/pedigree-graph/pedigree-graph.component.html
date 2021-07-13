@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-xs-12 col-md-12">
+		<div class="row">
+			<div class="col-12">
+				<form class="form-inline">
+					<div class="form-group mb-2">
+						<label class="font-weight-bold">Level</label>
+						<input class="form-control ml-2" name="level" [disabled]="isLoading" type="number" [(ngModel)]="level" (ngModelChange)="levelFieldChanged($event)" min="1" max="20"/>
+					</div>
+					<div class="form-group mb-2">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input ml-2" id="includeDerivative" name="includeDerivative" [disabled]="isLoading" type="checkbox" [(ngModel)]="includeDerivativeLines" (ngModelChange)="render()"/>
+							<label class="form-check-label" for="includeDerivative" jhiTranslate="pedigree.tree.include.derivative.lines">Include derivative and maintenance lines </label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input ml-2" id="includeBreedingMethod" name="includeBreedingMethod" [disabled]="isLoading" type="checkbox" [(ngModel)]="includeBreedingMethod" (ngModelChange)="render()"/>
+							<label class="form-check-label" for="includeBreedingMethod" jhiTranslate="pedigree.tree.include.breeding.method">Include Breeding Method </label>
+						</div>
+					</div>
+					<div *ngIf="isLoading" class="mb-2"><span class="throbber"></span></div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-12 col-md-12">
+		<div id="pedigree-graph" class="pedigree-graph"></div>
+	</div>
+</div>

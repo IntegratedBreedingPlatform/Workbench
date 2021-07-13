@@ -7,6 +7,8 @@ export class GermplasmDto {
         public germplasmUUID?: string,
         public preferredName?: string,
         public creationDate?: string,
+        public createdBy?: string,
+        public createdByUserId?: number,
         public reference?: string,
         public breedingLocationId?: number,
         public breedingLocation?: string,
@@ -20,6 +22,15 @@ export class GermplasmDto {
         public names?: GermplasmName[],
         public attributes?: GermplasmAttribute[],
         public germplasmOrigin?: GermplasmOrigin
+    ) {
+    }
+}
+
+export class GermplasmBasicDetailsDto {
+    constructor(
+        public creationDate?: string,
+        public reference?: string,
+        public breedingLocationId?: number
     ) {
     }
 }
@@ -42,9 +53,11 @@ export class GermplasmName {
 
 export class GermplasmAttribute {
     constructor(
+        public id?: number,
         public value?: string,
-        public attributeCode?: string,
-        public attributeDescription?: string,
+        public variableId?: number,
+        public variableName?: string,
+        public variableDescription?: string,
         public date?: string,
         public locationId?: string,
         public locationName?: string,
@@ -57,7 +70,8 @@ export class GermplasmList {
         public listId?: number,
         public listName?: string,
         public creationDate?: string,
-        public description?: string
+        public description?: string,
+        public programUUID?: string
     ) {
     }
 }
@@ -66,13 +80,15 @@ export class GermplasmStudy {
     constructor(
         public studyId?: number,
         public name?: string,
-        public description?: string
+        public description?: string,
+        public programUUID?: string
     ) {
     }
 }
 
 export class GermplasmOrigin {
     constructor(
+        public programUUID?: string,
         public studyId?: number,
         public studyName?: string,
         public observationUnitId?: string,
@@ -95,7 +111,8 @@ export class GermplasmProgenitorsDetails {
         public femaleParent?: GermplasmDto,
         public maleParents?: GermplasmDto[],
         public groupSource?: GermplasmDto,
-        public immediateSource?: GermplasmDto
+        public immediateSource?: GermplasmDto,
+        public numberOfDerivativeProgeny?: number
     ) {
     }
 }

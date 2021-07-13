@@ -23,21 +23,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     private _filters;
 
-    @Input()
-    set filters(value) {
-        this._filters = value;
-
-        this.filtersAdded = [];
-        this._filters.filter((filter) => filter.default || filter.added).forEach((filter) => {
-            this.filtersAdded.push(filter);
-            ColumnFilterComponent.updateBadgeLabel(filter);
-        });
-    }
-
-    get filters() {
-        return this._filters;
-    }
-
     filtersAdded = [];
 
     FILTER_TYPES = FilterType;
@@ -84,7 +69,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     static transformAttributesFilter(filter, request) {
         const attributes: any = {};
         for (const attribute of filter.attributes) {
-            attributes[attribute.code] = attribute.value;
+            const attributeName = attribute.alias ? attribute.alias : attribute.name;
+            attributes[attributeName] = attribute.value;
         }
         request[filter.key] = attributes;
     }
@@ -94,7 +80,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
         // Remove all attributes column
         for (const attribute of filter.attributes) {
-            request.addedColumnsPropertyIds.pop(attribute.code);
+            const attributeName = attribute.alias ? attribute.alias : attribute.name;
+            request.addedColumnsPropertyIds.pop(attributeName);
         }
 
         filter.attributes = [];
@@ -181,7 +168,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return Promise.resolve();
             case FilterType.ATTRIBUTES:
                 if (filter.attributes && filter.attributes.length) {
-                    return Promise.resolve(filter.attributes.map((attribute) => `${attribute.code} : ${attribute.value}`)
+                    return Promise.resolve(filter.attributes.map((attribute) => `${attribute.alias ? attribute.alias : attribute.name} : ${attribute.value}`)
                         .join(', '));
                 }
                 return Promise.resolve();
@@ -249,6 +236,21 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return ColumnFilterComponent.updateBadgeLabel(filter);
             }));
         });
+    }
+
+    @Input()
+    set filters(value) {
+        this._filters = value;
+
+        this.filtersAdded = [];
+        this._filters.filter((filter) => filter.default || filter.added).forEach((filter) => {
+            this.filtersAdded.push(filter);
+            ColumnFilterComponent.updateBadgeLabel(filter);
+        });
+    }
+
+    get filters() {
+        return this._filters;
     }
 
     ngOnDestroy(): void {
@@ -435,15 +437,17 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     addAttributesColumn(attribute) {
-        if (!this.request.addedColumnsPropertyIds.some((e) => e === attribute.code)) {
-            this.request.addedColumnsPropertyIds.push(attribute.code);
+        const attributeName = attribute.alias ? attribute.alias : attribute.name;
+        if (!this.request.addedColumnsPropertyIds.some((e) => e === attributeName)) {
+            this.request.addedColumnsPropertyIds.push(attributeName);
             this.addedAttributes.push(attribute);
         }
     }
 
     removeAttributesColumn(attribute) {
-        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attribute.code);
-        this.addedAttributes = this.addedAttributes.filter((a) => a.code !== attribute.code);
+        const attributeName = attribute.alias ? attribute.alias : attribute.name;
+        this.request.addedColumnsPropertyIds = this.request.addedColumnsPropertyIds.filter((e) => e !== attributeName);
+        this.addedAttributes = this.addedAttributes.filter((a) => a.name !== attributeName);
     }
 
     removeAllAttributesColumn() {

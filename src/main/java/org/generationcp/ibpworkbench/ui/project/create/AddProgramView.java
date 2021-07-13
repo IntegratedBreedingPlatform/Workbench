@@ -16,7 +16,6 @@ import org.generationcp.commons.help.document.HelpModule;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.ibpworkbench.actions.OpenNewProjectAction;
-import org.generationcp.ibpworkbench.ui.WorkbenchMainView;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
 import org.generationcp.ibpworkbench.ui.programmembers.ProgramMembersPanel;
 import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
@@ -269,10 +268,6 @@ public class AddProgramView extends Panel implements InitializingBean {
 	}
 
 	public void updateUIOnProgramSave(final Project project, final Window window) {
-		if (window instanceof WorkbenchMainView) {
-			((WorkbenchMainView) window).addTitle(this.contextUtil.getProjectInContext().getProjectName());
-		}
-
 		// initialize program methods and view and set them to the tabs
 		this.programMethodsView = new ProgramMethodsView(project);
 		this.programMethodsView.setDebugId("programMethodsView");

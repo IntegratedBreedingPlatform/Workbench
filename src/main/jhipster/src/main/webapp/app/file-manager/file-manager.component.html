@@ -1,0 +1,15 @@
+<div class="modal-header">
+	<h5 class="modal-title">File name: {{fileName}}</h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col">
+			<!-- not sure why the ngif works given that the src is preloaded with a tiny image... -->
+			<i class="throbber" *ngIf="!img.src"></i>
+			<img #img alt="" [src]="'/bmsapi/files/' + fileKey | secureImage | async"  style="width:100%; height: 100%"/>
+		</div>
+	</div>
+</div>
+<jhi-alert></jhi-alert>

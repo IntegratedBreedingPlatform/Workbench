@@ -5,4 +5,5 @@ import { ListEntry } from './model/list.model';
 export class ListBuilderContext {
     visible = false;
     data: ListEntry[] = [];
+    pageSize = 20;
 }

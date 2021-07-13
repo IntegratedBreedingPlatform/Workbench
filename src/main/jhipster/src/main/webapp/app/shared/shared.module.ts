@@ -29,7 +29,6 @@ import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/colum
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
 import { ColumnFilterNameTypesComponent } from './column-filter/column-filter-name-types-component';
-import { AttributesService } from './attributes/service/attributes.service';
 import { NameTypeService } from './name-type/service/name-type.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
@@ -56,7 +55,24 @@ import { KeySequenceRegisterService } from './key-sequence-register/service/key-
 import { ProgramService } from './program/service/program.service';
 import { ToolService } from './tool/service/tool.service';
 import { CollapsibleComponent } from './component/collapsible.component';
-import { UserProgramInfoService } from './service/user-program-info.service';
+import { ProgramUsageService } from './service/program-usage.service';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { GeojsonMapComponent } from './geojson-map/geojson-map.component';
+import { CropService } from './crop/service/crop.service';
+import { CropSelect2DataPipe } from './crop/util/crop-select2.pipe';
+import { UrlService } from './service/url.service';
+import { LocationsSelectComponent } from './locations-select/locations-select.component';
+import { NameTypeSelect2Pipe } from './name-type/model/name-type-select2.pipe';
+import { DateHelperService } from './service/date.helper.service';
+import { AttributeSelect2DataPipe } from './attributes/model/attribute-select2.pipe';
+import { OnlyNumbersDirective } from './util/apply-only-numbers.directive';
+import { SecureImagePipe } from './util/secure-image.pipe';
+import { GermplasmPedigreeService } from './germplasm/service/germplasm.pedigree.service';
+import { VariableSelectComponent } from './variable-select/variable-select.component';
+import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.component';
+import { VariableService } from './ontology/service/variable.service';
+import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
+import { VariableValidationService } from './ontology/service/variable-validation.service';
 
 @NgModule({
     imports: [
@@ -66,7 +82,8 @@ import { UserProgramInfoService } from './service/user-program-info.service';
         TableModule,
         TreeModule,
         DragDropModule,
-        CdkDragDropModule
+        CdkDragDropModule,
+        LeafletModule
     ],
     declarations: [
         ModalComponent,
@@ -90,18 +107,28 @@ import { UserProgramInfoService } from './service/user-program-info.service';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
+        NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
-        CollapsibleComponent
+        CollapsibleComponent,
+        GeojsonMapComponent,
+        LocationsSelectComponent,
+        OnlyNumbersDirective,
+        PedigreeGraphComponent,
+        VariableSelectComponent
     ],
     providers: [
         LoginService,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         Principal,
         AccountService,
         InventoryService,
@@ -113,21 +140,27 @@ import { UserProgramInfoService } from './service/user-program-info.service';
         SampleListBuilderService,
         HelpService,
         GermplasmService,
-        AttributesService,
         NameTypeService,
         BreedingMethodService,
         LocationService,
         ProgramService,
+        CropService,
         PopupService,
         AlertService,
         ToolService,
         KeySequenceRegisterService,
-        UserProgramInfoService,
+        ProgramUsageService,
+        DateHelperService,
         /*
          * Workaround to reuse modal content outside ngb modals
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
-        NgbActiveModal
+        NgbActiveModal,
+        UrlService,
+        GermplasmPedigreeService,
+        VariableService,
+        VariableValidationService,
+        GermplasmGroupingService
     ],
     entryComponents: [
         ModalComponent,
@@ -145,7 +178,11 @@ import { UserProgramInfoService } from './service/user-program-info.service';
         TableModule,
         DatePipe,
         KeyValuePipe,
+        SecureImagePipe,
         BreedingMethodSelect2DataPipe,
+        CropSelect2DataPipe,
+        NameTypeSelect2Pipe,
+        AttributeSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
         HasAnyAuthorityDirective,
@@ -170,7 +207,12 @@ import { UserProgramInfoService } from './service/user-program-info.service';
         ListBuilderComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
-        CollapsibleComponent
+        CollapsibleComponent,
+        GeojsonMapComponent,
+        LocationsSelectComponent,
+        OnlyNumbersDirective,
+        PedigreeGraphComponent,
+        VariableSelectComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

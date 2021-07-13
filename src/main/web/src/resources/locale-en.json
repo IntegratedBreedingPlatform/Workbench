@@ -189,14 +189,14 @@
 			"nameRequired": "Please name your variable.",
 			"noneditableCategories": "Some categories cannot be edited because there are recorded study measurements associated to them",
 			"noneditableFields": "Some fields cannot be edited as this variable is already in use.",
-			"pattern": "Name must start with a letter and may only contain letters, numbers or underscores.",
+			"pattern": "{{field}} must start with a letter and may only contain letters, numbers or underscores.",
 			"propertyRequired": "Property is required.",
 			"scaleRequired": "Scale is required.",
 			"treatmentFactor":"Please note that in order to use this variable as a Treatment Factor, you need to create two variables with the same property and variable type \"Treatment Factor\".",
 			"variableTypeEmpty": "Please select at least one variable type.",
 			"variableTypeAppending": "Once saved, variable types cannot be removed for variables in use",
 			"someListsNotLoaded": "The methods, properties, scales or variables types lists were not loaded. Please, refresh the page.",
-			"alias": "The alias will be available only for Traits, Selection methods and Study conditions."
+			"alias": "The alias will be available only for Traits, Selection methods, Study conditions, Germplasm Passport and Germplasm Attributes"
 		},
 
 		"filter": {
@@ -217,7 +217,9 @@
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
 			"studies": "Nurseries and Trials",
-		  	"datasets": "Datasets"
+		  	"datasets": "Datasets",
+			"germplasm": "Germplasm",
+			"breedingMethods": "BreedingMethods"
 		}
 	},
 

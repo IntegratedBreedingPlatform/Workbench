@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>17.3</version>
+        <version>18.2</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -15,8 +15,8 @@
 		<spring.version>4.1.6.RELEASE</spring.version>
 		<spring.security.version>3.2.5.RELEASE</spring.security.version>
 		<modelmapper.version>0.7.3</modelmapper.version>
-		<node.version>v8.11.3</node.version>
-		<yarn.version>v1.21.1</yarn.version>
+		<node.version>v14.17.0</node.version>
+		<yarn.version>v1.22.10</yarn.version>
 		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
 		<envConfig>${user.name}</envConfig>
 	</properties>
@@ -169,9 +169,9 @@
 
 		<!-- java mail for smtp implem -->
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.7</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.6</version>
 		</dependency>
 
 		<!-- For automatic conversion of Java objects to JSON for AJAX purposes -->
@@ -429,7 +429,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.23.4</version>
+			<version>3.8.0</version>
 			<scope>test</scope>
 		</dependency>
 

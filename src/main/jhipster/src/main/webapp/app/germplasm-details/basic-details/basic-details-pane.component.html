@@ -5,7 +5,7 @@
 				<div class="col-3">
 					<label class="font-weight-bold" jhiTranslate="basic-details.preferred-name">Preferred Name:</label>
 				</div>
-				<div class="col">{{germplasm?.preferredName}}</div>
+				<div class="col word-wrap">{{germplasm?.preferredName}}</div>
 			</div>
 			<div class="row">
 				<div class="col-3">
@@ -25,24 +25,35 @@
 				</div>
 				<div class="col"><a *ngIf="germplasm && germplasm?.groupId !== 0" [href]="this.germplasmDetailsUrlService.getUrl(germplasm?.groupId)" target="_blank">{{germplasm?.groupId}}</a></div>
 			</div>
+			<div class="row">
+				<div class="col-3">
+					<label class="font-weight-bold" jhiTranslate="basic-details.created-by">Created By:</label>
+				</div>
+				<div class="col">{{germplasm?.createdBy}}</div>
+			</div>
 			<div class="table-responsive">
-				<table class="table table-striped table-bordered table-curved">
+				<table class="table table-striped table-bordered table-curved table-fixed">
 					<thead>
 					<tr>
 						<th scope="col" jhiTranslate="basic-details.created-date">Created Date</th>
 						<th scope="col" jhiTranslate="basic-details.location">Location</th>
 						<th scope="col" jhiTranslate="basic-details.reference">Reference</th>
-<!--						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>-->
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_ACTIONS_PERMISSIONS" style="width: 150px" >Actions</th>
 					</tr>
 					</thead>
 					<tbody>
 					<tr>
 						<td>{{germplasm?.creationDate}}</td>
 						<td>{{germplasm?.breedingLocation}}</td>
-						<td>{{germplasm?.reference}}</td>
-<!--						<td class="text-center">-->
-<!--							<button class="btn btn-info"><i class="fa fa-edit fa-fa-md" aria-hidden="true"></i></button>-->
-<!--						</td>-->
+						<td class="word-wrap">{{germplasm?.reference}}</td>
+						<td class="text-center">
+							<button class="btn btn-info mr-2" (click)="editGermplasmBasicDetails()" *jhiHasAnyAuthority="EDIT_BASIC_DETAILS_PERMISSIONS">
+								<i class="fa fa-edit fa-fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmBasicDetailsAuditModal()" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
+						</td>
 					</tr>
 					</tbody>
 				</table>
@@ -51,31 +62,41 @@
 	</jhi-collapsible>
 	<jhi-collapsible heading="{{translateService.instant('basic-details.names.title')}}">
 		<div class="container-fluid">
-<!--			<div class="pull-right pb-3">-->
-<!--				<button class="btn btn-outline-info"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>-->
-<!--			</div>-->
+			<div class="pull-right pb-3">
+			<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS" (click)="createGermplasmName()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+			</div>
 			<div class="table-responsive">
-				<table class="table table-striped table-bordered table-curved">
+				<table class="table table-striped table-bordered table-curved table-fixed">
 					<thead>
 					<tr>
-						<th scope="col" jhiTranslate="basic-details.names.name-type">Name type</th>
-						<th scope="col" jhiTranslate="basic-details.names.name-description">Name Description</th>
+						<th scope="col" jhiTranslate="basic-details.names.name-type" style="width: 13%">Name type</th>
+						<th scope="col" jhiTranslate="basic-details.names.name-description" style="width: 15%">Name Description</th>
 						<th scope="col" jhiTranslate="basic-details.names.value">Value</th>
 						<th scope="col" jhiTranslate="basic-details.names.location">Location</th>
+						<th scope="col" jhiTranslate="basic-details.names.date">Date</th>
 						<th scope="col" jhiTranslate="basic-details.names.preferred">Preferred</th>
-<!--						<th scope="col" jhiTranslate="germplasm-details.actions">Actions</th>-->
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="NAMES_ACTIONS_PERMISSIONS" style="width: 150px">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
 					<tr *ngFor="let name of germplasm?.names">
 						<td>{{name.nameTypeCode}}</td>
 						<td>{{name.nameTypeDescription}}</td>
-						<td>{{name.name}}</td>
+						<td class="word-wrap">{{name.name}}</td>
 						<td>{{name.locationName}}</td>
+						<td>{{name.date}}</td>
 						<td>{{name.preferred ? 'Yes' : 'No'}}</td>
-<!--						<td class="text-center">-->
-<!--							<button class="btn btn-info"><i class="fa fa-edit fa-md" aria-hidden="true"></i></button>&nbsp;&nbsp;<button class="btn btn-info"><i class="fa fa-trash fa-md" aria-hidden="true"></i></button>-->
-<!--						</td>-->
+						<td class="text-center" *jhiHasAnyAuthority="NAMES_ACTIONS_PERMISSIONS">
+							<button class="btn btn-info mr-2" (click)="editGermplasmName(name)" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
+								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info mr-2" (click)="deleteGermplasmName(name)" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS">
+								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info" (click)="openGermplasmNameAuditModal(name)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
+						</td>
 					</tr>
 					</tbody>
 				</table>
@@ -83,7 +104,7 @@
 		</div>
 	</jhi-collapsible>
 	<jhi-collapsible heading="{{translateService.instant('basic-details.germplasm-origin.title')}}">
-		<div class="container-fluid">
+		<div class="container-fluid pb-3">
 			<div class="row">
 				<div class="col">
 					<table class="table table-striped table-bordered table-curved" *ngIf="germplasm?.germplasmOrigin?.observationUnitId else nogermplasmorigin">
@@ -100,7 +121,9 @@
 						</thead>
 						<tbody>
 						<tr>
-							<td>{{germplasm?.germplasmOrigin?.studyName}}</td>
+							<td><a *ngIf="germplasmDetailsContext.isModal && isStudyClickable(germplasm?.germplasmOrigin?.programUUID)" href (click)="urlService.openStudy(germplasm?.germplasmOrigin?.studyId)">{{germplasm?.germplasmOrigin?.studyName}}</a>
+								<span *ngIf="germplasmDetailsContext.isModal && !isStudyClickable(germplasm?.germplasmOrigin?.programUUID)" class="btn btn-link disabled p-0">{{germplasm?.germplasmOrigin?.studyName}}</span>
+								<span *ngIf="!germplasmDetailsContext.isModal">{{germplasm?.germplasmOrigin?.studyName}}</span></td>
 							<td>{{germplasm?.germplasmOrigin?.observationUnitId}}</td>
 							<td>{{germplasm?.germplasmOrigin?.plotNumber}}</td>
 							<td>{{germplasm?.germplasmOrigin?.repNumber}}</td>
@@ -126,6 +149,11 @@
 					</ng-template>
 				</div>
 				<div class="col">
+					<div style="height: 350px; width: 100%">
+						<jhi-geojson-map [geojson]="germplasm?.germplasmOrigin?.geoCoordinates" *ngIf="germplasm?.germplasmOrigin?.geoCoordinates">
+						</jhi-geojson-map>
+					</div>
+
 				</div>
 			</div>
 		</div>

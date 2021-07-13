@@ -1,0 +1,87 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">
+				<span *ngIf="attributeId" jhiTranslate="germplasm-attribute-modal.edit.header"></span>
+				<span *ngIf="!attributeId" jhiTranslate="germplasm-attribute-modal.create.header"></span>
+			</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="clear()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm">
+			<div class="form-group row required">
+				<label for="dropdownvariable" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-attribute-modal.variable">Variable</label>
+				<div class="col-sm-9">
+					<jhi-variable-select name="dropdownvariable" id="dropdownvariable"
+										 (onVariableSelectedChange)="selectVariable($event)"
+										 [value]="variable?.id"
+										 [variableTypeIds]="[attributeTypeId]"
+										 [disabled]="attributeId">
+					</jhi-variable-select>
+				</div>
+			</div>
+			<div class="form-group row required" [ngSwitch]="variable?.scale?.dataType?.name">
+				<label for="variablevalue" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-attribute-modal.value">Value</label>
+				<div class="col-sm-9" *ngSwitchCase="DataType.CATEGORICAL">
+					<select class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" required>
+						<option *ngFor="let category of variable.scale.validValues.categories"
+								[title]="category.description"
+								[value]="category.name">
+							<label>{{category.name}}</label>
+						</option>
+					</select>
+				</div>
+				<div class="col-sm-9 input-group" *ngSwitchCase="DataType.DATE">
+					<input class="form-control" name="variablevalue" id="variablevalue"
+						   placeholder="yyyy-mm-dd"
+						   [(ngModel)]="dateValue"
+						   (dateSelect)="value = dateHelperService.convertNgbDateToString($event)"
+						   ngbDatepicker #valuedate="ngbDatepicker" required />
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary calendar" (click)="valuedate.toggle()" type="button"></button>
+					</div>
+				</div>
+				<div class="col-sm-9" *ngSwitchCase="DataType.NUMERIC" >
+					<input type="number" class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="255"
+						   [title]="getNumericOutOfRangeWarning()"
+						   [class.accepted-value]="isNumericOutOfRange()" />
+				</div>
+				<div class="col-sm-9" *ngSwitchDefault >
+					<input type="text" class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="255"/>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="attributedate" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-attribute-modal.date">Date</label>
+				<div class="input-group col-sm-9">
+					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="date"
+						   ngbDatepicker #attributedate="ngbDatepicker" id="attributedate" name="date" required/>
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary calendar" (click)="attributedate.toggle()" type="button"></button>
+					</div>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="dropdownLocations" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm-attribute-modal.location">Location</label>
+				<div class="col-sm-9">
+					<jhi-locations-select [(value)]="locationId" [showFilterOptions]="false"></jhi-locations-select>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+		</button>
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;
+			<span *ngIf="attributeId" jhiTranslate="update"></span>
+			<span *ngIf="!attributeId" jhiTranslate="create"></span>
+		</button>
+	</div>
+</div>

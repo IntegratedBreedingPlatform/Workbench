@@ -31,8 +31,10 @@
 		</button>
 		<mat-menu #memberMenu="matMenu" yPosition="below" [overlapTrigger]="false">
 			<div class="container">
-				<div class="row">
-					<h6 class=col>{{user?.firstName}} {{user?.lastName}}</h6>
+				<div class="form-group" style="margin-bottom: 0px;">
+					<button mat-icon-button id="menu" (click)="openMyProfile()">
+						<i class="fa fa-pencil-square-o"></i><span style="margin-left: 5px">{{user?.firstName}} {{user?.lastName}}</span>
+					</button>
 				</div>
 				<div class="row">
 					<h6 class=col>{{user?.email}}</h6>
@@ -56,7 +58,7 @@
 					{{node.name}}
 				</mat-tree-node>
 				<!-- This is the tree node template for leaf nodes -->
-				<mat-tree-node class="leaf" [class.selected]="node.link == toolLinkSelected"
+				<mat-tree-node class="leaf" [class.selected]="toolLinkSelected.startsWith(node.link)"
 							   *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="34"
 							   (click)="openTool(node.link)">
 					{{node.name}}

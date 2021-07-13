@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
-import { AttributesService } from '../attributes/service/attributes.service';
+import { GermplasmService } from '../germplasm/service/germplasm.service';
 
 @Component({
     selector: 'jhi-column-filter-attributes',
@@ -15,16 +15,26 @@ import { AttributesService } from '../attributes/service/attributes.service';
 				</div>
 				<ul class="filter-select">
 					<li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result)">
-						<label class="label-info">Code:</label> {{result.code}} - <label class="label-info">Name:</label> {{result.name}}</li>
+						<div>
+							<img class="variable-select-icon" alt="Property" src="/ibpworkbench/controller/static/images/property.svg">
+							<span> {{result.property.name}} </span>
+						</div>
+						<div>
+							<img class="variable-select-icon" alt="Variable" src="/ibpworkbench/controller/static/images/variable.png">
+							<span *ngIf="result.alias"  class="label-info"> {{result.alias}} ({{result.name}})</span>
+							<span *ngIf="!result.alias" class="label-info"> {{result.name}}</span>
+						</div>
+					</li>
 				</ul>
 			</section>
 			<div *ngIf="this.filter.attributes.length === 0"><span>Search for attributes that you want to filter</span></div>
 			<br/>
 			<div *ngFor="let attribute of filter.attributes">
 				<div class="form-group">
-					<label for="{{attribute.code}}">{{attribute.name}}</label>
+					<label *ngIf="attribute.alias" for="{{attribute.name}}">{{attribute.name}} ({{attribute.alias}})</label>
+					<label *ngIf="!attribute.alias" for="{{attribute.name}}">{{attribute.name}}</label>
 					<div class="input-group">
-						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.code}}">
+						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.name}}">
 						<div class="input-group-append">
 							<button class="btn btn-default float-right fa fa-minus" (click)="deleteAttribute(attribute)"></button>
 						</div>
@@ -51,14 +61,14 @@ export class ColumnFilterAttributesComponent implements OnInit {
     @Output() onApply = new EventEmitter();
     @Output() onReset = new EventEmitter();
 
-    constructor(private attributesService: AttributesService) {
+    constructor(private germplasmService: GermplasmService) {
     }
 
     ngOnInit(): void {
         this.queryField.valueChanges
             .debounceTime(500)
             .distinctUntilChanged()
-            .switchMap((query) => this.attributesService.searchAttributes(query))
+            .switchMap((query) => this.germplasmService.searchAttributes(query))
             .subscribe((result) => {
                 if (result.status === 400) {
                     return;
@@ -72,14 +82,14 @@ export class ColumnFilterAttributesComponent implements OnInit {
         // Reset query field value
         this.queryField.setValue('');
         // Do not add attribute if it's already in the list
-        if (!this.filter.attributes.some((e) => e.code === attribute.code)) {
+        if (!this.filter.attributes.some((e) => e.name === attribute.name)) {
             this.filter.attributes.push({ ...attribute, value: '' });
         }
         this.onAdd.emit(attribute);
     }
 
     deleteAttribute(attribute) {
-        this.filter.attributes = this.filter.attributes.filter((e) => e.code !== attribute.code);
+        this.filter.attributes = this.filter.attributes.filter((e) => e.name !== attribute.name);
         this.onDelete.emit(attribute);
     }
 

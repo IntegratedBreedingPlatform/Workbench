@@ -9,7 +9,7 @@ var argv = require('yargs').argv,
 	prefix = require('gulp-autoprefixer'),
 	pixrem = require('gulp-pixrem'),
 	concat = require('gulp-concat'),
-	sass = require('gulp-sass');
+	sass = require('gulp-dart-sass');
 
 gulp.task('sass', ['libSass', 'clientSass', 'ontologySass']);
 

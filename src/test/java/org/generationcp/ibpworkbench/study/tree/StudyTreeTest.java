@@ -253,13 +253,13 @@ public class StudyTreeTest {
 		populateTestTree();
 		this.studyTree.setProgramStateManager(this.programStateManager);
 		final List<String> idList = Arrays.asList(FOLDER1.getId().toString(), FOLDER2.getId().toString());
-		Mockito.doReturn(idList).when(this.programStateManager).getUserProgramTreeStateByUserIdProgramUuidAndType(Matchers.anyInt(),
+		Mockito.doReturn(idList).when(this.programStateManager).getUserProgramTreeState(Matchers.anyInt(),
 				Matchers.anyString(), Matchers.anyString());
 		final int userId = 1001;
 		Mockito.doReturn(userId).when(this.contextUtil).getCurrentWorkbenchUserId();
 
 		this.studyTree.expandSavedTreeState();
-		Mockito.verify(this.programStateManager).getUserProgramTreeStateByUserIdProgramUuidAndType(userId, PROGRAM_UUID,
+		Mockito.verify(this.programStateManager).getUserProgramTreeState(userId, PROGRAM_UUID,
 				ListTreeState.STUDY_LIST.name());
 		Assert.assertTrue(this.studyTree.isExpanded(StudyTree.STUDY_ROOT_NODE));
 		Assert.assertTrue(this.studyTree.isExpanded(FOLDER1.getId()));

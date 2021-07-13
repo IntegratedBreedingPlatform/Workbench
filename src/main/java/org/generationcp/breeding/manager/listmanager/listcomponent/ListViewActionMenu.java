@@ -22,15 +22,12 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	private ContextMenuItem menuExportList;
 	private ContextMenuItem menuCopyToList;
 	private ContextMenuItem menuAddEntry;
-	private ContextMenuItem menuAssignCodes;
 	private ContextMenuItem menuSaveChanges;
 	private ContextMenuItem menuDeleteEntries;
-	private ContextMenuItem menuGroupLines;
 	private ContextMenuItem menuEditList;
 	private ContextMenuItem menuDeleteList;
 	private ContextMenuItem menuSelectAll;
 	private ContextMenuItem listEditingOptions;
-	private ContextMenuItem codingAndGroupingOptions;
 	private ContextMenuItem removeSelectedGermplasm;
 
 	@Autowired
@@ -51,11 +48,13 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.menuDeleteList = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.DELETE_LIST));
 		this.menuCopyToList = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.COPY_TO_LIST));
 		this.menuExportList = this.addItem(this.messageSource.getMessage(Message.EXPORT_LIST));
-		this.codingAndGroupingOptions = this.addItem(this.messageSource.getMessage(Message.CODING_AND_GROUPING_OPTIONS));
-		this.menuGroupLines = this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.GROUP));
-		this.menuAssignCodes = this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.ASSIGN_CODES));
 		try {
-			this.layoutAdminLink();
+			this.addCreateInventoryLotsLink();
+		} catch (final AccessDeniedException e) {
+			// NOOP
+		}
+		try {
+			this.addDeleteGermplasmLink();
 		} catch (final AccessDeniedException e) {
 			// do nothing if the user is not authorized to access Admin link
 		}
@@ -79,20 +78,12 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		return this.menuAddEntry;
 	}
 
-	public ContextMenuItem getMenuAssignCodes() {
-		return this.menuAssignCodes;
-	}
-
 	public ContextMenuItem getMenuSaveChanges() {
 		return this.menuSaveChanges;
 	}
 
 	public ContextMenuItem getMenuDeleteEntries() {
 		return this.menuDeleteEntries;
-	}
-
-	public ContextMenuItem getMenuGroupLines() {
-		return this.menuGroupLines;
 	}
 
 	public ContextMenuItem getMenuEditList() {
@@ -119,11 +110,8 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.menuDeleteEntries.setVisible(true);
 		// show only Delete List when user is owner
 		this.menuDeleteList.setVisible(isLocalUserListOwner);
-		this.menuGroupLines.setVisible(true);
 		this.menuSaveChanges.setVisible(true);
 		this.menuAddEntry.setVisible(true);
-		this.menuAssignCodes.setVisible(true);
-		this.codingAndGroupingOptions.setVisible(true);
 		//need to show when List is unlocked
 		try {
 			this.setRemoveSelectedGermplasmWhenListIsLocked(true);
@@ -132,7 +120,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		}
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_DELETE_GERMPLASM')")
 	private void setRemoveSelectedGermplasmWhenListIsLocked(final boolean visible) {
 		if (this.removeSelectedGermplasm != null) {
 			this.removeSelectedGermplasm.setVisible(visible);
@@ -143,11 +131,8 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.menuEditList.setVisible(false);
 		this.menuDeleteList.setVisible(false);
 		this.menuDeleteEntries.setVisible(false);
-		this.menuGroupLines.setVisible(false);
 		this.menuSaveChanges.setVisible(false);
 		this.menuAddEntry.setVisible(false);
-		this.menuAssignCodes.setVisible(false);
-		this.codingAndGroupingOptions.setVisible(false);
 		try {
 			this.setRemoveSelectedGermplasmWhenListIsLocked(false);
 		} catch (final AccessDeniedException e) {
@@ -180,17 +165,18 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.messageSource = messageSource;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')")
-	protected void layoutAdminLink() {
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_DELETE_GERMPLASM')")
+	protected void addDeleteGermplasmLink() {
 		this.removeSelectedGermplasm = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.REMOVE_SELECTED_GERMPLASM));
-		this.codingAndGroupingOptions.addItem(this.messageSource.getMessage(Message.UNGROUP));
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')")
+	private void addCreateInventoryLotsLink() {
+		this.createInventoryLots = this.addItem(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM));
 	}
 
 	protected void setListEditingOptions(final ContextMenuItem listEditingOptions) {
 		this.listEditingOptions = listEditingOptions;
 	}
 
-	protected void setCodingAndGroupingOptions(final ContextMenuItem codingAndGroupingOptions) {
-	  this.codingAndGroupingOptions = codingAndGroupingOptions;
-	}
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class ParamContext {
@@ -10,7 +10,8 @@ export class ParamContext {
     selectedProjectId: number;
     loggedInUserId: number;
 
-    constructor(private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute,
+                private router: Router) {
     }
 
     readParams(): any {
@@ -20,5 +21,21 @@ export class ParamContext {
         this.authToken = queryParams.authToken;
         this.selectedProjectId = queryParams.selectedProjectId;
         this.loggedInUserId = queryParams.loggedInUserId;
+    }
+
+    /**
+     * Workaround until https://github.com/angular/angular/issues/12664
+     */
+    resetQueryParams() {
+        // FIXME this.router.navigate(['./'], { relativeTo: this.activatedRoute } not working
+        return this.router.navigate(['/germplasm-manager/germplasm-search/'], {
+            queryParams: {
+                programUUID: this.programUUID,
+                cropName: this.cropName,
+                authToken: this.authToken,
+                selectedProjectId: this.selectedProjectId,
+                loggedInUserId: this.loggedInUserId
+            }
+        });
     }
 }

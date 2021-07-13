@@ -6,6 +6,7 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 import { ParamContext } from '../../shared/service/param.context';
 import { INVENTORY_DETAILS_URL } from '../../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
+import { LoginService } from '../../shared/login/login.service';
 
 @Component({
     selector: 'jhi-inventory-pane',
@@ -19,7 +20,8 @@ export class InventoryPaneComponent implements OnInit {
                 public translateService: TranslateService,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private paramContext: ParamContext,
-                private sanitizer: DomSanitizer
+                private sanitizer: DomSanitizer,
+                private loginService: LoginService
     ) {
 
         const queryParams = `?cropName=${paramContext.cropName}&programUUID=${paramContext.programUUID}&gid=${germplasmDetailsContext.gid}`;
@@ -28,6 +30,9 @@ export class InventoryPaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        // Explicitly validate token when this page is loaded. If token is invalid, browser will redirect to login page.
+        this.loginService.validateToken().toPromise().then(() => {
+        });
     }
 
 }
