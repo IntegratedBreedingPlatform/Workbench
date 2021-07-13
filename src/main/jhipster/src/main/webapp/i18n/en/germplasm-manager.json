@@ -26,6 +26,9 @@
         "code-all-germplasm-not-supported": "Creation of germplasm code in all pages is not supported. Please select individual germplasm to code.",
         "too-many-selected-germplasm": "You can only code 500 germplasm records at a time."
     },
+    "germplasm-filter-by-selected-records": {
+        "filter-all-germplasm-not-supported": "Filtering of germplasm in all pages is not supported. Please select individual germplasm to filter."
+    },
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
@@ -65,7 +68,8 @@
             "grouping" : "Grouping Options",
             "group" : "Group",
             "ungroup": "Ungroup",
-            "code-germplasm": "Code germplasm"
+            "code-germplasm": "Code germplasm",
+            "filter-by-selected-records": "Filter by selected records"
         },
         "included-gids": "(+ included germplasm)"
     },
