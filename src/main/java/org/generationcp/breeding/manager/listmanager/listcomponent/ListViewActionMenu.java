@@ -29,6 +29,7 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	private ContextMenuItem menuSelectAll;
 	private ContextMenuItem listEditingOptions;
 	private ContextMenuItem removeSelectedGermplasm;
+	private ContextMenuItem createInventoryLots;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
