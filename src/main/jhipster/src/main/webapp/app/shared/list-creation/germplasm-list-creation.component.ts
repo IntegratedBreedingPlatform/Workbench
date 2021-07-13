@@ -23,7 +23,7 @@ import { Principal } from '..';
 import { ListModel } from '../list-builder/model/list.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ListService } from './service/list.service';
-import { GermplasmListService } from './service/germplasm-list.service';
+import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
 
 @Component({
     selector: 'jhi-germplasm-list-creation',

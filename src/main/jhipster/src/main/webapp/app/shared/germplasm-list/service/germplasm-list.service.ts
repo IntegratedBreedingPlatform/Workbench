@@ -9,7 +9,7 @@ import { ListType } from '../../list-builder/model/list-type.model';
 import { map } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
 import { ListModel } from '../../list-builder/model/list.model';
-import { ListService } from './list.service';
+import { ListService } from '../../list-creation/service/list.service';
 
 @Injectable()
 export class GermplasmListService implements ListService {
