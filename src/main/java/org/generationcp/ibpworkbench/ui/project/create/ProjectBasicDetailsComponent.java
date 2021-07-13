@@ -29,6 +29,7 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.commons.vaadin.validator.RegexValidator;
 import org.generationcp.commons.vaadin.validator.ValidationUtil;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.middleware.dao.UserRoleDao;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.CropType;
@@ -292,7 +293,16 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			}
 
 			try {
-				this.cropTypeCombo.validate();
+				/**
+				 * hotfix IBP-4800: Allow project to be updated even when combo is empty.
+				 * No risk because the combo is disabled anyway on update.
+				 * The combo is empty because the user might not have permissions
+				 * (See {@link UserRoleDao#GET_CROPS_WITH_ADD_PROGRAM_PERMISSION_FOR_A_CROP_ROLE_SQL})
+				 * FIXME: on update there should be no combo, just the crop name.
+				 */
+				if (!this.isUpdate) {
+					this.cropTypeCombo.validate();
+				}
 			} catch (final InvalidValueException e) {
 				this.errorDescription.append(ValidationUtil.getMessageFor(e));
 				success = false;
@@ -307,7 +317,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			}
 		}
 
-		if (cropType == null) {
+		// hotfix IBP-4800: See comment above
+		if (cropType == null && !this.isUpdate) {
 			this.errorDescription.append(this.messageSource.getMessage("CROP_TYPE_REQUIRED_ERROR")).append(" ");
 			success = false;
 		}
