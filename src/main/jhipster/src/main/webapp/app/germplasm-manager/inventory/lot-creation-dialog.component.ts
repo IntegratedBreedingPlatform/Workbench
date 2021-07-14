@@ -16,6 +16,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
+import { SearchType, SearchTypeComposite } from '../../shared/model/Search-type-composite';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -32,6 +33,7 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
+    searchType;
     studyId;
 
     units: Promise<InventoryUnit[]>;
@@ -64,9 +66,10 @@ export class LotCreationDialogComponent implements OnInit {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
-        this.openedFromWorkbench = (queryParams.openedFromWorkbench === 'true') ? true : false;
+        this.searchType = queryParams.searchType;
+        this.openedFromWorkbench = (this.searchType === SearchType.GERMPLASM_SEARCH) ? true : false;
 
-        if (queryParams.studyId) {
+        if (this.searchType === SearchType.MANAGE_STUDY) {
             // studyId has value if this Lot Creation page is called from Study Manager.
             // In this case, deposit is required.
             this.studyId = queryParams.studyId;
@@ -96,7 +99,7 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     clear() {
-        // TODO
+        this.activeModal.dismiss('cancel');
     }
 
     save() {
@@ -109,8 +112,7 @@ export class LotCreationDialogComponent implements OnInit {
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
-            }, this.lot),
-            studyId: this.studyId
+            }, this.lot)
         };
         this.lotService.createLots(lotGeneratorBatchRequest)
             .subscribe(
@@ -119,13 +121,15 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private getSearchComposite(): SearchComposite<any, number> {
-        if (this.germplasmManagerContext.searchComposite) {
+        if (this.searchType === SearchType.GERMPLASM_SEARCH) {
             return this.germplasmManagerContext.searchComposite;
-        }
-        return {
+        } else if (this.searchType === SearchType.MANAGE_STUDY) {
+            const searchTypeComposite = new SearchTypeComposite(this.searchRequestId, SearchType.MANAGE_STUDY);
+            return {
                 itemIds: null,
-                searchRequest: this.searchRequestId
+                searchRequest: searchTypeComposite
             };
+        }
     }
 
     private createDeposit(lotUUIDs: string[]) {
@@ -169,10 +173,18 @@ export class LotCreationDialogComponent implements OnInit {
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
-        if (msg) {
-            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
+        if (this.openedFromWorkbench) {
+            if (msg) {
+                this.alertService.error('error.custom', { param: msg });
+            } else {
+                this.alertService.error('error.general');
+            }
         } else {
-            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
+            if (msg) {
+                this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
+            } else {
+                this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
+            }
         }
         this.isLoading = false;
     }
