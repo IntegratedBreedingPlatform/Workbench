@@ -1,11 +1,11 @@
-export class SearchTypeComposite {
+export class SearchOriginComposite {
     constructor(
         public searchRequestId?: number,
-        public searchType?: string
+        public searchOrigin?: SearchOrigin
     ) {}
 }
 
-export enum SearchType {
+export enum SearchOrigin {
     MANAGE_STUDY = 'ManageStudy',
     GERMPLASM_SEARCH = 'GermplasmSearch'
 }

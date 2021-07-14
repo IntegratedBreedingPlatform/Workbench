@@ -37,7 +37,7 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
-import { SearchTypeComposite, SearchType } from '../shared/model/Search-type-composite';
+import { SearchOriginComposite, SearchOrigin } from '../shared/model/Search-origin-composite';
 
 declare var $: any;
 
@@ -692,9 +692,9 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        const searchComposite = new SearchComposite<SearchTypeComposite, number>();
+        const searchComposite = new SearchComposite<SearchOriginComposite, number>();
         if (this.isSelectAll) {
-            searchComposite.searchRequest = new SearchTypeComposite(Number(this.resultSearch.searchResultDbId), SearchType.GERMPLASM_SEARCH);
+            searchComposite.searchRequest = new SearchOriginComposite(Number(this.resultSearch.searchResultDbId), SearchOrigin.GERMPLASM_SEARCH);
         } else {
             searchComposite.itemIds = this.getSelectedItemIds();
         }
@@ -704,7 +704,7 @@ export class GermplasmSearchComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge',
             queryParams: {
-                searchType: SearchType.GERMPLASM_SEARCH
+                searchType: SearchOrigin.GERMPLASM_SEARCH
             }
         });
     }

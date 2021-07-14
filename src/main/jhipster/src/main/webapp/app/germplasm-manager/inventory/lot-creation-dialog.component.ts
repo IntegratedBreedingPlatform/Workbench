@@ -16,7 +16,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
-import { SearchType, SearchTypeComposite } from '../../shared/model/Search-type-composite';
+import { SearchOrigin, SearchOriginComposite } from '../../shared/model/Search-origin-composite';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -66,9 +66,9 @@ export class LotCreationDialogComponent implements OnInit {
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
         this.searchType = queryParams.searchType;
-        this.openedFromWorkbench = (this.searchType === SearchType.GERMPLASM_SEARCH) ? true : false;
+        this.openedFromWorkbench = (this.searchType === SearchOrigin.GERMPLASM_SEARCH) ? true : false;
 
-        if (this.searchType === SearchType.MANAGE_STUDY) {
+        if (this.searchType === SearchOrigin.MANAGE_STUDY) {
             // studyId has value if this Lot Creation page is called from Study Manager.
             // In this case, deposit is required.
             this.studyId = queryParams.studyId;
@@ -119,10 +119,10 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private getSearchComposite(): SearchComposite<any, number> {
-        if (this.searchType === SearchType.GERMPLASM_SEARCH) {
+        if (this.searchType === SearchOrigin.GERMPLASM_SEARCH) {
             return this.germplasmManagerContext.searchComposite;
-        } else if (this.searchType === SearchType.MANAGE_STUDY) {
-            const searchTypeComposite = new SearchTypeComposite(this.searchRequestId, SearchType.MANAGE_STUDY);
+        } else if (this.searchType === SearchOrigin.MANAGE_STUDY) {
+            const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, SearchOrigin.MANAGE_STUDY);
             return {
                 itemIds: null,
                 searchRequest: searchTypeComposite
