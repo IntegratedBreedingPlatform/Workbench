@@ -432,6 +432,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="germplasmNameTypeService" factory-bean="managerFactory"
+		  factory-method="getGermplasmNameTypeService" scope="request">
+		<aop:scoped-proxy />
+    </bean>
+
 	<bean id="germplasmAttributeService" factory-bean="managerFactory"
 		  factory-method="getGermplasmAttributeService" scope="request">
 		<aop:scoped-proxy/>
