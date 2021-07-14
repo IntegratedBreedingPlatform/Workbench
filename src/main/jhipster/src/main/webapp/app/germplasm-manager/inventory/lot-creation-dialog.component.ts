@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../shared/inventory/model/lot.model';
 import { Transaction } from '../../shared/inventory/model/transaction.model';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
@@ -55,7 +55,6 @@ export class LotCreationDialogComponent implements OnInit {
                 private jhiLanguageService: JhiLanguageService,
                 private transactionService: TransactionService,
                 private inventoryService: InventoryService,
-                private jhiAlertService: JhiAlertService,
                 private lotService: LotService,
                 private eventManager: JhiEventManager,
                 private paramContext: ParamContext,
@@ -105,7 +104,6 @@ export class LotCreationDialogComponent implements OnInit {
     save() {
         this.isLoading = true;
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
-        this.jhiAlertService.clear();
 
         const lotGeneratorBatchRequest = {
             searchComposite: this.getSearchComposite(),
@@ -161,36 +159,22 @@ export class LotCreationDialogComponent implements OnInit {
     private onSaveSuccess(lotUUIDs: string[]) {
         this.isSuccess = true;
         this.isLoading = false;
-
-        if (this.openedFromWorkbench) {
-            this.alertService.success('lot-creation.success', { param: lotUUIDs.length }, null);
-            this.eventManager.broadcast({ name: 'columnFiltersChanged', content: '' });
-            this.activeModal.close();
-        } else {
-            this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
-        }
+        this.alertService.success('lot-creation.success', { param: lotUUIDs.length }, null);
+        this.eventManager.broadcast({ name: 'columnFiltersChanged', content: '' });
+        this.activeModal.close();
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
-        if (this.openedFromWorkbench) {
-            if (msg) {
-                this.alertService.error('error.custom', { param: msg });
-            } else {
-                this.alertService.error('error.general');
-            }
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            if (msg) {
-                this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
-            } else {
-                this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
-            }
+            this.alertService.error('error.general');
         }
         this.isLoading = false;
     }
 
     close() {
-        this.jhiAlertService.clear();
         this.activeModal.dismiss();
     }
 
