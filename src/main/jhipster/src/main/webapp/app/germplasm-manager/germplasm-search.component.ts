@@ -20,7 +20,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS,
+import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS,
+    GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS,
     UNGROUP_GERMPLASM_PERMISSIONS, CODE_GERMPLASM_PERMISSIONS
 } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
@@ -36,6 +37,7 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
+import { SearchTypeComposite, SearchType } from '../shared/model/Search-type-composite';
 
 declare var $: any;
 
@@ -690,13 +692,19 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        this.addSearchCompositeToContext();
+        const searchComposite = new SearchComposite<SearchTypeComposite, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = new SearchTypeComposite(Number(this.resultSearch.searchResultDbId), SearchType.GERMPLASM_SEARCH);
+        } else {
+            searchComposite.itemIds = this.getSelectedItemIds();
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
 
         this.router.navigate(['/', { outlets: { popup: 'lot-creation' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge',
             queryParams: {
-                openedFromWorkbench: true
+                searchType: SearchType.GERMPLASM_SEARCH
             }
         });
     }
