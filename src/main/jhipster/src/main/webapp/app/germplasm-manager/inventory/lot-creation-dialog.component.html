@@ -113,10 +113,9 @@
 </div>
 <div class="modal-footer">
 	<jhi-alert style="margin-right: auto;"></jhi-alert>
-
-	<!--<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+	<button *ngIf="openedFromWorkbench" type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 		<span jhiTranslate="entity.action.cancel">Cancel</span>
-	</button>-->
+	</button>
 	<button (click)="save()" [disabled]="f.form.invalid || isSuccess || isLoading" class="btn btn-primary">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
