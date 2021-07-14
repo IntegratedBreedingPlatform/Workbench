@@ -1202,50 +1202,6 @@ public class ListComponent extends VerticalLayout implements InitializingBean, I
 		}
 	}
 
-	public void createInventoryLots() {
-		final Set<Integer> gidsToProcess = this.extractGidListFromListDataTable(this.listDataTable);
-
-		if (!gidsToProcess.isEmpty()) {
-			final GidSearchDto searchRequestDto = new GidSearchDto();
-			searchRequestDto.setGids(new ArrayList<>(gidsToProcess));
-			final Integer searchRequestId = this.searchRequestService.saveSearchRequest(searchRequestDto, GidSearchDto.class);
-
-			final String params = Util.getAdditionalParams(this.workbenchDataManager);
-			final Project projectInContext = this.contextUtil.getProjectInContext();
-			final ExternalResource createInventoryLotsUrl = new ExternalResource(WorkbenchAppPathResolver.getFullWebAddress(
-				"/ibpworkbench/controller/jhipster#/lot-creation-dialog") + "?restartApplication" + params
-				+ addQueryParameter("cropName", projectInContext.getCropType().getCropName()
-				+ addQueryParameter("programUUID", projectInContext.getUniqueID()
-				+ addQueryParameter("searchRequestId", searchRequestId.toString()))));
-
-			final Embedded createInventoryLotsDialog = new Embedded(null, createInventoryLotsUrl);
-			createInventoryLotsDialog.setDebugId("createInventoryLotsDialog");
-
-			createInventoryLotsDialog.setType(Embedded.TYPE_BROWSER);
-			createInventoryLotsDialog.setSizeFull();
-
-			final AbsoluteLayout layout = new AbsoluteLayout();
-			layout.setMargin(false);
-			layout.addStyleName("no-caption");
-			layout.addComponent(createInventoryLotsDialog);
-
-			final Window modal = new BaseSubWindow(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MODAL_TITLE));
-			modal.setContent(layout);
-			modal.setWidth("748px");
-			modal.setHeight("768px");
-			modal.center();
-			modal.setResizable(false);
-			modal.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
-			modal.setModal(true);
-
-			this.getWindow().addWindow(modal);
-
-		} else {
-			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR),
-				this.messageSource.getMessage(Message.ERROR_LIST_ENTRIES_MUST_BE_SELECTED));
-		}
-
-	}
 
 	/**
 	 * Extracts the GIDs from the ListDataTable, the order of GIDs would follow the order of entries in the table.
