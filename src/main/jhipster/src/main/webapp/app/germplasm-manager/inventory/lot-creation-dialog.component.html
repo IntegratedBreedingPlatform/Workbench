@@ -112,7 +112,7 @@
 	</form>
 </div>
 <div class="modal-footer">
-	<jhi-alert style="margin-right: auto;"></jhi-alert>
+	<jhi-alert *ngIf="!openedFromWorkbench" style="margin-right: auto;"></jhi-alert>
 	<button *ngIf="openedFromWorkbench" type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 		<span jhiTranslate="entity.action.cancel">Cancel</span>
 	</button>
