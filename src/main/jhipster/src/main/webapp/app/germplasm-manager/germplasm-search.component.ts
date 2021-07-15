@@ -704,7 +704,7 @@ export class GermplasmSearchComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge',
             queryParams: {
-                searchType: SearchOrigin.GERMPLASM_SEARCH
+                searchOrigin: SearchOrigin.GERMPLASM_SEARCH
             }
         });
     }
