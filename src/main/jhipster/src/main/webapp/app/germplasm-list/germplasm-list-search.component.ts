@@ -196,14 +196,10 @@ export class GermplasmListSearchComponent implements OnInit {
     }
 
     private getListTypesOptions(): Promise<Select2OptionData[]> {
-        // return this.germplasmListService.getListTypes().toPromise().then((listTypes: ListType[]) => {
-        //     return listTypes.filter((listType: ListType) => (listType.code !== 'FOLDER'))
-        //         .map((listType: ListType) => new ColumnFilterDropdownOption(listType.code, listType.name));
-        // });
         return this.germplasmListService.getListTypes().toPromise().then((listTypes: ListType[]) => {
             return listTypes.filter((listType: ListType) => (listType.code !== 'FOLDER'))
                 .map((listType: ListType) => {
-                    return { id: listType.code, text: listType.name }
+                    return { id: listType.code, text: listType.name + ' (' + listType.code + ')' }
                 });
         });
     }
