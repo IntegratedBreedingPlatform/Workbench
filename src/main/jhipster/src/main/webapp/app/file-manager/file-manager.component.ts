@@ -8,7 +8,7 @@ import { ParamContext } from '../shared/service/param.context';
     templateUrl: './file-manager.component.html'
 })
 export class FileManagerComponent {
-    fileKey: string;
+    path: string;
     fileName: string;
 
     constructor(
@@ -19,7 +19,7 @@ export class FileManagerComponent {
         this.context.readParams();
         const routeParams = this.route.snapshot.paramMap;
         const queryParamMap = this.route.snapshot.queryParamMap;
-        this.fileKey = routeParams.get('fileKey');
+        this.path = routeParams.get('filePath');
         this.fileName = queryParamMap.get('fileName');
     }
 
@@ -31,6 +31,6 @@ export class FileManagerComponent {
     }
 
     getFileKeyEncoded() {
-        return encodeURIComponent(this.fileKey);
+        return encodeURIComponent(this.path);
     }
 }
