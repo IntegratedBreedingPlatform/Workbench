@@ -33,7 +33,7 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
-    searchType;
+    searchOrigin;
     studyId;
 
     units: Promise<InventoryUnit[]>;
@@ -65,10 +65,10 @@ export class LotCreationDialogComponent implements OnInit {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
-        this.searchType = queryParams.searchType;
-        this.openedFromWorkbench = (this.searchType === SearchOrigin.GERMPLASM_SEARCH) ? true : false;
+        this.searchOrigin = queryParams.searchOrigin;
+        this.openedFromWorkbench = (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) ? true : false;
 
-        if (this.searchType === SearchOrigin.MANAGE_STUDY) {
+        if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
             // studyId has value if this Lot Creation page is called from Study Manager.
             // In this case, deposit is required.
             this.studyId = queryParams.studyId;
@@ -119,9 +119,9 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private getSearchComposite(): SearchComposite<any, number> {
-        if (this.searchType === SearchOrigin.GERMPLASM_SEARCH) {
+        if (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) {
             return this.germplasmManagerContext.searchComposite;
-        } else if (this.searchType === SearchOrigin.MANAGE_STUDY) {
+        } else if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
             const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, SearchOrigin.MANAGE_STUDY);
             return {
                 itemIds: null,
