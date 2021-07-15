@@ -1,0 +1,21 @@
+{
+    "germplasm-list": {
+        "title": "Germplasm Lists",
+        "nav": {
+            "search": "Search"
+        },
+        "search": {
+            "columns": {
+                "list-name": "LIST NAME",
+                "parent-folder": "PARENT FOLDER",
+                "description": "DESCRIPTION",
+                "list-owner": "LIST OWNER",
+                "list-type": "LIST TYPE",
+                "number-of-entries": "# OF ENTRIES",
+                "status": "STATUS",
+                "notes": "NOTES",
+                "list-date": "LIST DATE"
+            }
+        }
+    }
+}

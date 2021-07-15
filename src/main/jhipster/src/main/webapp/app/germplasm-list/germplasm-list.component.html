@@ -1,0 +1,23 @@
+<section>
+    <header>
+        <h1><span jhiTranslate="germplasm-list.title">Germplasm Lists</span>&nbsp;
+            <a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a>
+        </h1>
+    </header>
+	<div class="row">
+        <section class="col">
+            <nav>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['germplasm-lists-search']" [routerLinkActive]="['active']"
+                           jhiTranslate="germplasm-list.nav.search">Search</a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="tab-content p-3">
+                <router-outlet></router-outlet>
+                <jhi-alert></jhi-alert>
+            </div>
+        </section>
+    </div>
+</section>

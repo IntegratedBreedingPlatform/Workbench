@@ -73,6 +73,7 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
 import { VariableService } from './ontology/service/variable.service';
 import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
 import { VariableValidationService } from './ontology/service/variable-validation.service';
+import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dropdown-component';
 
 @NgModule({
     imports: [
@@ -106,6 +107,7 @@ import { VariableValidationService } from './ontology/service/variable-validatio
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
+        ColumnFilterDropdownComponent,
         KeyValuePipe,
         SecureImagePipe,
         BreedingMethodSelect2DataPipe,
@@ -202,6 +204,7 @@ import { VariableValidationService } from './ontology/service/variable-validatio
         ColumnFilterPedigreeOptionsComponent,
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
+        ColumnFilterDropdownComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         ListBuilderComponent,

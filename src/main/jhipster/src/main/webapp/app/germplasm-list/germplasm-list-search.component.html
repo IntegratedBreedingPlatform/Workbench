@@ -1,0 +1,82 @@
+<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="germplasm-list-search-tab">
+	<div class="d-flex">
+		<jhi-column-filter [request]="request" [resultSearch]="resultSearch" [filters]="filters"
+						   class="flex-sm-grow-1"></jhi-column-filter>
+	</div>
+	<br/>
+	<div class="row">
+		<div class="col">
+			<div class="form-group form-inline">
+				<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+				<div style="margin-left: 10px;">
+					<a href (click)="onClearSort($event)" jhiTranslate="global.clear-sort"></a>
+				</div>
+				<span *ngIf="isLoading" style="margin-left: 10px;" class="throbber throbber-2x"></span>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<div class="table-responsive" *ngIf="germplasmLists">
+		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmLists.length else nodata">
+			<thead>
+			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+				<th [jhiSortBy]="ColumnLabels.LIST_NAME"><span jhiTranslate="germplasm-list.search.columns.list-name"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.PARENT_FOLDER"><span jhiTranslate="germplasm-list.search.columns.parent-folder"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.DESCRIPTION"><span jhiTranslate="germplasm-list.search.columns.description"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.LIST_OWNER"><span jhiTranslate="germplasm-list.search.columns.list-owner"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.LIST_TYPE"><span jhiTranslate="germplasm-list.search.columns.list-type"></span> <span class="fa fa-sort"></span></th>
+				<th><span jhiTranslate="germplasm-list.search.columns.number-of-entries"></span></th>
+				<th [jhiSortBy]="ColumnLabels.STATUS"><span jhiTranslate="germplasm-list.search.columns.status"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.NOTES"><span jhiTranslate="germplasm-list.search.columns.notes"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.LIST_DATE"><span jhiTranslate="germplasm-list.search.columns.list-date"></span> <span class="fa fa-sort"></span></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let list of germplasmLists; trackBy: trackId; index as index">
+				<td>{{list.listName}}</td>
+				<td>{{list.parentFolderName}}</td>
+				<td>{{list.description}}</td>
+				<td>{{list.listOwner}}</td>
+				<td>{{list.listType}}</td>
+				<td>{{list.numberOfEntries}}</td>
+				<td>{{list.status}}</td>
+				<td>{{list.notes}}</td>
+				<td>{{list.listDate}}</td>
+			</tr>
+			</tbody>
+		</table>
+		<ng-template #nodata>
+			<table class="table table-striped table-bordered table-curved">
+				<thead>
+				<tr>
+					<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td jhiTranslate="no.data"></td>
+				</tr>
+				</tbody>
+			</table>
+		</ng-template>
+	</div>
+	<div *ngIf="germplasmLists && germplasmLists.length">
+		<div class="row">
+			<div class="col">
+				<div class="pagination-container">
+					<div class="pagination-box pagination-box-left">
+						<div>
+							<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+						</div>
+					</div>
+					<div class="pagination-box">
+						<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
+										[maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+					</div>
+					<div class="pagination-box pagination-box-right">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

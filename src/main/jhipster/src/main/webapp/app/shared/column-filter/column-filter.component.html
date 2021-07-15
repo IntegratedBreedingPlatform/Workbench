@@ -92,6 +92,11 @@
                                                       (onApply)="updateFilter(filter)"
                                                       (onReset)="reset(filter)" (onAdd)="addNameTypeColumn($event)" (onDelete)="removeNameTypeColumn($event)">
                         </jhi-column-filter-name-types>
+                        <jhi-column-filter-dropdown *ngIf="filter.type === FILTER_TYPES.DROPDOWN"
+                                                    [filter]="filter"
+                                                    (onApply)="updateFilter(filter)"
+                                                    (onReset)="reset(filter)">
+                        </jhi-column-filter-dropdown>
                         <!-- TODO dynamic custom popover filter -->
                     </ng-template>
                     <button *ngIf="filter.type !== FILTER_TYPES.MODAL"
