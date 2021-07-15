@@ -17,7 +17,9 @@
 							<label class="form-check-label" for="includeBreedingMethod" jhiTranslate="pedigree.tree.include.breeding.method">Include Breeding Method </label>
 						</div>
 					</div>
-					<div *ngIf="isLoading" class="mb-2"><span class="throbber"></span></div>
+					<button class="btn btn-info ml-2 mb-2" (click)="downloadSvg()">
+						<i class="fa fa-download"></i> Download</button>
+					<div *ngIf="isLoading" class="ml-2 mb-2"><span class="throbber"></span></div>
 				</form>
 			</div>
 		</div>
