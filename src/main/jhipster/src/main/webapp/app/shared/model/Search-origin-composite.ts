@@ -6,6 +6,6 @@ export class SearchOriginComposite {
 }
 
 export enum SearchOrigin {
-    MANAGE_STUDY = 'ManageStudy',
-    GERMPLASM_SEARCH = 'GermplasmSearch'
+    MANAGE_STUDY = 'MANAGE_STUDY',
+    GERMPLASM_SEARCH = 'GERMPLASM_SEARCH'
 }
