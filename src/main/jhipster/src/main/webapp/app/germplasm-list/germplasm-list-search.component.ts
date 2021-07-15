@@ -233,7 +233,7 @@ export enum ColumnLabels {
     'DESCRIPTION' = 'DESCRIPTION',
     'LIST_OWNER' = 'LIST_OWNER',
     'LIST_TYPE' = 'LIST_TYPE',
-    'NUMBER_OF_ENTRIES' = '# OF ENTRIES',
+    'NUMBER_OF_ENTRIES' = 'NUMBER_OF_ENTRIES',
     'STATUS' = 'STATUS',
     'NOTES' = 'NOTES',
     'LIST_DATE' = 'LIST_DATE'
