@@ -196,4 +196,19 @@ export class PedigreeGraphComponent implements OnInit {
         return germplasmTreeNode.gid;
     }
 
+    downloadSvg() {
+        // Reset zoom so that the downloaded file will show the whole graph
+        this.graphviz.resetZoom();
+        const svgData = document.getElementsByTagName('svg')[0].outerHTML;
+        const preface = '<?xml version="1.0" standalone="no"?>\r\n';
+        const svgBlob = new Blob([preface, svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = svgUrl;
+        downloadLink.download = `pedigree-graph-${this.gid}.svg`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+
 }
