@@ -115,12 +115,12 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     static transformDropdownFilter(filter, request) {
-        request[filter.key] = filter.selectedOptions.map((option: Select2OptionData) => option.id);
+        request[filter.key] = filter.selectedValues.map((option: Select2OptionData) => option.id);
     }
 
     static resetDropdownFilter(filter, request) {
         request[filter.key] = undefined;
-        filter.selectedOptions = [];
+        filter.selectedValues = [];
     }
 
     static updateBadgeLabel(filter) {
@@ -194,8 +194,8 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             case FilterType.MODAL:
                 return Promise.resolve(filter.value);
             case FilterType.DROPDOWN:
-                if (filter.selectedOptions && filter.selectedOptions.length) {
-                    return Promise.resolve(filter.selectedOptions.map((option: Select2OptionData) => `${option.text}`)
+                if (filter.selectedValues && filter.selectedValues.length) {
+                    return Promise.resolve(filter.selectedValues.map((option: Select2OptionData) => `${option.text}`)
                         .join(', '));
                 }
                 return Promise.resolve();

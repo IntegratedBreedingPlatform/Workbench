@@ -18,8 +18,7 @@ import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
 								[(ngModel)]="selectedValues"
 								[data]="this.values"
 								[options]="this.options"
-								[dropdownParent]="'dropdown-container-' + this.filter.key"
-								(ngModelChange)="onNgModelChange()">
+								[dropdownParent]="'dropdown-container-' + this.filter.key">
 					</ng-select2>
 				</div>
 			</section>
@@ -38,30 +37,34 @@ export class ColumnFilterDropdownComponent implements OnInit {
     values: Select2OptionData[];
     selectedValues: string[];
     multipleSelect: boolean;
+    options;
 
     @Input() filter: any;
 
     @Output() onApply = new EventEmitter();
     @Output() onReset = new EventEmitter();
 
-    options;
-
     constructor() {
     }
 
     async ngOnInit() {
-       this.values = await this.filter.values;
+        if (this.filter.selectedValues) {
+            this.selectedValues = this.filter.selectedValues.map((value: Select2OptionData) => value.id);
+        }
        this.multipleSelect = (this.filter.multipleSelect) ? this.filter.multipleSelect : false;
-       this.options = {
-           multiple: this.multipleSelect
-       }
+        this.options = {
+            multiple: true,
+            tags: true
+        };
+
+        this.values = await this.filter.values;
     }
 
     apply(form) {
         if (!form.valid) {
             return;
         }
-        this.filter['selectedOptions'] = this.values.filter((value) => this.selectedValues.indexOf(value.id) > -1);
+        this.filter['selectedValues'] = this.values.filter((value: Select2OptionData) => this.selectedValues.indexOf(value.id) > -1);
         this.onApply.emit();
     }
 
@@ -70,16 +73,4 @@ export class ColumnFilterDropdownComponent implements OnInit {
         this.onReset.emit();
     }
 
-    // isOptionSelected(option: ColumnFilterDropdownOption) {
-    //     return this.selectedOptions &&
-    //         this.selectedOptions.filter((selectedOption: ColumnFilterDropdownOption) => option.id === selectedOption.id).length === 1;
-    // }
-
-    onNgModelChange() {
-
-    }
-
-    clickedOption() {
-        console.log(this.selectedValues);
-    }
 }
