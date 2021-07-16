@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { Lot } from '../../shared/inventory/model/lot.model';
 import { Transaction } from '../../shared/inventory/model/transaction.model';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
@@ -12,6 +12,11 @@ import { Location } from '../../shared/model/location.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { ParamContext } from '../../shared/service/param.context';
 import { SearchComposite } from '../../shared/model/search-composite';
+import { AlertService } from '../../shared/alert/alert.service';
+import { PopupService } from '../../shared/modal/popup.service';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmManagerContext } from '../germplasm-manager.context';
+import { SearchOrigin, SearchOriginComposite } from '../../shared/model/Search-origin-composite';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -28,6 +33,7 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
+    searchOrigin;
     studyId;
 
     units: Promise<InventoryUnit[]>;
@@ -43,20 +49,26 @@ export class LotCreationDialogComponent implements OnInit {
     isConfirmDeposit = false;
     isLoading = false;
 
+    openedFromWorkbench: boolean;
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private transactionService: TransactionService,
                 private inventoryService: InventoryService,
-                private jhiAlertService: JhiAlertService,
                 private lotService: LotService,
                 private eventManager: JhiEventManager,
-                private paramContext: ParamContext
+                private paramContext: ParamContext,
+                private germplasmManagerContext: GermplasmManagerContext,
+                private activeModal: NgbActiveModal,
+                private alertService: AlertService
     ) {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.searchRequestId = queryParams.searchRequestId;
+        this.searchOrigin = queryParams.searchOrigin;
+        this.openedFromWorkbench = (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) ? true : false;
 
-        if (queryParams.studyId) {
+        if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
             // studyId has value if this Lot Creation page is called from Study Manager.
             // In this case, deposit is required.
             this.studyId = queryParams.studyId;
@@ -80,34 +92,42 @@ export class LotCreationDialogComponent implements OnInit {
             const defaultFavoriteLocation = favoriteLocations.find((location) => location.defaultLocation);
             this.favoriteLocIdSelected = defaultFavoriteLocation ? defaultFavoriteLocation.id : favoriteLocations[0] && favoriteLocations[0].id;
         });
-
     }
 
     ngOnInit() {
     }
 
     clear() {
-        // TODO
+        this.activeModal.dismiss('cancel');
     }
 
     save() {
         this.isLoading = true;
         this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
+
         const lotGeneratorBatchRequest = {
-            searchComposite: <SearchComposite<any, string>>({
-                itemIds: null,
-                searchRequest: this.searchRequestId
-            }),
+            searchComposite: this.getSearchComposite(),
             lotGeneratorInput: Object.assign({
                 generateStock: true,
                 stockPrefix: this.model.stockIdPrefix
-            }, this.lot),
-            studyId: this.studyId
+            }, this.lot)
         };
         this.lotService.createLots(lotGeneratorBatchRequest)
             .subscribe(
             (res) => this.createDeposit(res),
             (res) => this.onError(res));
+    }
+
+    private getSearchComposite(): SearchComposite<any, number> {
+        if (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) {
+            return this.germplasmManagerContext.searchComposite;
+        } else if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
+            const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, SearchOrigin.MANAGE_STUDY);
+            return {
+                itemIds: null,
+                searchRequest: searchTypeComposite
+            };
+        }
     }
 
     private createDeposit(lotUUIDs: string[]) {
@@ -137,18 +157,53 @@ export class LotCreationDialogComponent implements OnInit {
     }
 
     private onSaveSuccess(lotUUIDs: string[]) {
-        this.jhiAlertService.addAlert({ msg: 'lot-creation.success', type: 'success', toast: false, params: { param: lotUUIDs.length } }, null);
         this.isSuccess = true;
         this.isLoading = false;
+        this.alertService.success('lot-creation.success', { param: lotUUIDs.length }, null);
+        this.eventManager.broadcast({ name: 'columnFiltersChanged', content: '' });
+        this.activeModal.close();
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
+            this.alertService.error('error.custom', { param: msg });
         } else {
-            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
+            this.alertService.error('error.general');
         }
         this.isLoading = false;
     }
+
+    close() {
+        this.activeModal.dismiss();
+    }
+
+}
+
+@Component({
+    selector: 'jhi-lot-creation-popup',
+    template: ''
+})
+
+export class LotCreationPopupComponent implements OnInit, OnDestroy {
+
+    routeSub: any;
+
+    constructor(private alertService: AlertService,
+                private route: ActivatedRoute,
+                private popupService: PopupService
+    ) {
+    }
+
+    ngOnInit() {
+        this.routeSub = this.route.params.subscribe((params) => {
+            this.popupService
+                .open(LotCreationDialogComponent as Component);
+        });
+    }
+
+    ngOnDestroy() {
+        this.routeSub.unsubscribe();
+    }
+
 }

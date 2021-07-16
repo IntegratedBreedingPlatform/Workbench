@@ -20,8 +20,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import {
-    IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS,
+import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS,
+    GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS,
     UNGROUP_GERMPLASM_PERMISSIONS, CODE_GERMPLASM_PERMISSIONS
 } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
@@ -37,6 +37,7 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
+import { SearchOriginComposite, SearchOrigin } from '../shared/model/Search-origin-composite';
 
 declare var $: any;
 
@@ -53,6 +54,7 @@ export class GermplasmSearchComponent implements OnInit {
     GROUP_GERMPLASM_PERMISSIONS = GROUP_GERMPLASM_PERMISSIONS;
     UNGROUP_GERMPLASM_PERMISSIONS = UNGROUP_GERMPLASM_PERMISSIONS;
     CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
+    CREATE_INVENTORY_LOT_PERMISSIONS = CREATE_INVENTORY_LOT_PERMISSIONS;
 
     ColumnLabels = ColumnLabels;
 
@@ -379,7 +381,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerColumnFiltersChaged();
+        this.registerColumnFiltersChanged();
         this.registerFilterBy();
         this.registerGermplasmDetailsChanged();
         this.request.addedColumnsPropertyIds = [];
@@ -447,7 +449,7 @@ export class GermplasmSearchComponent implements OnInit {
         return item.gid;
     }
 
-    registerColumnFiltersChaged() {
+    registerColumnFiltersChanged() {
         this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
 
             this.preSortCheck();
@@ -677,6 +679,37 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
+        this.addSearchCompositeToContext();
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
+    openCreateLots() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const searchComposite = new SearchComposite<SearchOriginComposite, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = new SearchOriginComposite(Number(this.resultSearch.searchResultDbId), SearchOrigin.GERMPLASM_SEARCH);
+        } else {
+            searchComposite.itemIds = this.getSelectedItemIds();
+        }
+        this.germplasmManagerContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'lot-creation' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge',
+            queryParams: {
+                searchOrigin: SearchOrigin.GERMPLASM_SEARCH
+            }
+        });
+    }
+
+    private addSearchCompositeToContext() {
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         if (this.isSelectAll) {
             searchComposite.searchRequest = this.request;
@@ -684,11 +717,6 @@ export class GermplasmSearchComponent implements OnInit {
             searchComposite.itemIds = this.getSelectedItemIds();
         }
         this.germplasmManagerContext.searchComposite = searchComposite;
-
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
     }
 
     exportDataAndLabels() {
