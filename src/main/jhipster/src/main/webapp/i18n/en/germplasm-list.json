@@ -1,6 +1,8 @@
 {
     "germplasm-list": {
         "title": "Germplasm Lists",
+        "browse-link": "Browse",
+        "browse-text": " for lists",
         "nav": {
             "search": "Search"
         },

@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { RouteAccessService } from '../shared';
 import { SEARCH_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
-import { GermplasmListComponent } from './germplasm-list.component';
+import { GermplasmListBrowsePopupComponent, GermplasmListComponent } from './germplasm-list.component';
 
 export const GERMPLASM_LIST_ROUTES: Routes = [
     {
@@ -21,5 +21,10 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
                 canActivate: [RouteAccessService]
             }
         ]
+    },
+    {
+        path: 'germplasm-list-browse-dialog',
+        component: GermplasmListBrowsePopupComponent,
+        outlet: 'popup'
     }
 ];

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BmsjHipsterSharedModule } from '../shared';
 import { RouterModule } from '@angular/router';
 import { GermplasmImportModule } from '../germplasm-manager/import/germplasm-import.module';
-import { GermplasmListComponent } from './germplasm-list.component';
+import { GermplasmListBrowsePopupComponent, GermplasmListComponent } from './germplasm-list.component';
 import { GERMPLASM_LIST_ROUTES } from './germplasm-list.route';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
@@ -15,11 +15,13 @@ import { GermplasmListService } from '../shared/germplasm-list/service/germplasm
     ],
     declarations: [
         GermplasmListComponent,
-        GermplasmListSearchComponent
+        GermplasmListSearchComponent,
+        GermplasmListBrowsePopupComponent
     ],
     entryComponents: [
         GermplasmListComponent,
-        GermplasmListSearchComponent
+        GermplasmListSearchComponent,
+        GermplasmListBrowsePopupComponent
     ],
     providers: [
         GermplasmListService

@@ -3,6 +3,9 @@ import { ParamContext } from '../shared/service/param.context';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_GERMPLASM_LIST } from '../app.constants';
 import { JhiLanguageService } from 'ng-jhipster';
+import { ActivatedRoute } from '@angular/router';
+import { PopupService } from '../shared/modal/popup.service';
+import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -29,4 +32,21 @@ export class GermplasmListComponent implements OnInit {
 
     ngOnInit() {
     }
+
+}
+
+@Component({
+    selector: 'jhi-germplasm-list-browse-popup',
+    template: ``
+})
+export class GermplasmListBrowsePopupComponent implements OnInit {
+
+    constructor(private route: ActivatedRoute,
+                private popupService: PopupService) {
+    }
+
+    ngOnInit(): void {
+        this.popupService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' });
+    }
+
 }
