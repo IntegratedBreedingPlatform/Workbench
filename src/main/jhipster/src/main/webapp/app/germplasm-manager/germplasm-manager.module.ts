@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { LotCreationDialogComponent } from './inventory/lot-creation-dialog.component';
+import { LotCreationDialogComponent, LotCreationPopupComponent } from './inventory/lot-creation-dialog.component';
 import { RouterModule } from '@angular/router';
 import { GERMPLASM_MANAGER_ROUTES } from './germplasm-manager.route';
 import { BmsjHipsterSharedModule } from '../shared';
@@ -29,6 +29,7 @@ import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './g
     ],
     declarations: [
         LotCreationDialogComponent,
+        LotCreationPopupComponent,
         GermplasmManagerComponent,
         GermplasmSearchComponent,
         GermplasmListCreationPopupComponent,
@@ -49,6 +50,7 @@ import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './g
     ],
     entryComponents: [
         LotCreationDialogComponent,
+        LotCreationPopupComponent,
         GermplasmManagerComponent,
         GermplasmSearchComponent,
         GermplasmListCreationPopupComponent,

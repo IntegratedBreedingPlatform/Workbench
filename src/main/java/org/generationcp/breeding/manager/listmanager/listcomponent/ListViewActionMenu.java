@@ -29,7 +29,6 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	private ContextMenuItem menuSelectAll;
 	private ContextMenuItem listEditingOptions;
 	private ContextMenuItem removeSelectedGermplasm;
-	private ContextMenuItem createInventoryLots;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -49,11 +48,6 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 		this.menuDeleteList = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.DELETE_LIST));
 		this.menuCopyToList = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.COPY_TO_LIST));
 		this.menuExportList = this.addItem(this.messageSource.getMessage(Message.EXPORT_LIST));
-		try {
-			this.addCreateInventoryLotsLink();
-		} catch (final AccessDeniedException e) {
-			// NOOP
-		}
 		try {
 			this.addDeleteGermplasmLink();
 		} catch (final AccessDeniedException e) {
@@ -169,11 +163,6 @@ public class ListViewActionMenu extends ContextMenu implements InitializingBean,
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_MANAGE_GERMPLASM', 'ROLE_DELETE_GERMPLASM')")
 	protected void addDeleteGermplasmLink() {
 		this.removeSelectedGermplasm = this.listEditingOptions.addItem(this.messageSource.getMessage(Message.REMOVE_SELECTED_GERMPLASM));
-	}
-
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')")
-	private void addCreateInventoryLotsLink() {
-		this.createInventoryLots = this.addItem(this.messageSource.getMessage(Message.CREATE_INVENTORY_LOTS_MENU_ITEM));
 	}
 
 	protected void setListEditingOptions(final ContextMenuItem listEditingOptions) {
