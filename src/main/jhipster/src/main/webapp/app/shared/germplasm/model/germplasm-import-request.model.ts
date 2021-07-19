@@ -9,7 +9,7 @@ export class GermplasmImportRequest {
 export class GermplasmImportPayload {
     constructor(
         public clientId?: number,
-        public germplasmUUID?: string,
+        public germplasmPUI?: string,
         public locationAbbr?: string,
         public breedingMethodAbbr?: string,
         public reference?: string,
