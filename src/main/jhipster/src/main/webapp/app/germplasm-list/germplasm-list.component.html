@@ -8,20 +8,33 @@
             <span jhiTranslate="germplasm-list.browse-text"></span>
         </div>
     </header>
-	<div class="row">
+    <div class="row">
         <section class="col">
             <nav>
-                <ul class="nav nav-tabs">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link" [routerLink]="['germplasm-lists-search']" [routerLinkActive]="['active']"
-                           jhiTranslate="germplasm-list.nav.search">Search</a>
+                        <a class="nav-link" href="#germplasm-list" [class.active]="!hideSearchTab" (click)="setSearchTabActive()" jhiTranslate="germplasm-list.nav.search">Search</a>
+                    </li>
+                    <li class="nav-item" *ngFor="let list of lists" role="presentation">
+                        <a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+                            {{list.listName}}
+                            <i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
+                        </a>
                     </li>
                 </ul>
+                <div class="tab-content">
+                    <div class="col-xs-12 col-md-12" [hidden]="hideSearchTab">
+                        <jhi-germplasm-list-search></jhi-germplasm-list-search>
+                    </div>
+                    <!-- Tab panes -->
+                    <div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="list.active" id="list-{{list.id}}">
+                        <div class="col-xs-12 col-md-12">
+                            <jhi-list [germplasmList]="list"></jhi-list>
+                        </div>
+                    </div>
+                </div>
             </nav>
-            <div class="tab-content p-3">
-                <router-outlet></router-outlet>
-                <jhi-alert></jhi-alert>
-            </div>
         </section>
     </div>
 </section>

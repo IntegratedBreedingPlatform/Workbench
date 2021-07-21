@@ -33,7 +33,7 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let list of germplasmLists; trackBy: trackId; index as index">
-				<td>{{list.listName}}</td>
+				<td><a href (click)="selectList($event, list)">{{list.listName}}</a></td>
 				<td>{{list.parentFolderName}}</td>
 				<td>{{list.description}}</td>
 				<td>{{list.listOwner}}</td>

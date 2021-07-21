@@ -25,7 +25,7 @@ declare var $: any;
 })
 export class GermplasmListSearchComponent implements OnInit {
 
-    private readonly itemsPerPage: number = 20;
+    readonly itemsPerPage: number = 20;
 
     ColumnLabels = ColumnLabels;
 
@@ -155,6 +155,15 @@ export class GermplasmListSearchComponent implements OnInit {
         this.page = 1;
         this.previousPage = 1;
         this.loadAll(this.request);
+    }
+
+    selectList($event, list: GermplasmListSearchResponse) {
+        $event.preventDefault();
+
+        this.router.navigate(['/germplasm-list'], {queryParams: {
+                listId: list.listId
+            }
+        });
     }
 
     private getInitialFilters() {
