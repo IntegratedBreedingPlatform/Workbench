@@ -3,11 +3,11 @@ import { ParamContext } from '../shared/service/param.context';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_GERMPLASM_LIST } from '../app.constants';
 import { JhiLanguageService } from 'ng-jhipster';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PopupService } from '../shared/modal/popup.service';
+import { ActivatedRoute } from '@angular/router';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { GermplasmList } from './germplasm-list.model';
 import { Subscription } from 'rxjs';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -27,7 +27,8 @@ export class GermplasmListComponent implements OnInit {
                 private paramContext: ParamContext,
                 private helpService: HelpService,
                 private jhiLanguageService: JhiLanguageService,
-                private router: Router
+                private modalService: NgbModal,
+                public activeModal: NgbActiveModal
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -37,7 +38,7 @@ export class GermplasmListComponent implements OnInit {
             }
 
             if (!this.exists(this.listId)) {
-                this.lists.push(new GermplasmList(this.listId, 'List ' + this.listId, '', true));
+                this.lists.push(new GermplasmList(this.listId, params['listName'], '', true));
             }
 
             this.setActive(this.listId);
@@ -74,10 +75,6 @@ export class GermplasmListComponent implements OnInit {
         this.lists.forEach((list: GermplasmList) => list.active = false);
     }
 
-    private exists(listId: number) {
-        return this.lists.some((list) => list.id === listId);
-    }
-
     closeTab(list: GermplasmList) {
         this.lists.splice(this.lists.indexOf(list), 1);
         if (list.active) {
@@ -89,20 +86,27 @@ export class GermplasmListComponent implements OnInit {
         return item.id;
     }
 
-}
+    browseList($event) {
+        $event.preventDefault();
 
-@Component({
-    selector: 'jhi-germplasm-list-browse-popup',
-    template: ``
-})
-export class GermplasmListBrowsePopupComponent implements OnInit {
+        this.modalService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
+            .result.then((germplasmLists) => {
+                    if (germplasmLists && germplasmLists.length > 0) {
+                        germplasmLists.forEach((germplasmList) => {
+                            if (!this.exists(germplasmList.id)) {
+                                this.lists.push(new GermplasmList(germplasmList.id, germplasmList.name, '', false));
+                            }
+                        });
 
-    constructor(private route: ActivatedRoute,
-                private popupService: PopupService) {
+                        this.listId = germplasmLists[germplasmLists.length - 1].id;
+                        this.setActive(this.listId);
+                    }
+                    this.activeModal.close();
+                }, () => this.activeModal.dismiss());
     }
 
-    ngOnInit(): void {
-        this.popupService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' });
+    private exists(listId: number) {
+        return this.lists.some((list) => list.id === listId);
     }
 
 }
