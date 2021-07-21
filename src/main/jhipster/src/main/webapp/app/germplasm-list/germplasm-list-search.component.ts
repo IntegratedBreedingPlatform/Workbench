@@ -25,7 +25,7 @@ declare var $: any;
 })
 export class GermplasmListSearchComponent implements OnInit {
 
-    readonly itemsPerPage: number = 20;
+    itemsPerPage = 20;
 
     ColumnLabels = ColumnLabels;
 
