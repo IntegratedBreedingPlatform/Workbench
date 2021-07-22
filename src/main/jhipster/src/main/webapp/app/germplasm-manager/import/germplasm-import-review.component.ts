@@ -444,9 +444,9 @@ enum CREATION_OPTIONS {
 })
 export class NameColumnPipePipe implements PipeTransform {
     transform(items: any[]): any {
-        // exclude common headers
+        // exclude common name headers
         return items.filter((item: NameType) =>
-            [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(item.code) === -1);
+            [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString(), HEADERS.PUI.toString()].indexOf(item.code) === -1);
     }
 
 }
