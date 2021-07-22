@@ -1,0 +1,12 @@
+{
+    "fileManager": {
+        "title": "File",
+        "fileSection" : "File",
+        "preview": "Preview",
+        "preview.not.available": "Preview not available",
+        "fileName": "File name",
+        "actions": "Actions",
+        "fileUpload.description": "Choose a file to import",
+        "upload": "Upload"
+    }
+}

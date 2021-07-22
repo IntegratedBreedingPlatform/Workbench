@@ -1,15 +1,71 @@
 <div class="modal-header">
-	<h5 class="modal-title">File name: {{fileName}}</h5>
+	<h3 class="modal-title" jhiTranslate="fileManager.title"></h3>
 	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
 	</button>
 </div>
 <div class="modal-body">
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col">
-			<!-- not sure why the ngif works given that the src is preloaded with a tiny image... -->
-			<i class="throbber" *ngIf="!img.src"></i>
-			<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + path | secureImage | async" style="width:100%; height: 100%"/>
+			<h4 jhiTranslate="fileManager.fileSection" class="border-bottom pb-3 mb-3"></h4>
+			<form *ngIf="!fileMetadata">
+				<div class="form-group row">
+					<div class="col">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="input-group">
+									<!-- TODO  -->
+									<input type="file" class="custom-file-input" id="fileInput"
+										   (change)="onFileChange($event)" accept="{{selectedFileType}}">
+									<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
+										<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
+									</label>
+								</div>
+							</div>
+							<div class="col-auto">
+								<button class="btn btn-info" jhiTranslate="fileManager.upload"></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<table class="table table-striped table-bordered table-curved table-fit" *ngIf="fileMetadata">
+				<thead>
+				<tr>
+					<th jhiTranslate="fileManager.fileName"></th>
+					<th jhiTranslate="fileManager.actions"></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>{{fileMetadata.name}}</td>
+					<td>
+						<button class="btn btn-info mr-2" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"></i></button>
+						<button class="btn btn-info" (click)="download()"><i class="fa fa-download" aria-hidden="true"></i></button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col">
+			<h4 jhiTranslate="fileManager.preview" class="border-bottom pb-3 mb-3"></h4>
+			<div class="row">
+				<div class="col">
+					<div *ngIf="fileMetadata else nopreview">
+						<!-- FIXME works intermittently, not sure why the ngif works given that the src is preloaded with a tiny image... -->
+						<i class="throbber" *ngIf="!img.src"></i>
+						<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadata.path | secureImage | async" style="max-height: 400px"/>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
+<div class="modal-footer">
+	<button class="btn btn-default" jhiTranslate="cancel" (click)="cancel()"></button>
+</div>
 <jhi-alert></jhi-alert>
+<ng-template #nopreview>
+	<div class="text-center" jhiTranslate="fileManager.preview.not.available"></div>
+</ng-template>
