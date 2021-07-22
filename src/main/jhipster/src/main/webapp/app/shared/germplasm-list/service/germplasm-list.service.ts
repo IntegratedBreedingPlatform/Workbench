@@ -12,6 +12,8 @@ import { ListService } from '../../list-creation/service/list.service';
 import { GermplasmListSearchRequest } from '../model/germplasm-list-search-request.model';
 import { GermplasmListSearchResponse } from '../model/germplasm-list-search-response.model';
 import { createRequestOption } from '../..';
+import { GermplasmListDataSearchRequest } from '../model/germplasm-list-data-search-request.model';
+import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-search-response.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -40,10 +42,16 @@ export class GermplasmListService implements ListService {
         return this.http.post<void>(url, searchComposite);
     }
 
-    search(req: GermplasmListSearchRequest, pagination: any): Observable<HttpResponse<GermplasmListSearchResponse[]>> {
+    searchList(req: GermplasmListSearchRequest, pagination: any): Observable<HttpResponse<GermplasmListSearchResponse[]>> {
         const params = createRequestOption(pagination);
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/search?programUUID=` + this.context.programUUID;
         return this.http.post<GermplasmListSearchResponse[]>(url, req, { params, observe: 'response' });
+    }
+
+    searchListData(listId: number, req: GermplasmListDataSearchRequest, pagination: any): Observable<HttpResponse<GermplasmListDataSearchResponse[]>> {
+        const params = createRequestOption(pagination);
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/data/search?programUUID=` + this.context.programUUID;
+        return this.http.post<GermplasmListDataSearchResponse[]>(url, req, { params, observe: 'response' });
     }
 
 }

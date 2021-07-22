@@ -18,6 +18,11 @@
                 "notes": "NOTES",
                 "list-date": "LIST DATE"
             }
+        },
+        "list-data": {
+            "columns": {
+                "entry-number": "ENTRY_NO"
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ export class GermplasmListSearchComponent implements OnInit {
     ColumnLabels = ColumnLabels;
 
     germplasmLists: GermplasmListSearchResponse[];
-    germplasmListSearchRequest: GermplasmListSearchRequest;
+    searchRequest: GermplasmListSearchRequest;
     eventSubscriber: Subscription;
     resultSearch: SearchResult;
 
@@ -58,7 +58,7 @@ export class GermplasmListSearchComponent implements OnInit {
         this.predicate = ColumnLabels.LIST_NAME;
         this.reverse = 'asc';
         this.resultSearch = new SearchResult('');
-        this.germplasmListSearchRequest = new GermplasmListSearchRequest();
+        this.searchRequest = new GermplasmListSearchRequest();
     }
 
     ngOnInit() {
@@ -70,11 +70,11 @@ export class GermplasmListSearchComponent implements OnInit {
     }
 
     get request() {
-        return this.germplasmListSearchRequest;
+        return this.searchRequest;
     }
 
     set request(request: GermplasmListSearchRequest) {
-        this.germplasmListSearchRequest = request;
+        this.searchRequest = request;
     }
 
     get filters() {
@@ -87,7 +87,7 @@ export class GermplasmListSearchComponent implements OnInit {
 
     loadAll(request: GermplasmListSearchRequest) {
         this.isLoading = true;
-        this.germplasmListService.search(request,
+        this.germplasmListService.searchList(request,
             {
                 page: this.page - 1,
                 size: this.itemsPerPage,
