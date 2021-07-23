@@ -12,7 +12,5 @@ export class NameTypeService {
 
     }
 
-    searchNameTypes(query): Observable<HttpResponse<NameType[]>> {
-        return this.http.get<NameType[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types/search?query=` + query, { observe: 'response' });
-    }
+
 }
