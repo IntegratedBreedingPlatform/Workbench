@@ -246,5 +246,5 @@ export enum ColumnLabels {
     'NUMBER_OF_ENTRIES' = 'NUMBER_OF_ENTRIES',
     'STATUS' = 'STATUS',
     'NOTES' = 'NOTES',
-    'LIST_DATE' = 'LIST_DATE'
+    'CREATION_DATE' = 'CREATION_DATE'
 }
