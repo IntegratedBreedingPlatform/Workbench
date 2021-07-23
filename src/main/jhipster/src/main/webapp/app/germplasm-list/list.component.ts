@@ -174,6 +174,15 @@ export class ListComponent implements OnInit {
         });
     }
 
+    toggleListStatus() {
+        this.germplasmListService.toggleGermplasmListStatus(this.listId);
+
+       this.germplasmListService.toggleGermplasmListStatus(this.listId).subscribe(
+           (res: boolean) => this.germplasmList.locked = res,
+           (res: HttpErrorResponse) => this.onError(res)
+       );
+    }
+
     private getInitialFilters() {
         return [];
     }

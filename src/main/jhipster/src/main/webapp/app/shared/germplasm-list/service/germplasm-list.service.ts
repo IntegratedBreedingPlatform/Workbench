@@ -60,4 +60,9 @@ export class GermplasmListService implements ListService {
             { observe: 'response' });
     }
 
+    toggleGermplasmListStatus(listId: number): Observable<boolean> {
+        return this.http.post<boolean>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/toggle-status?programUUID=` + this.context.programUUID,
+            { observe: 'response' });
+    }
+
 }
