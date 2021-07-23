@@ -7,6 +7,11 @@
 	<br/>
 	<div class="row">
 		<div class="col">
+			<div style="float: right">
+				<button class="btn btn-light">
+					<i [ngClass]="germplasmList.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true"></i>
+				</button>
+			</div>
 			<div class="form-group form-inline">
 				<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
 				<div style="margin-left: 10px;">

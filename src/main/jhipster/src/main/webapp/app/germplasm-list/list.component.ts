@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { GermplasmList } from './germplasm-list.model';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListSearchResponse } from '../shared/germplasm-list/model/germplasm-list-search-response.model';
 import { GermplasmListSearchRequest } from '../shared/germplasm-list/model/germplasm-list-search-request.model';
@@ -15,6 +14,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../shared/alert/alert.service';
+import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
 
 declare var $: any;
 
@@ -25,12 +25,13 @@ declare var $: any;
 export class ListComponent implements OnInit {
 
     @Input()
-    germplasmList: GermplasmList;
+    listId: number;
 
     itemsPerPage = 20;
 
     ColumnLabels = ColumnLabels;
 
+    germplasmList: GermplasmList;
     entries: GermplasmListDataSearchResponse[];
     searchRequest: GermplasmListDataSearchRequest;
     eventSubscriber: Subscription;
@@ -63,6 +64,11 @@ export class ListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.germplasmListService.getGermplasmListById(this.listId).subscribe(
+            (res: HttpResponse<GermplasmList>) => this.germplasmList = res.body,
+            (res: HttpErrorResponse) => this.onError(res)
+        );
+
         this.filters = this.getInitialFilters();
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
 
@@ -88,7 +94,7 @@ export class ListComponent implements OnInit {
 
     loadAll(request: GermplasmListDataSearchRequest) {
         this.isLoading = true;
-        this.germplasmListService.searchListData(this.germplasmList.id, request,
+        this.germplasmListService.searchListData(this.listId, request,
             {
                 page: this.page - 1,
                 size: this.itemsPerPage,

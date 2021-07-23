@@ -14,6 +14,7 @@ import { GermplasmListSearchResponse } from '../model/germplasm-list-search-resp
 import { createRequestOption } from '../..';
 import { GermplasmListDataSearchRequest } from '../model/germplasm-list-data-search-request.model';
 import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-search-response.model';
+import { GermplasmList } from '../../model/germplasm-list';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -52,6 +53,11 @@ export class GermplasmListService implements ListService {
         const params = createRequestOption(pagination);
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/data/search?programUUID=` + this.context.programUUID;
         return this.http.post<GermplasmListDataSearchResponse[]>(url, req, { params, observe: 'response' });
+    }
+
+    getGermplasmListById(listId: number): Observable<HttpResponse<GermplasmList>> {
+        return this.http.get<GermplasmList>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}?programUUID=` + this.context.programUUID,
+            { observe: 'response' });
     }
 
 }

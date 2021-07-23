@@ -1,13 +1,17 @@
-export class GermplasmListSearchResponse {
+import { GermplasmList } from './germplasm-list.model';
+
+export class GermplasmListSearchResponse extends GermplasmList {
     constructor(public listId: number,
                 public listName: string,
+                public creationDate: string,
                 public description: string,
+                public programUUID: string,
+                public locked: boolean,
                 public listOwner: string,
                 public listType: string,
                 public numberOfEntries: number,
-                public locked: boolean,
-                public creationDate: string,
                 public parentFolderName: string,
                 public notes?: string) {
+        super(listId, listName, creationDate, description, programUUID, locked);
     }
 }

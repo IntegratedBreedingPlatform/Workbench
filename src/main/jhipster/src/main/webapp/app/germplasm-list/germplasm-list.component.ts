@@ -5,7 +5,6 @@ import { HELP_GERMPLASM_LIST } from '../app.constants';
 import { JhiLanguageService } from 'ng-jhipster';
 import { ActivatedRoute } from '@angular/router';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
-import { GermplasmList } from './germplasm-list.model';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -15,7 +14,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class GermplasmListComponent implements OnInit {
 
-    lists: GermplasmList[] = [];
+    lists: GermplasmListTab[] = [];
 
     helpLink: string;
     hideSearchTab = false;
@@ -38,7 +37,7 @@ export class GermplasmListComponent implements OnInit {
             }
 
             if (!this.exists(this.listId)) {
-                this.lists.push(new GermplasmList(this.listId, params['listName'], '', true));
+                this.lists.push(new GermplasmListTab(this.listId, params['listName'], true));
             }
 
             this.setActive(this.listId);
@@ -61,7 +60,7 @@ export class GermplasmListComponent implements OnInit {
     setActive(listId: number) {
         this.hideSearchTab = true;
 
-        this.lists.forEach((list: GermplasmList) => {
+        this.lists.forEach((list: GermplasmListTab) => {
             list.active = false;
             if (list.id === listId) {
                 list.active = true;
@@ -72,17 +71,17 @@ export class GermplasmListComponent implements OnInit {
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.listId = null;
-        this.lists.forEach((list: GermplasmList) => list.active = false);
+        this.lists.forEach((list: GermplasmListTab) => list.active = false);
     }
 
-    closeTab(list: GermplasmList) {
+    closeTab(list: GermplasmListTab) {
         this.lists.splice(this.lists.indexOf(list), 1);
         if (list.active) {
             this.hideSearchTab = false;
         }
     }
 
-    trackId(index: number, item: GermplasmList) {
+    trackId(index: number, item: GermplasmListTab) {
         return item.id;
     }
 
@@ -94,7 +93,7 @@ export class GermplasmListComponent implements OnInit {
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {
                             if (!this.exists(germplasmList.id)) {
-                                this.lists.push(new GermplasmList(germplasmList.id, germplasmList.name, '', false));
+                                this.lists.push(new GermplasmListTab(germplasmList.id, germplasmList.name, false));
                             }
                         });
 
@@ -109,4 +108,13 @@ export class GermplasmListComponent implements OnInit {
         return this.lists.some((list) => list.id === listId);
     }
 
+}
+
+export class GermplasmListTab {
+    constructor(
+        public id: number,
+        public listName: string,
+        public active: boolean
+    ) {
+    }
 }
