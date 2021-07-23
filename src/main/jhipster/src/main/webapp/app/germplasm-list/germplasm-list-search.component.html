@@ -26,7 +26,7 @@
 				<th [jhiSortBy]="ColumnLabels.LIST_OWNER"><span jhiTranslate="germplasm-list.search.columns.list-owner"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.LIST_TYPE"><span jhiTranslate="germplasm-list.search.columns.list-type"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NUMBER_OF_ENTRIES"><span jhiTranslate="germplasm-list.search.columns.number-of-entries"></span> <span class="fa fa-sort"></span></th>
-				<th [jhiSortBy]="ColumnLabels.STATUS"><span jhiTranslate="germplasm-list.search.columns.status"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels.LOCKED"><span jhiTranslate="germplasm-list.search.columns.locked"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NOTES"><span jhiTranslate="germplasm-list.search.columns.notes"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.CREATION_DATE"><span jhiTranslate="germplasm-list.search.columns.list-date"></span> <span class="fa fa-sort"></span></th>
 			</tr>
@@ -39,7 +39,7 @@
 				<td>{{list.listOwner}}</td>
 				<td>{{list.listType}}</td>
 				<td>{{list.numberOfEntries}}</td>
-				<td>{{list.status}}</td>
+				<td>{{list.locked ? 'Yes' : 'No'}}</td>
 				<td>{{list.notes}}</td>
 				<td>{{list.creationDate}}</td>
 			</tr>

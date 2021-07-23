@@ -5,7 +5,7 @@ export class GermplasmListSearchResponse {
                 public listOwner: string,
                 public listType: string,
                 public numberOfEntries: number,
-                public status: string,
+                public locked: boolean,
                 public creationDate: string,
                 public parentFolderName: string,
                 public notes?: string) {

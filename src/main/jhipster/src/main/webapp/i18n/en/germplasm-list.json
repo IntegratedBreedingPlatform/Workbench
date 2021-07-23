@@ -14,7 +14,7 @@
                 "list-owner": "LIST OWNER",
                 "list-type": "LIST TYPE",
                 "number-of-entries": "# OF ENTRIES",
-                "status": "STATUS",
+                "locked": "LOCKED",
                 "notes": "NOTES",
                 "list-date": "LIST DATE"
             }

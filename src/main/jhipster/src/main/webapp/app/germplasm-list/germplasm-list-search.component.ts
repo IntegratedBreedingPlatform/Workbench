@@ -185,7 +185,7 @@ export class GermplasmListSearchComponent implements OnInit {
                     ColumnFilterComponent.resetDropdownFilter(this, req);
                 },
             },
-            { key: 'locked', name: 'Status', type: FilterType.RADIOBUTTON, options: this.getStatusFilterOptions() },
+            { key: 'locked', name: 'Locked', type: FilterType.RADIOBUTTON, options: this.getStatusFilterOptions() },
             { key: 'notes', name: 'Notes', placeholder: 'Contains Text', type: FilterType.TEXT },
             {
                 key: 'listDate', name: 'List Date', type: FilterType.DATE,
@@ -216,8 +216,8 @@ export class GermplasmListSearchComponent implements OnInit {
 
     private getStatusFilterOptions(): Promise<ColumnFilterRadioButtonOption[]> {
         return new Promise<ColumnFilterRadioButtonOption[]>((resolve, reject) => {
-            resolve([new ColumnFilterRadioButtonOption(true, 'LOCKED'),
-                new ColumnFilterRadioButtonOption(false, 'UNLOCKED')]);
+            resolve([new ColumnFilterRadioButtonOption(true, 'Yes'),
+                new ColumnFilterRadioButtonOption(false, 'No')]);
         });
     }
 
@@ -244,7 +244,7 @@ export enum ColumnLabels {
     'LIST_OWNER' = 'LIST_OWNER',
     'LIST_TYPE' = 'LIST_TYPE',
     'NUMBER_OF_ENTRIES' = 'NUMBER_OF_ENTRIES',
-    'STATUS' = 'STATUS',
+    'LOCKED' = 'LOCKED',
     'NOTES' = 'NOTES',
     'CREATION_DATE' = 'CREATION_DATE'
 }
