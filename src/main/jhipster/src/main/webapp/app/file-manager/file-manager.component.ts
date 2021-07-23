@@ -4,8 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../shared/service/param.context';
 import { FileService } from '../shared/file/service/file.service';
 import { FileMetadata } from '../shared/file/model/file-metadata';
-import { readAsDataURL } from '../shared/util/file-utils';
-import { HttpErrorResponse } from '@angular/common/http';
+import { readAsDataURL, saveFile } from '../shared/util/file-utils';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { finalize } from 'rxjs/operators';
@@ -30,7 +30,6 @@ export class FileManagerComponent {
     termId: number;
 
     isLoading = false;
-    isSaving = false;
     // TODO
     acceptedFileTypes = [];
 
@@ -80,6 +79,12 @@ export class FileManagerComponent {
     }
 
     download() {
+        this.isLoading = true;
+        this.fileService.downloadFile(this.fileMetadata.path).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe(
+            (file: HttpResponse<Blob>) => saveFile(file, this.fileMetadata.name)
+        );
     }
 
     async onFileChange(evt: any) {
@@ -91,14 +96,14 @@ export class FileManagerComponent {
     }
 
     upload() {
-        this.isSaving = true;
+        this.isLoading = true;
         // upload file / save observation
         this.fileService.upload(
             this.file,
             this.observationUnitUUID,
             this.termId
         ).pipe(
-            finalize(() => this.isSaving = false)
+            finalize(() => this.isLoading = false)
         ).subscribe(
             (fileMetadata) => {
                 this.fileMetadata = fileMetadata;

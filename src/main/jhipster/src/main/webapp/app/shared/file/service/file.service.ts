@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { FileMetadata } from '../model/file-metadata';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
+import { saveFile } from '../../util/file-utils';
 
 @Injectable()
 export class FileService {
@@ -35,6 +36,11 @@ export class FileService {
 
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.post<FileMetadata>(baseUrl + '/files', formData, options);
+    }
+
+    downloadFile(path): Observable<HttpResponse<Blob>> {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.get(baseUrl + '/files/' + path, { observe: 'response', responseType: 'blob' });
     }
 
 }

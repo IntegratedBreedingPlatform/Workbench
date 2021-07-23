@@ -7,7 +7,7 @@
 	<div class="row mb-3">
 		<div class="col">
 			<h4 jhiTranslate="fileManager.fileSection" class="border-bottom pb-3 mb-3"></h4>
-			<i class="throbber" *ngIf="isLoading"></i>
+			<i class="throbber float-right" *ngIf="isLoading"></i>
 			<form *ngIf="!fileMetadata && !isLoading">
 				<div class="form-group row">
 					<div class="col">
@@ -24,7 +24,6 @@
 							</div>
 							<div class="col-auto">
 								<button class="btn btn-info" (click)="upload()">
-									<span *ngIf="isSaving" class="throbber throbber-btn"></span>
 									<span jhiTranslate="fileManager.upload"></span>
 								</button>
 							</div>
@@ -44,7 +43,9 @@
 					<td>{{fileMetadata.name}}</td>
 					<td>
 						<button class="btn btn-info mr-2" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"></i></button>
-						<button class="btn btn-info" (click)="download()"><i class="fa fa-download" aria-hidden="true"></i></button>
+						<button class="btn btn-info" (click)="download()">
+							<i class="fa fa-download" aria-hidden="true"></i>
+						</button>
 					</td>
 				</tr>
 				</tbody>
