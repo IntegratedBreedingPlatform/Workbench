@@ -21,6 +21,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     @Input() resultSearch: any;
     @Input() request: any;
+    @Input() eventName = 'columnFiltersChanged';
 
     private _filters;
 
@@ -439,7 +440,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.eventManager.broadcast({ name: 'columnFiltersChanged', content: '' });
+        this.eventManager.broadcast({ name: this.eventName, content: '' });
     }
 
     private onError(error) {

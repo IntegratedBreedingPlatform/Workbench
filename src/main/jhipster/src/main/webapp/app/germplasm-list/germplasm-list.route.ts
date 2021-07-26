@@ -20,13 +20,13 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
                 component: GermplasmListSearchComponent,
                 data: { authorities: SEARCH_GERMPLASM_LIST_PERMISSIONS },
                 canActivate: [RouteAccessService]
+            },
+            {
+                path: 'list',
+                component: ListComponent,
+                data: { authorities: SEARCH_GERMPLASM_LIST_PERMISSIONS },
+                canActivate: [RouteAccessService]
             }
         ]
-    },
-    {
-        path: 'list',
-        component: ListComponent,
-        data: { authorities: SEARCH_GERMPLASM_LIST_PERMISSIONS },
-        canActivate: [RouteAccessService]
     }
 ];

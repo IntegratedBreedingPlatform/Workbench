@@ -25,6 +25,9 @@ declare var $: any;
 })
 export class GermplasmListSearchComponent implements OnInit {
 
+    static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
+    COLUMN_FILTER_EVENT_NAME = GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME;
+
     itemsPerPage = 20;
 
     ColumnLabels = ColumnLabels;
@@ -146,7 +149,7 @@ export class GermplasmListSearchComponent implements OnInit {
     }
 
     registerColumnFiltersChanged() {
-        this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
+        this.eventSubscriber = this.eventManager.subscribe(GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME, (event) => {
             this.resetTable();
         });
     }
@@ -160,7 +163,7 @@ export class GermplasmListSearchComponent implements OnInit {
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
 
-        this.router.navigate(['/germplasm-list'], {queryParams: {
+        this.router.navigate(['/germplasm-list/list'], {queryParams: {
                 listId: list.listId,
                 listName: list.listName
             }

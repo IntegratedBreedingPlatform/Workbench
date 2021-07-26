@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../shared/alert/alert.service';
 import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 
 declare var $: any;
 
@@ -153,7 +154,7 @@ export class ListComponent implements OnInit {
     }
 
     registerColumnFiltersChanged() {
-        this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
+        this.eventSubscriber = this.eventManager.subscribe(this.listId + 'ColumnFiltersChanged', (event) => {
             this.resetTable();
         });
     }
@@ -167,7 +168,7 @@ export class ListComponent implements OnInit {
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
 
-        this.router.navigate(['/germplasm-list'], {queryParams: {
+        this.router.navigate(['/germplasm-list/list'], {queryParams: {
                 listId: list.listId,
                 listName: list.listName
             }
@@ -175,10 +176,8 @@ export class ListComponent implements OnInit {
     }
 
     toggleListStatus() {
-        this.germplasmListService.toggleGermplasmListStatus(this.listId);
-
        this.germplasmListService.toggleGermplasmListStatus(this.listId).subscribe(
-           (res: boolean) => this.germplasmList.locked = res,
+           (res: boolean) => this.onToggleListStatusSuccess(res),
            (res: HttpErrorResponse) => this.onError(res)
        );
     }
@@ -199,6 +198,11 @@ export class ListComponent implements OnInit {
         } else {
             this.alertService.error('error.general');
         }
+    }
+
+    private onToggleListStatusSuccess(locked: boolean) {
+        this.germplasmList.locked = locked;
+        this.eventManager.broadcast({ name: GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME, content: '' });
     }
 
 }
