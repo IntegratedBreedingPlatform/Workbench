@@ -3,7 +3,7 @@ import { ParamContext } from '../shared/service/param.context';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_GERMPLASM_LIST } from '../app.constants';
 import { JhiLanguageService } from 'ng-jhipster';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -27,7 +27,8 @@ export class GermplasmListComponent implements OnInit {
                 private helpService: HelpService,
                 private jhiLanguageService: JhiLanguageService,
                 private modalService: NgbModal,
-                public activeModal: NgbActiveModal
+                private activeModal: NgbActiveModal,
+                private router: Router
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -79,6 +80,8 @@ export class GermplasmListComponent implements OnInit {
         if (list.active) {
             this.hideSearchTab = false;
         }
+
+        this.router.navigate(['/germplasm-list'], {queryParams: {}});
     }
 
     trackId(index: number, item: GermplasmListTab) {
