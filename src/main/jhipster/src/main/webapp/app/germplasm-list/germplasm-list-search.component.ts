@@ -21,7 +21,8 @@ declare var $: any;
 
 @Component({
     selector: 'jhi-germplasm-list-search',
-    templateUrl: './germplasm-list-search.component.html'
+    templateUrl: './germplasm-list-search.component.html',
+    styleUrls: ['germplasm-list.css']
 })
 export class GermplasmListSearchComponent implements OnInit {
 
