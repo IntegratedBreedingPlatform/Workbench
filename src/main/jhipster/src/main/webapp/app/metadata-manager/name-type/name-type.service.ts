@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SERVER_API_URL } from '../../../app.constants';
-import { ParamContext } from '../../service/param.context';
-import { NameType, NameTypeDetails } from '../../germplasm/model/name-type.model';
-import { createRequestOption } from '../../model/request-util';
+import { SERVER_API_URL } from '../../app.constants';
+import { ParamContext } from '../../shared/service/param.context';
+import { NameType, NameTypeDetails } from '../../shared/germplasm/model/name-type.model';
+import { createRequestOption } from '../../shared/model/request-util';
 
 @Injectable()
 export class NameTypeService {

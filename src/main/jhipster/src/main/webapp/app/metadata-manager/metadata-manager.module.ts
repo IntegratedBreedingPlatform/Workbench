@@ -5,6 +5,7 @@ import { METADATA_MANAGER_ROUTES } from './metadata-manager.route';
 import { MetadataManagerComponent } from './metadata-manager.component';
 import { NameTypeComponent } from './name-type/name-type.component';
 import { NameTypeResolvePagingParams } from './name-type/name-type-resolve-paging-params';
+import { NameTypeService } from './name-type/name-type.service';
 
 @NgModule({
     imports: [
@@ -21,7 +22,8 @@ import { NameTypeResolvePagingParams } from './name-type/name-type-resolve-pagin
         NameTypeComponent
     ],
     providers: [
-        NameTypeResolvePagingParams
+        NameTypeResolvePagingParams,
+        NameTypeService
     ]
 })
 export class MetadataManagerModule {
