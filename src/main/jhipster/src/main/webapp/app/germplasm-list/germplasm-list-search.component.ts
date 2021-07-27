@@ -190,6 +190,21 @@ export class GermplasmListSearchComponent implements OnInit {
                 },
             },
             { key: 'locked', name: 'Locked', type: FilterType.RADIOBUTTON, options: this.getStatusFilterOptions() },
+            {
+                key: 'numberOfEntriesRange', name: 'Number Of Entries Range', type: FilterType.NUMBER_RANGE,
+                fromKey: 'numberOfEntriesFrom',
+                toKey: 'numberOfEntriesTo',
+                transform(req) {
+                    ColumnFilterComponent.transformNumberRangeFilter(this, req, this.fromKey, this.toKey);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetRangeFilter(this, req, this.fromKey, this.toKey);
+                },
+                reload(req) {
+                    this.from = req[this.fromKey];
+                    this.to = req[this.toKey];
+                }
+            },
             { key: 'notes', name: 'Notes', placeholder: 'Contains Text', type: FilterType.TEXT },
             {
                 key: 'listDate', name: 'List Date', type: FilterType.DATE,

@@ -5,6 +5,8 @@ export class GermplasmListSearchRequest {
                 public listOwner?: string,
                 public listTypes?: Array<number>,
                 public locked?: boolean,
+                public numberOfEntriesFrom?: number,
+                public numberOfEntriesTo?: number,
                 public notes?: string,
                 public listDateFrom?: number,
                 public listDateTo?: number) {
