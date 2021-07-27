@@ -41,7 +41,7 @@
 				<td>{{list.numberOfEntries}}</td>
 				<td>{{list.locked ? 'Yes' : 'No'}}</td>
 				<td><span class="text-ellipsis" title="{{list.notes}}">{{list.notes}}</span></td>
-				<td>{{list.creationDate}}</td>
+				<td>{{list.creationDate ? list.creationDate : 'null'}}</td>
 			</tr>
 			</tbody>
 		</table>
