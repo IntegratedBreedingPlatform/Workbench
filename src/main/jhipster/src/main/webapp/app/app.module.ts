@@ -25,7 +25,7 @@ import { UserProfileModule } from './entities/user-profile/user-profile.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
 import { PrototypeModule } from './prototype/prototype.module';
 import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
-import { CropManagerModule } from './crop-manager/crop-manager.module';
+import { MetadataManagerModule } from './metadata-manager/metadata-manager.module';
 
 @NgModule({
     imports: [
@@ -44,7 +44,7 @@ import { CropManagerModule } from './crop-manager/crop-manager.module';
         UserProfileModule,
         FileManagerModule,
         PrototypeModule,
-        CropManagerModule,
+        MetadataManagerModule,
         VariableDetailsModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
