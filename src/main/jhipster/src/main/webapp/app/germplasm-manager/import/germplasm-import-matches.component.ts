@@ -28,7 +28,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
     // modal input
     unassignedMatches: any[] = [];
     matchesByName: { [key: string]: GermplasmDto[] };
-    matchesByGUID: { [key: string]: GermplasmDto };
+    matchesByPUI: { [key: string]: GermplasmDto };
     // ENTRY_NO -> gid or null (new)
     selectMatchesResult: { [key: string]: number };
 
@@ -39,7 +39,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
     dataRow: any = {};
     entryNo: string;
     name: string;
-    guidMatch: GermplasmDto = null;
+    puiMatch: GermplasmDto = null;
     isIgnoreAllRemaining: boolean;
     isIgnoreMatch: boolean;
 
@@ -60,7 +60,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
         this.isIgnoreMatch = false;
 
         this.dataRow = this.unassignedMatches[matchNumber - 1];
-        this.guidMatch = this.matchesByGUID[toUpper(this.dataRow[HEADERS.GUID])];
+        this.puiMatch = this.matchesByPUI[toUpper(this.dataRow[HEADERS.PUI])];
         const gidMap = {};
         this.matches = this.context.nametypesCopy
             .filter((nameType) => Boolean(this.matchesByName[toUpper(this.dataRow[nameType.code])]))
@@ -73,8 +73,8 @@ export class GermplasmImportMatchesComponent implements OnInit {
                 }
                 return false;
             });
-        if (this.guidMatch && !gidMap[this.guidMatch.gid]) {
-            this.matches.unshift(this.guidMatch);
+        if (this.puiMatch && !gidMap[this.puiMatch.gid]) {
+            this.matches.unshift(this.puiMatch);
         }
         this.entryNo = this.dataRow[HEADERS.ENTRY_NO];
     }
