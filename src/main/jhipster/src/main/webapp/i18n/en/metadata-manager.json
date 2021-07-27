@@ -12,8 +12,16 @@
         "confirmation": {
           "title": "Confirmation"
         },
-        "delete.success": "Name Type deleted successfully.",
-        "delete.warning": "Are you sure you want to delete the Name Type {{param}}?"
+        "delete": {
+          "success": "Name Type deleted successfully.",
+          "warning": "Are you sure you want to delete the Name Type {{param}}?"
+        },
+        "create": {
+          "header": "Create Name Type"
+        },
+        "edit": {
+          "header": "Edit Name Type"
+        }
       }
     }
   }
