@@ -59,7 +59,8 @@ module.exports = (options) => ({
                 // (see the `jhipster.cors` common JHipster property in the `application-*.yml` configurations)
                 SERVER_API_URL: `'/bmsapi/'`,
                 MAX_PAGE_SIZE: `'${appProperties.get('pagedresult.max.page.size')}'`,
-                INSTITUTE_LOGO_PATH: `'${appProperties.get('institute.logo.path')}'`
+                INSTITUTE_LOGO_PATH: `'${appProperties.get('institute.logo.path')}'`,
+                FILE_UPLOAD_SUPPORTED_TYPES: `'${appProperties.get('file.upload.supported.types')}'`
             }
         }),
         new CopyWebpackPlugin([

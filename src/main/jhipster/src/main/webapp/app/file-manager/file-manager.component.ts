@@ -11,6 +11,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { finalize } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { FILE_UPLOAD_SUPPORTED_TYPES } from '../app.constants';
 
 @Component({
     selector: 'jhi-file-manager',
@@ -32,8 +33,7 @@ export class FileManagerComponent {
     termId: number;
 
     isLoading = false;
-    // TODO
-    acceptedFileTypes = [];
+    acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
 
     constructor(
         private route: ActivatedRoute,
