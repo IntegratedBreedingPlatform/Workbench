@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NameTypeDetails } from '../../shared/germplasm/model/name-type.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { NameTypeService } from './name-type.service';
-import { ParamContext } from '../../shared/service/param.context';
 import { SORT_PREDICATE_NONE } from '../../germplasm-manager/germplasm-search-resolve-paging-params';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
@@ -12,6 +11,8 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+import { NameTypeContext } from './name-type.context';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'jhi-name-type',
@@ -28,6 +29,7 @@ export class NameTypeComponent implements OnInit {
     private previousPage: any;
     reverse: any;
     isLoading: boolean;
+    eventSubscriber: Subscription;
 
     constructor(public translateService: TranslateService,
                 private activatedRoute: ActivatedRoute,
@@ -36,7 +38,9 @@ export class NameTypeComponent implements OnInit {
                 private alertService: AlertService,
                 private router: Router,
                 private modalService: NgbModal,
-                private paramContext: ParamContext
+                private nameTypeContext: NameTypeContext,
+                private eventManager: JhiEventManager,
+
     ) {
 
         this.routeData = this.activatedRoute.data.subscribe((data) => {
@@ -49,6 +53,7 @@ export class NameTypeComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadAll();
+        this.registerNameTypeChanged();
     }
 
     loadAll() {
@@ -113,12 +118,9 @@ export class NameTypeComponent implements OnInit {
         this.loadAll();
     }
 
-    openCreateNewTypeModal() {
-
-    }
-
     editNameType(nameType: any) {
-
+        this.nameTypeContext.nameTypeDetails = nameType;
+        this.router.navigate(['/', { outlets: { popup: 'name-type-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
     deleteNameType(nameType: any) {
@@ -143,6 +145,12 @@ export class NameTypeComponent implements OnInit {
         this.page = 1;
         this.previousPage = 1;
         this.loadAll();
+    }
+
+    registerNameTypeChanged() {
+        this.eventSubscriber = this.eventManager.subscribe('nameTypeViewChanged', (event) => {
+            this.loadAll();
+        });
     }
 
 }
