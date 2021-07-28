@@ -17,10 +17,12 @@
           "warning": "Are you sure you want to delete the Name Type {{param}}?"
         },
         "create": {
-          "header": "Create Name Type"
+          "header": "Create Name Type",
+          "success": "Name type created successfully"
         },
         "edit": {
-          "header": "Edit Name Type"
+          "header": "Edit Name Type",
+          "success": "Name type updated successfully"
         }
       }
     }
