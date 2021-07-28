@@ -8,6 +8,7 @@
         "actions": "Actions",
         "fileUpload.description": "Choose a file to import",
         "upload": "Upload",
-        "upload.success": "File uploaded successfully!"
+        "upload.success": "File uploaded successfully!",
+        "delete.success": "File deleted successfully!"
     }
 }

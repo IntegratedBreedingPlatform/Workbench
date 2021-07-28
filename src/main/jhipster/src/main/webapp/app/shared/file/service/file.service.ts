@@ -43,4 +43,9 @@ export class FileService {
         return this.http.get(baseUrl + '/files/' + path, { observe: 'response', responseType: 'blob' });
     }
 
+    delete(fileUUID) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.delete(baseUrl + '/files/' + fileUUID);
+    }
+
 }

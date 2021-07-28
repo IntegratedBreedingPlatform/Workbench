@@ -75,7 +75,17 @@ export class FileManagerComponent {
     }
 
     delete() {
-        // this.fileService.delete(fileMetadata);
+        this.isLoading = true;
+        this.fileService.delete(this.fileMetadata.fileUUID)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(() => {
+                this.alertService.success('fileManager.delete.success');
+                this.fileMetadata = null;
+                this.imgToUploadUrlPreview = null;
+                if (window.parent) {
+                    window.parent.postMessage('observations-changed', '*');
+                }
+            }, (error) => this.onError(error))
     }
 
     download() {
@@ -107,17 +117,13 @@ export class FileManagerComponent {
         ).subscribe(
             (fileMetadata) => {
                 this.fileMetadata = fileMetadata;
-                this.onSuccess()
+                this.alertService.success('fileManager.upload.success');
+                if (window.parent) {
+                    window.parent.postMessage('observations-changed', '*');
+                }
             },
             (error) => this.onError(error)
         );
-    }
-
-    private onSuccess() {
-        this.alertService.success('fileManager.upload.success');
-        if (window.parent) {
-            window.parent.postMessage('observations-changed', '*');
-        }
     }
 
     private onError(response: HttpErrorResponse) {
