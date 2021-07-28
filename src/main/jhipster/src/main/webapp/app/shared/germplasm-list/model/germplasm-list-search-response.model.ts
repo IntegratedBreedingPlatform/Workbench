@@ -7,11 +7,12 @@ export class GermplasmListSearchResponse extends GermplasmList {
                 public description: string,
                 public programUUID: string,
                 public locked: boolean,
+                public ownerId: number,
                 public listOwner: string,
                 public listType: string,
                 public numberOfEntries: number,
                 public parentFolderName: string,
                 public notes?: string) {
-        super(listId, listName, creationDate, description, programUUID, locked);
+        super(listId, listName, creationDate, description, programUUID, locked, ownerId);
     }
 }

@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col">
 			<div style="float: right">
-				<button class="btn btn-light" (click)="toggleListStatus()">
+				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="user?.id !== germplasmList?.ownerId">
 					<i [ngClass]="germplasmList?.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true"></i>
 				</button>
 			</div>

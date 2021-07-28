@@ -16,6 +16,7 @@ import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../shared/alert/alert.service';
 import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
+import { Principal } from '../shared';
 
 declare var $: any;
 
@@ -29,6 +30,8 @@ export class ListComponent implements OnInit {
     listId: number;
 
     itemsPerPage = 20;
+
+    user?: any;
 
     ColumnLabels = ColumnLabels;
 
@@ -54,7 +57,8 @@ export class ListComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmListService: GermplasmListService,
                 private router: Router,
-                private alertService: AlertService) {
+                private alertService: AlertService,
+                private principal: Principal) {
         this.page = 1;
         this.predicate = '';
         this.currentSearch = '';
@@ -64,7 +68,10 @@ export class ListComponent implements OnInit {
         this.searchRequest = new GermplasmListDataSearchRequest();
     }
 
-    ngOnInit() {
+   async ngOnInit() {
+       const identity = await this.principal.identity();
+       this.user = identity;
+
         this.germplasmListService.getGermplasmListById(this.listId).subscribe(
             (res: HttpResponse<GermplasmList>) => this.germplasmList = res.body,
             (res: HttpErrorResponse) => this.onError(res)
