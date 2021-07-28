@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NameTypeDetails } from '../../shared/germplasm/model/name-type.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { NameTypeService } from './name-type.service';
+import { NameTypeService } from '../../shared/name-type/service/name-type.service';
 import { SORT_PREDICATE_NONE } from '../../germplasm-manager/germplasm-search-resolve-paging-params';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
