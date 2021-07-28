@@ -115,7 +115,7 @@
                     "entryNo": "The ENTRY_NO column is mandatory",
                     "entryNo.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
                     "entryNo.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
-                    "guid.duplicates": "Some GUID values are duplicated. Please correct them and try again",
+                    "pui.duplicates": "Some PUI values are duplicated. Please correct them and try again",
                     "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
                     "names.no.column": "No suitable column found for germplasm name. Please check the CODES sheet for NAMES",
                     "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again",
@@ -164,12 +164,12 @@
             },
             "matches": {
                 "header": "Select existing germplasm or add new entry",
-                "with.guid.match": " (<b>GUID={{guid}}</b> <i>automatically selected</i>)",
+                "with.pui.match": " (<b>PUI={{pui}}</b> <i>automatically selected</i>)",
                 "matches.were.found": "Match(es) were found for <b>ENTRY_NO: {{entryNo}}</b> ({{matchNumber}} of {{unassignedCount}})",
                 "click.on.an.entry": ". Click on an existing entry below to choose it as the match for this germplasm. You may also choose to ignore the match and add a new entry.",
                 "ignore.match": "Ignore matches and add new entry",
                 "ignore.all.remaining": "Ignore remaining matches and add new entries for all",
-                "guid.matches.warning": "Remaining matches by GUID will <b>not</b> be ignored and selected automatically!"
+                "pui.matches.warning": "Remaining matches by PUI will <b>not</b> be ignored and selected automatically!"
             },
             "review": {
                 "header": "Review",
@@ -184,7 +184,7 @@
                     "new": "{{param}} entries have no matches <strong>(new records will be created)</strong>",
                     "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
                     "match.by.name": "{{param}} entries with matches <b>by name</b> were selected (no records will be created)",
-                    "match.by.guid": "{{param}} entries with matches <b>by GUID</b> were automatically selected (no records will be created)",
+                    "match.by.pui": "{{param}} entries with matches <b>by PUI</b> were automatically selected (no records will be created)",
                     "inventory": "{{param}} lots will be created",
                     "progenitors": "{{param}} entries will be connected with progenitors"
                 }

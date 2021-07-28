@@ -176,7 +176,7 @@ export class GermplasmImportComponent implements OnInit {
             .forEach((header) => this.codes[header] = 1);
         // Known name types
         fileHeader.filter((header) => {
-            return [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(header.toUpperCase()) !== -1;
+            return [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString(), HEADERS.PUI.toString()].indexOf(header.toUpperCase()) !== -1;
         }).forEach((header) => this.codes[header] = 1);
     }
 
@@ -212,8 +212,8 @@ export class GermplasmImportComponent implements OnInit {
         if (this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
             errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo.duplicates'));
         }
-        if (this.context.data.map((row) => row[HEADERS.GUID]).filter((cell) => cell).some((cell, i, col) => col.indexOf(cell) !== i)) {
-            errorMessage.push(this.translateService.instant('germplasm.import.file.validation.guid.duplicates'));
+        if (this.context.data.map((row) => row[HEADERS.PUI]).filter((cell) => cell).some((cell, i, col) => col.indexOf(cell) !== i)) {
+            errorMessage.push(this.translateService.instant('germplasm.import.file.validation.pui.duplicates'));
         }
     }
 
@@ -268,7 +268,7 @@ export class GermplasmImportComponent implements OnInit {
                 creationDate: row[HEADERS['CREATION DATE']],
                 unit: row[HEADERS.UNITS],
                 stockId: row[HEADERS['STOCK ID']],
-                germplasmUUID: row[HEADERS.GUID],
+                germplasmPUI: row[HEADERS.PUI],
                 progenitor1: row[HEADERS['PROGENITOR 1']],
                 progenitor2: row[HEADERS['PROGENITOR 2']]
             });
@@ -332,7 +332,7 @@ export enum HEADERS {
     'STOCK ID' = 'STOCK ID',
     // Used internally - doesn't come in spreadsheet
     'STOCK ID PREFIX' = 'STOCK ID PREFIX',
-    'GUID' = 'GUID',
+    'PUI' = 'PUI',
     // Used internally - doesn't come in spreadsheet
     'GID MATCHES' = 'GID MATCHES',
 }
