@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Route } from '@angular/router';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../shared/service/param.context';
 import { FileService } from '../shared/file/service/file.service';
 import { FileMetadata } from '../shared/file/model/file-metadata';
@@ -9,6 +9,8 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { finalize } from 'rxjs/operators';
+import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-file-manager',
@@ -38,7 +40,9 @@ export class FileManagerComponent {
         private activeModal: NgbActiveModal,
         public context: ParamContext,
         private fileService: FileService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private modalService: NgbModal,
+        private translateService: TranslateService
     ) {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
@@ -74,7 +78,14 @@ export class FileManagerComponent {
         return encodeURIComponent(path);
     }
 
-    delete() {
+    async delete() {
+        const confirmModal = this.modalService.open(ModalConfirmComponent);
+        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm');
+        try {
+            await confirmModal.result;
+        } catch (e) {
+            return;
+        }
         this.isLoading = true;
         this.fileService.delete(this.fileMetadata.fileUUID)
             .pipe(finalize(() => this.isLoading = false))

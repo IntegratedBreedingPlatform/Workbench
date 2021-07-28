@@ -9,6 +9,7 @@
         "fileUpload.description": "Choose a file to import",
         "upload": "Upload",
         "upload.success": "File uploaded successfully!",
-        "delete.success": "File deleted successfully!"
+        "delete.success": "File deleted successfully!",
+        "delete.confirm": "Are you sure you want to delete the file?"
     }
 }
