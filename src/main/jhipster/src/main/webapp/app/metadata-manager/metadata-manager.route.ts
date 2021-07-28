@@ -4,8 +4,11 @@ import { NameTypeComponent } from './name-type/name-type.component';
 import { NameTypeResolvePagingParams } from './name-type/name-type-resolve-paging-params';
 import { RouteAccessService } from '../shared';
 import { MANAGE_METADATA_PERMISSIONS } from '../shared/auth/permissions';
+import { nameTypePopupRoutes, nameTypeRoutes } from './name-type/name-type-route';
+import { NameTypeEditPopupComponent } from './name-type/name-type-edit-dialog.component';
 
 export const METADATA_MANAGER_ROUTES: Routes = [
+    ...nameTypePopupRoutes,
     {
         path: 'metadata-manager',
         component: MetadataManagerComponent,
@@ -14,19 +17,8 @@ export const METADATA_MANAGER_ROUTES: Routes = [
             authorities: [...MANAGE_METADATA_PERMISSIONS]
         },
         canActivate: [RouteAccessService],
-        children: [
-            {
-                path: '',
-                redirectTo: 'name-type',
-                pathMatch: 'full'
-            }, {
-                path: 'name-type',
-                component: NameTypeComponent,
-                data: {},
-                resolve: {
-                    'pagingParams': NameTypeResolvePagingParams
-                },
-            }
-        ]
+        children: [...nameTypeRoutes,
+        ],
     }
+
 ];
