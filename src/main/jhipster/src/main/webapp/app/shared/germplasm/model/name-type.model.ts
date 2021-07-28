@@ -2,8 +2,8 @@ export class NameType {
     constructor(
         public id?: number,
         public code?: string,
-        private name?: string,
-        private description?: string,
+        public name?: string,
+        public description?: string,
     ) {
     }
 }
@@ -12,10 +12,10 @@ export class NameTypeDetails {
     constructor(
         public id?: number,
         public code?: string,
-        private name?: string,
-        private description?: string,
-        private date?: string,
-        private userName?: string,
+        public name?: string,
+        public description?: string,
+        public date?: string,
+        public userName?: string,
     ) {
     }
 }

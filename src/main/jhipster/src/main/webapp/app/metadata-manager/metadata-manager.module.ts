@@ -6,6 +6,8 @@ import { MetadataManagerComponent } from './metadata-manager.component';
 import { NameTypeComponent } from './name-type/name-type.component';
 import { NameTypeResolvePagingParams } from './name-type/name-type-resolve-paging-params';
 import { NameTypeService } from './name-type/name-type.service';
+import { NameTypeEditDialogComponent, NameTypeEditPopupComponent } from './name-type/name-type-edit-dialog.component';
+import { NameTypeContext } from './name-type/name-type.context';
 
 @NgModule({
     imports: [
@@ -15,15 +17,20 @@ import { NameTypeService } from './name-type/name-type.service';
     ],
     declarations: [
         MetadataManagerComponent,
-        NameTypeComponent
+        NameTypeComponent,
+        NameTypeEditDialogComponent,
+        NameTypeEditPopupComponent
     ],
     entryComponents: [
         MetadataManagerComponent,
-        NameTypeComponent
+        NameTypeComponent,
+        NameTypeEditDialogComponent,
+        NameTypeEditPopupComponent
     ],
     providers: [
         NameTypeResolvePagingParams,
-        NameTypeService
+        NameTypeService,
+        NameTypeContext
     ]
 })
 export class MetadataManagerModule {
