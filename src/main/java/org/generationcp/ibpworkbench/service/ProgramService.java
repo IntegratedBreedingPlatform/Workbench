@@ -128,7 +128,7 @@ public class ProgramService {
 		final List<Integer> userIdsToBeRemoved =
 			this.getUsersNotAssociatedToSpecificProgram(project.getProjectId(), userList);
 		if (!userIdsToBeRemoved.isEmpty()) {
-			this.programServiceMw.removeUsersFromProgram(userIdsToBeRemoved, project.getUniqueID());
+			this.programServiceMw.removeProgramMembers(userIdsToBeRemoved, project.getUniqueID());
 		}
 
 	}
