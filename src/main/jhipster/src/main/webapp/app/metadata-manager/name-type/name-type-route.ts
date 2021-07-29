@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { NameTypeEditPopupComponent } from './name-type-edit-dialog.component';
 import { NameTypeComponent } from './name-type.component';
 import { NameTypeResolvePagingParams } from './name-type-resolve-paging-params';
-import { RouteAccessService } from '../../shared';
-import { MANAGE_METADATA_PERMISSIONS } from '../../shared/auth/permissions';
 
 export const nameTypeRoutes: Routes = [
     {
