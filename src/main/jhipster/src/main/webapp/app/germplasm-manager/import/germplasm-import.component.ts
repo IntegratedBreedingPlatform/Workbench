@@ -106,7 +106,7 @@ export class GermplasmImportComponent implements OnInit {
         }
         const unknown = codeKeys.filter((code) =>
             this.context.attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
-            && this.context.nameTypes.every((name) => name.code !== code)
+            && this.context.nameTypes.every((name) => toUpper(name.code) !== code)
         );
         if (unknown.length) {
             this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)}, 5000);
@@ -221,7 +221,7 @@ export class GermplasmImportComponent implements OnInit {
         const rowWithMissingNameData = [];
         const preferredNameInvalid = {};
         for (const row of this.context.data) {
-            const nameColumns = this.context.nameTypes.filter((nameType) => row[nameType.code]);
+            const nameColumns = this.context.nameTypes.filter((nameType) => row[toUpper(nameType.code)]);
             if (!nameColumns.length) {
                 rowWithMissingNameData.push(row);
                 continue;
