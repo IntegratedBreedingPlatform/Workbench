@@ -726,7 +726,10 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     exportDataAndLabels() {
-        if (!this.validateSelection()) {
+        if (this.germplasmList.length === 0) {
+            this.alertService.error('error.custom', {
+                param: 'The filter applied does not return any results to perform this action. Please check'
+            });
             return;
         }
 
