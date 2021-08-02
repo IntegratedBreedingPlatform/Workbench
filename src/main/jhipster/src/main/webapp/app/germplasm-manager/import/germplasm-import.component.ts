@@ -252,7 +252,7 @@ export class GermplasmImportComponent implements OnInit {
         // sort as in the file. TODO Different institutes may have name priorities
         this.context.nameTypes.sort((a, b) => {
             const header = this.rawData[0];
-            if (header.indexOf(a.code) > header.indexOf(b.code)) {
+            if (header.indexOf(toUpper(a.code)) > header.indexOf(toUpper(b.code))) {
                 return 1;
             }
             return -1;
