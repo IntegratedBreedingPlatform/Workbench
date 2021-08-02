@@ -95,13 +95,14 @@ public class ProgramService {
 		// sets current user as program owner
 		program.setUserId(this.contextUtil.getCurrentWorkbenchUserId());
 
+		//FIXME Crop should always exist
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			this.workbenchDataManager.addCropType(program.getCropType());
 		}
 		program.setLastOpenDate(null);
 
-		this.workbenchDataManager.addProject(program);
+		this.programServiceMw.addProject(program);
 	}
 
 	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {

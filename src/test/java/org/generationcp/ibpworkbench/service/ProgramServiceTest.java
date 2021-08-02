@@ -67,6 +67,9 @@ public class ProgramServiceTest {
 	@Mock
 	private LocationDataManager locationDataManager;
 
+	@Mock
+	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
+
 	@InjectMocks
 	private final ProgramService programService = new ProgramService();
 
@@ -79,7 +82,6 @@ public class ProgramServiceTest {
 
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
 		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);
-		;
 		Mockito.when(this.cookie.getValue()).thenReturn(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE);
 		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[] {this.cookie});
 
@@ -122,7 +124,7 @@ public class ProgramServiceTest {
 
 		// Verify that the key database operations for program creation are
 		// invoked.
-		Mockito.verify(this.workbenchDataManager).addProject(project);
+		Mockito.verify(this.programServiceMw).addProject(project);
 		Assert.assertEquals(ProgramServiceTest.USER_ID, project.getUserId());
 		Assert.assertNull(project.getLastOpenDate());
 
