@@ -15,13 +15,13 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationId): Observable<FileMetadata[]> {
+    listFileMetadata(observationUnitUUID): Observable<FileMetadata[]> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params: any = { observationId }
+        const params: any = { observationUnitUUID }
         return this.http.get<FileMetadata[]>(baseUrl + '/filemetadata', { params, observe: 'body' });
     }
 
-    upload(file: File, observationUnitUUID, termId): Observable<FileMetadata> {
+    upload(file: File, observationUnitUUID, termId = null): Observable<FileMetadata> {
         const formData: FormData = new FormData();
         formData.append('file', file, file.name);
         const headers = new Headers();
@@ -29,10 +29,13 @@ export class FileService {
 
         const options = {
             params: {
-                observationUnitUUID,
-                termId
+                observationUnitUUID
             },
         };
+
+        if (termId) {
+            options.params['termId'] = termId;
+        }
 
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.post<FileMetadata>(baseUrl + '/files', formData, options);

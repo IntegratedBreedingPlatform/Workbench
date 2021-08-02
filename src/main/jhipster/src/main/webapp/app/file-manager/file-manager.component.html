@@ -8,7 +8,7 @@
 		<div class="col">
 			<h4 jhiTranslate="fileManager.fileSection" class="border-bottom pb-3 mb-3"></h4>
 			<i class="throbber float-right" *ngIf="isLoading"></i>
-			<form *ngIf="!fileMetadata">
+			<form>
 				<div class="form-group row">
 					<div class="col">
 						<div class="row">
@@ -23,7 +23,7 @@
 								</div>
 							</div>
 							<div class="col-auto">
-								<button class="btn btn-info" (click)="upload()">
+								<button class="btn btn-info" (click)="upload()" [disabled]="!file">
 									<span jhiTranslate="fileManager.upload"></span>
 								</button>
 							</div>
@@ -31,7 +31,7 @@
 					</div>
 				</div>
 			</form>
-			<table class="table table-striped table-bordered table-curved table-fit" *ngIf="fileMetadata">
+			<table class="table table-striped table-bordered table-curved table-fit" *ngIf="fileMetadataList && fileMetadataList.length">
 				<thead>
 				<tr>
 					<th jhiTranslate="fileManager.fileName"></th>
@@ -39,11 +39,12 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr>
+				<tr *ngFor="let fileMetadata of fileMetadataList" (click)="select(fileMetadata)"
+					[class.selected]="fileMetadataSelected && fileMetadataSelected.fileUUID == fileMetadata.fileUUID">
 					<td>{{fileMetadata.name}}</td>
 					<td>
-						<button class="btn btn-info mr-2" (click)="delete()"><i class="fa fa-trash" aria-hidden="true"></i></button>
-						<button class="btn btn-info" (click)="download()">
+						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+						<button class="btn btn-info" (click)="download($event, fileMetadata)">
 							<i class="fa fa-download" aria-hidden="true"></i>
 						</button>
 					</td>
@@ -57,16 +58,25 @@
 			<h4 jhiTranslate="fileManager.preview" class="border-bottom pb-3 mb-3"></h4>
 			<div class="row">
 				<div class="col">
-					<div *ngIf="((fileMetadata && isImage(fileMetadata.name)) || imgToUploadUrlPreview) else nopreview">
-						<div *ngIf="fileMetadata else imgpreview">
-							<!-- FIXME works intermittently, not sure why the ngif works given that the src is preloaded with a tiny image... -->
-							<i class="throbber" *ngIf="!img.src"></i>
-							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadata.path | secureImage | async" />
+					<!-- Preview image either from file selected... -->
+					<div *ngIf="(fileMetadataSelected && fileMetadataSelected.path)">
+						<div *ngIf="isImage(fileMetadataSelected.name) else nopreview">
+							<!-- FIXME tiny blank image inserted by secureImage fires the load event -->
+							<i class="throbber" *ngIf="isLoadingImage"></i>
+							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadataSelected.path | secureImage | async" (load)="isLoadingImage = false" />
 						</div>
-						<ng-template #imgpreview>
-							<img alt="" [src]="imgToUploadUrlPreview" />
-						</ng-template>
 					</div>
+					<!-- ...or image to upload -->
+					<div *ngIf="imgToUploadUrlPreview">
+						<img alt="" [src]="imgToUploadUrlPreview" />
+					</div>
+					<!-- ... or there is nothing selected -->
+					<div *ngIf="!(fileMetadataSelected && fileMetadataSelected.path)">
+						<div *ngIf="!file else nopreview">
+							<div class="text-center" jhiTranslate="fileManager.preview.select"></div>
+						</div>
+					</div>
+					<!-- ... or there is something selected with no preview -->
 					<ng-template #nopreview>
 						<div class="text-center" jhiTranslate="fileManager.preview.not.available"></div>
 					</ng-template>

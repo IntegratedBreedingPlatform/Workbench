@@ -24,15 +24,14 @@ export class FileManagerComponent {
     fileUpload: ElementRef;
     file: File;
 
-    fileMetadata: FileMetadata
+    fileMetadataSelected: FileMetadata;
+    fileMetadataList: FileMetadata[];
     imgToUploadUrlPreview;
 
-    datasetId: number;
     observationUnitUUID: string;
-    observationId: number;
-    termId: number;
 
     isLoading = false;
+    isLoadingImage = false;
     acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
 
     constructor(
@@ -46,21 +45,19 @@ export class FileManagerComponent {
     ) {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
-        this.datasetId = Number(queryParamMap.get('datasetId'));
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
-        this.observationId = Number(queryParamMap.get('observationId'));
-        this.termId = Number(queryParamMap.get('termId'));
+        this.load();
+    }
 
-        if (this.observationId) {
-            this.isLoading = true;
-            this.fileService.listFileMetadata(this.observationId)
-                .pipe(finalize(() => this.isLoading = false))
-                .subscribe((fileMetadataList) => {
-                    if (fileMetadataList && fileMetadataList.length) {
-                        this.fileMetadata = fileMetadataList[0];
-                    }
-                }, (error) => this.onError(error));
-        }
+    private load() {
+        this.isLoading = true;
+        this.fileService.listFileMetadata(this.observationUnitUUID)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe((fileMetadataList) => {
+                this.fileMetadataSelected = null;
+                this.imgToUploadUrlPreview = null;
+                this.fileMetadataList = fileMetadataList;
+            }, (error) => this.onError(error));
     }
 
     isImage(fileName) {
@@ -78,37 +75,41 @@ export class FileManagerComponent {
         return encodeURIComponent(path);
     }
 
-    async delete() {
+    async delete($event, fileMetadata: FileMetadata) {
+        $event.stopPropagation();
         const confirmModal = this.modalService.open(ModalConfirmComponent);
-        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm');
+        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', {fileName: fileMetadata.name});
         try {
             await confirmModal.result;
         } catch (e) {
             return;
         }
         this.isLoading = true;
-        this.fileService.delete(this.fileMetadata.fileUUID)
+        this.fileService.delete(fileMetadata.fileUUID)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(() => {
                 this.alertService.success('fileManager.delete.success');
-                this.fileMetadata = null;
-                this.imgToUploadUrlPreview = null;
+                this.load();
                 if (window.parent) {
                     window.parent.postMessage('observations-changed', '*');
                 }
             }, (error) => this.onError(error))
+        return false;
     }
 
-    download() {
+    download($event, fileMetadata: FileMetadata) {
+        $event.stopPropagation();
         this.isLoading = true;
-        this.fileService.downloadFile(this.fileMetadata.path).pipe(
+        this.fileService.downloadFile(fileMetadata.path).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(
-            (file: HttpResponse<Blob>) => saveFile(file, this.fileMetadata.name)
+            (file: HttpResponse<Blob>) => saveFile(file, fileMetadata.name)
         );
     }
 
     async onFileChange(evt: any) {
+        this.fileMetadataSelected = null;
+        this.imgToUploadUrlPreview = null;
         this.file = evt.target.files[0];
         this.fileUpload.nativeElement.innerText = this.file.name;
         if (this.isImage(this.file.name)) {
@@ -121,13 +122,12 @@ export class FileManagerComponent {
         // upload file / save observation
         this.fileService.upload(
             this.file,
-            this.observationUnitUUID,
-            this.termId
+            this.observationUnitUUID
         ).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(
             (fileMetadata) => {
-                this.fileMetadata = fileMetadata;
+                this.load();
                 this.alertService.success('fileManager.upload.success');
                 if (window.parent) {
                     window.parent.postMessage('observations-changed', '*');
@@ -135,6 +135,12 @@ export class FileManagerComponent {
             },
             (error) => this.onError(error)
         );
+    }
+
+    select(fileMetadata: FileMetadata) {
+        this.imgToUploadUrlPreview = null;
+        this.isLoadingImage = true;
+        this.fileMetadataSelected = fileMetadata;
     }
 
     private onError(response: HttpErrorResponse) {
