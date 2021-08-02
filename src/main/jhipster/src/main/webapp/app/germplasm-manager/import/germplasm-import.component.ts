@@ -228,7 +228,7 @@ export class GermplasmImportComponent implements OnInit {
             }
             nameColumns.forEach((n) => this.context.nameColumnsWithData[n.code] = true);
             const preferredName = row[HEADERS['PREFERRED NAME']];
-            if (preferredName && !nameColumns.some((col) => col.code === preferredName.toUpperCase())) {
+            if (preferredName && !nameColumns.some((col) => toUpper(col.code) === preferredName.toUpperCase())) {
                 preferredNameInvalid[preferredName] = true;
             }
         }
