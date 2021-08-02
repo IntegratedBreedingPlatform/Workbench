@@ -276,6 +276,10 @@
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 
+	<bean id="programServiceMw"
+		  class="org.generationcp.middleware.api.program.ProgramServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider"/>
+    </bean>
 
 	<bean id="workbenchHibernateSessionProvider"
 		class="org.generationcp.middleware.hibernate.HibernateSessionPerRequestProvider">
