@@ -4,9 +4,6 @@ import { SERVER_API_URL } from '../../app.constants';
 import { HttpClient } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
 
-declare const cropName: string;
-declare const currentProgramId: string;
-
 @Injectable()
 export class AccountService  {
     constructor(private http: HttpClient,
@@ -16,11 +13,19 @@ export class AccountService  {
         const cropNameContext = this.paramContext.cropName;
         const programUUIDContext = this.paramContext.programUUID;
 
+        const params = {};
+        const cropName = cropNameParam || cropNameContext;
+        const programUUID = programUUIDParam || programUUIDContext;
+
+        if (cropName) {
+            params['cropName'] = cropName;
+        }
+        if (programUUID) {
+            params['programUUID'] = programUUID;
+        }
+
         return this.http.get<Account>(SERVER_API_URL + '/account', {
-            params: {
-                cropName: cropNameParam || cropNameContext || cropName,
-                programUUID: programUUIDParam || programUUIDContext || currentProgramId
-            }
+            params
         });
     }
 }
