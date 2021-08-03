@@ -5,7 +5,6 @@ import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.api.program.ProgramFavoriteService;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.Person;
@@ -63,9 +62,6 @@ public class ProgramServiceTest {
 	private InstallationDirectoryUtil installationDirectoryUtil;
 
 	@Mock
-	private GermplasmDataManager germplasmDataManager;
-
-	@Mock
 	private LocationDataManager locationDataManager;
 
 	@Mock
@@ -116,7 +112,6 @@ public class ProgramServiceTest {
 		selectedUsers.add(this.memberUser);
 
 		final Integer unspecifiedLocationID = 9999;
-		final String entityType = "LOCATION";
 
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(ArgumentMatchers.anyString()))
@@ -132,14 +127,8 @@ public class ProgramServiceTest {
 		Assert.assertEquals(ProgramServiceTest.USER_ID, project.getUserId());
 		Assert.assertNull(project.getLastOpenDate());
 
-		// Capture the argument of the saveProgramFavorite function
-		//		final ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
 		Mockito.verify(this.programFavoriteService, Mockito.times(1)).addProgramFavorite(Mockito.eq(project.getUniqueID()), Mockito.eq(
 			ProgramFavorite.FavoriteType.LOCATION), Mockito.eq(unspecifiedLocationID));
-		// Assert the arguments
-		//		final ProgramFavorite programFavorite = captor.getValue();
-		//		Assert.assertEquals(unspecifiedLocationID, programFavorite.getEntityId());
-		//		Assert.assertEquals(entityType, programFavorite.getEntityType());
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil)
