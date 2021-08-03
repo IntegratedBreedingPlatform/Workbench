@@ -521,5 +521,10 @@
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 
+	<bean id="programFavoriteService" factory-bean="managerFactory" factory-method="getProgramFavoriteService"
+		  scope="request">
+		<aop:scoped-proxy/>
+	</bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>

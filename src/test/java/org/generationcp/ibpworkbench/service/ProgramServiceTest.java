@@ -4,6 +4,7 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
+import org.generationcp.middleware.api.program.ProgramFavoriteService;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -68,6 +69,9 @@ public class ProgramServiceTest {
 	private LocationDataManager locationDataManager;
 
 	@Mock
+	private ProgramFavoriteService programFavoriteService;
+
+	@Mock
 	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
 
 	@InjectMocks
@@ -129,15 +133,17 @@ public class ProgramServiceTest {
 		Assert.assertNull(project.getLastOpenDate());
 
 		// Capture the argument of the saveProgramFavorite function
-		final ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
-		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).saveProgramFavorite(captor.capture());
+		//		final ArgumentCaptor<ProgramFavorite> captor = ArgumentCaptor.forClass(ProgramFavorite.class);
+		Mockito.verify(this.programFavoriteService, Mockito.times(1)).addProgramFavorite(Mockito.eq(project.getUniqueID()), Mockito.eq(
+			ProgramFavorite.FavoriteType.LOCATION), Mockito.eq(unspecifiedLocationID));
 		// Assert the arguments
-		final ProgramFavorite programFavorite = captor.getValue();
-		Assert.assertEquals(unspecifiedLocationID, programFavorite.getEntityId());
-		Assert.assertEquals(entityType, programFavorite.getEntityType());
+		//		final ProgramFavorite programFavorite = captor.getValue();
+		//		Assert.assertEquals(unspecifiedLocationID, programFavorite.getEntityId());
+		//		Assert.assertEquals(entityType, programFavorite.getEntityType());
 
 		// Verify that utility to create workspace directory was called
-		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(project);
+		Mockito.verify(this.installationDirectoryUtil)
+			.createWorkspaceDirectoriesForProject(project.getCropType().getCropName(), project.getProjectName());
 
 		// Verify session attribute was set
 		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);
@@ -166,14 +172,14 @@ public class ProgramServiceTest {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("1");
 		this.programService.addUnspecifiedLocationToFavorite(this.createProject());
 		Mockito.verify(this.locationDataManager).retrieveLocIdOfUnspecifiedLocation();
-		Mockito.verify(this.germplasmDataManager).saveProgramFavorite(ArgumentMatchers.any(ProgramFavorite.class));
+		Mockito.verify(this.programFavoriteService).addProgramFavorite(Mockito.any(), Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void testNonExistingUnspecifiedLocationId() {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("");
 		this.programService.addUnspecifiedLocationToFavorite(this.createProject());
-		Mockito.verify(this.germplasmDataManager, Mockito.never()).saveProgramFavorite(ArgumentMatchers.any(ProgramFavorite.class));
+		Mockito.verify(this.programFavoriteService, Mockito.never()).addProgramFavorite(Mockito.any(), Mockito.any(), Mockito.any());
 	}
 
 	private Project createProject() {

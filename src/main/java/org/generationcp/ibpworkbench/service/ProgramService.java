@@ -6,6 +6,7 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
+import org.generationcp.middleware.api.program.ProgramFavoriteService;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
@@ -53,6 +54,9 @@ public class ProgramService {
 	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
 
 	@Autowired
+	private ProgramFavoriteService programFavoriteService;
+
+	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
@@ -70,7 +74,7 @@ public class ProgramService {
 		this.addUnspecifiedLocationToFavorite(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
-		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
+		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program.getCropType().getCropName(), program.getProjectName());
 
 		ProgramService.LOG.info(
 				"Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
@@ -147,11 +151,8 @@ public class ProgramService {
 	public void addUnspecifiedLocationToFavorite(final Project program) {
 		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
 		if (!StringUtils.isEmpty(unspecifiedLocationID)) {
-			final ProgramFavorite favorite = new ProgramFavorite();
-			favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
-			favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
-			favorite.setUniqueID(program.getUniqueID());
-			this.germplasmDataManager.saveProgramFavorite(favorite);
+			programFavoriteService
+				.addProgramFavorite(program.getUniqueID(), ProgramFavorite.FavoriteType.LOCATION, Integer.parseInt(unspecifiedLocationID));
 		}
 	}
 
