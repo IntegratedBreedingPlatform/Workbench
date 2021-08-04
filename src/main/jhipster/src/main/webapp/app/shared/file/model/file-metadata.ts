@@ -1,3 +1,5 @@
+import { Variable } from '../../ontology/model/variable';
+
 export class FileMetadata {
     constructor(
         public fileId: number,
@@ -15,6 +17,7 @@ export class FileMetadata {
         public fileTimestamp?: any,
         public observationUnitId?: string,
         public ndExperimentId?: number,
+        public variables?: Variable[]
     ) {
     }
 }

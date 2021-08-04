@@ -10,24 +10,34 @@
 			<i class="throbber float-right" *ngIf="isLoading"></i>
 			<form>
 				<div class="form-group row">
-					<div class="col">
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="input-group">
-									<!-- TODO  -->
-									<input type="file" class="custom-file-input" id="fileInput"
-										   (change)="onFileChange($event)" accept="{{acceptedFileTypes}}">
-									<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
-										<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
-									</label>
-								</div>
-							</div>
-							<div class="col-auto">
-								<button class="btn btn-info" (click)="upload()" [disabled]="!file">
-									<span jhiTranslate="fileManager.upload"></span>
-								</button>
-							</div>
+					<label class="col-sm-4 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
+					<div class="col-sm-6">
+						<div class="input-group">
+							<input type="file" class="custom-file-input" id="fileInput"
+								   (change)="onFileChange($event)" accept="{{acceptedFileTypes}}">
+							<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
+								<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
+							</label>
 						</div>
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-info" (click)="upload()" [disabled]="!file">
+							<span jhiTranslate="fileManager.upload.button"></span>
+						</button>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-4 col-form-label" for="variable" jhiTranslate="fileManager.upload.variable"></label>
+					<div class="col-sm-6">
+						<jhi-variable-select
+							id="variable"
+							[allowClear]="true"
+							(onVariableSelectedChange)="variable = $event"
+						></jhi-variable-select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="offset-3 col-sm-6">
 					</div>
 				</div>
 			</form>
@@ -35,6 +45,7 @@
 				<thead>
 				<tr>
 					<th jhiTranslate="fileManager.fileName"></th>
+					<th jhiTranslate="fileManager.variable"></th>
 					<th jhiTranslate="fileManager.actions"></th>
 				</tr>
 				</thead>
@@ -42,6 +53,7 @@
 				<tr *ngFor="let fileMetadata of fileMetadataList" (click)="select(fileMetadata)"
 					[class.selected]="fileMetadataSelected && fileMetadataSelected.fileUUID == fileMetadata.fileUUID">
 					<td>{{fileMetadata.name}}</td>
+					<td>{{fileMetadata.variables?.length ? (fileMetadata.variables[0].alias || fileMetadata.variables[0].name) : ''}}</td>
 					<td>
 						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"><i class="fa fa-trash" aria-hidden="true"></i></button>
 						<button class="btn btn-info" (click)="download($event, fileMetadata)">

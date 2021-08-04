@@ -17,7 +17,10 @@ export class FileService {
 
     listFileMetadata(observationUnitUUID): Observable<FileMetadata[]> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params: any = { observationUnitUUID }
+        const params: any = {
+            observationUnitUUID,
+            programUUID: this.context.programUUID
+        }
         return this.http.get<FileMetadata[]>(baseUrl + '/filemetadata', { params, observe: 'body' });
     }
 

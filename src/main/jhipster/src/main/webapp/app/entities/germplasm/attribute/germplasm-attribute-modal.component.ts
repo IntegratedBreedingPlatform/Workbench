@@ -7,7 +7,6 @@ import { GermplasmService } from '../../../shared/germplasm/service/germplasm.se
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
 import { GermplasmAttributeContext } from './germplasm-attribute.context';
-import { Attribute } from '../../../shared/attributes/model/attribute.model';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../../shared/ontology/model/variable-details';
 import { VariableService } from '../../../shared/ontology/service/variable.service';

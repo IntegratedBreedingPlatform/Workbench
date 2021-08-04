@@ -183,6 +183,7 @@ export class GermplasmService {
         return this.http.patch<any>(url, germplasmProgenitorsUpdateRequestModel);
     }
 
+    // FIXME backend returns share/ontology/model/variable
     searchAttributes(query): Observable<HttpResponse<Attribute[]>> {
         return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes/search?query=` + query
             + '&programUUID=' + this.context.programUUID, { observe: 'response' });

@@ -12,6 +12,7 @@ import { finalize } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { FILE_UPLOAD_SUPPORTED_TYPES } from '../app.constants';
+import { VariableDetails } from '../shared/ontology/model/variable-details';
 
 @Component({
     selector: 'jhi-file-manager',
@@ -23,6 +24,7 @@ export class FileManagerComponent {
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
     file: File;
+    variable: VariableDetails;
 
     fileMetadataSelected: FileMetadata;
     fileMetadataList: FileMetadata[];
@@ -122,7 +124,8 @@ export class FileManagerComponent {
         // upload file / save observation
         this.fileService.upload(
             this.file,
-            this.observationUnitUUID
+            this.observationUnitUUID,
+            this.variable && this.variable.id || null
         ).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(
