@@ -123,7 +123,7 @@ public class ProgramServiceTest {
 
 		// Verify that the key database operations for program creation are
 		// invoked.
-		Mockito.verify(this.programServiceMw).addProject(project);
+		Mockito.verify(this.programServiceMw).addProgram(project);
 		Assert.assertEquals(ProgramServiceTest.USER_ID, project.getUserId());
 		Assert.assertNull(project.getLastOpenDate());
 

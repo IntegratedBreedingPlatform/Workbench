@@ -102,7 +102,7 @@ public class ProgramService {
 		}
 		program.setLastOpenDate(null);
 
-		this.programServiceMw.addProject(program);
+		this.programServiceMw.addProgram(program);
 	}
 
 	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
