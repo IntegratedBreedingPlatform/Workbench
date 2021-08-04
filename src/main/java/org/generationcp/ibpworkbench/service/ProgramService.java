@@ -7,7 +7,6 @@ import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
 import org.generationcp.middleware.api.program.ProgramFavoriteService;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
@@ -46,9 +45,6 @@ public class ProgramService {
 
 	@Autowired
 	private LocationDataManager locationDataManager;
-
-	@Autowired
-	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
 	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
