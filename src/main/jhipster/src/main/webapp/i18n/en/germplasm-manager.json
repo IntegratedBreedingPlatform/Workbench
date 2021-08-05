@@ -73,7 +73,11 @@
             "filter-by-selected-records": "Filter by selected records",
             "create-inventory-lots": "Create inventory lots"
         },
-        "included-gids": "(+ included germplasm)"
+        "included-gids": "(+ included germplasm)",
+        "selection": {
+            "filter.no.result": "The filter applied does not return any results to perform this action. Please check",
+            "empty": "Please select at least one lot"
+        }
     },
     "germplasm-list-creation": {
         "header": "Save list",

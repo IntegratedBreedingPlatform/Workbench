@@ -622,9 +622,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     private validateSelection() {
         if (this.germplasmList.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) === 0)) {
-            this.alertService.error('error.custom', {
-                param: 'Please select at least one germplasm'
-            });
+            this.alertService.error('search-germplasm.selection.empty');
             return false;
         }
         return true;
@@ -727,9 +725,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     exportDataAndLabels() {
         if (this.germplasmList.length === 0) {
-            this.alertService.error('error.custom', {
-                param: 'The filter applied does not return any results to perform this action. Please check'
-            });
+            this.alertService.error('search-germplasm.selection.filter.no.result');
             return;
         }
 
