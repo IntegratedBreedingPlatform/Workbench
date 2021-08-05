@@ -74,6 +74,7 @@ import { VariableService } from './ontology/service/variable.service';
 import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
 import { VariableValidationService } from './ontology/service/variable-validation.service';
 import { FileService } from './file/service/file.service';
+import { ColumnFilterInlineComponent } from './column-filter/inline/column-filter-inline.component';
 
 @NgModule({
     imports: [
@@ -101,6 +102,7 @@ import { FileService } from './file/service/file.service';
         ColumnFilterRadioComponent,
         ColumnFilterListComponent,
         ColumnFilterComponent,
+        ColumnFilterInlineComponent,
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
@@ -198,6 +200,7 @@ import { FileService } from './file/service/file.service';
         ColumnFilterRadioComponent,
         ColumnFilterListComponent,
         ColumnFilterComponent,
+        ColumnFilterInlineComponent,
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
