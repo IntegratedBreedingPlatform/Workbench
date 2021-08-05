@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Route } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../shared/service/param.context';
 import { FileService } from '../shared/file/service/file.service';
@@ -13,6 +13,7 @@ import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { FILE_UPLOAD_SUPPORTED_TYPES } from '../app.constants';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
+import { FilterType } from '../shared/column-filter/column-filter.component';
 
 @Component({
     selector: 'jhi-file-manager',
@@ -36,6 +37,14 @@ export class FileManagerComponent {
     isLoadingImage = false;
     acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
 
+    filters = {
+        variable: {
+            key: 'variable',
+            type: FilterType.TEXT,
+            value: ''
+        }
+    }
+
     constructor(
         private route: ActivatedRoute,
         private activeModal: NgbActiveModal,
@@ -53,13 +62,21 @@ export class FileManagerComponent {
 
     private load() {
         this.isLoading = true;
-        this.fileService.listFileMetadata(this.observationUnitUUID)
+        this.fileService.listFileMetadata(this.observationUnitUUID, this.filters.variable.value)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe((fileMetadataList) => {
                 this.fileMetadataSelected = null;
                 this.imgToUploadUrlPreview = null;
                 this.fileMetadataList = fileMetadataList;
             }, (error) => this.onError(error));
+    }
+
+    applyFilters() {
+        this.load();
+    }
+
+    resetFilters() {
+        this.load();
     }
 
     isImage(fileName) {

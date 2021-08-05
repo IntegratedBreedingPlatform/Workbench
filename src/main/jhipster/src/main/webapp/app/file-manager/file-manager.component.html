@@ -41,15 +41,20 @@
 					</div>
 				</div>
 			</form>
-			<table class="table table-striped table-bordered table-curved table-fit" *ngIf="fileMetadataList && fileMetadataList.length">
+			<table class="table table-striped table-bordered table-curved">
 				<thead>
 				<tr>
 					<th jhiTranslate="fileManager.fileName"></th>
-					<th jhiTranslate="fileManager.variable"></th>
+					<th>
+						<span jhiTranslate="fileManager.variable"></span>
+						<jhi-column-filter-inline [filter]="filters.variable"
+												  (onApply)="applyFilters()"
+												  (onReset)="resetFilters()"></jhi-column-filter-inline>
+					</th>
 					<th jhiTranslate="fileManager.actions"></th>
 				</tr>
 				</thead>
-				<tbody>
+				<tbody *ngIf="fileMetadataList && fileMetadataList.length else nodata">
 				<tr *ngFor="let fileMetadata of fileMetadataList" (click)="select(fileMetadata)"
 					[class.selected]="fileMetadataSelected && fileMetadataSelected.fileUUID == fileMetadata.fileUUID">
 					<td>{{fileMetadata.name}}</td>
@@ -62,6 +67,15 @@
 					</td>
 				</tr>
 				</tbody>
+				<ng-template #nodata>
+					<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					</tbody>
+				</ng-template>
 			</table>
 		</div>
 	</div>
