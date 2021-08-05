@@ -8,12 +8,13 @@ import { readAsDataURL, saveFile } from '../shared/util/file-utils';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { FILE_UPLOAD_SUPPORTED_TYPES } from '../app.constants';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
+import { Pageable } from '../shared/model/pageable';
 
 @Component({
     selector: 'jhi-file-manager',
@@ -45,6 +46,10 @@ export class FileManagerComponent {
         }
     }
 
+    page = 1;
+    pageSize = 5;
+    totalCount: any;
+
     constructor(
         private route: ActivatedRoute,
         private activeModal: NgbActiveModal,
@@ -60,15 +65,27 @@ export class FileManagerComponent {
         this.load();
     }
 
-    private load() {
+    load() {
         this.isLoading = true;
-        this.fileService.listFileMetadata(this.observationUnitUUID, this.filters.variable.value)
-            .pipe(finalize(() => this.isLoading = false))
-            .subscribe((fileMetadataList) => {
-                this.fileMetadataSelected = null;
-                this.imgToUploadUrlPreview = null;
-                this.fileMetadataList = fileMetadataList;
-            }, (error) => this.onError(error));
+        this.fileService.listFileMetadata(
+            this.observationUnitUUID,
+            this.filters.variable.value,
+            <Pageable>({
+                page: this.page - 1,
+                size: this.pageSize,
+                sort: null
+            }),
+        ).pipe(
+            finalize(() => this.isLoading = false),
+            map((resp) => {
+                this.totalCount = resp.headers.get('X-Total-Count')
+                return resp;
+            })
+        ).subscribe((resp) => {
+            this.fileMetadataSelected = null;
+            this.imgToUploadUrlPreview = null;
+            this.fileMetadataList = resp.body;
+        }, (error) => this.onError(error));
     }
 
     applyFilters() {

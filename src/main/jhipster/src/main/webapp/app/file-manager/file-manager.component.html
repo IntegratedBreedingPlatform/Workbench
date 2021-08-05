@@ -70,13 +70,19 @@
 				<ng-template #nodata>
 					<tbody>
 					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td colspan="3" jhiTranslate="no.data"></td>
 					</tr>
 					</tbody>
 				</ng-template>
 			</table>
+			<div class="pagination-container">
+				<div class="pagination-box pagination-box-left"></div>
+				<div class="pagination-box">
+					<ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" [disabled]="isLoading"
+									[maxSize]="5" [rotate]="true" (pageChange)="load()"></ngb-pagination>
+				</div>
+				<div class="pagination-box pagination-box-right"></div>
+			</div>
 		</div>
 	</div>
 	<div class="row mb-3">

@@ -5,6 +5,8 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
 import { saveFile } from '../../util/file-utils';
+import { Pageable } from '../../model/pageable';
+import { createRequestOption } from '../..';
 
 @Injectable()
 export class FileService {
@@ -15,16 +17,18 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationUnitUUID, variableName): Observable<FileMetadata[]> {
+    listFileMetadata(observationUnitUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params: any = {
+        const request = {
             observationUnitUUID,
-            programUUID: this.context.programUUID
-        }
+        };
         if (variableName) {
-            params['variableName'] = variableName;
+            request['variableName'] = variableName;
         }
-        return this.http.get<FileMetadata[]>(baseUrl + '/filemetadata', { params, observe: 'body' });
+        const params: any = createRequestOption(Object.assign({
+            programUUID: this.context.programUUID
+        }, pageable));
+        return this.http.post<FileMetadata[]>(baseUrl + '/filemetadata/search', request, { params, observe: 'response' });
     }
 
     upload(file: File, observationUnitUUID, termId = null): Observable<FileMetadata> {
