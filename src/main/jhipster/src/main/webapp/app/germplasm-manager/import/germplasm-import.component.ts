@@ -106,7 +106,7 @@ export class GermplasmImportComponent implements OnInit {
         }
         const unknown = codeKeys.filter((code) =>
             this.context.attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
-            && this.context.nameTypes.every((name) => name.code !== code)
+            && this.context.nameTypes.every((name) => toUpper(name.code) !== code)
         );
         if (unknown.length) {
             this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)}, 5000);
@@ -221,14 +221,14 @@ export class GermplasmImportComponent implements OnInit {
         const rowWithMissingNameData = [];
         const preferredNameInvalid = {};
         for (const row of this.context.data) {
-            const nameColumns = this.context.nameTypes.filter((nameType) => row[nameType.code]);
+            const nameColumns = this.context.nameTypes.filter((nameType) => row[toUpper(nameType.code)]);
             if (!nameColumns.length) {
                 rowWithMissingNameData.push(row);
                 continue;
             }
             nameColumns.forEach((n) => this.context.nameColumnsWithData[n.code] = true);
             const preferredName = row[HEADERS['PREFERRED NAME']];
-            if (preferredName && !nameColumns.some((col) => col.code === preferredName.toUpperCase())) {
+            if (preferredName && !nameColumns.some((col) => toUpper(col.code) === preferredName.toUpperCase())) {
                 preferredNameInvalid[preferredName] = true;
             }
         }
@@ -252,7 +252,7 @@ export class GermplasmImportComponent implements OnInit {
         // sort as in the file. TODO Different institutes may have name priorities
         this.context.nameTypes.sort((a, b) => {
             const header = this.rawData[0];
-            if (header.indexOf(a.code) > header.indexOf(b.code)) {
+            if (header.indexOf(toUpper(a.code)) > header.indexOf(toUpper(b.code))) {
                 return 1;
             }
             return -1;

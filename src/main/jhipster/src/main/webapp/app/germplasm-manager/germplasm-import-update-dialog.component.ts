@@ -116,7 +116,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
             const progenitorsValuesMap = {};
 
             names.forEach((name) => {
-                namesValuesMap[name.code] = row[name.code];
+                namesValuesMap[toUpper(name.code)] = row[toUpper(name.code)];
             });
             attributes.forEach((attribute) => {
                 if (row[toUpper(attribute.name)]) {
@@ -207,7 +207,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         // TODO See GermplasmImportComponent.showUnknownColumnsWarning
         const invalidCodes = codes.filter((code) =>
             attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
-            && names.every((name) => name.code !== code)
+            && names.every((name) => toUpper(name.code) !== code)
         );
         if (invalidCodes && invalidCodes.length > 0) {
             errorMessage.push(this.translateService.instant('germplasm-import-updates.validation.invalid.codes', { param: invalidCodes.join(', ') }));
