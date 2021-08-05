@@ -1,0 +1,7 @@
+{
+    "baseUrl": "http://localhost:8080",
+    "username": "admin",
+    "password": "@dm1N",
+    "cropName": "maize",
+    "watchForFileChanges": false
+}
