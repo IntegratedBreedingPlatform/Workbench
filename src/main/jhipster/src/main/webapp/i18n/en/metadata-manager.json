@@ -1,0 +1,30 @@
+{
+  "metadata-manager": {
+    "title": "Manage Metadata",
+    "name-type": {
+      "title": "Germplasm Name Types",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "date": "Date",
+      "action": "Action",
+      "modal": {
+        "confirmation": {
+          "title": "Confirmation"
+        },
+        "delete": {
+          "success": "Name Type deleted successfully.",
+          "warning": "Are you sure you want to delete the Name Type {{param}}?"
+        },
+        "create": {
+          "header": "Create Name Type",
+          "success": "Name type created successfully"
+        },
+        "edit": {
+          "header": "Edit Name Type",
+          "success": "Name type updated successfully"
+        }
+      }
+    }
+  }
+}

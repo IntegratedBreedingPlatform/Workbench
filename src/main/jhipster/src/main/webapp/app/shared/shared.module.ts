@@ -29,7 +29,6 @@ import { ColumnFilterTextWithMatchOptionsComponent } from './column-filter/colum
 import { ColumnFilterPedigreeOptionsComponent } from './column-filter/column-filter-pedigree-options-component';
 import { ColumnFilterAttributesComponent } from './column-filter/column-filter-attributes-component';
 import { ColumnFilterNameTypesComponent } from './column-filter/column-filter-name-types-component';
-import { NameTypeService } from './name-type/service/name-type.service';
 import { KeyValuePipe } from './util/keyvalue.pipe';
 import { PopupService } from './modal/popup.service';
 import { LocationService } from './location/service/location.service';
@@ -143,7 +142,6 @@ import { ColumnFilterInlineComponent } from './column-filter/inline/column-filte
         SampleListBuilderService,
         HelpService,
         GermplasmService,
-        NameTypeService,
         BreedingMethodService,
         LocationService,
         ProgramService,
