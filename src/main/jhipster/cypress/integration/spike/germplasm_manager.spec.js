@@ -9,7 +9,7 @@ describe('Germplasm Manager', () => {
 		it('Import germplasm', () => {
 			const program = Cypress.env('program');
 
-			cy.visit(`ibpworkbench/main/app/#/germplasm-manager/germplasm-search?cropName=${Cypress.config('cropName')}&programUUID=${program.uuid}`);
+			cy.visit(`ibpworkbench/main/app/#/germplasm-manager/germplasm-search?cropName=${Cypress.env('cropName')}&programUUID=${program.uuid}`);
 
 			cy.get('#actionMenu').click();
 			cy.get('[jhitranslate="search-germplasm.actions.import"]').click().then(() => {
@@ -53,7 +53,7 @@ describe('Germplasm Manager', () => {
 				cy.get('jhi-modal-confirm').should('exist');
 			});
 
-			cy.intercept('POST', `bmsapi/crops/${Cypress.config('cropName')}/germplasm?programUUID=${program.uuid}`).as('importGermplasm');
+			cy.intercept('POST', `bmsapi/crops/${Cypress.env('cropName')}/germplasm?programUUID=${program.uuid}`).as('importGermplasm');
 
 			// Click confirm button of confirmation modal
 			cy.get('.container > .modal-footer > .btn-primary').click().then(() => {

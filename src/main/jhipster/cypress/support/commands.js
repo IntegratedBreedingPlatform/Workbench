@@ -31,8 +31,8 @@ Cypress.Commands.add('login', () => {
 
 	cy.intercept('POST', '/ibpworkbench/controller/auth/validateLogin').as('doLogin');
 
-	cy.get('.js-login-username').type(Cypress.config('username'));
-	cy.get('.js-login-password').type(Cypress.config('password'));
+	cy.get('.js-login-username').type(Cypress.env('username'));
+	cy.get('.js-login-password').type(Cypress.env('password'));
 	cy.get('.js-login-form').submit();
 
 	cy.wait('@doLogin');
@@ -47,7 +47,7 @@ Cypress.Commands.add('getProgram', () => {
 
 	cy.request({
 		method: 'GET',
-		url: `/bmsapi/${Cypress.config('cropName')}/brapi/v1/programs`,
+		url: `/bmsapi/${Cypress.env('cropName')}/brapi/v1/programs`,
 		headers: {
 			'X-Auth-Token': getAccessToken()
 		}

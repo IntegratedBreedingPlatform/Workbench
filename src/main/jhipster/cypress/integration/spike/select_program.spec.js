@@ -1,6 +1,6 @@
 describe('Programs', () => {
 
-	const cropName = Cypress.config('cropName');
+	const cropName = Cypress.env('cropName');
 
 	const getProgramsIframeDocument = () => {
 		return cy.get('#programsFrame').its('0.contentDocument').should('exist');

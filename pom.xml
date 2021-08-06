@@ -594,22 +594,12 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<filtering>true</filtering>
-				<directory>src/test/resources</directory>
-				<includes>
-					<include>**/*.properties</include>
-				</includes>
-			</testResource>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/resources</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.properties</exclude>
-				</excludes>
-			</testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </testResource>
 		</testResources>
 		<plugins>
 			<plugin>
