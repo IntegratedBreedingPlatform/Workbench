@@ -1,16 +1,15 @@
 <div class="modal-header">
 	<h3 class="modal-title" jhiTranslate="fileManager.title"></h3>
-	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">&times;
 	</button>
 </div>
 <div class="modal-body">
 	<div class="row mb-3">
 		<div class="col">
 			<h4 jhiTranslate="fileManager.fileSection" class="border-bottom pb-3 mb-3"></h4>
-			<i class="throbber float-right" *ngIf="isLoading"></i>
 			<form>
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
+					<label class="col-sm-3 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
 					<div class="col-sm-6">
 						<div class="input-group">
 							<input type="file" class="custom-file-input" id="fileInput"
@@ -25,9 +24,12 @@
 							<span jhiTranslate="fileManager.upload.button"></span>
 						</button>
 					</div>
+					<div class="col-sm-1">
+						<i class="throbber" *ngIf="isLoading"></i>
+					</div>
 				</div>
 				<div class="form-group row">
-					<label class="col-sm-4 col-form-label" for="variable" jhiTranslate="fileManager.upload.variable"></label>
+					<label class="col-sm-3 col-form-label" for="variable" jhiTranslate="fileManager.upload.variable"></label>
 					<div class="col-sm-6">
 						<jhi-variable-select
 							id="variable"
@@ -118,6 +120,6 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-default" jhiTranslate="cancel" (click)="cancel()"></button>
+	<button class="btn btn-default" jhiTranslate="close" (click)="close()"></button>
 </div>
 <jhi-alert></jhi-alert>

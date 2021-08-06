@@ -62,6 +62,7 @@ export class FileManagerComponent {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
+        this.filters.variable.value = queryParamMap.get('variableName');
         this.load();
     }
 
@@ -100,7 +101,7 @@ export class FileManagerComponent {
         return fileName.match(/\.(gif|jpe?g|tiff?|png|webp|bmp)$/i)
     }
 
-    cancel() {
+    close() {
         this.activeModal.dismiss();
         if ((<any>window.parent).closeModal) {
             (<any>window.parent).closeModal();
