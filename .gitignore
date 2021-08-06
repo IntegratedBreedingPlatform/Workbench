@@ -250,3 +250,6 @@ datasetExporterTest.csv
 *.ser
 test1.txt
 test2.txt
+
+src/main/jhipster/cypress/videos
+src/main/jhipster/cypress/screenshots

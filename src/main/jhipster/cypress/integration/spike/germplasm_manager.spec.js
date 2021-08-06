@@ -33,6 +33,8 @@ describe('Germplasm Manager', () => {
 
 			cy.wait(50);
 
+			// TODO: use data-test=”unique_value” as selectors
+
 			// Click next button to go to basic details modal
 			cy.get('jhi-germplasm-import > .modal-footer > .btn-primary').click().then(() => {
 				cy.get('jhi-germplasm-import-basic-details').should('exist');

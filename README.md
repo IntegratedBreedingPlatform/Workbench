@@ -52,6 +52,7 @@ To build using a specific configuration, run the following:
 where `dev-config-dir` is the configuration specific to your build.
 
 `-DskipTests` is optional, if you want to run unit-tests see [To Run Tests](#to-run-tests) section.
+`-DskipE2ETests` is optional, if you want to run end-to-end tests see [Run e2e tests](#run-e2e-tests) section.
 
 To Run Tests
 --------------
@@ -68,6 +69,28 @@ All JUnit test suites require the rice database, except for `GenotypicDataManage
 Similar to building `Workbench`, add the `-DenvConfig` parameter to use a specific configuration.
 
 To run JUnit tests using Eclipse, right-click on the specific JUnit test suite the `Workbench` project, select __Run As --> JUnit test__.
+
+## Run e2e tests
+
+ - Please, verify you have the right properties for e2e testing in BMSConfig (check for propeties with 'test.e2e' prefix)  
+ - If you are building the project running e2e tests, please do not forget to add the e2eBaseUrl property
+ - To run it locally, execute the following in command line:
+
+~~~
+yarn e2e
+~~~
+
+ - If parameter baseUrl is not present, the baseUrl will be the one set in BMSConfig properties. To run it in other environment:
+
+~~~ 
+mvn test -P e2e -De2eBaseUrl={baseUrl} 
+~~~
+
+ - To run locally using cypress test runner: 
+ 
+~~~ 
+run cypress run
+~~~
 
 Developer guide and IDE setup
 -------------------
