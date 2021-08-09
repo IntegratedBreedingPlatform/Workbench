@@ -1,0 +1,19 @@
+{
+    "fileManager": {
+        "title": "File",
+        "fileSection" : "File",
+        "preview": "Preview",
+        "preview.not.available": "Preview not available",
+        "preview.select": "Select a file to preview",
+        "fileName": "File name",
+        "variable": "Variable",
+        "actions": "Actions",
+        "fileUpload.description": "Choose a file to import",
+        "upload.file": "File to upload",
+        "upload.variable": "(Optional) associate to variable",
+        "upload.button": "Upload",
+        "upload.success": "File uploaded successfully!",
+        "delete.success": "File deleted successfully!",
+        "delete.confirm": "Are you sure you want to delete the file <strong>{{fileName}}</strong>?"
+    }
+}
