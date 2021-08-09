@@ -106,7 +106,7 @@ export class GermplasmImportComponent implements OnInit {
         }
         const unknown = codeKeys.filter((code) =>
             this.context.attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
-            && this.context.nameTypes.every((name) => name.code !== code)
+            && this.context.nameTypes.every((name) => toUpper(name.code) !== code)
         );
         if (unknown.length) {
             this.alertService.warning('germplasm.import.file.validation.unknown.column', {param: listPreview(unknown)}, 5000);
@@ -176,7 +176,7 @@ export class GermplasmImportComponent implements OnInit {
             .forEach((header) => this.codes[header] = 1);
         // Known name types
         fileHeader.filter((header) => {
-            return [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(header.toUpperCase()) !== -1;
+            return [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString(), HEADERS.PUI.toString()].indexOf(header.toUpperCase()) !== -1;
         }).forEach((header) => this.codes[header] = 1);
     }
 
@@ -212,8 +212,8 @@ export class GermplasmImportComponent implements OnInit {
         if (this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
             errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo.duplicates'));
         }
-        if (this.context.data.map((row) => row[HEADERS.GUID]).filter((cell) => cell).some((cell, i, col) => col.indexOf(cell) !== i)) {
-            errorMessage.push(this.translateService.instant('germplasm.import.file.validation.guid.duplicates'));
+        if (this.context.data.map((row) => row[HEADERS.PUI]).filter((cell) => cell).some((cell, i, col) => col.indexOf(cell) !== i)) {
+            errorMessage.push(this.translateService.instant('germplasm.import.file.validation.pui.duplicates'));
         }
     }
 
@@ -221,14 +221,14 @@ export class GermplasmImportComponent implements OnInit {
         const rowWithMissingNameData = [];
         const preferredNameInvalid = {};
         for (const row of this.context.data) {
-            const nameColumns = this.context.nameTypes.filter((nameType) => row[nameType.code]);
+            const nameColumns = this.context.nameTypes.filter((nameType) => row[toUpper(nameType.code)]);
             if (!nameColumns.length) {
                 rowWithMissingNameData.push(row);
                 continue;
             }
             nameColumns.forEach((n) => this.context.nameColumnsWithData[n.code] = true);
             const preferredName = row[HEADERS['PREFERRED NAME']];
-            if (preferredName && !nameColumns.some((col) => col.code === preferredName.toUpperCase())) {
+            if (preferredName && !nameColumns.some((col) => toUpper(col.code) === preferredName.toUpperCase())) {
                 preferredNameInvalid[preferredName] = true;
             }
         }
@@ -252,7 +252,7 @@ export class GermplasmImportComponent implements OnInit {
         // sort as in the file. TODO Different institutes may have name priorities
         this.context.nameTypes.sort((a, b) => {
             const header = this.rawData[0];
-            if (header.indexOf(a.code) > header.indexOf(b.code)) {
+            if (header.indexOf(toUpper(a.code)) > header.indexOf(toUpper(b.code))) {
                 return 1;
             }
             return -1;
@@ -268,7 +268,7 @@ export class GermplasmImportComponent implements OnInit {
                 creationDate: row[HEADERS['CREATION DATE']],
                 unit: row[HEADERS.UNITS],
                 stockId: row[HEADERS['STOCK ID']],
-                germplasmUUID: row[HEADERS.GUID],
+                germplasmPUI: row[HEADERS.PUI],
                 progenitor1: row[HEADERS['PROGENITOR 1']],
                 progenitor2: row[HEADERS['PROGENITOR 2']]
             });
@@ -332,7 +332,7 @@ export enum HEADERS {
     'STOCK ID' = 'STOCK ID',
     // Used internally - doesn't come in spreadsheet
     'STOCK ID PREFIX' = 'STOCK ID PREFIX',
-    'GUID' = 'GUID',
+    'PUI' = 'PUI',
     // Used internally - doesn't come in spreadsheet
     'GID MATCHES' = 'GID MATCHES',
 }

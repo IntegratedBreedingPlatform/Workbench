@@ -3,7 +3,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
-import { NameType } from '../../germplasm/model/name-type.model';
+import { NameType, NameTypeDetails } from '../../germplasm/model/name-type.model';
+import { createRequestOption } from '../../model/request-util';
 
 @Injectable()
 export class NameTypeService {
@@ -12,7 +13,25 @@ export class NameTypeService {
 
     }
 
-    searchNameTypes(query): Observable<HttpResponse<NameType[]>> {
-        return this.http.get<NameType[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types/search?query=` + query, { observe: 'response' });
+    createNameType(nameType: NameType) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types?programUUID=` + this.context.programUUID;
+        return this.http.post(url, nameType);
     }
+
+    updateNameType(nameType: NameType, nameTypeId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types/${nameTypeId}?programUUID=` + this.context.programUUID;
+        return this.http.patch(url, nameType);
+    }
+
+    deleteNameType(nameTypeId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types/${nameTypeId}?programUUID=` + this.context.programUUID;
+        return this.http.delete(url);
+    }
+
+    getNameTypes(req?: any): Observable<HttpResponse<NameTypeDetails[]>> {
+        const options = createRequestOption(req);
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types?programUUID=` + this.context.programUUID;
+        return this.http.get<NameTypeDetails[]>(url, { params: options, observe: 'response' });
+    }
+
 }

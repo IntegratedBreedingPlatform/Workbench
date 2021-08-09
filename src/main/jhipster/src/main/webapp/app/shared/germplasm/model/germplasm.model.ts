@@ -5,6 +5,7 @@ export class GermplasmDto {
     constructor(
         public gid?: number,
         public germplasmUUID?: string,
+        public germplasmPUI?: string,
         public preferredName?: string,
         public creationDate?: string,
         public createdBy?: string,

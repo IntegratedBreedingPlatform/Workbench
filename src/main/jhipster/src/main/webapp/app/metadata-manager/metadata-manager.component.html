@@ -1,0 +1,17 @@
+<section>
+	<header>
+		<h1 jhiTranslate="metadata-manager.title">Manage Metadata</h1>
+	</header>
+	<nav>
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['/name-type']"
+				   [routerLinkActive]="['active']" queryParamsHandling="merge" jhiTranslate="metadata-manager.name-type.title">Germplasm Name Types</a>
+			</li>
+		</ul>
+	</nav>
+	<div class="tab-content p-3">
+		<router-outlet></router-outlet>
+		<jhi-alert></jhi-alert>
+	</div>
+</section>

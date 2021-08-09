@@ -63,7 +63,7 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     // matches from db
     matches: GermplasmDto[];
-    matchesByGUID: { [key: string]: GermplasmDto; } = {};
+    matchesByPUI: { [key: string]: GermplasmDto; } = {};
     matchesByName: { [key: string]: GermplasmDto[]; } = {};
 
     selectMatchesResult: any = {};
@@ -92,8 +92,8 @@ export class GermplasmImportReviewComponent implements OnInit {
         const uuids = [];
         const names = {};
         this.context.data.forEach((row) => {
-            if (row[HEADERS['GUID']]) {
-                uuids.push(row[HEADERS['GUID']]);
+            if (row[HEADERS['PUI']]) {
+                uuids.push(row[HEADERS['PUI']]);
             }
             this.context.nametypesCopy.forEach((nameType) => {
                 if (row[nameType.code]) {
@@ -106,11 +106,11 @@ export class GermplasmImportReviewComponent implements OnInit {
             finalize(() => this.isLoading = false)
         ).subscribe((matches) => {
             this.matches = matches;
-            this.matchesByGUID = {};
+            this.matchesByPUI = {};
             this.matchesByName = {};
 
             this.matches.forEach((match) => {
-                this.matchesByGUID[toUpper(match.germplasmUUID)] = match;
+                this.matchesByPUI[toUpper(match.germplasmPUI)] = match;
                 match.names.forEach((name) => {
                     if (!this.matchesByName[toUpper(name.name)]) {
                         this.matchesByName[toUpper(name.name)] = [];
@@ -119,13 +119,13 @@ export class GermplasmImportReviewComponent implements OnInit {
                 });
             });
             this.context.data.forEach((row) => {
-                const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
+                const puiMatch = this.matchesByPUI[toUpper(row[HEADERS.PUI])];
                 const nameMatches = this.context.nametypesCopy.filter((nameType) => {
                     return Boolean(this.matchesByName[toUpper(row[nameType.code])]);
                 });
-                if (guidMatch) {
+                if (puiMatch) {
                     this.dataMatches.push(row);
-                    row[HEADERS['GID MATCHES']] = guidMatch.gid;
+                    row[HEADERS['GID MATCHES']] = puiMatch.gid;
                 } else if (nameMatches.length) {
                     this.dataMatches.push(row);
                     row[HEADERS['GID MATCHES']] = nameMatches
@@ -177,7 +177,7 @@ export class GermplasmImportReviewComponent implements OnInit {
             // Proceed with save
 
             const newEntries = this.context.data.filter((row) => {
-                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByGUID[toUpper(row[HEADERS.GUID])];
+                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByPUI[toUpper(row[HEADERS.PUI])];
             });
 
             if (newEntries.length) {
@@ -185,7 +185,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 this.importResult = await this.germplasmService.importGermplasm(<GermplasmImportRequest>({
                     germplasmList: newEntries.map((row) => <GermplasmImportPayload>({
                         clientId: row[HEADERS.ENTRY_NO],
-                        germplasmUUID: row[HEADERS.GUID],
+                        germplasmPUI: row[HEADERS.PUI],
                         locationAbbr: row[HEADERS['LOCATION ABBR']],
                         breedingMethodAbbr: row[HEADERS['BREEDING METHOD']],
                         reference: row[HEADERS['REFERENCE']],
@@ -234,8 +234,8 @@ export class GermplasmImportReviewComponent implements OnInit {
             if (this.creationOption === CREATION_OPTIONS.SELECT_EXISTING) {
                 if (this.isSelectMatchesAutomatically) {
                     unassignedMatches.forEach((row) => {
-                        const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
-                        if (!guidMatch) {
+                        const puiMatch = this.matchesByPUI[toUpper(row[HEADERS.PUI])];
+                        if (!puiMatch) {
                             const matches = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
                             if (matches && matches.length === 1) {
                                 this.selectMatchesResult[row[HEADERS.ENTRY_NO]] = matches[0].gid;
@@ -251,13 +251,13 @@ export class GermplasmImportReviewComponent implements OnInit {
                  * -> open manual
                  */
                 if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
-                    && !this.matchesByGUID[toUpper(row[HEADERS.GUID])])) {
+                    && !this.matchesByPUI[toUpper(row[HEADERS.PUI])])) {
 
                     const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
                         { size: 'lg', backdrop: 'static' });
                     selectMatchesModalRef.componentInstance.unassignedMatches = unassignedMatches;
                     selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
-                    selectMatchesModalRef.componentInstance.matchesByGUID = this.matchesByGUID;
+                    selectMatchesModalRef.componentInstance.matchesByPUI = this.matchesByPUI;
                     selectMatchesModalRef.componentInstance.selectMatchesResult = this.selectMatchesResult;
                     try {
                         await selectMatchesModalRef.result;
@@ -274,10 +274,10 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     private async showSummaryConfirmation() {
-        const countMatchByGUID = this.context.data.filter((row) => this.matchesByGUID[toUpper(row[HEADERS.GUID])]).length,
+        const countMatchByPUI = this.context.data.filter((row) => this.matchesByPUI[toUpper(row[HEADERS.PUI])]).length,
             countMatchByName = this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]).length,
             countNew = this.newRecords.length,
-            countIgnored = this.dataMatches.length - countMatchByName - countMatchByGUID;
+            countIgnored = this.dataMatches.length - countMatchByName - countMatchByPUI;
         const messages = [];
         if (countNew) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.new', { param: countNew }));
@@ -288,8 +288,8 @@ export class GermplasmImportReviewComponent implements OnInit {
         if (countMatchByName) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.name', { param: countMatchByName }));
         }
-        if (countMatchByGUID) {
-            messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.guid', { param: countMatchByGUID }));
+        if (countMatchByPUI) {
+            messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.pui', { param: countMatchByPUI }));
         }
         if (this.inventoryData.length) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.inventory', { param: this.inventoryData.length }));
@@ -320,8 +320,8 @@ export class GermplasmImportReviewComponent implements OnInit {
         }
         gids.push(...this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]])
             .map((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]));
-        gids.push(...this.context.data.filter((row) => this.matchesByGUID[toUpper(row[HEADERS.GUID])])
-            .map((row) => this.matchesByGUID[toUpper(row[HEADERS.GUID])].gid));
+        gids.push(...this.context.data.filter((row) => this.matchesByPUI[toUpper(row[HEADERS.PUI])])
+            .map((row) => this.matchesByPUI[toUpper(row[HEADERS.PUI])].gid));
 
         this.eventManager.broadcast({ name: 'filterByGid', content: gids });
 
@@ -367,8 +367,8 @@ export class GermplasmImportReviewComponent implements OnInit {
     private getSavedGid(row) {
         if (this.importResult[row[HEADERS.ENTRY_NO]]) {
             return this.importResult[row[HEADERS.ENTRY_NO]].gids[0];
-        } else if (this.matchesByGUID[toUpper(row[HEADERS.GUID])]) {
-            return this.matchesByGUID[toUpper(row[HEADERS.GUID])].gid;
+        } else if (this.matchesByPUI[toUpper(row[HEADERS.PUI])]) {
+            return this.matchesByPUI[toUpper(row[HEADERS.PUI])].gid;
         } else {
             return this.selectMatchesResult[row[HEADERS.ENTRY_NO]];
         }
@@ -444,9 +444,9 @@ enum CREATION_OPTIONS {
 })
 export class NameColumnPipePipe implements PipeTransform {
     transform(items: any[]): any {
-        // exclude common headers
+        // exclude common name headers
         return items.filter((item: NameType) =>
-            [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString()].indexOf(item.code) === -1);
+            [HEADERS.LNAME.toString(), HEADERS.DRVNM.toString(), HEADERS.PUI.toString()].indexOf(item.code) === -1);
     }
 
 }
