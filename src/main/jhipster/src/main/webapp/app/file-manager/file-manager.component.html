@@ -101,14 +101,14 @@
 						</div>
 					</div>
 					<!-- ...or image to upload -->
-					<div *ngIf="imgToUploadUrlPreview">
-						<img alt="" [src]="imgToUploadUrlPreview" />
-					</div>
-					<!-- ... or there is nothing selected -->
-					<div *ngIf="!(fileMetadataSelected && fileMetadataSelected.path)">
-						<div *ngIf="!file else nopreview">
-							<div class="text-center" jhiTranslate="fileManager.preview.select"></div>
+					<div *ngIf="!(fileMetadataSelected && fileMetadataSelected.path) && file">
+						<div *ngIf="imgToUploadUrlPreview else nopreview">
+							<img alt="" [src]="imgToUploadUrlPreview" />
 						</div>
+					</div>
+						<!-- ... or there is nothing selected -->
+					<div *ngIf="!(fileMetadataSelected && fileMetadataSelected.path) && !file">
+						<div class="text-center" jhiTranslate="fileManager.preview.select"></div>
 					</div>
 					<!-- ... or there is something selected with no preview -->
 					<ng-template #nopreview>
