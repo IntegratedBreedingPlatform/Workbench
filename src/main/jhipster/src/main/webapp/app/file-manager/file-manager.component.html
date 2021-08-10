@@ -6,7 +6,6 @@
 <div class="modal-body">
 	<div class="row mb-3">
 		<div class="col">
-			<h4 jhiTranslate="fileManager.fileSection" class="border-bottom pb-3 mb-3"></h4>
 			<form>
 				<div class="form-group row">
 					<label class="col-sm-3 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
@@ -95,9 +94,8 @@
 					<!-- Preview image either from file selected... -->
 					<div *ngIf="(fileMetadataSelected && fileMetadataSelected.path)">
 						<div *ngIf="isImage(fileMetadataSelected.name) else nopreview">
-							<!-- FIXME tiny blank image inserted by secureImage fires the load event -->
 							<i class="throbber" *ngIf="isLoadingImage"></i>
-							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadataSelected.path | secureImage | async" (load)="isLoadingImage = false" />
+							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadataSelected.path | secureImage | async" (load)="onImageLoad()" />
 						</div>
 					</div>
 					<!-- ...or image to upload -->
