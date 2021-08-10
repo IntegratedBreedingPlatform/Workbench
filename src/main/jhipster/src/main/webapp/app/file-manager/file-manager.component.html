@@ -95,9 +95,8 @@
 					<!-- Preview image either from file selected... -->
 					<div *ngIf="(fileMetadataSelected && fileMetadataSelected.path)">
 						<div *ngIf="isImage(fileMetadataSelected.name) else nopreview">
-							<!-- FIXME tiny blank image inserted by secureImage fires the load event -->
 							<i class="throbber" *ngIf="isLoadingImage"></i>
-							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadataSelected.path | secureImage | async" (load)="isLoadingImage = false" />
+							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadataSelected.path | secureImage | async" (load)="onImageLoad()" />
 						</div>
 					</div>
 					<!-- ...or image to upload -->

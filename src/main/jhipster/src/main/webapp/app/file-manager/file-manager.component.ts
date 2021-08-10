@@ -11,7 +11,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { finalize, map } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import { FILE_UPLOAD_SUPPORTED_TYPES } from '../app.constants';
+import { FILE_UPLOAD_SUPPORTED_TYPES, TINY_BLANK_IMAGE } from '../app.constants';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
@@ -27,6 +27,8 @@ export class FileManagerComponent {
     fileUpload: ElementRef;
     file: File;
     variable: VariableDetails;
+    @ViewChild('img')
+    img: ElementRef;
 
     fileMetadataSelected: FileMetadata;
     fileMetadataList: FileMetadata[];
@@ -179,6 +181,12 @@ export class FileManagerComponent {
         this.imgToUploadUrlPreview = null;
         this.isLoadingImage = true;
         this.fileMetadataSelected = fileMetadata;
+    }
+
+    onImageLoad() {
+        if (this.img.nativeElement.src !== TINY_BLANK_IMAGE) {
+            this.isLoadingImage = false;
+        }
     }
 
     private onError(response: HttpErrorResponse) {
