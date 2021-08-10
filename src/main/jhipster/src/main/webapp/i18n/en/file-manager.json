@@ -1,7 +1,6 @@
 {
     "fileManager": {
-        "title": "File",
-        "fileSection" : "File",
+        "title": "File Manager",
         "preview": "Preview",
         "preview.not.available": "Preview not available",
         "preview.select": "Select a file to preview",
