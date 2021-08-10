@@ -1,0 +1,13 @@
+<i *ngIf="filter.type !== FILTER_TYPES.MODAL"
+   class="fa fa-filter ml-3" [ngbPopover]="popover" [placement]="['bottom', 'right']" [autoClose]="'outside'"
+   [class.text-info]="filter.value"
+   #popoverButton="ngbPopover">
+</i>
+<ng-template #popover>
+	<jhi-column-filter-text *ngIf="filter.type === FILTER_TYPES.TEXT"
+							[filter]="filter"
+							(onApply)="apply()"
+							(onReset)="reset()">
+	</jhi-column-filter-text>
+	<!-- TODO complete as needed -->
+</ng-template>

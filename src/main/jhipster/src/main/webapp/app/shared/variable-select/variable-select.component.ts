@@ -114,6 +114,7 @@ export class VariableSelectComponent implements OnInit {
 
     onNgModelChange() {
         if (!this.value) {
+            this.onVariableSelectedChange.emit(null);
             return;
         }
         const event = this.multiple

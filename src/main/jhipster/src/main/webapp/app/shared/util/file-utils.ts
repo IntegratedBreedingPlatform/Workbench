@@ -33,6 +33,16 @@ export function parseFile(file: File, sheetName): Observable<Array<Array<any>>> 
     return observable;
 }
 
+export function readAsDataURL(file: File): Promise<string> {
+    return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event: any) => {
+            resolve(event.target.result);
+        }
+    });
+}
+
 export function saveFile(response: HttpResponse<any>, fileName?: string) {
 
     if (!fileName) {

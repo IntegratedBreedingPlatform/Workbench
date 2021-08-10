@@ -9,8 +9,6 @@ import { GermplasmService } from '../../shared/germplasm/service/germplasm.servi
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../../shared/alert/alert.service';
-import { NameType } from '../../shared/germplasm/model/name-type.model';
-import { Attribute } from '../../shared/attributes/model/attribute.model';
 import { GermplasmImportValidationPayload } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { listPreview } from '../../shared/util/list-preview';
 import { GermplasmImportContext } from './germplasm-import.context';
