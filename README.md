@@ -72,7 +72,7 @@ To run JUnit tests using Eclipse, right-click on the specific JUnit test suite t
 
 ## Run e2e tests
 
- - Please, verify you have the right properties for e2e testing in BMSConfig (check for propeties with 'test.e2e' prefix)  
+ - Please, verify you have the right properties for e2e testing in BMSConfig (check for properties with 'test.e2e' prefix)  
  - If you are building the project running e2e tests, please do not forget to add the e2eBaseUrl property
  - To run it locally, execute the following in command line:
 
@@ -86,10 +86,16 @@ yarn e2e
 mvn test -P e2e -De2eBaseUrl={baseUrl} 
 ~~~
 
+ - To run locally using headless browser: 
+ 
+~~~ 
+src/main/jhipster$ yarn run cypress run
+~~~
+
  - To run locally using cypress test runner: 
  
 ~~~ 
-run cypress run
+src/main/jhipster$ yarn run cypress open
 ~~~
 
 Developer guide and IDE setup
