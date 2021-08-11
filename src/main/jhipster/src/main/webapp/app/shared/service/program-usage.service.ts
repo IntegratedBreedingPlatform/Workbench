@@ -22,7 +22,7 @@ export class ProgramUsageService {
         });
     }
 
-    setSelectedProgram(programUUID: string): Observable<any> {
+    setContextProgram(programUUID: string): Observable<any> {
         return this.http.post(USER_PROGRAM_INFO, programUUID, { responseType: 'text' });
     }
 }
