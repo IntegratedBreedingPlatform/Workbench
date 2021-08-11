@@ -110,7 +110,9 @@ export class GermplasmImportReviewComponent implements OnInit {
             this.matchesByName = {};
 
             this.matches.forEach((match) => {
-                this.matchesByPUI[toUpper(match.germplasmPUI)] = match;
+                if (match.germplasmPUI) {
+                    this.matchesByPUI[toUpper(match.germplasmPUI)] = match;
+                }
                 match.names.forEach((name) => {
                     if (!this.matchesByName[toUpper(name.name)]) {
                         this.matchesByName[toUpper(name.name)] = [];
@@ -118,6 +120,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                     this.matchesByName[toUpper(name.name)].push(match);
                 });
             });
+
             this.context.data.forEach((row) => {
                 const puiMatch = this.matchesByPUI[toUpper(row[HEADERS.PUI])];
                 const nameMatches = this.context.nametypesCopy.filter((nameType) => {
