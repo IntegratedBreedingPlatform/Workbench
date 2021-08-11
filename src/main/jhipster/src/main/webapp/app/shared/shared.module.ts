@@ -72,6 +72,8 @@ import { PedigreeGraphComponent } from './pedigree-graph/pedigree-graph.componen
 import { VariableService } from './ontology/service/variable.service';
 import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping.service';
 import { VariableValidationService } from './ontology/service/variable-validation.service';
+import { FileService } from './file/service/file.service';
+import { ColumnFilterInlineComponent } from './column-filter/inline/column-filter-inline.component';
 
 @NgModule({
     imports: [
@@ -99,6 +101,7 @@ import { VariableValidationService } from './ontology/service/variable-validatio
         ColumnFilterRadioComponent,
         ColumnFilterListComponent,
         ColumnFilterComponent,
+        ColumnFilterInlineComponent,
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,
@@ -154,6 +157,7 @@ import { VariableValidationService } from './ontology/service/variable-validatio
          * https://github.com/ng-bootstrap/ng-bootstrap/issues/1755#issuecomment-344088034
          */
         NgbActiveModal,
+        FileService,
         UrlService,
         GermplasmPedigreeService,
         VariableService,
@@ -194,6 +198,7 @@ import { VariableValidationService } from './ontology/service/variable-validatio
         ColumnFilterRadioComponent,
         ColumnFilterListComponent,
         ColumnFilterComponent,
+        ColumnFilterInlineComponent,
         ColVisButtonComponent,
         ColumnFilterBooleanComponent,
         ColumnFilterTextWithMatchOptionsComponent,

@@ -15,9 +15,11 @@ export const INVENTORY_DETAILS_URL = '/ibpworkbench/controller/jhipster#/invento
 export const GRAPHICAL_QUERIES_URL = '/ibpworkbench/controller/graphical-queries/';
 export const STUDY_URL = '/Fieldbook/TrialManager/openTrial/';
 export const MAX_PAGE_SIZE = process.env.MAX_PAGE_SIZE;
-export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/userProgramInfo';
+export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/context/program';
 export const INSTITUTE_LOGO_PATH = process.env.INSTITUTE_LOGO_PATH;
 export const GERMPLASM_LABEL_PRINTING_TYPE = 'Germplasm';
+export const FILE_UPLOAD_SUPPORTED_TYPES = process.env.FILE_UPLOAD_SUPPORTED_TYPES;
+export const TINY_BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 // HELP
 export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';

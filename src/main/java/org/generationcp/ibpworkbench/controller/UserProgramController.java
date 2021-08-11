@@ -36,10 +36,13 @@ public class UserProgramController {
          As a part of the IBP-4397 was implemented the APIs to return the last project user selected and save the project selected by the user.
          Also was implement ParamContext in AccountService and RouteAccessService
          to set the crop and programUUID and recover the user authorities to validate the access.
-         Remove after verifying that no other module depends on these values being in context info. */
+         Remove after verifying that no other module depends on these values being in context info.
 
-    @RequestMapping(value = "/userProgramInfo", method = RequestMethod.POST)
-    public ResponseEntity<String> setUserProgramInfo(@RequestBody final String programUUID) {
+         IBP-4829 I reuse the controller to set the projectId to the context and reload spring authorities after the user select a program.
+         It is to avoid the case when a user admin changes the role of a user with a session logged.
+         */
+    @RequestMapping(value = "/context/program", method = RequestMethod.POST)
+    public ResponseEntity<String> setContextProgram(@RequestBody final String programUUID) {
         final Project project = this.workbenchDataManager.getProjectByUuid(programUUID);
         if (project != null) {
             org.generationcp.commons.util.ContextUtil.setContextInfo(this.request,
