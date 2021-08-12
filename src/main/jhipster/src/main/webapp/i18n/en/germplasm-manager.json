@@ -76,7 +76,7 @@
         "included-gids": "(+ included germplasm)",
         "selection": {
             "filter.no.result": "The filter applied does not return any results to perform this action. Please check",
-            "empty": "Please select at least one lot"
+            "empty": "Please select at least one germplasm"
         }
     },
     "germplasm-list-creation": {
