@@ -89,11 +89,11 @@ export class GermplasmImportReviewComponent implements OnInit {
     ngOnInit(): void {
         this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
 
-        const uuids = [];
+        const puis = [];
         const names = {};
         this.context.data.forEach((row) => {
             if (row[HEADERS['PUI']]) {
-                uuids.push(row[HEADERS['PUI']]);
+                puis.push(row[HEADERS['PUI']]);
             }
             this.context.nametypesCopy.forEach((nameType) => {
                 if (row[nameType.code]) {
@@ -102,7 +102,7 @@ export class GermplasmImportReviewComponent implements OnInit {
             });
         });
         this.isLoading = true;
-        this.germplasmService.getGermplasmMatches(uuids, Object.keys(names)).pipe(
+        this.germplasmService.getGermplasmMatches(puis, Object.keys(names)).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe((matches) => {
             this.matches = matches;
@@ -110,7 +110,9 @@ export class GermplasmImportReviewComponent implements OnInit {
             this.matchesByName = {};
 
             this.matches.forEach((match) => {
-                this.matchesByPUI[toUpper(match.germplasmPUI)] = match;
+                if (match.germplasmPUI) {
+                    this.matchesByPUI[toUpper(match.germplasmPUI)] = match;
+                }
                 match.names.forEach((name) => {
                     if (!this.matchesByName[toUpper(name.name)]) {
                         this.matchesByName[toUpper(name.name)] = [];
@@ -118,6 +120,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                     this.matchesByName[toUpper(name.name)].push(match);
                 });
             });
+
             this.context.data.forEach((row) => {
                 const puiMatch = this.matchesByPUI[toUpper(row[HEADERS.PUI])];
                 const nameMatches = this.context.nametypesCopy.filter((nameType) => {
