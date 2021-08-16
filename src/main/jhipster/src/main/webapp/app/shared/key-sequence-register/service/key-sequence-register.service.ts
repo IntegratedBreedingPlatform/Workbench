@@ -15,7 +15,7 @@ export class KeySequenceRegisterService {
         const params = {};
         params['gids'] = gids;
         params['prefixes'] = prefixes;
-        return this.http.delete<DeleteKeySequencePrefixesResultType>(SERVER_API_URL + `crops/${this.context.cropName}/key-sequences`,
+        return this.http.delete<DeleteKeySequencePrefixesResultType>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/key-sequences`,
             { params, observe: 'response' }).pipe(map((res: HttpResponse<DeleteKeySequencePrefixesResultType>) => res.body));
     }
 }
