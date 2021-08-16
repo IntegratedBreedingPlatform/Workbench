@@ -92,6 +92,7 @@
 		<bean:property name="tokenValiditySeconds" value="864000" />
 		<bean:property name="parameter" value="remember-me" />
 		<bean:property name="cookieName" value="BMS_TOK" />
+		<bean:property name="useSecureCookie" value="true" />
 	</bean:bean>
 
 
