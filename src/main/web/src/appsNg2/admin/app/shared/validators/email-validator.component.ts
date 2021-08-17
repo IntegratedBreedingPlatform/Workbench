@@ -2,7 +2,7 @@ import { Directive } from '@angular/core';
 import { NG_VALIDATORS } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 
-export const EMAIL_LOCAL_PART_REGEX = '^[_A-Za-z0-9-]+)+(\\.[_A-Za-z0-9-]+)*';
+export const EMAIL_LOCAL_PART_REGEX = '^([_A-Za-z0-9-]+)+(\\.[_A-Za-z0-9-]+)*';
 
 @Directive({
   selector: '[validateEmail][ngModel]',
