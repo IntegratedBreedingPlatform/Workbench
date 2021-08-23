@@ -83,7 +83,8 @@ function loadTrials() {
 				var query = {
 					studyNameContainsString: params.term,
 					page: params.page - 1 || 0,
-					size: pageSize
+					size: pageSize,
+					sort: 'name,asc'
 				}
 				return query;
 			},
