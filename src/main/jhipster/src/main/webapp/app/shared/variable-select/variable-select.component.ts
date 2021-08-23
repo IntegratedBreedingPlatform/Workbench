@@ -7,6 +7,7 @@ import { AlertService } from '../alert/alert.service';
 import { finalize } from 'rxjs/operators';
 import { Select2OptionData } from 'ng-select2';
 import { VariableTypeEnum } from '../ontology/variable-type.enum';
+import { VariableFilterRequest } from '../ontology/model/variable-filter-request';
 
 declare const $: any;
 
@@ -23,8 +24,11 @@ export class VariableSelectComponent implements OnInit {
 
     @Input() disabled = false;
     @Input() multiple = false;
-    @Input() variableTypeIds: VariableTypeEnum[];
     @Input() allowClear = false;
+
+    // Filters
+    @Input() variableTypeIds: VariableTypeEnum[];
+    @Input() datasetId: number;
 
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
 
@@ -64,7 +68,19 @@ export class VariableSelectComponent implements OnInit {
         private variableService: VariableService,
         private alertService: AlertService
     ) {
-        this.variableService.getVariables().pipe(
+    }
+
+    ngOnInit(): void {
+        this.options.multiple = this.multiple;
+
+        const filterRequest = <VariableFilterRequest>({});
+        if (this.datasetId) {
+            filterRequest.datasetIds = [this.datasetId];
+        }
+        if (this.variableTypeIds && this.variableTypeIds.length) {
+            filterRequest.variableTypeIds = this.variableTypeIds.map((enumType) => enumType.toString());
+        }
+        this.variableService.filterVariables(filterRequest).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe((variables) => {
             this.variables = this.transform(variables)
@@ -77,21 +93,8 @@ export class VariableSelectComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {
-        this.options.multiple = this.multiple;
-    }
-
     transform(variables: VariableDetails[]): any[] {
-        return variables.filter((variable) => {
-            if (this.variableTypeIds && this.variableTypeIds.length) {
-                return variable.variableTypes
-                    && variable.variableTypes.length
-                    && variable.variableTypes.some(
-                        (variableType) => this.variableTypeIds.includes(Number(variableType.id))
-                    );
-            }
-            return true;
-        }).map((variable) => {
+        return variables.map((variable) => {
             this.variableById[variable.id] = variable;
 
             const copy: any = Object.assign({}, variable);
