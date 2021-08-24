@@ -83,9 +83,9 @@ export class GermplasmImportComponent implements OnInit {
     next() {
         this.isLoading = true;
         this.validateFile().then((valid) => {
-            this.showUnknownColumnsWarning();
             this.isLoading = false;
             if (valid) {
+                this.showUnknownColumnsWarning();
                 this.sortNameTypes();
                 this.modal.close();
                 const nextModal = this.modalService.open(GermplasmImportBasicDetailsComponent as Component,
