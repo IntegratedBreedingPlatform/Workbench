@@ -8,7 +8,8 @@ export class VariableFilterRequest {
         public dataTypeIds?: string[],
         public variableTypeIds?: string[],
         public variableNames?: string[],
-        public propertyClasses?: string[]
+        public propertyClasses?: string[],
+        public datasetIds?: number[]
     ) {
     }
 }

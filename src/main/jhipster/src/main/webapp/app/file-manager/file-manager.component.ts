@@ -15,6 +15,7 @@ import { FILE_UPLOAD_SUPPORTED_TYPES, TINY_BLANK_IMAGE } from '../app.constants'
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
+import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 
 @Component({
     selector: 'jhi-file-manager',
@@ -22,6 +23,8 @@ import { Pageable } from '../shared/model/pageable';
     styleUrls: ['./file-manager.scss']
 })
 export class FileManagerComponent {
+
+    VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD]
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -35,6 +38,7 @@ export class FileManagerComponent {
     imgToUploadUrlPreview;
 
     observationUnitUUID: string;
+    datasetId: number;
 
     isLoading = false;
     isLoadingImage = false;
@@ -64,6 +68,7 @@ export class FileManagerComponent {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
+        this.datasetId = Number(queryParamMap.get('datasetId'));
         this.filters.variable.value = queryParamMap.get('variableName');
         this.load();
     }
