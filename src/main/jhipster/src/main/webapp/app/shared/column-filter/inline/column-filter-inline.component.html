@@ -9,5 +9,10 @@
 							(onApply)="apply()"
 							(onReset)="reset()">
 	</jhi-column-filter-text>
+	<jhi-column-filter-date *ngIf="filter.type === FILTER_TYPES.DATE"
+							[filter]="filter"
+							(onApply)="apply()"
+							(onReset)="reset()">
+	</jhi-column-filter-date>
 	<!-- TODO complete as needed -->
 </ng-template>
