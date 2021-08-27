@@ -84,7 +84,13 @@ export class NameTypeComponent implements OnInit {
     }
 
     loadAll() {
-        this.nameTypeService.getNameTypes(this.addSortParam({
+        this.nameTypeService.searchNameTypes({
+                code: this.filters.code.value,
+                name: this.filters.name.value,
+                description: this.filters.description.value,
+                nameTypeDateFrom: this.filters.date.from ? `${this.filters.date.from.year}-${this.filters.date.from.month}-${this.filters.date.from.day}` : '',
+                nameTypeDateTo: this.filters.date.to ? `${this.filters.date.to.year}-${this.filters.date.to.month}-${this.filters.date.to.day}` : ''
+            }, this.addSortParam({
                 page: this.page - 1,
                 size: this.itemsPerPage
             })
