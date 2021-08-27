@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FilterType } from '../column-filter.component';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -9,8 +9,11 @@ import { JhiEventManager } from 'ng-jhipster';
 @Component({
     selector: 'jhi-column-filter-inline',
     templateUrl: './column-filter-inline.component.html',
-    styleUrls: ['./../column-filter.component.css'],
-    encapsulation: ViewEncapsulation.None
+    styles: [`
+        i {
+            font-size: 1.3em;
+        }
+    `]
 })
 export class ColumnFilterInlineComponent {
     FILTER_TYPES = FilterType;
