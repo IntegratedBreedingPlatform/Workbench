@@ -79,6 +79,10 @@ export class LabelPrintingComponent implements OnInit {
             this.metadata = new Map(Object.entries(originResourceMetadata.metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
             this.labelPrintingData.filename = originResourceMetadata.defaultFileName;
+        }).catch((response) => {
+            this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.initComplete = true;
+            return;
         });
 
         const fieldsPromise = this.service.getAvailableLabelFields().toPromise();
