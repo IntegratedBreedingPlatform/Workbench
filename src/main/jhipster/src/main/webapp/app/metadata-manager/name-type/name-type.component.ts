@@ -53,8 +53,8 @@ export class NameTypeComponent implements OnInit {
         date: {
             key: 'date',
             type: FilterType.DATE,
-            from: undefined,
-            to: undefined
+            from: null,
+            to: null
         },
     }
 

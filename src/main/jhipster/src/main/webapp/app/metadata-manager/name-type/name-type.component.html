@@ -4,7 +4,7 @@
 		<button class="btn btn-outline-info" [routerLink]="['/', { outlets: { popup: 'name-type-edit-dialog' } }]" queryParamsHandling="merge"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 	</div>
 	<div class="table-responsive" *ngIf="nameTypes">
-		<table class="table table-striped table-bordered table-curved" *ngIf="nameTypes.length else nodata">
+		<table class="table table-striped table-bordered table-curved">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
 				<th><span jhiSortBy="fcode"><span jhiTranslate="metadata-manager.name-type.code">Code</span><span class="fa fa-sort"></span></span>
@@ -30,8 +30,8 @@
 				<th style="width: 95px;"><span jhiTranslate="metadata-manager.name-type.action">Action</span></th>
 			</tr>
 			</thead>
-			<tbody>
-			<tr *ngFor="let nameType of nameTypes ;trackBy: trackId">
+			<tbody *ngIf="nameTypes.length else nodata">
+			<tr *ngFor="let nameType of nameTypes">
 				<td>{{nameType.code}}</td>
 				<td>{{nameType.name}}</td>
 				<td><span class="d-inline-block text-truncate" style="max-width: 800px;" title="{{nameType.description}}">{{nameType.description}}</span></td>
@@ -48,13 +48,11 @@
 			</tbody>
 		</table>
 		<ng-template #nodata>
-			<table class="table table-striped table-bordered table-curved">
-				<thead><tr><th></th></tr></thead><tbody>
-				<tr>
-					<td jhiTranslate="no.data"></td>
-				</tr>
-				</tbody>
-			</table>
+			<tbody>
+			<tr>
+				<td colspan="5" jhiTranslate="no.data"></td>
+			</tr>
+			</tbody>
 		</ng-template>
 	</div>
 	<div *ngIf="nameTypes && nameTypes.length">
