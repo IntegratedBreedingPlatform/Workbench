@@ -17,7 +17,7 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationUnitUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
+    listFileMetadata(observationUnitUUID, variableName, fileName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const request = {
             observationUnitUUID,
@@ -25,6 +25,11 @@ export class FileService {
         if (variableName) {
             request['variableName'] = variableName;
         }
+
+        if (fileName) {
+            request['fileName'] = fileName;
+        }
+
         const params: any = createRequestOption(Object.assign({
             programUUID: this.context.programUUID
         }, pageable));
