@@ -77,7 +77,7 @@ export class FileManagerComponent {
         this.isLoading = true;
         this.fileService.listFileMetadata(
             this.observationUnitUUID,
-            this.filters.variable.value,
+            this.filters.variable.value, null,
             <Pageable>({
                 page: this.page - 1,
                 size: this.pageSize,
@@ -161,22 +161,18 @@ export class FileManagerComponent {
         }
     }
 
-    validateFileNameDuplicated() {
-        let filesObservations = [];
-        if (this.variable && this.variable.id) {
-            const variableId = Number(this.variable.id);
-            filesObservations = this.fileMetadataList.filter((fileMetadata) => //
-                fileMetadata.variables.length !== 0 && Number(fileMetadata.variables[0].id) === variableId);
-        } else {
-            filesObservations = this.fileMetadataList.filter((fileMetadata) => //
-                fileMetadata.name === this.file.name && fileMetadata.variables.length === 0);
-        }
-
-        return filesObservations.filter((fileMetadata) => fileMetadata.name === this.file.name).length !== 0;
+   async validateIfFileNameAlreadyExists() {
+        let existsFileName: boolean;
+        this.fileService.listFileMetadata(
+            this.observationUnitUUID,
+            null, this.file.name, null).subscribe((resp) => {
+            existsFileName = resp.body.length > 0;
+        }, (error) => this.onError(error));
+        return existsFileName;
     }
 
     upload() {
-        if (this.validateFileNameDuplicated()) {
+        if (this.validateIfFileNameAlreadyExists()) {
             this.alertService.error('fileManager.duplicate.file.name.error');
             return false;
         }
