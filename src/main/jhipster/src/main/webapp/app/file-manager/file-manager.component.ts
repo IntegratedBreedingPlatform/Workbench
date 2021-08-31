@@ -161,18 +161,23 @@ export class FileManagerComponent {
         }
     }
 
-   async validateIfFileNameAlreadyExists() {
-        let existsFileName: boolean;
-        this.fileService.listFileMetadata(
-            this.observationUnitUUID,
-            null, this.file.name, null).subscribe((resp) => {
-            existsFileName = resp.body.length > 0;
-        }, (error) => this.onError(error));
-        return existsFileName;
+    validateIfFileNameAlreadyExists() {
+        return new Promise((resolve) => {
+            this.fileService.listFileMetadata(
+                this.observationUnitUUID,
+                null, this.file.name, null).subscribe((resp) => {
+                if (resp.body.length > 0) {
+                    const fileListMetadata = resp.body;
+                    resolve(fileListMetadata.filter((fileMetadata) => fileMetadata.name === this.file.name).length !== 0)
+                } else {
+                    resolve(false)
+                }
+            }, (error) => this.onError(error));
+        });
     }
 
-    upload() {
-        if (this.validateIfFileNameAlreadyExists()) {
+    async upload() {
+        if ( await this.validateIfFileNameAlreadyExists()) {
             this.alertService.error('fileManager.duplicate.file.name.error');
             return false;
         }
