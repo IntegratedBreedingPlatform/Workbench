@@ -28,10 +28,10 @@ export class NameTypeService {
         return this.http.delete(url);
     }
 
-    getNameTypes(req?: any): Observable<HttpResponse<NameTypeDetails[]>> {
+    searchNameTypes(nameTypeMetadataFilterRequest?: any, req?: any): Observable<HttpResponse<NameTypeDetails[]>> {
         const options = createRequestOption(req);
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types?programUUID=` + this.context.programUUID;
-        return this.http.get<NameTypeDetails[]>(url, { params: options, observe: 'response' });
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types/search?programUUID=` + this.context.programUUID;
+        return this.http.post<NameTypeDetails[]>(url, nameTypeMetadataFilterRequest, { params: options, observe: 'response' });
     }
 
 }

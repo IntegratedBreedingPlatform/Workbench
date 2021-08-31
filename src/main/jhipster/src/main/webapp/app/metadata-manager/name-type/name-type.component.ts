@@ -13,6 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { NameTypeContext } from './name-type.context';
 import { Subscription } from 'rxjs';
+import { FilterType } from '../../shared/column-filter/column-filter.component';
 
 @Component({
     selector: 'jhi-name-type',
@@ -30,6 +31,32 @@ export class NameTypeComponent implements OnInit {
     reverse: any;
     isLoading: boolean;
     eventSubscriber: Subscription;
+
+    nameTypeMetadataFilterRequest: {};
+
+    filters = {
+        code: {
+            key: 'code',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        name: {
+            key: 'name',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        description: {
+            key: 'description',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        date: {
+            key: 'date',
+            type: FilterType.DATE,
+            from: null,
+            to: null
+        },
+    }
 
     constructor(public translateService: TranslateService,
                 private activatedRoute: ActivatedRoute,
@@ -57,7 +84,13 @@ export class NameTypeComponent implements OnInit {
     }
 
     loadAll() {
-        this.nameTypeService.getNameTypes(this.addSortParam({
+        this.nameTypeService.searchNameTypes({
+                code: this.filters.code.value,
+                name: this.filters.name.value,
+                description: this.filters.description.value,
+                nameTypeDateFrom: this.filters.date.from ? `${this.filters.date.from.year}-${this.filters.date.from.month}-${this.filters.date.from.day}` : '',
+                nameTypeDateTo: this.filters.date.to ? `${this.filters.date.to.year}-${this.filters.date.to.month}-${this.filters.date.to.day}` : ''
+            }, this.addSortParam({
                 page: this.page - 1,
                 size: this.itemsPerPage
             })
@@ -151,6 +184,14 @@ export class NameTypeComponent implements OnInit {
         this.eventSubscriber = this.eventManager.subscribe('nameTypeViewChanged', (event) => {
             this.loadAll();
         });
+    }
+
+    applyFilters() {
+        this.loadAll();
+    }
+
+    resetFilters() {
+        this.loadAll();
     }
 
 }

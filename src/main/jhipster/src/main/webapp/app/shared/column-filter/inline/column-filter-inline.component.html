@@ -1,6 +1,6 @@
 <i *ngIf="filter.type !== FILTER_TYPES.MODAL"
    class="fa fa-filter ml-3" [ngbPopover]="popover" [placement]="['bottom', 'right']" [autoClose]="'outside'"
-   [class.text-info]="filter.value"
+   [class.text-info]="filter.value || filter.from || filter.to"
    #popoverButton="ngbPopover">
 </i>
 <ng-template #popover>
@@ -9,5 +9,10 @@
 							(onApply)="apply()"
 							(onReset)="reset()">
 	</jhi-column-filter-text>
+	<jhi-column-filter-date *ngIf="filter.type === FILTER_TYPES.DATE"
+							[filter]="filter"
+							(onApply)="apply()"
+							(onReset)="reset()">
+	</jhi-column-filter-date>
 	<!-- TODO complete as needed -->
 </ng-template>
