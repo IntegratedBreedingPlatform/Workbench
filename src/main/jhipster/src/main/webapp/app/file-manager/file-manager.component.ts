@@ -122,7 +122,7 @@ export class FileManagerComponent {
     async delete($event, fileMetadata: FileMetadata) {
         $event.stopPropagation();
         const confirmModal = this.modalService.open(ModalConfirmComponent);
-        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', {fileName: fileMetadata.name});
+        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', { fileName: fileMetadata.name });
         try {
             await confirmModal.result;
         } catch (e) {
@@ -161,7 +161,26 @@ export class FileManagerComponent {
         }
     }
 
+    validateFileNameDuplicated() {
+        let filesObservations = [];
+        if (this.variable && this.variable.id) {
+            const variableId = Number(this.variable.id);
+            filesObservations = this.fileMetadataList.filter((fileMetadata) => //
+                fileMetadata.variables.length !== 0 && Number(fileMetadata.variables[0].id) === variableId);
+        } else {
+            filesObservations = this.fileMetadataList.filter((fileMetadata) => //
+                fileMetadata.name === this.file.name && fileMetadata.variables.length === 0);
+        }
+
+        return filesObservations.filter((fileMetadata) => fileMetadata.name === this.file.name).length !== 0;
+    }
+
     upload() {
+        if (this.validateFileNameDuplicated()) {
+            this.alertService.error('fileManager.duplicate.file.name.error');
+            return false;
+        }
+
         this.isLoading = true;
         // upload file / save observation
         this.fileService.upload(
