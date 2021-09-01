@@ -77,7 +77,7 @@ export class FileManagerComponent {
         this.isLoading = true;
         this.fileService.listFileMetadata(
             this.observationUnitUUID,
-            this.filters.variable.value, null,
+            this.filters.variable.value,
             <Pageable>({
                 page: this.page - 1,
                 size: this.pageSize,
@@ -122,7 +122,7 @@ export class FileManagerComponent {
     async delete($event, fileMetadata: FileMetadata) {
         $event.stopPropagation();
         const confirmModal = this.modalService.open(ModalConfirmComponent);
-        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', { fileName: fileMetadata.name });
+        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', {fileName: fileMetadata.name});
         try {
             await confirmModal.result;
         } catch (e) {
@@ -161,29 +161,8 @@ export class FileManagerComponent {
         }
     }
 
-    validateIfFileNameAlreadyExists() {
-        return new Promise((resolve) => {
-            this.fileService.listFileMetadata(
-                this.observationUnitUUID,
-                null, this.file.name, null).subscribe((resp) => {
-                if (resp.body.length > 0) {
-                    const fileListMetadata = resp.body;
-                    resolve(fileListMetadata.filter((fileMetadata) => fileMetadata.name === this.file.name).length !== 0)
-                } else {
-                    resolve(false)
-                }
-            }, (error) => this.onError(error));
-        });
-    }
-
-    async upload() {
+    upload() {
         this.isLoading = true;
-        if (await this.validateIfFileNameAlreadyExists()) {
-            this.alertService.error('fileManager.duplicate.file.name.error');
-            this.isLoading = false;
-            return false;
-        }
-
         // upload file / save observation
         this.fileService.upload(
             this.file,

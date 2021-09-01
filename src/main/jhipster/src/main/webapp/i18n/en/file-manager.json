@@ -13,7 +13,6 @@
         "upload.button": "Upload",
         "upload.success": "File uploaded successfully!",
         "delete.success": "File deleted successfully!",
-        "delete.confirm": "Are you sure you want to delete the file <strong>{{fileName}}</strong>?",
-        "duplicate.file.name.error": "The file name already exists, if you want to replace it, please delete the existing one."
+        "delete.confirm": "Are you sure you want to delete the file <strong>{{fileName}}</strong>?"
     }
 }
