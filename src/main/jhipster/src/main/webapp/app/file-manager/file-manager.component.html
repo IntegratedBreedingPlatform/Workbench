@@ -11,7 +11,7 @@
 					<label class="col-sm-3 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
 					<div class="col-sm-6">
 						<div class="input-group">
-							<input type="file" class="custom-file-input" id="fileInput"
+							<input type="file" class="custom-file-input" id="fileInput" [disabled]="isLoading"
 								   (change)="onFileChange($event)" accept="{{acceptedFileTypes}}">
 							<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
 								<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
@@ -19,7 +19,7 @@
 						</div>
 					</div>
 					<div class="col-sm-2">
-						<button class="btn btn-info" (click)="upload()" [disabled]="!file">
+						<button class="btn btn-info" (click)="upload()" [disabled]="!file || isLoading">
 							<span jhiTranslate="fileManager.upload.button"></span>
 						</button>
 					</div>

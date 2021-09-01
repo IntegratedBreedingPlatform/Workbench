@@ -177,12 +177,13 @@ export class FileManagerComponent {
     }
 
     async upload() {
-        if ( await this.validateIfFileNameAlreadyExists()) {
+        this.isLoading = true;
+        if (await this.validateIfFileNameAlreadyExists()) {
             this.alertService.error('fileManager.duplicate.file.name.error');
+            this.isLoading = false;
             return false;
         }
 
-        this.isLoading = true;
         // upload file / save observation
         this.fileService.upload(
             this.file,
