@@ -1,15 +1,125 @@
 <div class="modal-header">
-	<h5 class="modal-title">File name: {{fileName}}</h5>
-	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">&times;
+	<h3 class="modal-title" jhiTranslate="fileManager.title"></h3>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">&times;
 	</button>
 </div>
 <div class="modal-body">
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col">
-			<!-- not sure why the ngif works given that the src is preloaded with a tiny image... -->
-			<i class="throbber" *ngIf="!img.src"></i>
-			<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + path | secureImage | async" style="width:100%; height: 100%"/>
+			<form>
+				<div class="form-group row">
+					<label class="col-sm-3 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
+					<div class="col-sm-6">
+						<div class="input-group">
+							<input type="file" class="custom-file-input" id="fileInput" [disabled]="isLoading"
+								   (change)="onFileChange($event)" accept="{{acceptedFileTypes}}">
+							<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
+								<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<button class="btn btn-info" (click)="upload()" [disabled]="!file || isLoading">
+							<span jhiTranslate="fileManager.upload.button"></span>
+						</button>
+					</div>
+					<div class="col-sm-1">
+						<i class="throbber" *ngIf="isLoading"></i>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 col-form-label" for="variable" jhiTranslate="fileManager.upload.variable"></label>
+					<div class="col-sm-6">
+						<jhi-variable-select
+							id="variable"
+							[allowClear]="true"
+							(onVariableSelectedChange)="variable = $event"
+							[datasetId]="datasetId"
+							[variableTypeIds]="VARIABLE_TYPE_IDS"
+						></jhi-variable-select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="offset-3 col-sm-6">
+					</div>
+				</div>
+			</form>
+			<table class="table table-striped table-bordered table-curved">
+				<thead>
+				<tr>
+					<th jhiTranslate="fileManager.fileName"></th>
+					<th>
+						<span jhiTranslate="fileManager.variable"></span>
+						<jhi-column-filter-inline [filter]="filters.variable"
+												  (onApply)="applyFilters()"
+												  (onReset)="resetFilters()"></jhi-column-filter-inline>
+					</th>
+					<th jhiTranslate="fileManager.actions"></th>
+				</tr>
+				</thead>
+				<tbody *ngIf="fileMetadataList && fileMetadataList.length else nodata">
+				<tr *ngFor="let fileMetadata of fileMetadataList" (click)="select(fileMetadata)"
+					[class.selected]="fileMetadataSelected && fileMetadataSelected.fileUUID == fileMetadata.fileUUID">
+					<td>{{fileMetadata.name}}</td>
+					<td>{{fileMetadata.variables?.length ? (fileMetadata.variables[0].alias || fileMetadata.variables[0].name) : ''}}</td>
+					<td>
+						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+						<button class="btn btn-info" (click)="download($event, fileMetadata)">
+							<i class="fa fa-download" aria-hidden="true"></i>
+						</button>
+					</td>
+				</tr>
+				</tbody>
+				<ng-template #nodata>
+					<tbody>
+					<tr>
+						<td colspan="3" jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</ng-template>
+			</table>
+			<div class="pagination-container">
+				<div class="pagination-box pagination-box-left"></div>
+				<div class="pagination-box">
+					<ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" [disabled]="isLoading"
+									[maxSize]="5" [rotate]="true" (pageChange)="load()"></ngb-pagination>
+				</div>
+				<div class="pagination-box pagination-box-right"></div>
+			</div>
 		</div>
 	</div>
+	<div class="row mb-3">
+		<div class="col">
+			<h4 jhiTranslate="fileManager.preview" class="border-bottom pb-3 mb-3"></h4>
+			<div class="row">
+				<div class="col">
+					<!-- Preview image either from file selected... -->
+					<div *ngIf="(fileMetadataSelected && fileMetadataSelected.path)">
+						<div *ngIf="isImage(fileMetadataSelected.name) else nopreview">
+							<i class="throbber" *ngIf="isLoadingImage"></i>
+							<img #img alt="" [src]="'/bmsapi/crops/' + context.cropName + '/files/' + fileMetadataSelected.path | secureImage | async" (load)="onImageLoad()" />
+						</div>
+					</div>
+					<!-- ...or image to upload -->
+					<div *ngIf="!(fileMetadataSelected && fileMetadataSelected.path) && file">
+						<div *ngIf="imgToUploadUrlPreview else nopreview">
+							<img alt="" [src]="imgToUploadUrlPreview" />
+						</div>
+					</div>
+						<!-- ... or there is nothing selected -->
+					<div *ngIf="!(fileMetadataSelected && fileMetadataSelected.path) && !file">
+						<div class="text-center" jhiTranslate="fileManager.preview.select"></div>
+					</div>
+					<!-- ... or there is something selected with no preview -->
+					<ng-template #nopreview>
+						<div class="text-center" jhiTranslate="fileManager.preview.not.available"></div>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-default" data-dismiss="modal" jhiTranslate="close" (click)="close()"></button>
 </div>
 <jhi-alert></jhi-alert>

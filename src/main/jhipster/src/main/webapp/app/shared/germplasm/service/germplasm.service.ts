@@ -49,13 +49,13 @@ export class GermplasmService {
             germplasmUpdates, { observe: 'response' });
     }
 
-    getGermplasmMatches(germplasmUUIDs: string[], names: string[]): Observable<GermplasmDto[]> {
+    getGermplasmMatches(germplasmPUIs: string[], names: string[]): Observable<GermplasmDto[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/matches` +
             '?programUUID=' + this.context.programUUID;
 
         return getAllRecords<GermplasmDto>((page: number, pageSize: number) => {
             return this.http.post<GermplasmDto[]>(url, {
-                germplasmUUIDs,
+                germplasmPUIs,
                 names
             }, {
                 params: createRequestOption({ page, size: pageSize })
@@ -183,9 +183,14 @@ export class GermplasmService {
         return this.http.patch<any>(url, germplasmProgenitorsUpdateRequestModel);
     }
 
+    // FIXME backend returns share/ontology/model/variable
     searchAttributes(query): Observable<HttpResponse<Attribute[]>> {
         return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes/search?query=` + query
             + '&programUUID=' + this.context.programUUID, { observe: 'response' });
+    }
+
+    searchNameTypes(query): Observable<HttpResponse<NameType[]>> {
+        return this.http.get<NameType[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types/search?query=` + query, { observe: 'response' });
     }
 }
 

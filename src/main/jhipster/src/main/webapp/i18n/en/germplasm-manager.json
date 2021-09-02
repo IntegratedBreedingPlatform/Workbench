@@ -73,7 +73,11 @@
             "filter-by-selected-records": "Filter by selected records",
             "create-inventory-lots": "Create inventory lots"
         },
-        "included-gids": "(+ included germplasm)"
+        "included-gids": "(+ included germplasm)",
+        "selection": {
+            "filter.no.result": "The filter applied does not return any results to perform this action. Please check",
+            "empty": "Please select at least one germplasm"
+        }
     },
     "germplasm-list-creation": {
         "header": "Save list",
@@ -119,7 +123,7 @@
                     "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
                     "names.no.column": "No suitable column found for germplasm name. Please check the CODES sheet for NAMES",
                     "names.missing.data": "There are some records with no values for any of the available NAME columns (entry_no: {{param}}). Please correct them and try again",
-                    "names.preferred.invalid": "The name type {{param}} does not exist as a column or has an empty value.",
+                    "names.preferred.invalid": "The name type {{param}} does not exist as a column or does not exist in the system or has an empty value.",
                     "progenitors.both": "You need to specify both progenitors",
                     "reference": "Reference length can not exceed 255 characters. Please check",
                     "unknown.column": "Some columns were not recognized in the system or are not relevant to the germplasm import and were thus ignored ({{param}})"

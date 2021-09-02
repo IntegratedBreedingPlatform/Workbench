@@ -13,7 +13,6 @@ import { ListBuilderService } from '../../shared/list-creation/service/list-buil
 import { SampleListBuilderService } from '../../shared/list-creation/service/sample-list-builder.service';
 import { ParamContext } from '../../shared/service/param.context';
 
-declare const cropName: string;
 declare var $: any;
 
 @Component({

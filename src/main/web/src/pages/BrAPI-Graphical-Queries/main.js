@@ -67,27 +67,59 @@ function buildLocationsCombo(response) {
 }
 
 function loadTrials() {
-	var url = "/bmsapi/" + getUrlParameter("cropName") + "/brapi/v1/trials"
-		+ '?programDbId=' + getUrlParameter('programUUID');
+	let itemCount = 0;
+	const pageSize = 1000;
 
-	$.get({
-		dataType: "json",
-		contentType: "application/json;charset=utf-8",
-		url: url,
-		beforeSend: beforeSend,
-		error: error
-	}).then(function (response) {
-		if (!response
-			|| !response.result
-			|| !response.result.data) {
-			return;
+	$('#trials').html('<select multiple ></select>');
+	$('#trials select').select2({
+		ajax: {
+			dataType: "json",
+			contentType: "application/json;charset=utf-8",
+			url: "/bmsapi/crops/" + getUrlParameter("cropName") + "/programs/" + getUrlParameter('programUUID') + "/studies",
+			beforeSend: beforeSend,
+			error: error,
+			delay: 500,
+			data: function (params) {
+				var query = {
+					studyNameContainsString: params.term,
+					page: params.page - 1 || 0,
+					size: pageSize,
+					sort: 'name,asc'
+				}
+				return query;
+			},
+			transport: function (params, success, failure) {
+				$.ajax(params.url, params)
+					.done(function( data, textStatus, jqXHR ) {
+						itemCount = jqXHR.getResponseHeader('x-total-count');
+						success({response: data, params: params.data});
+					})
+					.fail(function () {
+						failure();
+					});
+			},
+			processResults: function (data) {
+				if (data.response) {
+					const results = data.response.map(function (study) {
+						return { id : study.studyId, text : study.name };
+					});
+
+					return {
+						results: results,
+						pagination: {
+							more: ((data.params.page + 1) * pageSize) < itemCount
+						}
+					};
+				}
+
+				return {
+					results: {},
+					pagination: {
+						more: false
+					}
+				};
+			}
 		}
-
-		$('#trials').html('<select multiple ></select>');
-		$('#trials select').append(response.result.data.map(function (trial) {
-			return '<option value="' + trial.trialDbId + '">' + trial.trialName + '</option>';
-		}));
-		$('#trials select').select2();
 	});
 }
 

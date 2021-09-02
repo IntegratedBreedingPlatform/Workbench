@@ -79,6 +79,10 @@ export class LabelPrintingComponent implements OnInit {
             this.metadata = new Map(Object.entries(originResourceMetadata.metadata));
             this.metadataKeys = Array.from(this.metadata.keys());
             this.labelPrintingData.filename = originResourceMetadata.defaultFileName;
+        }).catch((response) => {
+            this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.initComplete = true;
+            return;
         });
 
         const fieldsPromise = this.service.getAvailableLabelFields().toPromise();
@@ -149,6 +153,7 @@ export class LabelPrintingComponent implements OnInit {
 
             this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
             this.fieldsSelected = labelFieldsSelected;
+            this.sortBySelected = (presetSetting.sortBy) ? presetSetting.sortBy : '';
 
             setTimeout(() => {
                 $('#leftSelectedFields').empty();
@@ -380,6 +385,9 @@ export class LabelPrintingComponent implements OnInit {
         preset.barcodeSetting = barcodeSetting;
         preset.fileConfiguration = fileConfiguration;
         preset.includeHeadings = this.labelPrintingData.includeHeadings;
+        if (this.sortBySelected) {
+            preset.sortBy = this.sortBySelected;
+        }
 
         const presetSetting = this.presetSettings.filter((x) => x.name === preset.name)[0];
 
@@ -408,6 +416,7 @@ export class LabelPrintingComponent implements OnInit {
                     presetSetting.barcodeSetting = preset.barcodeSetting;
                     presetSetting.fileConfiguration = preset.fileConfiguration;
                     presetSetting.includeHeadings = preset.includeHeadings;
+                    presetSetting.sortBy = preset.sortBy;
                     this.alertService.success('label-printing.update.preset.success');
                 }, (response) => {
                     if (response.error.errors[0].message) {

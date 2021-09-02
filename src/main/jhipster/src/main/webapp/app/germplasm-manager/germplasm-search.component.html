@@ -14,6 +14,7 @@
 				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.create-list"
+							*jhiHasAnyAuthority="CREATE_GERMPLASM_LIST_PERMISSIONS"
 							(click)="openCreateList()" >
 					</button>
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.add-to-list"
