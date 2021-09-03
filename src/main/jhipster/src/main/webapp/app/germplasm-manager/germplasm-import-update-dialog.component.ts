@@ -7,18 +7,14 @@ import { PopupService } from '../shared/modal/popup.service';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
-import { forkJoin, Observable } from 'rxjs';
 import { parseFile, saveFile } from '../shared/util/file-utils';
 import { AlertService } from '../shared/alert/alert.service';
-import { Attribute } from '../shared/attributes/model/attribute.model';
 import { NameType } from '../shared/germplasm/model/name-type.model';
 import { VariableService } from '../shared/ontology/service/variable.service';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { toUpper } from '../shared/util/to-upper';
-import { VariableValidationStatusType, VariableValidationService } from '../shared/ontology/service/variable-validation.service';
+import { VariableValidationService, VariableValidationStatusType } from '../shared/ontology/service/variable-validation.service';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
-import { ancestorWhere } from 'tslint';
-import { VariableType } from '../shared/ontology/model/variable-type';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 
 @Component({
@@ -116,7 +112,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
             const progenitorsValuesMap = {};
 
             names.forEach((name) => {
-                namesValuesMap[name.code] = row[name.code];
+                namesValuesMap[toUpper(name.code)] = row[toUpper(name.code)];
             });
             attributes.forEach((attribute) => {
                 if (row[toUpper(attribute.name)]) {
@@ -207,7 +203,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         // TODO See GermplasmImportComponent.showUnknownColumnsWarning
         const invalidCodes = codes.filter((code) =>
             attributes.every((attribute) => toUpper(attribute.alias) !== code && toUpper(attribute.name) !== code)
-            && names.every((name) => name.code !== code)
+            && names.every((name) => toUpper(name.code) !== code)
         );
         if (invalidCodes && invalidCodes.length > 0) {
             errorMessage.push(this.translateService.instant('germplasm-import-updates.validation.invalid.codes', { param: invalidCodes.join(', ') }));

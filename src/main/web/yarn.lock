@@ -49,9 +49,9 @@
     normalize-path "^2.0.1"
     through2 "^2.0.3"
 
-"@solgenomics/brapi-fieldmap@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:1.1.1":
-  version "1.1.1"
-  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#4e5b4b263ac6ac4719dc60ad6d61ab7803d5b206"
+"@solgenomics/brapi-fieldmap@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:1.1.3":
+  version "1.1.3"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#ccd0e48abf4d7139f5a64bf56a607103872c2d20"
   dependencies:
     "@solgenomics/brapijs" "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1"
     "@turf/turf" "^5.1.6"

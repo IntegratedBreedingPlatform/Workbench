@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { AlertService } from '../alert/alert.service';
 import { JhiLanguageService } from 'ng-jhipster';
+import { TINY_BLANK_IMAGE } from '../../app.constants';
 
 @Pipe({
     name: 'secureImage'
@@ -20,10 +21,9 @@ export class SecureImagePipe implements PipeTransform {
 
         return new Observable<string>((observer: any) => {
             /*
-             * This is a tiny blank image
              * If we don't put something into the image immediately, the browser will still try to load the image using HTTP
              */
-            observer.next('data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==');
+            observer.next(TINY_BLANK_IMAGE);
 
             // The next and error callbacks from the observer
             const { next, error } = observer;

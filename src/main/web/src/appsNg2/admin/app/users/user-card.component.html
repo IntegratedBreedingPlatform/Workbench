@@ -41,7 +41,7 @@
                 <label for="email" class="col-sm-3 control-label">Email</label>
                 <div class="col-sm-9">
                     <input type="text" class="form-control" [(ngModel)]="model.email" #email="ngModel" validateEmail name="email" id="email"
-                        placeholder="Email" maxlength="40">
+                        placeholder="Email" maxlength="255">
                     <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
                     <span class="sr-only">(error)</span>
                 </div>

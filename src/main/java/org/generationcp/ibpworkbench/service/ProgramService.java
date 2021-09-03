@@ -50,6 +50,9 @@ public class ProgramService {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Autowired
+	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
+
+	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
 
 	private InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
@@ -125,7 +128,7 @@ public class ProgramService {
 		final List<Integer> userIdsToBeRemoved =
 			this.getUsersNotAssociatedToSpecificProgram(project.getProjectId(), userList);
 		if (!userIdsToBeRemoved.isEmpty()) {
-			this.userService.removeUsersFromProgram(userIdsToBeRemoved, project.getProjectId());
+			this.programServiceMw.removeProgramMembers(project.getUniqueID(), userIdsToBeRemoved);
 		}
 
 	}

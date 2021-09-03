@@ -78,6 +78,7 @@
 	<!-- browse sample -->
 	<!-- TODO See SampleManagerComponent.browseList -->
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery/jquery.fix-vulnerability.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/Fieldbook/static/js/lib/bootstrap/bootstrap.min.js"></script>
 
@@ -89,12 +90,7 @@
 
 	<script type="text/javascript" th:inline="javascript">
 		//<![CDATA[
-		var loggedInUserId = getUrlParameter("loggedInUserId"),
-			authToken = getUrlParameter("authToken"),
-			selectedProjectId = getUrlParameter("selectedProjectId"),
-			cropName = /*[[${cropName}]]*/ '',
-			currentProgramId = /*[[${currentProgramId}]]*/ '',
-			showReleaseNotes = /*[[${showReleaseNotes}]]*/ '';
+		var showReleaseNotes = /*[[${showReleaseNotes}]]*/ '';
 	//]]>
 	</script>
 	<div id="notification-container" style="display:none">

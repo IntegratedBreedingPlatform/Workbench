@@ -20,9 +20,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { CREATE_INVENTORY_LOT_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_UPDATES_PERMISSIONS,
-    GERMPLASM_LABEL_PRINTING_PERMISSIONS, DELETE_GERMPLASM_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS,
-    UNGROUP_GERMPLASM_PERMISSIONS, CODE_GERMPLASM_PERMISSIONS
+import {
+    CODE_GERMPLASM_PERMISSIONS,
+    CREATE_INVENTORY_LOT_PERMISSIONS,
+    DELETE_GERMPLASM_PERMISSIONS,
+    GERMPLASM_LABEL_PRINTING_PERMISSIONS,
+    GROUP_GERMPLASM_PERMISSIONS,
+    IMPORT_GERMPLASM_PERMISSIONS,
+    IMPORT_GERMPLASM_UPDATES_PERMISSIONS,
+    UNGROUP_GERMPLASM_PERMISSIONS
 } from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
@@ -37,7 +43,7 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
-import { SearchOriginComposite, SearchOrigin } from '../shared/model/Search-origin-composite';
+import { SearchOrigin, SearchOriginComposite } from '../shared/model/Search-origin-composite';
 
 declare var $: any;
 
@@ -48,6 +54,8 @@ declare var $: any;
 export class GermplasmSearchComponent implements OnInit {
 
     IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
+    // TODO The Permissions will be change after implement IBP-4570 (New list manager)
+    CREATE_GERMPLASM_LIST_PERMISSIONS = [...IMPORT_GERMPLASM_PERMISSIONS, 'LISTS', 'GERMPLASM_LISTS'];
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
     GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
     DELETE_GERMPLASM_PERMISSIONS = DELETE_GERMPLASM_PERMISSIONS;
@@ -616,9 +624,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     private validateSelection() {
         if (this.germplasmList.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) === 0)) {
-            this.alertService.error('error.custom', {
-                param: 'Please select at least one germplasm'
-            });
+            this.alertService.error('search-germplasm.selection.empty');
             return false;
         }
         return true;
@@ -720,6 +726,11 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     exportDataAndLabels() {
+        if (this.germplasmList.length === 0) {
+            this.alertService.error('search-germplasm.selection.filter.no.result');
+            return;
+        }
+
         this.paramContext.resetQueryParams().then(() => {
             /*
              * FIXME workaround for history.back() with base-href

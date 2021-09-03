@@ -81,6 +81,7 @@ export class PresetSetting {
         public barcodeSetting?: BarcodeSetting,
         public includeHeadings?: boolean,
         public fileConfiguration?: FileConfiguration,
+        public sortBy?: string
     ) {
     }
 }

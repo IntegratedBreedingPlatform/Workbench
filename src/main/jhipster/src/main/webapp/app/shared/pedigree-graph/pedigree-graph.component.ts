@@ -150,12 +150,14 @@ export class PedigreeGraphComponent implements OnInit {
         } else {
             if (germplasmTreeNode.femaleParentNode) {
                 dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.femaleParentNode) + '->'
-                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';\n' : ' [color=\"RED\", arrowhead=\"odottee\"];\n'));
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1 && germplasmTreeNode.maleParentNode === null) ? ';\n' :
+                        ' [color=\"RED\", arrowhead=\"odottee\"];\n'));
                 this.addNode(dot, germplasmTreeNode.femaleParentNode);
             }
             if (germplasmTreeNode.maleParentNode) {
                 dot.push(this.createNodeTextWithFormatting(dot, germplasmTreeNode.maleParentNode) + '->'
-                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1) ? ';\n' : ' [color=\"BLUE\", arrowhead=\"veeodot\"];\n'));
+                    + germplasmTreeNode.gid + ((germplasmTreeNode.numberOfProgenitors === -1 && germplasmTreeNode.femaleParentNode === null) ? ';\n' :
+                        ' [color=\"BLUE\", arrowhead=\"veeodot\"];\n'));
                 this.addNode(dot, germplasmTreeNode.maleParentNode);
             }
             if (germplasmTreeNode.otherProgenitors && germplasmTreeNode.otherProgenitors.length > 0) {

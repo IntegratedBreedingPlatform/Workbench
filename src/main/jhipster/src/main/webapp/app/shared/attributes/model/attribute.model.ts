@@ -1,6 +1,4 @@
-// TODO
-//  - move to shared/germplasm
-//  - rename to AttributeType
+// TODO delete and use share/ontology/model/variable
 export class Attribute {
     constructor(
         public  code?: string,
