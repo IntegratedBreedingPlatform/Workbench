@@ -18,10 +18,10 @@ import { GenerationHistoryComponent } from './pedigree/generation-history.compon
 import { GermplasmTableComponent } from './pedigree/germplasm-table.component';
 import { ManagementNeighborsComponent } from './pedigree/management-neighbors.component';
 import { GroupRelativesComponent } from './pedigree/group-relatives.component';
-import { GermplasmNeighborhoodTreeComponent } from './pedigree/germplasm-neighborhood-tree.component';
 import { GermplasmDetailsGraphvizModalComponent, GermplasmDetailsGraphvizModalPopupComponent } from './germplasm-details-graphviz-modal.component';
 import { GermplasmDerivativeNeighborhoodTreeComponent } from './pedigree/germplasm-derivative-neighborhood-tree.component';
 import { GermplasmMaintenanceNeighborhoodTreeComponent } from './pedigree/germplasm-maintenance-neighborhood-tree.component';
+import { FilesPaneComponent } from './files/files-pane.component';
 
 @NgModule({
     imports: [
@@ -41,6 +41,7 @@ import { GermplasmMaintenanceNeighborhoodTreeComponent } from './pedigree/germpl
         InventoryPaneComponent,
         ListsPaneComponent,
         SamplesPaneComponent,
+        FilesPaneComponent,
         PedigreeTreeComponent,
         GermplasmTableComponent,
         GenerationHistoryComponent,
@@ -62,6 +63,7 @@ import { GermplasmMaintenanceNeighborhoodTreeComponent } from './pedigree/germpl
         InventoryPaneComponent,
         ListsPaneComponent,
         SamplesPaneComponent,
+        FilesPaneComponent,
         PedigreeTreeComponent,
         GermplasmTableComponent,
         GenerationHistoryComponent,

@@ -17,11 +17,15 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationUnitUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
+    listFileMetadata(observationUnitUUID, germplasmUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const request = {
-            observationUnitUUID,
-        };
+        const request = {}
+        if (observationUnitUUID) {
+            request['observationUnitUUID'] = observationUnitUUID;
+        }
+        if (germplasmUUID) {
+            request['germplasmUUID'] = germplasmUUID;
+        }
         if (variableName) {
             request['variableName'] = variableName;
         }
@@ -31,21 +35,23 @@ export class FileService {
         return this.http.post<FileMetadata[]>(baseUrl + '/filemetadata/search', request, { params, observe: 'response' });
     }
 
-    upload(file: File, observationUnitUUID, termId = null): Observable<FileMetadata> {
+    upload(file: File, observationUnitUUID, germplasmUUID, termId = null): Observable<FileMetadata> {
         const formData: FormData = new FormData();
         formData.append('file', file, file.name);
         const headers = new Headers();
         headers.append('Content-Type', '');
 
-        const options = {
-            params: {
-                observationUnitUUID
-            },
-        };
-
-        if (termId) {
-            options.params['termId'] = termId;
+        const params = {};
+        if (observationUnitUUID) {
+            params['observationUnitUUID'] = observationUnitUUID;
         }
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (termId) {
+            params['termId'] = termId;
+        }
+        const options = {params};
 
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.post<FileMetadata>(baseUrl + '/files', formData, options);

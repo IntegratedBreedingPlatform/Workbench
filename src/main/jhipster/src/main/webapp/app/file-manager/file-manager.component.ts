@@ -40,8 +40,11 @@ export class FileManagerComponent {
     observationUnitUUID: string;
     datasetId: number;
 
+    germplasmUUID: string;
+
     isLoading = false;
     isLoadingImage = false;
+    embedded = false;
     acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
 
     filters = {
@@ -67,7 +70,9 @@ export class FileManagerComponent {
     ) {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
+        this.embedded = Boolean(queryParamMap.get('embedded'));
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
+        this.germplasmUUID = queryParamMap.get('germplasmUUID');
         this.datasetId = Number(queryParamMap.get('datasetId'));
         this.filters.variable.value = queryParamMap.get('variableName');
         this.load();
@@ -77,6 +82,7 @@ export class FileManagerComponent {
         this.isLoading = true;
         this.fileService.listFileMetadata(
             this.observationUnitUUID,
+            this.germplasmUUID,
             this.filters.variable.value,
             <Pageable>({
                 page: this.page - 1,
@@ -167,6 +173,7 @@ export class FileManagerComponent {
         this.fileService.upload(
             this.file,
             this.observationUnitUUID,
+            this.germplasmUUID,
             this.variable && this.variable.id || null
         ).pipe(
             finalize(() => this.isLoading = false)
