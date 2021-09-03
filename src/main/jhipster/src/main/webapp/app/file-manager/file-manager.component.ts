@@ -24,7 +24,7 @@ import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 })
 export class FileManagerComponent {
 
-    VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD]
+    VARIABLE_TYPE_IDS;
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -71,10 +71,17 @@ export class FileManagerComponent {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
         this.embedded = Boolean(queryParamMap.get('embedded'));
+        this.filters.variable.value = queryParamMap.get('variableName');
+
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
         this.germplasmUUID = queryParamMap.get('germplasmUUID');
-        this.datasetId = Number(queryParamMap.get('datasetId'));
-        this.filters.variable.value = queryParamMap.get('variableName');
+        if (this.observationUnitUUID) {
+            this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
+            this.datasetId = Number(queryParamMap.get('datasetId'));
+        } else {
+            this.VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
+        }
+
         this.load();
     }
 

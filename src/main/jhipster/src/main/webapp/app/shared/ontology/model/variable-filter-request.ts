@@ -9,7 +9,8 @@ export class VariableFilterRequest {
         public variableTypeIds?: string[],
         public variableNames?: string[],
         public propertyClasses?: string[],
-        public datasetIds?: number[]
+        public datasetIds?: number[],
+        public germplasmUUIDs?: string[]
     ) {
     }
 }
