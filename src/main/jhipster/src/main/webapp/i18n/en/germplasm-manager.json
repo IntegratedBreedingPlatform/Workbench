@@ -65,6 +65,7 @@
             "add-to-list": "Add to existing list",
             "import": "Import germplasm",
             "delete-germplasm": "Delete selected germplasm records",
+            "merge-germplasm": "Merge germplasm",
             "export-data-and-labels": "Export data and labels",
             "grouping" : "Grouping Options",
             "group" : "Group",
@@ -225,5 +226,8 @@
        "ungrouping.none.successful": "All selected germplasm were not modified because they are not fixed.",
        "grouping-results" : "Grouping Results",
        "grouping-result-generative" : "Grouping was not applied as this is a generative germplasm."
+   },
+   "merge-germplasm" : {
+       "merge-all-germplasm-not-supported": "Merging of germplasm in all pages is not supported. Please select individual germplasm to merge."
    }
 }

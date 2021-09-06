@@ -24,6 +24,7 @@ import {
     CODE_GERMPLASM_PERMISSIONS,
     CREATE_INVENTORY_LOT_PERMISSIONS,
     DELETE_GERMPLASM_PERMISSIONS,
+    MERGE_GERMPLASM_PERMISSIONS,
     GERMPLASM_LABEL_PRINTING_PERMISSIONS,
     GROUP_GERMPLASM_PERMISSIONS,
     IMPORT_GERMPLASM_PERMISSIONS,
@@ -59,6 +60,7 @@ export class GermplasmSearchComponent implements OnInit {
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
     GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
     DELETE_GERMPLASM_PERMISSIONS = DELETE_GERMPLASM_PERMISSIONS;
+    MERGE_GERMPLASM_PERMISSIONS = MERGE_GERMPLASM_PERMISSIONS;
     GROUP_GERMPLASM_PERMISSIONS = GROUP_GERMPLASM_PERMISSIONS;
     UNGROUP_GERMPLASM_PERMISSIONS = UNGROUP_GERMPLASM_PERMISSIONS;
     CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
@@ -826,6 +828,16 @@ export class GermplasmSearchComponent implements OnInit {
             });
             this.activeModal.close();
         }, () => this.activeModal.dismiss());
+    }
+
+    mergeGermplasm() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        if (this.isSelectAll) {
+            this.alertService.error('merge-germplasm.merge-all-germplasm-not-supported');
+            return;
+        }
     }
 
     openKeySequenceDeletionDialog(gids: number[]) {
