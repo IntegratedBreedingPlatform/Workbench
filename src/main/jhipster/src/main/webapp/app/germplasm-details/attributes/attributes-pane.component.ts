@@ -6,7 +6,7 @@ import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
@@ -41,7 +41,9 @@ export class AttributesPaneComponent implements OnInit {
                 private alertService: JhiAlertService,
                 private modalService: NgbModal,
                 private router: Router,
-                private germplasmAttributesContext: GermplasmAttributeContext) {
+                private route: ActivatedRoute,
+                private germplasmAttributesContext: GermplasmAttributeContext
+    ) {
     }
 
     ngOnInit(): void {
@@ -116,6 +118,16 @@ export class AttributesPaneComponent implements OnInit {
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attributes/${germplasmAttribute.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
+        });
+    }
+
+    gotoFiles(attribute: GermplasmAttribute) {
+        this.router.navigate(['../files'], {
+            relativeTo: this.route,
+            queryParamsHandling: 'merge',
+            queryParams: {
+                variableName: attribute.variableName
+            }
         });
     }
 

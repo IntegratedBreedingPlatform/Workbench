@@ -33,8 +33,11 @@
 							<button class="btn btn-info mr-2" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
 							</button>
-							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+							<button class="btn btn-info mr-2" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
 								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info mr-2" (click)="gotoFiles(attribute)">
+								<i class="fa fa-file fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
 
@@ -92,8 +95,11 @@
 							<button class="btn btn-info mr-2" (click)="deleteGermplasmAttribute(attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
 							</button>
-							<button class="btn btn-info" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_ATTRIBUTE, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
+							<button class="btn btn-info mr-2" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_ATTRIBUTE, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
 								<i class="fa fa-list fa-md" aria-hidden="true"></i>
+							</button>
+							<button class="btn btn-info mr-2" (click)="gotoFiles(attribute)">
+								<i class="fa fa-file fa-md" aria-hidden="true"></i>
 							</button>
 						</td>
 					</tr>

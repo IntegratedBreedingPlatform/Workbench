@@ -7,6 +7,8 @@ import { ParamContext } from '../../shared/service/param.context';
 import { FILE_MANAGER_URL } from '../../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
+import { ActivatedRoute } from '@angular/router';
+import { activateRoutes } from '@angular/router/src/operators/activate_routes';
 
 @Component({
     selector: 'jhi-files-pane',
@@ -21,13 +23,18 @@ export class FilesPaneComponent implements OnInit {
                 private germplasmService: GermplasmService,
                 private germplasmDetailsContext: GermplasmDetailsContext,
                 private paramContext: ParamContext,
-                private sanitizer: DomSanitizer
+                private sanitizer: DomSanitizer,
+                private route: ActivatedRoute
     ) {
         this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((resp) => {
-            const queryParams = '?cropName=' + paramContext.cropName
+            let queryParams = '?cropName=' + paramContext.cropName
                 + '&programUUID=' + paramContext.programUUID
                 + '&germplasmUUID=' + resp.body.germplasmUUID
                 + '&embedded=true';
+            const variableName = this.route.snapshot.queryParamMap.get('variableName');
+            if (variableName) {
+                queryParams += '&variableName=' + variableName;
+            }
             this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(FILE_MANAGER_URL + queryParams);
         });
 
