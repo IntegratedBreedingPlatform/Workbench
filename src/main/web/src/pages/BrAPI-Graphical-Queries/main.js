@@ -403,7 +403,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		return new Promise((resolve) => {
 			$.ajax({
 				type: 'POST',
-				url: '/bmsapi/crops/' + getUrlParameter("cropName") + '/germplasm/search?page=0&size=3000',
+				url: '/bmsapi/crops/' + getUrlParameter("cropName") + '/germplasm/search',
 				data: JSON.stringify({
 					gids: gids
 				}),
@@ -417,7 +417,9 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
 					data: {
-						searchRequestId: resp.result.searchResultDbId
+						searchRequestId: resp.result.searchResultDbId,
+						page: 0,
+						size: 3000
 					},
 					beforeSend: beforeSend
 				})
