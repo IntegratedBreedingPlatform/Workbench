@@ -55,7 +55,7 @@
 												  (onApply)="applyFilters()"
 												  (onReset)="resetFilters()"></jhi-column-filter-inline>
 					</th>
-					<th jhiTranslate="fileManager.actions"></th>
+					<th jhiTranslate="fileManager.actions" class="fit"></th>
 				</tr>
 				</thead>
 				<tbody *ngIf="fileMetadataList && fileMetadataList.length else nodata">
@@ -63,7 +63,7 @@
 					[class.selected]="fileMetadataSelected && fileMetadataSelected.fileUUID == fileMetadata.fileUUID">
 					<td>{{fileMetadata.name}}</td>
 					<td>{{fileMetadata.variables?.length ? (fileMetadata.variables[0].alias || fileMetadata.variables[0].name) : ''}}</td>
-					<td>
+					<td class="fit">
 						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"><i class="fa fa-trash" aria-hidden="true"></i></button>
 						<button class="btn btn-info" (click)="download($event, fileMetadata)">
 							<i class="fa fa-download" aria-hidden="true"></i>

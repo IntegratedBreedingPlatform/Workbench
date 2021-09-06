@@ -13,7 +13,7 @@
 						<th scope="col" jhiTranslate="attributes.passport.value">Value</th>
 						<th scope="col" jhiTranslate="attributes.passport.date">Date</th>
 						<th scope="col" jhiTranslate="attributes.passport.location" style="width: 20%">Location</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" style="width: 150px">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" class="fit">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -26,7 +26,7 @@
 						<td class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value}}</td>
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
-						<td class="text-center" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
+						<td class="fit" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
 							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(VariableTypeEnum.GERMPLASM_PASSPORT, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
 							</button>
@@ -72,7 +72,7 @@
 						<th scope="col" jhiTranslate="attributes.attributes.value">Value</th>
 						<th scope="col" jhiTranslate="attributes.attributes.date">Date</th>
 						<th scope="col" jhiTranslate="attributes.attributes.location" style="width: 20%">Location</th>
-						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" style="width: 150px">Actions</th>
+						<th scope="col" jhiTranslate="germplasm-details.actions" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS" class="fit">Actions</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -85,7 +85,7 @@
 						<td class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value}}</td>
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
-						<td class="text-center" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
+						<td class="fit" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
 							<button class="btn btn-info mr-2" (click)="editGermplasmAttribute(VariableTypeEnum.GERMPLASM_ATTRIBUTE, attribute)" *jhiHasAnyAuthority="MODIFY_ATTRIBUTES_PERMISSIONS">
 								<i class="fa fa-edit fa-md" aria-hidden="true"></i>
 							</button>
