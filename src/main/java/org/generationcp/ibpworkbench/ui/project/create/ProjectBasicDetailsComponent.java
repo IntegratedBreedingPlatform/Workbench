@@ -15,6 +15,7 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.GridLayout;
@@ -63,7 +64,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	private GridLayout gridLayout;
 	private TextField projectNameField;
 	private BmsDateField startDateField;
-	private ComboBox cropTypeCombo;
+	private AbstractField cropTypeField;
 	
 	private Boolean isUpdate = false;
 
@@ -104,10 +105,6 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.initializeComponents();
 		this.initializeValues();
 		this.initializeLayout();
-
-		if (this.isUpdate) {
-			this.disableCropTypeCombo();
-		}
 	}
 
 	protected void initializeComponents() {
@@ -141,10 +138,16 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.startDateField.setStyleName("hide-caption");
 		this.startDateField.setWidth("250px");
 
-		this.cropTypeCombo = this.createCropTypeComboBox();
-		this.cropTypeCombo.setWidth("250px");
-		this.cropTypeCombo.setStyleName("hide-caption");
-		this.cropTypeCombo.setDebugId("vaadin_croptype_combo");
+		if (this.isUpdate) {
+			this.cropTypeField = new TextField();
+			this.cropTypeField.setDebugId("vaadin_croptype_txt");
+			this.cropTypeField.setEnabled(false);
+		} else {
+			this.cropTypeField = this.createCropTypeComboBox();
+			this.cropTypeField.setDebugId("vaadin_croptype_combo");
+		}
+		this.cropTypeField.setWidth("250px");
+		this.cropTypeField.setStyleName("hide-caption");
 
 		final Label lblCrop = new Label();
 		lblCrop.setDebugId("lblCrop");
@@ -165,7 +168,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		lblStartDate.setContentMode(Label.CONTENT_XHTML);
 
 		this.gridLayout.addComponent(lblCrop, 1, 1);
-		this.gridLayout.addComponent(this.cropTypeCombo, 2, 1);
+		this.gridLayout.addComponent(this.cropTypeField, 2, 1);
 		this.gridLayout.addComponent(lblProjectName, 1, 2);
 		this.gridLayout.addComponent(this.projectNameField, 2, 2);
 		this.gridLayout.addComponent(lblStartDate, 1, 3);
@@ -254,17 +257,15 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	void updateProjectDetailsFormField(final Project project) {
 		this.projectNameField.setValue(project.getProjectName());
 		this.startDateField.setValue(project.getStartDate());
-		this.cropTypeCombo.setValue(project.getCropType());
-
-		if (this.isUpdate) {
-			this.disableCropTypeCombo();
-		}
+		this.cropTypeField.setValue(this.isUpdate ?
+				project.getCropType().getCropName() : project.getCropType());
+		this.cropTypeField.setData(project.getCropType());
 	}
 
 	public boolean validate() {
 		boolean success = true;
 		final String projectName = (String) this.projectNameField.getValue();
-		final CropType cropType = (CropType) this.cropTypeCombo.getValue();
+		final CropType cropType = (CropType) this.cropTypeField.getData();
 
 		this.errorDescription = new StringBuilder();
 
@@ -292,7 +293,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			}
 
 			try {
-				this.cropTypeCombo.validate();
+				if(!this.isUpdate) {
+					this.cropTypeField.validate();
+				}
 			} catch (final InvalidValueException e) {
 				this.errorDescription.append(ValidationUtil.getMessageFor(e));
 				success = false;
@@ -336,11 +339,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	private CropType getCropTypeBasedOnInput() {
-		return (CropType) this.cropTypeCombo.getValue();
-	}
-
-	private void disableCropTypeCombo() {
-		this.cropTypeCombo.setEnabled(false);
+		return (CropType) this.cropTypeField.getValue();
 	}
 
 	protected void setIsUpdate(final Boolean isUpdate) {
@@ -352,13 +351,13 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	void enableForm() {
-		this.cropTypeCombo.setEnabled(false);
+		this.cropTypeField.setEnabled(false);
 		this.startDateField.setEnabled(true);
 		this.projectNameField.setEnabled(true);
 	}
 
 	void disableForm() {
-		this.cropTypeCombo.setEnabled(false);
+		this.cropTypeField.setEnabled(false);
 		this.startDateField.setEnabled(false);
 		this.projectNameField.setEnabled(false);
 	}
@@ -390,8 +389,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	
-	public ComboBox getCropTypeCombo() {
-		return cropTypeCombo;
+	public AbstractField getCropTypeField() {
+		return cropTypeField;
 	}
 
 	
