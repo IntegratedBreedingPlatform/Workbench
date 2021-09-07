@@ -186,7 +186,9 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 			vals[entry.name] = entry.value;
 			return vals
 		}, {});
-		const phenotypesSearchPromise = $scope.phenotypesSearch(createSearchObject(form));
+		const phenotypesSearchPromise = createSearchObject(form).then((searchObject) => {
+			return $scope.phenotypesSearch(searchObject);
+		});
 
 		switch ($scope.nested.toolId) {
 			case 'graphical-filtering':
@@ -279,7 +281,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 			{title: "observationUnitDbId", data: "observationUnitDbId"},
 			{title: "Accession", data: "germplasmName"},
 			{title: "EntryNumber", data: "entryNumber"},
-			{title: "GID", data: "germplasmDbId"},
+			{title: "GUID", data: "germplasmDbId"},
 			{title: "Location", data: "studyLocation"},
 		];
 		if (groupByAccession) {
@@ -365,19 +367,24 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		});
 	}
 
-	function createSearchObject(form) {
+	async function createSearchObject(form) {
 
 		// TODO: Use the new Locations selector (same as the locations-select directive used in Fieldbook)
 		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
 
 		if ($scope.gid) {
+			const guids = await convertToGUIDs([$scope.gid]);
 			// If the gid query parameter is specified, only the location, germplasm and dataset level filters are enabled.
 			return {
 				locationDbIds: locationDbIds || null,
-				germplasmDbIds: [$scope.gid],
+				germplasmDbIds: guids,
 				observationLevel: $scope.nested.selectedObservationModel || null
 			}
 		} else {
+			let guids = [];
+			if (form.germplasmDbIds) {
+				guids = await convertToGUIDs(form.germplasmDbIds.split(","));
+			}
 			return {
 				locationDbIds: locationDbIds || null,
 				observationLevel: $scope.nested.selectedObservationModel || null,
@@ -385,11 +392,41 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 				trialDbIds: $('#trials select').val() || null,
 				observationTimeStampRangeStart: form.observationTimeStampRangeStart || null,
 				observationTimeStampRangeEnd: form.observationTimeStampRangeEnd || null,
-				germplasmDbIds: form.germplasmDbIds ? form.germplasmDbIds.split(",") : [],
+				germplasmDbIds: guids,
 				pageSize: form.pageSize,
 				page: 0
 			};
 		}
+	}
+
+	function convertToGUIDs(gids) {
+		return new Promise((resolve) => {
+			$.ajax({
+				type: 'POST',
+				url: '/bmsapi/crops/' + getUrlParameter("cropName") + '/germplasm/search',
+				data: JSON.stringify({
+					gids: gids
+				}),
+				dataType: "json",
+				contentType: "application/json;charset=utf-8",
+				beforeSend: beforeSend
+			}).then((resp) => {
+				return $.ajax({
+					type: 'GET',
+					url: '/bmsapi/crops/' + getUrlParameter("cropName") + '/germplasm/search',
+					dataType: "json",
+					contentType: "application/json;charset=utf-8",
+					data: {
+						searchRequestId: resp.result.searchResultDbId,
+						page: 0,
+						size: 3000
+					},
+					beforeSend: beforeSend
+				})
+			}).then((resp) => {
+				resolve(resp.map((germplasm) => germplasm.germplasmUUID))
+			});
+		});
 	}
 
 	function tryParseNumber(str) {
