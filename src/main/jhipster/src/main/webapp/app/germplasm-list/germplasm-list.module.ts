@@ -7,6 +7,7 @@ import { GERMPLASM_LIST_ROUTES } from './germplasm-list.route';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { ListComponent } from './list.component';
+import { ListColumnsComponent } from './list-columns.component';
 
 @NgModule({
     imports: [
@@ -17,12 +18,14 @@ import { ListComponent } from './list.component';
     declarations: [
         GermplasmListComponent,
         GermplasmListSearchComponent,
-        ListComponent
+        ListComponent,
+        ListColumnsComponent
     ],
     entryComponents: [
         GermplasmListComponent,
         GermplasmListSearchComponent,
-        ListComponent
+        ListComponent,
+        ListColumnsComponent
     ],
     providers: [
         GermplasmListService

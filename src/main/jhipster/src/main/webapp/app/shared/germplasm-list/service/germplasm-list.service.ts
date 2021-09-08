@@ -15,6 +15,7 @@ import { createRequestOption } from '../..';
 import { GermplasmListDataSearchRequest } from '../model/germplasm-list-data-search-request.model';
 import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-search-response.model';
 import { GermplasmList } from '../../model/germplasm-list';
+import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -62,6 +63,11 @@ export class GermplasmListService implements ListService {
 
     toggleGermplasmListStatus(listId: number): Observable<boolean> {
         return this.http.post<boolean>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/toggle-status?programUUID=` + this.context.programUUID,
+            { observe: 'response' });
+    }
+
+    getGermplasmListColumns(listId: number): Observable<HttpResponse<GermplasmListColumn[]>> {
+        return this.http.get<GermplasmListColumn[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/columns?programUUID=` + this.context.programUUID,
             { observe: 'response' });
     }
 
