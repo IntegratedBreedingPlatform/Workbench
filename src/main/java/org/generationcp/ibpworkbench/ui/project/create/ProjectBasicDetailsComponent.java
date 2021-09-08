@@ -122,8 +122,8 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.projectNameField.setImmediate(true);
 		this.projectNameField.setRequired(true);
 		this.projectNameField.setRequiredError(this.messageSource.getMessage("PROGRAM_NAME_REQUIRED_ERROR"));
-		this.projectNameField
-				.addValidator(new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
+		this.projectNameField.addValidator(
+				new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
 		this.projectNameField.addValidator(
 				new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"), projectNameInvalidCharPattern, true));
 		this.projectNameField.setStyleName("hide-caption");
@@ -257,8 +257,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	void updateProjectDetailsFormField(final Project project) {
 		this.projectNameField.setValue(project.getProjectName());
 		this.startDateField.setValue(project.getStartDate());
-		this.cropTypeField.setValue(this.isUpdate ?
-				project.getCropType().getCropName() : project.getCropType());
+		this.cropTypeField.setValue(this.isUpdate ? project.getCropType().getCropName() : project.getCropType());
 		this.cropTypeField.setData(project.getCropType());
 	}
 
@@ -293,7 +292,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 			}
 
 			try {
-				if(!this.isUpdate) {
+				if (!this.isUpdate) {
 					this.cropTypeField.validate();
 				}
 			} catch (final InvalidValueException e) {
