@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../shared/service/param.context';
@@ -16,13 +16,17 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { MG_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_PERMISSION } from '../shared/auth/permissions';
+import { Principal } from '../shared';
 
 @Component({
     selector: 'jhi-file-manager',
     templateUrl: './file-manager.component.html',
     styleUrls: ['./file-manager.scss']
 })
-export class FileManagerComponent {
+export class FileManagerComponent implements OnInit {
+
+    manageFilesPermissions = [];
 
     VARIABLE_TYPE_IDS;
 
@@ -66,7 +70,8 @@ export class FileManagerComponent {
         private fileService: FileService,
         private alertService: AlertService,
         private modalService: NgbModal,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private principal: Principal,
     ) {
         this.context.readParams();
         const queryParamMap = this.route.snapshot.queryParamMap;
@@ -78,8 +83,10 @@ export class FileManagerComponent {
         if (this.observationUnitUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
             this.datasetId = Number(queryParamMap.get('datasetId'));
+            this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
         } else {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
+            this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
         }
 
         this.load();
@@ -107,6 +114,11 @@ export class FileManagerComponent {
             this.imgToUploadUrlPreview = null;
             this.fileMetadataList = resp.body;
         }, (error) => this.onError(error));
+    }
+
+    async ngOnInit() {
+        // get user account to use hasAnyAuthority directive
+        await this.principal.identity();
     }
 
     applyFilters() {

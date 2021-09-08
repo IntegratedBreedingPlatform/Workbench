@@ -54,7 +54,7 @@ export class FileService {
         const options = {params};
 
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.post<FileMetadata>(baseUrl + '/files', formData, options);
+        return this.http.post<FileMetadata>(baseUrl + '/files?programUUID=' + this.context.programUUID, formData, options);
     }
 
     downloadFile(path): Observable<HttpResponse<Blob>> {
@@ -64,7 +64,7 @@ export class FileService {
 
     delete(fileUUID) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.delete(baseUrl + '/files/' + fileUUID);
+        return this.http.delete(baseUrl + '/files/' + fileUUID + '?programUUID=' + this.context.programUUID);
     }
 
 }

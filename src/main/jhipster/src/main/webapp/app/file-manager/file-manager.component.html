@@ -8,42 +8,42 @@
 		<div class="col">
 			<form>
 				<div class="form-group row">
-					<label class="col-sm-3 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
-					<div class="col-sm-6">
-						<div class="input-group">
-							<input type="file" class="custom-file-input" id="fileInput" [disabled]="isLoading"
-								   (change)="onFileChange($event)" accept="{{acceptedFileTypes}}">
-							<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
-								<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
-							</label>
+					<ng-container *jhiHasAnyAuthority="manageFilesPermissions">
+						<label class="col-sm-3 col-form-label" for="fileInput" jhiTranslate="fileManager.upload.file"></label>
+						<div class="col-sm-6">
+							<div class="input-group">
+								<input type="file" class="custom-file-input" id="fileInput" [disabled]="isLoading"
+									   (change)="onFileChange($event)" accept="{{acceptedFileTypes}}">
+								<label class="custom-file-label text-truncate" #fileUpload for="fileInput">
+									<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="fileManager.fileUpload.description"></span>
+								</label>
+							</div>
 						</div>
-					</div>
-					<div class="col-sm-2">
-						<button class="btn btn-info" (click)="upload()" [disabled]="!file || isLoading">
-							<span jhiTranslate="fileManager.upload.button"></span>
-						</button>
-					</div>
+						<div class="col-sm-2">
+							<button class="btn btn-info" (click)="upload()" [disabled]="!file || isLoading">
+								<span jhiTranslate="fileManager.upload.button"></span>
+							</button>
+						</div>
+					</ng-container>
 					<div class="col-sm-1">
 						<i class="throbber" *ngIf="isLoading"></i>
 					</div>
 				</div>
-				<div class="form-group row">
-					<label class="col-sm-3 col-form-label" for="variable" jhiTranslate="fileManager.upload.variable"></label>
-					<div class="col-sm-6">
-						<jhi-variable-select
-							id="variable"
-							[allowClear]="true"
-							(onVariableSelectedChange)="variable = $event"
-							[datasetId]="datasetId"
-							[variableTypeIds]="VARIABLE_TYPE_IDS"
-							[germplasmUUID]="germplasmUUID"
-						></jhi-variable-select>
+				<ng-container *jhiHasAnyAuthority="manageFilesPermissions">
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label" for="variable" jhiTranslate="fileManager.upload.variable"></label>
+						<div class="col-sm-6">
+							<jhi-variable-select
+								id="variable"
+								[allowClear]="true"
+								(onVariableSelectedChange)="variable = $event"
+								[datasetId]="datasetId"
+								[variableTypeIds]="VARIABLE_TYPE_IDS"
+								[germplasmUUID]="germplasmUUID"
+							></jhi-variable-select>
+						</div>
 					</div>
-				</div>
-				<div class="form-group row">
-					<div class="offset-3 col-sm-6">
-					</div>
-				</div>
+				</ng-container>
 			</form>
 			<table class="table table-striped table-bordered table-curved">
 				<thead>
@@ -64,7 +64,8 @@
 					<td>{{fileMetadata.name}}</td>
 					<td>{{fileMetadata.variables?.length ? (fileMetadata.variables[0].alias || fileMetadata.variables[0].name) : ''}}</td>
 					<td class="fit">
-						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"
+								*jhiHasAnyAuthority="manageFilesPermissions"><i class="fa fa-trash" aria-hidden="true"></i></button>
 						<button class="btn btn-info" (click)="download($event, fileMetadata)">
 							<i class="fa fa-download" aria-hidden="true"></i>
 						</button>
