@@ -65,4 +65,8 @@ export class GermplasmListService implements ListService {
             { observe: 'response' });
     }
 
+    downloadGermplasmTemplate() {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls?programUUID=${this.context.programUUID}`;
+        return this.http.get(url, { observe: 'response', responseType: 'blob' });
+    }
 }
