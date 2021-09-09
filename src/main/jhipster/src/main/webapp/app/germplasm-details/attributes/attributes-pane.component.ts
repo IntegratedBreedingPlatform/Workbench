@@ -14,6 +14,9 @@ import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
+import { FileService } from '../../shared/file/service/file.service';
+import { FileDeleteOptionsComponent } from '../../shared/file/component/file-delete-options.component';
+import { formatErrorList } from '../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -42,7 +45,8 @@ export class AttributesPaneComponent implements OnInit {
                 private modalService: NgbModal,
                 private router: Router,
                 private route: ActivatedRoute,
-                private germplasmAttributesContext: GermplasmAttributeContext
+                private germplasmAttributesContext: GermplasmAttributeContext,
+                private fileService: FileService
     ) {
     }
 
@@ -92,19 +96,55 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute): void {
+    async deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.variableName });
 
-        confirmModalRef.result.then(() => {
-            this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise().then((result) => {
-                this.alertService.success('germplasm-attribute-modal.delete.success');
-                this.loadAttributes();
-                this.germplasmDetailsContext.notifyGermplasmDetailChanges();
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-            });
-        }, () => confirmModalRef.dismiss());
+        try {
+            await confirmModalRef.result
+        } catch (e) {
+            return
+        }
+
+        try {
+            const germplasmResp = await this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise();
+            const germplasmUUID = germplasmResp.body.germplasmUUID;
+            const variableIds = [germplasmAttribute.variableId];
+            const fileCountResp = await this.fileService.getFileCount(variableIds, germplasmUUID).toPromise();
+            const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
+            if (fileCount > 0) {
+                const fileOptionsModal = this.modalService.open(FileDeleteOptionsComponent as Component);
+                fileOptionsModal.componentInstance.fileCount = fileCount;
+                let doRemoveFiles;
+                try {
+                    doRemoveFiles = await fileOptionsModal.result;
+                } catch (e) {
+                    return;
+                }
+                if (doRemoveFiles) {
+                    await this.fileService.removeFiles(variableIds, germplasmUUID).toPromise();
+                } else {
+                    await this.fileService.detachFiles(variableIds, germplasmUUID).toPromise();
+                }
+            }
+
+            const result = await this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise()
+            this.alertService.success('germplasm-attribute-modal.delete.success');
+            this.loadAttributes();
+            this.germplasmDetailsContext.notifyGermplasmDetailChanges();
+        } catch (response) {
+            if (!response.error) {
+                this.alertService.error('error.general.client');
+                console.error(response);
+                return;
+            }
+            const msg = formatErrorList(response.error.errors);
+            if (msg) {
+                this.alertService.error('error.custom', { param: msg });
+            } else {
+                this.alertService.error('error.general');
+            }
+        }
     }
 
     isValidValue(attribute: GermplasmAttribute) {
