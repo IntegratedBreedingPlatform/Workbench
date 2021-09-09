@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GermplasmListColumn, GermplasmListColumnType } from '../shared/germplasm-list/model/germplasm-list-column.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
@@ -17,8 +17,7 @@ export class ListColumnsComponent implements OnInit {
 
     @Input() listId: number;
 
-    // @Output() onApply = new EventEmitter();
-    // @Output() onReset = new EventEmitter();
+    @Output() columnsSelectedEvent = new EventEmitter<number[]>();
 
     readonly ENTRY_NO_TERM_ID = 8230;
 
@@ -34,7 +33,6 @@ export class ListColumnsComponent implements OnInit {
 
     constructor(private germplasmListService: GermplasmListService,
                 private alertService: AlertService) {
-
     }
 
     ngOnInit(): void {
@@ -44,16 +42,9 @@ export class ListColumnsComponent implements OnInit {
         );
     }
 
-    apply(form) {
-        if (!form.valid) {
-            return;
-        }
-        // this.onApply.emit();
-    }
-
-    reset(form) {
-        form.reset();
-        // this.onReset.emit();
+    apply() {
+        const selectedColumnIds: number[] = this.getSelectedColumnIds();
+        this.columnsSelectedEvent.emit(selectedColumnIds);
     }
 
     onSearchColumn(evt: any) {
@@ -69,8 +60,10 @@ export class ListColumnsComponent implements OnInit {
         }
     }
 
-    showColumns() {
-        // this.searchInput.value = '';
+    private getSelectedColumnIds(): number[] {
+        return [].concat(this.filteredStaticColumns, this.filteredNameColumns, this.filteredPassportColumns, this.filteredAttributesColumns)
+            .filter((column: GermplasmListColumn) => column.selected)
+            .map((column: GermplasmListColumn) => column.id);
     }
 
     private filterColumns(columns: GermplasmListColumn[], searchString: string): GermplasmListColumn[] {

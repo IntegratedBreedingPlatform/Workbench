@@ -12,7 +12,7 @@
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
 					<button class="dropdown-item" type="submit">TODO: List import</button>
 				</div>
-				<jhi-list-columns class="ml-2" [listId]="this.listId"></jhi-list-columns>
+				<jhi-list-columns class="ml-2" [listId]="this.listId" (columnsSelectedEvent)="onColumnsSelected($event)"></jhi-list-columns>
 			</div>
 		</div>
 	</div>

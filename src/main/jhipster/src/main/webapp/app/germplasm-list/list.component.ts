@@ -137,6 +137,10 @@ export class ListComponent implements OnInit {
         this.loadAll(this.request);
     }
 
+    onColumnsSelected(values: number[]) {
+        console.log('value: ' + values);
+    }
+
     private getSort() {
         if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
