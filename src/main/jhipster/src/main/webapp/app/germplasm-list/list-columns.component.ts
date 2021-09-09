@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { GermplasmListColumn, GermplasmListColumnType } from '../shared/germplasm-list/model/germplasm-list-column.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-list-columns',
@@ -18,6 +19,8 @@ export class ListColumnsComponent implements OnInit {
     @Input() listId: number;
 
     @Output() columnsSelectedEvent = new EventEmitter<number[]>();
+
+    @ViewChild('columnsDropdown') columnsDropdown: NgbDropdown;
 
     readonly ENTRY_NO_TERM_ID = 8230;
 
@@ -43,6 +46,8 @@ export class ListColumnsComponent implements OnInit {
     }
 
     apply() {
+        this.columnsDropdown.close();
+
         const selectedColumnIds: number[] = this.getSelectedColumnIds();
         this.columnsSelectedEvent.emit(selectedColumnIds);
     }

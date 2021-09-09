@@ -1,4 +1,4 @@
-<div ngbDropdown class="float-right" placement="bottom-right">
+<div ngbDropdown placement="bottom-right" #columnsDropdown="ngbDropdown">
 	<button class="btn btn-info" id="columnMenu" ngbDropdownToggle jhiTranslate="germplasm-list.list-data.show-columns-button"></button>
 	<div ngbDropdownMenu aria-labelledby="columnMenu" class="column-menu p-2">
 		<form #f='ngForm'>
