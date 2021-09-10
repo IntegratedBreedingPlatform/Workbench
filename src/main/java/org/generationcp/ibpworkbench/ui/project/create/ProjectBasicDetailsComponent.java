@@ -123,9 +123,9 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 		this.projectNameField.setRequired(true);
 		this.projectNameField.setRequiredError(this.messageSource.getMessage("PROGRAM_NAME_REQUIRED_ERROR"));
 		this.projectNameField.addValidator(
-				new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
+			new StringLengthValidator(this.messageSource.getMessage("PROGRAM_NAME_LENGTH_ERROR"), 3, 65, false));
 		this.projectNameField.addValidator(
-				new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"), projectNameInvalidCharPattern, true));
+			new RegexValidator(this.messageSource.getMessage("PROGRAM_NAME_INVALID_ERROR"), projectNameInvalidCharPattern, true));
 		this.projectNameField.setStyleName("hide-caption");
 		this.projectNameField.setWidth("250px");
 		this.projectNameField.setDebugId("vaadin_projectname_txt");
@@ -338,7 +338,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	private CropType getCropTypeBasedOnInput() {
-		return (CropType)  (this.isUpdate ? this.cropTypeField.getData() : this.cropTypeField.getValue());
+		return (CropType) (this.isUpdate ? this.cropTypeField.getData() : this.cropTypeField.getValue());
 	}
 
 	protected void setIsUpdate(final Boolean isUpdate) {
