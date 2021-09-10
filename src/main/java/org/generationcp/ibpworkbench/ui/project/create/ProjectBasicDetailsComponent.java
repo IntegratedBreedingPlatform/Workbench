@@ -264,7 +264,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	public boolean validate() {
 		boolean success = true;
 		final String projectName = (String) this.projectNameField.getValue();
-		final CropType cropType = (CropType) this.cropTypeField.getData();
+		final CropType cropType = this.getCropTypeBasedOnInput();
 
 		this.errorDescription = new StringBuilder();
 
@@ -338,7 +338,7 @@ public class ProjectBasicDetailsComponent extends VerticalLayout implements Init
 	}
 
 	private CropType getCropTypeBasedOnInput() {
-		return (CropType) this.cropTypeField.getValue();
+		return (CropType)  (this.isUpdate ? this.cropTypeField.getData() : this.cropTypeField.getValue());
 	}
 
 	protected void setIsUpdate(final Boolean isUpdate) {
