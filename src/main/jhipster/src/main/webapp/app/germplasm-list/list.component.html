@@ -7,6 +7,17 @@
 	<br/>
 	<div class="row">
 		<div class="col">
+<!--			<div ngbDropdown class="float-right" placement="bottom-right">-->
+<!--				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>-->
+<!--				<div ngbDropdownMenu aria-labelledby="actionMenu">-->
+<!--					<button class="dropdown-item" type="submit">TODO: some action</button>-->
+<!--				</div>-->
+<!--			</div>-->
+			<jhi-list-columns class="ml-2 float-right" [listId]="this.listId" (columnsSelectedEvent)="onColumnsSelected($event)"></jhi-list-columns>
+		</div>
+	</div>
+	<div class="row mt-2 mb-2">
+		<div class="col">
 			<div style="float: right">
 				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="user?.id !== germplasmList?.ownerId">
 					<i [ngClass]="germplasmList?.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true"></i>
@@ -21,7 +32,6 @@
 			</div>
 		</div>
 	</div>
-	<br/>
 	<div class="table-responsive" *ngIf="entries">
 		<table class="table table-striped table-bordered table-curved" *ngIf="entries.length else nodata">
 			<thead>

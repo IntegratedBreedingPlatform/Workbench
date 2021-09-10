@@ -20,8 +20,14 @@
             }
         },
         "list-data": {
+            "show-columns-button": "Columns",
             "columns": {
-                "entry-number": "ENTRY_NO"
+                "entry-number": "ENTRY_NO",
+                "types" : {
+                    "names": "NAMES",
+                    "passport": "PASSPORT",
+                    "attributes": "ATTRIBUTES"
+                }
             }
         }
     }

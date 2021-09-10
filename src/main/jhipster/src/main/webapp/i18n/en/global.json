@@ -153,6 +153,7 @@
     "finish": "Finish",
     "actions": "Actions",
     "ok": "Ok",
+    "search": "Search",
     "template.download": {
         "description": "You can download a template",
         "here": "here"
