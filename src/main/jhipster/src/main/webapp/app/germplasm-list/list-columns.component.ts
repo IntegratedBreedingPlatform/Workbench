@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { GermplasmListColumn, GermplasmListColumnType } from '../shared/germplasm-list/model/germplasm-list-column.model';
+import { GermplasmListColumn, GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { formatErrorList } from '../shared/alert/format-error-list';
@@ -77,13 +77,13 @@ export class ListColumnsComponent implements OnInit {
 
     private onGetColumnsSuccess(columns: GermplasmListColumn[]) {
         columns.forEach((column: GermplasmListColumn) => {
-            if (column.columnType === GermplasmListColumnType.STATIC) {
+            if (column.category === GermplasmListColumnCategory.STATIC) {
                 this.staticColumns.push(column);
             }
-            if (column.columnType === GermplasmListColumnType.NAMES) {
+            if (column.category === GermplasmListColumnCategory.NAMES) {
                 this.nameColumns.push(column);
             }
-            if (column.columnType === GermplasmListColumnType.VARIABLE) {
+            if (column.category === GermplasmListColumnCategory.VARIABLE) {
                 if (column.typeId === VariableTypeEnum.GERMPLASM_PASSPORT) {
                     this.passportColumns.push(column);
                 }
