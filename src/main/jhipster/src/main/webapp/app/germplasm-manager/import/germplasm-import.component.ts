@@ -157,9 +157,8 @@ export class GermplasmImportComponent implements OnInit {
     }
 
     private validateHeader(fileHeader: string[], errorMessage: string[]) {
-    	//ignore empty column headers
-    	fileHeader = fileHeader.filter((header) => !!header);
-
+        // Ignore empty column headers
+        fileHeader = fileHeader.filter((header) => !!header);
         this.codes = {};
         Object.keys(fileHeader
             // get duplicates
