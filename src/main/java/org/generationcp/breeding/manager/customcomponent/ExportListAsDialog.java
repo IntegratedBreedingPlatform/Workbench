@@ -17,7 +17,6 @@ import org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter;
 import org.generationcp.breeding.manager.util.FileDownloaderUtility;
 import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.exceptions.GermplasmListExporterException;
-import org.generationcp.commons.pojo.CustomReportType;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
@@ -29,7 +28,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.workbench.ToolName;
-import org.generationcp.middleware.reports.Reporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -171,10 +169,6 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 				} else if (exportType
 						.equalsIgnoreCase(ExportListAsDialog.this.messageSource.getMessage(Message.EXPORT_LIST_FOR_GENOTYPING_ORDER))) {
 					ExportListAsDialog.this.exportListForGenotypingOrderAction();
-				} else {
-					final String userSelection = ExportListAsDialog.this.formatOptionsCbx.getValue().toString();
-					final String reportCode = userSelection.substring(0, userSelection.indexOf("-")).trim();
-					ExportListAsDialog.this.exportCustomReport(reportCode);
 				}
 
 			}
@@ -241,23 +235,6 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 					e.getMessage() + ". " + this.messageSource.getMessage(Message.ERROR_REPORT_TO));
 		}
 
-	}
-
-	protected void exportCustomReport(final String reportCode) {
-		try {
-			final String temporaryFilePath = this.installationDirectoryUtil
-					.getTempFileInOutputDirectoryForProjectAndTool(ExportListAsDialog.TEMP_FILENAME, CSV_EXT, this.contextUtil.getProjectInContext(),
-							ToolName.BM_LIST_MANAGER_MAIN);
-			final Reporter customReport =
-					this.germplasmListExporter.exportGermplasmListCustomReport(this.germplasmList.getId(), temporaryFilePath, reportCode);
-
-			this.fileDownloaderUtility.initiateFileDownload(temporaryFilePath, customReport.getFileName(), this.source);
-
-		} catch (final GermplasmListExporterException | IOException e) {
-			ExportListAsDialog.LOG.error(this.messageSource.getMessage(Message.ERROR_EXPORTING_LIST), e);
-			MessageNotifier.showError(this.source.getWindow(), this.messageSource.getMessage(Message.ERROR_EXPORTING_LIST),
-					e.getMessage() + ". " + this.messageSource.getMessage(Message.ERROR_REPORT_TO));
-		}
 	}
 
 	protected void exportListAsXLS(final Table table) {
@@ -342,10 +319,6 @@ public class ExportListAsDialog extends BaseSubWindow implements InitializingBea
 
 	public void setExportOptionValue(final String comboValue) {
 		this.formatOptionsCbx.setValue(comboValue);
-	}
-
-	protected String formatCustomReportString(final CustomReportType type) {
-		return type.getCode() + " - " + type.getName();
 	}
 
 	protected GermplasmList getGermplasmList() {
