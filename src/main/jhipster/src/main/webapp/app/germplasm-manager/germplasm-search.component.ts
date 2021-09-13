@@ -45,6 +45,7 @@ import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
 import { SearchOrigin, SearchOriginComposite } from '../shared/model/Search-origin-composite';
+import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
 
 declare var $: any;
 
@@ -838,6 +839,13 @@ export class GermplasmSearchComponent implements OnInit {
             this.alertService.error('merge-germplasm.merge-all-germplasm-not-supported');
             return;
         }
+        if (this.size(this.selectedItems) > 20) {
+            this.alertService.error('merge-germplasm.too-many-selected-germplasm');
+            return;
+        }
+        const mergeGermplasmModal = this.modalService.open(MergeGermplasmSelectionComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });
+        mergeGermplasmModal.componentInstance.gids = this.getSelectedItemIds();
+
     }
 
     openKeySequenceDeletionDialog(gids: number[]) {

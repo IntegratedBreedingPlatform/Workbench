@@ -20,6 +20,7 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
+import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
 
 @NgModule({
     imports: [
@@ -46,7 +47,8 @@ import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './g
         GermplasmGroupOptionsDialogComponent,
         GermplasmGroupingResultComponent,
         GermplasmCodingDialogComponent,
-        GermplasmCodingResultDialogComponent
+        GermplasmCodingResultDialogComponent,
+        MergeGermplasmSelectionComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -67,7 +69,8 @@ import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './g
         GermplasmGroupOptionsDialogComponent,
         GermplasmGroupingResultComponent,
         GermplasmCodingDialogComponent,
-        GermplasmCodingResultDialogComponent
+        GermplasmCodingResultDialogComponent,
+        MergeGermplasmSelectionComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,

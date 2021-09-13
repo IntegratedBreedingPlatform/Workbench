@@ -228,6 +228,24 @@
        "grouping-result-generative" : "Grouping was not applied as this is a generative germplasm."
    },
    "merge-germplasm" : {
-       "merge-all-germplasm-not-supported": "Merging of germplasm in all pages is not supported. Please select individual germplasm to merge."
+       "merge-all-germplasm-not-supported": "Merging of germplasm in all pages is not supported. Please select individual germplasm to merge.",
+       "too-many-selected-germplasm": "You can only merge 20 germplasm records at a time.",
+       "title" : "Merge Germplasm",
+       "select-germplasm-caption" : "You have selected the following germplasm to merge. Please select the target germplasm record you would like to keep.",
+       "non-selected-germplasm-caption": "The non-selected germplasm will be deleted.",
+       "column.target" : "Target",
+       "column.designation" : "DESIGNATION",
+       "column.guid" : "GUID",
+       "column.hasProgeny" : "HAS PROGENY",
+       "column.hasPedigree" : "HAS PEDIGREE",
+       "column.usedInStudy" : "USED IN STUDY",
+       "variables.and.names": "Variables and Names",
+       "transfer-passport-data" : "Transfer passport data from deleted germplasm to target germplasm",
+       "transfer-attributes-data" : "Transfer attributes data from deleted germplasm to target germplasm",
+       "transfer-names-types-data" : "Transfer name-types data from deleted germplasm to target germplasm",
+       "non-selected-germplasm-has-progeny": "Some of the germplasm to be deleted has progeny associated: {{param}}. Please manually edit such progeny so that it points to a different progenitor in order to proceed with the merge.",
+       "non-selected-germplasm-fixed": "Some of the germplasm to be deleted is grouped: {{param}}. Please ungroup this germplasm in order to proceed with the merge.",
+       "non-selected-germplasm-in-locked-list": "Some of the germplasm to be deleted is part of a locked germplasm list: {{param}}. Please remove them from such list/s, unlocking the list first, in order to proceed with the merge.",
+       "confirm" : "Confirm"
    }
 }
