@@ -5,7 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     selector: 'jhi-modal-confirm',
     template: `
 		<jhi-modal>
-			<div class="modal-body word-wrap">
+			<div class="modal-body">
                 <span jhiTranslate="fileManager.delete.variable.files.message" [translateValues]="{fileCount: fileCount}"></span>
 			</div>
 			<div class="modal-footer">

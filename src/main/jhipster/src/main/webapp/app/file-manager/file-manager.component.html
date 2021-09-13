@@ -64,7 +64,7 @@
 					<td>{{fileMetadata.name}}</td>
 					<td>{{fileMetadata.variables?.length ? (fileMetadata.variables[0].alias || fileMetadata.variables[0].name) : ''}}</td>
 					<td class="fit">
-						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)"
+						<button class="btn btn-info mr-2" (click)="delete($event, fileMetadata)" [disabled]="isLoading"
 								*jhiHasAnyAuthority="manageFilesPermissions"><i class="fa fa-trash" aria-hidden="true"></i></button>
 						<button class="btn btn-info" (click)="download($event, fileMetadata)">
 							<i class="fa fa-download" aria-hidden="true"></i>
