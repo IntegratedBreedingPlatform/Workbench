@@ -109,7 +109,6 @@ public class GermplasmListTreeUtilTest {
 
 		final Project dummyProject = new Project();
 		dummyProject.setProjectId(5L);
-		when(this.workbenchDataManager.getLastOpenedProject(USER_ID)).thenReturn(dummyProject);
 		when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(USER_ID);
 		when(this.userService.getPersonNameForUserId(USER_ID)).thenReturn(USER_FULL_NAME);
 
