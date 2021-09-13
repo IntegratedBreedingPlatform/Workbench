@@ -69,8 +69,6 @@
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 	</bean>
 
-	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil" />
-
 	<bean id="tomcatUtil" class="org.generationcp.commons.tomcat.util.TomcatUtil">
 		<property name="managerUrl" value="${tomcat.manager.url}" />
 		<property name="username" value="${tomcat.manager.username}" />
@@ -78,8 +76,6 @@
 	</bean>
 
 	<bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
-	<bean id="appLauncherService"
-		class="org.generationcp.ibpworkbench.service.AppLauncherService"></bean>
 
 	<bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 
