@@ -29,6 +29,31 @@
                     "attributes": "ATTRIBUTES"
                 }
             }
+      },
+      "actions": {
+          "import-list":"Import list"
+      },
+      "import": {
+            "header": "Import List",
+            "file": {
+                  "input.description": "Choose the file you would like to import in format: Excel",
+                  "validation": {
+                        "file.empty": "Wrong name for Observation sheet or the file has no data. Please verify and try again",
+                        "extensions": "Only the following file extensions are allowed: {{param}}",
+                        "header": "At least GID, GUID or DESCRIPTION column is required",
+                        "gid.format": "Some GID values are not a positive integer. Please correct them and try again",
+                        "unknown.column": "Some columns were not recognized in the system or are not relevant to the import list and were thus ignored ({{param}})"
+
+                  }
+            },
+        "review": {
+          "header": "Review",
+          "show.matches": "Show matches",
+          "skip.multi.matches" : "Skip data with multiple matches",
+          "skip.data.with.out.matches": "Skip data without matches"
+        },
+        "cancel.confirm": "Are you sure you want to quit the import process?",
+        "success": "Germplasm imported successfully!"
         }
     }
 }
