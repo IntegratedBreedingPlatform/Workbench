@@ -6,18 +6,16 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { VariableService } from '../../shared/ontology/service/variable.service';
-import { GermplasmImportContext } from '../../germplasm-manager/import/germplasm-import.context';
 import { parseFile, saveFile } from '../../shared/util/file-utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListImportContext } from './germplasm-list-import.context';
-import { toUpper } from '../../shared/util/to-upper';
 import { listPreview } from '../../shared/util/list-preview';
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
 
 @Component({
-    selector: 'jhi-list-import',
+    selector: 'jhi-germplasm-list-import',
     templateUrl: 'germplasm-list-import.component.html'
 })
 export class GermplasmListImportComponent implements OnInit {
@@ -177,10 +175,10 @@ export class GermplasmListImportComponent implements OnInit {
 }
 
 @Component({
-    selector: 'jhi-list-import-popup',
+    selector: 'jhi-germplasm-list-import-popup',
     template: ''
 })
-export class ListImportPopupComponent implements OnInit, OnDestroy {
+export class GermplasmListImportPopupComponent implements OnInit, OnDestroy {
 
     routeSub: any;
 

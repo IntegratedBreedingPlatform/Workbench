@@ -7,7 +7,7 @@ import { GERMPLASM_LIST_ROUTES } from './germplasm-list.route';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { ListComponent } from './list.component';
-import { ListImportPopupComponent, GermplasmListImportComponent } from './import/germplasm-list-import.component';
+import { GermplasmListImportComponent } from './import/germplasm-list-import.component';
 import { GermplasmListImportModule } from './import/germplasm-list-import.module';
 import { GermplasmListImportContext } from './import/germplasm-list-import.context';
 import { ListColumnsComponent } from './list-columns.component';
