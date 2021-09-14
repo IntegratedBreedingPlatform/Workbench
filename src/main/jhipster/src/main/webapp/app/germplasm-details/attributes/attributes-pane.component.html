@@ -36,7 +36,7 @@
 							<button class="btn btn-info mr-2" (click)="openGermplasmAttributeAuditChanges(VariableTypeEnum.GERMPLASM_PASSPORT, attribute)" *jhiHasAnyAuthority="GERMPLASM_AUDIT_PERMISSION">
 								<i class="fa fa-list fa-md" aria-hidden="true"></i>
 							</button>
-							<button class="btn btn-info mr-2" (click)="gotoFiles(attribute)" *ngIf="attribute.hasFiles">
+							<button class="btn btn-info mr-2" (click)="gotoFiles(attribute)" *ngIf="attribute.hasFiles && isFileStorageConfigured">
 								<i class="fa fa-file fa-md" aria-hidden="true"></i>
 							</button>
 						</td>

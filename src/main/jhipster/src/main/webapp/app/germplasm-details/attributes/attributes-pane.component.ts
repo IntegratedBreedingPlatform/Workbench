@@ -33,6 +33,7 @@ export class AttributesPaneComponent implements OnInit {
     attributes: GermplasmAttribute[] = [];
     variableByAttributeId: { [key: number]: VariableDetails } = {};
     VariableTypeEnum = VariableTypeEnum;
+    isFileStorageConfigured: boolean;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
@@ -53,6 +54,7 @@ export class AttributesPaneComponent implements OnInit {
     ngOnInit(): void {
         this.loadAttributes();
         this.registerGermplasmAttributeChanged();
+        this.fileService.isFileStorageConfigured().then((isFileStorageConfigured) => this.isFileStorageConfigured = isFileStorageConfigured);
     }
 
     registerGermplasmAttributeChanged() {

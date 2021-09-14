@@ -25,7 +25,7 @@
 		<li class="nav-item">
 			<a class="nav-link" [routerLink]="['samples']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.samples">Samples</a>
 		</li>
-		<li class="nav-item">
+		<li class="nav-item" *ngIf="isFileStorageConfigured">
 			<a class="nav-link" [routerLink]="['files']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.files.tab">Files</a>
 		</li>
 	</ul>

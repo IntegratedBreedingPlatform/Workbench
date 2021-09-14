@@ -98,4 +98,9 @@ export class FileService {
         });
     }
 
+   isFileStorageConfigured(): Promise<boolean> {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.get(baseUrl + '/filestorage/status').toPromise().then((resp: any) => resp.status);
+    }
+
 }
