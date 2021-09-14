@@ -15,9 +15,9 @@
         "delete.success": "File deleted successfully!",
         "delete.confirm": "Are you sure you want to delete the file <strong>{{fileName}}</strong>?",
         "delete.variable.files": {
-            "message": "There are files ({{fileCount}}) associated with this variable which are going to be disassociated. If you want to also remove them, please confirm.",
+            "message": "There are files ({{fileCount}}) associated with this variable which are going to be disassociated. If you want to also delete them, please confirm.",
             "keep": "No, keep them",
-            "remove": "Yes, remove them"
+            "remove": "Yes, delete them"
         }
     }
 }
