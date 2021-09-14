@@ -69,8 +69,6 @@
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 	</bean>
 
-	<bean id="toolUtil" class="org.generationcp.ibpworkbench.util.ToolUtil" />
-
 	<bean id="tomcatUtil" class="org.generationcp.commons.tomcat.util.TomcatUtil">
 		<property name="managerUrl" value="${tomcat.manager.url}" />
 		<property name="username" value="${tomcat.manager.username}" />
@@ -78,8 +76,6 @@
 	</bean>
 
 	<bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
-	<bean id="appLauncherService"
-		class="org.generationcp.ibpworkbench.service.AppLauncherService"></bean>
 
 	<bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 
@@ -380,16 +376,6 @@
 		</property>
 	</bean>
 
-	<bean id="jasperReportService" class="org.generationcp.commons.reports.service.impl.JasperReportServiceImpl"
-		  scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
-	<bean id="reportService" factory-bean="managerFactory"
-		  factory-method="getReportService" scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="germplasmListExporter" class="org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter"/>
 	<bean id="fileDownloadUtility" class="org.generationcp.breeding.manager.util.FileDownloaderUtility"/>
 	<bean id="germplasmExportService" class="org.generationcp.commons.service.impl.GermplasmExportServiceImpl" scope="request">
@@ -520,6 +506,11 @@
 			  class="org.generationcp.middleware.service.impl.releasenote.ReleaseNoteServiceImpl">
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
+
+	<bean id="programFavoriteService" factory-bean="managerFactory" factory-method="getProgramFavoriteService"
+		  scope="request">
+		<aop:scoped-proxy/>
+	</bean>
 
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>

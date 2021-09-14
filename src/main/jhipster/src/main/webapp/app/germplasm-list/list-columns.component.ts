@@ -24,15 +24,15 @@ export class ListColumnsComponent implements OnInit {
 
     readonly ENTRY_NO_TERM_ID = 8230;
 
-    staticColumns: GermplasmListColumn[] = [];
-    nameColumns: GermplasmListColumn[] = [];
-    passportColumns: GermplasmListColumn[] = [];
-    attributesColumns: GermplasmListColumn[] = [];
+    staticColumns: GermplasmListColumnModel[] = [];
+    nameColumns: GermplasmListColumnModel[] = [];
+    passportColumns: GermplasmListColumnModel[] = [];
+    attributesColumns: GermplasmListColumnModel[] = [];
 
-    filteredStaticColumns: GermplasmListColumn[] = [];
-    filteredNameColumns: GermplasmListColumn[] = [];
-    filteredPassportColumns: GermplasmListColumn[] = [];
-    filteredAttributesColumns: GermplasmListColumn[] = [];
+    filteredStaticColumns: GermplasmListColumnModel[] = [];
+    filteredNameColumns: GermplasmListColumnModel[] = [];
+    filteredPassportColumns: GermplasmListColumnModel[] = [];
+    filteredAttributesColumns: GermplasmListColumnModel[] = [];
 
     constructor(private germplasmListService: GermplasmListService,
                 private alertService: AlertService) {
@@ -71,12 +71,14 @@ export class ListColumnsComponent implements OnInit {
             .map((column: GermplasmListColumn) => column.id);
     }
 
-    private filterColumns(columns: GermplasmListColumn[], searchString: string): GermplasmListColumn[] {
-        return columns.filter((column: GermplasmListColumn) => column.name.toLowerCase().includes(searchString));
+    private filterColumns(columns: GermplasmListColumnModel[], searchString: string): GermplasmListColumnModel[] {
+        return columns.filter((column: GermplasmListColumnModel) => column.displayName.toLowerCase().includes(searchString));
     }
 
     private onGetColumnsSuccess(columns: GermplasmListColumn[]) {
-        columns.forEach((column: GermplasmListColumn) => {
+        const columnModels = this.transformGermplasmListColumns(columns);
+
+        columnModels.forEach((column: GermplasmListColumnModel) => {
             if (column.category === GermplasmListColumnCategory.STATIC) {
                 this.staticColumns.push(column);
             }
@@ -96,6 +98,15 @@ export class ListColumnsComponent implements OnInit {
         this.resetColumns();
     }
 
+    private transformGermplasmListColumns(columns: GermplasmListColumn[]): GermplasmListColumnModel[] {
+        return columns.map((column: GermplasmListColumn) =>
+            new GermplasmListColumnModel(column.id,
+                column.alias ? `${column.alias} (${column.name}) ` : column.name,
+                column.category,
+                column.selected,
+                column.typeId));
+    }
+
     private resetColumns() {
         this.filteredStaticColumns = this.staticColumns;
         this.filteredNameColumns = this.nameColumns;
@@ -110,6 +121,18 @@ export class ListColumnsComponent implements OnInit {
         } else {
             this.alertService.error('error.general');
         }
+    }
+
+}
+
+class GermplasmListColumnModel {
+
+    constructor(
+        public id: number,
+        public displayName: string,
+        public category: GermplasmListColumnCategory,
+        public selected: boolean,
+        public typeId?: number) {
     }
 
 }

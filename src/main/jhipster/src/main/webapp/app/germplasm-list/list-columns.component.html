@@ -13,7 +13,7 @@
 							   id="check-static-{{column.id}}" name="'check-static-{{column.id}}'"
 							   [disabled]="column.id === ENTRY_NO_TERM_ID">
 						<label class="form-check-label" for="check-static-{{column.id}}">
-							{{column.name}}
+							{{column.displayName}}
 						</label>
 					</div>
 				</div>
@@ -25,7 +25,7 @@
 						<input class="form-check-input" type="checkbox"  [(ngModel)]="column.selected"
 							   id="check-name-{{column.id}}" name="'check-name-{{column.id}}'">
 						<label class="form-check-label" for="check-name-{{column.id}}">
-							{{column.name}}
+							{{column.displayName}}
 						</label>
 					</div>
 				</div>
@@ -37,7 +37,7 @@
 						<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
 							   id="check-passport-{{column.id}}" name="'check-passport-{{column.id}}'">
 						<label class="form-check-label" for="check-passport-{{column.id}}">
-							{{column.name}}
+							{{column.displayName}}
 						</label>
 					</div>
 				</div>
@@ -49,7 +49,7 @@
 						<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
 							   id="check-attributes-{{column.id}}" name="'check-attributes-{{column.id}}'">
 						<label class="form-check-label" for="check-attributes-{{column.id}}">
-							{{column.name}}
+							{{column.displayName}}
 						</label>
 					</div>
 				</div>

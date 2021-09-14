@@ -6,7 +6,7 @@ import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.ContextHolder;
-import org.generationcp.middleware.manager.api.GermplasmDataManager;
+import org.generationcp.middleware.api.program.ProgramFavoriteService;
 import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
@@ -47,10 +47,10 @@ public class ProgramService {
 	private LocationDataManager locationDataManager;
 
 	@Autowired
-	private GermplasmDataManager germplasmDataManager;
+	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
 
 	@Autowired
-	private org.generationcp.middleware.api.program.ProgramService programServiceMw;
+	private ProgramFavoriteService programFavoriteService;
 
 	@Autowired
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
@@ -70,7 +70,7 @@ public class ProgramService {
 		this.addUnspecifiedLocationToFavorite(program);
 
 		// After saving, we create folder for program under <install directory>/workspace
-		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program);
+		this.installationDirectoryUtil.createWorkspaceDirectoriesForProject(program.getCropType().getCropName(), program.getProjectName());
 
 		ProgramService.LOG.info(
 				"Program created. ID:" + program.getProjectId() + " Name:" + program.getProjectName() + " Start date:" + program
@@ -95,13 +95,14 @@ public class ProgramService {
 		// sets current user as program owner
 		program.setUserId(this.contextUtil.getCurrentWorkbenchUserId());
 
+		//FIXME Crop should always exist
 		final CropType cropType = this.workbenchDataManager.getCropTypeByName(program.getCropType().getCropName());
 		if (cropType == null) {
 			this.workbenchDataManager.addCropType(program.getCropType());
 		}
 		program.setLastOpenDate(null);
 
-		this.workbenchDataManager.addProject(program);
+		this.programServiceMw.addProgram(program);
 	}
 
 	void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
@@ -146,11 +147,8 @@ public class ProgramService {
 	public void addUnspecifiedLocationToFavorite(final Project program) {
 		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
 		if (!StringUtils.isEmpty(unspecifiedLocationID)) {
-			final ProgramFavorite favorite = new ProgramFavorite();
-			favorite.setEntityId(Integer.parseInt(unspecifiedLocationID));
-			favorite.setEntityType(ProgramFavorite.FavoriteType.LOCATION.getName());
-			favorite.setUniqueID(program.getUniqueID());
-			this.germplasmDataManager.saveProgramFavorite(favorite);
+			programFavoriteService
+				.addProgramFavorite(program.getUniqueID(), ProgramFavorite.FavoriteType.LOCATION, Integer.parseInt(unspecifiedLocationID));
 		}
 	}
 
