@@ -806,6 +806,7 @@ export class GermplasmSearchComponent implements OnInit {
         confirmModalRef.componentInstance.message = 'Are you sure you want to delete the selected germplasm records from the database? '
             + 'The deletion will be permanent and can take a long time for germplasm included in lists - from which they will also be deleted.';
         confirmModalRef.result.then(() => {
+            this.isLoading = true;
             this.germplasmService.deleteGermplasm(this.getSelectedItemIds()).subscribe((response) => {
                 if (response.germplasmWithErrors && response.germplasmWithErrors.length) {
                     this.alertService.warning('germplasm-delete.warning');
@@ -822,7 +823,7 @@ export class GermplasmSearchComponent implements OnInit {
                 if (response.deletedGermplasm && response.deletedGermplasm.length) {
                     this.openKeySequenceDeletionDialog(response.deletedGermplasm);
                 }
-
+                this.isLoading = false;
             });
             this.activeModal.close();
         }, () => this.activeModal.dismiss());
