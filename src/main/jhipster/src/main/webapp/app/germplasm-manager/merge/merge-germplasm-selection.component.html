@@ -9,7 +9,7 @@
 <div class="modal-body">
 	<span jhiTranslate="merge-germplasm.select-germplasm-caption"></span>
 	<br/>
-	<span jhiTranslate="merge-germplasm.non-selected-germplasm-caption"></span>
+	<i class="fa fa-exclamation-circle"></i><span jhiTranslate="merge-germplasm.non-selected-germplasm-caption"></span>
 	<div class="table-responsive" *ngIf="germplasmList">
 		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
 			<thead>
@@ -36,7 +36,7 @@
 				<td>{{germplasm.lotCount}}</td>
 				<!-- TODO: Render Yes as link -->
 				<td><span *ngIf="germplasm.hasProgeny">YES</span><span *ngIf="!germplasm.hasProgeny">NO</span></td>
-				<td></td>
+				<td><span *ngIf="germplasm.femaleParentGID && germplasm.maleParentGID">YES</span><span *ngIf="!germplasm.femaleParentGID && !germplasm.maleParentGID">NO</span></td>
 				<td><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
 				<td><span *ngIf="germplasm.usedInStudy">YES</span><span *ngIf="!germplasm.usedInStudy">No</span></td>
 			</tr>

@@ -40,7 +40,8 @@ export class MergeGermplasmSelectionComponent implements OnInit {
 
     ngOnInit(): void {
         this.request = new GermplasmSearchRequest();
-        this.request.addedColumnsPropertyIds = ['PREFERRED NAME','HAS PROGENY', 'USED IN STUDY', 'USED IN LOCKED LIST'];
+        this.request.addedColumnsPropertyIds = ['PREFERRED NAME','HAS PROGENY', 'USED IN STUDY', 'USED IN LOCKED LIST',
+            'FGID', 'MGID'];
         this.request.gids = this.gids;
 
         this.isLoading = true;
