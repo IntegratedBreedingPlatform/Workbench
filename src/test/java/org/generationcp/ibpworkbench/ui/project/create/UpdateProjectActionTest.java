@@ -6,7 +6,6 @@ import java.util.Date;
 import com.vaadin.ui.ComponentContainer;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
-import org.generationcp.ibpworkbench.util.ToolUtil;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -37,9 +36,6 @@ public class UpdateProjectActionTest {
 
 	@Mock
 	private WorkbenchDataManager workbenchDataManager;
-
-	@Mock
-	private ToolUtil toolUtil;
 
 	@Mock
 	private ContextUtil contextUtil;

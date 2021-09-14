@@ -2,7 +2,6 @@ package org.generationcp.breeding.manager.listmanager.util;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
-import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.collections.CollectionUtils;
 import org.generationcp.commons.exceptions.GermplasmListExporterException;
 import org.generationcp.commons.pojo.ExportColumnHeader;
@@ -17,12 +16,7 @@ import org.generationcp.middleware.domain.gms.ListDataColumnValues;
 import org.generationcp.middleware.domain.oms.CvId;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.domain.ontology.DataType;
-import org.generationcp.middleware.domain.ontology.Method;
-import org.generationcp.middleware.domain.ontology.Property;
-import org.generationcp.middleware.domain.ontology.Scale;
 import org.generationcp.middleware.domain.ontology.Variable;
-import org.generationcp.middleware.domain.ontology.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -35,9 +29,6 @@ import org.generationcp.middleware.manager.ontology.api.OntologyVariableDataMana
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
 import org.generationcp.middleware.pojos.UserDefinedField;
-import org.generationcp.middleware.reports.BuildReportException;
-import org.generationcp.middleware.reports.Reporter;
-import org.generationcp.middleware.service.api.ReportService;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,9 +75,6 @@ public class GermplasmListExporter {
 
 	@Resource
 	private ContextUtil contextUtil;
-
-	@Resource
-	private ReportService reportService;
 
 	@Resource
 	private GermplasmExportService germplasmExportService;
@@ -184,20 +170,6 @@ public class GermplasmListExporter {
 			wellNumberIndex++;
 		}
 		return exportRows;
-	}
-
-	public Reporter exportGermplasmListCustomReport(final int germplasmListID, final String fileName, final String reportCode) throws GermplasmListExporterException {
-		try {
-			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			final Reporter customReport =
-					this.reportService.getStreamGermplasmListReport(reportCode, germplasmListID, this.contextUtil.getProjectInContext()
-							.getProjectName(), baos);
-			final File createdFile = new File(fileName);
-			baos.writeTo(new FileOutputStream(createdFile));
-			return customReport;
-		} catch (final JRException | IOException | BuildReportException e) {
-			throw new GermplasmListExporterException("Error with exporting using a custom report", e);
-		}
 	}
 
 	public FileOutputStream exportGermplasmListXLS(final int germplasmListID, final String fileName, final Table listDataTable) throws GermplasmListExporterException {
