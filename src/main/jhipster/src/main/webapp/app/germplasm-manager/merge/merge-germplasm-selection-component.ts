@@ -4,6 +4,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Germplasm } from '../../entities/germplasm/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
+import { GermplasmMergeRequest, MergeOptions, NonSelectedGermplasm } from "../../shared/germplasm/model/germplasm-merge-request.model";
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { SearchResult } from '../../shared/search-result.model';
@@ -100,16 +101,35 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         if (this.hasValidationError(nonSelectedGids)) {
             return;
         }
-        // TODO show lots selection if there are non-selected germplasm having lots
+
+        var germplasmMergeRequest = new GermplasmMergeRequest();
+        germplasmMergeRequest.mergeOptions = new MergeOptions();
+        germplasmMergeRequest.mergeOptions.migrateAttributesData = this.isTransferAttributesData;
+        germplasmMergeRequest.mergeOptions.migrateNameTypes = this.isTransferNameTypesData;
+        germplasmMergeRequest.mergeOptions.migratePassportData = this.isTransferPassportData;
+        germplasmMergeRequest.targetGermplasmId = this.selectedGid;
+        germplasmMergeRequest.nonSelectedGermplasm = [];
+
+        nonSelectedGids.forEach((nonSelectedGid) => {
+            var nonSelectedGermplasm = new NonSelectedGermplasm();
+            nonSelectedGermplasm.closeLots = false;
+            nonSelectedGermplasm.germplasmId = nonSelectedGid;
+            nonSelectedGermplasm.migrateLots = false;
+            nonSelectedGermplasm.omit = false;
+            germplasmMergeRequest.nonSelectedGermplasm.push(nonSelectedGermplasm);
+        });
+
         var gidsWithLots = this.germplasmList.filter((germplasm) => (germplasm.lotCount > 0 && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
 
         if (gidsWithLots.length > 0) {
             // TODO show lots selection if there are non-selected germplasm having lots
         } else {
-            // TODO proceed with merge
+            this.germplasmService.mergeGermplasm(germplasmMergeRequest).toPromise()
+                .then(() => true);
+            this.alertService.success("merge-germplasm.success")
+            this.modal.dismiss();
         }
-
     }
 
     private hasValidationError(nonSelectedGids: number[]): boolean {

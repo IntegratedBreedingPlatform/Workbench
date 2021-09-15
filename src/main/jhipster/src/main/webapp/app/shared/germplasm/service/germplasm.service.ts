@@ -19,6 +19,7 @@ import { map } from 'rxjs/operators';
 import { GermplasmCodeNameBatchRequestModel } from '../model/germplasm-code-name-batch-request.model';
 import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
 import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
+import { GermplasmMergeRequest} from "../model/germplasm-merge-request.model";
 import { VariableTypeEnum } from '../../ontology/variable-type.enum';
 
 @Injectable()
@@ -191,6 +192,12 @@ export class GermplasmService {
 
     searchNameTypes(query): Observable<HttpResponse<NameType[]>> {
         return this.http.get<NameType[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/name-types/search?query=` + query, { observe: 'response' });
+    }
+
+    mergeGermplasm(germplasmMergeRequest: GermplasmMergeRequest) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/merge` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post(url, germplasmMergeRequest);
     }
 }
 
