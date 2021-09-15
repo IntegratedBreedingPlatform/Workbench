@@ -101,9 +101,11 @@ public class MultiSiteDataExporterTest {
 
 	private void setupFileUtilMocks() {
 		Mockito.doReturn(BASIC_FILE_NAME + ".csv").when(this.multiSiteDataExporter)
-				.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.<List<String[]>>any(), ArgumentMatchers.eq(false));
+			.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.any(),
+				ArgumentMatchers.eq(false));
 		Mockito.doReturn(BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv").when(this.multiSiteDataExporter)
-				.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.<List<String[]>>any(), ArgumentMatchers.eq(true));
+			.writeToCsvFile(ArgumentMatchers.anyString(), ArgumentMatchers.any(Project.class), ArgumentMatchers.any(),
+				ArgumentMatchers.eq(true));
 		Mockito.doReturn(BMS_INPUT_FILES_DIR).when(this.installationDirectoryUtil)
 				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 	}
@@ -388,7 +390,8 @@ public class MultiSiteDataExporterTest {
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForMeans() {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(this.project, BASIC_FILE_NAME, false);
-		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
+		Mockito.verify(this.installationDirectoryUtil)
+			.createWorkspaceDirectoriesForProject(this.project.getCropType().getCropName(), this.project.getProjectName());
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 
 		final File expectedFile = new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv");
@@ -421,7 +424,8 @@ public class MultiSiteDataExporterTest {
 	@Test
 	public void testGetCsvFileInWorkbenchDirectoryForSummaryStats() {
 		final File meansFile = this.multiSiteDataExporter.getCsvFileInWorkbenchDirectory(this.project, BASIC_FILE_NAME, true);
-		Mockito.verify(this.installationDirectoryUtil).createWorkspaceDirectoriesForProject(this.project);
+		Mockito.verify(this.installationDirectoryUtil)
+			.createWorkspaceDirectoriesForProject(this.project.getCropType().getCropName(), this.project.getProjectName());
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 
 		final File expectedFile = new File(BMS_INPUT_FILES_DIR + File.separator + BASIC_FILE_NAME + MultiSiteDataExporter.SUMMARY_STATS + ".csv");
