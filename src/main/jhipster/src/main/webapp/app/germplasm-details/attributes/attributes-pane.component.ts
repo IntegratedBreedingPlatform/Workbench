@@ -9,7 +9,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
+import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION, MG_MANAGE_FILES_PERMISSION } from '../../shared/auth/permissions';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableService } from '../../shared/ontology/service/variable.service';
@@ -17,6 +17,7 @@ import { VariableValidationService } from '../../shared/ontology/service/variabl
 import { FileService } from '../../shared/file/service/file.service';
 import { FileDeleteOptionsComponent } from '../../shared/file/component/file-delete-options.component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
+import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -47,7 +48,8 @@ export class AttributesPaneComponent implements OnInit {
                 private router: Router,
                 private route: ActivatedRoute,
                 private germplasmAttributesContext: GermplasmAttributeContext,
-                private fileService: FileService
+                private fileService: FileService,
+                private principal: Principal
     ) {
     }
 
@@ -99,6 +101,16 @@ export class AttributesPaneComponent implements OnInit {
     }
 
     async deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute) {
+        const germplasmResp = await this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise();
+        const germplasmUUID = germplasmResp.body.germplasmUUID;
+        const variableIds = [germplasmAttribute.variableId];
+        const fileCountResp = await this.fileService.getFileCount(variableIds, germplasmUUID).toPromise();
+        const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
+        if (fileCount > 0 && !await this.principal.hasAnyAuthority(MG_MANAGE_FILES_PERMISSION)) {
+            this.alertService.error('germplasm-attribute-modal.delete.blocked.files')
+            return;
+        }
+
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.variableName });
 
@@ -109,11 +121,6 @@ export class AttributesPaneComponent implements OnInit {
         }
 
         try {
-            const germplasmResp = await this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise();
-            const germplasmUUID = germplasmResp.body.germplasmUUID;
-            const variableIds = [germplasmAttribute.variableId];
-            const fileCountResp = await this.fileService.getFileCount(variableIds, germplasmUUID).toPromise();
-            const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
             if (fileCount > 0) {
                 const fileOptionsModal = this.modalService.open(FileDeleteOptionsComponent as Component);
                 fileOptionsModal.componentInstance.fileCount = fileCount;
