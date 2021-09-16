@@ -1,82 +1,59 @@
 <div class="modal-header">
-    <h4 class="modal-title font-weight-bold">
-        <span jhiTranslate="merge-germplasm.inventory-lots.title"></span>
-    </h4>
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-            (click)="dismiss()">&times;
-    </button>
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="merge-germplasm.inventory-lots.title"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
 </div>
 <div class="modal-body">
-    <span jhiTranslate="merge-germplasm.select-germplasm-caption"></span>
-    <br/>
-    <div class="table-responsive" *ngIf="inventoryList">
-        <table class="table table-striped table-bordered table-curved" *ngIf="inventoryList.length else nodata">
-            <thead>
-            <tr>
-                <th><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
-                <th><span jhiTranslate="merge-germplasm.column.designation"></span> <span class="fa fa-sort"></span></th>
-                <th><span jhiTranslate="search-germplasm.column.stockid"></span></th>
-                <th><span jhiTranslate="merge-germplasm.column.storageLocation"></span></th>
-                <th><span jhiTranslate="merge-germplasm.column.units"></span> <span class="fa fa-sort"></span></th>
-                <th><span jhiTranslate="search-germplasm.column.amount"></span><span class="fa fa-sort"></span></th>
-                <th><span jhiTranslate="merge-germplasm.column.action"></span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let inventory of inventoryList ;trackBy: trackId">
-                <td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + inventory.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
-                <td>{{inventory.designation}}</td>
-                <td>{{inventory.stockId}}</td>
-                <td>{{inventory.locationName}}</td>
-                <td>{{inventory.unitName}}</td>
-                <td>{{inventory.availableBalance}}</td>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="form-group row">
-            <div class="row">
-                <span jhiTranslate="merge-germplasm.variables.and.names"></span>
-                <hr/>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" name="transferPassportData" id="transferPassportData"
-                               [(ngModel)]="isTransferPassportData">
-                        <label class="form-check-label" for="transferPassportData" jhiTranslate="merge-germplasm.transfer-passport-data">
-                        </label>
-                    </div>
-                    <br/>
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" name="transferAttributesData" id="transferAttributesData"
-                               [(ngModel)]="isTransferAttributesData">
-                        <label class="form-check-label" for="transferAttributesData" jhiTranslate="merge-germplasm.transfer-attributes-data">
-                        </label>
-                    </div>
-                    <br/>
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" name="transferNameTypesData" id="transferNameTypesData"
-                               [(ngModel)]="isTransferNameTypesData">
-                        <label class="form-check-label" for="transferNameTypesData" jhiTranslate="merge-germplasm.transfer-names-types-data">
-                        </label>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
+	<span jhiTranslate="merge-germplasm.inventory-lots.description"></span>
+	<br/><br/>
+	<div *ngIf="lotsByGids && lotsByGids.size > 0">
+		<div class="card">
+			<h5 class="card-header"><span jhiTranslate="merge-germplasm.action.apply.to.all.description"></span></h5>
+			<div class="card-body">
+				<div class="form-group row">
+					<div class="col">
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="applyToAll" id="radioCloseAllLots"
+								   [(ngModel)]="applyToAll" value="close">
+							<label class="form-check-label" for="radioCloseAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.closeLots">
+							</label>
+						</div>
+						<br/>
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="applyToAll" id="radioMigrateAllLots"
+								   [(ngModel)]="applyToAll" value="migrate">
+							<label class="form-check-label" for="radioMigrateAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.associateLots">
+							</label>
+						</div>
+						<br/>
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="applyToAll" id="radioOmitAllLots"
+								   [(ngModel)]="applyToAll" value="omit">
+							<label class="form-check-label" for="radioOmitAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.omitLots">
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div *ngFor="let nonSelectedGermplasm of germplasmMergeRequest.nonSelectedGermplasm">
+			<jhi-collapsible *ngIf="lotsByGids.get(nonSelectedGermplasm.germplasmId)" heading="{{'GID:' + nonSelectedGermplasm.germplasmId}}">
+				<jhi-merge-germplasm-lot-table [lots]="lotsByGids.get(nonSelectedGermplasm.germplasmId)" [nonSelectedGermplasm]="nonSelectedGermplasm" [(applyToAll)]="applyToAll"></jhi-merge-germplasm-lot-table>
+			</jhi-collapsible>
+		</div>
+	</div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">
-        <span class="fa fa-ban"></span>&nbsp;
-        <span jhiTranslate="cancel"></span>
-    </button>
-    <button (click)="confirm()" class="btn btn-primary" [disabled]="isLoading || !selectedGid">
-        <span *ngIf="isLoading" class="throbber throbber-btn"></span>
-        <span class="fa fa-save"></span>&nbsp;
-        <span jhiTranslate="merge-germplasm.confirm"></span>
-    </button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">
+		<span class="fa fa-ban"></span>&nbsp;
+		<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="confirm()" class="btn btn-primary">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-save"></span>&nbsp;
+		<span jhiTranslate="merge-germplasm.confirm"></span>
+	</button>
 </div>

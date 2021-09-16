@@ -42,39 +42,36 @@
 			</tr>
 			</tbody>
 		</table>
-		<div class="form-group row">
-			<div class="row">
+		<div class="row">
+			<div class="col">
 				<span jhiTranslate="merge-germplasm.variables.and.names"></span>
 				<hr/>
 			</div>
-			<div class="row">
-				<div class="col">
-					<div class="form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" name="transferPassportData" id="transferPassportData"
-							   [(ngModel)]="isTransferPassportData">
-						<label class="form-check-label" for="transferPassportData" jhiTranslate="merge-germplasm.transfer-passport-data">
-						</label>
-					</div>
-					<br/>
-					<div class="form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" name="transferAttributesData" id="transferAttributesData"
-							   [(ngModel)]="isTransferAttributesData">
-						<label class="form-check-label" for="transferAttributesData" jhiTranslate="merge-germplasm.transfer-attributes-data">
-						</label>
-					</div>
-					<br/>
-					<div class="form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" name="transferNameTypesData" id="transferNameTypesData"
-							   [(ngModel)]="isTransferNameTypesData">
-						<label class="form-check-label" for="transferNameTypesData" jhiTranslate="merge-germplasm.transfer-names-types-data">
-						</label>
-					</div>
-				</div>
-
-			</div>
-
 		</div>
-
+		<div class="form-group row">
+			<div class="col">
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" name="transferPassportData" id="transferPassportData"
+						   [(ngModel)]="isTransferPassportData">
+					<label class="form-check-label" for="transferPassportData" jhiTranslate="merge-germplasm.transfer-passport-data">
+					</label>
+				</div>
+				<br/>
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" name="transferAttributesData" id="transferAttributesData"
+						   [(ngModel)]="isTransferAttributesData">
+					<label class="form-check-label" for="transferAttributesData" jhiTranslate="merge-germplasm.transfer-attributes-data">
+					</label>
+				</div>
+				<br/>
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" name="transferNameTypesData" id="transferNameTypesData"
+						   [(ngModel)]="isTransferNameTypesData">
+					<label class="form-check-label" for="transferNameTypesData" jhiTranslate="merge-germplasm.transfer-names-types-data">
+					</label>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="modal-footer">

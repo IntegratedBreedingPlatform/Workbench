@@ -840,7 +840,7 @@ export class GermplasmSearchComponent implements OnInit {
             this.alertService.error('merge-germplasm.merge-all-germplasm-not-supported');
             return;
         }
-        if (this.size(this.selectedItems) > 20) {
+        if (this.size(this.selectedItems) > 100) {
             this.alertService.error('merge-germplasm.too-many-selected-germplasm');
             return;
         }

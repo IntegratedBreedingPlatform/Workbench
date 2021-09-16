@@ -229,7 +229,7 @@
    },
    "merge-germplasm" : {
        "merge-all-germplasm-not-supported": "Merging of germplasm in all pages is not supported. Please select individual germplasm to merge.",
-       "too-many-selected-germplasm": "You can only merge 20 germplasm records at a time.",
+       "too-many-selected-germplasm": "You can only merge 100 germplasm records at a time.",
        "title" : "Merge Germplasm",
        "success": "Germplasm have been merged.",
        "select-germplasm-caption" : "You have selected the following germplasm to merge. Please select the target germplasm record you would like to keep.",
@@ -258,6 +258,11 @@
        "inventory-lots.description": "The following germplasm have lots associated to them. It will be deleted by the merge process. What do you want to do with them?",
        "action.closeLots": "Close Lot/s",
        "action.associateLots": "Associate lot/s to target germplasm",
-       "action.omitLots": "Omit this germplasm from the merge"
+       "action.omitLots": "Omit this germplasm from the merge",
+       "action.apply.to.all.description": "Apply to all germplasm",
+       "action.apply.to.all.closeLots": "Close Lot/s from all germplasm",
+       "action.apply.to.all.associateLots": "Associate lot/s to target germplasm for all germplasm",
+       "action.apply.to.all.omitLots": "Omit all germplasm from the merge",
+       "no.germplasm.to.be.merged": "There is no germplasm to be merged"
    }
 }

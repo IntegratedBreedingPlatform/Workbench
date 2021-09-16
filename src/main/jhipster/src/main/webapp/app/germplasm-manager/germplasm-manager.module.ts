@@ -21,6 +21,8 @@ import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
 import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
+import { MergeGermplasmExistingLotsComponent } from './merge/merge-germplasm-existing-lots.component';
+import { MergeGermplasmLotTableComponent } from './merge/merge-germplasm-lot-table.component';
 
 @NgModule({
     imports: [
@@ -48,7 +50,9 @@ import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-select
         GermplasmGroupingResultComponent,
         GermplasmCodingDialogComponent,
         GermplasmCodingResultDialogComponent,
-        MergeGermplasmSelectionComponent
+        MergeGermplasmSelectionComponent,
+        MergeGermplasmExistingLotsComponent,
+        MergeGermplasmLotTableComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -70,7 +74,9 @@ import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-select
         GermplasmGroupingResultComponent,
         GermplasmCodingDialogComponent,
         GermplasmCodingResultDialogComponent,
-        MergeGermplasmSelectionComponent
+        MergeGermplasmSelectionComponent,
+        MergeGermplasmExistingLotsComponent,
+        MergeGermplasmLotTableComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,

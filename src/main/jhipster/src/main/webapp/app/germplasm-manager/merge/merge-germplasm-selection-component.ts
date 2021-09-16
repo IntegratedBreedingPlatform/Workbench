@@ -4,12 +4,12 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Germplasm } from '../../entities/germplasm/germplasm.model';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
-import { GermplasmMergeRequest, MergeOptions, NonSelectedGermplasm } from "../../shared/germplasm/model/germplasm-merge-request.model";
+import { GermplasmMergeRequest, MergeOptions, NonSelectedGermplasm } from '../../shared/germplasm/model/germplasm-merge-request.model';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { SearchResult } from '../../shared/search-result.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
-import { GermplasmImportReviewComponent } from '../import/germplasm-import-review.component';
+import { JhiEventManager } from 'ng-jhipster';
+import { MergeGermplasmExistingLotsComponent } from './merge-germplasm-existing-lots.component';
 
 @Component({
     selector: 'jhi-merge-germplasm-select',
@@ -34,21 +34,21 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         private alertService: AlertService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
-        private germplasmService: GermplasmService
+        private germplasmService: GermplasmService,
+        private eventManager: JhiEventManager
     ) {
     }
 
-
     ngOnInit(): void {
         this.request = new GermplasmSearchRequest();
-        this.request.addedColumnsPropertyIds = ['PREFERRED NAME','HAS PROGENY', 'USED IN STUDY', 'USED IN LOCKED LIST',
+        this.request.addedColumnsPropertyIds = ['PREFERRED NAME', 'HAS PROGENY', 'USED IN STUDY', 'USED IN LOCKED LIST',
             'FGID', 'MGID'];
         this.request.gids = this.gids;
 
         this.isLoading = true;
         this.search(this.request).then((searchId) => {
             this.germplasmService.getSearchResults(
-                { searchRequestId: searchId}
+                { searchRequestId: searchId }
             ).pipe(finalize(() => {
                 this.isLoading = false;
             })).subscribe(
@@ -102,7 +102,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
             return;
         }
 
-        var germplasmMergeRequest = new GermplasmMergeRequest();
+        const germplasmMergeRequest = new GermplasmMergeRequest();
         germplasmMergeRequest.mergeOptions = new MergeOptions();
         germplasmMergeRequest.mergeOptions.migrateAttributesData = this.isTransferAttributesData;
         germplasmMergeRequest.mergeOptions.migrateNameTypes = this.isTransferNameTypesData;
@@ -111,7 +111,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         germplasmMergeRequest.nonSelectedGermplasm = [];
 
         nonSelectedGids.forEach((nonSelectedGid) => {
-            var nonSelectedGermplasm = new NonSelectedGermplasm();
+            const nonSelectedGermplasm = new NonSelectedGermplasm();
             nonSelectedGermplasm.closeLots = false;
             nonSelectedGermplasm.germplasmId = nonSelectedGid;
             nonSelectedGermplasm.migrateLots = false;
@@ -119,33 +119,39 @@ export class MergeGermplasmSelectionComponent implements OnInit {
             germplasmMergeRequest.nonSelectedGermplasm.push(nonSelectedGermplasm);
         });
 
-        var gidsWithLots = this.germplasmList.filter((germplasm) => (germplasm.lotCount > 0 && nonSelectedGids.includes(germplasm.gid)))
+        const gidsWithLots = this.germplasmList.filter((germplasm) => (germplasm.lotCount > 0 && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
 
         if (gidsWithLots.length > 0) {
-            // TODO show lots selection if there are non-selected germplasm having lots
+            const mergeGermplasmExistingLotsModal = this.modalService.open(MergeGermplasmExistingLotsComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });
+            mergeGermplasmExistingLotsModal.componentInstance.gidsWithLots = gidsWithLots;
+            mergeGermplasmExistingLotsModal.componentInstance.germplasmMergeRequest = germplasmMergeRequest;
+            this.modal.dismiss();
         } else {
             this.germplasmService.mergeGermplasm(germplasmMergeRequest).toPromise()
-                .then(() => true);
-            this.alertService.success("merge-germplasm.success")
-            this.modal.dismiss();
+                .then(() => {
+                    this.alertService.success('merge-germplasm.success')
+                    this.modal.dismiss();
+                    // Refresh the Germplasm Manager search germplasm table to reflect the changes made in germplasm.
+                    this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+                });
         }
     }
 
     private hasValidationError(nonSelectedGids: number[]): boolean {
-        var fixedGids = this.germplasmList.filter((germplasm) => (germplasm.groupId !== 0 && nonSelectedGids.includes(germplasm.gid)))
+        const fixedGids = this.germplasmList.filter((germplasm) => (germplasm.groupId !== 0 && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
         if (fixedGids.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-fixed', { param: fixedGids.join() });
             return true;
         }
-        var gidsWithProgeny = this.germplasmList.filter((germplasm) => (germplasm.hasProgeny && nonSelectedGids.includes(germplasm.gid)))
+        const gidsWithProgeny = this.germplasmList.filter((germplasm) => (germplasm.hasProgeny && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
         if (gidsWithProgeny.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-has-progeny', { param: gidsWithProgeny.join() });
             return true;
         }
-        var gidsInLockedList = this.germplasmList.filter((germplasm) => (germplasm.usedInLockedList && nonSelectedGids.includes(germplasm.gid)))
+        const gidsInLockedList = this.germplasmList.filter((germplasm) => (germplasm.usedInLockedList && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
         if (gidsInLockedList.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-in-locked-list', { param: gidsInLockedList.join() });
