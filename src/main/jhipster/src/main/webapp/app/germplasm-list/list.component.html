@@ -32,16 +32,19 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="table-responsive" *ngIf="entries">
 		<table class="table table-striped table-bordered table-curved" *ngIf="entries.length else nodata">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-				<th [jhiSortBy]="ColumnLabels.ENTRY_NUMBER"><span jhiTranslate="germplasm-list.list-data.columns.entry-number"></span> <span class="fa fa-sort"></span></th>
+				<th *ngFor="let column of header">
+					<span>{{column.name}}</span>
+				</th>
 			</tr>
 			</thead>
 			<tbody>
 			<tr *ngFor="let list of entries; trackBy: trackId; index as index">
-				<td>{{list.entryNumber}}</td>
+				<td *ngFor="let column of header">{{getRowData(list, column)}}</td>
 			</tr>
 			</tbody>
 		</table>
