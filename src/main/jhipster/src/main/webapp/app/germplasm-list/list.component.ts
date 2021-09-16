@@ -150,7 +150,7 @@ export class ListComponent implements OnInit {
     }
 
     getRowData(response: GermplasmListDataSearchResponse, column: ObservationVariable) {
-        return response.data[column.name] === undefined ? response.data[column.termId] : response.data[column.name];
+        return response.data[column.alias] === undefined ? response.data[column.termId] : response.data[column.alias];
     }
 
     private getSort() {
