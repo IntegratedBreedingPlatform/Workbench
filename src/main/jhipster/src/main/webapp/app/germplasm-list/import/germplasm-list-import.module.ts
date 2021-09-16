@@ -4,7 +4,8 @@ import { RouterModule } from '@angular/router';
 import { GermplasmListImportComponent, GermplasmListImportPopupComponent } from './germplasm-list-import.component';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
-import { GermplasmListImportMatchesComponent } from './germplasm-list-import-matches.component';
+import { GermplasmListImportMultiMatchesComponent } from './germplasm-list-import-multi-matches.component';
+import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
 
 @NgModule({
     imports: [
@@ -15,13 +16,15 @@ import { GermplasmListImportMatchesComponent } from './germplasm-list-import-mat
         GermplasmListImportComponent,
         GermplasmListImportPopupComponent,
         GermplasmListImportReviewComponent,
-        GermplasmListImportMatchesComponent
+        GermplasmListImportMultiMatchesComponent,
+        GermplasmListImportManualMatchesComponent
     ],
     entryComponents: [
         GermplasmListImportComponent,
         GermplasmListImportPopupComponent,
         GermplasmListImportReviewComponent,
-        GermplasmListImportMatchesComponent
+        GermplasmListImportMultiMatchesComponent,
+        GermplasmListImportManualMatchesComponent
     ],
     providers: [GermplasmListService
     ]
