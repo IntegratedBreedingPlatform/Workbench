@@ -21,6 +21,8 @@ import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model
 import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
 import { GermplasmMergeRequest} from "../model/germplasm-merge-request.model";
 import { VariableTypeEnum } from '../../ontology/variable-type.enum';
+import { GermplasmProgeny } from '../model/germplasm-progeny.model';
+import { GermplasmMerge } from '../model/germplasm-merge.model';
 
 @Injectable()
 export class GermplasmService {
@@ -198,6 +200,16 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/merge` +
             '?programUUID=' + this.context.programUUID;
         return this.http.post(url, germplasmMergeRequest);
+    }
+
+    getProgenies(gid: number): Observable<GermplasmProgeny[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenies`;
+        return this.http.get<GermplasmProgeny[]>(url);
+    }
+
+    getGermplasmMerge(gid: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/merge/${gid}`;
+        return this.http.get<GermplasmMerge[]>(url);
     }
 }
 

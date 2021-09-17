@@ -9,6 +9,8 @@ import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 import { GermplasmBasicDetailsAudit } from './germplasm-basic-details-audit.model';
+import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
+import { GermplasmMerge } from '../../../shared/germplasm/model/germplasm-merge.model';
 
 @Component({
     selector: 'jhi-germplasm-basic-details-audit',
@@ -34,8 +36,11 @@ export class BasicDetailsAuditComponent implements OnInit {
     getEventDate = getEventDate;
     getEventUser = getEventUser;
 
+    germplasmMergeInfo: GermplasmMerge[] = [];
+
     constructor(public activeModal: NgbActiveModal,
                 private  germplasmAuditService: GermplasmAuditService,
+                private  germplasmService: GermplasmService,
                 private translateService: TranslateService,
                 private jhiAlertService: JhiAlertService,
                 private activatedRoute: ActivatedRoute,
@@ -46,6 +51,7 @@ export class BasicDetailsAuditComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadAll();
+        this.loadGermplasmMergeInfo();
     }
 
     loadPage(page: number) {
@@ -53,6 +59,12 @@ export class BasicDetailsAuditComponent implements OnInit {
             this.previousPage = page;
             this.transition();
         }
+    }
+
+    loadGermplasmMergeInfo() {
+        this.germplasmService.getGermplasmMerge(this.gid).toPromise().then(germplasmMergeInfo => {
+            this.germplasmMergeInfo = germplasmMergeInfo;
+        });
     }
 
     transition() {
