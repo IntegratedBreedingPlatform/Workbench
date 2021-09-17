@@ -8,6 +8,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { AlertService } from '../../shared/alert/alert.service';
 import { JhiEventManager } from 'ng-jhipster';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-merge-germplasm-existing-lots',
@@ -86,6 +88,8 @@ export class MergeGermplasmExistingLotsComponent implements OnInit {
                     this.modal.dismiss();
                     // Refresh the Germplasm Manager search germplasm table to reflect the changes made in germplasm.
                     this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+                }, (error) => {
+                    this.onError(error)
                 });
         }
     }
@@ -97,5 +101,15 @@ export class MergeGermplasmExistingLotsComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
+        this.isLoading = false;
     }
 }

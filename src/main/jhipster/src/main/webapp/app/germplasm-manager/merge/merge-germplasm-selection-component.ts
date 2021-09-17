@@ -72,16 +72,6 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         });
     }
 
-    private onError(response: HttpErrorResponse) {
-        const msg = formatErrorList(response.error.errors);
-        if (msg) {
-            this.alertService.error('error.custom', { param: msg });
-        } else {
-            this.alertService.error('error.general');
-        }
-        this.isLoading = false;
-    }
-
     isSelected(germplasm: Germplasm) {
         return this.selectedGid === germplasm.gid;
     }
@@ -134,7 +124,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
                     this.modal.dismiss();
                     // Refresh the Germplasm Manager search germplasm table to reflect the changes made in germplasm.
                     this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
-                });
+                }, (error) => this.onError(error));
         }
     }
 
@@ -158,6 +148,16 @@ export class MergeGermplasmSelectionComponent implements OnInit {
             return true;
         }
         return false
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
+        this.isLoading = false;
     }
 
 }
