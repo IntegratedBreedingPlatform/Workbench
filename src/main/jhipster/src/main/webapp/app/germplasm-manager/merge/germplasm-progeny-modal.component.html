@@ -10,21 +10,23 @@
 		</div>
 	</div>
 	<div class="modal-body">
-		<div class="table-responsive">
-			<table class="table table-striped table-bordered table-curved">
-				<thead>
-				<tr>
-					<th jhiTranslate="search-germplasm.column.gid"><span>GID</span>
-					<th jhiTranslate="merge-germplasm.column.designation"><span>DESIGNATION</span>
-				</tr>
-				</thead>
-				<tbody>
-				<tr *ngFor="let progeny of germplasmProgenies">
-					<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + progeny.gid } }]" queryParamsHandling="merge">{{progeny.gid}}</a></td>
-					<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + progeny.gid } }]" queryParamsHandling="merge">{{progeny.designation}}</a></td>
-				</tr>
-				</tbody>
-			</table>
+		<div style="overflow-y: scroll; max-height: 500px;">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr>
+						<th jhiTranslate="search-germplasm.column.gid"><span>GID</span>
+						<th jhiTranslate="merge-germplasm.column.designation"><span>DESIGNATION</span>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let progeny of germplasmProgenies">
+						<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + progeny.gid } }]" queryParamsHandling="merge">{{progeny.gid}}</a></td>
+						<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + progeny.gid } }]" queryParamsHandling="merge">{{progeny.designation}}</a></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
