@@ -59,7 +59,7 @@ public class BreedingMethodFormFieldFactoryTest {
 	@Test
 	public void testMethodNameValidatorValidateSuccess() {
 
-		when(this.germplasmDataManager.getMethodByName(METHOD_NAME, PROGRAM_UUID)).thenReturn(null);
+		when(this.germplasmDataManager.getMethodByName(METHOD_NAME)).thenReturn(null);
 
 		final BreedingMethodFormFieldFactory.MethodNameValidator validator = this.breedingMethodFormFieldFactory.new MethodNameValidator();
 
@@ -79,7 +79,7 @@ public class BreedingMethodFormFieldFactoryTest {
 		method.setMname(METHOD_NAME);
 		method.setMid(methodId);
 
-		when(this.germplasmDataManager.getMethodByName(METHOD_NAME, PROGRAM_UUID)).thenReturn(method);
+		when(this.germplasmDataManager.getMethodByName(METHOD_NAME)).thenReturn(method);
 		when(this.methodNameField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodNameValidator validator = this.breedingMethodFormFieldFactory.new MethodNameValidator();
@@ -102,7 +102,7 @@ public class BreedingMethodFormFieldFactoryTest {
 		method.setMname(METHOD_NAME);
 		method.setMid(methodId);
 
-		when(this.germplasmDataManager.getMethodByName(METHOD_NAME, PROGRAM_UUID)).thenReturn(method);
+		when(this.germplasmDataManager.getMethodByName(METHOD_NAME)).thenReturn(method);
 		when(this.methodNameField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodNameValidator validator = this.breedingMethodFormFieldFactory.new MethodNameValidator();
@@ -114,7 +114,7 @@ public class BreedingMethodFormFieldFactoryTest {
 	@Test
 	public void testMethodNameValidatorMethodNotYetExists() {
 
-		when(this.germplasmDataManager.getMethodByName(METHOD_NAME, PROGRAM_UUID)).thenReturn(null);
+		when(this.germplasmDataManager.getMethodByName(METHOD_NAME)).thenReturn(null);
 
 		final BreedingMethodFormFieldFactory.MethodNameValidator validator = this.breedingMethodFormFieldFactory.new MethodNameValidator();
 
@@ -125,7 +125,7 @@ public class BreedingMethodFormFieldFactoryTest {
 	@Test
 	public void testMethodCodeValidatorValidateSuccess() {
 
-		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE, PROGRAM_UUID)).thenReturn(null);
+		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE)).thenReturn(null);
 
 		final BreedingMethodFormFieldFactory.MethodCodeValidator validator = this.breedingMethodFormFieldFactory.new MethodCodeValidator();
 
@@ -146,7 +146,7 @@ public class BreedingMethodFormFieldFactoryTest {
 		method.setMid(methodId);
 		method.setMcode(METHOD_CODE);
 
-		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE, PROGRAM_UUID)).thenReturn(method);
+		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE)).thenReturn(method);
 		when(this.methodCodeField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodCodeValidator validator = this.breedingMethodFormFieldFactory.new MethodCodeValidator();
@@ -171,7 +171,7 @@ public class BreedingMethodFormFieldFactoryTest {
 		method.setMid(methodId);
 		method.setMcode(METHOD_CODE);
 
-		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE, PROGRAM_UUID)).thenReturn(method);
+		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE)).thenReturn(method);
 		when(this.methodCodeField.isModified()).thenReturn(true);
 
 		final BreedingMethodFormFieldFactory.MethodCodeValidator validator = this.breedingMethodFormFieldFactory.new MethodCodeValidator();
@@ -183,7 +183,7 @@ public class BreedingMethodFormFieldFactoryTest {
 	@Test
 	public void testMethodCodeValidatorMethodNotYetExists() {
 
-		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE, PROGRAM_UUID)).thenReturn(null);
+		when(this.germplasmDataManager.getMethodByCode(METHOD_CODE)).thenReturn(null);
 
 		final BreedingMethodFormFieldFactory.MethodCodeValidator validator = this.breedingMethodFormFieldFactory.new MethodCodeValidator();
 
