@@ -17,7 +17,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { Principal } from '../shared';
-import { ObservationVariable } from '../shared/model/observation-variable.model';
+import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
 
 declare var $: any;
 
@@ -37,7 +37,7 @@ export class ListComponent implements OnInit {
     ColumnLabels = ColumnLabels;
 
     germplasmList: GermplasmList;
-    header: ObservationVariable[];
+    header: GermplasmListObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
     searchRequest: GermplasmListDataSearchRequest;
     eventSubscriber: Subscription;
@@ -85,7 +85,7 @@ export class ListComponent implements OnInit {
         this.registerColumnFiltersChanged();
 
         this.germplasmListService.getGermplasmListDataTableHeader(this.listId).subscribe(
-            (res: HttpResponse<ObservationVariable[]>) => {
+            (res: HttpResponse<GermplasmListObservationVariable[]>) => {
                 this.header = res.body;
                 this.loadAll(this.request);
             },

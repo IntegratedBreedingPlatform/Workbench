@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GermplasmListDataSearchResponse } from '../shared/germplasm-list/model/germplasm-list-data-search-response.model';
-import { ObservationVariable } from '../shared/model/observation-variable.model';
 import { ColumnLabels } from './list.component';
+import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
+import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -9,7 +10,7 @@ import { ColumnLabels } from './list.component';
 })
 export class ListDataRowComponent implements OnInit {
 
-    @Input() column: ObservationVariable;
+    @Input() column: GermplasmListObservationVariable;
     @Input() entry: GermplasmListDataSearchResponse;
 
     private readonly LOCATION_ID = 'LOCATION_ID';
@@ -22,7 +23,11 @@ export class ListDataRowComponent implements OnInit {
     }
 
     getRowData() {
-        return this.entry.data[this.column.alias] === undefined ? this.entry.data[this.column.termId] : this.entry.data[this.column.alias];
+        if (this.column.columnCategory === GermplasmListColumnCategory.STATIC) {
+            return this.entry.data[this.column.alias];
+        }
+
+        return this.entry.data[this.column.columnCategory + '_' + this.column.termId] ;
     }
 
     getGidData() {
