@@ -26,7 +26,7 @@
 						</thead>
 						<tbody>
 						<tr [@tableAnimation] *ngFor="let germplasm of matches | slice: (page-1) * pageSize : page * pageSize"
-							[class.selected]="selectMatchesResult[dataRow[HEADERS.DESIGNATION]] == germplasm.gid"
+							[class.selected]="selectMatchesResult[dataRow['ENTRY_NO']] == germplasm.gid"
 							(click)="onSelectMatch(germplasm)">
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
@@ -70,7 +70,7 @@
 	<button type="button" class="btn btn-primary" (click)="ignoreMatch()">
 		<span jhiTranslate="omit"></span>
 	</button>
-	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreMatch|| selectMatchesResult[dataRow[HEADERS.DESIGNATION]])">
+	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreMatch|| selectMatchesResult[dataRow['ENTRY_NO']])">
 	<span *ngIf="isFinish(); else nextButton" jhiTranslate="finish"></span>
 		<ng-template #nextButton><span jhiTranslate="next"></span></ng-template>
 	</button>

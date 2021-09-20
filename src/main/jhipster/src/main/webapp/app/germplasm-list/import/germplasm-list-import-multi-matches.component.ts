@@ -88,12 +88,12 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     }
 
     onSelectMatch(germplasm: GermplasmDto) {
-        this.selectMatchesResult[this.dataRow[HEADERS.DESIGNATION]] = germplasm.gid;
+        this.selectMatchesResult[this.dataRow['ENTRY_NO']] = germplasm.gid;
         this.isIgnoreMatch = false;
     }
 
     ignoreMatch() {
-        this.selectMatchesResult[this.dataRow[HEADERS.DESIGNATION]] = null;
+        this.selectMatchesResult[this.dataRow['ENTRY_NO']] = null;
         this.next();
     }
 }
