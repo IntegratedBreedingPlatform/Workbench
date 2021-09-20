@@ -19,7 +19,7 @@ import { map } from 'rxjs/operators';
 import { GermplasmCodeNameBatchRequestModel } from '../model/germplasm-code-name-batch-request.model';
 import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
 import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
-import { GermplasmMergeRequest} from "../model/germplasm-merge-request.model";
+import { GermplasmMergeRequest} from '../model/germplasm-merge-request.model';
 import { VariableTypeEnum } from '../../ontology/variable-type.enum';
 import { GermplasmProgeny } from '../model/germplasm-progeny.model';
 import { GermplasmMerge } from '../model/germplasm-merge.model';

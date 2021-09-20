@@ -62,7 +62,7 @@ export class BasicDetailsAuditComponent implements OnInit {
     }
 
     loadGermplasmMergeInfo() {
-        this.germplasmService.getGermplasmMerge(this.gid).toPromise().then(germplasmMergeInfo => {
+        this.germplasmService.getGermplasmMerge(this.gid).toPromise().then((germplasmMergeInfo) => {
             this.germplasmMergeInfo = germplasmMergeInfo;
         });
     }
