@@ -230,6 +230,7 @@
    "merge-germplasm" : {
        "merge-all-germplasm-not-supported": "Merging of germplasm in all pages is not supported. Please select individual germplasm to merge.",
        "too-many-selected-germplasm": "You can only merge 100 germplasm records at a time.",
+       "at-least-two-germplasm-are-selected": "At least 2 germplasm are selected to merge germplasm.",
        "title" : "Merge Germplasm",
        "success": "Germplasm have been merged.",
        "select-germplasm-caption" : "You have selected the following germplasm to merge. Please select the target germplasm record you would like to keep.",

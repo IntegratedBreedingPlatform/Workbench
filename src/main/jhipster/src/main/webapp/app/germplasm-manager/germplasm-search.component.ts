@@ -845,6 +845,10 @@ export class GermplasmSearchComponent implements OnInit {
             this.alertService.error('merge-germplasm.too-many-selected-germplasm');
             return;
         }
+        if (this.size(this.selectedItems) < 2) {
+            this.alertService.error('merge-germplasm.at-least-two-germplasm-are-selected');
+            return;
+        }
         const mergeGermplasmModal = this.modalService.open(MergeGermplasmSelectionComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });
         mergeGermplasmModal.componentInstance.gids = this.getSelectedItemIds();
 
