@@ -42,7 +42,7 @@
 				<span style="padding-left: 5px;" class="font-weight-bold">
 					{{isSelectAllPages ? (+filteredItems + (germplasmList.length > filteredItems ? germplasmList.length - filteredItems : 0)) : selectedItems.length}}
 				</span>
-				<div class="form-check form-check-inline" style="margin-left: 20px;">
+				<div *ngIf="selectMultiple" class="form-check form-check-inline" style="margin-left: 20px;">
 					<input type="checkbox" tooltip="Select all pages" [checked]="isSelectAllPages" (click)="onSelectAllPages(isSelectAllPages)" id="check-select-all" name="check-select-all">
 					<label class="form-check-label" for="check-select-all" style="padding-left: 5px;">
 						Select all pages
