@@ -160,7 +160,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	protected void deleteAllProgramLocationsAndMethods(final Project project) {
 		locationDataManager.deleteProgramLocationsByUniqueId(project.getUniqueID());
-		germplasmDataManager.deleteProgramMethodsByUniqueId(project.getUniqueID());
 	}
 
 	protected void deleteAllProgramFavorites(final Project project) {

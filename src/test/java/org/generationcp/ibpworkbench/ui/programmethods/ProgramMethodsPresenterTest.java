@@ -3,7 +3,6 @@ package org.generationcp.ibpworkbench.ui.programmethods;
 import org.generationcp.commons.hibernate.ManagerFactoryProvider;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.data.initializer.MethodViewTestDataInitializer;
-import org.generationcp.middleware.data.initializer.MethodTestDataInitializer;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
@@ -23,16 +22,12 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class ProgramMethodsPresenterTest {
 
 	private static final Integer USER_ID = 1;
 	private static final int NO_OF_METHODS = 5;
-	private static final int NO_OF_METHODS_WITH_PROGRAM_UUID = 3;
 
 	@Mock
 	private ManagerFactoryProvider managerFactoryProvider;
@@ -77,36 +72,16 @@ public class ProgramMethodsPresenterTest {
 
 		Collection<MethodView> result = null;
 		try {
-			this.setupGetFilteredResults(mgroup, mtype, mname, ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
+			this.setupGetFilteredResults(mgroup, mtype, mname);
 			result = this.controller.getFilteredResults(mgroup, mtype, mname);
 		} catch (final MiddlewareQueryException e) {
 			Assert.fail();
 		}
 
-		final Integer expectedNoOfResults = ProgramMethodsPresenterTest.NO_OF_METHODS - 1;
+		final Integer expectedNoOfResults = ProgramMethodsPresenterTest.NO_OF_METHODS;
 		Assert.assertTrue("Expecting the results returned " + expectedNoOfResults + " but returned " + result.size(),
 				expectedNoOfResults.equals(result.size()));
 
-	}
-
-	@Test
-	public void testGetSavedProgramMethods() {
-		final String entityType = "C";
-		List<MethodView> results = new ArrayList<MethodView>();
-		final String mgroup = "C";
-		final String mtype = MethodType.GENERATIVE.getCode();
-		final String mname = "Method Name";
-
-		try {
-			this.setupGetFilteredResults(mgroup, mtype, mname, ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
-			this.setUpFavoriteMethods(entityType);
-			results = this.controller.getSavedProgramMethods();
-		} catch (final MiddlewareQueryException e) {
-			Assert.fail();
-		}
-
-		Assert.assertTrue("Expecting to return " + ProgramMethodsPresenterTest.NO_OF_FAVORITES + " but returned " + results.size(),
-				ProgramMethodsPresenterTest.NO_OF_FAVORITES == results.size());
 	}
 
 	@Test
@@ -115,7 +90,7 @@ public class ProgramMethodsPresenterTest {
 		final Method existingMethod = new Method();
 		existingMethod.setMname(methodName);
 
-		Mockito.when(this.gerplasmDataManager.getMethodByName(methodName, this.project.getUniqueID())).thenReturn(existingMethod);
+		Mockito.when(this.gerplasmDataManager.getMethodByName(methodName)).thenReturn(existingMethod);
 		Assert.assertTrue("Expected to return true for existing method but didn't.", this.controller.isExistingMethod(methodName));
 	}
 
@@ -123,14 +98,14 @@ public class ProgramMethodsPresenterTest {
 	public void testIsExistingMethod_ReturnsFalseForNonExistingMethod() throws MiddlewareQueryException {
 		final String methodName = "My New Method";
 
-		Mockito.when(this.gerplasmDataManager.getMethodByName(methodName, this.project.getUniqueID())).thenReturn(new Method());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(methodName)).thenReturn(new Method());
 		Assert.assertFalse("Expected to return true for existing method but didn't.", this.controller.isExistingMethod(methodName));
 	}
 	
 	@Test
 	public void testSaveNewBreedingMethod() {
 		final MethodView method = MethodViewTestDataInitializer.createMethodView();
-		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
@@ -156,7 +131,7 @@ public class ProgramMethodsPresenterTest {
 
 	}
 
-	public void setupGetFilteredResults(String mgroup, String mtype, String mname, final String programUUID)
+	public void setupGetFilteredResults(String mgroup, String mtype, String mname)
 			throws MiddlewareQueryException {
 		mgroup = mgroup != null ? mgroup : "";
 		mtype = mtype != null ? mtype : "";
@@ -177,21 +152,13 @@ public class ProgramMethodsPresenterTest {
 			Mockito.when(this.gerplasmDataManager.getMethodByID(methodId)).thenReturn(method);
 		}
 
-		for (int i = 0; i < ProgramMethodsPresenterTest.NO_OF_METHODS_WITH_PROGRAM_UUID; i++) {
-			final Method method = methods.get(i);
-			method.setUniqueID(ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
-		}
-
-		final Method method = methods.get(ProgramMethodsPresenterTest.NO_OF_METHODS_WITH_PROGRAM_UUID);
-		method.setUniqueID("9876543210");
-
 		Mockito.when(this.gerplasmDataManager.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname)).thenReturn(methods);
 	}
 
 	@Test
 	public void testSaveNewBreedingMethodGenerative() {
 		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.GENERATIVE.getCode());
-		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
@@ -202,7 +169,7 @@ public class ProgramMethodsPresenterTest {
 	@Test
 	public void testSaveNewBreedingMethodDerivative() {
 		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.DERIVATIVE.getCode());
-		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
@@ -213,7 +180,7 @@ public class ProgramMethodsPresenterTest {
 	@Test
 	public void testSaveNewBreedingMethodMaintenance() {
 		final MethodView method = MethodViewTestDataInitializer.createMethodView(MethodType.MAINTENANCE.getCode());
-		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString(), Matchers.anyString())).thenReturn(new Method());
+		Mockito.when(this.gerplasmDataManager.getMethodByName(Matchers.anyString())).thenReturn(new Method());
 		final MethodView result = this.controller.saveNewBreedingMethod(method);
 		Assert.assertEquals(method.getMname(), result.getMname());
 		Assert.assertEquals(method.getMcode(), result.getMcode());
