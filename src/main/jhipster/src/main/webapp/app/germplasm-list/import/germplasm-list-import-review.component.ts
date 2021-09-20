@@ -14,8 +14,13 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
+import { GermplasmListImportMultiMatchesComponent } from './germplasm-list-import-multi-matches.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
+import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
+import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
+import { GermplasmListEntry } from '../../shared/model/germplasm-list';
+import { ListModel } from '../../shared/list-builder/model/list.model';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -118,11 +123,11 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
             });
 
-            this.context.data.forEach((row) => {
+            this.context.data.forEach((row, index) => {
                 const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
                 const gidMatch = this.matchesByGid[row[HEADERS.GID]];
                 const nameMatches = this.matchesByName[toUpper(row[HEADERS.DESIGNATION])];
-
+                row['ENTRY_NO'] = ++index;
                 if (guidMatch) {
                     this.dataSingleMatches.push(row);
                     row[HEADERS['GID MATCHES']] = guidMatch.gid;
@@ -189,7 +194,145 @@ export class GermplasmListImportReviewComponent implements OnInit {
     }
 
     async save() {
+        try {
 
+            let doContinue = await this.processMultiMatches();
+            if (!doContinue) {
+                return;
+            }
+
+            doContinue = await this.processManualMatches();
+            if (!doContinue) {
+                return;
+            }
+
+            doContinue = await this.showSummaryConfirmation();
+            if (!doContinue) {
+                return;
+            }
+
+            // Proceed with save
+            this.selectManualMatchesResult;
+            this.selectMultipleMatchesResult;
+            const newGermplasmList = [];
+            let index = 0;
+            this.context.data.forEach((row) => {
+                const germplasmList = {};
+                const singleMatch = this.dataSingleMatches.find((matchEntry) =>
+                    Boolean(matchEntry['ENTRY_NO'] === row['ENTRY_NO'])
+                );
+
+                // Single Match
+                if (singleMatch) {
+                    germplasmList['ENTRY_NO'] = ++index;
+                    germplasmList[HEADERS.GID] = singleMatch[HEADERS['GID MATCHES']];
+                    newGermplasmList.push(germplasmList);
+                // Manual Match
+                } else if (Object.keys(this.selectManualMatchesResult).length > 0 && this.selectManualMatchesResult[row['ENTRY_NO']]) {
+                    if (this.selectManualMatchesResult[row['ENTRY_NO']]) {
+                        germplasmList['ENTRY_NO'] = ++index;
+                        germplasmList[HEADERS.GID] = this.selectManualMatchesResult[row['ENTRY_NO']];
+                        newGermplasmList.push(germplasmList);
+                    }
+                // Multi Match
+                } else if (Object.keys(this.selectMultipleMatchesResult).length > 0 && this.selectMultipleMatchesResult[row['ENTRY_NO']]) {
+                    germplasmList['ENTRY_NO'] = ++index;
+                    germplasmList[HEADERS.GID] = this.selectMultipleMatchesResult[row['ENTRY_NO']];
+                    newGermplasmList.push(germplasmList);
+                }
+            });
+
+            const model = new ListModel();
+            const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
+                { size: 'lg', backdrop: 'static' });
+            germplasmListCreationModalRef.componentInstance.entries = newGermplasmList.map((row) => {
+                const entry = new GermplasmListEntry();
+                entry.gid = row[HEADERS.GID];
+                entry.entryNo = Number(row['ENTRY_NO']);
+                return entry
+            });
+            germplasmListCreationModalRef.componentInstance.model = model;
+            germplasmListCreationModalRef.result.then(() => {
+                    this.eventManager.broadcast({ name: 'listNameFilter', content: model.name });
+                this.modal.close();
+                }
+            );
+
+        } catch (error) {
+            this.onError(error);
+        }
+        this.isSaving = false;
+    }
+
+    private async showSummaryConfirmation() {
+        const countMultiMatches = this.context.data.filter((row) => this.selectMultipleMatchesResult[row['ENTRY_NO']]).length,
+            countManualMatches = this.context.data.filter((row) => this.selectManualMatchesResult[row['ENTRY_NO']]).length,
+            countSingleMatches = this.dataSingleMatches.length,
+            countOmited = this.context.data.length - countMultiMatches - countManualMatches - countSingleMatches,
+            messages = [];
+
+        if (countSingleMatches) {
+            messages.push(this.translateService.instant('germplasm-list.import.review.summary.single.matches', { param: countSingleMatches }));
+        }
+
+        if (countMultiMatches) {
+            messages.push(this.translateService.instant('germplasm-list.import.review.summary.multiples.matches', { param: countMultiMatches }));
+        }
+        if (countManualMatches) {
+            messages.push(this.translateService.instant('germplasm-list.import.review.summary.manual.matches', { param: countManualMatches }));
+        }
+        if (countOmited) {
+            messages.push(this.translateService.instant('germplasm-list.import.review.summary.omited.matches', { param: countOmited }));
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
+            { windowClass: 'modal-medium', backdrop: 'static' });
+        confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.import.review.summary.title');
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import.review.summary.message', {
+            param: messages.map((item) => '<li>' + item + '</li>').join('')
+        });
+        try {
+            await confirmModalRef.result;
+        } catch (rejected) {
+            return false;
+        }
+        return true;
+
+    }
+
+    private async processMultiMatches(): Promise<boolean> {
+        this.selectMultipleMatchesResult = {};
+        if (Object.keys(this.dataMultipleMatches).length > 0 && !this.skipMultipleMatches) {
+            const selectMatchesModalRef = this.modalService.open(GermplasmListImportMultiMatchesComponent as Component,
+                { size: 'lg', backdrop: 'static' });
+            selectMatchesModalRef.componentInstance.unassignedMatches = this.dataMultipleMatches;
+            selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
+            selectMatchesModalRef.componentInstance.selectMatchesResult = this.selectMultipleMatchesResult;
+
+            try {
+                await selectMatchesModalRef.result;
+            } catch (rejected) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private async processManualMatches(): Promise<boolean> {
+        this.selectManualMatchesResult = {};
+        if (Object.keys(this.dataWithOutMatches).length > 0 && !this.skipDataWithoutMatches) {
+            const selectManualMatchesModalRef = this.modalService.open(GermplasmListImportManualMatchesComponent as Component,
+                { windowClass: 'modal-extra-large', backdrop: 'static' });
+            selectManualMatchesModalRef.componentInstance.rows = this.dataWithOutMatches;
+            selectManualMatchesModalRef.componentInstance.selectMatchesResult = this.selectManualMatchesResult;
+
+            try {
+                await selectManualMatchesModalRef.result;
+            } catch (rejected) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private onError(response: HttpErrorResponse | any) {

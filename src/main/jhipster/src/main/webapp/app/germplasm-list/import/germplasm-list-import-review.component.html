@@ -36,7 +36,7 @@
 						</th>
 						</thead>
 						<tbody>
-						<tr *ngFor="let row of rows | slice: (page-1) * pageSize : page * pageSize">
+						<tr *ngFor="let row of rows | orderBy: 'ENTRY_NO' | slice: (page-1) * pageSize : page * pageSize">
 							<td *ngFor="let header of keys(HEADERS)">
 								{{row[header]}}
 							</td>
