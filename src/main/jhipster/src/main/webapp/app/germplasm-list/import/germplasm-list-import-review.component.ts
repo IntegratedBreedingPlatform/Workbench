@@ -194,6 +194,9 @@ export class GermplasmListImportReviewComponent implements OnInit {
     }
 
     async save() {
+        this.selectManualMatchesResult = {};
+        this.selectMultipleMatchesResult = {};
+
         try {
 
             let doContinue = await this.processMultiMatches();
@@ -212,8 +215,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
             }
 
             // Proceed with save
-            this.selectManualMatchesResult;
-            this.selectMultipleMatchesResult;
             const newGermplasmList = [];
             let index = 0;
             this.context.data.forEach((row) => {
@@ -323,7 +324,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
         if (Object.keys(this.dataWithOutMatches).length > 0 && !this.skipDataWithoutMatches) {
             const selectManualMatchesModalRef = this.modalService.open(GermplasmListImportManualMatchesComponent as Component,
                 { windowClass: 'modal-extra-large', backdrop: 'static' });
-            selectManualMatchesModalRef.componentInstance.rows = this.dataWithOutMatches;
+            selectManualMatchesModalRef.componentInstance.rows = this.dataWithOutMatches.map((row) => Object.assign({}, row));
             selectManualMatchesModalRef.componentInstance.selectMatchesResult = this.selectManualMatchesResult;
 
             try {
