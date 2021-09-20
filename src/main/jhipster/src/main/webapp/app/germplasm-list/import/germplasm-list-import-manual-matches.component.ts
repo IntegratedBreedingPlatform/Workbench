@@ -26,7 +26,7 @@ export class GermplasmListImportManualMatchesComponent implements OnInit {
     // table displayed in html
     rows: any[] = [];
 
-    selectMatchesResult: any[] = [];
+    selectMatchesResult: { [key: string]: number };
     selectedRow;
 
     eventSubscriber: Subscription;
@@ -59,7 +59,6 @@ export class GermplasmListImportManualMatchesComponent implements OnInit {
     }
 
     next() {
-        this.selectMatchesResult = this.rows;
         this.modal.close(this.selectMatchesResult);
         return;
     }
@@ -88,9 +87,13 @@ export class GermplasmListImportManualMatchesComponent implements OnInit {
         this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
             this.germplasmService.getGermplasmMatches(undefined, undefined, [event.content], undefined).pipe(
                 finalize(() => this.isLoading = false)
-            ).subscribe((matches) => {
-                this.selectedRow['MAPPED GID'] = matches[0].gid;
-                this.selectedRow['MAPPED DESIGNATION'] = matches[0].preferredName;
+            ).subscribe((germplasm) => {
+                this.selectedRow['MAPPED GID'] = germplasm[0].gid;
+                this.selectedRow['MAPPED DESIGNATION'] = germplasm[0].preferredName;
+
+                const entry = this.selectedRow['ENTRY_NO'];
+                this.selectMatchesResult[entry] = germplasm[0].gid;
+
             });
 
         });
