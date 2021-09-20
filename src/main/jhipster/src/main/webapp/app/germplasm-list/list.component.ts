@@ -149,10 +149,6 @@ export class ListComponent implements OnInit {
         console.log('value: ' + values);
     }
 
-    getRowData(response: GermplasmListDataSearchResponse, column: ObservationVariable) {
-        return response.data[column.alias] === undefined ? response.data[column.termId] : response.data[column.alias];
-    }
-
     private getSort() {
         if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
@@ -232,5 +228,9 @@ export class ListComponent implements OnInit {
 }
 
 export enum ColumnLabels {
-    'ENTRY_NUMBER' = 'ENTRY_NUMBER'
+    'ENTRY_NUMBER' = 'ENTRY_NUMBER',
+    'GID' = 'GID',
+    'LOTS' = 'LOTS',
+    'LOCATION_NAME' = 'LOCATION_NAME',
+    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME'
 }

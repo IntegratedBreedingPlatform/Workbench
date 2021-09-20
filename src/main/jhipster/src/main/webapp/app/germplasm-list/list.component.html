@@ -43,8 +43,10 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let list of entries; trackBy: trackId; index as index">
-				<td *ngFor="let column of header">{{getRowData(list, column)}}</td>
+			<tr *ngFor="let entry of entries; trackBy: trackId; index as index">
+				<td *ngFor="let column of header">
+					<jhi-list-data-row [column]="column" [entry]="entry"></jhi-list-data-row>
+				</td>
 			</tr>
 			</tbody>
 		</table>
