@@ -21,6 +21,7 @@ export const GERMPLASM_LABEL_PRINTING_TYPE = 'Germplasm';
 export const FILE_MANAGER_URL = '/ibpworkbench/controller/jhipster#/file-manager/';
 export const FILE_UPLOAD_SUPPORTED_TYPES = process.env.FILE_UPLOAD_SUPPORTED_TYPES;
 export const TINY_BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+export const EMPTY_PAGE_URL = 'about:blank';
 
 // HELP
 export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';
