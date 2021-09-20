@@ -17,6 +17,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { Principal } from '../shared';
+import { ObservationVariable } from '../shared/model/observation-variable.model';
 
 declare var $: any;
 
@@ -36,6 +37,7 @@ export class ListComponent implements OnInit {
     ColumnLabels = ColumnLabels;
 
     germplasmList: GermplasmList;
+    header: ObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
     searchRequest: GermplasmListDataSearchRequest;
     eventSubscriber: Subscription;
@@ -68,9 +70,9 @@ export class ListComponent implements OnInit {
         this.searchRequest = new GermplasmListDataSearchRequest();
     }
 
-   async ngOnInit() {
-       const identity = await this.principal.identity();
-       this.user = identity;
+    async ngOnInit() {
+        const identity = await this.principal.identity();
+        this.user = identity;
 
         this.germplasmListService.getGermplasmListById(this.listId).subscribe(
             (res: HttpResponse<GermplasmList>) => this.germplasmList = res.body,
@@ -81,7 +83,13 @@ export class ListComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
 
         this.registerColumnFiltersChanged();
-        this.loadAll(this.request);
+
+        this.germplasmListService.getGermplasmListDataTableHeader(this.listId).subscribe(
+            (res: HttpResponse<ObservationVariable[]>) => {
+                this.header = res.body;
+                this.loadAll(this.request);
+            },
+            (res: HttpErrorResponse) => this.onError(res));
     }
 
     get request() {
@@ -141,6 +149,10 @@ export class ListComponent implements OnInit {
         console.log('value: ' + values);
     }
 
+    getRowData(response: GermplasmListDataSearchResponse, column: ObservationVariable) {
+        return response.data[column.alias] === undefined ? response.data[column.termId] : response.data[column.alias];
+    }
+
     private getSort() {
         if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
@@ -179,7 +191,8 @@ export class ListComponent implements OnInit {
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
 
-        this.router.navigate(['/germplasm-list/list'], {queryParams: {
+        this.router.navigate(['/germplasm-list/list'], {
+            queryParams: {
                 listId: list.listId,
                 listName: list.listName
             }
@@ -187,10 +200,10 @@ export class ListComponent implements OnInit {
     }
 
     toggleListStatus() {
-       this.germplasmListService.toggleGermplasmListStatus(this.listId).subscribe(
-           (res: boolean) => this.onToggleListStatusSuccess(res),
-           (res: HttpErrorResponse) => this.onError(res)
-       );
+        this.germplasmListService.toggleGermplasmListStatus(this.listId).subscribe(
+            (res: boolean) => this.onToggleListStatusSuccess(res),
+            (res: HttpErrorResponse) => this.onError(res)
+        );
     }
 
     private getInitialFilters() {
