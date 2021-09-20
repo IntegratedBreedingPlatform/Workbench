@@ -128,7 +128,7 @@ export class GermplasmImportComponent implements OnInit {
         });
 
         const errorMessage: string[] = [];
-        this.validateHeader(this.rawData[0], errorMessage);
+        this.validateHeader(headers, errorMessage);
         this.validateData(errorMessage);
 
         if (errorMessage.length !== 0) {
@@ -157,6 +157,8 @@ export class GermplasmImportComponent implements OnInit {
     }
 
     private validateHeader(fileHeader: string[], errorMessage: string[]) {
+        // Ignore empty column headers
+        fileHeader = fileHeader.filter((header) => !!header);
         this.codes = {};
         Object.keys(fileHeader
             // get duplicates

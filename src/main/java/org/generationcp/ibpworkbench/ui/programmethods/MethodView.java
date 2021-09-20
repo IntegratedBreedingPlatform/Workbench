@@ -57,7 +57,7 @@ public class MethodView extends Method implements BeanFormState {
 	public Method copy() {
 		final Method method = new Method(this.getMid(), this.getMtype(), this.getMgrp(), this.getMcode(), this.getMname(), this.getMdesc(),
 				this.getReference(), this.getMprgn(), this.getMfprg(), this.getMattr(), this.getGeneq(), this.getUser(), this.getLmid(),
-				this.getMdate(), this.getUniqueID());
+				this.getMdate());
 		method.setSnametype(this.getSnametype());
 		method.setSeparator(this.getSeparator());
 		method.setPrefix(this.getPrefix());
@@ -82,7 +82,6 @@ public class MethodView extends Method implements BeanFormState {
 		methodView.setUser(this.getUser());
 		methodView.setLmid(this.getLmid());
 		methodView.setMdate(this.getMdate());
-		methodView.setUniqueID(this.getUniqueID());
 		methodView.setSnametype(this.getSnametype());
 		methodView.setSeparator(this.getSeparator());
 		methodView.setPrefix(this.getPrefix());

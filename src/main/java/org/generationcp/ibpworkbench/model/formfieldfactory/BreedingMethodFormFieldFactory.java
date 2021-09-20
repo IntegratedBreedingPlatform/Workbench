@@ -222,7 +222,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			Method method = null;
 			try {
 				final Project currentProject = BreedingMethodFormFieldFactory.this.contextUtil.getProjectInContext();
-				method = BreedingMethodFormFieldFactory.this.germplasmDataManager.getMethodByName(value.toString(), currentProject.getUniqueID());
+				method = BreedingMethodFormFieldFactory.this.germplasmDataManager.getMethodByName(value.toString());
 			} catch (final MiddlewareQueryException e) {
 				BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 			}
@@ -274,7 +274,7 @@ public class BreedingMethodFormFieldFactory extends DefaultFieldFactory {
 			Method method = null;
 			try {
 				final Project currentProject = BreedingMethodFormFieldFactory.this.contextUtil.getProjectInContext();
-				method = BreedingMethodFormFieldFactory.this.germplasmDataManager.getMethodByCode(value.toString(), currentProject.getUniqueID());
+				method = BreedingMethodFormFieldFactory.this.germplasmDataManager.getMethodByCode(value.toString());
 			} catch (final MiddlewareQueryException e) {
 				BreedingMethodFormFieldFactory.LOG.error(e.getMessage(), e);
 			}
