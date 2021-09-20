@@ -34,8 +34,12 @@
 							<td>{{row[HEADERS.GID]}}</td>
 							<td>{{row[HEADERS.GUID]}}</td>
 							<td>{{row[HEADERS.DESIGNATION]}}</td>
-							<td>{{row['MAPPED GID']}}</td>
-							<td>{{row['MAPPED DESIGNATION']}}</td>
+							<td>
+								<a *ngIf="row['MAPPED GID']" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row['MAPPED GID'] } }]" [queryParams]="{designation: row['MAPPED DESIGNATION']}">{{row['MAPPED GID']}}</a>
+							</td>
+							<td>
+								<a *ngIf="row['MAPPED GID']" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row['MAPPED GID'] } }]" [queryParams]="{designation: row['MAPPED DESIGNATION']}">{{row['MAPPED DESIGNATION']}}</a>
+							</td>
 							<td>
 								<span class="fa fa-check-circle text-success" *ngIf="validMapped(row)"></span>
 								<span class="fa fa-ban text-danger" *ngIf="!validMapped(row)"></span>
