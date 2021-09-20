@@ -1,6 +1,7 @@
-import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Lot } from '../../shared/inventory/model/lot.model';
 import { NonSelectedGermplasm } from '../../shared/germplasm/model/germplasm-merge-request.model';
+import { LotMergeOptionsEnum } from './merge-germplasm-existing-lots.component';
 
 @Component({
     selector: 'jhi-merge-germplasm-lot-table',
@@ -8,16 +9,14 @@ import { NonSelectedGermplasm } from '../../shared/germplasm/model/germplasm-mer
 })
 export class MergeGermplasmLotTableComponent implements OnChanges {
 
-    readonly LOT_OPTIONS_OMIT = 'omit';
-    readonly LOT_OPTIONS_MIGRATE = 'migrate';
-    readonly LOT_OPTIONS_CLOSE = 'close';
+    lotMergeOptionsEnum = LotMergeOptionsEnum;
 
     @Input() lots: Lot[] = [];
     @Input() nonSelectedGermplasm: NonSelectedGermplasm;
-    @Input() applyToAll: string;
-    @Output() applyToAllChange: EventEmitter<string> = new EventEmitter<string>();
+    @Input() applyToAll: LotMergeOptionsEnum = LotMergeOptionsEnum.CLOSE;
+    @Output() applyToAllChange: EventEmitter<LotMergeOptionsEnum> = new EventEmitter<LotMergeOptionsEnum>();
 
-    selectedOption;
+    selectedOption: LotMergeOptionsEnum;
 
     onLotOptionChanged() {
         this.updateNonSelectedGermplasmOptions();
@@ -33,9 +32,9 @@ export class MergeGermplasmLotTableComponent implements OnChanges {
     }
 
     updateNonSelectedGermplasmOptions() {
-        this.nonSelectedGermplasm.closeLots = this.selectedOption === this.LOT_OPTIONS_CLOSE;
-        this.nonSelectedGermplasm.migrateLots = this.selectedOption === this.LOT_OPTIONS_MIGRATE;
-        this.nonSelectedGermplasm.omit = this.selectedOption === this.LOT_OPTIONS_OMIT;
+        this.nonSelectedGermplasm.closeLots = this.selectedOption === LotMergeOptionsEnum.CLOSE;
+        this.nonSelectedGermplasm.migrateLots = this.selectedOption === LotMergeOptionsEnum.MIGRATE;
+        this.nonSelectedGermplasm.omit = this.selectedOption === LotMergeOptionsEnum.OMIT;
     }
 
 }

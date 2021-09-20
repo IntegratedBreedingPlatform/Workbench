@@ -17,21 +17,21 @@
 					<div class="col">
 						<div class="form-check form-check-inline">
 							<input type="radio" class="form-check-input" name="applyToAll" id="radioCloseAllLots"
-								   [(ngModel)]="applyToAll" value="close">
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.CLOSE">
 							<label class="form-check-label" for="radioCloseAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.closeLots">
 							</label>
 						</div>
 						<br/>
 						<div class="form-check form-check-inline">
 							<input type="radio" class="form-check-input" name="applyToAll" id="radioMigrateAllLots"
-								   [(ngModel)]="applyToAll" value="migrate">
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.MIGRATE">
 							<label class="form-check-label" for="radioMigrateAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.associateLots">
 							</label>
 						</div>
 						<br/>
 						<div class="form-check form-check-inline">
 							<input type="radio" class="form-check-input" name="applyToAll" id="radioOmitAllLots"
-								   [(ngModel)]="applyToAll" value="omit">
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.OMIT">
 							<label class="form-check-label" for="radioOmitAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.omitLots">
 							</label>
 						</div>

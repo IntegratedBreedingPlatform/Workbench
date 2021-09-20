@@ -23,21 +23,21 @@
 		<div class="col">
 			<div class="form-check form-check-inline">
 				<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioCloseLots' + nonSelectedGermplasm.germplasmId"
-					   [(ngModel)]="selectedOption" [value]="LOT_OPTIONS_CLOSE" (change)="onLotOptionChanged()">
+					   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.CLOSE" (change)="onLotOptionChanged()">
 				<label class="form-check-label" [attr.for]="'radioCloseLots' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.closeLots">
 				</label>
 			</div>
 			<br/>
 			<div class="form-check form-check-inline">
 				<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioAssociateLots' + nonSelectedGermplasm.germplasmId"
-					   [(ngModel)]="selectedOption" [value]="LOT_OPTIONS_MIGRATE" (change)="onLotOptionChanged()">
+					   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.MIGRATE" (change)="onLotOptionChanged()">
 				<label class="form-check-label" [attr.for]="'radioAssociateLots' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.associateLots">
 				</label>
 			</div>
 			<br/>
 			<div class="form-check form-check-inline">
 				<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioOmit' + nonSelectedGermplasm.germplasmId"
-					   [(ngModel)]="selectedOption" [value]="LOT_OPTIONS_OMIT" (change)="onLotOptionChanged()">
+					   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.OMIT" (change)="onLotOptionChanged()">
 				<label class="form-check-label" [attr.for]="'radioOmit' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.omitLots">
 				</label>
 			</div>

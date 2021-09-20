@@ -17,13 +17,15 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 })
 export class MergeGermplasmExistingLotsComponent implements OnInit {
 
+    lotMergeOptionsEnum = LotMergeOptionsEnum;
+
     @Input()
     germplasmMergeRequest: GermplasmMergeRequest;
     gidsWithLots: number[];
 
     isLoading: boolean;
     lotsByGids: Map<number, Lot[]>;
-    applyToAll: string;
+    applyToAll: LotMergeOptionsEnum = LotMergeOptionsEnum.CLOSE;
 
     constructor(
         private lotService: LotService,
@@ -112,4 +114,10 @@ export class MergeGermplasmExistingLotsComponent implements OnInit {
         }
         this.isLoading = false;
     }
+}
+
+export enum LotMergeOptionsEnum {
+    OMIT = 'omit',
+    MIGRATE = 'migrate',
+    CLOSE = 'close'
 }

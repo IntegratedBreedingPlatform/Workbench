@@ -8,8 +8,8 @@
 </div>
 <div class="modal-body">
 	<span jhiTranslate="merge-germplasm.select-germplasm-caption"></span>
-	<br/>
-	<i class="fa fa-exclamation-circle"></i><span jhiTranslate="merge-germplasm.non-selected-germplasm-caption"></span>
+	<br/><br/>
+	<i class="fa fa-exclamation-circle text-danger"></i>&nbsp;<span jhiTranslate="merge-germplasm.non-selected-germplasm-caption"></span>
 	<div class="table-responsive" *ngIf="germplasmList">
 		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
 			<thead>

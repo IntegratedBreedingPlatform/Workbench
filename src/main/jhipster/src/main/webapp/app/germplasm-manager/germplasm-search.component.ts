@@ -497,6 +497,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmDetailsEventSubscriber = this.eventManager.subscribe('germplasmDetailsChanged', (event) => {
             // Reload the table when a germplasm is updated via germplasm details popup.
             this.transition();
+            this.selectedItems = {};
         });
     }
 
