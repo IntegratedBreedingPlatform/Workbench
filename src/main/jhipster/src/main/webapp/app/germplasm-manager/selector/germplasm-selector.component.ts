@@ -482,7 +482,7 @@ export class GermplasmSelectorComponent implements OnInit {
     private onSuccess(data, headers, callback) {
         this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
-        if (callback && typeof callback === "function") {
+        if (callback && typeof callback === 'function') {
             callback();
         }
     }
@@ -519,7 +519,7 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     toggleSelect(germplasm: Germplasm) {
-    	if (this.isSelectAllPages) {
+        if (this.isSelectAllPages) {
             return;
         }
         if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
@@ -559,7 +559,7 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     selectGermplasm() {
-        if (this.isSelectAllPages){
+        if (this.isSelectAllPages) {
             this.handleSelectAllPages();
         } else {
             this.handleGidSelection();
