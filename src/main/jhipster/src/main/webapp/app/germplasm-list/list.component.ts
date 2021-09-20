@@ -17,7 +17,8 @@ import { AlertService } from '../shared/alert/alert.service';
 import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { Principal } from '../shared';
-import { ObservationVariable } from '../shared/model/observation-variable.model';
+import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
+import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 
 declare var $: any;
 
@@ -34,10 +35,10 @@ export class ListComponent implements OnInit {
 
     user?: any;
 
-    ColumnLabels = ColumnLabels;
+    GermplasmListColumnCategory = GermplasmListColumnCategory;
 
     germplasmList: GermplasmList;
-    header: ObservationVariable[];
+    header: GermplasmListObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
     searchRequest: GermplasmListDataSearchRequest;
     eventSubscriber: Subscription;
@@ -85,7 +86,7 @@ export class ListComponent implements OnInit {
         this.registerColumnFiltersChanged();
 
         this.germplasmListService.getGermplasmListDataTableHeader(this.listId).subscribe(
-            (res: HttpResponse<ObservationVariable[]>) => {
+            (res: HttpResponse<GermplasmListObservationVariable[]>) => {
                 this.header = res.body;
                 this.loadAll(this.request);
             },
@@ -149,23 +150,6 @@ export class ListComponent implements OnInit {
         console.log('value: ' + values);
     }
 
-    getRowData(response: GermplasmListDataSearchResponse, column: ObservationVariable) {
-        return response.data[column.alias] === undefined ? response.data[column.termId] : response.data[column.alias];
-    }
-
-    private getSort() {
-        if (this.predicate === SORT_PREDICATE_NONE) {
-            return '';
-        }
-        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-    }
-
-    private clearSort() {
-        this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
-        $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
-    }
-
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
@@ -206,6 +190,14 @@ export class ListComponent implements OnInit {
         );
     }
 
+    getHeaderDisplayName(column: GermplasmListObservationVariable) {
+        if (column.columnCategory === GermplasmListColumnCategory.STATIC) {
+            return column.name;
+        }
+
+        return column.alias ? column.alias : column.name;
+    }
+
     private getInitialFilters() {
         return [];
     }
@@ -229,8 +221,25 @@ export class ListComponent implements OnInit {
         this.eventManager.broadcast({ name: GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME, content: '' });
     }
 
+    private getSort() {
+        if (this.predicate === SORT_PREDICATE_NONE) {
+            return '';
+        }
+        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
+    }
+
+    private clearSort() {
+        this.predicate = SORT_PREDICATE_NONE;
+        this.reverse = '';
+        $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
+    }
+
 }
 
 export enum ColumnLabels {
-    'ENTRY_NUMBER' = 'ENTRY_NUMBER'
+    'ENTRY_NUMBER' = 'ENTRY_NUMBER',
+    'GID' = 'GID',
+    'LOTS' = 'LOTS',
+    'LOCATION_NAME' = 'LOCATION_NAME',
+    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME'
 }

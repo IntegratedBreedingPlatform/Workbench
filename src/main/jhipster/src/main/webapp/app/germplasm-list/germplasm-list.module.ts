@@ -11,6 +11,7 @@ import { GermplasmListImportComponent } from './import/germplasm-list-import.com
 import { GermplasmListImportModule } from './import/germplasm-list-import.module';
 import { GermplasmListImportContext } from './import/germplasm-list-import.context';
 import { ListColumnsComponent } from './list-columns.component';
+import { ListDataRowComponent } from './list-table-row-data.component';
 
 @NgModule({
     imports: [
@@ -22,13 +23,15 @@ import { ListColumnsComponent } from './list-columns.component';
         GermplasmListComponent,
         GermplasmListSearchComponent,
         ListComponent,
-        ListColumnsComponent
+        ListColumnsComponent,
+        ListDataRowComponent
     ],
     entryComponents: [
         GermplasmListComponent,
         GermplasmListSearchComponent,
         ListComponent,
-        ListColumnsComponent
+        ListColumnsComponent,
+        ListDataRowComponent
     ],
     providers: [
         GermplasmListService,
