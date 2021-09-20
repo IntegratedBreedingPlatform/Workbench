@@ -92,9 +92,7 @@ public class ProgramMethodsPresenter {
 					this.convertFrom(this.gerplasmDataManager.getMethodsByGroupAndTypeAndName(mgroup, mtype, mname));
 
 			for (final MethodView method : result) {
-				if (method.getUniqueID() == null || method.getUniqueID().equals(this.project.getUniqueID())) {
-					resultsMap.put(method.getMid(), method);
-				}
+				resultsMap.put(method.getMid(), method);
 			}
 
 		} catch (final MiddlewareQueryException e) {
@@ -126,7 +124,7 @@ public class ProgramMethodsPresenter {
 	public boolean isExistingMethod(final String methodName) {
 		final Method existingMethod;
 		try {
-			existingMethod = this.gerplasmDataManager.getMethodByName(methodName, this.project.getUniqueID());
+			existingMethod = this.gerplasmDataManager.getMethodByName(methodName);
 
 			if (existingMethod.getMname() != null && existingMethod.getMname().length() > 0) {
 				return true;
@@ -158,9 +156,6 @@ public class ProgramMethodsPresenter {
 
 			newBreedingMethod.setMdate(DateUtil.getCurrentDateAsIntegerValue());
 			newBreedingMethod.setMfprg(0);
-
-			// set programUUID
-			newBreedingMethod.setUniqueID(this.project.getUniqueID());
 
 			// ADD TO MIDDLEWARE LOCAL
 			newBreedingMethod.setMid(this.gerplasmDataManager.addMethod(newBreedingMethod.copy()));
@@ -220,7 +215,7 @@ public class ProgramMethodsPresenter {
 					if (m2 == null) {
 						final Method newMethod =
 								new Method(m.getMid(), m.getMtype(), m.getMgrp(), m.getMcode(), m.getMname(), m.getMdesc(), 0, 0, 0, 0, 0,
-										0, 0, m.getMdate(), project.getUniqueID());
+										0, 0, m.getMdate());
 						mID = gdm.addMethod(newMethod);
 					} else {
 						mID = m2.getMid();

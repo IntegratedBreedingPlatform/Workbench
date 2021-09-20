@@ -112,6 +112,7 @@ public class StudyBrowserMain extends VerticalLayout implements InitializingBean
 		this.titleLayout.setHeight("40px");
 
 		this.toolTitle = new Label(this.messageSource.getMessage(Message.BROWSE_STUDIES));
+		this.toolTitle.setDebugId("toolTitle");
 		this.toolTitle.setStyleName(Bootstrap.Typography.H1.styleName());
 		this.toolTitle.setContentMode(Label.CONTENT_XHTML);
 		this.toolTitle.setWidth("220px");

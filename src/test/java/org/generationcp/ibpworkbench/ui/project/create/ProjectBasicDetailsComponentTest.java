@@ -119,7 +119,7 @@ public class ProjectBasicDetailsComponentTest {
 		final BmsDateField dateField = this.basicDetailsComponent.getStartDateField();
 		Assert.assertTrue(dateField.isRequired());
 		
-		final ComboBox cropTypeCombobox = this.basicDetailsComponent.getCropTypeCombo();
+		final ComboBox cropTypeCombobox = (ComboBox) this.basicDetailsComponent.getCropTypeField();
 		Assert.assertEquals(this.cropTypes.size(), cropTypeCombobox.size());
 		Assert.assertFalse(cropTypeCombobox.isNewItemsAllowed());
 		Assert.assertTrue(cropTypeCombobox.isRequired());
