@@ -158,7 +158,7 @@ export class TreeTableComponent implements OnInit {
             this.mode = Mode.None;
             return;
         }
-        if (this.isRootFolder() && this.mode === Mode.Rename || this.mode === Mode.Delete) {
+        if (this.isRootFolder()) {
             this.mode = Mode.None;
         }
         this.setName();
