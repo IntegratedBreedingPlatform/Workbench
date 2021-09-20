@@ -71,7 +71,7 @@
 		<span jhiTranslate="omit"></span>
 	</button>
 	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreMatch|| selectMatchesResult[dataRow['ENTRY_NO']])">
-	<span *ngIf="isFinish(); else nextButton" jhiTranslate="finish"></span>
+	<span *ngIf="isFinish(); else nextButton" jhiTranslate="next"></span>
 		<ng-template #nextButton><span jhiTranslate="next"></span></ng-template>
 	</button>
 </div>
