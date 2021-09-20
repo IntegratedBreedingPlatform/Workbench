@@ -38,7 +38,7 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 				<th *ngFor="let column of header">
-					<span>{{column.alias ? column.alias : column.name}}</span>
+					<span>{{this.getHeaderDisplayName(column)}}</span>
 				</th>
 			</tr>
 			</thead>
