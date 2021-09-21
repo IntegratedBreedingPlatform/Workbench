@@ -1,5 +1,5 @@
-<div class="table-responsive">
-	<div style="overflow-y: scroll; max-height: 250px;">
+<div style="overflow-y: auto; max-height: 250px;">
+	<div class="table-responsive">
 		<table class="table table-striped table-bordered table-curved">
 			<thead>
 			<tr>
@@ -19,28 +19,28 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="form-group row">
-		<div class="col">
-			<div class="form-check form-check-inline">
-				<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioCloseLots' + nonSelectedGermplasm.germplasmId"
-					   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.CLOSE" (change)="onLotOptionChanged()">
-				<label class="form-check-label" [attr.for]="'radioCloseLots' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.closeLots">
-				</label>
-			</div>
-			<br/>
-			<div class="form-check form-check-inline">
-				<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioAssociateLots' + nonSelectedGermplasm.germplasmId"
-					   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.MIGRATE" (change)="onLotOptionChanged()">
-				<label class="form-check-label" [attr.for]="'radioAssociateLots' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.associateLots">
-				</label>
-			</div>
-			<br/>
-			<div class="form-check form-check-inline">
-				<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioOmit' + nonSelectedGermplasm.germplasmId"
-					   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.OMIT" (change)="onLotOptionChanged()">
-				<label class="form-check-label" [attr.for]="'radioOmit' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.omitLots">
-				</label>
-			</div>
+</div>
+<div class="form-group row">
+	<div class="col">
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioCloseLots' + nonSelectedGermplasm.germplasmId"
+				   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.CLOSE" (change)="onLotOptionChanged()">
+			<label class="form-check-label" [attr.for]="'radioCloseLots' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.closeLots">
+			</label>
+		</div>
+		<br/>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioAssociateLots' + nonSelectedGermplasm.germplasmId"
+				   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.MIGRATE" (change)="onLotOptionChanged()">
+			<label class="form-check-label" [attr.for]="'radioAssociateLots' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.associateLots">
+			</label>
+		</div>
+		<br/>
+		<div class="form-check form-check-inline">
+			<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelectedGermplasm.germplasmId" [attr.id]="'radioOmit' + nonSelectedGermplasm.germplasmId"
+				   [(ngModel)]="selectedOption" [value]="lotMergeOptionsEnum.OMIT" (change)="onLotOptionChanged()">
+			<label class="form-check-label" [attr.for]="'radioOmit' + nonSelectedGermplasm.germplasmId" jhiTranslate="merge-germplasm.action.omitLots">
+			</label>
 		</div>
 	</div>
 </div>

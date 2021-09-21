@@ -54,7 +54,9 @@ export class MergeGermplasmExistingLotsComponent implements OnInit {
         this.isLoading = true;
         this.search(request).then((searchId) => {
             this.lotService.getSearchResults({
-                searchRequestId: searchId
+                searchRequestId: searchId,
+                page: 0,
+                size: 10000
             }).pipe(finalize(() => {
                 this.isLoading = false;
             })).subscribe((response) => {
