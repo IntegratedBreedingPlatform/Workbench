@@ -15,6 +15,10 @@ export class MergeGermplasmLotTableComponent implements OnChanges, OnInit {
     lotMergeOptionsEnum = LotMergeOptionsEnum;
     isLoading: boolean;
     lots: Lot[] = [];
+    itemsPerPage: any = 10;
+    page: any = 1;
+    previousPage: any;
+    filteredItems: any;
 
     @Input() nonSelectedGermplasm: NonSelectedGermplasm;
     @Input() applyToAll: LotMergeOptionsEnum = LotMergeOptionsEnum.CLOSE;
@@ -27,10 +31,7 @@ export class MergeGermplasmLotTableComponent implements OnChanges, OnInit {
     }
 
     ngOnInit(): void {
-        const lotSearch = new LotSearch();
-        lotSearch.gids = [this.nonSelectedGermplasm.germplasmId.toString()];
-        // Get lot records
-        this.loadLots(lotSearch);
+        this.transition();
     }
 
     onLotOptionChanged() {
@@ -65,15 +66,30 @@ export class MergeGermplasmLotTableComponent implements OnChanges, OnInit {
         this.search(request).then((searchId) => {
             this.lotService.getSearchResults({
                 searchRequestId: searchId,
-                page: 0,
-                size: 10000
+                page: this.page - 1,
+                size: this.itemsPerPage
             }).pipe(finalize(() => {
                 this.isLoading = false;
             })).subscribe((response) => {
+                    this.filteredItems = response.headers.get('X-Filtered-Count');
                     this.lots = response.body;
                 }
             );
         });
+    }
+
+    transition() {
+        const lotSearch = new LotSearch();
+        lotSearch.gids = [this.nonSelectedGermplasm.germplasmId.toString()];
+        // Get lot records
+        this.loadLots(lotSearch);
+    }
+
+    loadPage(page: number) {
+        if (page !== this.previousPage) {
+            this.previousPage = page;
+            this.transition();
+        }
     }
 
 }
