@@ -9,7 +9,7 @@
 <div class="modal-body">
 	<span jhiTranslate="merge-germplasm.inventory-lots.description"></span>
 	<br/><br/>
-	<div *ngIf="lotsByGids && lotsByGids.size > 0">
+	<div *ngIf="gidsWithLots && gidsWithLots.length > 0">
 		<div class="card">
 			<h5 class="card-header"><span jhiTranslate="merge-germplasm.action.apply.to.all.description"></span></h5>
 			<div class="card-body">
@@ -40,8 +40,8 @@
 			</div>
 		</div>
 		<div *ngFor="let nonSelectedGermplasm of germplasmMergeRequest.nonSelectedGermplasm">
-			<jhi-collapsible *ngIf="lotsByGids.get(nonSelectedGermplasm.germplasmId)" heading="{{'GID:' + nonSelectedGermplasm.germplasmId}}">
-				<jhi-merge-germplasm-lot-table [lots]="lotsByGids.get(nonSelectedGermplasm.germplasmId)" [nonSelectedGermplasm]="nonSelectedGermplasm" [(applyToAll)]="applyToAll"></jhi-merge-germplasm-lot-table>
+			<jhi-collapsible *ngIf="gidsWithLots.includes(nonSelectedGermplasm.germplasmId)" heading="{{'GID:' + nonSelectedGermplasm.germplasmId}}">
+				<jhi-merge-germplasm-lot-table [nonSelectedGermplasm]="nonSelectedGermplasm" [(applyToAll)]="applyToAll"></jhi-merge-germplasm-lot-table>
 			</jhi-collapsible>
 		</div>
 	</div>

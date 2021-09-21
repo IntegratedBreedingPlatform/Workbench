@@ -834,8 +834,9 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     mergeGermplasm() {
-        if (!this.validateSelection()) {
-            return;
+        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) < 2)) {
+            this.alertService.error('merge-germplasm.at-least-two-germplasm-are-selected');
+            return false;
         }
         if (this.isSelectAll) {
             this.alertService.error('merge-germplasm.merge-all-germplasm-not-supported');
@@ -843,10 +844,6 @@ export class GermplasmSearchComponent implements OnInit {
         }
         if (this.size(this.selectedItems) > 100) {
             this.alertService.error('merge-germplasm.too-many-selected-germplasm');
-            return;
-        }
-        if (this.size(this.selectedItems) < 2) {
-            this.alertService.error('merge-germplasm.at-least-two-germplasm-are-selected');
             return;
         }
         const mergeGermplasmModal = this.modalService.open(MergeGermplasmSelectionComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });

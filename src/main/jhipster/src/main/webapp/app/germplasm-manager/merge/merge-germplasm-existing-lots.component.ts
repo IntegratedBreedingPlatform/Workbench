@@ -15,7 +15,7 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
     selector: 'jhi-merge-germplasm-existing-lots',
     templateUrl: './merge-germplasm-existing-lots.component.html',
 })
-export class MergeGermplasmExistingLotsComponent implements OnInit {
+export class MergeGermplasmExistingLotsComponent {
 
     lotMergeOptionsEnum = LotMergeOptionsEnum;
 
@@ -24,7 +24,6 @@ export class MergeGermplasmExistingLotsComponent implements OnInit {
     gidsWithLots: number[];
 
     isLoading: boolean;
-    lotsByGids: Map<number, Lot[]>;
     applyToAll: LotMergeOptionsEnum = LotMergeOptionsEnum.CLOSE;
 
     constructor(
@@ -33,37 +32,6 @@ export class MergeGermplasmExistingLotsComponent implements OnInit {
         private alertService: AlertService,
         private modal: NgbActiveModal,
         private eventManager: JhiEventManager) {
-    }
-
-    ngOnInit(): void {
-        const lotSearch = new LotSearch();
-        lotSearch.gids = this.gidsWithLots.map(String);
-        // Get all lot records from all germplasm with lots.
-        this.loadLots(lotSearch);
-    }
-
-    search(request: LotSearch): Promise<string> {
-        return new Promise((resolve, reject) => {
-            this.lotService.search(request).subscribe((response) => {
-                resolve(response);
-            }, (error) => reject(error));
-        });
-    }
-
-    loadLots(request: LotSearch) {
-        this.isLoading = true;
-        this.search(request).then((searchId) => {
-            this.lotService.getSearchResults({
-                searchRequestId: searchId,
-                page: 0,
-                size: 10000
-            }).pipe(finalize(() => {
-                this.isLoading = false;
-            })).subscribe((response) => {
-                    this.lotsByGids = this.groupBy(response.body, (lot) => lot.gid);
-                }
-            );
-        });
     }
 
     dismiss() {

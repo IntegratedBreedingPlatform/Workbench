@@ -1,22 +1,37 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Lot } from '../../shared/inventory/model/lot.model';
 import { NonSelectedGermplasm } from '../../shared/germplasm/model/germplasm-merge-request.model';
 import { LotMergeOptionsEnum } from './merge-germplasm-existing-lots.component';
+import { LotSearch } from '../../shared/inventory/model/lot-search.model';
+import { finalize } from 'rxjs/operators';
+import { LotService } from '../../shared/inventory/service/lot.service';
 
 @Component({
     selector: 'jhi-merge-germplasm-lot-table',
     templateUrl: './merge-germplasm-lot-table.component.html'
 })
-export class MergeGermplasmLotTableComponent implements OnChanges {
+export class MergeGermplasmLotTableComponent implements OnChanges, OnInit {
 
     lotMergeOptionsEnum = LotMergeOptionsEnum;
+    isLoading: boolean;
+    lots: Lot[] = [];
 
-    @Input() lots: Lot[] = [];
     @Input() nonSelectedGermplasm: NonSelectedGermplasm;
     @Input() applyToAll: LotMergeOptionsEnum = LotMergeOptionsEnum.CLOSE;
     @Output() applyToAllChange: EventEmitter<LotMergeOptionsEnum> = new EventEmitter<LotMergeOptionsEnum>();
 
     selectedOption: LotMergeOptionsEnum;
+
+    constructor(
+        private lotService: LotService) {
+    }
+
+    ngOnInit(): void {
+        const lotSearch = new LotSearch();
+        lotSearch.gids = [this.nonSelectedGermplasm.germplasmId.toString()];
+        // Get lot records
+        this.loadLots(lotSearch);
+    }
 
     onLotOptionChanged() {
         this.updateNonSelectedGermplasmOptions();
@@ -35,6 +50,30 @@ export class MergeGermplasmLotTableComponent implements OnChanges {
         this.nonSelectedGermplasm.closeLots = this.selectedOption === LotMergeOptionsEnum.CLOSE;
         this.nonSelectedGermplasm.migrateLots = this.selectedOption === LotMergeOptionsEnum.MIGRATE;
         this.nonSelectedGermplasm.omit = this.selectedOption === LotMergeOptionsEnum.OMIT;
+    }
+
+    search(request: LotSearch): Promise<string> {
+        return new Promise((resolve, reject) => {
+            this.lotService.search(request).subscribe((response) => {
+                resolve(response);
+            }, (error) => reject(error));
+        });
+    }
+
+    loadLots(request: LotSearch) {
+        this.isLoading = true;
+        this.search(request).then((searchId) => {
+            this.lotService.getSearchResults({
+                searchRequestId: searchId,
+                page: 0,
+                size: 10000
+            }).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe((response) => {
+                    this.lots = response.body;
+                }
+            );
+        });
     }
 
 }
