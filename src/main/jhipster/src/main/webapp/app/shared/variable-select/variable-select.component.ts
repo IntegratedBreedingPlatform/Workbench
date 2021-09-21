@@ -29,6 +29,7 @@ export class VariableSelectComponent implements OnInit {
     // Filters
     @Input() variableTypeIds: VariableTypeEnum[];
     @Input() datasetId: number;
+    @Input() germplasmUUID: string;
 
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
 
@@ -76,6 +77,9 @@ export class VariableSelectComponent implements OnInit {
         const filterRequest = <VariableFilterRequest>({});
         if (this.datasetId) {
             filterRequest.datasetIds = [this.datasetId];
+        }
+        if (this.germplasmUUID) {
+            filterRequest.germplasmUUIDs = [this.germplasmUUID];
         }
         if (this.variableTypeIds && this.variableTypeIds.length) {
             filterRequest.variableTypeIds = this.variableTypeIds.map((enumType) => enumType.toString());
