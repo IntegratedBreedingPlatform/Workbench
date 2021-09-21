@@ -37,8 +37,17 @@
 						</thead>
 						<tbody>
 						<tr *ngFor="let row of rows | orderBy: 'ENTRY_NO' | slice: (page-1) * pageSize : page * pageSize">
-							<td *ngFor="let header of keys(HEADERS)">
-								{{row[header]}}
+							<td>{{row[HEADERS.GID]}}</td>
+							<td>{{row[HEADERS.GUID]}}</td>
+							<td>{{row[HEADERS.DESIGNATION]}}</td>
+							<td *ngIf="matchesByName[row[HEADERS.DESIGNATION]]">
+								<span *ngFor="let germplasm of matchesByName[row[HEADERS.DESIGNATION]]; index as i">
+									<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">
+										{{germplasm.gid}}{{matchesByName[row[HEADERS.DESIGNATION]].length === (i+1)?" ":","}}</a>
+								</span>
+							</td>
+							<td *ngIf="!matchesByName[row[HEADERS.DESIGNATION]]">
+								<a *ngIf="row[HEADERS['GID MATCHES']]" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row[HEADERS['GID MATCHES']] } }]">{{row[HEADERS['GID MATCHES']]}}</a>
 							</td>
 						</tr>
 						</tbody>
