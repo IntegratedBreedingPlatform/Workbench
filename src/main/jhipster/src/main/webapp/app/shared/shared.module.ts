@@ -74,6 +74,7 @@ import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping
 import { VariableValidationService } from './ontology/service/variable-validation.service';
 import { FileService } from './file/service/file.service';
 import { ColumnFilterInlineComponent } from './column-filter/inline/column-filter-inline.component';
+import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 
 @NgModule({
     imports: [
@@ -89,6 +90,7 @@ import { ColumnFilterInlineComponent } from './column-filter/inline/column-filte
     declarations: [
         ModalComponent,
         ModalConfirmComponent,
+        FileDeleteOptionsComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,
@@ -167,6 +169,7 @@ import { ColumnFilterInlineComponent } from './column-filter/inline/column-filte
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        FileDeleteOptionsComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent
     ],
@@ -187,6 +190,7 @@ import { ColumnFilterInlineComponent } from './column-filter/inline/column-filte
         AttributeSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
+        FileDeleteOptionsComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,

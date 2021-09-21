@@ -17,11 +17,15 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationUnitUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
+    listFileMetadata(observationUnitUUID, germplasmUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const request = {
-            observationUnitUUID,
-        };
+        const request = {}
+        if (observationUnitUUID) {
+            request['observationUnitUUID'] = observationUnitUUID;
+        }
+        if (germplasmUUID) {
+            request['germplasmUUID'] = germplasmUUID;
+        }
         if (variableName) {
             request['variableName'] = variableName;
         }
@@ -31,24 +35,26 @@ export class FileService {
         return this.http.post<FileMetadata[]>(baseUrl + '/filemetadata/search', request, { params, observe: 'response' });
     }
 
-    upload(file: File, observationUnitUUID, termId = null): Observable<FileMetadata> {
+    upload(file: File, observationUnitUUID, germplasmUUID, termId = null): Observable<FileMetadata> {
         const formData: FormData = new FormData();
         formData.append('file', file, file.name);
         const headers = new Headers();
         headers.append('Content-Type', '');
 
-        const options = {
-            params: {
-                observationUnitUUID
-            },
-        };
-
-        if (termId) {
-            options.params['termId'] = termId;
+        const params = {};
+        if (observationUnitUUID) {
+            params['observationUnitUUID'] = observationUnitUUID;
         }
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (termId) {
+            params['termId'] = termId;
+        }
+        const options = {params};
 
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.post<FileMetadata>(baseUrl + '/files', formData, options);
+        return this.http.post<FileMetadata>(baseUrl + '/files?programUUID=' + this.context.programUUID, formData, options);
     }
 
     downloadFile(path): Observable<HttpResponse<Blob>> {
@@ -58,7 +64,43 @@ export class FileService {
 
     delete(fileUUID) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.delete(baseUrl + '/files/' + fileUUID);
+        return this.http.delete(baseUrl + '/files/' + fileUUID + '?programUUID=' + this.context.programUUID);
+    }
+
+    getFileCount(variableIds, germplasmUUID) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.head(baseUrl + '/filemetadata', {
+            params: {
+                variableIds,
+                germplasmUUID
+            },
+            observe: 'response'
+        });
+    }
+
+    detachFiles(variableIds, germplasmUUID) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.delete(baseUrl + '/filemetadata/variables', {
+            params: {
+                variableIds,
+                germplasmUUID
+            }
+        });
+    }
+
+    removeFiles(variableIds, germplasmUUID) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.delete(baseUrl + '/filemetadata', {
+            params: {
+                variableIds,
+                germplasmUUID
+            }
+        });
+    }
+
+   isFileStorageConfigured(): Promise<boolean> {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.get(baseUrl + '/filestorage/status').toPromise().then((resp: any) => resp.status);
     }
 
 }

@@ -10,6 +10,7 @@ import { SamplesPaneComponent } from './samples/samples-pane.component';
 import { GermplasmDetailsPopupComponent } from './germplasm-details-modal.component';
 import { RouteAccessService } from '../shared';
 import { GermplasmDetailsGraphvizModalPopupComponent } from './germplasm-details-graphviz-modal.component';
+import { FilesPaneComponent } from './files/files-pane.component';
 
 export const germplasmDetailsRoutes: Routes = [
     {
@@ -53,6 +54,10 @@ export const germplasmDetailsRoutes: Routes = [
             {
                 path: 'samples',
                 component: SamplesPaneComponent
+            },
+            {
+                path: 'files',
+                component: FilesPaneComponent
             }
         ]
     },
