@@ -35,23 +35,27 @@
 							<span>{{header}}</span>
 						</th>
 						</thead>
-						<tbody>
+						<tbody *ngIf="rows && rows.length else nodata">
 						<tr *ngFor="let row of rows | orderBy: 'ENTRY_NO' | slice: (page-1) * pageSize : page * pageSize">
 							<td>{{row[HEADERS.GID]}}</td>
 							<td>{{row[HEADERS.GUID]}}</td>
 							<td>{{row[HEADERS.DESIGNATION]}}</td>
-							<td *ngIf="matchesByName[row[HEADERS.DESIGNATION]]">
-								<span *ngFor="let germplasm of matchesByName[row[HEADERS.DESIGNATION]]; index as i">
+							<td>
+								<span *ngFor="let germplasm of row[HEADERS.GID_MATCHES]; index as i">
 									<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">
-										{{germplasm.gid}}{{matchesByName[row[HEADERS.DESIGNATION]].length === (i+1)?" ":","}}</a>
+										{{germplasm.gid}}{{row[HEADERS.GID_MATCHES].length === (i+1)?" ":","}}</a>
 								</span>
-							</td>
-							<td *ngIf="!matchesByName[row[HEADERS.DESIGNATION]]">
-								<a *ngIf="row[HEADERS['GID MATCHES']]" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row[HEADERS['GID MATCHES']] } }]">{{row[HEADERS['GID MATCHES']]}}</a>
 							</td>
 						</tr>
 						</tbody>
 					</table>
+					<ng-template #nodata>
+						<tbody>
+						<tr>
+							<td colspan="4" jhiTranslate="no.data"></td>
+						</tr>
+						</tbody>
+					</ng-template>
 				</div>
 				<div class="row">
 					<div class="col">
