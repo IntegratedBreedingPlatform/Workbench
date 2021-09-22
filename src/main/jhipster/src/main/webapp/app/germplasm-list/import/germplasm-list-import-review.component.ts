@@ -128,20 +128,21 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 const gidMatch = this.matchesByGid[row[HEADERS.GID]];
                 const nameMatches = this.matchesByName[toUpper(row[HEADERS.DESIGNATION])];
                 row['ENTRY_NO'] = ++index;
+                row[HEADERS.GID_MATCHES] = [];
                 if (guidMatch) {
                     this.dataSingleMatches.push(row);
-                    row[HEADERS['GID MATCHES']] = guidMatch.gid;
+                    row[HEADERS.GID_MATCHES].push(guidMatch);
                 } else if (gidMatch) {
                     this.dataSingleMatches.push(row);
-                    row[HEADERS['GID MATCHES']] = gidMatch.gid;
+                    row[HEADERS.GID_MATCHES].push(gidMatch);
                 } else if (nameMatches) {
                     if (nameMatches.length > 1) {
                         this.dataMultipleMatches.push(row);
-                        row[HEADERS['GID MATCHES']] = nameMatches.map((m) => m.gid).join(', ');
+                        row[HEADERS.GID_MATCHES] = nameMatches;
 
                     } else {
                         this.dataSingleMatches.push(row);
-                        row[HEADERS['GID MATCHES']] = nameMatches[0].gid;
+                        row[HEADERS.GID_MATCHES] = nameMatches;
                     }
                 } else {
                     this.dataWithOutMatches.push(row);
@@ -226,7 +227,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 // Single Match
                 if (singleMatch) {
                     germplasmList['ENTRY_NO'] = ++index;
-                    germplasmList[HEADERS.GID] = singleMatch[HEADERS['GID MATCHES']];
+                    germplasmList[HEADERS.GID] = singleMatch[HEADERS.GID_MATCHES][0].gid;
                     newGermplasmList.push(germplasmList);
                 // Manual Match
                 } else if (Object.keys(this.selectManualMatchesResult).length > 0 && this.selectManualMatchesResult[row['ENTRY_NO']]) {
