@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmListImportContext } from './germplasm-list-import.context';
 import { HEADERS } from './germplasm-list-import.component';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
 
@@ -24,7 +23,6 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     page = 0;
     pageSize = 10;
 
-    matchesByName: { [key: string]: GermplasmDto[]; } = {};
     selectMatchesResult: { [key: string]: number };
     // internal usage
     matchNumber = 1;
@@ -40,7 +38,6 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     isIgnoreMatch: boolean;
 
     constructor(
-        private context: GermplasmListImportContext,
         private modal: NgbActiveModal
     ) {
     }
@@ -67,7 +64,7 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         this.page = 0;
         this.isIgnoreMatch = false;
         this.dataRow = this.unassignedMatches[matchNumber - 1];
-        this.matches = this.matchesByName[this.dataRow[HEADERS.DESIGNATION]];
+        this.matches = this.dataRow[HEADERS.GID_MATCHES];
         this.name = this.dataRow[HEADERS.DESIGNATION];
     }
 

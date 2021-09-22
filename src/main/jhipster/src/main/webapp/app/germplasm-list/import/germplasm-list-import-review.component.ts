@@ -308,7 +308,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
             const selectMatchesModalRef = this.modalService.open(GermplasmListImportMultiMatchesComponent as Component,
                 { size: 'lg', backdrop: 'static' });
             selectMatchesModalRef.componentInstance.unassignedMatches = this.dataMultipleMatches;
-            selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
             selectMatchesModalRef.componentInstance.selectMatchesResult = this.selectMultipleMatchesResult;
 
             try {
