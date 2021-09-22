@@ -6,6 +6,8 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { Lot } from '../model/lot.model';
 import { createRequestOption } from '../..';
 import { LotImportRequest } from '../model/lot-import-request';
+import { map } from 'rxjs/operators';
+import { LotSearch } from '../model/lot-search.model';
 
 @Injectable()
 export class LotService {
@@ -32,5 +34,23 @@ export class LotService {
 
     importLotsWithInitialBalance(lotImportRequest: LotImportRequest): Observable<any> {
         return this.http.post<Lot>(SERVER_API_URL + `crops/${this.context.cropName}/lot-lists?programUUID` + this.context.programUUID, lotImportRequest);
+    }
+
+    search(req?: LotSearch): Observable<string> {
+        let url = SERVER_API_URL + `crops/${this.context.cropName}/lots/search`;
+        if (this.context.programUUID) {
+            url += `?programUUID=` + this.context.programUUID;
+        }
+        return this.http.post<any>(url, req, { observe: 'response' })
+            .pipe(map((res: any) => res.body.result.searchResultDbId));
+    }
+
+    getSearchResults(req?: any): Observable<HttpResponse<Lot[]>> {
+        const options = createRequestOption(req);
+        let url = SERVER_API_URL + `crops/${this.context.cropName}/lots/search`;
+        if (this.context.programUUID) {
+            url += `?programUUID=` + this.context.programUUID;
+        }
+        return this.http.get<Lot[]>(url, { params: options, observe: 'response' });
     }
 }

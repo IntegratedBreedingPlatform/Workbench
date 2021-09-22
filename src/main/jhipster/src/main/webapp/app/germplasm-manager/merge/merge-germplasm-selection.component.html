@@ -1,0 +1,87 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="merge-germplasm.title"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<span jhiTranslate="merge-germplasm.select-germplasm-caption"></span>
+	<br/><br/>
+	<i class="fa fa-exclamation-circle text-danger"></i>&nbsp;<span jhiTranslate="merge-germplasm.non-selected-germplasm-caption"></span>
+	<div class="table-responsive" *ngIf="germplasmList">
+		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
+			<thead>
+			<tr>
+				<th><span jhiTranslate="merge-germplasm.column.target"></span></th>
+				<th><span jhiTranslate="search-germplasm.column.gid"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.guid"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.designation"></span></span></th>
+				<th><span jhiTranslate="search-germplasm.column.lotCount"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.hasProgeny"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.hasPedigree"></span></th>
+				<th><span jhiTranslate="search-germplasm.column.groupId"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.usedInStudy"></span></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId">
+				<td>
+					<input type="radio" name="gid-option-group" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
+				</td>
+				<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
+				<td>{{germplasm.germplasmUUID}}</td>
+				<td>{{germplasm.germplasmPeferredName}}</td>
+				<td><a *ngIf="germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">{{germplasm.lotCount}}</a>
+					<span *ngIf="germplasm.lotCount === 0">-</span></td>
+				<td><a *ngIf="germplasm.hasProgeny" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-progeny-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">YES</a><span *ngIf="!germplasm.hasProgeny">NO</span></td>
+				<td><span *ngIf="germplasm.femaleParentGID && germplasm.maleParentGID">YES</span><span *ngIf="!germplasm.femaleParentGID && !germplasm.maleParentGID">NO</span></td>
+				<td><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
+				<td><span *ngIf="germplasm.usedInStudy">YES</span><span *ngIf="!germplasm.usedInStudy">No</span></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
+		<div class="col">
+			<span jhiTranslate="merge-germplasm.variables.and.names"></span>
+			<hr/>
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col">
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="transferPassportData" id="transferPassportData"
+					   [(ngModel)]="isTransferPassportData">
+				<label class="form-check-label" for="transferPassportData" jhiTranslate="merge-germplasm.transfer-passport-data">
+				</label>
+			</div>
+			<br/>
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="transferAttributesData" id="transferAttributesData"
+					   [(ngModel)]="isTransferAttributesData">
+				<label class="form-check-label" for="transferAttributesData" jhiTranslate="merge-germplasm.transfer-attributes-data">
+				</label>
+			</div>
+			<br/>
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="transferNameTypesData" id="transferNameTypesData"
+					   [(ngModel)]="isTransferNameTypesData">
+				<label class="form-check-label" for="transferNameTypesData" jhiTranslate="merge-germplasm.transfer-names-types-data">
+				</label>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">
+		<span class="fa fa-ban"></span>&nbsp;
+		<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="confirm()" class="btn btn-primary" [disabled]="isLoading || !selectedGid">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-save"></span>&nbsp;
+		<span jhiTranslate="merge-germplasm.confirm"></span>
+	</button>
+</div>

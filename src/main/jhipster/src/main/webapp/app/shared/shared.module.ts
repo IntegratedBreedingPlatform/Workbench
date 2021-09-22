@@ -75,6 +75,7 @@ import { VariableValidationService } from './ontology/service/variable-validatio
 import { FileService } from './file/service/file.service';
 import { ColumnFilterInlineComponent } from './column-filter/inline/column-filter-inline.component';
 import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dropdown-component';
+import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 
 @NgModule({
     imports: [
@@ -90,6 +91,7 @@ import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dro
     declarations: [
         ModalComponent,
         ModalConfirmComponent,
+        FileDeleteOptionsComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,
@@ -169,6 +171,7 @@ import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dro
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        FileDeleteOptionsComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent
     ],
@@ -189,6 +192,7 @@ import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dro
         AttributeSelect2DataPipe,
         ModalComponent,
         ModalConfirmComponent,
+        FileDeleteOptionsComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
         CustomMinGreaterThanValidatorDirective,

@@ -56,6 +56,7 @@ export class GermplasmSelectorComponent implements OnInit {
     germplasmHiddenColumns = {};
 
     selectedItems: any[] = [];
+    isSelectAllPages = false;
 
     private static getInitialFilters() {
         return [
@@ -312,7 +313,7 @@ export class GermplasmSelectorComponent implements OnInit {
         });
     }
 
-    loadAll(request: GermplasmSearchRequest) {
+    loadAll(request: GermplasmSearchRequest, successCallback?: () => void) {
         this.isLoading = true;
         this.search(request).then((searchId) => {
             this.germplasmService.getSearchResults(
@@ -324,7 +325,7 @@ export class GermplasmSelectorComponent implements OnInit {
             ).pipe(finalize(() => {
                 this.isLoading = false;
             })).subscribe(
-                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers, successCallback),
                 (res: HttpErrorResponse) => this.onError(res)
             );
         }, (error) => this.onError(error));
@@ -461,6 +462,7 @@ export class GermplasmSelectorComponent implements OnInit {
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
+        this.isSelectAllPages = false;
         this.selectedItems = [];
         this.loadAll(this.request);
     }
@@ -477,9 +479,12 @@ export class GermplasmSelectorComponent implements OnInit {
         this.resetTable();
     }
 
-    private onSuccess(data, headers) {
+    private onSuccess(data, headers, callback) {
         this.filteredItems = headers.get('X-Filtered-Count');
         this.germplasmList = data;
+        if (callback && typeof callback === 'function') {
+            callback();
+        }
     }
 
     private onError(response: HttpErrorResponse) {
@@ -508,7 +513,15 @@ export class GermplasmSelectorComponent implements OnInit {
         }
     }
 
+    onSelectAllPages(isSelectAllPages) {
+        this.isSelectAllPages = !isSelectAllPages;
+        this.selectedItems = [];
+    }
+
     toggleSelect(germplasm: Germplasm) {
+        if (this.isSelectAllPages) {
+            return;
+        }
         if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
             this.selectedItems = this.selectedItems.filter((item) => item !== germplasm.gid);
         } else if (!this.selectMultiple) {
@@ -546,7 +559,25 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     selectGermplasm() {
+        if (this.isSelectAllPages) {
+            this.handleSelectAllPages();
+        } else {
+            this.handleGidSelection();
+        }
 
+    }
+
+    handleSelectAllPages() {
+        this.itemsPerPage = this.filteredItems;
+        this.page = 1;
+
+        this.loadAll(this.request, () => {
+            this.selectedItems = this.germplasmList.map((germplasm) => germplasm.gid);
+            this.handleGidSelection();
+        });
+    }
+
+    handleGidSelection() {
         // Handle selection when this page is loaded outside Angular.
         if ((<any>window.parent).onGidsSelected) {
             (<any>window.parent).onGidsSelected(this.selectedItems);

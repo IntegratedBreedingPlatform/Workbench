@@ -360,6 +360,13 @@ table.table-fit {
     table-layout: auto !important;
 }
 
+.table td.fit,
+.table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+
 tr.selected {
     color: olivedrab;
     background-color: #bed6b2 !important;

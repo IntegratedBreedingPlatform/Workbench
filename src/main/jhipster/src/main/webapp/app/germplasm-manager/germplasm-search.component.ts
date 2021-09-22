@@ -24,6 +24,7 @@ import {
     CODE_GERMPLASM_PERMISSIONS,
     CREATE_INVENTORY_LOT_PERMISSIONS,
     DELETE_GERMPLASM_PERMISSIONS,
+    MERGE_GERMPLASM_PERMISSIONS,
     GERMPLASM_LABEL_PRINTING_PERMISSIONS,
     GROUP_GERMPLASM_PERMISSIONS,
     IMPORT_GERMPLASM_PERMISSIONS,
@@ -44,6 +45,7 @@ import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
 import { SearchOrigin, SearchOriginComposite } from '../shared/model/Search-origin-composite';
+import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
 
 declare var $: any;
 
@@ -59,6 +61,7 @@ export class GermplasmSearchComponent implements OnInit {
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
     GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
     DELETE_GERMPLASM_PERMISSIONS = DELETE_GERMPLASM_PERMISSIONS;
+    MERGE_GERMPLASM_PERMISSIONS = MERGE_GERMPLASM_PERMISSIONS;
     GROUP_GERMPLASM_PERMISSIONS = GROUP_GERMPLASM_PERMISSIONS;
     UNGROUP_GERMPLASM_PERMISSIONS = UNGROUP_GERMPLASM_PERMISSIONS;
     CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
@@ -494,6 +497,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.germplasmDetailsEventSubscriber = this.eventManager.subscribe('germplasmDetailsChanged', (event) => {
             // Reload the table when a germplasm is updated via germplasm details popup.
             this.transition();
+            this.selectedItems = {};
         });
     }
 
@@ -827,6 +831,24 @@ export class GermplasmSearchComponent implements OnInit {
             });
             this.activeModal.close();
         }, () => this.activeModal.dismiss());
+    }
+
+    mergeGermplasm() {
+        if (this.germplasmList.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) < 2)) {
+            this.alertService.error('merge-germplasm.at-least-two-germplasm-are-selected');
+            return false;
+        }
+        if (this.isSelectAll) {
+            this.alertService.error('merge-germplasm.merge-all-germplasm-not-supported');
+            return;
+        }
+        if (this.size(this.selectedItems) > 100) {
+            this.alertService.error('merge-germplasm.too-many-selected-germplasm');
+            return;
+        }
+        const mergeGermplasmModal = this.modalService.open(MergeGermplasmSelectionComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });
+        mergeGermplasmModal.componentInstance.gids = this.getSelectedItemIds();
+
     }
 
     openKeySequenceDeletionDialog(gids: number[]) {

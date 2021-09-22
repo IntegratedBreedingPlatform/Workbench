@@ -34,6 +34,9 @@
 					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="DELETE_GERMPLASM_PERMISSIONS"  jhiTranslate="search-germplasm.actions.delete-germplasm"
 							(click)="deleteGermplasm()" >
 					</button>
+					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="MERGE_GERMPLASM_PERMISSIONS"  jhiTranslate="search-germplasm.actions.merge-germplasm"
+							(click)="mergeGermplasm()" >
+					</button>
 					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="GERMPLASM_LABEL_PRINTING_PERMISSIONS" jhiTranslate="search-germplasm.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()">
 					</button>
