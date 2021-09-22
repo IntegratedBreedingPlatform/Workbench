@@ -1,4 +1,4 @@
-export class GermplasmMerge {
+export class GermplasmMerged {
     constructor(
         public gid?: number,
         public designation?: string,

@@ -62,7 +62,7 @@
 			</div>
 		</div>
 	</div>
-	<div *ngIf="germplasmMergeInfo && germplasmMergeInfo.length > 0">
+	<div *ngIf="germplasmMerged && germplasmMerged.length > 0">
 		<br/>
 		The following germplasm were merged into this germplasm:
 		<div style="overflow-y: scroll; max-height: 200px;">
@@ -75,7 +75,7 @@
 					</tr>
 					</thead>
 					<tbody>
-					<tr *ngFor="let germplasmMerge of germplasmMergeInfo">
+					<tr *ngFor="let germplasmMerge of germplasmMerged">
 						<td>{{germplasmMerge.gid}}</td>
 						<td>{{germplasmMerge.designation}}</td>
 					</tr>

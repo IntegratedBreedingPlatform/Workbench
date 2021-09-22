@@ -19,10 +19,10 @@ import { map } from 'rxjs/operators';
 import { GermplasmCodeNameBatchRequestModel } from '../model/germplasm-code-name-batch-request.model';
 import { GermplasmNameSettingModel } from '../model/germplasm-name-setting.model';
 import { GermplasmCodeNameBatchResultModel } from '../model/germplasm-code-name-batch-result.model';
-import { GermplasmMergeRequest} from '../model/germplasm-merge-request.model';
+import { GermplasmMergeRequest } from '../model/germplasm-merge-request.model';
 import { VariableTypeEnum } from '../../ontology/variable-type.enum';
 import { GermplasmProgeny } from '../model/germplasm-progeny.model';
-import { GermplasmMerge } from '../model/germplasm-merge.model';
+import { GermplasmMerged } from '../model/merged-germplasm.model';
 
 @Injectable()
 export class GermplasmService {
@@ -207,9 +207,9 @@ export class GermplasmService {
         return this.http.get<GermplasmProgeny[]>(url);
     }
 
-    getGermplasmMerge(gid: number) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/merge/${gid}`;
-        return this.http.get<GermplasmMerge[]>(url);
+    getGermplasmMerged(gid: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/merges`;
+        return this.http.get<GermplasmMerged[]>(url);
     }
 }
 
