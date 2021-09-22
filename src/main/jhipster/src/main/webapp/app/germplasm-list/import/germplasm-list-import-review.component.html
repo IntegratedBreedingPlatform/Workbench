@@ -98,7 +98,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="save()" class="btn btn-primary" [disabled]="isSaving">
+	<button (click)="save()" class="btn btn-primary" [disabled]="isLoading || isSaving">
 		<span *ngIf="isSaving" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="next"></span>
 	</button>
