@@ -245,20 +245,21 @@ export class GermplasmListImportReviewComponent implements OnInit {
             });
 
             const model = new ListModel();
-            const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
-                { size: 'lg', backdrop: 'static' });
+            const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component, { size: 'lg', backdrop: 'static' });
             germplasmListCreationModalRef.componentInstance.entries = newGermplasmList.map((row) => {
                 const entry = new GermplasmListEntry();
                 entry.gid = row[HEADERS.GID];
                 entry.entryNo = Number(row['ENTRY_NO']);
                 return entry
             });
+
             germplasmListCreationModalRef.componentInstance.model = model;
             germplasmListCreationModalRef.result.then(() => {
                     this.eventManager.broadcast({ name: 'listNameFilter', content: model.name });
                 this.modal.close();
-                }
-            );
+            }, () => {
+                this.modal.close();
+            });
 
         } catch (error) {
             this.onError(error);
