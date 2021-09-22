@@ -62,4 +62,26 @@
 			</div>
 		</div>
 	</div>
+	<div *ngIf="germplasmMerged && germplasmMerged.length > 0">
+		<br/>
+		The following germplasm were merged into this germplasm:
+		<div style="overflow-y: scroll; max-height: 200px;">
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr>
+						<th jhiTranslate="search-germplasm.column.gid"><span>GID</span>
+						<th jhiTranslate="merge-germplasm.column.designation"><span>DESIGNATION</span>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let germplasmMerge of germplasmMerged">
+						<td>{{germplasmMerge.gid}}</td>
+						<td>{{germplasmMerge.designation}}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>

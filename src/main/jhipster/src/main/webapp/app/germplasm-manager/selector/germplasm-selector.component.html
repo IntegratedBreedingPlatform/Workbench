@@ -39,7 +39,15 @@
 				<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
 										   [limit]="5000"></jhi-item-count-custom>
 				<span style="margin-left: 20px;">Selected:</span>
-				<span style="padding-left: 5px;" class="font-weight-bold"> {{selectedItems.length}}</span>
+				<span style="padding-left: 5px;" class="font-weight-bold">
+					{{isSelectAllPages ? (+filteredItems + (germplasmList.length > filteredItems ? germplasmList.length - filteredItems : 0)) : selectedItems.length}}
+				</span>
+				<div *ngIf="selectMultiple" class="form-check form-check-inline" style="margin-left: 20px;">
+					<input type="checkbox" tooltip="Select all pages" [checked]="isSelectAllPages" (click)="onSelectAllPages(isSelectAllPages)" id="check-select-all" name="check-select-all">
+					<label class="form-check-label" for="check-select-all" style="padding-left: 5px;">
+						Select all pages
+					</label>
+				</div>
 				<div style="margin-left: 10px;">
 					<a href (click)="onClearSort($event)" jhiTranslate="global.clear-sort"></a>
 				</div>
@@ -52,7 +60,7 @@
 		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
-				<th><input *ngIf="selectMultiple" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
+				<th *ngIf="!isSelectAllPages"><input *ngIf="selectMultiple" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
 				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns[ColumnLabels.GID]"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GROUP ID']" [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="search-germplasm.column.groupId"></span><span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NAMES" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="search-germplasm.column.names"></span> <span class="fa fa-sort"></span></th>
@@ -86,7 +94,7 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let germplasm of germplasmList ;trackBy: trackId">
-				<td>
+				<td *ngIf="!isSelectAllPages">
 					<input *ngIf="selectMultiple" type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
 					<input *ngIf="!selectMultiple" type="radio" name="gid-option-group" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
 				</td>
@@ -168,7 +176,7 @@
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
             <span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
-		<button (click)="selectGermplasm()" [disabled]="selectedItems.length == 0" class="btn btn-primary">
+		<button (click)="selectGermplasm()" [disabled]="!isSelectAllPages && selectedItems.length == 0" class="btn btn-primary">
 			<span jhiTranslate="entity.action.select">Select</span>
 		</button>
 	</div>
