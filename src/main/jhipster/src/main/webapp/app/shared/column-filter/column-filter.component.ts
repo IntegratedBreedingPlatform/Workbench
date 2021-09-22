@@ -317,6 +317,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     updateBooleanFilter(filter: any, key: string) {
         this.request[key] = filter.value;
+        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
