@@ -17,6 +17,7 @@ import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-se
 import { GermplasmList } from '../../model/germplasm-list';
 import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
+import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -75,6 +76,11 @@ export class GermplasmListService implements ListService {
     getGermplasmListDataTableHeader(listId: number): Observable<HttpResponse<GermplasmListObservationVariable[]>> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/table/columns?programUUID=` + this.context.programUUID;
         return this.http.get<GermplasmListObservationVariable[]>(url, { observe: 'response' });
+    }
+
+    saveGermplasmListDataView(listId: number, request: GermplasmListDataUpdateViewRequest[]) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/view?programUUID=` + this.context.programUUID;
+        return this.http.put<any>(url, request, { observe: 'response' });
     }
 
 }
