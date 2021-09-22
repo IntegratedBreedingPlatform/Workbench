@@ -19,7 +19,7 @@ export class ListColumnsComponent implements OnInit {
 
     @Input() listId: number;
 
-    @Output() columnsSelectedEvent = new EventEmitter<number[]>();
+    @Output() columnsSelectedEvent = new EventEmitter<GermplasmListColumnModel[]>();
 
     @ViewChild('columnsDropdown') columnsDropdown: NgbDropdown;
 
@@ -49,8 +49,8 @@ export class ListColumnsComponent implements OnInit {
     apply() {
         this.columnsDropdown.close();
 
-        const selectedColumnIds: number[] = this.getSelectedColumnIds();
-        this.columnsSelectedEvent.emit(selectedColumnIds);
+        const selectedColumns: GermplasmListColumnModel[] = this.getSelectedColumns();
+        this.columnsSelectedEvent.emit(selectedColumns);
     }
 
     onSearchColumn(evt: any) {
@@ -66,10 +66,9 @@ export class ListColumnsComponent implements OnInit {
         }
     }
 
-    private getSelectedColumnIds(): number[] {
+    private getSelectedColumns(): GermplasmListColumnModel[] {
         return [].concat(this.filteredStaticColumns, this.filteredNameColumns, this.filteredPassportColumns, this.filteredAttributesColumns)
-            .filter((column: GermplasmListColumn) => column.selected)
-            .map((column: GermplasmListColumn) => column.id);
+            .filter((column: GermplasmListColumnModel) => column.selected);
     }
 
     private filterColumns(columns: GermplasmListColumnModel[], searchString: string): GermplasmListColumnModel[] {
@@ -126,7 +125,7 @@ export class ListColumnsComponent implements OnInit {
 
 }
 
-class GermplasmListColumnModel {
+export class GermplasmListColumnModel {
 
     constructor(
         public id: number,
