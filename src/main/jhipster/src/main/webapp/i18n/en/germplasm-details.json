@@ -9,7 +9,11 @@
         "lists": "Lists",
         "samples": "Samples",
         "actions": "Actions",
-        "new": "New"
+        "new": "New",
+        "files": {
+           "tab": "Files",
+            "heading": "Files"
+        }
     },
     "basic-details": {
         "title": "BASIC DETAILS",

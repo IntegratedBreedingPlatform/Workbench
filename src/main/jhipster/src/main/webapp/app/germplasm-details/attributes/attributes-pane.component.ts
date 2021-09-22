@@ -6,14 +6,18 @@ import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GermplasmAttributeContext } from '../../entities/germplasm/attribute/germplasm-attribute.context';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
+import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION, MG_MANAGE_FILES_PERMISSION } from '../../shared/auth/permissions';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
+import { FileService } from '../../shared/file/service/file.service';
+import { FileDeleteOptionsComponent } from '../../shared/file/component/file-delete-options.component';
+import { formatErrorList } from '../../shared/alert/format-error-list';
+import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -30,6 +34,7 @@ export class AttributesPaneComponent implements OnInit {
     attributes: GermplasmAttribute[] = [];
     variableByAttributeId: { [key: number]: VariableDetails } = {};
     VariableTypeEnum = VariableTypeEnum;
+    isFileStorageConfigured: boolean;
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
@@ -41,12 +46,17 @@ export class AttributesPaneComponent implements OnInit {
                 private alertService: JhiAlertService,
                 private modalService: NgbModal,
                 private router: Router,
-                private germplasmAttributesContext: GermplasmAttributeContext) {
+                private route: ActivatedRoute,
+                private germplasmAttributesContext: GermplasmAttributeContext,
+                private fileService: FileService,
+                private principal: Principal
+    ) {
     }
 
     ngOnInit(): void {
         this.loadAttributes();
         this.registerGermplasmAttributeChanged();
+        this.fileService.isFileStorageConfigured().then((isFileStorageConfigured) => this.isFileStorageConfigured = isFileStorageConfigured);
     }
 
     registerGermplasmAttributeChanged() {
@@ -90,19 +100,60 @@ export class AttributesPaneComponent implements OnInit {
         });
     }
 
-    deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute): void {
+    async deleteGermplasmAttribute(germplasmAttribute: GermplasmAttribute) {
+        const germplasmResp = await this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise();
+        const germplasmUUID = germplasmResp.body.germplasmUUID;
+        const variableIds = [germplasmAttribute.variableId];
+        const fileCountResp = await this.fileService.getFileCount(variableIds, germplasmUUID).toPromise();
+        const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
+        if (fileCount > 0 && !await this.principal.hasAnyAuthority(MG_MANAGE_FILES_PERMISSION)) {
+            this.alertService.error('germplasm-attribute-modal.delete.blocked.files')
+            return;
+        }
+
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-attribute-modal.delete.warning', { param: germplasmAttribute.variableName });
 
-        confirmModalRef.result.then(() => {
-            this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise().then((result) => {
-                this.alertService.success('germplasm-attribute-modal.delete.success');
-                this.loadAttributes();
-                this.germplasmDetailsContext.notifyGermplasmDetailChanges();
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-            });
-        }, () => confirmModalRef.dismiss());
+        try {
+            await confirmModalRef.result
+        } catch (e) {
+            return
+        }
+
+        try {
+            if (fileCount > 0) {
+                const fileOptionsModal = this.modalService.open(FileDeleteOptionsComponent as Component);
+                fileOptionsModal.componentInstance.fileCount = fileCount;
+                let doRemoveFiles;
+                try {
+                    doRemoveFiles = await fileOptionsModal.result;
+                } catch (e) {
+                    return;
+                }
+                if (doRemoveFiles) {
+                    await this.fileService.removeFiles(variableIds, germplasmUUID).toPromise();
+                } else {
+                    await this.fileService.detachFiles(variableIds, germplasmUUID).toPromise();
+                }
+            }
+
+            const result = await this.germplasmService.deleteGermplasmAttribute(this.germplasmDetailsContext.gid, germplasmAttribute.id).toPromise()
+            this.alertService.success('germplasm-attribute-modal.delete.success');
+            this.loadAttributes();
+            this.germplasmDetailsContext.notifyGermplasmDetailChanges();
+        } catch (response) {
+            if (!response.error) {
+                this.alertService.error('error.general.client');
+                console.error(response);
+                return;
+            }
+            const msg = formatErrorList(response.error.errors);
+            if (msg) {
+                this.alertService.error('error.custom', { param: msg });
+            } else {
+                this.alertService.error('error.general');
+            }
+        }
     }
 
     isValidValue(attribute: GermplasmAttribute) {
@@ -116,6 +167,16 @@ export class AttributesPaneComponent implements OnInit {
         this.germplasmAttributesContext.attribute = germplasmAttribute;
         this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attributes/${germplasmAttribute.id}/audit-dialog`}, }], {
             queryParamsHandling: 'merge'
+        });
+    }
+
+    gotoFiles(attribute: GermplasmAttribute) {
+        this.router.navigate(['../files'], {
+            relativeTo: this.route,
+            queryParamsHandling: 'merge',
+            queryParams: {
+                variableName: attribute.variableName
+            }
         });
     }
 
