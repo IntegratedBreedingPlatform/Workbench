@@ -204,6 +204,6 @@ export enum HEADERS {
     'GUID' = 'GUID',
     'DESIGNATION' = 'DESIGNATION',
     // Used internally - doesn't come in spreadsheet
-    'GID MATCHES' = 'GID MATCHES',
+    'GID_MATCHES' = 'GID MATCHES',
 
 }
