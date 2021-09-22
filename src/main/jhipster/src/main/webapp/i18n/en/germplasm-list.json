@@ -58,7 +58,7 @@
               }
           },
           "review": {
-              "header": "Review",
+              "header": "Review import list",
                   "show.matches": "Show matches",
                   "skip.multi.matches" : "Skip data with multiple matches",
                   "skip.data.with.out.matches": "Skip data without matches",
