@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { GermplasmListColumn, GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column.model';
+import { GermplasmListColumn } from '../shared/germplasm-list/model/germplasm-list-column.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 
 @Component({
     selector: 'jhi-list-columns',
