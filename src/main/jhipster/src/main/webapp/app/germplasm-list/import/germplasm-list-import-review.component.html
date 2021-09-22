@@ -31,9 +31,10 @@
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered table-curved">
 						<thead>
-						<th *ngFor="let header of keys(HEADERS)">
-							<span>{{header}}</span>
-						</th>
+						<th>{{HEADERS.GID}}</th>
+						<th>{{HEADERS.GUID}}</th>
+						<th>{{HEADERS.DESIGNATION}}</th>
+						<th>{{HEADERS.GID_MATCHES}}</th>
 						</thead>
 						<tbody *ngIf="rows && rows.length else nodata">
 						<tr *ngFor="let row of rows | orderBy: 'ENTRY_NO' | slice: (page-1) * pageSize : page * pageSize">
