@@ -20,6 +20,10 @@ import { GermplasmGroupingResultComponent } from './grouping/germplasm-grouping-
 import { GermplasmCodingDialogComponent } from './coding/germplasm-coding-dialog.component';
 import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-result-dialog.component';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
+import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
+import { MergeGermplasmExistingLotsComponent } from './merge/merge-germplasm-existing-lots.component';
+import { MergeGermplasmLotTableComponent } from './merge/merge-germplasm-lot-table.component';
+import { GermplasmProgenyModalComponent, GermplasmProgenyPopupComponent } from './merge/germplasm-progeny-modal.component';
 
 @NgModule({
     imports: [
@@ -46,7 +50,12 @@ import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './g
         GermplasmGroupOptionsDialogComponent,
         GermplasmGroupingResultComponent,
         GermplasmCodingDialogComponent,
-        GermplasmCodingResultDialogComponent
+        GermplasmCodingResultDialogComponent,
+        MergeGermplasmSelectionComponent,
+        MergeGermplasmExistingLotsComponent,
+        MergeGermplasmLotTableComponent,
+        GermplasmProgenyModalComponent,
+        GermplasmProgenyPopupComponent
     ],
     entryComponents: [
         LotCreationDialogComponent,
@@ -67,7 +76,12 @@ import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './g
         GermplasmGroupOptionsDialogComponent,
         GermplasmGroupingResultComponent,
         GermplasmCodingDialogComponent,
-        GermplasmCodingResultDialogComponent
+        GermplasmCodingResultDialogComponent,
+        MergeGermplasmSelectionComponent,
+        MergeGermplasmExistingLotsComponent,
+        MergeGermplasmLotTableComponent,
+        GermplasmProgenyModalComponent,
+        GermplasmProgenyPopupComponent
     ],
     providers: [
         GermplasmSearchResolvePagingParams,
