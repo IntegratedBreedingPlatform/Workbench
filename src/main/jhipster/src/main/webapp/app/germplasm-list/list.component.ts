@@ -65,6 +65,7 @@ export class ListComponent implements OnInit {
                 private alertService: AlertService,
                 private principal: Principal) {
         this.page = 1;
+        this.totalItems = 0;
         this.predicate = '';
         this.currentSearch = '';
         this.predicate = ColumnLabels.ENTRY_NUMBER;
