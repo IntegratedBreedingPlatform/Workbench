@@ -41,9 +41,26 @@
 						</thead>
 						<tbody *ngIf="rows && rows.length else nodata">
 						<tr *ngFor="let row of rows | orderBy: 'ENTRY_NO' | slice: (page-1) * pageSize : page * pageSize">
-							<td>{{row[HEADERS.GID]}}</td>
-							<td>{{row[HEADERS.GUID]}}</td>
-							<td>{{row[HEADERS.DESIGNATION]}}</td>
+							<td><span>{{row[HEADERS.ROW_NUMBER]}}</span></td>
+							<td *ngIf="matchesByGid[toUpper(row[HEADERS.GID])]">
+								{{row[HEADERS.GID]}} <span class="fa fa-check-circle text-success"></span>
+							</td>
+							<td *ngIf="!this.matchesByGid[toUpper(row[HEADERS.GID])]">
+								<span>{{row[HEADERS.GID]}}</span>
+							</td>
+							<td *ngIf="this.matchesByGUID[toUpper(row[HEADERS.GUID])]">
+								{{row[HEADERS.GUID]}} <span class="fa fa-check-circle text-success"></span>
+
+							</td>
+							<td *ngIf="!this.matchesByGUID[toUpper(row[HEADERS.GUID])]">
+								<span>{{row[HEADERS.GUID]}}</span>
+
+							<td *ngIf="this.matchesByName[toUpper(row[HEADERS.DESIGNATION])]">
+								{{row[HEADERS.DESIGNATION]}} <span class="fa fa-check-circle text-success"></span>
+							</td>
+							<td *ngIf="!this.matchesByName[toUpper(row[HEADERS.DESIGNATION])]">
+								<span>{{row[HEADERS.DESIGNATION]}}</span>
+							</td>
 							<td>
 								<span *ngFor="let germplasm of row[HEADERS.GID_MATCHES]; index as i">
 									<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">
