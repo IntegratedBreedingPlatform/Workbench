@@ -91,7 +91,7 @@ export class GermplasmListImportManualMatchesComponent implements OnInit {
                 this.selectedRow['MAPPED GID'] = germplasm[0].gid;
                 this.selectedRow['MAPPED DESIGNATION'] = germplasm[0].preferredName;
 
-                const entry = this.selectedRow['ENTRY_NO'];
+                const entry = this.selectedRow[HEADERS.ROW_NUMBER];
                 this.selectMatchesResult[entry] = germplasm[0].gid;
 
             });

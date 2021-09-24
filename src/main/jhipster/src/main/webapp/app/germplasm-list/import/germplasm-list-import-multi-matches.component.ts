@@ -34,6 +34,7 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     unassignedMatches: any[] = [];
 
     name: string;
+    rowNumber: number;
 
     isIgnoreMatch: boolean;
 
@@ -66,6 +67,7 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         this.dataRow = this.unassignedMatches[matchNumber - 1];
         this.matches = this.dataRow[HEADERS.GID_MATCHES];
         this.name = this.dataRow[HEADERS.DESIGNATION];
+        this.rowNumber = this.dataRow[HEADERS.ROW_NUMBER];
     }
 
     next() {
@@ -85,12 +87,12 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     }
 
     onSelectMatch(germplasm: GermplasmDto) {
-        this.selectMatchesResult[this.dataRow['ENTRY_NO']] = germplasm.gid;
+        this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = germplasm.gid;
         this.isIgnoreMatch = false;
     }
 
     ignoreMatch() {
-        this.selectMatchesResult[this.dataRow['ENTRY_NO']] = null;
+        this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = null;
         this.next();
     }
 }

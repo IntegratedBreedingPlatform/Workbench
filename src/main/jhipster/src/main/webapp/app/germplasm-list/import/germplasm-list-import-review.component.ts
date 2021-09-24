@@ -127,7 +127,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
                 const gidMatch = this.matchesByGid[row[HEADERS.GID]];
                 const nameMatches = this.matchesByName[toUpper(row[HEADERS.DESIGNATION])];
-                row['ENTRY_NO'] = ++index;
+                row[HEADERS.ROW_NUMBER] = ++index;
                 row[HEADERS.GID_MATCHES] = [];
                 if (guidMatch) {
                     this.dataSingleMatches.push(row);
@@ -221,25 +221,25 @@ export class GermplasmListImportReviewComponent implements OnInit {
             this.context.data.forEach((row) => {
                 const germplasmList = {};
                 const singleMatch = this.dataSingleMatches.find((matchEntry) =>
-                    Boolean(matchEntry['ENTRY_NO'] === row['ENTRY_NO'])
+                    Boolean(matchEntry[HEADERS.ROW_NUMBER] === row[HEADERS.ROW_NUMBER])
                 );
 
                 // Single Match
                 if (singleMatch) {
-                    germplasmList['ENTRY_NO'] = ++index;
+                    germplasmList[HEADERS.ROW_NUMBER] = ++index;
                     germplasmList[HEADERS.GID] = singleMatch[HEADERS.GID_MATCHES][0].gid;
                     newGermplasmList.push(germplasmList);
                 // Manual Match
-                } else if (Object.keys(this.selectManualMatchesResult).length > 0 && this.selectManualMatchesResult[row['ENTRY_NO']]) {
-                    if (this.selectManualMatchesResult[row['ENTRY_NO']]) {
-                        germplasmList['ENTRY_NO'] = ++index;
-                        germplasmList[HEADERS.GID] = this.selectManualMatchesResult[row['ENTRY_NO']];
+                } else if (Object.keys(this.selectManualMatchesResult).length > 0 && this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]]) {
+                    if (this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]]) {
+                        germplasmList[HEADERS.ROW_NUMBER] = ++index;
+                        germplasmList[HEADERS.GID] = this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]];
                         newGermplasmList.push(germplasmList);
                     }
                 // Multi Match
-                } else if (Object.keys(this.selectMultipleMatchesResult).length > 0 && this.selectMultipleMatchesResult[row['ENTRY_NO']]) {
-                    germplasmList['ENTRY_NO'] = ++index;
-                    germplasmList[HEADERS.GID] = this.selectMultipleMatchesResult[row['ENTRY_NO']];
+                } else if (Object.keys(this.selectMultipleMatchesResult).length > 0 && this.selectMultipleMatchesResult[row[HEADERS.ROW_NUMBER]]) {
+                    germplasmList[HEADERS.ROW_NUMBER] = ++index;
+                    germplasmList[HEADERS.GID] = this.selectMultipleMatchesResult[row[HEADERS.ROW_NUMBER]];
                     newGermplasmList.push(germplasmList);
                 }
             });
@@ -249,7 +249,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
             germplasmListCreationModalRef.componentInstance.entries = newGermplasmList.map((row) => {
                 const entry = new GermplasmListEntry();
                 entry.gid = row[HEADERS.GID];
-                entry.entryNo = Number(row['ENTRY_NO']);
+                entry.entryNo = Number(row[HEADERS.ROW_NUMBER]);
                 return entry
             });
 
@@ -268,8 +268,8 @@ export class GermplasmListImportReviewComponent implements OnInit {
     }
 
     private async showSummaryConfirmation() {
-        const countMultiMatches = this.context.data.filter((row) => this.selectMultipleMatchesResult[row['ENTRY_NO']]).length,
-            countManualMatches = this.context.data.filter((row) => this.selectManualMatchesResult[row['ENTRY_NO']]).length,
+        const countMultiMatches = this.context.data.filter((row) => this.selectMultipleMatchesResult[row[HEADERS.ROW_NUMBER]]).length,
+            countManualMatches = this.context.data.filter((row) => this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]]).length,
             countSingleMatches = this.dataSingleMatches.length,
             countOmited = this.context.data.length - countMultiMatches - countManualMatches - countSingleMatches,
             messages = [];
