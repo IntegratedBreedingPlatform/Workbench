@@ -48,13 +48,13 @@
           "multi": {
               "matches": {
                   "header": "Select match",
-                  "description": "Multiple matches were found for the following <b>ROW NUMBER: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omited."
+                  "description": "Multiple matches were found for the following <b>ROW NUMBER: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
               }
           },
           "manual": {
               "matches": {
                   "header": "Manual match",
-                  "description": "No matches were found for the following records. Please provide a mapping. Unmapped records will be omited."
+                  "description": "No matches were found for the following records. Please provide a mapping. Unmapped records will be omitted."
               }
           },
           "review": {
@@ -70,7 +70,7 @@
                       "multiples.matches": "{{param}} entries selected with multiples matches",
                       "single.matches": "{{param}} entries selected with single matches",
                       "manual.matches": "{{param}} entries selected manually",
-                      "omited.matches": "{{param}} entries omited"
+                      "omitted.matches": "{{param}} entries omitted"
                   }
           },
           "cancel.confirm": "Are you sure you want to quit the import process?",

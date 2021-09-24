@@ -271,7 +271,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
         const countMultiMatches = this.context.data.filter((row) => this.selectMultipleMatchesResult[row[HEADERS.ROW_NUMBER]]).length,
             countManualMatches = this.context.data.filter((row) => this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]]).length,
             countSingleMatches = this.dataSingleMatches.length,
-            countOmited = this.context.data.length - countMultiMatches - countManualMatches - countSingleMatches,
+            countOmittedMatches = this.context.data.length - countMultiMatches - countManualMatches - countSingleMatches,
             messages = [];
 
         if (countSingleMatches) {
@@ -284,8 +284,8 @@ export class GermplasmListImportReviewComponent implements OnInit {
         if (countManualMatches) {
             messages.push(this.translateService.instant('germplasm-list.import.review.summary.manual.matches', { param: countManualMatches }));
         }
-        if (countOmited) {
-            messages.push(this.translateService.instant('germplasm-list.import.review.summary.omited.matches', { param: countOmited }));
+        if (countOmittedMatches) {
+            messages.push(this.translateService.instant('germplasm-list.import.review.summary.omitted.matches', { param: countOmittedMatches }));
         }
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
