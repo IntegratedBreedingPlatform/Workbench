@@ -19,6 +19,8 @@ import { GermplasmListSearchComponent } from './germplasm-list-search.component'
 import { Principal } from '../shared';
 import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
+import { GermplasmListColumnModel } from './list-columns.component';
+import { GermplasmListDataUpdateViewRequest } from '../shared/germplasm-list/model/germplasm-list-data-update-view-request.model';
 
 declare var $: any;
 
@@ -63,6 +65,7 @@ export class ListComponent implements OnInit {
                 private alertService: AlertService,
                 private principal: Principal) {
         this.page = 1;
+        this.totalItems = 0;
         this.predicate = '';
         this.currentSearch = '';
         this.predicate = ColumnLabels.ENTRY_NUMBER;
@@ -84,7 +87,10 @@ export class ListComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
 
         this.registerColumnFiltersChanged();
+        this.refreshTable();
+    }
 
+    private refreshTable() {
         this.germplasmListService.getGermplasmListDataTableHeader(this.listId).subscribe(
             (res: HttpResponse<GermplasmListObservationVariable[]>) => {
                 this.header = res.body;
@@ -146,8 +152,12 @@ export class ListComponent implements OnInit {
         this.loadAll(this.request);
     }
 
-    onColumnsSelected(values: number[]) {
-        console.log('value: ' + values);
+    onColumnsSelected(columns: GermplasmListColumnModel[]) {
+        const request =  this.mapSelectedColumnsToUpdateViewRequest(columns);
+        this.germplasmListService.saveGermplasmListDataView(this.listId, request).subscribe(
+            (res: HttpResponse<any>) => this.refreshTable(),
+            (res: HttpErrorResponse) => this.onError(res)
+        );
     }
 
     onClearSort($event) {
@@ -232,6 +242,11 @@ export class ListComponent implements OnInit {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
+    }
+
+    private mapSelectedColumnsToUpdateViewRequest(selectedColumns: GermplasmListColumnModel[]): GermplasmListDataUpdateViewRequest[] {
+        return selectedColumns.map((column: GermplasmListColumnModel) =>
+            new GermplasmListDataUpdateViewRequest(column.id, column.category, column.typeId));
     }
 
 }

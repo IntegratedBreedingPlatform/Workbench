@@ -14,6 +14,7 @@ import { inventoryDetailsRoutes } from './inventory/details/inventory-details.ro
 import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
 import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
 import { GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
+import { GermplasmProgenyPopupComponent } from './merge/germplasm-progeny-modal.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...breedingMethodRoutes,
@@ -103,6 +104,11 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
         path: 'germplasm-import',
         component: GermplasmImportPopupComponent,
+        outlet: 'popup'
+    },
+    {
+        path: 'germplasm-progeny-dialog',
+        component: GermplasmProgenyPopupComponent,
         outlet: 'popup'
     }
 ];

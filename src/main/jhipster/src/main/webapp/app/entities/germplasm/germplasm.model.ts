@@ -28,7 +28,10 @@ export class Germplasm {
         public attributeTypesValueMap?: any,
         public nameTypesValueMap?: any,
         public locationId?: number,
-        public breedingMethodId?: number
+        public breedingMethodId?: number,
+        public hasProgeny?: boolean,
+        public usedInStudy?: boolean,
+        public usedInLockedList?: boolean
     ) {
     }
 }

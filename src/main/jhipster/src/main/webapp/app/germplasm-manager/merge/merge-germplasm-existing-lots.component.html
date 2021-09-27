@@ -1,0 +1,59 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="merge-germplasm.inventory-lots.title"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<span jhiTranslate="merge-germplasm.inventory-lots.description"></span>
+	<br/><br/>
+	<div *ngIf="gidsWithLots && gidsWithLots.length > 0">
+		<div class="card">
+			<h5 class="card-header"><span jhiTranslate="merge-germplasm.action.apply.to.all.description"></span></h5>
+			<div class="card-body">
+				<div class="form-group row">
+					<div class="col">
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="applyToAll" id="radioCloseAllLots"
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.CLOSE">
+							<label class="form-check-label" for="radioCloseAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.closeLots">
+							</label>
+						</div>
+						<br/>
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="applyToAll" id="radioMigrateAllLots"
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.MIGRATE">
+							<label class="form-check-label" for="radioMigrateAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.associateLots">
+							</label>
+						</div>
+						<br/>
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" name="applyToAll" id="radioOmitAllLots"
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.OMIT">
+							<label class="form-check-label" for="radioOmitAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.omitLots">
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div *ngFor="let nonSelectedGermplasm of germplasmMergeRequest.nonSelectedGermplasm">
+			<jhi-collapsible *ngIf="gidsWithLots.includes(nonSelectedGermplasm.germplasmId)" heading="{{'GID:' + nonSelectedGermplasm.germplasmId}}">
+				<jhi-merge-germplasm-lot-table [nonSelectedGermplasm]="nonSelectedGermplasm" [(applyToAll)]="applyToAll"></jhi-merge-germplasm-lot-table>
+			</jhi-collapsible>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">
+		<span class="fa fa-ban"></span>&nbsp;
+		<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="confirm()" class="btn btn-primary">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-save"></span>&nbsp;
+		<span jhiTranslate="merge-germplasm.confirm"></span>
+	</button>
+</div>

@@ -419,7 +419,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 					data: {
 						searchRequestId: resp.result.searchResultDbId,
 						page: 0,
-						size: 3000
+						size: 5000
 					},
 					beforeSend: beforeSend
 				})
