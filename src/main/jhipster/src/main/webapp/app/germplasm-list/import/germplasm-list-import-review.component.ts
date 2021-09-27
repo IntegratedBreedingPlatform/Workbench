@@ -244,6 +244,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 }
             });
 
+            this.modal.close();
             const model = new ListModel();
             const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component, { size: 'lg', backdrop: 'static' });
             germplasmListCreationModalRef.componentInstance.entries = newGermplasmList.map((row) => {
@@ -256,9 +257,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
             germplasmListCreationModalRef.componentInstance.model = model;
             germplasmListCreationModalRef.result.then(() => {
                     this.eventManager.broadcast({ name: 'listNameFilter', content: model.name });
-                this.modal.close();
-            }, () => {
-                this.modal.close();
             });
 
         } catch (error) {
