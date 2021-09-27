@@ -21,7 +21,7 @@ import { JhiEventManager } from 'ng-jhipster';
 					</button>
 				</div>
 			</div>
-			<iframe [src]="safeUrl" style="border: 0" width="100%" height="700px"></iframe>
+			<iframe [src]="safeUrl" style="border: 0" width="100%" height="720px"></iframe>
 		</div>
     `
 })
