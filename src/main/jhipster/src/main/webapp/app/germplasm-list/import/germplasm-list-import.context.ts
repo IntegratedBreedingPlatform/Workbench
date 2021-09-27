@@ -1,6 +1,5 @@
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 
-
 export class GermplasmListImportContext {
     // germplasm List data
     data = [];
