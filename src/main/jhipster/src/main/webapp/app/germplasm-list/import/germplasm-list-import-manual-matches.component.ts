@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-germplasm-list-import-manual-matches',
