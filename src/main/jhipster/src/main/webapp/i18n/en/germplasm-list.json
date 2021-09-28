@@ -48,7 +48,7 @@
           "multi": {
               "matches": {
                   "header": "Select match",
-                  "description": "Multiple matches were found for the following <b>ROW NUMBER: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
+                  "description": "Multiple matches were found for the following <b>ROW #: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
               }
           },
           "manual": {
