@@ -76,6 +76,8 @@ import { FileService } from './file/service/file.service';
 import { ColumnFilterInlineComponent } from './column-filter/inline/column-filter-inline.component';
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dropdown-component';
+import { InlineEditorComponent } from './inline-editor/inline-editor.component';
+import { InlineEditorService } from './inline-editor/inline-editor.service';
 
 @NgModule({
     imports: [
@@ -128,7 +130,8 @@ import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dro
         LocationsSelectComponent,
         OnlyNumbersDirective,
         PedigreeGraphComponent,
-        VariableSelectComponent
+        VariableSelectComponent,
+        InlineEditorComponent
     ],
     providers: [
         LoginService,
@@ -166,7 +169,8 @@ import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dro
         GermplasmPedigreeService,
         VariableService,
         VariableValidationService,
-        GermplasmGroupingService
+        GermplasmGroupingService,
+        InlineEditorService
     ],
     entryComponents: [
         ModalComponent,
@@ -222,7 +226,8 @@ import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dro
         LocationsSelectComponent,
         OnlyNumbersDirective,
         PedigreeGraphComponent,
-        VariableSelectComponent
+        VariableSelectComponent,
+        InlineEditorComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

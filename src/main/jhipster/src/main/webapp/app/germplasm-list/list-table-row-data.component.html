@@ -22,5 +22,15 @@
 	   queryParamsHandling="merge">{{this.getRowData()}}</a>
 </span>
 <ng-template #noLink>
-	<span>{{this.getRowData()}}</span>
+	<div *ngIf="!isEditing() else editable" (click)="edit()" style="cursor: pointer">
+		<span><!-- filler -->&nbsp;</span>
+		{{this.getRowData()}}
+	</div>
+	<ng-template #editable>
+		<jhi-inline-editor [observationVariable]="column"
+						   [value]="this.getRowData()"
+						   (onApply)="submit($event)"
+						   (onCancel)="cancel()"
+		></jhi-inline-editor>
+	</ng-template>
 </ng-template>

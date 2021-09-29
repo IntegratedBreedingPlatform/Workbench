@@ -3,6 +3,7 @@ import { GermplasmListDataSearchResponse } from '../shared/germplasm-list/model/
 import { ColumnAlias } from './list.component';
 import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
+import { InlineEditorService } from '../shared/inline-editor/inline-editor.service';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -16,7 +17,9 @@ export class ListDataRowComponent implements OnInit {
     private readonly LOCATION_ID = 'LOCATION_ID';
     private readonly BREEDING_METHOD_ID = 'BREEDING_METHOD_ID';
 
-    constructor() {
+    constructor(
+        private inlineEditorService: InlineEditorService
+    ) {
     }
 
     ngOnInit(): void {
@@ -63,6 +66,32 @@ export class ListDataRowComponent implements OnInit {
 
     isBreedingMethodNameColumn() {
         return this.column.alias === ColumnAlias.BREEDING_METHOD_PREFERRED_NAME;
+    }
+
+    edit() {
+        this.inlineEditorService.editingEntry = [this.entry.listDataId.toString(), this.column.termId.toString()];
+    }
+
+    isEditing() {
+        return this.inlineEditorService.editingEntry[0] === this.entry.listDataId.toString()
+            && this.inlineEditorService.editingEntry[1] === this.column.termId.toString();
+    }
+
+    submit(value) {
+        this.inlineEditorService.editingEntry = null;
+        /*
+         * TODO
+         *  - post/patch/delete and reload
+         */
+        if (value) {
+            this.entry.data[this.column.columnCategory + '_' + this.column.termId] = value;
+        } else {
+            this.entry.data[this.column.columnCategory + '_' + this.column.termId] = null;
+        }
+    }
+
+    cancel() {
+        this.inlineEditorService.editingEntry = null;
     }
 
 }

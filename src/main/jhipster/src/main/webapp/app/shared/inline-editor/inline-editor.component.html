@@ -1,0 +1,29 @@
+<form #f='ngForm' [ngSwitch]="observationVariable.dataTypeId" (keyup.enter)="submit(f)" (keyup.escape)="cancel()">
+	<div *ngSwitchCase="DataTypeIdEnum.CHARACTER">
+		<input type="text" class="form-control" name="editorInput" #editorInput [(ngModel)]="value" (blur)="submit(f)"/>
+	</div>
+	<div *ngSwitchCase="DataTypeIdEnum.NUMERIC">
+		<input type="number" class="form-control" name="editorInput" #editorInput [(ngModel)]="value" (blur)="submit(f)"/>
+	</div>
+	<div *ngSwitchCase="DataTypeIdEnum.CATEGORICAL">
+		<ng-select name="editorInput" #editorInput
+				   [items]="observationVariable.possibleValues" [(ngModel)]="value"
+				   bindValue="id" bindLabel="name"
+				   [searchFn]="searchCategorical"
+				   (blur)="submit(f)">
+			<ng-template ng-option-tmp let-possibleValue="item">
+				<div title="{{possibleValue.description}}">{{possibleValue.name}}</div>
+			</ng-template>
+		</ng-select>
+	</div>
+	<div *ngSwitchCase="DataTypeIdEnum.DATE">
+		<div class="input-group">
+			<input class="form-control" placeholder="yyyy-mm-dd"
+				   name="editorInput" [(ngModel)]="dateValue"
+				   ngbDatepicker #editorInput="ngbDatepicker"
+				   (click)="editorInput.open()"
+				   (closed)="value = dateHelperService.convertNgbDateToStringIso(dateValue); submit(f)"
+			/>
+		</div>
+	</div>
+</form>
