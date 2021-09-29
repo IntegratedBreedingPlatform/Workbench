@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GermplasmListDataSearchResponse } from '../shared/germplasm-list/model/germplasm-list-data-search-response.model';
-import { ColumnLabels } from './list.component';
+import { ColumnAlias } from './list.component';
 import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 
@@ -31,7 +31,7 @@ export class ListDataRowComponent implements OnInit {
     }
 
     getGidData() {
-        return this.entry.data[ColumnLabels.GID];
+        return this.entry.data[ColumnAlias.GID];
     }
 
     getLocationIdData() {
@@ -50,19 +50,19 @@ export class ListDataRowComponent implements OnInit {
     }
 
     isGidColumn() {
-        return this.column.alias === ColumnLabels.GID;
+        return this.column.alias === ColumnAlias.GID;
     }
 
     isLotsColumn() {
-        return this.column.alias === ColumnLabels.LOTS;
+        return this.column.alias === ColumnAlias.LOTS;
     }
 
     isLocationNameColumn() {
-        return this.column.alias === ColumnLabels.LOCATION_NAME;
+        return this.column.alias === ColumnAlias.LOCATION_NAME;
     }
 
     isBreedingMethodNameColumn() {
-        return this.column.alias === ColumnLabels.BREEDING_METHOD_PREFERRED_NAME;
+        return this.column.alias === ColumnAlias.BREEDING_METHOD_PREFERRED_NAME;
     }
 
 }
