@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListSearchResponse } from '../shared/germplasm-list/model/germplasm-list-search-response.model';
+import { Subscription } from 'rxjs';
 import { GermplasmListDataSearchResponse } from '../shared/germplasm-list/model/germplasm-list-data-search-response.model';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { finalize } from 'rxjs/internal/operators/finalize';
@@ -94,6 +95,7 @@ export class ListComponent implements OnInit {
     germplasmList: GermplasmList;
     header: GermplasmListObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
+    eventSubscriber: Subscription;
 
     currentSearch: string;
     totalItems: number;
