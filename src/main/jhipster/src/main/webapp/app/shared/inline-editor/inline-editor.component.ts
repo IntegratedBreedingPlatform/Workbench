@@ -14,6 +14,7 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
     /*
      * TODO:
      *  - fix date escape cancel
+     *  - no way to delete date values
      */
 
     @Input() observationVariable: ObservationVariable;

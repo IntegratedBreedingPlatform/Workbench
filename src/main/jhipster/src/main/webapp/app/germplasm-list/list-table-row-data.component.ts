@@ -91,6 +91,9 @@ export class ListDataRowComponent implements OnInit {
         const observationId = this.entry.data['VARIABLE_' + this.column.termId + '_DETAIL_ID'];
         if (observationId) {
             if (value) {
+                if (value === this.getRowData()) {
+                    return;
+                }
                 this.germplasmListService.modifyObservation(this.listId, value, observationId)
                     .subscribe(
                         () => this.onSuccess(),
@@ -104,6 +107,9 @@ export class ListDataRowComponent implements OnInit {
                     );
             }
         } else {
+            if (!value && value !== 0) {
+                return;
+            }
             this.germplasmListService.createObservation(this.listId, this.entry.listDataId, this.column.termId, value)
                 .subscribe(
                     () => this.onSuccess(),
