@@ -78,6 +78,8 @@ import { FileDeleteOptionsComponent } from './file/component/file-delete-options
 import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dropdown-component';
 import { InlineEditorComponent } from './inline-editor/inline-editor.component';
 import { InlineEditorService } from './inline-editor/inline-editor.service';
+import { VariableContainerComponent } from './variable-container/variable-container.component';
+import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
 
 @NgModule({
     imports: [
@@ -132,6 +134,9 @@ import { InlineEditorService } from './inline-editor/inline-editor.service';
         PedigreeGraphComponent,
         VariableSelectComponent,
         InlineEditorComponent
+        VariableSelectComponent,
+        VariableSelectModalComponent,
+        VariableContainerComponent
     ],
     providers: [
         LoginService,
@@ -177,7 +182,8 @@ import { InlineEditorService } from './inline-editor/inline-editor.service';
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
         GermplasmListCreationComponent,
-        SampleListCreationComponent
+        SampleListCreationComponent,
+        VariableSelectModalComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -227,7 +233,10 @@ import { InlineEditorService } from './inline-editor/inline-editor.service';
         OnlyNumbersDirective,
         PedigreeGraphComponent,
         VariableSelectComponent,
-        InlineEditorComponent
+        InlineEditorComponent,
+        VariableSelectComponent,
+        VariableSelectModalComponent,
+        VariableContainerComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
