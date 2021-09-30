@@ -139,6 +139,11 @@ export class ListComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
 
+        this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
+            (res: HttpResponse<VariableDetails[]>) => this.variables = res.body,
+            (res: HttpErrorResponse) => this.onError(res)
+        );
+
         this.registerGermplasmListViewChanged();
         this.refreshTable();
     }
@@ -419,6 +424,26 @@ export class ListComponent implements OnInit {
             request.variablesFilters[filter.termId] = value;
             return;
         }
+    }
+    addVariable(variable: VariableDetails) {
+        this.germplasmListService.addVariable(this.listId, variable.id, VariableTypeEnum.ENTRY_DETAILS).subscribe(() => {
+            this.variables.push(variable);
+            this.refreshTable();
+        });
+    }
+
+    deleteVariables(variableIds: any[]) {
+        this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
+            const variableDeleted = this.variables.filter((variable) =>
+                variableIds.indexOf(variable.id.toString()) !== -1
+            );
+
+            variableDeleted.forEach((variable) => {
+                this.variables.splice(this.variables.indexOf(variable), 1);
+            });
+
+            this.refreshTable();
+        });
     }
 
 }
