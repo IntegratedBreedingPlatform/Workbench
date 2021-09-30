@@ -8,7 +8,7 @@
 	<div *ngSwitchCase="DataTypeIdEnum.CATEGORICAL">
 		<ng-select name="editorInput" #editorInput
 				   [items]="observationVariable.possibleValues" [(ngModel)]="value"
-				   bindValue="id" bindLabel="name"
+				   bindValue="name" bindLabel="name"
 				   [searchFn]="searchCategorical"
 				   (blur)="submit(f)">
 			<ng-template ng-option-tmp let-possibleValue="item">
@@ -22,7 +22,7 @@
 				   name="editorInput" [(ngModel)]="dateValue"
 				   ngbDatepicker #editorInput="ngbDatepicker"
 				   (click)="editorInput.open()"
-				   (closed)="value = dateHelperService.convertNgbDateToStringIso(dateValue); submit(f)"
+				   (closed)="value = dateHelperService.convertNgbDateToString(dateValue); submit(f)"
 			/>
 		</div>
 	</div>

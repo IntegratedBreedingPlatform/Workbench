@@ -29,6 +29,8 @@ declare var $: any;
 })
 export class ListComponent implements OnInit {
 
+    static readonly GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX = 'GermplasmListViewChanged';
+
     readonly STATIC_FILTERS = {
         ENTRY_NO: {
             key: 'entryNumbers', type: FilterType.LIST
@@ -133,6 +135,7 @@ export class ListComponent implements OnInit {
 
         this.filters = this.getInitialFilters();
         this.registerColumnFiltersChanged();
+        this.registerGermplasmListViewChanged();
         this.refreshTable();
     }
 
@@ -213,6 +216,12 @@ export class ListComponent implements OnInit {
 
     registerColumnFiltersChanged() {
         this.eventSubscriber = this.eventManager.subscribe(this.listId + 'ColumnFiltersChanged', (event) => {
+            this.resetTable();
+        });
+    }
+
+    registerGermplasmListViewChanged() {
+        this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, (event) => {
             this.resetTable();
         });
     }

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Outp
 import { ObservationVariable, ValueReference } from '../model/observation-variable.model';
 import { DataTypeIdEnum } from '../ontology/data-type.enum';
 import { DateHelperService } from '../service/date.helper.service';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { toUpper } from '../util/to-upper';
 
 @Component({
@@ -26,7 +26,7 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
     editorInput: ElementRef;
 
     DataTypeIdEnum = DataTypeIdEnum;
-    dateValue: NgbDateStruct;
+    dateValue: NgbDate;
 
     constructor(
         public dateHelperService: DateHelperService
@@ -35,7 +35,7 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         try {
-            this.dateValue = this.dateHelperService.convertStringIsoToNgbDate(this.value);
+            this.dateValue = this.dateHelperService.convertStringToNgbDate(this.value);
         } catch (e) {
 
         }

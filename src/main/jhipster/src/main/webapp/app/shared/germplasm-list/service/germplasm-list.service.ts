@@ -82,4 +82,27 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
+    createObservation(listId: number, listDataId: number, variableId: number, value: string) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations?programUUID=` + this.context.programUUID;
+        const request = {
+            listDataId,
+            variableId,
+            value
+        };
+        return this.http.put<any>(url, request, { observe: 'response' });
+    }
+
+    modifyObservation(listId: number, value: string, observationId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations/${observationId}?programUUID=` + this.context.programUUID;
+        const request = {
+            value
+        };
+        return this.http.patch<any>(url, request, { observe: 'response' });
+    }
+
+    removeObservation(listId: number, observationId: string) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations/${observationId}?programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
 }
