@@ -57,6 +57,7 @@ export class GermplasmListSearchComponent implements OnInit {
                 private alertService: AlertService
     ) {
         this.page = 1;
+        this.totalItems = 0;
         this.predicate = '';
         this.currentSearch = '';
         this.predicate = ColumnLabels.LIST_NAME;

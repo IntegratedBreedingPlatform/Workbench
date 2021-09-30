@@ -14,5 +14,14 @@
 							(onApply)="apply()"
 							(onReset)="reset()">
 	</jhi-column-filter-date>
+	<jhi-column-filter-list *ngIf="filter.type === FILTER_TYPES.LIST"
+							[filter]="filter"
+							(onApply)="apply()"
+							(onReset)="reset()">
+	</jhi-column-filter-list>
+	<jhi-column-filter-text-with-match-options *ngIf="filter.type === FILTER_TYPES.TEXT_WITH_MATCH_OPTIONS"
+											   [filter]="filter"
+											   (onApply)="apply()"
+											   (onReset)="reset()">
 	<!-- TODO complete as needed -->
 </ng-template>
