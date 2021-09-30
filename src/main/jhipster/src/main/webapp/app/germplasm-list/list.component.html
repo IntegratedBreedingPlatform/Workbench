@@ -1,13 +1,21 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="germplasm-list-data-tab">
 	<div class="row pt-4">
 		<div class="col">
+			<div class="row"></div>
+			<jhi-variable-container [title]="title" [variables]="variables" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
+		</div>
+		<div class="col">
 <!--			<div ngbDropdown class="float-right" placement="bottom-right">-->
 <!--				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>-->
 <!--				<div ngbDropdownMenu aria-labelledby="actionMenu">-->
 <!--					<button class="dropdown-item" type="submit">TODO: some action</button>-->
 <!--				</div>-->
 <!--			</div>-->
-			<jhi-list-columns class="ml-2 float-right" [listId]="this.listId" (columnsSelectedEvent)="onColumnsSelected($event)"></jhi-list-columns>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="col">
+			<jhi-list-columns class="ml-2 float-right" [listId]="listId" (columnsSelectedEvent)="onColumnsSelected($event)"></jhi-list-columns>
 		</div>
 	</div>
 	<div class="row mt-2 mb-2">

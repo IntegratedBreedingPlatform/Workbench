@@ -20,6 +20,7 @@ import { GermplasmListColumnModel } from './list-columns.component';
 import { GermplasmListDataUpdateViewRequest } from '../shared/germplasm-list/model/germplasm-list-data-update-view-request.model';
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { VariableDetails } from '../shared/ontology/model/variable-details';
 
 declare var $: any;
 
@@ -85,6 +86,10 @@ export class ListComponent implements OnInit {
         }
     };
 
+    public isCollapsed = false;
+    variables: VariableDetails[];
+    title = 'Entry details';
+
     @Input()
     listId: number;
 
@@ -125,6 +130,7 @@ export class ListComponent implements OnInit {
     }
 
     async ngOnInit() {
+        this.variables = [];
         const identity = await this.principal.identity();
         this.user = identity;
 
