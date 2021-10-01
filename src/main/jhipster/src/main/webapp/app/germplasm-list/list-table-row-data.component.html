@@ -22,7 +22,9 @@
 	   queryParamsHandling="merge">{{this.rowData}}</a>
 </span>
 <ng-template #noLink>
-	<div *ngIf="!isEditing() || germplasmList?.locked else editable" (click)="edit()" [class.editable]="!germplasmList?.locked">
+	<div *ngIf="!isEditing() || germplasmList?.locked else editable"
+		 (click)="!germplasmList?.locked && edit()"
+		 [class.editable]="!germplasmList?.locked">
 		<span><!-- filler -->&nbsp;</span>
 		{{this.rowData}}
 	</div>
