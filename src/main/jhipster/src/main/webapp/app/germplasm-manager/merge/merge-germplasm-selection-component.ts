@@ -41,7 +41,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
 
     ngOnInit(): void {
         this.request = new GermplasmSearchRequest();
-        this.request.addedColumnsPropertyIds = ['PREFERRED NAME', 'HAS PROGENY', 'USED IN STUDY', 'USED IN LOCKED LIST',
+        this.request.addedColumnsPropertyIds = ['PREFERRED NAME', 'HAS PROGENY', 'USED IN LOCKED STUDY', 'USED IN LOCKED LIST',
             'FGID', 'MGID'];
         this.request.gids = this.gids;
 
@@ -138,16 +138,26 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         const gidsWithProgeny = this.germplasmList.filter((germplasm) => (germplasm.hasProgeny && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
         if (gidsWithProgeny.length > 0) {
-            this.alertService.error('merge-germplasm.non-selected-germplasm-has-progeny', { param: gidsWithProgeny.join() });
+            this.alertService.error('merge-germplasm.non-selected-germplasm-has-progeny', { param: this.getGidsToDisplay(gidsWithProgeny) });
             return true;
         }
         const gidsInLockedList = this.germplasmList.filter((germplasm) => (germplasm.usedInLockedList && nonSelectedGids.includes(germplasm.gid)))
             .map((germplasm) => germplasm.gid);
         if (gidsInLockedList.length > 0) {
-            this.alertService.error('merge-germplasm.non-selected-germplasm-in-locked-list', { param: gidsInLockedList.join() });
+            this.alertService.error('merge-germplasm.non-selected-germplasm-in-locked-list', { param: this.getGidsToDisplay(gidsInLockedList) });
+            return true;
+        }
+        const gidsInLockedStudy = this.germplasmList.filter((germplasm) => (germplasm.usedInLockedStudy && nonSelectedGids.includes(germplasm.gid)))
+            .map((germplasm) => germplasm.gid);
+        if (gidsInLockedStudy.length > 0) {
+            this.alertService.error('merge-germplasm.non-selected-germplasm-in-locked-study', { param: this.getGidsToDisplay(gidsInLockedStudy) });
             return true;
         }
         return false
+    }
+
+    private getGidsToDisplay(gids: number[]): string {
+        return gids. length > 7 ? gids.slice(0, 7).join() + '...' : gids.join();
     }
 
     private onError(response: HttpErrorResponse) {
