@@ -22,7 +22,7 @@
 				   name="editorInput" [(ngModel)]="dateValue"
 				   ngbDatepicker #editorInput="ngbDatepicker"
 				   (click)="editorInput.open()"
-				   (closed)="value = dateHelperService.convertNgbDateToString(dateValue); submit(f)"
+				   (closed)="submitDate(f)"
 			/>
 		</div>
 	</div>
