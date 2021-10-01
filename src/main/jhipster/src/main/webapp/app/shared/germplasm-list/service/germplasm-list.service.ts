@@ -123,4 +123,9 @@ export class GermplasmListService implements ListService {
         return this.http.delete<any>(url, { observe: 'response' });
     }
 
+    countObservationsByVariables(listId: number, variableIds: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}`;
+        return this.http.head(url, { observe: 'response' });
+    }
+
 }
