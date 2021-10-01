@@ -122,10 +122,8 @@ export class ListComponent implements OnInit {
                 private principal: Principal) {
         this.page = 1;
         this.totalItems = 0;
-        this.predicate = '';
         this.currentSearch = '';
-        // TODO: is necessary for sorting?
-        this.predicate = ColumnAlias.ENTRY_NUMBER;
+        this.predicate = ColumnAlias.ENTRY_NO;
         this.reverse = 'asc';
     }
 
@@ -209,7 +207,6 @@ export class ListComponent implements OnInit {
         );
     }
 
-    // TODO: remove it?
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
@@ -250,11 +247,18 @@ export class ListComponent implements OnInit {
         );
     }
 
-    getHeaderDisplayName(column: GermplasmListObservationVariable) {
+    getHeaderDisplayName(column: GermplasmListObservationVariable): string {
         if (this.isStaticColumn(column.columnCategory)) {
             return column.name;
         }
         return column.alias ? column.alias : column.name;
+    }
+
+    getColumnSortName(column: GermplasmListObservationVariable): string {
+        if (this.isStaticColumn(column.columnCategory)) {
+            return column.alias;
+        }
+        return column.columnCategory + '_' + column.termId;
     }
 
     isColumnFilterable(column: GermplasmListObservationVariable): boolean {
@@ -322,7 +326,6 @@ export class ListComponent implements OnInit {
         this.loadAll();
     }
 
-    // TODO: remove it?
     private getSort() {
         if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
@@ -330,7 +333,6 @@ export class ListComponent implements OnInit {
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
-    // TODO: remove it?
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
@@ -448,9 +450,8 @@ export class ListComponent implements OnInit {
 
 }
 
-// TODO: should move it to ListDataRowComponent?
 export enum ColumnAlias {
-    'ENTRY_NUMBER' = 'ENTRY_NUMBER',
+    'ENTRY_NO' = 'ENTRY_NO',
     'GID' = 'GID',
     'LOTS' = 'LOTS',
     'LOCATION_NAME' = 'LOCATION_NAME',

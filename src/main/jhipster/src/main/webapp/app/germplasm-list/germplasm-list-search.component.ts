@@ -58,7 +58,6 @@ export class GermplasmListSearchComponent implements OnInit {
     ) {
         this.page = 1;
         this.totalItems = 0;
-        this.predicate = '';
         this.currentSearch = '';
         this.predicate = ColumnLabels.LIST_NAME;
         this.reverse = 'asc';
