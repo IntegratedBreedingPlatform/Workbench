@@ -1,21 +1,16 @@
 import { Injectable } from '@angular/core';
-import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
 export class DateHelperService {
 
     constructor(
-        private calendar: NgbCalendar,
-        private ngbDateParserFormatter: NgbDateParserFormatter
+        private calendar: NgbCalendar
     ) {
     }
 
     convertNgbDateToString(date: NgbDate) {
         return '' + date.year + this.twoDigit(date.month) + this.twoDigit(date.day);
-    }
-
-    convertNgbDateToStringIso(date: NgbDateStruct) {
-        return this.ngbDateParserFormatter.format(date)
     }
 
     convertStringToNgbDate(dateString: string): NgbDate {
@@ -26,10 +21,6 @@ export class DateHelperService {
             return new NgbDate(year, month, day);
         }
         return this.calendar.getToday();
-    }
-
-    convertStringIsoToNgbDate(dateString: string): NgbDateStruct {
-        return this.ngbDateParserFormatter.parse(dateString);
     }
 
     private twoDigit(n) {
