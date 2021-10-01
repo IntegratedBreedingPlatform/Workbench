@@ -1,4 +1,5 @@
-<form #f='ngForm' [ngSwitch]="observationVariable.dataTypeId" (keyup.enter)="submit(f)" (keyup.escape)="cancel()">
+<form #f='ngForm' autocomplete="off"
+	  [ngSwitch]="observationVariable.dataTypeId" (keyup.enter)="submit(f)" (keyup.escape)="cancel()">
 	<div *ngSwitchCase="DataTypeIdEnum.CHARACTER">
 		<input type="text" class="form-control" name="editorInput" #editorInput [(ngModel)]="value" (blur)="submit(f)"/>
 	</div>
