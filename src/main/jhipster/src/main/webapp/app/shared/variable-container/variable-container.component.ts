@@ -16,6 +16,8 @@ export class VariableContainerComponent implements OnInit {
 
     @Input() title: string;
 
+    @Input() hideAddAndRemove = false;
+
     @Input() variables: VariableDetails[];
 
     @Output() onDeleteVariable = new EventEmitter<any[]>();
