@@ -33,7 +33,7 @@
 		</button>
 		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
 			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
-			<span class="fa fa-save"></span>&nbsp;
+			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
 		</button>
 	</div>
 </div>
