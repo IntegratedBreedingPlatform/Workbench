@@ -34,12 +34,28 @@ export class ListDataRowComponent implements OnInit {
     ngOnInit(): void {
     }
 
-    getRowData() {
+    get rowData() {
         if (this.column.columnCategory === GermplasmListColumnCategory.STATIC) {
             return this.entry.data[this.column.alias];
         }
 
         return this.entry.data[this.column.columnCategory + '_' + this.column.termId] ;
+    }
+
+    set rowData(rowData: string) {
+        if (this.column.columnCategory === GermplasmListColumnCategory.STATIC) {
+            this.entry.data[this.column.alias] = rowData;
+        } else {
+            this.entry.data[this.column.columnCategory + '_' + this.column.termId] = rowData;
+        }
+    }
+
+    get observationId() {
+        return this.entry.data['VARIABLE_' + this.column.termId + '_DETAIL_ID'];
+    }
+
+    set observationId(observationId: number) {
+        this.entry.data['VARIABLE_' + this.column.termId + '_DETAIL_ID'] = observationId;
     }
 
     getGidData() {
@@ -88,21 +104,20 @@ export class ListDataRowComponent implements OnInit {
 
     submit(value) {
         this.inlineEditorService.editingEntry = null;
-        const observationId = this.entry.data['VARIABLE_' + this.column.termId + '_DETAIL_ID'];
-        if (observationId) {
+        if (this.observationId) {
             if (value) {
-                if (value === this.getRowData()) {
+                if (value === this.rowData) {
                     return;
                 }
-                this.germplasmListService.modifyObservation(this.listId, value, observationId)
+                this.germplasmListService.modifyObservation(this.listId, value, this.observationId)
                     .subscribe(
-                        () => this.onSuccess(),
+                        () => this.rowData = value,
                         (error) => this.onError(error)
                     );
             } else {
-                this.germplasmListService.removeObservation(this.listId, observationId)
+                this.germplasmListService.removeObservation(this.listId, this.observationId)
                     .subscribe(
-                        () => this.onSuccess(),
+                        () => this.rowData = '',
                         (error) => this.onError(error)
                     );
             }
@@ -112,7 +127,10 @@ export class ListDataRowComponent implements OnInit {
             }
             this.germplasmListService.createObservation(this.listId, this.entry.listDataId, this.column.termId, value)
                 .subscribe(
-                    () => this.onSuccess(),
+                    (resp) => {
+                        this.rowData = value;
+                        this.observationId = resp.body;
+                    },
                     (error) => this.onError(error)
                 );
         }
@@ -120,10 +138,6 @@ export class ListDataRowComponent implements OnInit {
 
     cancel() {
         this.inlineEditorService.editingEntry = null;
-    }
-
-    private onSuccess() {
-        this.eventManager.broadcast({ name: this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, content: '' });
     }
 
     private onError(response: HttpErrorResponse) {

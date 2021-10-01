@@ -1,34 +1,34 @@
 <span *ngIf="this.shouldHasLink() else noLink">
 	<a *ngIf="this.isGidColumn()"
 	   (click)="$event.stopPropagation()"
-	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getRowData() } }]"
-	   queryParamsHandling="merge">{{this.getRowData()}}</a>
+	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.rowData } }]"
+	   queryParamsHandling="merge">{{this.rowData}}</a>
 
-	<a *ngIf="this.isLotsColumn() && this.getRowData()"
+	<a *ngIf="this.isLotsColumn() && this.rowData"
 	   (click)="$event.stopPropagation()"
 	   [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
 	   [queryParams]="{gid: this.getGidData()}"
-	   queryParamsHandling="merge">{{this.getRowData()}}</a>
-	<span *ngIf="this.isLotsColumn() && this.getRowData() === 0">-</span>
+	   queryParamsHandling="merge">{{this.rowData}}</a>
+	<span *ngIf="this.isLotsColumn() && this.rowData === 0">-</span>
 
 	<a *ngIf="this.isLocationNameColumn()"
 	   (click)="$event.stopPropagation()"
 	   [routerLink]="['/', { outlets: { popup: 'location/' + this.getLocationIdData() } }]"
-	   queryParamsHandling="merge">{{this.getRowData()}}</a>
+	   queryParamsHandling="merge">{{this.rowData}}</a>
 
 	<a *ngIf="this.isBreedingMethodNameColumn()"
 	   (click)="$event.stopPropagation()"
 	   [routerLink]="['/', { outlets: { popup: 'breeding-method/' + this.getBreedingMethodIdData() } }]"
-	   queryParamsHandling="merge">{{this.getRowData()}}</a>
+	   queryParamsHandling="merge">{{this.rowData}}</a>
 </span>
 <ng-template #noLink>
 	<div *ngIf="!isEditing() else editable" (click)="edit()" style="cursor: pointer">
 		<span><!-- filler -->&nbsp;</span>
-		{{this.getRowData()}}
+		{{this.rowData}}
 	</div>
 	<ng-template #editable>
 		<jhi-inline-editor [observationVariable]="column"
-						   [value]="this.getRowData()"
+						   [value]="this.rowData"
 						   (onApply)="submit($event)"
 						   (onCancel)="cancel()"
 		></jhi-inline-editor>
