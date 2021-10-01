@@ -133,7 +133,7 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
         OnlyNumbersDirective,
         PedigreeGraphComponent,
         VariableSelectComponent,
-        InlineEditorComponent
+        InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
         VariableContainerComponent
