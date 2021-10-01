@@ -7,7 +7,7 @@
 			<!--					<button class="dropdown-item" type="submit">TODO: some action</button>-->
 			<!--				</div>-->
 			<!--			</div>-->
-			<jhi-list-columns *ngIf="!this.germplasmList.locked" class="ml-2 float-right"
+			<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
 							  [listId]="this.listId"
 							  (columnsSelectedEvent)="onColumnsSelected($event)">
 			</jhi-list-columns>
