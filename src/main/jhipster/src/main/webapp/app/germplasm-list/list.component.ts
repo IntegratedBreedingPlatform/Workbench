@@ -21,6 +21,9 @@ import { GermplasmListDataUpdateViewRequest } from '../shared/germplasm-list/mod
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
+import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var $: any;
 
@@ -119,7 +122,10 @@ export class ListComponent implements OnInit {
                 private germplasmListService: GermplasmListService,
                 private router: Router,
                 private alertService: AlertService,
-                private principal: Principal) {
+                private principal: Principal,
+                private modalService: NgbModal,
+                public translateService: TranslateService
+    ) {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
@@ -427,25 +433,49 @@ export class ListComponent implements OnInit {
             return;
         }
     }
+
     addVariable(variable: VariableDetails) {
+        const variableAdded = this.variables.filter((x) =>
+            Number(x.id) === Number(variable.id));
+
+        if (variableAdded.length > 0) {
+            this.alertService.warning('germplasm-list.variables.already.exsits');
+            return;
+        }
+
         this.germplasmListService.addVariable(this.listId, variable.id, VariableTypeEnum.ENTRY_DETAILS).subscribe(() => {
             this.variables.push(variable);
             this.refreshTable();
         });
     }
 
-    deleteVariables(variableIds: any[]) {
-        this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
-            const variableDeleted = this.variables.filter((variable) =>
-                variableIds.indexOf(variable.id.toString()) !== -1
-            );
+    async deleteVariables(variableIds: any[]) {
+        const countObservationsByVariablesResp = await this.germplasmListService.countObservationsByVariables(this.listId, variableIds).toPromise();
+        const variablesCount = Number(countObservationsByVariablesResp.headers.get('X-Total-Count'));
 
-            variableDeleted.forEach((variable) => {
-                this.variables.splice(this.variables.indexOf(variable), 1);
-            });
+        if (variablesCount > 0) {
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.variables.confirm.delete.title');
+            confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.variables.confirm.delete.warning');
 
-            this.refreshTable();
-        });
+            try {
+                await confirmModalRef.result
+            } catch (e) {
+                return
+            }
+        }
+
+         this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
+             const variableDeleted = this.variables.filter((variable) =>
+                 variableIds.indexOf(variable.id.toString()) !== -1
+             );
+
+             variableDeleted.forEach((variable) => {
+                 this.variables.splice(this.variables.indexOf(variable), 1);
+             });
+
+             this.refreshTable();
+         });
     }
 
 }
