@@ -56,7 +56,7 @@
 			<tbody *ngIf="entries.length else nodata">
 			<tr *ngFor="let entry of entries; trackBy: trackId; index as index">
 				<td *ngFor="let column of header">
-					<jhi-list-data-row [listId]="listId" [column]="column" [entry]="entry"></jhi-list-data-row>
+					<jhi-list-data-row [germplasmList]="germplasmList" [listId]="listId" [column]="column" [entry]="entry"></jhi-list-data-row>
 				</td>
 			</tr>
 			</tbody>

@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { JhiEventManager } from 'ng-jhipster';
+import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -17,6 +18,7 @@ import { JhiEventManager } from 'ng-jhipster';
 export class ListDataRowComponent implements OnInit {
 
     @Input() listId: number;
+    @Input() germplasmList: GermplasmList;
     @Input() column: GermplasmListObservationVariable;
     @Input() entry: GermplasmListDataSearchResponse;
 
