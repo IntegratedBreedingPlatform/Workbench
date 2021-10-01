@@ -28,6 +28,11 @@
                     "attributes": "ATTRIBUTES"
                 }
             }
+        },
+        "variables": {
+            "confirm.delete.title": "Delete confirmation",
+            "confirm.delete.warning": "Specified variable(s) already have data associated. Do you want to proceed?",
+            "already.exsits": "Specified variable is already associated to the list"
         }
     }
 }
