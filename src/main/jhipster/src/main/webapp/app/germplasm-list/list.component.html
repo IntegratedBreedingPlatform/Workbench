@@ -2,7 +2,7 @@
 	<div class="row pt-4">
 		<div class="col">
 			<div class="row"></div>
-			<jhi-variable-container [title]="title" [variables]="variables" [hideAddAndRemove]="germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
+			<jhi-variable-container [title]="title" [variables]="variables" [hideAddAndRemove]="this.germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
 		</div>
 		<div class="col">
 <!--			<div ngbDropdown class="float-right" placement="bottom-right">-->
@@ -15,8 +15,8 @@
 	</div>
 	<div class="row pt-4">
 		<div class="col">
-			<jhi-list-columns *ngIf="!this.germplasmList.locked" class="ml-2 float-right"
-							  [listId]="listId"
+			<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
+							  [listId]="this.listId"
 							  (columnsSelectedEvent)="onColumnsSelected($event)">
 			</jhi-list-columns>
 		</div>
@@ -56,7 +56,7 @@
 			<tbody *ngIf="entries.length else nodata">
 			<tr *ngFor="let entry of entries; trackBy: trackId; index as index">
 				<td *ngFor="let column of header">
-					<jhi-list-data-row [germplasmList]="germplasmList" [listId]="listId" [column]="column" [entry]="entry"></jhi-list-data-row>
+					<jhi-list-data-row [column]="column" [entry]="entry"></jhi-list-data-row>
 				</td>
 			</tr>
 			</tbody>

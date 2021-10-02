@@ -164,7 +164,7 @@ export class GermplasmListSearchComponent implements OnInit {
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
 
-        this.router.navigate(['/germplasm-list/list'], {queryParams: {
+        this.router.navigate([`/germplasm-list/list/${list.listId}`], {queryParams: {
                 listId: list.listId,
                 listName: list.listName
             }

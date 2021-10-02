@@ -192,7 +192,7 @@ export class ListComponent implements OnInit {
     }
 
     transition() {
-        this.router.navigate(['./'], {
+        this.router.navigate([`./${this.listId}`], {
             queryParamsHandling: 'merge',
             queryParams: {
                 page: this.page,
@@ -235,17 +235,6 @@ export class ListComponent implements OnInit {
         this.loadAll();
     }
 
-    selectList($event, list: GermplasmListSearchResponse) {
-        $event.preventDefault();
-
-        this.router.navigate(['/germplasm-list/list'], {
-            queryParams: {
-                listId: list.listId,
-                listName: list.listName
-            }
-        });
-    }
-
     toggleListStatus() {
         this.germplasmListService.toggleGermplasmListStatus(this.listId).subscribe(
             (res: boolean) => this.onToggleListStatusSuccess(res),
@@ -272,7 +261,7 @@ export class ListComponent implements OnInit {
     }
 
     applyFilters() {
-        this.loadAll();
+        this.resetTable();
     }
 
     resetFilters() {
