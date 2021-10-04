@@ -267,6 +267,17 @@
        "action.apply.to.all.associateLots": "Associate lot/s to target germplasm for all germplasm",
        "action.apply.to.all.omitLots": "Omit all germplasm from the merge",
        "no.germplasm.to.be.merged": "There is no germplasm to be merged",
-       "progeny.title": "Germplasm Progeny:"
+       "progeny.title": "Germplasm Progeny:",
+       "review.title": "Merge Germplasm - Review",
+       "review.germplasm.summary": "<b>{{germplasmDeletionCount}}</b> germplasm will be deleted, <b>{{listsCount}}</b> list(s) will be modified.",
+       "review.studies" : "<b>Studies</b>",
+       "review.studies.summary": "Germplasm will be replaced in <b>{{studiesCount}}</b> studies for <b>{{plotsCount}}</b> plot(s).",
+       "review.lots" : "<b>Inventory Lots</b>",
+       "review.lots.summary": "<b>{{migrateLotsCount}}</b> lot(s) will be migrated, <b>{{closeLotsCount}}</b> lot(s) will be closed.",
+       "review.transfer-data" : "<b>Germplasm Data</b>",
+       "review.transfer-passport-data" : "Passport data will be transferred to target germplasm.",
+       "review.transfer-attributes-data" : "Attributes data will be transferred to target germplasm.",
+       "review.transfer-names-types-data" : "Name-types data will be transferred to target germplasm.",
+       "review.no-transfer-germplasm-data" : "No passport, attributes and name-types data will be transferred to target germplasm."
    }
 }

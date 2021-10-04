@@ -8,8 +8,8 @@ import { GermplasmMergeRequest, MergeOptions, NonSelectedGermplasm } from '../..
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
-import { JhiEventManager } from 'ng-jhipster';
 import { MergeGermplasmExistingLotsComponent } from './merge-germplasm-existing-lots.component';
+import { MergeGermplasmReviewComponent } from './merge-germplasm-review.component';
 
 @Component({
     selector: 'jhi-merge-germplasm-select',
@@ -34,8 +34,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         private alertService: AlertService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
-        private germplasmService: GermplasmService,
-        private eventManager: JhiEventManager
+        private germplasmService: GermplasmService
     ) {
     }
 
@@ -118,13 +117,9 @@ export class MergeGermplasmSelectionComponent implements OnInit {
             mergeGermplasmExistingLotsModal.componentInstance.germplasmMergeRequest = germplasmMergeRequest;
             this.modal.dismiss();
         } else {
-            this.germplasmService.mergeGermplasm(germplasmMergeRequest).toPromise()
-                .then(() => {
-                    this.alertService.success('merge-germplasm.success')
-                    this.modal.dismiss();
-                    // Refresh the Germplasm Manager search germplasm table to reflect the changes made in germplasm.
-                    this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
-                }, (error) => this.onError(error));
+            const mergeGermplasmReviewModal = this.modalService.open(MergeGermplasmReviewComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
+            mergeGermplasmReviewModal.componentInstance.germplasmMergeRequest = germplasmMergeRequest;
+            this.modal.dismiss();
         }
     }
 
