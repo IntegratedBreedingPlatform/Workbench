@@ -292,7 +292,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     updateListFilter(filter) {
         this.request[filter.key] = filter.value.split(',');
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 
@@ -302,7 +302,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         } else {
             this.request[key] = filter.value;
         }
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 
@@ -311,13 +311,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             type: filter.matchType,
             value: filter.value
         };
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 
     updateBooleanFilter(filter: any, key: string) {
         this.request[key] = filter.value;
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 
@@ -328,7 +328,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             }).map((option) => {
                 return option.id;
             });
-            this.resultSearch.searchResultDbId = '';
+            this.resultSearch.searchResultsDbId = '';
             this.apply(filter);
         });
     }
@@ -337,13 +337,13 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         if (filter.transform) {
             filter.transform(this.request);
         }
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 
     reset(filter) {
         this._reset(filter);
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 
@@ -391,7 +391,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.clearFilters();
         this.removeAllAttributesColumn();
         this.removeAllNameTypesColumn();
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.transition();
     }
 
@@ -402,7 +402,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             this._reset(filter);
             ColumnFilterComponent.updateBadgeLabel(filter);
         }
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.transition();
     }
 
@@ -412,7 +412,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     openModal(filter) {
         filter.open(this.modal, this.request).then(() => {
-            this.resultSearch.searchResultDbId = '';
+            this.resultSearch.searchResultsDbId = '';
             this.apply(filter);
         });
     }
@@ -433,7 +433,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     updateRadioFilter(filter: any, key: string) {
         this.request[key] = filter.value;
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.apply(filter);
     }
 

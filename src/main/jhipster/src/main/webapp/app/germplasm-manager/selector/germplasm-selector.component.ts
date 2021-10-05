@@ -301,14 +301,14 @@ export class GermplasmSelectorComponent implements OnInit {
 
     search(request: GermplasmSearchRequest): Promise<string> {
         return new Promise((resolve, reject) => {
-            if (!this.resultSearch.searchResultDbId) {
+            if (!this.resultSearch.searchResultsDbId) {
                 this.germplasmService.search(request).subscribe((response) => {
-                    this.resultSearch.searchResultDbId = response;
-                    resolve(this.resultSearch.searchResultDbId);
+                    this.resultSearch.searchResultsDbId = response;
+                    resolve(this.resultSearch.searchResultsDbId);
                 }, (error) => reject(error));
                 this.page = 1;
             } else {
-                resolve(this.resultSearch.searchResultDbId);
+                resolve(this.resultSearch.searchResultsDbId);
             }
         });
     }
@@ -468,7 +468,7 @@ export class GermplasmSelectorComponent implements OnInit {
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);

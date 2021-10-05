@@ -1,4 +1,4 @@
 export class SearchResult {
-    constructor(public searchResultDbId?: string) {
+    constructor(public searchResultsDbId?: string) {
     }
 }

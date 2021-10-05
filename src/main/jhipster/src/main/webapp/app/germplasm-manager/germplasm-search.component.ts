@@ -341,14 +341,14 @@ export class GermplasmSearchComponent implements OnInit {
 
     search(request: GermplasmSearchRequest): Promise<string> {
         return new Promise((resolve, reject) => {
-            if (!this.resultSearch.searchResultDbId) {
+            if (!this.resultSearch.searchResultsDbId) {
                 this.germplasmService.search(request).subscribe((response) => {
-                    this.resultSearch.searchResultDbId = response;
-                    resolve(this.resultSearch.searchResultDbId);
+                    this.resultSearch.searchResultsDbId = response;
+                    resolve(this.resultSearch.searchResultsDbId);
                 }, (error) => reject(error));
                 this.page = 1;
             } else {
-                resolve(this.resultSearch.searchResultDbId);
+                resolve(this.resultSearch.searchResultsDbId);
             }
         });
     }
@@ -537,7 +537,7 @@ export class GermplasmSearchComponent implements OnInit {
     }
 
     toggleAdditionalColumn(isVisible: boolean, columnPropertyId: string) {
-        this.resultSearch.searchResultDbId = '';
+        this.resultSearch.searchResultsDbId = '';
         this.colVisPopOver.close();
         if (isVisible) {
             this.request.addedColumnsPropertyIds.push(columnPropertyId);
@@ -704,7 +704,7 @@ export class GermplasmSearchComponent implements OnInit {
 
         const searchComposite = new SearchComposite<SearchOriginComposite, number>();
         if (this.isSelectAll) {
-            searchComposite.searchRequest = new SearchOriginComposite(Number(this.resultSearch.searchResultDbId), SearchOrigin.GERMPLASM_SEARCH);
+            searchComposite.searchRequest = new SearchOriginComposite(Number(this.resultSearch.searchResultsDbId), SearchOrigin.GERMPLASM_SEARCH);
         } else {
             searchComposite.itemIds = this.getSelectedItemIds();
         }
@@ -747,7 +747,7 @@ export class GermplasmSearchComponent implements OnInit {
                 + '?cropName=' + this.paramContext.cropName
                 + '&programUUID=' + this.paramContext.programUUID
                 + '&printingLabelType=' + GERMPLASM_LABEL_PRINTING_TYPE
-                + '&searchRequestId=' + this.resultSearch.searchResultDbId;
+                + '&searchRequestId=' + this.resultSearch.searchResultsDbId;
         });
     }
 

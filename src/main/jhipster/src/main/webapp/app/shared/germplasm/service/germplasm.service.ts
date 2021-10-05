@@ -38,7 +38,7 @@ export class GermplasmService {
 
     search(req?: GermplasmSearchRequest): Observable<string> {
         return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID, req, { observe: 'response' })
-            .pipe(map((res: any) => res.body.result.searchResultDbId));
+            .pipe(map((res: any) => res.body.result.searchResultsDbId));
     }
 
     downloadGermplasmTemplate(isGermplasmUpdateFormat: boolean): Observable<HttpResponse<Blob>> {
