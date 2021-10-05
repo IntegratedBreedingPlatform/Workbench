@@ -430,11 +430,10 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 	}
 
 	function tryParseNumber(str) {
-		var retValue = null;
 		if (str && !isNaN(str)) {
 			return Number(str);
 		}
-		return retValue;
+		return str;
 	}
 
 	$scope.init();
