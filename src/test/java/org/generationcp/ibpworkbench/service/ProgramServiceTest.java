@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.service;
 
+import com.google.common.collect.ImmutableSet;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -128,7 +129,7 @@ public class ProgramServiceTest {
 		Assert.assertNull(project.getLastOpenDate());
 
 		Mockito.verify(this.programFavoriteService, Mockito.times(1)).addProgramFavorites(Mockito.eq(project.getUniqueID()), Mockito.eq(
-			ProgramFavorite.FavoriteType.LOCATION), Mockito.eq(new HashSet<>(unspecifiedLocationID)));
+			ProgramFavorite.FavoriteType.LOCATION), Mockito.anySet());
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil)
