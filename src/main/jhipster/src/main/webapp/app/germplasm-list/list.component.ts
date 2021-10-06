@@ -192,7 +192,7 @@ export class ListComponent implements OnInit {
     }
 
     transition() {
-        this.router.navigate([`./${this.listId}`], {
+        this.router.navigate([`./list/${this.listId}`], {
             queryParamsHandling: 'merge',
             queryParams: {
                 page: this.page,
