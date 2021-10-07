@@ -176,6 +176,7 @@ export class ListComponent implements OnInit {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
+                listId: this.listId,
                 sort: this.getSort()
             },
             relativeTo: this.activatedRoute
