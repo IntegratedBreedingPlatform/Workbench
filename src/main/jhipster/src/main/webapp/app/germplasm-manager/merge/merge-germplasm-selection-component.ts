@@ -101,7 +101,6 @@ export class MergeGermplasmSelectionComponent implements OnInit {
 
         nonSelectedGids.forEach((nonSelectedGid) => {
             const nonSelectedGermplasm = new NonSelectedGermplasm();
-            nonSelectedGermplasm.closeLots = false;
             nonSelectedGermplasm.germplasmId = nonSelectedGid;
             nonSelectedGermplasm.migrateLots = false;
             nonSelectedGermplasm.omit = false;

@@ -48,7 +48,6 @@ export class MergeGermplasmLotTableComponent implements OnChanges, OnInit {
     }
 
     updateNonSelectedGermplasmOptions() {
-        this.nonSelectedGermplasm.closeLots = this.selectedOption === LotMergeOptionsEnum.CLOSE;
         this.nonSelectedGermplasm.migrateLots = this.selectedOption === LotMergeOptionsEnum.MIGRATE;
         this.nonSelectedGermplasm.omit = this.selectedOption === LotMergeOptionsEnum.OMIT;
     }
