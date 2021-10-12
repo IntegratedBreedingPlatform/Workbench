@@ -23,7 +23,7 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
                 canActivate: [RouteAccessService]
             },
             {
-                path: 'list',
+                path: 'list/:listId',
                 component: ListComponent,
                 data: { authorities: SEARCH_GERMPLASM_LIST_PERMISSIONS },
                 canActivate: [RouteAccessService]

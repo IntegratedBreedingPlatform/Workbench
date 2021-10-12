@@ -58,7 +58,6 @@ export class GermplasmListSearchComponent implements OnInit {
     ) {
         this.page = 1;
         this.totalItems = 0;
-        this.predicate = '';
         this.currentSearch = '';
         this.predicate = ColumnLabels.LIST_NAME;
         this.reverse = 'asc';
@@ -186,7 +185,7 @@ export class GermplasmListSearchComponent implements OnInit {
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
 
-        this.router.navigate(['/germplasm-list/list'], {queryParams: {
+        this.router.navigate([`/germplasm-list/list/${list.listId}`], {queryParams: {
                 listId: list.listId,
                 listName: list.listName
             }
