@@ -1,5 +1,6 @@
 package org.generationcp.ibpworkbench.service;
 
+import com.google.common.collect.ImmutableSet;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -127,8 +128,8 @@ public class ProgramServiceTest {
 		Assert.assertEquals(ProgramServiceTest.USER_ID, project.getUserId());
 		Assert.assertNull(project.getLastOpenDate());
 
-		Mockito.verify(this.programFavoriteService, Mockito.times(1)).addProgramFavorite(Mockito.eq(project.getUniqueID()), Mockito.eq(
-			ProgramFavorite.FavoriteType.LOCATION), Mockito.eq(unspecifiedLocationID));
+		Mockito.verify(this.programFavoriteService, Mockito.times(1)).addProgramFavorites(Mockito.eq(project.getUniqueID()), Mockito.eq(
+			ProgramFavorite.FavoriteType.LOCATION), Mockito.anySet());
 
 		// Verify that utility to create workspace directory was called
 		Mockito.verify(this.installationDirectoryUtil)
@@ -161,14 +162,14 @@ public class ProgramServiceTest {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("1");
 		this.programService.addUnspecifiedLocationToFavorite(this.createProject());
 		Mockito.verify(this.locationDataManager).retrieveLocIdOfUnspecifiedLocation();
-		Mockito.verify(this.programFavoriteService).addProgramFavorite(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.verify(this.programFavoriteService).addProgramFavorites(Mockito.any(), Mockito.any(), Mockito.any());
 	}
 
 	@Test
 	public void testNonExistingUnspecifiedLocationId() {
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn("");
 		this.programService.addUnspecifiedLocationToFavorite(this.createProject());
-		Mockito.verify(this.programFavoriteService, Mockito.never()).addProgramFavorite(Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.verify(this.programFavoriteService, Mockito.never()).addProgramFavorites(Mockito.any(), Mockito.any(), Mockito.any());
 	}
 
 	private Project createProject() {
