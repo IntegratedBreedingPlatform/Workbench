@@ -25,7 +25,8 @@
 						<input type="checkbox" [checked]="isSelected(variable)" (click)="toggleSelect(index, variable, true)">
 					</td>
 					<td style="width: auto; min-width: 150px;">
-						{{variable.alias ? variable.alias : variable.name}}
+						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
+						   [queryParams]="{ variableId: variable.id }">{{variable.alias ? variable.alias : variable.name}}</a>
 					</td>
 					<td style="width: auto">{{variable.definition ? variable.definition : variable.description}}</td>
 				</tr>

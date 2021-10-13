@@ -80,6 +80,7 @@ import { InlineEditorService } from './inline-editor/inline-editor.service';
 import { VariableContainerComponent } from './variable-container/variable-container.component';
 import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     imports: [
@@ -90,7 +91,8 @@ import { FileDeleteOptionsComponent } from './file/component/file-delete-options
         TreeModule,
         DragDropModule,
         CdkDragDropModule,
-        LeafletModule
+        LeafletModule,
+        RouterModule
     ],
     declarations: [
         ModalComponent,
