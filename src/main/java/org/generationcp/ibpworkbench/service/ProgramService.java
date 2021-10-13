@@ -26,6 +26,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -147,8 +148,8 @@ public class ProgramService {
 	public void addUnspecifiedLocationToFavorite(final Project program) {
 		final String unspecifiedLocationID = this.locationDataManager.retrieveLocIdOfUnspecifiedLocation();
 		if (!StringUtils.isEmpty(unspecifiedLocationID)) {
-			programFavoriteService
-				.addProgramFavorite(program.getUniqueID(), ProgramFavorite.FavoriteType.LOCATION, Integer.parseInt(unspecifiedLocationID));
+			this.programFavoriteService
+				.addProgramFavorites(program.getUniqueID(), ProgramFavorite.FavoriteType.LOCATION, new HashSet<>(Integer.parseInt(unspecifiedLocationID)));
 		}
 	}
 
