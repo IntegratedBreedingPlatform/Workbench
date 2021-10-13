@@ -74,12 +74,12 @@ import { GermplasmGroupingService } from './germplasm/service/germplasm-grouping
 import { VariableValidationService } from './ontology/service/variable-validation.service';
 import { FileService } from './file/service/file.service';
 import { ColumnFilterInlineComponent } from './column-filter/inline/column-filter-inline.component';
-import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { ColumnFilterDropdownComponent } from './column-filter/column-filter-dropdown-component';
 import { InlineEditorComponent } from './inline-editor/inline-editor.component';
 import { InlineEditorService } from './inline-editor/inline-editor.service';
 import { VariableContainerComponent } from './variable-container/variable-container.component';
 import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
+import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 
 @NgModule({
     imports: [

@@ -33,6 +33,53 @@
             "confirm.delete.title": "Delete confirmation",
             "confirm.delete.warning": "Specified variable(s) already have data associated. Do you want to proceed?",
             "already.exsits": "Specified variable is already associated to the list"
+        },
+        "actions": {
+            "import-list":"Import list"
+        },
+        "import": {
+            "header": "Import List",
+            "file": {
+                "input.description": "Choose the file you would like to import in format: Excel",
+                "validation": {
+                    "file.empty": "Wrong name for Observation sheet or the file has no data. Please verify and try again",
+                    "extensions": "Only the following file extensions are allowed: {{param}}",
+                    "header": "At least GID, GUID or DESIGNATION column is required",
+                    "gid.format": "Some GID values are not a positive integer. Please correct them and try again",
+                    "unknown.column": "Some columns were not recognized in the system or are not relevant to the import list and were thus ignored ({{param}})"
+
+                }
+            },
+            "multi": {
+                "matches": {
+                    "header": "Select match",
+                    "description": "Multiple matches were found for the following <b>ROW #: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
+                }
+            },
+            "manual": {
+                "matches": {
+                    "header": "Manual match",
+                    "description": "No matches were found for the following records. Please provide a mapping. Unmapped records will be omitted."
+                }
+            },
+            "review": {
+                "header": "Review import list",
+                "description": "The system has matched using the following priority: GUID if available, then GID if available and lastly DESIGNATION",
+                "show.matches": "Show matches",
+                "skip.multi.matches" : "Skip data with multiple matches",
+                "skip.data.with.out.matches": "Skip data without matches",
+                "summary": {
+                    "title": "Confirmation",
+                    "message": "<h4>Import List summary:</h4><p>{{param}}</p>",
+                    "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
+                    "multiples.matches": "{{param}} entries selected with multiples matches",
+                    "single.matches": "{{param}} entries selected with single matches",
+                    "manual.matches": "{{param}} entries selected manually",
+                    "omitted.matches": "{{param}} entries omitted"
+                }
+            },
+            "cancel.confirm": "Are you sure you want to quit the import process?",
+            "success": "Germplasm imported successfully!"
         }
     }
 }

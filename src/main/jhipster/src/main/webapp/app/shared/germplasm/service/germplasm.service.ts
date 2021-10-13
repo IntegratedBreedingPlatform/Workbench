@@ -52,14 +52,13 @@ export class GermplasmService {
             germplasmUpdates, { observe: 'response' });
     }
 
-    getGermplasmMatches(germplasmPUIs: string[], names: string[]): Observable<GermplasmDto[]> {
+    getGermplasmMatches(germplasmPUIs: string[], germplasmUUIDs: string[], gids: number[], names: string[]): Observable<GermplasmDto[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/matches` +
             '?programUUID=' + this.context.programUUID;
 
         return getAllRecords<GermplasmDto>((page: number, pageSize: number) => {
             return this.http.post<GermplasmDto[]>(url, {
-                germplasmPUIs,
-                names
+                germplasmPUIs, germplasmUUIDs, names, gids
             }, {
                 params: createRequestOption({ page, size: pageSize })
             });
