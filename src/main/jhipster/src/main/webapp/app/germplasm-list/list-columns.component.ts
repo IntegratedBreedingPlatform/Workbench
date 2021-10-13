@@ -7,6 +7,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
+import { TermIdEnum } from '../shared/ontology/model/termid.enum';
 
 @Component({
     selector: 'jhi-list-columns',
@@ -23,7 +24,7 @@ export class ListColumnsComponent implements OnInit {
 
     @ViewChild('columnsDropdown') columnsDropdown: NgbDropdown;
 
-    readonly ENTRY_NO_TERM_ID = 8230;
+    TermIdEnum = TermIdEnum;
 
     staticColumns: GermplasmListColumnModel[] = [];
     nameColumns: GermplasmListColumnModel[] = [];

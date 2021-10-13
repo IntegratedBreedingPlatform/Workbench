@@ -11,7 +11,7 @@
 					<div class="form-check" *ngFor="let column of filteredStaticColumns">
 						<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
 							   id="check-static-{{column.id}}" name="'check-static-{{column.id}}'"
-							   [disabled]="column.id === ENTRY_NO_TERM_ID">
+							   [disabled]="column.id === TermIdEnum.ENTRY_NO">
 						<label class="form-check-label" for="check-static-{{column.id}}">
 							{{column.displayName}}
 						</label>
