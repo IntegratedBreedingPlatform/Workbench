@@ -154,6 +154,7 @@
     "actions": "Actions",
     "ok": "Ok",
     "search": "Search",
+    "omit": "Omit",
     "template.download": {
         "description": "You can download a template",
         "here": "here"

@@ -68,8 +68,8 @@ export class GermplasmListSearchComponent implements OnInit {
     ngOnInit() {
         this.filters = this.getInitialFilters();
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
-
         this.registerColumnFiltersChanged();
+        this.registerFilterBy();
         this.loadAll(this.request);
     }
 
@@ -153,6 +153,27 @@ export class GermplasmListSearchComponent implements OnInit {
         this.eventSubscriber = this.eventManager.subscribe(GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME, (event) => {
             this.resetTable();
         });
+    }
+
+    registerFilterBy() {
+        this.eventSubscriber = this.eventManager.subscribe('listNameFilter', (event) => {
+            this.resetFilters();
+            const listNameFilter = this.filters.filter((filter) => filter.type === FilterType.TEXT_WITH_MATCH_OPTIONS);
+            listNameFilter[0].matchType = MatchType.EXACTMATCH;
+            this.request.listNameFilter = event.content;
+            ColumnFilterComponent.reloadFilters(this.filters, this.request);
+            this.request.listNameFilter = {
+                type: MatchType.EXACTMATCH,
+                value: event.content
+            }
+            this.resetTable();
+        });
+    }
+
+    private resetFilters() {
+        this.filters = this.getInitialFilters();
+        this.request = new GermplasmListSearchRequest();
+        this.resultSearch = new SearchResult('');
     }
 
     resetTable() {

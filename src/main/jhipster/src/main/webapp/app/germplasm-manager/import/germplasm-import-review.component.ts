@@ -102,7 +102,7 @@ export class GermplasmImportReviewComponent implements OnInit {
             });
         });
         this.isLoading = true;
-        this.germplasmService.getGermplasmMatches(puis, Object.keys(names)).pipe(
+        this.germplasmService.getGermplasmMatches(puis, undefined, undefined, Object.keys(names)).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe((matches) => {
             this.matches = matches;
