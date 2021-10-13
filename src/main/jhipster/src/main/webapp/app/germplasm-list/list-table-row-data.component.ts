@@ -96,7 +96,7 @@ export class ListDataRowComponent implements OnInit {
     }
 
     isEditable() {
-        return this.column.columnCategory == GermplasmListColumnCategory.VARIABLE;
+        return this.column.columnCategory === GermplasmListColumnCategory.VARIABLE;
     }
 
     edit() {
