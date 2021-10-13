@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GermplasmListDataSearchResponse } from '../shared/germplasm-list/model/germplasm-list-data-search-response.model';
-import { ColumnAlias, ListComponent } from './list.component';
+import { ColumnAlias } from './list.component';
 import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 import { InlineEditorService } from '../shared/inline-editor/inline-editor.service';
@@ -93,6 +93,10 @@ export class ListDataRowComponent implements OnInit {
 
     isBreedingMethodNameColumn() {
         return this.column.alias === ColumnAlias.BREEDING_METHOD_PREFERRED_NAME;
+    }
+
+    isEditable() {
+        return this.column.columnCategory == GermplasmListColumnCategory.VARIABLE;
     }
 
     edit() {

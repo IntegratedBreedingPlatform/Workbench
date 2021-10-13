@@ -22,13 +22,18 @@
 	   queryParamsHandling="merge">{{this.rowData}}</a>
 </span>
 <ng-template #noLink>
-	<div *ngIf="!isEditing() || germplasmList?.locked else editable"
-		 (click)="!germplasmList?.locked && edit()"
-		 [class.editable]="!germplasmList?.locked">
-		<span><!-- filler -->&nbsp;</span>
+	<div *ngIf="!isEditable() else editable">
 		{{this.rowData}}
 	</div>
 	<ng-template #editable>
+		<div *ngIf="!isEditing() || germplasmList?.locked else editing"
+			 (click)="!germplasmList?.locked && edit()"
+			 [class.editable]="!germplasmList?.locked">
+			<span><!-- filler -->&nbsp;</span>
+			{{this.rowData}}
+		</div>
+	</ng-template>
+	<ng-template #editing>
 		<jhi-inline-editor [observationVariable]="column"
 						   [value]="this.rowData"
 						   (onApply)="submit($event)"
