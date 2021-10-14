@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { RouteAccessService } from '../shared';
-import { SEARCH_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { GermplasmListComponent } from './germplasm-list.component';
 import { ListComponent } from './list.component';
@@ -19,13 +19,13 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
             {
                 path: 'germplasm-lists-search',
                 component: GermplasmListSearchComponent,
-                data: { authorities: SEARCH_GERMPLASM_LIST_PERMISSIONS },
+                data: { authorities: MANAGE_GERMPLASM_LIST_PERMISSIONS },
                 canActivate: [RouteAccessService]
             },
             {
                 path: 'list/:listId',
                 component: ListComponent,
-                data: { authorities: SEARCH_GERMPLASM_LIST_PERMISSIONS },
+                data: { authorities: MANAGE_GERMPLASM_LIST_PERMISSIONS },
                 canActivate: [RouteAccessService]
             }
         ]
