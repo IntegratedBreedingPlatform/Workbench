@@ -24,6 +24,7 @@ import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-select
 import { MergeGermplasmExistingLotsComponent } from './merge/merge-germplasm-existing-lots.component';
 import { MergeGermplasmLotTableComponent } from './merge/merge-germplasm-lot-table.component';
 import { GermplasmProgenyModalComponent, GermplasmProgenyPopupComponent } from './merge/germplasm-progeny-modal.component';
+import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.component';
 
 @NgModule({
     imports: [
@@ -54,6 +55,7 @@ import { GermplasmProgenyModalComponent, GermplasmProgenyPopupComponent } from '
         MergeGermplasmSelectionComponent,
         MergeGermplasmExistingLotsComponent,
         MergeGermplasmLotTableComponent,
+        MergeGermplasmReviewComponent,
         GermplasmProgenyModalComponent,
         GermplasmProgenyPopupComponent
     ],
@@ -80,6 +82,7 @@ import { GermplasmProgenyModalComponent, GermplasmProgenyPopupComponent } from '
         MergeGermplasmSelectionComponent,
         MergeGermplasmExistingLotsComponent,
         MergeGermplasmLotTableComponent,
+        MergeGermplasmReviewComponent,
         GermplasmProgenyModalComponent,
         GermplasmProgenyPopupComponent
     ],

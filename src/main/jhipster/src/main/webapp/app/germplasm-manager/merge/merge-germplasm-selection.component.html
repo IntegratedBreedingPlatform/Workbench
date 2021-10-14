@@ -16,13 +16,14 @@
 			<tr>
 				<th><span jhiTranslate="merge-germplasm.column.target"></span></th>
 				<th><span jhiTranslate="search-germplasm.column.gid"></span></th>
-				<th><span jhiTranslate="merge-germplasm.column.guid"></span></th>
-				<th><span jhiTranslate="merge-germplasm.column.designation"></span></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.location"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.designation"></span></th>
 				<th><span jhiTranslate="search-germplasm.column.lotCount"></span></th>
 				<th><span jhiTranslate="merge-germplasm.column.hasProgeny"></span></th>
-				<th><span jhiTranslate="merge-germplasm.column.hasPedigree"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.cross"></span></th>
 				<th><span jhiTranslate="search-germplasm.column.groupId"></span></th>
-				<th><span jhiTranslate="merge-germplasm.column.usedInStudy"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.usedInLockedList"></span></th>
+				<th><span jhiTranslate="merge-germplasm.column.usedInLockedStudy"></span></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -31,14 +32,15 @@
 					<input type="radio" name="gid-option-group" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
 				</td>
 				<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
-				<td>{{germplasm.germplasmUUID}}</td>
+				<td>{{germplasm.locationName}}</td>
 				<td>{{germplasm.germplasmPeferredName}}</td>
 				<td><a *ngIf="germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">{{germplasm.lotCount}}</a>
 					<span *ngIf="germplasm.lotCount === 0">-</span></td>
 				<td><a *ngIf="germplasm.hasProgeny" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-progeny-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">YES</a><span *ngIf="!germplasm.hasProgeny">NO</span></td>
-				<td><span *ngIf="germplasm.femaleParentGID && germplasm.maleParentGID">YES</span><span *ngIf="!germplasm.femaleParentGID && !germplasm.maleParentGID">NO</span></td>
+				<td>{{germplasm.pedigreeString}}</td>
 				<td><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
-				<td><span *ngIf="germplasm.usedInStudy">YES</span><span *ngIf="!germplasm.usedInStudy">No</span></td>
+				<td><span *ngIf="germplasm.usedInLockedList">YES</span><span *ngIf="!germplasm.usedInLockedList">No</span></td>
+				<td><span *ngIf="germplasm.usedInLockedStudy">YES</span><span *ngIf="!germplasm.usedInLockedStudy">No</span></td>
 			</tr>
 			</tbody>
 		</table>
