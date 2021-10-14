@@ -4,6 +4,11 @@
 	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getRowData() } }]"
 	   queryParamsHandling="merge">{{this.getRowData()}}</a>
 
+	<a *ngIf="this.isDesignationColumn()"
+	   (click)="$event.stopPropagation()"
+	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getGidData() } }]"
+	   queryParamsHandling="merge">{{this.getRowData()}}</a>
+
 	<a *ngIf="this.isLotsColumn() && this.getRowData()"
 	   (click)="$event.stopPropagation()"
 	   [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
