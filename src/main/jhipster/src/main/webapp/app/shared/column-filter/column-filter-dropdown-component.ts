@@ -14,7 +14,7 @@ import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
 								[name]="'dropdownFilter' + this.filter.key"
 								[id]="'dropdownFilter' + this.filter.key"
 								[placeholder]="'Select option' + (this.multipleSelect ? 's' : '')"
-								[allowClear]="true"
+								[allowClear]="false"
 								[(ngModel)]="selectedValues"
 								[data]="this.values"
 								[options]="this.options"
