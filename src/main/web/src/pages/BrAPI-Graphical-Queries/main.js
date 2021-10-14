@@ -157,6 +157,8 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 
 	$scope.filteredDataResult = [];
 
+    $scope.nanTraitNames = new Set();
+
 	$scope.gid = null;
 
 	$scope.observationLevels = [];
@@ -231,7 +233,10 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 			resolve: {
 				filteredDataResult: function () {
 					return $scope.filteredDataResult;
-				}
+				},
+                nanTraitNames: function () {
+                    return $scope.nanTraitNames;
+                }
 			}
 		});
 	};
@@ -260,7 +265,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 				}
 			});
 			observeUnit.observations.forEach(function (obs) {
-				newObj[obs.observationVariableName] = tryParseNumber(obs.value);
+				newObj[obs.observationVariableName] = tryParseNumber(obs.value, obs.observationVariableName);
 				traits[obs.observationVariableName] = true;
 			});
 			return newObj;
@@ -270,7 +275,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		data.forEach(function (datum) {
 			trait_names.forEach(function (trait) {
 				if (datum[trait] == undefined || datum[trait] == null || datum[trait] == NaN) {
-					datum[trait] = null
+					datum[trait] = null;
 				}
 			})
 		});
@@ -429,10 +434,12 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		});
 	}
 
-	function tryParseNumber(str) {
+	function tryParseNumber(str, trait) {
 		if (str && !isNaN(str)) {
 			return Number(str);
 		}
+        $scope.nanTraitNames.add(trait);
+
 		return str;
 	}
 
@@ -460,8 +467,8 @@ mainApp.controller('SelectGermplasmController', ['$scope', '$q', '$uibModalInsta
 
 	}]);
 
-mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'filteredDataResult',
-	function ($scope, $q, $uibModalInstance, rCallService, filteredDataResult) {
+mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'filteredDataResult', 'nanTraitNames',
+	function ($scope, $q, $uibModalInstance, rCallService, filteredDataResult, nanTraitNames) {
 
 		$scope.errorMessage = '';
 		$scope.rCallObjects = [];
@@ -471,7 +478,9 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 
 		$scope.proceed = function () {
 			$scope.errorMessage = '';
-			transform(angular.copy($scope.selectedRCallObject), filteredDataResult);
+            var rObject = angular.copy($scope.selectedRCallObject);
+            var filteredData = clearNanData(rObject.description, filteredDataResult, nanTraitNames);
+			transform(rObject, filteredData);
 		};
 
 		$scope.cancel = function () {
@@ -517,6 +526,21 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 				$scope.errorMessage = 'An error occurred while connecting to OpenCPU API. ' + errorResponse.data;
 			});
 		}
+
+        function clearNanData (transformType, data, nanTraits) {
+            var retData = angular.copy(data);
+            if (transformType === "None"){
+              return retData;
+            }
+
+            retData.forEach(function (datum) {
+                nanTraits.forEach(function (trait) {
+                    datum[trait] = null;
+                })
+            });
+
+            return retData;
+        }
 
 		function download(data) {
 			getExportFileName('datafile', 'csv').then(function (response) {
