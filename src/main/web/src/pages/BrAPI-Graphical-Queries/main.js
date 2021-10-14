@@ -157,7 +157,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 
 	$scope.filteredDataResult = [];
 
-    $scope.nanTraitNames = new Set();
+	$scope.nanTraitNames = new Set();
 
 	$scope.gid = null;
 
@@ -234,9 +234,9 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 				filteredDataResult: function () {
 					return $scope.filteredDataResult;
 				},
-                nanTraitNames: function () {
-                    return $scope.nanTraitNames;
-                }
+				nanTraitNames: function () {
+					return $scope.nanTraitNames;
+				}
 			}
 		});
 	};
@@ -438,7 +438,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		if (str && !isNaN(str)) {
 			return Number(str);
 		}
-        $scope.nanTraitNames.add(trait);
+		$scope.nanTraitNames.add(trait);
 
 		return str;
 	}
@@ -478,8 +478,9 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 
 		$scope.proceed = function () {
 			$scope.errorMessage = '';
-            var rObject = angular.copy($scope.selectedRCallObject);
-            var filteredData = clearNanData(rObject.description, filteredDataResult, nanTraitNames);
+			var rObject = angular.copy($scope.selectedRCallObject);
+			var filteredData = clearNanData(rObject.description, filteredDataResult, nanTraitNames);
+
 			transform(rObject, filteredData);
 		};
 
@@ -527,20 +528,20 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			});
 		}
 
-        function clearNanData (transformType, data, nanTraits) {
-            var retData = angular.copy(data);
-            if (transformType === "None"){
-              return retData;
-            }
+		function clearNanData (transformType, data, nanTraits) {
+			var retData = angular.copy(data);
+			if (transformType === "None"){
+				return retData;
+			}
 
-            retData.forEach(function (datum) {
-                nanTraits.forEach(function (trait) {
-                    datum[trait] = null;
-                })
-            });
+			retData.forEach(function (datum) {
+				nanTraits.forEach(function (trait) {
+					datum[trait] = null;
+				})
+			});
 
-            return retData;
-        }
+			return retData;
+		}
 
 		function download(data) {
 			getExportFileName('datafile', 'csv').then(function (response) {
