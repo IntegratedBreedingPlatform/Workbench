@@ -18,7 +18,6 @@ export class MergeOptions {
 
 export class NonSelectedGermplasm {
     constructor(
-        public closeLots?: boolean,
         public germplasmId?: number,
         public migrateLots?: boolean,
         public omit?: boolean
