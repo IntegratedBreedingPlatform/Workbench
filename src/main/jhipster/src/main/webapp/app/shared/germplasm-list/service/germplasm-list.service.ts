@@ -77,7 +77,7 @@ export class GermplasmListService implements ListService {
         return this.http.get<GermplasmListObservationVariable[]>(url, { observe: 'response' });
     }
 
-    saveGermplasmListDataView(listId: number, request: GermplasmListDataUpdateViewRequest[]) {
+    updateGermplasmListDataView(listId: number, request: GermplasmListDataUpdateViewRequest[]) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/view?programUUID=` + this.context.programUUID;
         return this.http.put<any>(url, request, { observe: 'response' });
     }

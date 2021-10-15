@@ -186,7 +186,7 @@ export class ListComponent implements OnInit {
 
     onColumnsSelected(columns: GermplasmListColumnModel[]) {
         const request = this.mapSelectedColumnsToUpdateViewRequest(columns);
-        this.germplasmListService.saveGermplasmListDataView(this.listId, request).subscribe(
+        this.germplasmListService.updateGermplasmListDataView(this.listId, request).subscribe(
             (res: HttpResponse<any>) => this.refreshTable(),
             (res: HttpErrorResponse) => this.onError(res)
         );
