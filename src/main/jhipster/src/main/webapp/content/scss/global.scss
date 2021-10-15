@@ -620,3 +620,15 @@ Input with icon
 
 .left-addon input  { padding-left:  30px; }
 .right-addon input { padding-right: 30px; }
+
+/* ==========================================================================
+Text ellipsis
+========================================================================== */
+.text-ellipsis {
+    display: block;
+    white-space: nowrap;
+    max-width: 125px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+

@@ -201,6 +201,12 @@ export class GermplasmService {
         return this.http.post(url, germplasmMergeRequest);
     }
 
+    reviewGermplasmMerge(germplasmMergeRequest: GermplasmMergeRequest) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/merge/summary` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post(url, germplasmMergeRequest);
+    }
+
     getProgenies(gid: number): Observable<GermplasmProgeny[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/progenies`;
         return this.http.get<GermplasmProgeny[]>(url);

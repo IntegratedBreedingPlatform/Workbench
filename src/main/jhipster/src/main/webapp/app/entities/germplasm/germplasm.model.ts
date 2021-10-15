@@ -30,7 +30,7 @@ export class Germplasm {
         public locationId?: number,
         public breedingMethodId?: number,
         public hasProgeny?: boolean,
-        public usedInStudy?: boolean,
+        public usedInLockedStudy?: boolean,
         public usedInLockedList?: boolean
     ) {
     }

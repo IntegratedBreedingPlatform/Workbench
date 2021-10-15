@@ -74,6 +74,7 @@ export class ListDataRowComponent implements OnInit {
 
     shouldHasLink() {
         return this.isGidColumn() ||
+            this.isDesignationColumn() ||
             this.isLotsColumn() ||
             this.isLocationNameColumn() ||
             this.isBreedingMethodNameColumn();
@@ -81,6 +82,10 @@ export class ListDataRowComponent implements OnInit {
 
     isGidColumn() {
         return this.column.alias === ColumnAlias.GID;
+    }
+
+    isDesignationColumn() {
+        return this.column.alias === ColumnAlias.DESIGNATION;
     }
 
     isLotsColumn() {
