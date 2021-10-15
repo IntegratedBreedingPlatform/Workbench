@@ -43,31 +43,43 @@ export class ListDataRowComponent implements OnInit {
     }
 
     shouldHasLink() {
-        return this.isGidColumn() ||
+        return this.shouldHasGidDetailsLink() ||
             this.isDesignationColumn() ||
-            this.isLotsColumn() ||
+            this.shouldHasLotsLink() ||
             this.isLocationNameColumn() ||
             this.isBreedingMethodNameColumn();
     }
 
-    isGidColumn() {
+    isGidColumn(): boolean {
         return this.column.alias === ColumnAlias.GID;
     }
 
-    isDesignationColumn() {
+    isDesignationColumn(): boolean {
         return this.column.alias === ColumnAlias.DESIGNATION;
     }
 
-    isLotsColumn() {
+    isLotsColumn(): boolean {
         return this.column.alias === ColumnAlias.LOTS;
     }
 
-    isLocationNameColumn() {
+    isGroupIdColumn(): boolean {
+        return this.column.alias === ColumnAlias.GROUP_ID;
+    }
+
+    isLocationNameColumn(): boolean {
         return this.column.alias === ColumnAlias.LOCATION_NAME;
     }
 
-    isBreedingMethodNameColumn() {
+    isBreedingMethodNameColumn(): boolean {
         return this.column.alias === ColumnAlias.BREEDING_METHOD_PREFERRED_NAME;
+    }
+
+    shouldHasGidDetailsLink(): boolean {
+        return this.isGidColumn() || (this.isGroupIdColumn() && this.getRowData());
+    }
+
+    shouldHasLotsLink(): boolean {
+        return this.isLotsColumn() && this.getRowData();
     }
 
 }

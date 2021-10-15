@@ -1,5 +1,5 @@
 <span *ngIf="this.shouldHasLink() else noLink">
-	<a *ngIf="this.isGidColumn()"
+	<a *ngIf="this.isGidColumn() || this.isGroupIdColumn()"
 	   (click)="$event.stopPropagation()"
 	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getRowData() } }]"
 	   queryParamsHandling="merge">{{this.getRowData()}}</a>
@@ -9,12 +9,11 @@
 	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getGidData() } }]"
 	   queryParamsHandling="merge">{{this.getRowData()}}</a>
 
-	<a *ngIf="this.isLotsColumn() && this.getRowData()"
+	<a *ngIf="this.isLotsColumn()"
 	   (click)="$event.stopPropagation()"
 	   [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
 	   [queryParams]="{gid: this.getGidData()}"
 	   queryParamsHandling="merge">{{this.getRowData()}}</a>
-	<span *ngIf="this.isLotsColumn() && this.getRowData() === 0">-</span>
 
 	<a *ngIf="this.isLocationNameColumn()"
 	   (click)="$event.stopPropagation()"
@@ -27,5 +26,6 @@
 	   queryParamsHandling="merge">{{this.getRowData()}}</a>
 </span>
 <ng-template #noLink>
-	<span>{{this.getRowData()}}</span>
+	<span *ngIf="this.isGroupIdColumn() || this.isLotsColumn()">-</span>
+	<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()">{{this.getRowData()}}</span>
 </ng-template>
