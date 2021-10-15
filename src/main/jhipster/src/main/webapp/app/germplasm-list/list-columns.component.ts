@@ -13,7 +13,7 @@ import { TermIdEnum } from '../shared/ontology/model/termid.enum';
     selector: 'jhi-list-columns',
     templateUrl: './list-columns.component.html',
     styleUrls: [
-        './germplasm-list.scss'
+        './list-columns.component.scss'
     ]
 })
 export class ListColumnsComponent implements OnInit {
