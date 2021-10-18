@@ -150,12 +150,25 @@ export class GermplasmListImportComponent implements OnInit {
 
     private validateData(errorMessage: string[]) {
         // row validations
+        let hasEntryCode = false;
+        let hasEntryCodeEmpty = false;
+
         for (const row of this.context.data) {
             if (row[HEADERS.GID] && (isNaN(row[HEADERS.GID])
                 || !Number.isInteger(Number(row[HEADERS.GID])) || row[HEADERS.GID] < 0)) {
                 errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.gid.format'));
                 break;
             }
+
+            if (!row[HEADERS.ENTRY_CODE]) {
+                hasEntryCodeEmpty = true;
+            } else {
+                hasEntryCode = true;
+            }
+        }
+
+        if (hasEntryCode && hasEntryCodeEmpty) {
+            errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.code'));
         }
     }
 
@@ -205,6 +218,7 @@ export enum HEADERS {
     'DESIGNATION' = 'DESIGNATION',
     // Used internally - doesn't come in spreadsheet
     'GID_MATCHES' = 'GID MATCHES',
-    'ROW_NUMBER' = 'ROW NUMBER'
+    'ROW_NUMBER' = 'ROW NUMBER',
+    'ENTRY_CODE' = 'ENTRY_CODE'
 
 }

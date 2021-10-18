@@ -208,7 +208,7 @@ export class ListComponent implements OnInit {
 
     onColumnsSelected(columns: GermplasmListColumnModel[]) {
         const request = this.mapSelectedColumnsToUpdateViewRequest(columns);
-        this.germplasmListService.saveGermplasmListDataView(this.listId, request).subscribe(
+        this.germplasmListService.updateGermplasmListDataView(this.listId, request).subscribe(
             (res: HttpResponse<any>) => this.refreshTable(),
             (res: HttpErrorResponse) => this.onError(res)
         );
@@ -473,8 +473,9 @@ export class ListComponent implements OnInit {
 export enum ColumnAlias {
     'ENTRY_NO' = 'ENTRY_NO',
     'GID' = 'GID',
+    'DESIGNATION' = 'DESIGNATION',
     'LOTS' = 'LOTS',
+    'GROUP_ID' = 'GROUP_ID',
     'LOCATION_NAME' = 'LOCATION_NAME',
-    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME',
-    'DESIGNATION' = 'DESIGNATION'
+    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME'
 }
