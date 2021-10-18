@@ -38,6 +38,7 @@
 						<th>{{HEADERS.GID}}</th>
 						<th>{{HEADERS.GUID}}</th>
 						<th>{{HEADERS.DESIGNATION}}</th>
+						<th>{{HEADERS.ENTRY_CODE}}</th>
 						<th>{{HEADERS.GID_MATCHES}}</th>
 						</thead>
 						<tbody *ngIf="rows && rows.length else nodata">
@@ -62,6 +63,7 @@
 							<td *ngIf="!this.matchesByName[toUpper(row[HEADERS.DESIGNATION])]">
 								<span>{{row[HEADERS.DESIGNATION]}}</span>
 							</td>
+							<td>{{row[HEADERS.ENTRY_CODE]}}</td>
 							<td>
 								<span *ngFor="let germplasm of row[HEADERS.GID_MATCHES]; index as i">
 									<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">
