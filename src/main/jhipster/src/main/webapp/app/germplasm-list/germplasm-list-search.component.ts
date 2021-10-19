@@ -26,10 +26,10 @@ declare var $: any;
 })
 export class GermplasmListSearchComponent implements OnInit {
 
+    static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
+
     IMPORT_GERMPLASM_LIST_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LISTS'];
     ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LISTS'];
-
-    static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
     COLUMN_FILTER_EVENT_NAME = GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME;
 
     itemsPerPage = 20;

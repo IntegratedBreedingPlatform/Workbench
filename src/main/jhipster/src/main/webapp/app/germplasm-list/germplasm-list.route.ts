@@ -19,13 +19,13 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
             {
                 path: 'germplasm-lists-search',
                 component: GermplasmListSearchComponent,
-                data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS,'SEARCH_GERMPLASM_LISTS'] },
+                data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS'] },
                 canActivate: [RouteAccessService]
             },
             {
                 path: 'list/:listId',
                 component: ListComponent,
-                data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS,'SEARCH_GERMPLASM_LISTS'] },
+                data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS'] },
                 canActivate: [RouteAccessService]
             }
         ]
@@ -34,7 +34,7 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
         path: 'import-germplasm-list',
         component: GermplasmListImportPopupComponent,
         outlet: 'popup',
-        data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS,'SEARCH_GERMPLASM_LISTS', 'IMPORT_GERMPLASM_LISTS'] },
+        data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS', 'IMPORT_GERMPLASM_LISTS'] },
         canActivate: [RouteAccessService]
     }
 ];
