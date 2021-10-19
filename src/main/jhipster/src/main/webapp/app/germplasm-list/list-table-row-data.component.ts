@@ -105,11 +105,11 @@ export class ListDataRowComponent implements OnInit {
     }
 
     shouldHasGidDetailsLink(): boolean {
-        return this.isGidColumn() || (this.isGroupIdColumn() && this.getRowData());
+        return this.isGidColumn() || (this.isGroupIdColumn() && Boolean(this.rowData));
     }
 
     shouldHasLotsLink(): boolean {
-        return this.isLotsColumn() && this.getRowData();
+        return this.isLotsColumn() && Boolean(this.rowData);
     }
 
     isEditable() {

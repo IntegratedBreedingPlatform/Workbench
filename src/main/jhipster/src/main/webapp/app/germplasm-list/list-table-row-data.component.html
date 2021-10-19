@@ -1,50 +1,49 @@
-<span *ngIf="this.shouldHasLink() else noLink">
-	<a *ngIf="this.isGidColumn() || this.isGroupIdColumn()"
-	   (click)="$event.stopPropagation()"
-	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.rowData } }]"
-	   queryParamsHandling="merge">{{this.rowData}}</a>
+<div *ngIf="!isEditable() else editable">
+	<span *ngIf="this.shouldHasLink() else noLink">
+		<a *ngIf="this.isGidColumn() || this.isGroupIdColumn()"
+		   (click)="$event.stopPropagation()"
+		   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.rowData } }]"
+		   queryParamsHandling="merge">{{this.rowData}}</a>
 
-	<a *ngIf="this.isDesignationColumn()"
-	   (click)="$event.stopPropagation()"
-	   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getGidData() } }]"
-	   queryParamsHandling="merge">{{this.rowData}}</a>
+		<a *ngIf="this.isDesignationColumn()"
+		   (click)="$event.stopPropagation()"
+		   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getGidData() } }]"
+		   queryParamsHandling="merge">{{this.rowData}}</a>
 
-	<a *ngIf="this.isLotsColumn()"
-	   (click)="$event.stopPropagation()"
-	   [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
-	   [queryParams]="{gid: this.getGidData()}"
-	   queryParamsHandling="merge">{{this.rowData}}</a>
-	<span *ngIf="this.isLotsColumn() && this.rowData === 0">-</span>
+		<a *ngIf="this.isLotsColumn()"
+		   (click)="$event.stopPropagation()"
+		   [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
+		   [queryParams]="{gid: this.getGidData()}"
+		   queryParamsHandling="merge">{{this.rowData}}</a>
+		<span *ngIf="this.isLotsColumn() && this.rowData === 0">-</span>
 
-	<a *ngIf="this.isLocationNameColumn()"
-	   (click)="$event.stopPropagation()"
-	   [routerLink]="['/', { outlets: { popup: 'location/' + this.getLocationIdData() } }]"
-	   queryParamsHandling="merge">{{this.rowData}}</a>
+		<a *ngIf="this.isLocationNameColumn()"
+		   (click)="$event.stopPropagation()"
+		   [routerLink]="['/', { outlets: { popup: 'location/' + this.getLocationIdData() } }]"
+		   queryParamsHandling="merge">{{this.rowData}}</a>
 
-	<a *ngIf="this.isBreedingMethodNameColumn()"
-	   (click)="$event.stopPropagation()"
-	   [routerLink]="['/', { outlets: { popup: 'breeding-method/' + this.getBreedingMethodIdData() } }]"
-	   queryParamsHandling="merge">{{this.rowData}}</a>
-</span>
-<ng-template #noLink>
-	<span *ngIf="this.isGroupIdColumn() || this.isLotsColumn()">-</span>
-	<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()">{{this.rowData}}</span>
-	<div *ngIf="!isEditable() else editable">
+		<a *ngIf="this.isBreedingMethodNameColumn()"
+		   (click)="$event.stopPropagation()"
+		   [routerLink]="['/', { outlets: { popup: 'breeding-method/' + this.getBreedingMethodIdData() } }]"
+		   queryParamsHandling="merge">{{this.rowData}}</a>
+	</span>
+	<ng-template #noLink>
+		<span *ngIf="this.isGroupIdColumn() || this.isLotsColumn()">-</span>
+		<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()">{{this.rowData}}</span>
+	</ng-template>
+</div>
+<ng-template #editable>
+	<div *ngIf="!isEditing() || germplasmList?.locked else editing"
+		 (click)="!germplasmList?.locked && edit()"
+		 [class.editable]="!germplasmList?.locked">
+		<span><!-- filler -->&nbsp;</span>
 		{{this.rowData}}
 	</div>
-	<ng-template #editable>
-		<div *ngIf="!isEditing() || germplasmList?.locked else editing"
-			 (click)="!germplasmList?.locked && edit()"
-			 [class.editable]="!germplasmList?.locked">
-			<span><!-- filler -->&nbsp;</span>
-			{{this.rowData}}
-		</div>
-	</ng-template>
-	<ng-template #editing>
-		<jhi-inline-editor [observationVariable]="column"
-						   [value]="this.rowData"
-						   (onApply)="submit($event)"
-						   (onCancel)="cancel()"
-		></jhi-inline-editor>
-	</ng-template>
+</ng-template>
+<ng-template #editing>
+	<jhi-inline-editor [observationVariable]="column"
+					   [value]="this.rowData"
+					   (onApply)="submit($event)"
+					   (onCancel)="cancel()"
+	></jhi-inline-editor>
 </ng-template>
