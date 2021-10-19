@@ -22,6 +22,7 @@
 			<input class="form-control" placeholder="yyyy-mm-dd"
 				   name="editorInput" [(ngModel)]="dateValue"
 				   ngbDatepicker #editorInput="ngbDatepicker"
+				   container="body"
 				   (click)="editorInput.open()"
 				   (closed)="submitDate(f)"
 			/>
