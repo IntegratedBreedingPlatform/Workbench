@@ -154,7 +154,6 @@ export class ListComponent implements OnInit {
                 this.resultSearch.searchResultDbId = response;
                 resolve(this.resultSearch.searchResultDbId);
             }, (error) => reject(error));
-            this.page = 1;
         });
     }
 
