@@ -19,6 +19,7 @@ import { GermplasmListColumnModel } from './list-columns.component';
 import { GermplasmListDataUpdateViewRequest } from '../shared/germplasm-list/model/germplasm-list-data-update-view-request.model';
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { SearchResult } from '../shared/search-result.model';
 
 declare var $: any;
 
@@ -99,6 +100,7 @@ export class ListComponent implements OnInit {
     previousPage: number;
     predicate: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
 
@@ -116,6 +118,7 @@ export class ListComponent implements OnInit {
         this.currentSearch = '';
         this.predicate = ColumnAlias.ENTRY_NO;
         this.reverse = 'asc';
+        this.resultSearch = new SearchResult('');
     }
 
     async ngOnInit() {
@@ -144,22 +147,35 @@ export class ListComponent implements OnInit {
         this.germplasmListFilters = filters;
     }
 
+    postSearch(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const request = this.mapFiltersToRequest();
+            this.germplasmListService.postSearchListData(this.listId, request).subscribe((response: string) => {
+                this.resultSearch.searchResultDbId = response;
+                resolve(this.resultSearch.searchResultDbId);
+            }, (error) => reject(error));
+            this.page = 1;
+        });
+    }
+
     loadAll() {
         this.isLoading = true;
-
-        const request = this.mapFiltersToRequest();
-        this.germplasmListService.searchListData(this.listId, request,
-            {
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.getSort()
-            }
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<GermplasmListDataSearchResponse[]>) => this.onSearchSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        this.postSearch().then((searchId: string) => {
+            this.germplasmListService.getSearchResults(
+                this.listId,
+                {
+                    page: this.page - 1,
+                    size: this.itemsPerPage,
+                    sort: this.getSort(),
+                    searchRequestId: searchId
+                }
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<GermplasmListDataSearchResponse[]>) => this.onSearchSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
