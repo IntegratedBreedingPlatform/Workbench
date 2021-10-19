@@ -164,6 +164,10 @@ export class GermplasmListImportComponent implements OnInit {
                 hasEntryCodeEmpty = true;
             } else {
                 hasEntryCode = true;
+                if(row[HEADERS.ENTRY_CODE].length){
+                    errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.code.max.length'));
+                    break;
+                }
             }
         }
 
