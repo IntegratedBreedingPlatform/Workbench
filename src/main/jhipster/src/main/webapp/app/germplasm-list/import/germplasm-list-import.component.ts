@@ -32,6 +32,7 @@ export class GermplasmListImportComponent implements OnInit {
     selectedFileType = this.extensions[0];
 
     isLoading: boolean;
+
     constructor(
         private translateService: TranslateService,
         private alertService: AlertService,
@@ -164,6 +165,10 @@ export class GermplasmListImportComponent implements OnInit {
                 hasEntryCodeEmpty = true;
             } else {
                 hasEntryCode = true;
+                if (row[HEADERS.ENTRY_CODE].length > 47) {
+                    errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.code.max.length'));
+                    break;
+                }
             }
         }
 

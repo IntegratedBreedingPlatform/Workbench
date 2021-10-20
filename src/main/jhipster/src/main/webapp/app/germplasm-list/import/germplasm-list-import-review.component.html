@@ -76,7 +76,7 @@
 					<ng-template #nodata>
 						<tbody>
 						<tr>
-							<td colspan="4" jhiTranslate="no.data"></td>
+							<td colspan="6" jhiTranslate="no.data"></td>
 						</tr>
 						</tbody>
 					</ng-template>
@@ -126,7 +126,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="save()" class="btn btn-primary" [disabled]="isLoading || isSaving">
+	<button (click)="save()" class="btn btn-primary" [disabled]="isLoading || isSaving || rows && rows.length === 0">
 		<span *ngIf="isSaving" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="next"></span>
 	</button>
