@@ -27,6 +27,22 @@
                     "passport": "PASSPORT",
                     "attributes": "ATTRIBUTES"
                 }
+            },
+            "actions": {
+                "reorder-entries": "Reorder entries"
+            },
+            "selection": {
+                "empty": "Please select at least one entry."
+            },
+            "reorder-entries":{
+                "header": "Reorder entries",
+                "description": "Please, define the starting position of the entry number:",
+                "position-labels": {
+                    "beginning":  "At the beginning of the list",
+                    "end":  "At the end of the list",
+                    "fixed":  "Select a specific position:"
+                },
+                "reorder-action": "Reorder"
             }
       },
       "actions": {

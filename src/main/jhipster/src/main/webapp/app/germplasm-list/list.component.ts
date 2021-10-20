@@ -20,6 +20,8 @@ import { GermplasmListDataUpdateViewRequest } from '../shared/germplasm-list/mod
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { SearchResult } from '../shared/search-result.model';
+import { SearchComposite } from '../shared/model/search-composite';
+import { GermplasmListContext } from './germplasm-list.context';
 
 declare var $: any;
 
@@ -106,19 +108,25 @@ export class ListComponent implements OnInit {
 
     germplasmListFilters: any;
 
+    selectedItems: { [key: number]: GermplasmListDataSearchResponse } = {};
+    isSelectAll: boolean;
+    lastClickIndex: any;
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private germplasmListService: GermplasmListService,
                 private router: Router,
                 private alertService: AlertService,
-                private principal: Principal) {
+                private principal: Principal,
+                private germplasmListContext: GermplasmListContext) {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
         this.predicate = ColumnAlias.ENTRY_NO;
         this.reverse = 'asc';
         this.resultSearch = new SearchResult('');
+        this.isSelectAll = false;
     }
 
     async ngOnInit() {
@@ -261,6 +269,73 @@ export class ListComponent implements OnInit {
             return this.filters[column.alias];
         }
         return this.filters[this.getNotStaticFilterKey(column)];
+    }
+
+    isPageSelected() {
+        return this.size(this.selectedItems) && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
+    }
+
+    onSelectPage() {
+        if (this.isPageSelected()) {
+            // remove all items
+            this.entries.forEach((entry: GermplasmListDataSearchResponse) => delete this.selectedItems[entry.listDataId]);
+        } else {
+            // check remaining items
+            this.entries.forEach((entry: GermplasmListDataSearchResponse) => this.selectedItems[entry.listDataId] = entry);
+        }
+    }
+
+    isSelected(entry: GermplasmListDataSearchResponse) {
+        return this.selectedItems[entry.listDataId];
+    }
+
+    toggleSelect($event, index, entry: GermplasmListDataSearchResponse, checkbox = false) {
+        if (this.isSelectAll) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
+        let items;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1,
+                min = Math.min(this.lastClickIndex, index);
+            items = this.entries.slice(min, max);
+        } else {
+            items = [entry];
+            this.lastClickIndex = index;
+        }
+        const isClickedItemSelected = this.selectedItems[entry.listDataId];
+        for (const item of items) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[item.listDataId];
+            } else {
+                this.selectedItems[item.listDataId] = item;
+            }
+        }
+    }
+
+    openReorderEntries() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const searchComposite = new SearchComposite<any, number>();
+        if (this.isSelectAll) {
+            searchComposite.searchRequest = this.mapFiltersToRequest();
+        } else {
+            searchComposite.itemIds = this.getSelectedItemIds();
+        }
+        this.germplasmListContext.searchComposite = searchComposite;
+
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-reorder-entries-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
     }
 
     private getFilters() {
@@ -409,6 +484,18 @@ export class ListComponent implements OnInit {
             request.variablesFilters[filter.termId] = value;
             return;
         }
+    }
+
+    private validateSelection() {
+        if (this.entries.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) === 0)) {
+            this.alertService.error('germplasm-list.list-data.selection.empty');
+            return false;
+        }
+        return true;
+    }
+
+    private getSelectedItemIds() {
+        return Object.keys(this.selectedItems).map((listDataId: string) => Number(listDataId));
     }
 
 }
