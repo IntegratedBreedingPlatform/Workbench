@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { isNumeric } from '../util/is-numeric';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../alert/alert.service';
+import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
 
 @Component({
     selector: 'jhi-column-filter',
@@ -20,6 +21,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     @Input() resultSearch: any;
     @Input() request: any;
+    @Input() eventName = 'columnFiltersChanged';
 
     private _filters;
 
@@ -113,6 +115,15 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         filter.to = undefined;
     }
 
+    static transformDropdownFilter(filter, request) {
+        request[filter.key] = filter.selectedValues.map((option: Select2OptionData) => option.id);
+    }
+
+    static resetDropdownFilter(filter, request) {
+        request[filter.key] = undefined;
+        filter.selectedValues = [];
+    }
+
     static updateBadgeLabel(filter) {
         return ColumnFilterComponent.getBadgeLabelByType(filter).then((label) => {
             if (label) {
@@ -183,6 +194,12 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             case FilterType.BOOLEAN:
             case FilterType.MODAL:
                 return Promise.resolve(filter.value);
+            case FilterType.DROPDOWN:
+                if (filter.selectedValues && filter.selectedValues.length) {
+                    return Promise.resolve(filter.selectedValues.map((option: Select2OptionData) => `${option.text}`)
+                        .join(', '));
+                }
+                return Promise.resolve();
             default:
                 return Promise.resolve();
         }
@@ -424,7 +441,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.eventManager.broadcast({ name: 'columnFiltersChanged', content: '' });
+        this.eventManager.broadcast({ name: this.eventName, content: '' });
     }
 
     private onError(error) {
@@ -492,5 +509,6 @@ export enum FilterType {
     PEDIGREE_OPTIONS,
     ATTRIBUTES,
     NUMBER_RANGE,
-    NAME_TYPES
+    NAME_TYPES,
+    DROPDOWN
 }

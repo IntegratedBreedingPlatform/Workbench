@@ -40,3 +40,9 @@ export class ColumnFilterRadioComponent implements OnInit {
         this.onReset.emit();
     }
 }
+
+export class ColumnFilterRadioButtonOption {
+    constructor(public id: any,
+                public name: string) {
+    }
+}

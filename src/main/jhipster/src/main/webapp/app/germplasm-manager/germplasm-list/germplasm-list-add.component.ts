@@ -14,7 +14,7 @@ import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode'
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../../shared/alert/alert.service';
-import { GermplasmListService } from '../../shared/list-creation/service/germplasm-list.service';
+import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 
 declare var $: any;
 

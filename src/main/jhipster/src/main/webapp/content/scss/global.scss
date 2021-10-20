@@ -597,3 +597,34 @@ Audit
 .diff-new {
     background-color: #b9deb9;
 }
+
+/* ==========================================================================
+Input with icon
+========================================================================== */
+.inner-addon {
+    position: relative;
+}
+
+.inner-addon .fa {
+    position: absolute;
+    padding: 10px;
+    pointer-events: none;
+}
+
+.left-addon .fa  { left:  0px;}
+.right-addon .fa { right: 0px;}
+
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+/* ==========================================================================
+Text ellipsis
+========================================================================== */
+.text-ellipsis {
+    display: block;
+    white-space: nowrap;
+    max-width: 125px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
