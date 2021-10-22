@@ -58,7 +58,8 @@
                   "header": "At least GID, GUID or DESIGNATION column is required",
                   "gid.format": "Some GID values are not a positive integer. Please correct them and try again",
                   "unknown.column": "Some columns were not recognized in the system or are not relevant to the import list and were thus ignored ({{param}})",
-                  "entry.code": "ENTRY_CODE column should either be specified for all entries, or not at all"
+                  "entry.code": "ENTRY_CODE column should either be specified for all entries, or not at all",
+                  "entry.code.max.length": "ENTRY_CODE must not exceed 47 characters"
               }
           },
           "multi": {
