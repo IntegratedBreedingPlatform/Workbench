@@ -6,6 +6,7 @@ import { GermplasmListService } from '../../shared/germplasm-list/service/germpl
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
 import { GermplasmListImportMultiMatchesComponent } from './germplasm-list-import-multi-matches.component';
 import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
+import { GermplasmListImportUpdateComponent, GermplasmListImportUpdatePopupComponent } from './germplasm-list-import-update.component';
 
 @NgModule({
     imports: [
@@ -17,14 +18,18 @@ import { GermplasmListImportManualMatchesComponent } from './germplasm-list-impo
         GermplasmListImportPopupComponent,
         GermplasmListImportReviewComponent,
         GermplasmListImportMultiMatchesComponent,
-        GermplasmListImportManualMatchesComponent
+        GermplasmListImportManualMatchesComponent,
+        GermplasmListImportUpdateComponent,
+        GermplasmListImportUpdatePopupComponent
     ],
     entryComponents: [
         GermplasmListImportComponent,
         GermplasmListImportPopupComponent,
         GermplasmListImportReviewComponent,
         GermplasmListImportMultiMatchesComponent,
-        GermplasmListImportManualMatchesComponent
+        GermplasmListImportManualMatchesComponent,
+        GermplasmListImportUpdateComponent,
+        GermplasmListImportUpdatePopupComponent
     ],
     providers: [GermplasmListService
     ]

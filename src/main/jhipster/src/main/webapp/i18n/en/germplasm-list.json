@@ -35,10 +35,15 @@
             "already.exsits": "Specified variable is already associated to the list"
         },
         "actions": {
-            "import-list":"Import list"
+            "import-list":"Import list",
+            "import-list.update":"Import list update"
+
         },
         "import": {
             "header": "Import List",
+            "update": {
+                "header": "Import List Update"
+            },
             "file": {
                 "input.description": "Choose the file you would like to import in format: Excel",
                 "validation": {

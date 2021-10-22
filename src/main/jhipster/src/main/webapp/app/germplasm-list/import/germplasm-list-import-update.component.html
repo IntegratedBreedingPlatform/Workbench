@@ -1,0 +1,33 @@
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="germplasm-list.import.update.header"></span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+			(click)="dismiss()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div class="form-group row">
+		<div class="col">
+			<span jhiTranslate="template.download.description"></span>&nbsp;<a href (click)="export($event)" jhiTranslate="template.download.here"></a>.
+		</div>
+	</div>
+	<div class="form-group row">
+		<div class="col-2"></div>
+		<div class="col-md-8">
+			<input type="file" class="custom-file-input" id="importFile"
+				   (change)="onFileChange($event)" accept="{{selectedFileType}}">
+			<label class="custom-file-label" #fileUpload for="importFile">
+				<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="germplasm-list.import.file.input.description"></span></label>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+		<span jhiTranslate="cancel"></span>
+	</button>
+	<button (click)="next()" class="btn btn-primary" [disabled]="isLoading">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span jhiTranslate="next"></span>
+	</button>
+</div>
