@@ -2,7 +2,7 @@
 	<div class="row pt-4">
 		<div class="col">
 			<div class="row"></div>
-			<jhi-variable-container [title]="title" [variables]="variables" [hideAddAndRemove]="this.germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
+			<jhi-variable-container [title]="title" [selectedVariables]="selectedVariables" [variables]="variables" [hideAddAndRemove]="this.germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
 		</div>
 		<div class="col">
 <!--			<div ngbDropdown class="float-right" placement="bottom-right">-->

@@ -91,6 +91,7 @@ export class ListComponent implements OnInit {
 
     public isCollapsed = false;
     variables: VariableDetails[];
+    selectedVariables: { [key: number]: VariableDetails } = {};
     title = 'Entry details';
 
     @Input()
@@ -462,6 +463,7 @@ export class ListComponent implements OnInit {
 
              variableDeleted.forEach((variable) => {
                  this.variables.splice(this.variables.indexOf(variable), 1);
+                 delete this.selectedVariables[variable.id];
              });
 
              this.refreshTable();
