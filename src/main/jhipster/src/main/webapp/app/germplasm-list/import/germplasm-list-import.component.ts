@@ -70,7 +70,8 @@ export class GermplasmListImportComponent implements OnInit {
 
     export($event) {
         $event.preventDefault();
-        this.germplasmListService.downloadGermplasmTemplate().subscribe((response) => {
+        const isGermplasmListUpdateFormat = false;
+        this.germplasmListService.downloadGermplasmTemplate(isGermplasmListUpdateFormat).subscribe((response) => {
             saveFile(response);
         });
     }

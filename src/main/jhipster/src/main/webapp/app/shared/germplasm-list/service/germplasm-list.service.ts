@@ -84,8 +84,8 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
-    downloadGermplasmTemplate() {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls?programUUID=${this.context.programUUID}`;
+    downloadGermplasmTemplate(isGermplasListmUpdateFormat: boolean) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls/${isGermplasListmUpdateFormat}?programUUID=${this.context.programUUID}`;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
     createObservation(listId: number, listDataId: number, variableId: number, value: string): Observable<HttpResponse<number>> {
