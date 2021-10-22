@@ -31,7 +31,7 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
         ]
     },
     {
-        path: 'import-germplasm-list',
+        path: 'germplasm-list-import',
         component: GermplasmListImportPopupComponent,
         outlet: 'popup',
         data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS', 'IMPORT_GERMPLASM_LISTS'] },
