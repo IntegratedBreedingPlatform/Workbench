@@ -49,30 +49,30 @@
     normalize-path "^2.0.1"
     through2 "^2.0.3"
 
-"@solgenomics/brapi-fieldmap@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:1.1.3":
-  version "1.1.3"
-  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#ccd0e48abf4d7139f5a64bf56a607103872c2d20"
+"@solgenomics/brapi-fieldmap@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:1.1.4":
+  version "1.1.4"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#0bd7061c7d37227bf14a123eebdea6269f7ae829"
   dependencies:
-    "@solgenomics/brapijs" "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1"
+    "@solgenomics/brapijs" "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^2.0.2"
     "@turf/turf" "^5.1.6"
     d3 "^5.7.0"
     leaflet "^1.5.1"
     leaflet-path-transform "^1.1.2"
     leaflet-search "^2.9.8"
 
-"@solgenomics/brapi-study-comparison@git+ssh://git@github.com:IntegratedBreedingPlatform/BrAPI-Study-Comparison.git#semver:1.1.3":
-  version "1.1.3"
-  resolved "git+ssh://git@github.com:IntegratedBreedingPlatform/BrAPI-Study-Comparison.git#fd2c1f28b5ae291e546ac5c5874048fb0c014fb3"
+"@solgenomics/brapi-study-comparison@git+ssh://git@github.com:IntegratedBreedingPlatform/BrAPI-Study-Comparison.git#semver:1.1.4":
+  version "1.1.4"
+  resolved "git+ssh://git@github.com:IntegratedBreedingPlatform/BrAPI-Study-Comparison.git#19544efd5df36d8021b37f8da2b7be759178df83"
   dependencies:
-    "@solgenomics/brapijs" "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1"
+    "@solgenomics/brapijs" "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^2.0.2"
     "@solgenomics/brapp-wrapper" "^1.0.0"
     rollup "^0.56.1"
 
-"@solgenomics/brapijs@git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^1.0.1":
-  version "1.0.2"
-  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#bb18301bd4dc9f894b8c2bc8a6eb734d8b224991"
+"@solgenomics/brapijs@git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#semver:^2.0.2":
+  version "2.0.2"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/BrAPI-js.git#ec27e936709913b4a175043e740b2ebc6be669a5"
   dependencies:
-    node-fetch "2.0.0"
+    node-fetch "2.6.1"
     rollup "0.40"
 
 "@solgenomics/brapp-wrapper@^1.0.0":
@@ -6356,10 +6356,10 @@ node-emoji@^1.4.1:
   dependencies:
     lodash.toarray "^4.4.0"
 
-node-fetch@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.0.0.tgz#982bba43ecd4f2922a29cc186a6bbb0bb73fcba6"
-  integrity sha1-mCu6Q+zU8pIqKcwYamu7C7c/y6Y=
+node-fetch@2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
+  integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
 node-fs@~0.1.7:
   version "0.1.7"
