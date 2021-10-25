@@ -18,7 +18,6 @@ import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
 import { VariableDetails } from '../../ontology/model/variable-details';
-import * as Http from 'http';
 
 @Injectable()
 export class GermplasmListService implements ListService {
