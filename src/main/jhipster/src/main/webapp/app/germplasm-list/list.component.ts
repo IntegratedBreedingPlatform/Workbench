@@ -248,6 +248,10 @@ export class ListComponent implements OnInit {
         return (this.isStaticColumn(column.columnCategory) && this.STATIC_FILTERS[column.alias]) || this.isNotStaticColumn(column.columnCategory);
     }
 
+    isColumnSortable(column: GermplasmListObservationVariable): boolean {
+        return !(column.alias === ColumnAlias.MALE_PARENT_NAME || column.alias === ColumnAlias.FEMALE_PARENT_NAME);
+    }
+
     applyFilters() {
         this.resetTable();
     }
@@ -420,5 +424,7 @@ export enum ColumnAlias {
     'LOTS' = 'LOTS',
     'GROUP_ID' = 'GROUP_ID',
     'LOCATION_NAME' = 'LOCATION_NAME',
-    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME'
+    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME',
+    'MALE_PARENT_NAME' = 'MALE_PARENT_NAME',
+    'FEMALE_PARENT_NAME' = 'FEMALE_PARENT_NAME'
 }
