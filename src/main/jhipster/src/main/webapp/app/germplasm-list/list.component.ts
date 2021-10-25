@@ -24,6 +24,7 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+import { SearchResult } from '../shared/search-result.model';
 
 declare var $: any;
 
@@ -112,6 +113,7 @@ export class ListComponent implements OnInit {
     previousPage: number;
     predicate: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
 
@@ -132,6 +134,7 @@ export class ListComponent implements OnInit {
         this.currentSearch = '';
         this.predicate = ColumnAlias.ENTRY_NO;
         this.reverse = 'asc';
+        this.resultSearch = new SearchResult('');
     }
 
     async ngOnInit() {
@@ -167,22 +170,34 @@ export class ListComponent implements OnInit {
         this.germplasmListFilters = filters;
     }
 
+    postSearch(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const request = this.mapFiltersToRequest();
+            this.germplasmListService.postSearchListData(this.listId, request).subscribe((response: string) => {
+                this.resultSearch.searchResultDbId = response;
+                resolve(this.resultSearch.searchResultDbId);
+            }, (error) => reject(error));
+        });
+    }
+
     loadAll() {
         this.isLoading = true;
-
-        const request = this.mapFiltersToRequest();
-        this.germplasmListService.searchListData(this.listId, request,
-            {
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.getSort()
-            }
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<GermplasmListDataSearchResponse[]>) => this.onSearchSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        this.postSearch().then((searchId: string) => {
+            this.germplasmListService.getSearchResults(
+                this.listId,
+                {
+                    page: this.page - 1,
+                    size: this.itemsPerPage,
+                    sort: this.getSort(),
+                    searchRequestId: searchId
+                }
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<GermplasmListDataSearchResponse[]>) => this.onSearchSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
