@@ -39,6 +39,9 @@ export class ListComponent implements OnInit {
         GUID: {
             key: 'germplasmUUID', placeholder: 'Match Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
         },
+        GROUP_ID: {
+            key: 'groupId', placeholder: 'Match Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
+        },
         DESIGNATION: {
             key: 'designationFilter', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS, matchType: MatchType.STARTSWITH,
             category: GermplasmListColumnCategory.STATIC
@@ -249,7 +252,15 @@ export class ListComponent implements OnInit {
     }
 
     isColumnSortable(column: GermplasmListObservationVariable): boolean {
-        return !(column.alias === ColumnAlias.MALE_PARENT_NAME || column.alias === ColumnAlias.FEMALE_PARENT_NAME);
+        return !(column.alias === ColumnAlias.MALE_PARENT_NAME ||
+            column.alias === ColumnAlias.FEMALE_PARENT_NAME ||
+            column.alias === ColumnAlias.LOTS ||
+            column.alias === ColumnAlias.AVAILABLE ||
+            column.alias === ColumnAlias.UNIT ||
+            column.alias === ColumnAlias.CROSS ||
+            column.alias === ColumnAlias.MALE_PARENT_GID ||
+            column.alias === ColumnAlias.FEMALE_PARENT_GID
+        );
     }
 
     applyFilters() {
@@ -422,7 +433,12 @@ export enum ColumnAlias {
     'GID' = 'GID',
     'DESIGNATION' = 'DESIGNATION',
     'LOTS' = 'LOTS',
+    'AVAILABLE' = 'AVAILABLE',
+    'UNIT' = 'UNIT',
     'GROUP_ID' = 'GROUP_ID',
+    'CROSS' = 'CROSS',
+    'MALE_PARENT_GID' = 'MALE_PARENT_GID',
+    'FEMALE_PARENT_GID' = 'FEMALE_PARENT_GID',
     'LOCATION_NAME' = 'LOCATION_NAME',
     'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME',
     'MALE_PARENT_NAME' = 'MALE_PARENT_NAME',
