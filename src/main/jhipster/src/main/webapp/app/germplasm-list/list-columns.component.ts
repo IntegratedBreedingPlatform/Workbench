@@ -8,6 +8,9 @@ import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
+import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { GERMPLASM_LABEL_PRINTING_TYPE, GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
+import { ParamContext } from '../shared/service/param.context';
 
 @Component({
     selector: 'jhi-list-columns',
@@ -24,6 +27,9 @@ export class ListColumnsComponent implements OnInit {
 
     @ViewChild('columnsDropdown') columnsDropdown: NgbDropdown;
 
+    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS];
+    EXPORT_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EXPORT_GERMPLASM_LISTS'];
+
     TermIdEnum = TermIdEnum;
 
     staticColumns: GermplasmListColumnModel[] = [];
@@ -36,8 +42,10 @@ export class ListColumnsComponent implements OnInit {
     filteredPassportColumns: GermplasmListColumnModel[] = [];
     filteredAttributesColumns: GermplasmListColumnModel[] = [];
 
+
     constructor(private germplasmListService: GermplasmListService,
-                private alertService: AlertService) {
+                private alertService: AlertService,
+                private paramContext: ParamContext) {
     }
 
     ngOnInit(): void {
@@ -66,6 +74,23 @@ export class ListColumnsComponent implements OnInit {
             this.resetColumns();
         }
     }
+    exportDataAndLabels() {
+        this.paramContext.resetQueryParams().then(() => {
+            /*
+             * FIXME workaround for history.back() with base-href
+             *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href
+             *  or 'inventory-manager' string
+             */
+            window.history.pushState({}, '', window.location.hash);
+
+            window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
+                + '?cropName=' + this.paramContext.cropName
+                + '&programUUID=' + this.paramContext.programUUID
+                + '&printingLabelType=' + GERMPLASM_LIST_LABEL_PRINTING_TYPE
+                + '&listId=' + this.listId;
+        });
+    }
+
 
     private getSelectedColumns(): GermplasmListColumnModel[] {
         return [].concat(this.filteredStaticColumns, this.filteredNameColumns, this.filteredPassportColumns, this.filteredAttributesColumns)

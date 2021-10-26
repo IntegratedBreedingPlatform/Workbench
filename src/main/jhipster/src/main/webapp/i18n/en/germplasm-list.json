@@ -27,6 +27,10 @@
                     "passport": "PASSPORT",
                     "attributes": "ATTRIBUTES"
                 }
+            },
+            "actions-button": "Actions",
+            "actions": {
+                "export-data-and-labels": "Export list data and labels"
             }
       },
       "actions": {

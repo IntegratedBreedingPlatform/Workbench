@@ -8,7 +8,7 @@ import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../shared/alert/alert.service';
 import { HelpService } from '../shared/service/help.service';
-import { GERMPLASM_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { GERMPLASM_LABEL_PRINTING_TYPE, GERMPLASM_LIST_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { ParamContext } from '../shared/service/param.context';
@@ -65,6 +65,7 @@ export class LabelPrintingComponent implements OnInit {
         this.context.studyId = params['studyId'];
         this.context.printingLabelType = params['printingLabelType'];
         this.context.searchRequestId = params['searchRequestId'];
+        this.context.listId = params['listId'];
 
         let labelsNeededPromise = Promise.resolve({});
         if (this.hasHeader()) {
@@ -122,6 +123,10 @@ export class LabelPrintingComponent implements OnInit {
 
     hasHeader() {
         return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
+    }
+
+    isForGermplasmListLabelPrinting() {
+        return this.context.printingLabelType === LabelPrintingType.GERMPLASM_LIST;
     }
 
     /**
@@ -508,7 +513,8 @@ export enum LabelPrintingType {
     OBSERVATION_DATASET = 'ObservationDataset',
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
     LOT = 'Lot',
-    GERMPLASM = 'Germplasm'
+    GERMPLASM = 'Germplasm',
+    GERMPLASM_LIST = 'Germplasm List'
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [

@@ -61,6 +61,19 @@
 								</div>
 							</div>
 						</div>
+						<div class="row" *ngIf="isForGermplasmListLabelPrinting()">
+							<div class="col-md-6">
+								<h2 class="sub-content-heading" jhiTranslate="label-printing.selected.germplasm.list">Selected List</h2>
+								<div>
+									<div *ngFor="let key of metadataKeys">
+										<label class="col-form-label font-weight-bold">
+											{{key}}:&nbsp;
+										</label>
+										<span>{{metadata.get(key)}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="row">
 							<div class="col-md-6">
 								<h2 class="sub-content-heading" jhiTranslate="label-printing.preset.heading">
