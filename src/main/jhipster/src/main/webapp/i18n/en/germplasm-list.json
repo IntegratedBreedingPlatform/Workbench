@@ -27,7 +27,8 @@
                     "passport": "PASSPORT",
                     "attributes": "ATTRIBUTES"
                 }
-            }
+            },
+            "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})"
         },
         "variables": {
             "confirm.delete.title": "Delete confirmation",
