@@ -1,4 +1,5 @@
 import { NameType } from '../../shared/germplasm/model/name-type.model';
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
 
 export class GermplasmListImportContext {
     // germplasm List data
@@ -8,6 +9,6 @@ export class GermplasmListImportContext {
     // [data[], data[], ...]
     dataBackup: any[][] = [];
 
-    nametypesCopy: NameType[] = [];
-
+    entryDetails: VariableDetails[] = [];
+    unknownNameVariables: any[];
 }
