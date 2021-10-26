@@ -132,9 +132,8 @@ export class ListComponent implements OnInit {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
-        this.predicate = ColumnAlias.ENTRY_NO;
-        this.reverse = 'asc';
         this.resultSearch = new SearchResult('');
+        this.setDefaultSort();
     }
 
     async ngOnInit() {
@@ -334,8 +333,25 @@ export class ListComponent implements OnInit {
 
     private onGetTableHeaderSuccess(header: GermplasmListObservationVariable[]) {
         this.header = header;
+
+        if (!this.isSortColumnExists()) {
+            this.setDefaultSort();
+        }
+
         this.filters = this.getFilters();
         this.loadAll();
+    }
+
+    private isSortColumnExists(): boolean {
+        const sortColumnExists = this.header.filter(
+            (column: GermplasmListObservationVariable) => {
+                if (this.isStaticColumn(column.columnCategory)) {
+                    return column.alias === this.predicate;
+                } else {
+                    return this.getNotStaticFilterKey(column) === this.predicate;
+                }
+            });
+        return sortColumnExists.length !== 0;
     }
 
     private getSort() {
@@ -349,6 +365,11 @@ export class ListComponent implements OnInit {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
+    }
+
+    private setDefaultSort() {
+        this.predicate = ColumnAlias.ENTRY_NO;
+        this.reverse = 'asc';
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {
