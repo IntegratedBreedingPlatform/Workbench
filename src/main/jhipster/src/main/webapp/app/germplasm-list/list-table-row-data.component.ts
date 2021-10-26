@@ -128,7 +128,7 @@ export class ListDataRowComponent implements OnInit {
     submit(value) {
         this.inlineEditorService.editingEntry = null;
         if (this.observationId) {
-            if (value) {
+            if (value || value === 0) {
                 if (value === this.rowData) {
                     return;
                 }
