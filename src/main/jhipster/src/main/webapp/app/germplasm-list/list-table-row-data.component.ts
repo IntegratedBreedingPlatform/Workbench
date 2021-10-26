@@ -140,7 +140,10 @@ export class ListDataRowComponent implements OnInit {
             } else {
                 this.germplasmListService.removeObservation(this.listId, this.observationId)
                     .subscribe(
-                        () => this.rowData = '',
+                        () => {
+                            this.rowData = '';
+                            this.observationId = null;
+                        },
                         (error) => this.onError(error)
                     );
             }
