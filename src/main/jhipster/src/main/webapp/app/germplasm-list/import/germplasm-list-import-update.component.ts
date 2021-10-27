@@ -7,10 +7,14 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { parseFile, saveFile } from '../../shared/util/file-utils';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListImportContext } from './germplasm-list-import.context';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { toUpper } from '../../shared/util/to-upper';
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
+import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 
 @Component({
     selector: 'jhi-germplasm-list-import-update',
@@ -21,6 +25,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
 
+    listId: number;
     fileName = '';
 
     rawData = new Array<any>();
@@ -30,8 +35,11 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     selectedFileType = this.extensions[0];
 
     isLoading: boolean;
+    unknowColumnNames = {}
+    variablesFiltered = [];
 
     constructor(
+        private route: ActivatedRoute,
         private translateService: TranslateService,
         private alertService: AlertService,
         private modal: NgbActiveModal,
@@ -44,6 +52,11 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.listId = Number(this.route.snapshot.queryParamMap.get('listId'));
+        this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
+            (res: HttpResponse<VariableDetails[]>) => this.context.variablesOfTheList = res.body,
+            (res: HttpErrorResponse) => this.onError(res)
+        );
     }
 
     onFileChange(evt: any) {
@@ -75,11 +88,121 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     }
 
     next() {
+        this.isLoading = true;
+        this.validateFile().then((valid) => {
+            this.isLoading = false;
+            if (valid) {
+                this.modal.close();
+                this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
 
+            }
+        }, (res) => {
+            this.isLoading = false;
+            this.onError(res);
+        });
+    }
+
+    private async validateFile() {
+        if (!this.rawData || this.rawData.filter((row) => row.some((column) => Boolean(column.trim()))).length <= 1) {
+            this.alertService.error('germplasm-list.import.file.validation.file.empty');
+            return false;
+        }
+
+        // normalize headers
+        this.rawData[0] = this.rawData[0].map((header) => header.toUpperCase());
+        const headers = this.rawData[0];
+        this.context.data = this.rawData.slice(1).map((fileRow, rowIndex) => {
+            return fileRow.reduce((map, col, colIndex) => {
+                map[headers[colIndex]] = col;
+                return map;
+            }, {});
+        });
+
+        const errorMessage: string[] = [];
+        this.validateHeader(headers, errorMessage);
+        this.validateData(errorMessage);
+
+        if (errorMessage.length) {
+            this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
+            return false;
+        }
+
+        await this.validateEntryDetailVariables(errorMessage);
+
+        if (!this.variablesFiltered || !this.variablesFiltered.length) {
+            this.alertService.error('germplasm-list.import.file.validation.entry.details.no.column');
+            return false;
+        }
+
+        return true;
+    }
+
+    private async validateEntryDetailVariables(errorMessage: string[]) {
+        const unknown = [];
+
+        const variableNameColumn = Object.keys(this.unknowColumnNames);
+
+        this.variablesFiltered = await this.variableService.filterVariables({
+            variableNames: variableNameColumn,
+            variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()]
+        }).toPromise();
+
+        this.context.unknownVariableNames = variableNameColumn.filter((variableName) =>
+            this.variablesFiltered.every((entryDetail) =>
+                toUpper(entryDetail.name) !== variableName &&
+                toUpper(entryDetail.alias) !== variableName)
+        );
+
+        this.context.newVariables = this.variablesFiltered.filter((variable) =>
+            this.context.variablesOfTheList.every((entryDetail) =>
+                Number(entryDetail.id) !== Number(variable.id))
+        );
+
+    }
+
+    private validateHeader(fileHeader: string[], errorMessage: string[]) {
+        // Ignore empty column headers
+        fileHeader = fileHeader.filter((header) => !!header);
+        this.unknowColumnNames = {};
+        Object.keys(fileHeader
+            // get duplicates
+            .filter((header, i, self) => self.indexOf(header) !== i)
+            // Show duplicates only once
+            .reduce((dupesMap, header) => {
+                dupesMap[header] = true;
+                return dupesMap;
+            }, {})
+        ).forEach((header) => {
+            errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: header }));
+        });
+
+        // Gather unknown columns
+        fileHeader.filter((header) => Object.values(HEADERS).indexOf(header) < 0)
+            .forEach((header) => this.unknowColumnNames[header] = 1);
     }
 
     dismiss() {
         this.modal.dismiss();
+    }
+
+    private validateData(errorMessage: string[]) {
+        // row validations
+        for (const row of this.context.data) {
+            if (!row[HEADERS.ENTRY_NO]) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no'));
+                break;
+            }
+
+            if (row[HEADERS.ENTRY_NO] && (isNaN(row[HEADERS.ENTRY_NO])
+                || !Number.isInteger(Number(row[HEADERS.ENTRY_NO])) || row[HEADERS.ENTRY_NO] < 0)) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.format'));
+                break;
+            }
+        }
+
+        if (!errorMessage.length && this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => cell.length && col.indexOf(cell) !== i)) {
+            errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.duplicates'));
+        }
     }
 
     private onError(response: HttpErrorResponse) {
@@ -119,8 +242,5 @@ export class GermplasmListImportUpdatePopupComponent implements OnInit, OnDestro
 }
 
 export enum HEADERS {
-    'GID' = 'GID',
-    'ROW_NUMBER' = 'ROW NUMBER',
-    'ENTRY_CODE' = 'ENTRY_CODE'
-
+    'ENTRY_NO' = 'ENTRY_NO'
 }
