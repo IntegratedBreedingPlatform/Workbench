@@ -83,7 +83,7 @@ export class GermplasmListImportComponent implements OnInit {
             if (valid) {
                 this.showUnknownColumnsWarning();
                 this.modal.close();
-                const nextModal = this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
             }
         }, (res) => {
             this.isLoading = false;
