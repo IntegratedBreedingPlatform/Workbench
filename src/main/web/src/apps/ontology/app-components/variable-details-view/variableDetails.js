@@ -57,10 +57,10 @@
 					});
 
 					function isVariableTypeNotAllowed(variableType) {
-						return ['1807', '1808', '1802', '1813', '1814'].indexOf(variableType.id) === -1;
+						return ['1807', '1808', '1802', '1813', '1814', '1815'].indexOf(variableType.id) === -1;
 					}
 					function isVariableTypeAllowed(variableType) {
-						return ['1807', '1808', '1802', '1813', '1814' ].indexOf(variableType.id) > -1;
+						return ['1807', '1808', '1802', '1813', '1814', '1815'].indexOf(variableType.id) > -1;
 					}
 
 					// Show the expected range widget if the chosen scale has a numeric datatype
@@ -111,8 +111,7 @@
 							"formulaId": 0
 						};
 						return formula;
-					};
-
+					}
 					$scope.editVariable = function(e) {
 						e.preventDefault();
 						resetErrors($scope);

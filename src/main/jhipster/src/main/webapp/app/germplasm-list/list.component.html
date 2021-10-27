@@ -1,6 +1,12 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="germplasm-list-data-tab">
 	<div class="row pt-4">
 		<div class="col">
+			<div class="row"></div>
+			<jhi-variable-container [title]="title" [selectedVariables]="selectedVariables" [variables]="variables" [hideAddAndRemove]="this.germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
+		</div>
+	</div>
+	<div class="row pt-4">
+		<div class="col">
 			<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
 							  [listId]="this.listId"
 							  (columnsSelectedEvent)="onColumnsSelected($event)">
@@ -37,13 +43,14 @@
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="this.transition.bind(this)">
 				<th *ngIf="!isSelectAll"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
 				<th *ngFor="let column of header">
-					<span *ngIf="isColumnFilterable(column)">
-						<span jhiSortBy="{{this.getColumnSortName(column)}}"><span>{{this.getHeaderDisplayName(column)}}</span><span class="fa fa-sort"></span></span>
-						<jhi-column-filter-inline [filter]="this.getFilter(column)"
-												  (onApply)="this.applyFilters()"
-												  (onReset)="this.resetFilters()"></jhi-column-filter-inline>
+					<span *ngIf="isColumnSortable(column)" jhiSortBy="{{this.getColumnSortName(column)}}">
+						<span>{{this.getHeaderDisplayName(column)}}</span>
+						<span class="fa fa-sort"></span>
 					</span>
-					<span *ngIf="!isColumnFilterable(column)">{{this.getHeaderDisplayName(column)}}</span>
+					<span *ngIf="!isColumnSortable(column)">{{this.getHeaderDisplayName(column)}}</span>
+					<jhi-column-filter-inline *ngIf="isColumnFilterable(column)" [filter]="this.getFilter(column)"
+											  (onApply)="this.applyFilters()"
+											  (onReset)="this.resetFilters()"></jhi-column-filter-inline>
 				</th>
 			</tr>
 			</thead>
@@ -51,7 +58,7 @@
 			<tr *ngFor="let entry of entries; trackBy: trackId; index as index">
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(entry)" (click)="toggleSelect($event, index, entry, true); $event.stopPropagation()"></td>
 				<td *ngFor="let column of header">
-					<jhi-list-data-row [column]="column" [entry]="entry"></jhi-list-data-row>
+					<jhi-list-data-row [germplasmList]="germplasmList" [listId]="listId" [column]="column" [entry]="entry"></jhi-list-data-row>
 				</td>
 			</tr>
 			</tbody>

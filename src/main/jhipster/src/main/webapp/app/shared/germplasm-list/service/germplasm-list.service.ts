@@ -17,6 +17,8 @@ import { GermplasmList } from '../../model/germplasm-list';
 import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
+import { VariableDetails } from '../../ontology/model/variable-details';
+import * as Http from 'http';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -92,4 +94,48 @@ export class GermplasmListService implements ListService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls?programUUID=${this.context.programUUID}`;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
+    createObservation(listId: number, listDataId: number, variableId: number, value: string): Observable<HttpResponse<number>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations?programUUID=` + this.context.programUUID;
+        const request = {
+            listDataId,
+            variableId,
+            value
+        };
+        return this.http.put<number>(url, request, { observe: 'response' });
+    }
+
+    modifyObservation(listId: number, value: string, observationId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations/${observationId}?programUUID=` + this.context.programUUID;
+        return this.http.patch<any>(url, value, { observe: 'response' });
+    }
+
+    removeObservation(listId: number, observationId) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations/${observationId}?programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
+    getVariables(listId: number, variableTypeId: number): Observable<HttpResponse<VariableDetails[]>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables?variableTypeId=${variableTypeId}&programUUID=` + this.context.programUUID;
+        return this.http.get<VariableDetails[]>(url, { observe: 'response' });
+    }
+
+    addVariable(listId: number, variableId: any, variableTypeId): Observable<any> {
+        const variable = {
+            'variableId': variableId,
+            'variableTypeId': variableTypeId
+        };
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables?programUUID=` + this.context.programUUID;
+        return this.http.put<any>(url, variable, { observe: 'response' });
+    }
+
+    deleteVariables(listId: number, variableIds: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables?variableIds=${variableIds}&programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
+    countObservationsByVariables(listId: number, variableIds: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}`;
+        return this.http.head(url, { observe: 'response' });
+    }
+
 }

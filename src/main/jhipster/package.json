@@ -20,6 +20,7 @@
     "@angular/router": "7.0.4",
     "@asymmetrik/ngx-leaflet": "5.0.2",
     "@ng-bootstrap/ng-bootstrap": "4.2.2",
+    "@ng-select/ng-select": "2.20.5",
     "@swimlane/ngx-charts": "^17.0.1",
     "@types/d3-graphviz": "^2.6.1",
     "bootstrap": "4.1.3",
