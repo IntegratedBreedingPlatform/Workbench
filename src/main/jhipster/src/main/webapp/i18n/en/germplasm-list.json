@@ -56,7 +56,6 @@
                     "entry.code": "ENTRY_CODE column should either be specified for all entries, or not at all",
                     "entry.code.max.length": "ENTRY_CODE must not exceed 47 characters",
                     "entry.details.no.column": "No suitable column found for entry detail variables. Please check the Entry Details sheet",
-                    "unknown.column": "Some columns were not recognized in the system as entry detail variables or are not relevant to the germplasm list import update and were thus ignored ({{param}})",
                     "entry.no": "The ENTRY_NO column is mandatory",
                     "entry.no.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
                     "entry.no.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again"
