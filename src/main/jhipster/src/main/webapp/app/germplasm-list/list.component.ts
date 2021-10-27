@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListSearchResponse } from '../shared/germplasm-list/model/germplasm-list-search-response.model';
+import { Subscription } from 'rxjs';
 import { GermplasmListDataSearchResponse } from '../shared/germplasm-list/model/germplasm-list-data-search-response.model';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { finalize } from 'rxjs/internal/operators/finalize';
@@ -19,6 +20,10 @@ import { GermplasmListColumnModel } from './list-columns.component';
 import { GermplasmListDataUpdateViewRequest } from '../shared/germplasm-list/model/germplasm-list-data-update-view-request.model';
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { VariableDetails } from '../shared/ontology/model/variable-details';
+import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { SearchResult } from '../shared/search-result.model';
 
 declare var $: any;
@@ -29,6 +34,8 @@ declare var $: any;
 })
 export class ListComponent implements OnInit {
 
+    static readonly GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX = 'GermplasmListViewChanged';
+
     readonly STATIC_FILTERS = {
         ENTRY_NO: {
             key: 'entryNumbers', type: FilterType.LIST, category: GermplasmListColumnCategory.STATIC
@@ -38,6 +45,9 @@ export class ListComponent implements OnInit {
         },
         GUID: {
             key: 'germplasmUUID', placeholder: 'Match Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
+        },
+        GROUP_ID: {
+            key: 'groupId', placeholder: 'Match Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
         },
         DESIGNATION: {
             key: 'designationFilter', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS, matchType: MatchType.STARTSWITH,
@@ -83,6 +93,11 @@ export class ListComponent implements OnInit {
         }
     };
 
+    public isCollapsed = false;
+    variables: VariableDetails[];
+    selectedVariables: { [key: number]: VariableDetails } = {};
+    title = 'Entry details';
+
     @Input()
     listId: number;
 
@@ -93,6 +108,7 @@ export class ListComponent implements OnInit {
     germplasmList: GermplasmList;
     header: GermplasmListObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
+    eventSubscriber: Subscription;
 
     currentSearch: string;
     totalItems: number;
@@ -112,16 +128,19 @@ export class ListComponent implements OnInit {
                 private germplasmListService: GermplasmListService,
                 private router: Router,
                 private alertService: AlertService,
-                private principal: Principal) {
+                private principal: Principal,
+                private modalService: NgbModal,
+                public translateService: TranslateService
+    ) {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
-        this.predicate = ColumnAlias.ENTRY_NO;
-        this.reverse = 'asc';
         this.resultSearch = new SearchResult('');
+        this.setDefaultSort();
     }
 
     async ngOnInit() {
+        this.variables = [];
         const identity = await this.principal.identity();
         this.user = identity;
 
@@ -130,6 +149,12 @@ export class ListComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
 
+        this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
+            (res: HttpResponse<VariableDetails[]>) => this.variables = res.body,
+            (res: HttpErrorResponse) => this.onError(res)
+        );
+
+        this.registerGermplasmListViewChanged();
         this.refreshTable();
     }
 
@@ -217,6 +242,12 @@ export class ListComponent implements OnInit {
         return item.listId;
     }
 
+    registerGermplasmListViewChanged() {
+        this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, (event) => {
+            this.resetTable();
+        });
+    }
+
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
@@ -246,6 +277,18 @@ export class ListComponent implements OnInit {
 
     isColumnFilterable(column: GermplasmListObservationVariable): boolean {
         return (this.isStaticColumn(column.columnCategory) && this.STATIC_FILTERS[column.alias]) || this.isNotStaticColumn(column.columnCategory);
+    }
+
+    isColumnSortable(column: GermplasmListObservationVariable): boolean {
+        return !(column.alias === ColumnAlias.MALE_PARENT_NAME ||
+            column.alias === ColumnAlias.FEMALE_PARENT_NAME ||
+            column.alias === ColumnAlias.LOTS ||
+            column.alias === ColumnAlias.AVAILABLE ||
+            column.alias === ColumnAlias.UNIT ||
+            column.alias === ColumnAlias.CROSS ||
+            column.alias === ColumnAlias.MALE_PARENT_GID ||
+            column.alias === ColumnAlias.FEMALE_PARENT_GID
+        );
     }
 
     applyFilters() {
@@ -305,8 +348,25 @@ export class ListComponent implements OnInit {
 
     private onGetTableHeaderSuccess(header: GermplasmListObservationVariable[]) {
         this.header = header;
+
+        if (!this.isSortColumnExists()) {
+            this.setDefaultSort();
+        }
+
         this.filters = this.getFilters();
         this.loadAll();
+    }
+
+    private isSortColumnExists(): boolean {
+        const sortColumnExists = this.header.filter(
+            (column: GermplasmListObservationVariable) => {
+                if (this.isStaticColumn(column.columnCategory)) {
+                    return column.alias === this.predicate;
+                } else {
+                    return this.getNotStaticFilterKey(column) === this.predicate;
+                }
+            });
+        return sortColumnExists.length !== 0;
     }
 
     private getSort() {
@@ -320,6 +380,11 @@ export class ListComponent implements OnInit {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
+    }
+
+    private setDefaultSort() {
+        this.predicate = ColumnAlias.ENTRY_NO;
+        this.reverse = 'asc';
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {
@@ -369,7 +434,7 @@ export class ListComponent implements OnInit {
                         this.addFilterToRequest(request, filter, filter.fromKey, filterValue);
                     }
                     if (filter.to) {
-                        const filterValue = `${filter.to.year}-${filter.to.month}-${filter.to.day}`
+                        const filterValue = `${filter.to.year}-${filter.to.month}-${filter.to.day}`;
                         this.addFilterToRequest(request, filter, filter.toKey, filterValue);
                     }
                 } else {
@@ -411,6 +476,51 @@ export class ListComponent implements OnInit {
         }
     }
 
+    addVariable(variable: VariableDetails) {
+        const variableAdded = this.variables.filter((x) =>
+            Number(x.id) === Number(variable.id));
+
+        if (variableAdded.length > 0) {
+            this.alertService.warning('germplasm-list.variables.already.exsits');
+            return;
+        }
+
+        this.germplasmListService.addVariable(this.listId, variable.id, VariableTypeEnum.ENTRY_DETAILS).subscribe(() => {
+            this.variables.push(variable);
+            this.refreshTable();
+        });
+    }
+
+    async deleteVariables(variableIds: any[]) {
+        const countObservationsByVariablesResp = await this.germplasmListService.countObservationsByVariables(this.listId, variableIds).toPromise();
+        const variablesCount = Number(countObservationsByVariablesResp.headers.get('X-Total-Count'));
+
+        if (variablesCount > 0) {
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.variables.confirm.delete.title');
+            confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.variables.confirm.delete.warning');
+
+            try {
+                await confirmModalRef.result
+            } catch (e) {
+                return
+            }
+        }
+
+         this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
+             const variableDeleted = this.variables.filter((variable) =>
+                 variableIds.indexOf(variable.id.toString()) !== -1
+             );
+
+             variableDeleted.forEach((variable) => {
+                 this.variables.splice(this.variables.indexOf(variable), 1);
+                 delete this.selectedVariables[variable.id];
+             });
+
+             this.refreshTable();
+         });
+    }
+
 }
 
 export enum ColumnAlias {
@@ -418,7 +528,14 @@ export enum ColumnAlias {
     'GID' = 'GID',
     'DESIGNATION' = 'DESIGNATION',
     'LOTS' = 'LOTS',
+    'AVAILABLE' = 'AVAILABLE',
+    'UNIT' = 'UNIT',
     'GROUP_ID' = 'GROUP_ID',
+    'CROSS' = 'CROSS',
+    'MALE_PARENT_GID' = 'MALE_PARENT_GID',
+    'FEMALE_PARENT_GID' = 'FEMALE_PARENT_GID',
     'LOCATION_NAME' = 'LOCATION_NAME',
-    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME'
+    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME',
+    'MALE_PARENT_NAME' = 'MALE_PARENT_NAME',
+    'FEMALE_PARENT_NAME' = 'FEMALE_PARENT_NAME'
 }

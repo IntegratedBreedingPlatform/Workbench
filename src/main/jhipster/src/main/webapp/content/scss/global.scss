@@ -372,6 +372,10 @@ tr.selected {
     background-color: #bed6b2 !important;
 }
 
+.table td .editable {
+   cursor: pointer;
+}
+
 .accepted-value {
     background-color: #E6F5FF !important;
     color: #3366CC !important;
