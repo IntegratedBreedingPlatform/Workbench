@@ -18,7 +18,7 @@ import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
 import { VariableDetails } from '../../ontology/model/variable-details';
-import * as Http from 'http';
+import { GermplasmListReorderEntriesRequestModel } from '../model/germplasm-list-reorder-entries-request.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -94,6 +94,7 @@ export class GermplasmListService implements ListService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls?programUUID=${this.context.programUUID}`;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
+
     createObservation(listId: number, listDataId: number, variableId: number, value: string): Observable<HttpResponse<number>> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations?programUUID=` + this.context.programUUID;
         const request = {
@@ -136,6 +137,11 @@ export class GermplasmListService implements ListService {
     countObservationsByVariables(listId: number, variableIds: any) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}`;
         return this.http.head(url, { observe: 'response' });
+    }
+
+    reorderEntries(listId: number, request: GermplasmListReorderEntriesRequestModel) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries/reorder?programUUID=` + this.context.programUUID;
+        return this.http.put<any>(url, request, { observe: 'response' });
     }
 
 }

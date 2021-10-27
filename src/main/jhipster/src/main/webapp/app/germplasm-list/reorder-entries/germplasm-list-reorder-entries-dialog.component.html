@@ -28,7 +28,8 @@
 			<div class="col form-inline">
 				<input class="ml-3" type="radio" id="fixedPosition" name="fixedPosition" [value]="Position.FIXED" [(ngModel)]="this.position"/>
 				<label class="ml-1" for="fixedPosition" jhiTranslate="germplasm-list.list-data.reorder-entries.position-labels.fixed"></label>
-				<input [disabled]="this.position !== Position.FIXED" type="text" class="ml-2 form-control" id="fixedPositionNumber" name="fixedPositionNumber" pattern="^[\d]+(,[\d]+)*$" [(ngModel)]="this.fixedPosition" required/>
+				<input [disabled]="this.position !== Position.FIXED" type="text" class="ml-2 form-control" id="fixedPositionNumber"
+					   name="fixedPositionNumber" pattern="^[1-9][0-9]*$" [(ngModel)]="this.fixedPosition" required/>
 			</div>
 		</div>
 	</form>

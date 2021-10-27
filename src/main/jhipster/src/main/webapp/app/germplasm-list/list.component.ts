@@ -25,8 +25,7 @@ import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { SearchResult } from '../shared/search-result.model';
-import { SearchComposite } from '../shared/model/search-composite';
-import { GermplasmListContext } from './germplasm-list.context';
+import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 
 declare var $: any;
 
@@ -37,6 +36,7 @@ declare var $: any;
 export class ListComponent implements OnInit {
 
     static readonly GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX = 'GermplasmListViewChanged';
+    static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
 
     readonly STATIC_FILTERS = {
         ENTRY_NO: {
@@ -136,8 +136,7 @@ export class ListComponent implements OnInit {
                 private alertService: AlertService,
                 private principal: Principal,
                 private modalService: NgbModal,
-                public translateService: TranslateService,
-                private germplasmListContext: GermplasmListContext
+                public translateService: TranslateService
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -162,7 +161,7 @@ export class ListComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
 
-        this.registerGermplasmListViewChanged();
+        this.registerEvents();
         this.refreshTable();
     }
 
@@ -250,9 +249,13 @@ export class ListComponent implements OnInit {
         return item.listId;
     }
 
-    registerGermplasmListViewChanged() {
+    registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, (event) => {
             this.resetTable();
+        });
+
+        this.eventManager.subscribe(ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, (event) => {
+            this.loadAll();
         });
     }
 
@@ -315,11 +318,11 @@ export class ListComponent implements OnInit {
     }
 
     isPageSelected() {
-        return this.size(this.selectedItems) && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
+        return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
     }
 
-    size(obj) {
-        return Object.keys(obj).length;
+    size() {
+        return Object.keys(this.selectedItems).length;
     }
 
     onSelectPage() {
@@ -367,18 +370,9 @@ export class ListComponent implements OnInit {
             return;
         }
 
-        const searchComposite = new SearchComposite<any, number>();
-        if (this.isSelectAll) {
-            searchComposite.searchRequest = this.mapFiltersToRequest();
-        } else {
-            searchComposite.itemIds = this.getSelectedItemIds();
-        }
-        this.germplasmListContext.searchComposite = searchComposite;
-
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-reorder-entries-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
+        const groupGermplasmModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
+        groupGermplasmModal.componentInstance.listId = this.listId;
+        groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
     }
 
     private getFilters() {
@@ -597,7 +591,7 @@ export class ListComponent implements OnInit {
     }
 
     private validateSelection() {
-        if (this.entries.length === 0 || (!this.isSelectAll && this.size(this.selectedItems) === 0)) {
+        if (this.entries.length === 0 || (!this.isSelectAll && this.size() === 0)) {
             this.alertService.error('germplasm-list.list-data.selection.empty');
             return false;
         }

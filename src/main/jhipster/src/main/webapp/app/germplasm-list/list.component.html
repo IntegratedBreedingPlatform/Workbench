@@ -7,17 +7,18 @@
 	</div>
 	<div class="row pt-4">
 		<div class="col">
-			<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
+			<div ngbDropdown class="ml-2 float-right" placement="bottom-right">
+				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>
+				<div ngbDropdownMenu aria-labelledby="actionMenu">
+					<button *ngIf="!this.germplasmList?.locked" class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.reorder-entries" (click)="openReorderEntries()" >
+					</button>
+				</div>
+			</div>
+			<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="float-right"
 							  [listId]="this.listId"
 							  (columnsSelectedEvent)="onColumnsSelected($event)">
 			</jhi-list-columns>
-			<div ngbDropdown class="float-right" placement="bottom-right">
-				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>
-				<div ngbDropdownMenu aria-labelledby="actionMenu">
-					<button class="dropdown-item" type="submit" jhiTranslate="germplasm-list.list-data.actions.reorder-entries"
-							(click)="openReorderEntries()" >
-				</div>
-			</div>
 		</div>
 	</div>
 	<div class="row mt-2 mb-2">
@@ -29,6 +30,10 @@
 			</div>
 			<div class="form-group form-inline">
 				<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+				<span style="margin-left: 20px;">Selected:</span>
+				<span style="padding-left: 5px;" class="font-weight-bold">
+					{{this.size()}}
+				</span>
 				<div style="margin-left: 10px;">
 					<a href (click)="onClearSort($event)" jhiTranslate="global.clear-sort"></a>
 				</div>
