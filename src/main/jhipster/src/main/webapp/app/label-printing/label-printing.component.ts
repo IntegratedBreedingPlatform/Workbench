@@ -445,6 +445,8 @@ export class LabelPrintingComponent implements OnInit {
                 return 'LOT_LABEL_PRINTING_PRESET';
             case LabelPrintingType.GERMPLASM:
                 return 'GERMPLASM_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.GERMPLASM_LIST:
+                return 'GERMPLASM_LIST_LABEL_PRINTING_PRESET';
             default:
                 return;
         }

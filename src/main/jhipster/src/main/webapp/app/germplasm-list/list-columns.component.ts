@@ -9,7 +9,7 @@ import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
 import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
-import { GERMPLASM_LABEL_PRINTING_TYPE, GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
+import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 
 @Component({
@@ -28,7 +28,7 @@ export class ListColumnsComponent implements OnInit {
     @ViewChild('columnsDropdown') columnsDropdown: NgbDropdown;
 
     ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS];
-    EXPORT_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EXPORT_GERMPLASM_LISTS'];
+    GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
 
     TermIdEnum = TermIdEnum;
 
