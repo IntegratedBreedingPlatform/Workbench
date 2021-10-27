@@ -42,7 +42,6 @@ export class ListColumnsComponent implements OnInit {
     filteredPassportColumns: GermplasmListColumnModel[] = [];
     filteredAttributesColumns: GermplasmListColumnModel[] = [];
 
-
     constructor(private germplasmListService: GermplasmListService,
                 private alertService: AlertService,
                 private paramContext: ParamContext) {
@@ -90,7 +89,6 @@ export class ListColumnsComponent implements OnInit {
                 + '&listId=' + this.listId;
         });
     }
-
 
     private getSelectedColumns(): GermplasmListColumnModel[] {
         return [].concat(this.filteredStaticColumns, this.filteredNameColumns, this.filteredPassportColumns, this.filteredAttributesColumns)

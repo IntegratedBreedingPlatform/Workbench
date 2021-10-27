@@ -65,7 +65,6 @@ export class LabelPrintingService {
         labelsGeneratorInput.searchRequestId = this.context.searchRequestId;
         labelsGeneratorInput.listId = this.context.listId;
 
-
         const printingLabelType = this.context.printingLabelType;
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/labels/${fileExtension}`;
         return this.http.post(`${this.baseUrl + resourceUrl}`, labelsGeneratorInput,
