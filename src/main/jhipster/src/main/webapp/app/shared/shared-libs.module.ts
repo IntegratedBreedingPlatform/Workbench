@@ -8,6 +8,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
 import { NgSelect2Module } from 'ng-select2';
 import { TreeDragDropService } from 'primeng/api';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
     imports: [
@@ -28,7 +29,8 @@ import { TreeDragDropService } from 'primeng/api';
         NgbModule,
         NgJhipsterModule,
         InfiniteScrollModule,
-        NgSelect2Module
+        NgSelect2Module,
+        NgSelectModule
     ],
     providers: [
         TreeDragDropService

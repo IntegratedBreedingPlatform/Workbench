@@ -4,6 +4,8 @@ import { VariableDetails } from '../model/variable-details';
 import { DataTypeEnum } from '../data-type.enum';
 import { isNumeric } from '../../util/is-numeric';
 import { DateFormatEnum, isValidDate } from '../../util/date-utils';
+import { ObservationVariable } from '../../model/observation-variable.model';
+import { convertToVariableDetails } from '../variable-utils';
 
 @Injectable()
 export class VariableValidationService {
@@ -12,6 +14,17 @@ export class VariableValidationService {
     ) {
     }
 
+    /**
+     * <pre>
+     * returns
+     *   {
+     *       isValid: if categorical and is one of the accepted values
+     *                or if numerical and the value is numeric
+     *                or if date and value is a valid ISO date
+     *       isInRange: if numerical and the value is both inside scale range and expected range
+     *   }
+     * </pre>
+     */
     isValidValue(value, variable: VariableDetails): VariableValidationStatusType {
         let isInRange = true,
             isValid = true;
@@ -55,6 +68,10 @@ export class VariableValidationService {
         }
 
         return { isValid, isInRange };
+    }
+
+    isValidValueObservation(value, variable: ObservationVariable): VariableValidationStatusType {
+        return this.isValidValue(value, convertToVariableDetails(variable));
     }
 
     getStatusIcon(attribute: VariableDetails, attributeStatusById: {[key: number]: VariableValidationStatusType}) {

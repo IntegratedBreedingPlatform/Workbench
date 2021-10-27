@@ -4,7 +4,9 @@ import { NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 @Injectable()
 export class DateHelperService {
 
-    constructor(private calendar: NgbCalendar) {
+    constructor(
+        private calendar: NgbCalendar
+    ) {
     }
 
     convertNgbDateToString(date: NgbDate) {
