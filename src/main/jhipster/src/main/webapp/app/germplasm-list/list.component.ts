@@ -255,6 +255,7 @@ export class ListComponent implements OnInit {
         });
 
         this.eventManager.subscribe(ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, (event) => {
+            this.clearSelectedItems();
             this.loadAll();
         });
     }
@@ -363,6 +364,10 @@ export class ListComponent implements OnInit {
                 this.selectedItems[item.listDataId] = item;
             }
         }
+    }
+
+    clearSelectedItems() {
+        this.selectedItems = {};
     }
 
     openReorderEntries() {
