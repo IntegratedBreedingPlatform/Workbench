@@ -83,7 +83,7 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 
     back() {
         this.modal.close();
-        const modalRef = this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
+        this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
     }
 
     dismiss() {
