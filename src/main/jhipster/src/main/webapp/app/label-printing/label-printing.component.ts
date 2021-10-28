@@ -12,6 +12,7 @@ import { GERMPLASM_LABEL_PRINTING_TYPE, GERMPLASM_LIST_LABEL_PRINTING_TYPE, HELP
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { ParamContext } from '../shared/service/param.context';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 declare const $: any;
 
@@ -42,6 +43,7 @@ export class LabelPrintingComponent implements OnInit {
 
     sortableFields: Sortable[];
     sortBySelected: any = '';
+    isLoading: boolean;
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -310,14 +312,16 @@ export class LabelPrintingComponent implements OnInit {
             sortBy: !this.sortBySelected ? undefined : this.sortBySelected
         };
 
-        this.proceed = function donwloadPrintingLabel(): void {
-            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any) => {
+        this.proceed = function downloadPrintingLabel(): void {
+            this.isLoading = true;
+            this.service.download(this.fileType, labelsGeneratorInput).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe((response: any) => {
                 const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
                 this.fileDownloadHelper.save(response.body, fileName);
 
             }, (error: HttpErrorResponse) => {
                 this.handleError(error);
-
             });
         };
 

@@ -377,13 +377,16 @@
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button onclick="javascript:window.history.back();" type="submit" class="btn btn-secondary" value="Cancel">
+							<button onclick="javascript:window.history.back();" type="button" class="btn btn-secondary" value="Cancel">
 								<span class="fa fa-ban"></span>&nbsp;Cancel
 							</button>
 							<button *ngIf="fileType" id="fbk-lbl-printing-save-preset" (click)="savePresets()" class="btn btn-info">
 								<span class="fa fa-save"></span>&nbsp;Save Preset
 							</button>
-							<button *ngIf="fileType" (click)="export()" class="btn btn-primary">Export</button>
+							<button *ngIf="fileType" (click)="export()" class="btn btn-primary" [disabled]="isLoading">
+								<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+								Export
+							</button>
 						</div>
 						<div class="row">
 							&nbsp;
