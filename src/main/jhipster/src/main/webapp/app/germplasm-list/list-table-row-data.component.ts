@@ -10,6 +10,10 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { JhiEventManager } from 'ng-jhipster';
 import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { VariableValidationService } from '../shared/ontology/service/variable-validation.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -29,7 +33,10 @@ export class ListDataRowComponent implements OnInit {
         private inlineEditorService: InlineEditorService,
         private germplasmListService: GermplasmListService,
         private eventManager: JhiEventManager,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private validationService: VariableValidationService,
+        private modalService: NgbModal,
+        private translateService: TranslateService
     ) {
     }
 
@@ -125,10 +132,16 @@ export class ListDataRowComponent implements OnInit {
             && this.inlineEditorService.editingEntry[1] === this.column.termId.toString();
     }
 
-    submit(value) {
+    async submit(value) {
         this.inlineEditorService.editingEntry = null;
+        try {
+            await this.validateNumericRange(value);
+        } catch (e) {
+            // (out of range -> cancel) would not go back to inline edition because blur would trigger again
+            return;
+        }
         if (this.observationId) {
-            if (value) {
+            if (value || value === 0) {
                 if (value === this.rowData) {
                     return;
                 }
@@ -140,12 +153,15 @@ export class ListDataRowComponent implements OnInit {
             } else {
                 this.germplasmListService.removeObservation(this.listId, this.observationId)
                     .subscribe(
-                        () => this.rowData = '',
+                        () => {
+                            this.rowData = '';
+                            this.observationId = null;
+                        },
                         (error) => this.onError(error)
                     );
             }
         } else {
-            if (!value && value !== 0) {
+            if (!(value || value === 0)) {
                 return;
             }
             this.germplasmListService.createObservation(this.listId, this.entry.listDataId, this.column.termId, value)
@@ -169,6 +185,24 @@ export class ListDataRowComponent implements OnInit {
             this.alertService.error('error.custom', { param: msg });
         } else {
             this.alertService.error('error.general', null, null);
+        }
+    }
+
+    private async validateNumericRange(value) {
+        if (!(value || value === 0) || value === this.rowData) {
+            return;
+        }
+        const isOutOfrange = !this.validationService.isValidValueObservation(value, this.column).isInRange;
+        if (isOutOfrange) {
+            const min = (this.column.variableMinRange || this.column.variableMinRange === 0)
+                ? this.column.variableMinRange
+                : this.column.scaleMinRange;
+            const max = (this.column.variableMaxRange || this.column.variableMaxRange === 0)
+                ? this.column.variableMaxRange
+                : this.column.scaleMaxRange;
+            const confirmModal = this.modalService.open(ModalConfirmComponent);
+            confirmModal.componentInstance.message = this.translateService.instant('germplasm-list.list-data.out.of.range.warning', {value, min, max});
+            return confirmModal.result;
         }
     }
 }

@@ -52,10 +52,16 @@ export class GermplasmListService implements ListService {
         return this.http.post<GermplasmListSearchResponse[]>(url, req, { params, observe: 'response' });
     }
 
-    searchListData(listId: number, req: any, pagination: any): Observable<HttpResponse<GermplasmListDataSearchResponse[]>> {
-        const params = createRequestOption(pagination);
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/data/search?programUUID=` + this.context.programUUID;
-        return this.http.post<GermplasmListDataSearchResponse[]>(url, req, { params, observe: 'response' });
+    postSearchListData(listId: number, req: any): Observable<string> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/search?programUUID=` + this.context.programUUID;
+        return this.http.post<String[]>(url, req, { observe: 'response' })
+            .pipe(map((res: any) => res.body.result.searchResultDbId));
+    }
+
+    getSearchResults(listId: number, req: any): Observable<HttpResponse<GermplasmListDataSearchResponse[]>> {
+        const params = createRequestOption(req);
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/search?programUUID=` + this.context.programUUID;
+        return this.http.get<GermplasmListDataSearchResponse[]>(url, { params, observe: 'response' });
     }
 
     getGermplasmListById(listId: number): Observable<HttpResponse<GermplasmList>> {

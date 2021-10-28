@@ -26,7 +26,7 @@ export class VariableContainerComponent implements OnInit {
 
     isCollapsed = false;
 
-    selectedItems: { [key: number]: VariableDetails } = {};
+    @Input() selectedVariables;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
@@ -45,7 +45,7 @@ export class VariableContainerComponent implements OnInit {
 
     remove($event) {
         $event.preventDefault();
-        const variablesIds = Object.keys(this.selectedItems);
+        const variablesIds = Object.keys(this.selectedVariables);
         this.onDeleteVariable.emit(variablesIds);
     }
 
@@ -59,18 +59,18 @@ export class VariableContainerComponent implements OnInit {
     }
 
     isSelected(variable: VariableDetails) {
-        return this.selectedItems[variable.id];
+        return this.selectedVariables[variable.id];
     }
 
     toggleSelect(index, variable: VariableDetails, checkbox = false) {
         let items;
         items = [variable];
-        const isItemSelected = this.selectedItems[variable.id];
+        const isItemSelected = this.selectedVariables[variable.id];
         for (const item of items) {
             if (isItemSelected) {
-                delete this.selectedItems[item.id];
+                delete this.selectedVariables[item.id];
             } else {
-                this.selectedItems[item.id] = item;
+                this.selectedVariables[item.id] = item;
             }
         }
     }
@@ -80,16 +80,16 @@ export class VariableContainerComponent implements OnInit {
     }
 
     isAllSelected() {
-        return this.size(this.selectedItems) && this.variables.every((v) => Boolean(this.selectedItems[v.id]));
+        return this.size(this.selectedVariables) && this.variables.every((v) => Boolean(this.selectedVariables[v.id]));
     }
 
     onSelectAll() {
         if (this.isAllSelected()) {
             // remove all items
-            this.variables.forEach((v) => delete this.selectedItems[v.id]);
+            this.variables.forEach((v) => delete this.selectedVariables[v.id]);
         } else {
             // check remaining items
-            this.variables.forEach((v) => this.selectedItems[v.id] = v);
+            this.variables.forEach((v) => this.selectedVariables[v.id] = v);
         }
     }
 

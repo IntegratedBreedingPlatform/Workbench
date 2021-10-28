@@ -2,7 +2,7 @@
 	<div class="row pt-4">
 		<div class="col">
 			<div class="row"></div>
-			<jhi-variable-container [title]="title" [variables]="variables" [hideAddAndRemove]="this.germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
+			<jhi-variable-container [title]="title" [selectedVariables]="selectedVariables" [variables]="variables" [hideAddAndRemove]="this.germplasmList?.locked" (onAddVariable)="addVariable($event)" (onDeleteVariable)="deleteVariables($event)"></jhi-variable-container>
 		</div>
 		<div class="col">
 <!--			<div ngbDropdown class="float-right" placement="bottom-right">-->
@@ -53,13 +53,14 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="this.transition.bind(this)">
 				<th *ngFor="let column of header">
-					<span *ngIf="isColumnFilterable(column)">
-						<span jhiSortBy="{{this.getColumnSortName(column)}}"><span>{{this.getHeaderDisplayName(column)}}</span><span class="fa fa-sort"></span></span>
-						<jhi-column-filter-inline [filter]="this.getFilter(column)"
-												  (onApply)="this.applyFilters()"
-												  (onReset)="this.resetFilters()"></jhi-column-filter-inline>
+					<span *ngIf="isColumnSortable(column)" jhiSortBy="{{this.getColumnSortName(column)}}">
+						<span>{{this.getHeaderDisplayName(column)}}</span>
+						<span class="fa fa-sort"></span>
 					</span>
-					<span *ngIf="!isColumnFilterable(column)">{{this.getHeaderDisplayName(column)}}</span>
+					<span *ngIf="!isColumnSortable(column)">{{this.getHeaderDisplayName(column)}}</span>
+					<jhi-column-filter-inline *ngIf="isColumnFilterable(column)" [filter]="this.getFilter(column)"
+											  (onApply)="this.applyFilters()"
+											  (onReset)="this.resetFilters()"></jhi-column-filter-inline>
 				</th>
 			</tr>
 			</thead>

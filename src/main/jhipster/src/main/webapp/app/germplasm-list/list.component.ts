@@ -25,6 +25,7 @@ import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { SearchResult } from '../shared/search-result.model';
 
 declare var $: any;
 
@@ -48,6 +49,9 @@ export class ListComponent implements OnInit {
         },
         GUID: {
             key: 'germplasmUUID', placeholder: 'Match Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
+        },
+        GROUP_ID: {
+            key: 'groupId', placeholder: 'Match Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
         },
         DESIGNATION: {
             key: 'designationFilter', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS, matchType: MatchType.STARTSWITH,
@@ -95,6 +99,7 @@ export class ListComponent implements OnInit {
 
     public isCollapsed = false;
     variables: VariableDetails[];
+    selectedVariables: { [key: number]: VariableDetails } = {};
     title = 'Entry details';
 
     @Input()
@@ -115,6 +120,7 @@ export class ListComponent implements OnInit {
     previousPage: number;
     predicate: any;
     reverse: any;
+    resultSearch: SearchResult;
 
     isLoading: boolean;
 
@@ -133,8 +139,8 @@ export class ListComponent implements OnInit {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
-        this.predicate = ColumnAlias.ENTRY_NO;
-        this.reverse = 'asc';
+        this.resultSearch = new SearchResult('');
+        this.setDefaultSort();
     }
 
     async ngOnInit() {
@@ -177,22 +183,34 @@ export class ListComponent implements OnInit {
         this.germplasmListFilters = filters;
     }
 
+    postSearch(): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const request = this.mapFiltersToRequest();
+            this.germplasmListService.postSearchListData(this.listId, request).subscribe((response: string) => {
+                this.resultSearch.searchResultDbId = response;
+                resolve(this.resultSearch.searchResultDbId);
+            }, (error) => reject(error));
+        });
+    }
+
     loadAll() {
         this.isLoading = true;
-
-        const request = this.mapFiltersToRequest();
-        this.germplasmListService.searchListData(this.listId, request,
-            {
-                page: this.page - 1,
-                size: this.itemsPerPage,
-                sort: this.getSort()
-            }
-        ).pipe(finalize(() => {
-            this.isLoading = false;
-        })).subscribe(
-            (res: HttpResponse<GermplasmListDataSearchResponse[]>) => this.onSearchSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        this.postSearch().then((searchId: string) => {
+            this.germplasmListService.getSearchResults(
+                this.listId,
+                {
+                    page: this.page - 1,
+                    size: this.itemsPerPage,
+                    sort: this.getSort(),
+                    searchRequestId: searchId
+                }
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<GermplasmListDataSearchResponse[]>) => this.onSearchSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     loadPage(page: number) {
@@ -272,6 +290,18 @@ export class ListComponent implements OnInit {
         return (this.isStaticColumn(column.columnCategory) && this.STATIC_FILTERS[column.alias]) || this.isNotStaticColumn(column.columnCategory);
     }
 
+    isColumnSortable(column: GermplasmListObservationVariable): boolean {
+        return !(column.alias === ColumnAlias.MALE_PARENT_NAME ||
+            column.alias === ColumnAlias.FEMALE_PARENT_NAME ||
+            column.alias === ColumnAlias.LOTS ||
+            column.alias === ColumnAlias.AVAILABLE ||
+            column.alias === ColumnAlias.UNIT ||
+            column.alias === ColumnAlias.CROSS ||
+            column.alias === ColumnAlias.MALE_PARENT_GID ||
+            column.alias === ColumnAlias.FEMALE_PARENT_GID
+        );
+    }
+
     applyFilters() {
         this.resetTable();
     }
@@ -329,8 +359,25 @@ export class ListComponent implements OnInit {
 
     private onGetTableHeaderSuccess(header: GermplasmListObservationVariable[]) {
         this.header = header;
+
+        if (!this.isSortColumnExists()) {
+            this.setDefaultSort();
+        }
+
         this.filters = this.getFilters();
         this.loadAll();
+    }
+
+    private isSortColumnExists(): boolean {
+        const sortColumnExists = this.header.filter(
+            (column: GermplasmListObservationVariable) => {
+                if (this.isStaticColumn(column.columnCategory)) {
+                    return column.alias === this.predicate;
+                } else {
+                    return this.getNotStaticFilterKey(column) === this.predicate;
+                }
+            });
+        return sortColumnExists.length !== 0;
     }
 
     private getSort() {
@@ -344,6 +391,11 @@ export class ListComponent implements OnInit {
         this.predicate = SORT_PREDICATE_NONE;
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
+    }
+
+    private setDefaultSort() {
+        this.predicate = ColumnAlias.ENTRY_NO;
+        this.reverse = 'asc';
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {
@@ -473,6 +525,7 @@ export class ListComponent implements OnInit {
 
              variableDeleted.forEach((variable) => {
                  this.variables.splice(this.variables.indexOf(variable), 1);
+                 delete this.selectedVariables[variable.id];
              });
 
              this.refreshTable();
@@ -486,7 +539,14 @@ export enum ColumnAlias {
     'GID' = 'GID',
     'DESIGNATION' = 'DESIGNATION',
     'LOTS' = 'LOTS',
+    'AVAILABLE' = 'AVAILABLE',
+    'UNIT' = 'UNIT',
     'GROUP_ID' = 'GROUP_ID',
+    'CROSS' = 'CROSS',
+    'MALE_PARENT_GID' = 'MALE_PARENT_GID',
+    'FEMALE_PARENT_GID' = 'FEMALE_PARENT_GID',
     'LOCATION_NAME' = 'LOCATION_NAME',
-    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME'
+    'BREEDING_METHOD_PREFERRED_NAME' = 'BREEDING_METHOD_PREFERRED_NAME',
+    'MALE_PARENT_NAME' = 'MALE_PARENT_NAME',
+    'FEMALE_PARENT_NAME' = 'FEMALE_PARENT_NAME'
 }

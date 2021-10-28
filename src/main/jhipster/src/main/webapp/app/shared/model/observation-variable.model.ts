@@ -5,7 +5,11 @@ export class ObservationVariable {
                 public name: string,
                 public alias: string,
                 public dataTypeId?: DataTypeIdEnum,
-                public possibleValues?: ValueReference[]
+                public possibleValues?: ValueReference[],
+                public scaleMinRange?: number,
+                public scaleMaxRange?: number,
+                public variableMinRange?: number,
+                public variableMaxRange?: number,
                 // TODO: added missing properties required for entry details
                 ) {
     }
