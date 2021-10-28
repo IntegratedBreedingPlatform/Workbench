@@ -19,44 +19,27 @@
 						<th>DESCRIPTION</th>
 						<th>STATUS</th>
 						</thead>
-						<tbody *ngIf="context.variablesOfTheList && context.variablesOfTheList.length else nodata">
-						<tr *ngFor="let variable of context.variablesOfTheList | orderBy: HEADERS.ID | slice: (page-1) * pageSize : page * pageSize">
-							<td>
+						<tbody *ngIf="rows && rows.length else nodata">
+						<tr *ngFor="let variable of rows | slice: (page-1) * pageSize : page * pageSize">
+							<td *ngIf="variable.id">
 								<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
 								   [queryParams]="{ variableId: variable.id }">
 									{{variable.alias || variable.name}}
 								</a>
 							</td>
-							<td>
-								{{variable.definition}}
+							<td *ngIf="!variable.id">
+								{{variable.name}}
 							</td>
 							<td>
+								{{variable.description}}
+							</td>
+							<td *ngIf="variable.id && variable.exitsInlist">
 								<span class="fa fa-lg fa-check-circle text-success"></span>
 							</td>
-						</tr>
-						<tr *ngFor="let variable of context.newVariables | orderBy: HEADERS.ID | slice: (page-1) * pageSize : page * pageSize">
-							<td>
-								<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
-								   [queryParams]="{ variableId: variable.id }">
-									{{variable.alias || variable.name}}
-								</a>
-							</td>
-							<td>
-								{{variable.definition}}
-							</td>
-							<td>
+							<td *ngIf="variable.id && !variable.exitsInlist">
 								<span class="fa fa-lg fa-plus-circle text-info"></span>
 							</td>
-						</tr>
-						<tr *ngFor="let variableName of context.unknownVariableNames | orderBy: HEADERS.ID | slice: (page-1) * pageSize : page * pageSize">
-							<td>
-								<a>
-									{{variableName}}
-								</a>
-							</td>
-							<td>
-							</td>
-							<td>
+							<td *ngIf="!variable.id && !variable.exitsInlist">
 								<span class="fa fa-lg fa-times-circle text-danger"></span>
 							</td>
 						</tr>
