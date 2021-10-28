@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListSearchResponse } from '../shared/germplasm-list/model/germplasm-list-search-response.model';
 import { Subscription } from 'rxjs';
@@ -102,7 +102,6 @@ export class ListComponent implements OnInit {
     selectedVariables: { [key: number]: VariableDetails } = {};
     title = 'Entry details';
 
-    @Input()
     listId: number;
 
     itemsPerPage = 20;
@@ -136,6 +135,7 @@ export class ListComponent implements OnInit {
                 private modalService: NgbModal,
                 public translateService: TranslateService
     ) {
+        this.listId = Number(this.activatedRoute.snapshot.queryParamMap.get('listId'));
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';

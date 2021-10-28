@@ -65,6 +65,7 @@ export class GermplasmListComponent implements OnInit {
             list.active = false;
             if (list.id === listId) {
                 list.active = true;
+                this.router.navigate(['/germplasm-list/list/${list.listId}'], {queryParams: {listId:list.id}});
             }
         });
     }
