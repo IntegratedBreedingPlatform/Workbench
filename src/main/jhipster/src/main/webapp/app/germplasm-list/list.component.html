@@ -20,6 +20,14 @@
 							  (columnsSelectedEvent)="onColumnsSelected($event)">
 			</jhi-list-columns>
 		</div>
+		<div class="column" ngbDropdown>
+			<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *jhiHasAnyAuthority="ACTION_BUTTON_PERMISSIONS" jhiTranslate="germplasm-list.list-data.actions-button"></button>
+			<div ngbDropdownMenu aria-labelledby="actionMenu">
+				<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS" jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
+						(click)="exportDataAndLabels()">
+				</button>
+			</div>
+		</div>
 	</div>
 	<div class="row mt-2 mb-2">
 		<div class="col">
