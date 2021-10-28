@@ -10,8 +10,10 @@
 			<div ngbDropdown class="ml-2 float-right" placement="bottom-right">
 				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle jhiTranslate="actions"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
-					<button *ngIf="!this.germplasmList?.locked" class="dropdown-item" type="submit"
-							jhiTranslate="germplasm-list.list-data.actions.reorder-entries" (click)="openReorderEntries()" >
+					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.reorder-entries"
+							*jhiHasAnyAuthority="REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
+							(click)="openReorderEntries()" >
 					</button>
 				</div>
 			</div>

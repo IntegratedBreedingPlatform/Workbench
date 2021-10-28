@@ -26,6 +26,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { SearchResult } from '../shared/search-result.model';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
+import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -94,6 +95,8 @@ export class ListComponent implements OnInit {
             key: 'reference', placeholder: 'Contains Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
         }
     };
+
+    REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
 
     public isCollapsed = false;
     variables: VariableDetails[];
