@@ -34,7 +34,7 @@ declare var $: any;
 })
 export class ListComponent implements OnInit {
 
-    static readonly GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX = 'GermplasmListViewChanged';
+    static readonly GERMPLASM_LIST_CHANGED = 'GermplasmListViewChanged';
 
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
     ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
@@ -147,13 +147,20 @@ export class ListComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
 
-        this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
+        this.load();
+        this.registerGermplasmListChanged();
+    }
+
+    async load() {
+        await this.loadEntryDetails();
+        this.refreshTable();
+    }
+
+    private loadEntryDetails() {
+        return this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise().then(
             (res: HttpResponse<VariableDetails[]>) => this.variables = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
-
-        this.registerGermplasmListViewChanged();
-        this.refreshTable();
     }
 
     private refreshTable() {
@@ -228,9 +235,9 @@ export class ListComponent implements OnInit {
         return item.listId;
     }
 
-    registerGermplasmListViewChanged() {
-        this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, (event) => {
-            this.resetTable();
+    registerGermplasmListChanged() {
+        this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASM_LIST_CHANGED, (event) => {
+            this.load()
         });
     }
 
