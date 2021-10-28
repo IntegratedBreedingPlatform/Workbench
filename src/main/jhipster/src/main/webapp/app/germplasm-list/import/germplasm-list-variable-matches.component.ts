@@ -93,7 +93,41 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
     }
 
     save() {
+        this.isLoading = true;
+        const keys = Object.keys(this.context.data[0]);
+        const germplasmListGenerator = { id: this.listId, entries: [] };
+        for (const row of this.context.data) {
+            const entry = { 'entryNo': row[HEADERS.ENTRY_NO], 'data': {} };
+            keys.forEach((variableName) => {
+                const entryDetails = this.variables[toUpper(variableName)];
+                if (entryDetails) {
+                    entry.data[entryDetails.id] = { value: row[toUpper(variableName)] }
+                }
+            });
+            germplasmListGenerator.entries.push(entry);
+        }
 
+        this.germplasmListService.germplasmListUpdates(germplasmListGenerator).subscribe(
+            () => {
+                this.isLoading = false;
+                this.modal.close();
+                this.eventManager.broadcast({ name: this.listId + ListComponent.GERMPLASM_LIST_CHANGED });
+            },
+            (error) => {
+                this.isLoading = false;
+                this.onError(error);
+            }
+        );
+
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general', null, null);
+        }
     }
 
 }
