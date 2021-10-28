@@ -131,4 +131,8 @@ export class GermplasmListService implements ListService {
         return this.http.head(url, { observe: 'response' });
     }
 
+    germplasmListUpdates(germplasmListGenerator: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists`;
+        return this.http.patch(url, germplasmListGenerator, { observe: 'response' });
+    }
 }
