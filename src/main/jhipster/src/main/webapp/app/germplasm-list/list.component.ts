@@ -314,7 +314,7 @@ export class ListComponent implements OnInit {
     }
 
     exportDataAndLabels() {
-        this.paramContext.resetQueryParams().then(() => {
+        this.paramContext.resetQueryParams('/germplasm-list/').then(() => {
             /*
              * FIXME workaround for history.back() with base-href
              *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href
