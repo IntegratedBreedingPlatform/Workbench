@@ -1,9 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { LotService } from '../../shared/inventory/service/lot.service';
 import { Lot } from '../../shared/inventory/model/lot.model';
 import { GermplasmMergeRequest, NonSelectedGermplasm } from '../../shared/germplasm/model/germplasm-merge-request.model';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { AlertService } from '../../shared/alert/alert.service';
 import { MergeGermplasmReviewComponent } from './merge-germplasm-review.component';
 
@@ -61,6 +59,14 @@ export class MergeGermplasmExistingLotsComponent {
             return true;
         }
         return false;
+    }
+
+    applyToAllNonSelectedGermplasm() {
+        this.germplasmMergeRequest.nonSelectedGermplasm.forEach((nonSelectedGermplasm) => {
+            nonSelectedGermplasm.migrateLots = this.applyToAll === LotMergeOptionsEnum.MIGRATE;
+            nonSelectedGermplasm.omit = this.applyToAll === LotMergeOptionsEnum.OMIT;
+            }
+        );
     }
 
 }
