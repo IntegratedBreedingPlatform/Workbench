@@ -35,7 +35,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     selectedFileType = this.extensions[0];
 
     isLoading: boolean;
-    unknowColumnNames = {}
+    unknowColumnNames = {};
 
     constructor(
         private route: ActivatedRoute,
@@ -138,7 +138,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         const unknown = [];
 
         const variableNameColumn = Object.keys(this.unknowColumnNames);
-        let variableExistings = [], variablesFiltered = [];
+        let variableExistings, variablesFiltered = [];
 
         if (variableNameColumn.length) {
             variablesFiltered = await this.variableService.filterVariables({
@@ -146,13 +146,10 @@ export class GermplasmListImportUpdateComponent implements OnInit {
                 variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()]
             }).toPromise();
 
-            this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
-                (res: HttpResponse<VariableDetails[]>) => variableExistings = res.body,
-                (res: HttpErrorResponse) => this.onError(res)
-            );
+            variableExistings = await this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
-                variableExistings.every((entryDetail) =>
+                variableExistings.body.every((entryDetail) =>
                     Number(entryDetail.id) === Number(variable.id))
             );
 
