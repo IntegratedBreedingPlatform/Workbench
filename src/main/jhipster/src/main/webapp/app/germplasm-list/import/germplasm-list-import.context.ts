@@ -19,4 +19,11 @@ export class GermplasmListImportContext {
 
     // discarded variables
     unknownVariableNames: any[];
+
+    resertContext() {
+        this.data = [];
+        this.newVariables = [];
+        this.variablesOfTheList = [];
+        this.unknownVariableNames = [];
+    }
 }
