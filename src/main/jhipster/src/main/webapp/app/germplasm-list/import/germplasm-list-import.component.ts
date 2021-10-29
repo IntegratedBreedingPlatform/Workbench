@@ -11,11 +11,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListImportContext } from './germplasm-list-import.context';
-import { listPreview } from '../../shared/util/list-preview';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../shared/util/to-upper';
-import { GermplasmListImportVariableMatchesComponent } from './germplasm-list-import-variable-matches.component';
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
+import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 
 @Component({
     selector: 'jhi-germplasm-list-import',
@@ -89,7 +88,8 @@ export class GermplasmListImportComponent implements OnInit {
                 const variables = [...this.context.newVariables, ...this.context.unknownVariableNames]
 
                 if (variables && variables.length) {
-                    this.modalService.open(GermplasmListImportVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+                    const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+                    modalRef.componentInstance.isGermplasmListImport = true;
                 } else {
                     this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
                 }

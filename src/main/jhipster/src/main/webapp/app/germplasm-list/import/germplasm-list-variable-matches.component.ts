@@ -13,15 +13,14 @@ import { GermplasmListService } from '../../shared/germplasm-list/service/germpl
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { ListComponent } from '../list.component';
+import { GermplasmListImportComponent } from './germplasm-list-import.component';
+import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
 
 @Component({
     selector: 'jhi-germplasm-list-variable-matches.component',
     templateUrl: 'germplasm-list-variable-matches.component.html'
 })
 export class GermplasmListVariableMatchesComponent implements OnInit {
-
-    listId: number;
-
     HEADERS = HEADERS;
 
     page = 0;
@@ -29,8 +28,10 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 
     isLoading: boolean;
     isSaving: boolean;
+
     rows = [];
     variableMatchesResult: any = {};
+    isGermplasmListImport: boolean;
 
     constructor(
         private route: ActivatedRoute,
@@ -46,7 +47,6 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.listId = Number(this.route.snapshot.queryParamMap.get('listId'));
         this.rows = [];
         this.context.newVariables.forEach((variable) => {
             const variableName = variable.alias ? variable.alias : variable.name;
@@ -91,7 +91,11 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 
     back() {
         this.modal.close();
-        this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
+        if (this.isGermplasmListImport) {
+            this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
+        } else {
+            this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
+        }
     }
 
     dismiss() {
@@ -100,10 +104,16 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
         confirmModalRef.result.then(() => this.modal.dismiss());
     }
 
+    next() {
+        this.modal.close();
+        this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
+    }
+
     save() {
         this.isLoading = true;
         const keys = Object.keys(this.context.data[0]);
-        const germplasmListGenerator = { id: this.listId, entries: [] };
+        const listId = Number(this.route.snapshot.queryParamMap.get('listId'));
+        const germplasmListGenerator = { id: listId, entries: [] };
         for (const row of this.context.data) {
             const entry = { 'entryNo': row[HEADERS.ENTRY_NO], 'data': {} };
             Object.keys(this.variableMatchesResult).forEach((variableName) => {
@@ -116,7 +126,7 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({ name: this.listId + ListComponent.GERMPLASM_LIST_CHANGED });
+                this.eventManager.broadcast({ name: listId + ListComponent.GERMPLASM_LIST_CHANGED });
             },
             (error) => {
                 this.isLoading = false;

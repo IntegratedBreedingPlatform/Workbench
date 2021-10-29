@@ -89,8 +89,8 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             this.isLoading = false;
             if (valid) {
                 this.modal.close();
-                this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
-
+                const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+                modalRef.componentInstance.isGermplasmListImport = false;
             }
         }, (res) => {
             this.isLoading = false;

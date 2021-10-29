@@ -21,7 +21,7 @@ import { GermplasmListImportManualMatchesComponent } from './germplasm-list-impo
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/model/germplasm-list';
 import { ListModel } from '../../shared/list-builder/model/list.model';
-import { GermplasmListImportVariableMatchesComponent } from './germplasm-list-import-variable-matches.component';
+import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -174,7 +174,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
         const variables = [...this.context.newVariables, ...this.context.unknownVariableNames]
 
         if (variables && variables.length) {
-            this.modalService.open(GermplasmListImportVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+            this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
         } else {
             this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
         }

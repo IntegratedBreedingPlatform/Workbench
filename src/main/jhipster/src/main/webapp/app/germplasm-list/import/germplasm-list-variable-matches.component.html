@@ -1,6 +1,8 @@
 <div class="modal-header">
 	<h4 class="modal-title font-weight-bold">
-		<span jhiTranslate="germplasm-list.import.update.header"></span>
+		<span *ngIf="isGermplasmListImport" jhiTranslate="germplasm-list.import.header"></span>
+		<span *ngIf="!isGermplasmListImport" jhiTranslate="germplasm-list.import.update.header"></span>
+
 	</h4>
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
 			(click)="dismiss()">&times;
@@ -81,9 +83,13 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="save()" class="btn btn-primary" [disabled]="isLoading">
+	<button *ngIf="!isGermplasmListImport" (click)="save()" class="btn btn-primary" [disabled]="isLoading">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span jhiTranslate="save"></span>
+	</button>
+	<button *ngIf="isGermplasmListImport" (click)="next()" class="btn btn-primary" [disabled]="isLoading">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span jhiTranslate="next"></span>
 	</button>
 </div>
 
