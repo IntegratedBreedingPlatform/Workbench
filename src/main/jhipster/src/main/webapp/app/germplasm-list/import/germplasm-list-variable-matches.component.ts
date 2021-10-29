@@ -30,7 +30,7 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
     isLoading: boolean;
     isSaving: boolean;
     rows = [];
-    variables: { [key: string]: any; } = {};
+    variableMatchesResult: any = {};
 
     constructor(
         private route: ActivatedRoute,
@@ -55,7 +55,11 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
                 description: variable.description,
                 exitsInlist: false
             };
-            this.variables[toUpper(variableName)] = entryDetail;
+
+            if (variable.alias) {
+                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
+            }
+            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
             this.rows.push(entryDetail);
         });
 
@@ -66,7 +70,11 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
                 name: variableName, description: variable.description,
                 exitsInlist: true
             };
-            this.variables[toUpper(variableName)] = entryDetail;
+
+            if (variable.alias) {
+                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
+            }
+            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
             this.rows.push(entryDetail);
         });
 
@@ -98,11 +106,8 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
         const germplasmListGenerator = { id: this.listId, entries: [] };
         for (const row of this.context.data) {
             const entry = { 'entryNo': row[HEADERS.ENTRY_NO], 'data': {} };
-            keys.forEach((variableName) => {
-                const entryDetails = this.variables[toUpper(variableName)];
-                if (entryDetails) {
-                    entry.data[entryDetails.id] = { value: row[toUpper(variableName)] }
-                }
+            Object.keys(this.variableMatchesResult).forEach((variableName) => {
+                entry.data[this.variableMatchesResult[variableName]] = { value: row[variableName] };
             });
             germplasmListGenerator.entries.push(entry);
         }
