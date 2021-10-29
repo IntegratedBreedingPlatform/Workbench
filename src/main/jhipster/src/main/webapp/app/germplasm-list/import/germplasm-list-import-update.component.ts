@@ -51,6 +51,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.context.resetContext();
         this.listId = Number(this.route.snapshot.queryParamMap.get('listId'));
     }
 

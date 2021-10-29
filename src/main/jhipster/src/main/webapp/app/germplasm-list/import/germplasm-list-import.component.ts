@@ -49,7 +49,7 @@ export class GermplasmListImportComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.context.resertContext();
+        this.context.resetContext();
     }
 
     onFileChange(evt: any) {
