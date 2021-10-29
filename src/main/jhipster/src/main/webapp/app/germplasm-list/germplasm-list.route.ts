@@ -24,6 +24,10 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
                 canActivate: [RouteAccessService]
             },
             {
+                /**
+                 * :listId param is to track active link, but listId queryParam is actually used to open tabs
+                 * because it's also available to parent (and all) component
+                 */
                 path: 'list/:listId',
                 component: ListComponent,
                 data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS'] },

@@ -14,23 +14,26 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link" href="#germplasm-list" [class.active]="!hideSearchTab" (click)="setSearchTabActive()" jhiTranslate="germplasm-list.nav.search">Search</a>
+                        <a class="nav-link" href="#germplasm-list" jhiTranslate="germplasm-list.nav.search" (click)="setSearchTabActive()"
+                           [routerLink]="['germplasm-lists-search']" [routerLinkActive]="['active']">Search</a>
                     </li>
                     <li class="nav-item" *ngFor="let list of lists" role="presentation">
-                        <a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+                        <a class="nav-link" role="tab" data-toggle="tab" (click)="setActive(list.id)"
+                           [routerLink]="['list/' + list.id]" [routerLinkActive]="['active']" [queryParams]="{ listId: list.id }">
                             {{list.listName}}
                             <i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
                         </a>
                     </li>
                 </ul>
+                <!-- TODO router-outlet sticky state? router-outlet not possible right now because we don't want to reload tabs  -->
                 <div class="tab-content">
-                    <div class="col-xs-12 col-md-12" [hidden]="hideSearchTab">
+                    <div role="tabpanel" class="tab-pane container-fluid row" [class.active]="!hideSearchTab">
                         <jhi-germplasm-list-search></jhi-germplasm-list-search>
                     </div>
                     <!-- Tab panes -->
                     <div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="list.active" id="list-{{list.id}}">
                         <div class="col-xs-12 col-md-12">
-                            <jhi-list></jhi-list>
+                            <jhi-list [listId]="list.id"></jhi-list>
                         </div>
                     </div>
                 </div>

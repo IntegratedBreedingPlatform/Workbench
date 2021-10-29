@@ -65,7 +65,6 @@ export class GermplasmListComponent implements OnInit {
             list.active = false;
             if (list.id === listId) {
                 list.active = true;
-                this.router.navigate(['/germplasm-list/list/${list.listId}'], { queryParams: { listId: list.id } });
             }
         });
     }
@@ -103,6 +102,7 @@ export class GermplasmListComponent implements OnInit {
 
                         this.listId = germplasmLists[germplasmLists.length - 1].id;
                         this.setActive(this.listId);
+                        this.router.navigate([`/germplasm-list/list/${this.listId}`], { queryParams: { listId: this.listId } });
                     }
                     this.activeModal.close();
                 }, () => this.activeModal.dismiss());
