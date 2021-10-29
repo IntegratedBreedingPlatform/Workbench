@@ -6,6 +6,7 @@ import { GermplasmListService } from '../../shared/germplasm-list/service/germpl
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
 import { GermplasmListImportMultiMatchesComponent } from './germplasm-list-import-multi-matches.component';
 import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
+import { GermplasmListImportVariableMatchesComponent } from './germplasm-list-import-variable-matches.component';
 import { GermplasmListImportUpdateComponent, GermplasmListImportUpdatePopupComponent } from './germplasm-list-import-update.component';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 
@@ -22,7 +23,8 @@ import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable
         GermplasmListImportManualMatchesComponent,
         GermplasmListImportUpdateComponent,
         GermplasmListImportUpdatePopupComponent,
-        GermplasmListVariableMatchesComponent
+        GermplasmListVariableMatchesComponent,
+        GermplasmListImportVariableMatchesComponent
     ],
     entryComponents: [
         GermplasmListImportComponent,
@@ -32,7 +34,8 @@ import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable
         GermplasmListImportManualMatchesComponent,
         GermplasmListImportUpdateComponent,
         GermplasmListImportUpdatePopupComponent,
-        GermplasmListVariableMatchesComponent
+        GermplasmListVariableMatchesComponent,
+        GermplasmListImportVariableMatchesComponent
     ],
     providers: [GermplasmListService
     ]

@@ -39,6 +39,9 @@
 						<th>{{HEADERS.GUID}}</th>
 						<th>{{HEADERS.DESIGNATION}}</th>
 						<th>{{HEADERS.ENTRY_CODE}}</th>
+						<th *ngFor="let variable of context.newVariables">
+							{{variable.alias ? variable.alias : variable.name}}
+						</th>
 						<th>{{HEADERS.GID_MATCHES}}</th>
 						</thead>
 						<tbody *ngIf="rows && rows.length else nodata">
@@ -64,6 +67,9 @@
 								<span>{{row[HEADERS.DESIGNATION]}}</span>
 							</td>
 							<td>{{row[HEADERS.ENTRY_CODE]}}</td>
+							<td *ngFor="let variable of context.newVariables">
+								{{row[toUpper(variable.alias)] ? row[toUpper(variable.alias)] : row[toUpper(variable.name)]}}
+							</td>
 							<td>
 								<span *ngFor="let germplasm of row[HEADERS.GID_MATCHES]; index as i">
 									<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">
