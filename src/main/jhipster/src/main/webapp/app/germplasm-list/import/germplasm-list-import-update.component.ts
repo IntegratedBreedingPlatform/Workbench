@@ -36,7 +36,6 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
     isLoading: boolean;
     unknowColumnNames = {}
-    variablesFiltered = [];
 
     constructor(
         private route: ActivatedRoute,
@@ -53,10 +52,6 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
     ngOnInit(): void {
         this.listId = Number(this.route.snapshot.queryParamMap.get('listId'));
-        this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
-            (res: HttpResponse<VariableDetails[]>) => this.context.variablesOfTheList = res.body,
-            (res: HttpErrorResponse) => this.onError(res)
-        );
     }
 
     onFileChange(evt: any) {
@@ -128,8 +123,9 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         }
 
         await this.validateEntryDetailVariables(errorMessage);
+        const variables = [...this.context.newVariables, ...this.context.unknownVariableNames, ...this.context.variablesOfTheList]
 
-        if (!this.variablesFiltered || !this.variablesFiltered.length) {
+        if (!variables || !variables.length) {
             this.alertService.error('germplasm-list.import.file.validation.entry.details.no.column');
             return false;
         }
@@ -141,23 +137,35 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         const unknown = [];
 
         const variableNameColumn = Object.keys(this.unknowColumnNames);
+        let variableExistings = [], variablesFiltered = [];
 
-        this.variablesFiltered = await this.variableService.filterVariables({
-            variableNames: variableNameColumn,
-            variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()]
-        }).toPromise();
+        if (variableNameColumn.length) {
+            variablesFiltered = await this.variableService.filterVariables({
+                variableNames: variableNameColumn,
+                variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()]
+            }).toPromise();
 
-        this.context.unknownVariableNames = variableNameColumn.filter((variableName) =>
-            this.variablesFiltered.every((entryDetail) =>
-                toUpper(entryDetail.name) !== variableName &&
-                toUpper(entryDetail.alias) !== variableName)
-        );
+            this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
+                (res: HttpResponse<VariableDetails[]>) => variableExistings = res.body,
+                (res: HttpErrorResponse) => this.onError(res)
+            );
 
-        this.context.newVariables = this.variablesFiltered.filter((variable) =>
-            this.context.variablesOfTheList.every((entryDetail) =>
-                Number(entryDetail.id) !== Number(variable.id))
-        );
+            this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
+                variableExistings.every((entryDetail) =>
+                    Number(entryDetail.id) === Number(variable.id))
+            );
 
+            this.context.unknownVariableNames = variableNameColumn.filter((variableName) =>
+                variablesFiltered.every((entryDetail) =>
+                    toUpper(entryDetail.name) !== variableName &&
+                    toUpper(entryDetail.alias) !== variableName)
+            );
+
+            this.context.newVariables = variablesFiltered.filter((variable) =>
+                this.context.variablesOfTheList.every((entryDetail) =>
+                    Number(entryDetail.id) !== Number(variable.id))
+            );
+        }
     }
 
     private validateHeader(fileHeader: string[], errorMessage: string[]) {
