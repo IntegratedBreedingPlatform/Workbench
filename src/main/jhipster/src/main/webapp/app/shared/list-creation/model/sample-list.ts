@@ -1,6 +1,5 @@
-import { ListEntry, ListModel } from '../list-builder/model/list.model';
+import { ListEntry, ListModel } from '../../list-builder/model/list.model';
 
-// TODO move to shared/list-creation/model
 export class SampleList extends ListModel {
     constructor(
 

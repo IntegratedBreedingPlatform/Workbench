@@ -13,7 +13,7 @@ import { GermplasmListSearchRequest } from '../model/germplasm-list-search-reque
 import { GermplasmListSearchResponse } from '../model/germplasm-list-search-response.model';
 import { createRequestOption } from '../..';
 import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-search-response.model';
-import { GermplasmList } from '../../model/germplasm-list';
+import { GermplasmList } from '../../list-creation/model/germplasm-list';
 import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';

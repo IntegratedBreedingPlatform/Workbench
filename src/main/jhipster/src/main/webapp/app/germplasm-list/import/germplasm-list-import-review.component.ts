@@ -19,7 +19,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
-import { GermplasmListEntry } from '../../shared/model/germplasm-list';
+import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ListModel } from '../../shared/list-builder/model/list.model';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 
