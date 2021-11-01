@@ -28,7 +28,24 @@
                     "attributes": "ATTRIBUTES"
                 }
             },
-            "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})"
+            "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})",
+            "actions": {
+                "reorder-entries": "Reorder entries"
+            },
+            "selection": {
+                "empty": "Please select at least one entry."
+            },
+            "reorder-entries":{
+                "header": "Reorder entries",
+                "description": "Please, define the starting position of the entry number:",
+                "position-labels": {
+                    "beginning":  "At the beginning of the list",
+                    "end":  "At the end of the list",
+                    "fixed":  "Select a specific position:"
+                },
+                "reorder-action": "Reorder",
+                "reorder.success": "Successfully reorder of entries."
+            }
         },
         "variables": {
             "confirm.delete.title": "Delete confirmation",
