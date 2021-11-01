@@ -131,7 +131,6 @@ export class GermplasmListImportComponent implements OnInit {
     }
 
     private async validateEntryDetailVariables(errorMessage: string[]) {
-        const unknown = [];
         const variableNameColumn = Object.keys(this.unknowColumnNames);
         if (variableNameColumn.length) {
             const variablesFiltered = await this.variableService.filterVariables({

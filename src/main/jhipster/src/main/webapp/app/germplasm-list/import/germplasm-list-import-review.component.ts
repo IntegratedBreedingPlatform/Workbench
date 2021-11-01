@@ -274,7 +274,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 entry.gid = row[HEADERS.GID];
                 entry.entryCode = row[HEADERS.ENTRY_CODE];
                 entry.entryNo = Number(row[HEADERS.ROW_NUMBER]);
-                // TODO IBP-5093 map from column name in validation stage
                 entry.data = {};
                 Object.keys(this.variableMatchesResult).forEach((variableName) => {
                     entry.data[this.variableMatchesResult[variableName]] = { value: row[variableName] };
