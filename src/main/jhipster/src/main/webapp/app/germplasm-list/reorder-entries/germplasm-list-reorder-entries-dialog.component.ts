@@ -66,7 +66,7 @@ export class GermplasmListReorderEntriesDialogComponent implements OnInit {
         }
 
         if (this.position === Position.END) {
-            request.atTheEndPosition = true;
+            request.endOfList = true;
             return request;
         }
 
