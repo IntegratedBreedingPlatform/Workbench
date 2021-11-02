@@ -69,7 +69,7 @@
 				<div class="form-group row">
 					<label for="name" class="col-sm-3 col-form-label" jhiTranslate="germplasm-list-creation.name"></label>
 					<div class="col-sm-9">
-						<input type="text" class="form-control" id="name" name="name" [(ngModel)]="model.name" required/>
+						<input type="text" class="form-control" id="name" name="name" [(ngModel)]="model.name" data-test="name" required />
 					</div>
 				</div>
 				<div class="form-group row">
@@ -113,7 +113,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading">
 		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
 	</button>
-	<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+	<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary" data-test="saveList">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
 	</button>

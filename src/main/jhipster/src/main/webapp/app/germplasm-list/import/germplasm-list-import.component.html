@@ -15,7 +15,7 @@
 	<div class="form-group row">
 		<div class="col-2"></div>
 		<div class="col-md-8">
-			<input type="file" class="custom-file-input" id="importFile"
+			<input type="file" class="custom-file-input" id="importFile" data-test="importFileInput"
 				   (change)="onFileChange($event)" accept="{{selectedFileType}}">
 			<label class="custom-file-label" #fileUpload for="importFile">
 				<i class="fa fa-search"></i>&nbsp;<span jhiTranslate="germplasm-list.import.file.input.description"></span></label>
@@ -26,7 +26,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
 		<span jhiTranslate="cancel"></span>
 	</button>
-	<button (click)="next()" class="btn btn-primary" [disabled]="isLoading">
+	<button (click)="next()" class="btn btn-primary" [disabled]="isLoading" data-test="importFileNext">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span jhiTranslate="next"></span>
 	</button>
