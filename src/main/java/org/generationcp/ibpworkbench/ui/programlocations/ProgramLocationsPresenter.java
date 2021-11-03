@@ -63,7 +63,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 			final String locationName) {
 
 		final List<LocationDetails> locationDetails =
-				this.locationDataManager.getFilteredLocationsDetails(countryId, locationType, locationName, this.project.getUniqueID());
+				this.locationDataManager.getFilteredLocationsDetails(countryId, locationType, locationName);
 
 		return createLocationViewModelList(locationDetails);
 	}
@@ -151,7 +151,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLatitude(locationDetails.getLatitude());
 		viewModel.setLongitude(locationDetails.getLongitude());
 		viewModel.setAltitude(locationDetails.getAltitude());
-		viewModel.setProgramUUID(locationDetails.getProgramUUID());
 		viewModel.setProvinceId(locationDetails.getProvinceId());
 		viewModel.setProvinceName(locationDetails.getProvinceName());
 		viewModel.setlDefault(locationDetails.getlDefault());
@@ -169,7 +168,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
-		viewModel.setProgramUUID(location.getProgramUUID());
 		viewModel.setlDefault(location.getLdefault());
 
 		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
@@ -254,7 +252,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 	}
 
 	public List<Location> getExistingLocations(final String locationName) {
-		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL, this.project.getUniqueID());
+		return this.locationDataManager.getLocationsByName(locationName, Operation.EQUAL);
 	}
 
 	public Location convertLocationViewToLocation(final LocationViewModel locationViewModel) {
@@ -284,10 +282,6 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 		if (location.getSnl1id() == null) {
 			location.setSnl1id(0);
-		}
-
-		if (!locationViewModel.getCropAccessible()) {
-			location.setProgramUUID(this.project.getUniqueID());
 		}
 
 		location.setLdefault(locationViewModel.getlDefault());

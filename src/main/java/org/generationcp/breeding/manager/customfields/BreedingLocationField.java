@@ -179,7 +179,7 @@ public class BreedingLocationField extends AbsoluteLayout implements Initializin
 
 	@Override
 	public void initializeValues() {
-		this.populateLocations(this.programUniqueId);
+		this.populateLocations();
 		this.initPopulateFavLocations(this.programUniqueId, BreedingLocationField.STORAGE_LOCATION_TYPEID);
 	}
 
@@ -345,20 +345,20 @@ public class BreedingLocationField extends AbsoluteLayout implements Initializin
 			}
 
 		} else {
-			this.populateLocations(programUUID);
+			this.populateLocations();
 		}
 
 	}
 
-	private void populateLocations(final String programUUID) {
+	private void populateLocations() {
 
 		try {
 			if (this.isSelectAllLocations()) {
-				this.locations = this.locationDataManager.getLocationsByUniqueID(programUUID);
+				this.locations = this.locationDataManager.getAllLocations();
 			} else if (this.locationType > 0) {
-				this.locations = this.locationDataManager.getLocationsByType(this.locationType, programUUID);
+				this.locations = this.locationDataManager.getLocationsByType(this.locationType);
 			} else {
-				this.locations = this.locationDataManager.getAllBreedingLocationsByUniqueID(programUUID);
+				this.locations = this.locationDataManager.getAllBreedingLocationsByUniqueID();
 			}
 		} catch (final MiddlewareQueryException e) {
 			BreedingLocationField.LOG.error(e.getMessage(), e);
