@@ -27,6 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SearchResult } from '../shared/search-result.model';
 import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
+import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 
 declare var $: any;
@@ -38,6 +39,7 @@ declare var $: any;
 export class ListComponent implements OnInit {
 
     static readonly GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX = 'GermplasmListViewChanged';
+    static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
 
     ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS];
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
@@ -99,6 +101,8 @@ export class ListComponent implements OnInit {
         }
     };
 
+    REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
+
     public isCollapsed = false;
     variables: VariableDetails[];
     selectedVariables: { [key: number]: VariableDetails } = {};
@@ -128,6 +132,10 @@ export class ListComponent implements OnInit {
 
     germplasmListFilters: any;
 
+    selectedItems: { [key: number]: GermplasmListDataSearchResponse } = {};
+    isSelectAll: boolean;
+    lastClickIndex: any;
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
@@ -143,6 +151,7 @@ export class ListComponent implements OnInit {
         this.totalItems = 0;
         this.currentSearch = '';
         this.resultSearch = new SearchResult('');
+        this.isSelectAll = false;
         this.setDefaultSort();
     }
 
@@ -161,7 +170,7 @@ export class ListComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
 
-        this.registerGermplasmListViewChanged();
+        this.registerEvents();
         this.refreshTable();
     }
 
@@ -249,9 +258,14 @@ export class ListComponent implements OnInit {
         return item.listId;
     }
 
-    registerGermplasmListViewChanged() {
+    registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, (event) => {
             this.resetTable();
+        });
+
+        this.eventManager.subscribe(ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, (event) => {
+            this.clearSelectedItems();
+            this.loadAll();
         });
     }
 
@@ -328,6 +342,68 @@ export class ListComponent implements OnInit {
                 + '&printingLabelType=' + GERMPLASM_LIST_LABEL_PRINTING_TYPE
                 + '&listId=' + this.listId;
         });
+    }
+
+    isPageSelected() {
+        return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
+    }
+
+    size() {
+        return Object.keys(this.selectedItems).length;
+    }
+
+    onSelectPage() {
+        if (this.isPageSelected()) {
+            // remove all items
+            this.entries.forEach((entry: GermplasmListDataSearchResponse) => delete this.selectedItems[entry.listDataId]);
+        } else {
+            // check remaining items
+            this.entries.forEach((entry: GermplasmListDataSearchResponse) => this.selectedItems[entry.listDataId] = entry);
+        }
+    }
+
+    isSelected(entry: GermplasmListDataSearchResponse) {
+        return this.selectedItems[entry.listDataId];
+    }
+
+    toggleSelect($event, index, entry: GermplasmListDataSearchResponse, checkbox = false) {
+        if (this.isSelectAll) {
+            return;
+        }
+        if (!$event.ctrlKey && !checkbox) {
+            this.selectedItems = {};
+        }
+        let items;
+        if ($event.shiftKey) {
+            const max = Math.max(this.lastClickIndex, index) + 1,
+                min = Math.min(this.lastClickIndex, index);
+            items = this.entries.slice(min, max);
+        } else {
+            items = [entry];
+            this.lastClickIndex = index;
+        }
+        const isClickedItemSelected = this.selectedItems[entry.listDataId];
+        for (const item of items) {
+            if (isClickedItemSelected) {
+                delete this.selectedItems[item.listDataId];
+            } else {
+                this.selectedItems[item.listDataId] = item;
+            }
+        }
+    }
+
+    clearSelectedItems() {
+        this.selectedItems = {};
+    }
+
+    openReorderEntries() {
+        if (!this.validateSelection()) {
+            return;
+        }
+
+        const groupGermplasmModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
+        groupGermplasmModal.componentInstance.listId = this.listId;
+        groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
     }
 
     private getFilters() {
@@ -543,6 +619,18 @@ export class ListComponent implements OnInit {
 
              this.refreshTable();
          });
+    }
+
+    private validateSelection() {
+        if (this.entries.length === 0 || (!this.isSelectAll && this.size() === 0)) {
+            this.alertService.error('germplasm-list.list-data.selection.empty');
+            return false;
+        }
+        return true;
+    }
+
+    private getSelectedItemIds() {
+        return Object.keys(this.selectedItems).map((listDataId: string) => Number(listDataId));
     }
 
 }
