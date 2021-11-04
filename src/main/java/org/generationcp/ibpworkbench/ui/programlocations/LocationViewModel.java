@@ -28,10 +28,6 @@ public class LocationViewModel implements BeanFormState {
 	private Double longitude;
 	private Double altitude;
 
-	private String programUUID;
-
-	private Boolean cropAccessible = true;
-
 	private Boolean lDefault;
 
 	public LocationViewModel() {
@@ -114,7 +110,7 @@ public class LocationViewModel implements BeanFormState {
 		return new StringBuilder("LocationViewModel: [locationId=").append(this.locationId).append(", locationName=")
 			.append(this.locationName).append(", locationAbbreviation=").append(this.locationAbbreviation).append(", ltypeStr=")
 			.append(this.ltypeStr).append(", cntryFullName=").append(this.cntryFullName).append(", cntryName=").append(this.cntryName)
-			.append(", provinceName=").append(this.provinceName).append(", programUUID=").append(this.programUUID).append("]").toString();
+			.append(", provinceName=").append(this.provinceName).append("]").toString();
 	}
 
 	@Override
@@ -190,22 +186,6 @@ public class LocationViewModel implements BeanFormState {
 			return false;
 		}
 		return true;
-	}
-
-	public String getProgramUUID() {
-		return programUUID;
-	}
-
-	public void setProgramUUID(final String programUUID) {
-		this.programUUID = programUUID;
-	}
-
-	public Boolean getCropAccessible() {
-		return cropAccessible;
-	}
-
-	public void setCropAccessible(final Boolean cropAccessible) {
-		this.cropAccessible = cropAccessible;
 	}
 
 	public String getCntryName() {

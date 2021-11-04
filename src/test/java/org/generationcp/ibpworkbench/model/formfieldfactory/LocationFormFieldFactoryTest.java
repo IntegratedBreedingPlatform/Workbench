@@ -1,7 +1,6 @@
 package org.generationcp.ibpworkbench.model.formfieldfactory;
 
 import com.vaadin.data.util.BeanContainer;
-import com.vaadin.ui.ComboBox;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsPresenter;
 import org.generationcp.middleware.pojos.Country;
@@ -10,20 +9,10 @@ import org.generationcp.middleware.pojos.UserDefinedField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -95,17 +84,6 @@ public class LocationFormFieldFactoryTest {
 		this.locationFormFieldFactory.getlType().select(userDefinedField.getFldno());
 
 		assertEquals(userDefinedField, this.locationFormFieldFactory.retrieveLocationType());
-
-	}
-
-	@Test
-	public void testDisableCropAccessible() {
-
-		this.locationFormFieldFactory.getCropAccessible().setEnabled(true);
-
-		this.locationFormFieldFactory.disableCropAccessible();
-
-		assertFalse(this.locationFormFieldFactory.getCropAccessible().isEnabled());
 
 	}
 

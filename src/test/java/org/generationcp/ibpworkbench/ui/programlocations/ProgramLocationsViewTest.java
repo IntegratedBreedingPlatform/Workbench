@@ -287,8 +287,6 @@ public class ProgramLocationsViewTest {
 		locationViewModel.setAltitude(5d);
 		locationViewModel.setLatitude(6d);
 		locationViewModel.setLongitude(7d);
-		locationViewModel.setCropAccessible(true);
-		locationViewModel.setProgramUUID(PROGRAM_UUID);
 		return locationViewModel;
 	}
 
@@ -515,9 +513,6 @@ public class ProgramLocationsViewTest {
 		assertEquals(object1.getAltitude(), object2.getAltitude());
 		assertEquals(object1.getLatitude(), object2.getLatitude());
 		assertEquals(object1.getLongitude(), object2.getLongitude());
-		assertEquals(object1.getCropAccessible(), object2.getCropAccessible());
-		assertEquals(object1.getProgramUUID(), object2.getProgramUUID());
-
 	}
 
 }

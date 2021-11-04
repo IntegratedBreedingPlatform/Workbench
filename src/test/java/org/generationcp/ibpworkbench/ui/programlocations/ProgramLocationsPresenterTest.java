@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.ui.programlocations;
 
-import org.junit.Assert;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.LocationDataManager;
@@ -10,6 +9,7 @@ import org.generationcp.middleware.pojos.LocationDetails;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite.FavoriteType;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 
 public class ProgramLocationsPresenterTest {
 
@@ -288,52 +288,6 @@ public class ProgramLocationsPresenterTest {
 		Assert.assertThat(LATITUDE, is(locationViewModel.getLatitude()));
 		Assert.assertThat(LONGITUDE, is(locationViewModel.getLongitude()));
 		Assert.assertThat(ALTITUDE, is(locationViewModel.getAltitude()));
-	}
-
-	@Test
-	public void testConvertLocationViewToLocationProgramAccessible() {
-
-		final LocationViewModel locationViewModel = createLocationViewModel();
-		locationViewModel.setCropAccessible(false);
-
-		final Location result = controller.convertLocationViewToLocation(locationViewModel);
-
-		Assert.assertEquals((Integer) 0, result.getLrplce());
-		Assert.assertEquals(LOCID, result.getLocid());
-		Assert.assertEquals(LOCATION_NAME, result.getLname());
-		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLabbr());
-		Assert.assertEquals(LTYPE, result.getLtype());
-		Assert.assertEquals(CNTRYID, result.getCntryid());
-		Assert.assertThat(LONGITUDE, is(result.getLongitude()));
-		Assert.assertThat(LATITUDE, is(result.getLatitude()));
-		Assert.assertThat(ALTITUDE, is(result.getAltitude()));
-		Assert.assertEquals((Integer) 0, result.getNllp());
-		Assert.assertEquals((Integer) 0, result.getSnl3id());
-		Assert.assertEquals((Integer) 0, result.getSnl2id());
-		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
-	}
-
-	@Test
-	public void testConvertLocationViewToLocationCropAccessible() {
-
-		final LocationViewModel locationViewModel = createLocationViewModel();
-		locationViewModel.setCropAccessible(true);
-
-		final Location result = controller.convertLocationViewToLocation(locationViewModel);
-
-		Assert.assertEquals((Integer) 0, result.getLrplce());
-		Assert.assertEquals(LOCID, result.getLocid());
-		Assert.assertEquals(LOCATION_NAME, result.getLname());
-		Assert.assertEquals(LOCATION_ABBREVIATION, result.getLabbr());
-		Assert.assertEquals(LTYPE, result.getLtype());
-		Assert.assertEquals(CNTRYID, result.getCntryid());
-		Assert.assertThat(LONGITUDE, is(result.getLongitude()));
-		Assert.assertThat(LATITUDE, is(result.getLatitude()));
-		Assert.assertThat(ALTITUDE, is(result.getAltitude()));
-		Assert.assertEquals((Integer) 0, result.getNllp());
-		Assert.assertEquals((Integer) 0, result.getSnl3id());
-		Assert.assertEquals((Integer) 0, result.getSnl2id());
-		Assert.assertEquals(PROVINCE_ID, result.getSnl1id());
 	}
 
 	@Test

@@ -17,7 +17,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.AbstractSelect;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -64,8 +63,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 	private TextField latitude;
 	private TextField longitude;
 	private TextField altitude;
-
-	private CheckBox cropAccessible;
 
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(LocationFormFieldFactory.class);
@@ -220,11 +217,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		this.altitude.addValidator(new DoubleValidator(messageSource.getMessage(Message.ADD_LOCATION_INVALID_NUMBER_ERROR)));
 		this.altitude.setNullSettingAllowed(true);
 		this.altitude.setNullRepresentation("");
-
-		this.cropAccessible = new CheckBox();
-		this.cropAccessible.setImmediate(true);
-		this.cropAccessible.setDebugId("cropAccessible");
-
 	}
 
 	@Override
@@ -245,8 +237,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 			return this.longitude;
 		} else if (LocationForm.ALTITUDE.equals(propertyId)) {
 			return this.altitude;
-		} else if (LocationForm.CROP_ACCESSIBLE.equals(propertyId)) {
-			return this.cropAccessible;
 		}
 		return super.createField(item, propertyId, uiContext);
 	}
@@ -283,10 +273,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 		return altitude;
 	}
 
-	public CheckBox getCropAccessible() {
-		return cropAccessible;
-	}
-
 	public Country retrieveCountryValue() {
 		final BeanContainer<String, Country> beanContainer = (BeanContainer<String, Country>) this.country.getContainerDataSource();
 		final BeanItem<Country> beanItem = beanContainer.getItem(this.country.getValue());
@@ -304,10 +290,6 @@ public class LocationFormFieldFactory extends DefaultFieldFactory implements Ini
 				(BeanContainer<String, UserDefinedField>) this.lType.getContainerDataSource();
 		final BeanItem<UserDefinedField> beanItem = beanContainer.getItem(this.lType.getValue());
 		return beanItem == null ? null : beanItem.getBean();
-	}
-
-	public void disableCropAccessible() {
-		this.cropAccessible.setEnabled(false);
 	}
 
 	@Override
