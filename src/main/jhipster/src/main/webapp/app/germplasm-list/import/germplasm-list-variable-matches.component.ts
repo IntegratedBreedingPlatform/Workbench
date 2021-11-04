@@ -50,42 +50,42 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
         this.rows = [];
         this.context.newVariables.forEach((variable) => {
             const variableName = variable.alias ? variable.alias : variable.name;
-            const entryDetail = {
+            const row = {
                 id: variable.id, name: variableName,
                 description: variable.description,
-                exitsInlist: false
+                existsInlist: false
             };
 
             if (variable.alias) {
                 this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
             }
             this.variableMatchesResult[toUpper(variable.name)] = variable.id;
-            this.rows.push(entryDetail);
+            this.rows.push(row);
         });
 
         this.context.variablesOfTheList.forEach((variable) => {
             const variableName = variable.alias ? variable.alias : variable.name;
-            const entryDetail = {
+            const row = {
                 id: variable.id,
                 name: variableName, description: variable.description,
-                exitsInlist: true
+                existsInlist: true
             };
 
             if (variable.alias) {
                 this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
             }
             this.variableMatchesResult[toUpper(variable.name)] = variable.id;
-            this.rows.push(entryDetail);
+            this.rows.push(row);
         });
 
         this.context.unknownVariableNames.forEach((variableName) => {
-            const entryDetail = {
+            const row = {
                 id: null,
                 name: variableName,
                 description: '',
-                exitsInlist: false
+                existsInlist: false
             };
-            this.rows.push(entryDetail);
+            this.rows.push(row);
         });
     }
 

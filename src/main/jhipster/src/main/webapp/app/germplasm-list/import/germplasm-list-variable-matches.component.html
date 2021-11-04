@@ -25,8 +25,9 @@
 						<tr *ngFor="let variable of rows | slice: (page-1) * pageSize : page * pageSize">
 							<td *ngIf="variable.id">
 								<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
-								   [queryParams]="{ variableId: variable.id }">
-									{{variable.alias || variable.name}}
+								   [queryParams]="{ variableId: variable.id }"
+								   queryParamsHandling="merge">
+								{{variable.alias || variable.name}}
 								</a>
 							</td>
 							<td *ngIf="!variable.id">
@@ -35,13 +36,13 @@
 							<td>
 								{{variable.description}}
 							</td>
-							<td *ngIf="variable.id && variable.exitsInlist">
+							<td *ngIf="variable.id && variable.existsInlist">
 								<span class="fa fa-lg fa-check-circle text-success"></span>
 							</td>
-							<td *ngIf="variable.id && !variable.exitsInlist">
+							<td *ngIf="variable.id && !variable.existsInlist">
 								<span class="fa fa-lg fa-plus-circle text-info"></span>
 							</td>
-							<td *ngIf="!variable.id && !variable.exitsInlist">
+							<td *ngIf="!variable.id">
 								<span class="fa fa-lg fa-times-circle text-danger"></span>
 							</td>
 						</tr>

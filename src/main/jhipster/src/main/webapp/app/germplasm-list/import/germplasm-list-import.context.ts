@@ -10,7 +10,7 @@ export class GermplasmListImportContext {
     // new variable imported
     newVariables: any[] = [];
 
-    // existing varible
+    // existing variable
     variablesOfTheList: any[] = [];
 
     // discarded variables

@@ -35,7 +35,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     selectedFileType = this.extensions[0];
 
     isLoading: boolean;
-    unknowColumnNames = {};
+    unknowColumns = {};
 
     constructor(
         private route: ActivatedRoute,
@@ -123,7 +123,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             return false;
         }
 
-        await this.validateEntryDetailVariables(errorMessage);
+        await this.processEntryDetailVariables();
         const variables = [...this.context.newVariables, ...this.context.unknownVariableNames, ...this.context.variablesOfTheList]
 
         if (!variables || !variables.length) {
@@ -134,42 +134,40 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         return true;
     }
 
-    private async validateEntryDetailVariables(errorMessage: string[]) {
-        const unknown = [];
+    private async processEntryDetailVariables() {
+        const unknownColumnNames = Object.keys(this.unknowColumns);
+        let variablesOfTheList = [],
+            variablesFiltered = [];
 
-        const variableNameColumn = Object.keys(this.unknowColumnNames);
-        let variableExistings, variablesFiltered = [];
-
-        if (variableNameColumn.length) {
+        if (unknownColumnNames.length) {
             variablesFiltered = await this.variableService.filterVariables({
-                variableNames: variableNameColumn,
+                variableNames: unknownColumnNames,
                 variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()]
             }).toPromise();
 
-            variableExistings = await this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise();
+            variablesOfTheList = await this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS)
+                .map((resp) => resp.body)
+                .toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
-                variableExistings.body.some((entryDetail) =>
-                    Number(entryDetail.id) === Number(variable.id))
+                variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
             );
 
-            this.context.unknownVariableNames = variableNameColumn.filter((variableName) =>
-                variablesFiltered.every((entryDetail) =>
-                    toUpper(entryDetail.name) !== variableName &&
-                    toUpper(entryDetail.alias) !== variableName)
+            this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
+                variablesFiltered.every((v) => toUpper(v.name) !== variableName && toUpper(v.alias) !== variableName)
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
-                this.context.variablesOfTheList.every((entryDetail) =>
-                    Number(entryDetail.id) !== Number(variable.id))
+                this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
             );
         }
+
     }
 
     private validateHeader(fileHeader: string[], errorMessage: string[]) {
         // Ignore empty column headers
         fileHeader = fileHeader.filter((header) => !!header);
-        this.unknowColumnNames = {};
+        this.unknowColumns = {};
         Object.keys(fileHeader
             // get duplicates
             .filter((header, i, self) => self.indexOf(header) !== i)
@@ -184,7 +182,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
         // Gather unknown columns
         fileHeader.filter((header) => Object.values(HEADERS).indexOf(header) < 0)
-            .forEach((header) => this.unknowColumnNames[header] = 1);
+            .forEach((header) => this.unknowColumns[header] = 1);
     }
 
     dismiss() {
