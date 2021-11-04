@@ -206,7 +206,7 @@ public class BreedingLocationFieldTest {
 
 		// Verify that Middleware method for getting all breeding locations for program was called
 		Mockito.verify(this.locationDataManager, Mockito.times(1))
-				.getAllBreedingLocationsByUniqueID();
+				.getAllBreedingLocations();
 		Mockito.verifyNoMoreInteractions(this.locationDataManager);
 
 		// Verify that Middleware methods for getting program favorites were not called
