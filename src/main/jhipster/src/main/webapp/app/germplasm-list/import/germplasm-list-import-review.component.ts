@@ -274,10 +274,12 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 entry.gid = row[HEADERS.GID];
                 entry.entryCode = row[HEADERS.ENTRY_CODE];
                 entry.entryNo = Number(row[HEADERS.ROW_NUMBER]);
-                entry.data = {};
-                Object.keys(this.variableMatchesResult).forEach((variableName) => {
-                    entry.data[this.variableMatchesResult[variableName]] = { value: row[variableName] };
-                });
+                entry.data = Object.keys(this.variableMatchesResult).reduce((map, variableName) => {
+                    if (row[variableName]) {
+                        map[this.variableMatchesResult[variableName]] = { value: row[variableName] };
+                    }
+                    return map;
+                }, {});
                 return entry
             });
 

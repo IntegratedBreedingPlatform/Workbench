@@ -115,10 +115,15 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
         const listId = Number(this.route.snapshot.queryParamMap.get('listId'));
         const germplasmListGenerator = { id: listId, entries: [] };
         for (const row of this.context.data) {
-            const entry = { 'entryNo': row[HEADERS.ENTRY_NO], 'data': {} };
-            Object.keys(this.variableMatchesResult).forEach((variableName) => {
-                entry.data[this.variableMatchesResult[variableName]] = { value: row[variableName] };
-            });
+            const entry = {
+                entryNo: row[HEADERS.ENTRY_NO],
+                data: Object.keys(this.variableMatchesResult).reduce((map, variableName) => {
+                    if (row[variableName]) {
+                        map[this.variableMatchesResult[variableName]] = { value: row[variableName] };
+                    }
+                    return map;
+                }, {})
+            };
             germplasmListGenerator.entries.push(entry);
         }
 
