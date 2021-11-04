@@ -267,7 +267,7 @@ export class ListComponent implements OnInit {
 
     registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASM_LIST_CHANGED, (event) => {
-            this.resetTable();
+            this.load();
         });
 
         this.eventManager.subscribe(ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, (event) => {
