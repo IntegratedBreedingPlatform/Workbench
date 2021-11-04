@@ -145,7 +145,7 @@ export class GermplasmListService implements ListService {
     }
 
     germplasmListUpdates(germplasmListGenerator: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
         return this.http.patch(url, germplasmListGenerator, { observe: 'response' });
     }
 }
