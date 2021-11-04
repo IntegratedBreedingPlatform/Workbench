@@ -149,7 +149,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             variableExistings = await this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
-                variableExistings.body.every((entryDetail) =>
+                variableExistings.body.some((entryDetail) =>
                     Number(entryDetail.id) === Number(variable.id))
             );
 
