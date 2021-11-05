@@ -69,9 +69,7 @@
 								   [(ngModel)]="nonSelected.migrateLots" [value]="false">
 							<label class="form-check-label" [attr.for]="'radioCloseLots' + nonSelected.germplasmId" jhiTranslate="merge-germplasm.action.closeLots">
 							</label>
-						</div>
-						<br/>
-						<div class="form-check form-check-inline">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelected.germplasmId" [attr.id]="'radioAssociateLots' + nonSelected.germplasmId"
 								   [(ngModel)]="nonSelected.migrateLots" [value]="true">
 							<label class="form-check-label" [attr.for]="'radioAssociateLots' + nonSelected.germplasmId" jhiTranslate="merge-germplasm.action.associateLots">
