@@ -116,7 +116,6 @@ public class DeleteProjectActionTest {
 
 		deleteProjectAction.deleteProgram(project);
 
-		verify(locationDataManager).deleteProgramLocationsByUniqueId(project.getUniqueID());
 		verify(germplasmDataManager, Mockito.times(2)).deleteProgramFavorites(ArgumentMatchers.<List<ProgramFavorite>>any());
 		verify(studyDataManager).deleteProgramStudies(project.getUniqueID());
 		verify(germplasmListManager).deleteGermplasmListsByProgram(project.getUniqueID());

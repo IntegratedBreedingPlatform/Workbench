@@ -161,15 +161,10 @@ public class LocationForm extends Form {
 		this.grid.addComponent(lblAltitude, 3, 6);
 		this.grid.setComponentAlignment(lblLongitude, Alignment.TOP_LEFT);
 
-		this.grid.getComponent(1, 7).setCaption(this.messageSource.getMessage(Message.LOC_CROP_ACCESSIBLE));
-
 		// Set the selected value of Province combobox after all fields in the form are initialized. The option items of Province
 		// will only be available after the Country combobox is initialized.
 		final Location provinceValue = this.locationDataManager.getLocationByID(this.locationViewModel.getProvinceId());
 		this.locationFormFieldFactory.getProvince().setValue(provinceValue);
-
-		this.disableCropAccessibleIfLocationIsUsedInOtherProgram();
-		this.populateCropAccessibleCheckbox();
 
 		super.attach();
 
@@ -244,39 +239,6 @@ public class LocationForm extends Form {
 			this.locationViewModel.setLtypeStr(locationType.getFname());
 		}
 
-		if (this.locationViewModel.getCropAccessible()) {
-			this.locationViewModel.setProgramUUID(null);
-		} else {
-			this.locationViewModel.setProgramUUID(contextUtil.getCurrentProgramUUID());
-		}
-
-	}
-
-	protected void disableCropAccessibleIfLocationIsUsedInOtherProgram() {
-
-		final Integer locationId = this.locationViewModel.getLocationId();
-
-		if (locationId != null) {
-			// Check if the LOCATION variable is used in any study programs except for the current program.
-			if (this.studyDataManager.isVariableUsedInStudyOrTrialEnvironmentInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
-					String.valueOf(locationId), this.contextUtil.getCurrentProgramUUID())) {
-				locationFormFieldFactory.disableCropAccessible();
-			}
-			// Check if the LOCATION variable is used in any study across all programs.
-			locationUsedInAnyProgram = this.studyDataManager.isVariableUsedInStudyOrTrialEnvironmentInOtherPrograms(String.valueOf(TermId.LOCATION_ID.getId()),
-					String.valueOf(locationId), "");
-		}
-	}
-
-	protected void populateCropAccessibleCheckbox() {
-
-		if (this.locationViewModel.getLocationId() != null) {
-			if (this.locationViewModel.getProgramUUID() == null) {
-				locationFormFieldFactory.getCropAccessible().setValue(true);
-			} else {
-				locationFormFieldFactory.getCropAccessible().setValue(false);
-			}
-		}
 	}
 
 	public boolean isLocationUsedInAnyProgram() {

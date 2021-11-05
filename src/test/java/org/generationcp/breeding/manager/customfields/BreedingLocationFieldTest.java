@@ -85,7 +85,7 @@ public class BreedingLocationFieldTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 
 		final Project project = this.getProject(PROJECT_ID);
 
@@ -141,7 +141,7 @@ public class BreedingLocationFieldTest {
 
 	@Test
 	public void testinitPopulateFavLocationsReturnsFalseWhenThereAreNoFavouriteLocation() throws MiddlewareQueryException {
-		final ArrayList<ProgramFavorite> favouriteLocations = new ArrayList<ProgramFavorite>();
+		final ArrayList<ProgramFavorite> favouriteLocations = new ArrayList<>();
 		Mockito.when(this.germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, 1000, BreedingLocationFieldTest.DUMMY_UNIQUE_ID))
 				.thenReturn(favouriteLocations);
 
@@ -151,7 +151,7 @@ public class BreedingLocationFieldTest {
 
 	@Test
 	public void testinitPopulateFavLocationsReturnsTrueWhenThereAreFavouriteLocation() throws MiddlewareQueryException {
-		final ArrayList<ProgramFavorite> favouriteLocations = new ArrayList<ProgramFavorite>();
+		final ArrayList<ProgramFavorite> favouriteLocations = new ArrayList<>();
 		final OptionGroup opg = Mockito.mock(OptionGroup.class);
 		favouriteLocations.add(Mockito.mock(ProgramFavorite.class));
 		Mockito.when(opg.getValue()).thenReturn(Boolean.FALSE.toString());
@@ -192,12 +192,12 @@ public class BreedingLocationFieldTest {
 		this.breedingLocationField.populateHarvestLocation(false, BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
 
 		// Verify that Middleware method for getting all locations for program was called
-		Mockito.verify(this.locationDataManager, Mockito.times(1)).getLocationsByUniqueID(BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
+		Mockito.verify(this.locationDataManager, Mockito.times(1)).getAllLocations();
 		Mockito.verifyNoMoreInteractions(this.locationDataManager);
 
 		// Verify that Middleware methods for getting program favorites were not called
-		Mockito.verifyZeroInteractions(this.workbenchDataManager);
-		Mockito.verifyZeroInteractions(this.germplasmDataManager);
+		Mockito.verifyNoInteractions(this.workbenchDataManager);
+		Mockito.verifyNoInteractions(this.germplasmDataManager);
 	}
 
 	@Test
@@ -206,12 +206,12 @@ public class BreedingLocationFieldTest {
 
 		// Verify that Middleware method for getting all breeding locations for program was called
 		Mockito.verify(this.locationDataManager, Mockito.times(1))
-				.getAllBreedingLocationsByUniqueID(BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
+				.getAllBreedingLocations();
 		Mockito.verifyNoMoreInteractions(this.locationDataManager);
 
 		// Verify that Middleware methods for getting program favorites were not called
-		Mockito.verifyZeroInteractions(this.workbenchDataManager);
-		Mockito.verifyZeroInteractions(this.germplasmDataManager);
+		Mockito.verifyNoInteractions(this.workbenchDataManager);
+		Mockito.verifyNoInteractions(this.germplasmDataManager);
 	}
 
 	@Test
@@ -221,13 +221,13 @@ public class BreedingLocationFieldTest {
 		this.breedingLocationField.populateHarvestLocation(false, BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
 
 		// Verify that Middleware method for getting all seed storage locations for program was called
-		Mockito.verify(this.locationDataManager, Mockito.times(1)).getLocationsByType(BreedingLocationField.STORAGE_LOCATION_TYPEID,
-				BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
+		Mockito.verify(this.locationDataManager, Mockito.times(1)).getLocationsByType(BreedingLocationField.STORAGE_LOCATION_TYPEID
+		);
 		Mockito.verifyNoMoreInteractions(this.locationDataManager);
 
 		// Verify that Middleware methods for getting program favorites were not called
-		Mockito.verifyZeroInteractions(this.workbenchDataManager);
-		Mockito.verifyZeroInteractions(this.germplasmDataManager);
+		Mockito.verifyNoInteractions(this.workbenchDataManager);
+		Mockito.verifyNoInteractions(this.germplasmDataManager);
 	}
 
 	@Test
@@ -239,7 +239,7 @@ public class BreedingLocationFieldTest {
 		// Verify Middleware interactions
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getProgramFavorites(FavoriteType.LOCATION, 1000,
 				BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
-		Mockito.verifyZeroInteractions(this.locationDataManager);
+		Mockito.verifyNoInteractions(this.locationDataManager);
 
 		// Expecting all favorite locations to be in location combobox
 		final ComboBox locationComboBox = this.breedingLocationField.getBreedingLocationComboBox();
@@ -254,7 +254,7 @@ public class BreedingLocationFieldTest {
 		// Verify Middleware interactions
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getProgramFavorites(FavoriteType.LOCATION, 1000,
 				BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
-		Mockito.verifyZeroInteractions(this.locationDataManager);
+		Mockito.verifyNoInteractions(this.locationDataManager);
 
 		// Verify contents of location combobox
 		final ComboBox locationComboBox = this.breedingLocationField.getBreedingLocationComboBox();
@@ -276,7 +276,7 @@ public class BreedingLocationFieldTest {
 		// Verify Middleware interactions
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getProgramFavorites(FavoriteType.LOCATION, 1000,
 				BreedingLocationFieldTest.DUMMY_UNIQUE_ID);
-		Mockito.verifyZeroInteractions(this.locationDataManager);
+		Mockito.verifyNoInteractions(this.locationDataManager);
 
 		// Verify contents of location combobox
 		final ComboBox locationComboBox = this.breedingLocationField.getBreedingLocationComboBox();
@@ -297,16 +297,16 @@ public class BreedingLocationFieldTest {
 		final List<Location> locationList = new ArrayList<>();
 		locationList.add(this.locationTestDataInitializer.createLocation(BreedingLocationFieldTest.NON_BREEDING_NON_STORAGE_LOCATION_ID,
 				"LOCATION" + BreedingLocationFieldTest.NON_BREEDING_NON_STORAGE_LOCATION_ID, 1,
-				"ABBR" + BreedingLocationFieldTest.NON_BREEDING_NON_STORAGE_LOCATION_ID, DUMMY_UNIQUE_ID));
+				"ABBR" + BreedingLocationFieldTest.NON_BREEDING_NON_STORAGE_LOCATION_ID));
 		locationList.add(this.locationTestDataInitializer.createLocation(BreedingLocationFieldTest.BREEDING_LOCATION_ID1,
 				"LOCATION" + BreedingLocationFieldTest.BREEDING_LOCATION_ID1, Location.BREEDING_LOCATION_TYPE_IDS[0],
-				"ABBR" + BreedingLocationFieldTest.BREEDING_LOCATION_ID1, DUMMY_UNIQUE_ID));
+				"ABBR" + BreedingLocationFieldTest.BREEDING_LOCATION_ID1));
 		locationList.add(this.locationTestDataInitializer.createLocation(BreedingLocationFieldTest.BREEDING_LOCATION_ID2,
 				"LOCATION" + BreedingLocationFieldTest.BREEDING_LOCATION_ID1, Location.BREEDING_LOCATION_TYPE_IDS[1],
-				"ABBR" + BreedingLocationFieldTest.BREEDING_LOCATION_ID2, DUMMY_UNIQUE_ID));
+				"ABBR" + BreedingLocationFieldTest.BREEDING_LOCATION_ID2));
 		locationList.add(this.locationTestDataInitializer.createLocation(BreedingLocationFieldTest.STORAGE_LOCATION_ID,
 				"LOCATION" + BreedingLocationFieldTest.STORAGE_LOCATION_ID, BreedingLocationField.STORAGE_LOCATION_TYPEID,
-				"ABBR" + BreedingLocationFieldTest.STORAGE_LOCATION_ID, DUMMY_UNIQUE_ID));
+				"ABBR" + BreedingLocationFieldTest.STORAGE_LOCATION_ID));
 		return locationList;
 	}
 

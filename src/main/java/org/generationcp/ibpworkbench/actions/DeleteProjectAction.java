@@ -22,7 +22,6 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
-import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.ProgramFavorite;
@@ -58,9 +57,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
-
-	@Autowired
-	private LocationDataManager locationDataManager;
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
@@ -146,9 +142,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 		//hard delete
 		this.deleteAllProgramFavorites(project);
 
-		//hard delete
-		this.deleteAllProgramLocationsAndMethods(project);
-
 		// soft delete
 		this.deleteAllProgramLists(project);
 
@@ -156,10 +149,6 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 
 		this.manager.deleteProject(project);
 
-	}
-
-	protected void deleteAllProgramLocationsAndMethods(final Project project) {
-		locationDataManager.deleteProgramLocationsByUniqueId(project.getUniqueID());
 	}
 
 	protected void deleteAllProgramFavorites(final Project project) {
