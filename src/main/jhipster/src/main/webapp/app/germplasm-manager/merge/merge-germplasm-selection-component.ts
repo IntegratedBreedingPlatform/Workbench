@@ -86,7 +86,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
     }
 
     confirm() {
-        var nonSelectedGermplasmList = this.germplasmList.filter((germplasm) => this.selectedGid !== germplasm.gid);
+        const nonSelectedGermplasmList = this.germplasmList.filter((germplasm) => this.selectedGid !== germplasm.gid);
         if (this.hasValidationError(nonSelectedGermplasmList)) {
             return;
         }

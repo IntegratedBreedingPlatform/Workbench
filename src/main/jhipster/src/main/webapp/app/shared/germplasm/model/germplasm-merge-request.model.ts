@@ -1,4 +1,4 @@
-import { Germplasm } from "../../../entities/germplasm/germplasm.model";
+import { Germplasm } from '../../../entities/germplasm/germplasm.model';
 
 export class GermplasmMergeRequest {
     constructor(
