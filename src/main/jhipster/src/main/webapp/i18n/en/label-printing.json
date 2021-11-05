@@ -6,7 +6,7 @@
         "header.export.data": "Export data",
         "label.too.long": "Barcode field <i><b>{0}</b></i> exceeded the 80 character limit",
         "selected.study": "Selected study",
-        "selected.germplasmlist": "Selected list",
+        "selected.germplasm.list": "Selected list",
         "study.name": "Study Name",
         "germplasmlist.name": "List name",
         "germplasmlist.owner": "List owner",

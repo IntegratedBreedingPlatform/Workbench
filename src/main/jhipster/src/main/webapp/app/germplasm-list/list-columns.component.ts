@@ -8,6 +8,7 @@ import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
+import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-list-columns',
