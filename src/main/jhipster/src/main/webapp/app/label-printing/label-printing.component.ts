@@ -8,10 +8,11 @@ import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../shared/alert/alert.service';
 import { HelpService } from '../shared/service/help.service';
-import { GERMPLASM_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
+import { GERMPLASM_LABEL_PRINTING_TYPE, GERMPLASM_LIST_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { ParamContext } from '../shared/service/param.context';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 declare const $: any;
 
@@ -42,6 +43,7 @@ export class LabelPrintingComponent implements OnInit {
 
     sortableFields: Sortable[];
     sortBySelected: any = '';
+    isLoading: boolean;
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -65,6 +67,7 @@ export class LabelPrintingComponent implements OnInit {
         this.context.studyId = params['studyId'];
         this.context.printingLabelType = params['printingLabelType'];
         this.context.searchRequestId = params['searchRequestId'];
+        this.context.listId = params['listId'];
 
         let labelsNeededPromise = Promise.resolve({});
         if (this.hasHeader()) {
@@ -122,6 +125,10 @@ export class LabelPrintingComponent implements OnInit {
 
     hasHeader() {
         return typesWithHeaderDetails.indexOf(this.context.printingLabelType) !== -1;
+    }
+
+    isForGermplasmListLabelPrinting() {
+        return this.context.printingLabelType === LabelPrintingType.GERMPLASM_LIST;
     }
 
     /**
@@ -305,14 +312,16 @@ export class LabelPrintingComponent implements OnInit {
             sortBy: !this.sortBySelected ? undefined : this.sortBySelected
         };
 
-        this.proceed = function donwloadPrintingLabel(): void {
-            this.service.download(this.fileType, labelsGeneratorInput).subscribe((response: any) => {
+        this.proceed = function downloadPrintingLabel(): void {
+            this.isLoading = true;
+            this.service.download(this.fileType, labelsGeneratorInput).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe((response: any) => {
                 const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
                 this.fileDownloadHelper.save(response.body, fileName);
 
             }, (error: HttpErrorResponse) => {
                 this.handleError(error);
-
             });
         };
 
@@ -440,6 +449,8 @@ export class LabelPrintingComponent implements OnInit {
                 return 'LOT_LABEL_PRINTING_PRESET';
             case LabelPrintingType.GERMPLASM:
                 return 'GERMPLASM_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.GERMPLASM_LIST:
+                return 'GERMPLASM_LIST_LABEL_PRINTING_PRESET';
             default:
                 return;
         }
@@ -508,7 +519,8 @@ export enum LabelPrintingType {
     OBSERVATION_DATASET = 'ObservationDataset',
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
     LOT = 'Lot',
-    GERMPLASM = 'Germplasm'
+    GERMPLASM = 'Germplasm',
+    GERMPLASM_LIST = 'Germplasm List'
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [

@@ -735,7 +735,7 @@ export class GermplasmSearchComponent implements OnInit {
             return;
         }
 
-        this.paramContext.resetQueryParams().then(() => {
+        this.paramContext.resetQueryParams('/germplasm-manager/germplasm-search/').then(() => {
             /*
              * FIXME workaround for history.back() with base-href
              *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href

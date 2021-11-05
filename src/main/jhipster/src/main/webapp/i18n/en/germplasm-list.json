@@ -30,7 +30,8 @@
             },
             "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})",
             "actions": {
-                "reorder-entries": "Reorder entries"
+                "reorder-entries": "Reorder entries",
+                "export-data-and-labels": "Export list data and labels"
             },
             "selection": {
                 "empty": "Please select at least one entry."

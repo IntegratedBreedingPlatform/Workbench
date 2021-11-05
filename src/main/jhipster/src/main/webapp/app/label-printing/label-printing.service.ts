@@ -24,7 +24,8 @@ export class LabelPrintingService {
         return this.http.post(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
-            searchRequestId: this.context.searchRequestId
+            searchRequestId: this.context.searchRequestId,
+            listId: this.context.listId
         });
 
     }
@@ -35,7 +36,8 @@ export class LabelPrintingService {
         return this.http.post<OriginResourceMetadata>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
-            searchRequestId: this.context.searchRequestId
+            searchRequestId: this.context.searchRequestId,
+            listId: this.context.listId
         });
     }
 
@@ -45,7 +47,8 @@ export class LabelPrintingService {
         return this.http.post<LabelType[]>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
-            searchRequestId: this.context.searchRequestId
+            searchRequestId: this.context.searchRequestId,
+            listId: this.context.listId
         });
     }
 
@@ -60,6 +63,7 @@ export class LabelPrintingService {
         labelsGeneratorInput.datasetId = this.context.datasetId;
         labelsGeneratorInput.studyId = this.context.studyId;
         labelsGeneratorInput.searchRequestId = this.context.searchRequestId;
+        labelsGeneratorInput.listId = this.context.listId;
 
         const printingLabelType = this.context.printingLabelType;
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${printingLabelType}/labels/${fileExtension}`;
