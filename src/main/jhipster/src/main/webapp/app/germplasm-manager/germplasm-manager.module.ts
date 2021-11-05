@@ -22,7 +22,6 @@ import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
 import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
 import { MergeGermplasmExistingLotsComponent } from './merge/merge-germplasm-existing-lots.component';
-import { MergeGermplasmLotTableComponent } from './merge/merge-germplasm-lot-table.component';
 import { GermplasmProgenyModalComponent, GermplasmProgenyPopupComponent } from './merge/germplasm-progeny-modal.component';
 import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.component';
 
@@ -54,7 +53,6 @@ import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.co
         GermplasmCodingResultDialogComponent,
         MergeGermplasmSelectionComponent,
         MergeGermplasmExistingLotsComponent,
-        MergeGermplasmLotTableComponent,
         MergeGermplasmReviewComponent,
         GermplasmProgenyModalComponent,
         GermplasmProgenyPopupComponent
@@ -81,7 +79,6 @@ import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.co
         GermplasmCodingResultDialogComponent,
         MergeGermplasmSelectionComponent,
         MergeGermplasmExistingLotsComponent,
-        MergeGermplasmLotTableComponent,
         MergeGermplasmReviewComponent,
         GermplasmProgenyModalComponent,
         GermplasmProgenyPopupComponent
