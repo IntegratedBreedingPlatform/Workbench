@@ -16,8 +16,10 @@ export class GermplasmListEntry extends ListEntry {
         public entryCode?: string,
         public seedSource?: string,
         public groupName?: string,
-        // {variableId: GermplasmListObservationDto}
-        public data?: {[key: number]: any}
+        /**
+         * { <variableId>: <GermplasmListObservationDto> }
+         */
+        public data?: {[key: number]: {value: string}}
     ) {
         super();
     }
