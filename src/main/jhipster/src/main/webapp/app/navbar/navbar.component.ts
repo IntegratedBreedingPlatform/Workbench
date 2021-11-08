@@ -62,7 +62,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private programUsageService: ProgramUsageService,
         private router: Router
     ) {
-        this.version = VERSION ? `BMS ${VERSION}` : '';
+        this.version = '';
+        // Append a ".0" in BMS version if none is found. The .0 gets truncated from workbench.properties to webpack.common version
+        if (VERSION) {
+            this.version = VERSION.includes('.') ?  `BMS ${VERSION}` : `BMS ${VERSION}.0`;
+        }
         this.principal.identity().then((identity) => {
             this.user = identity;
         });
