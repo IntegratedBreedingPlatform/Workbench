@@ -22,6 +22,10 @@
 							*jhiHasAnyAuthority="REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
 							(click)="openReorderEntries()" >
 					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS"
+							jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
+							(click)="exportDataAndLabels()">
+					</button>
 				</div>
 				<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
 								  [listId]="this.listId"

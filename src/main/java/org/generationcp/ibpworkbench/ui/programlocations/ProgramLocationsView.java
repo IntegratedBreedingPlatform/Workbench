@@ -33,7 +33,6 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.pojos.Country;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.UserDefinedField;
-import org.generationcp.middleware.pojos.workbench.CropType;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private static final String SELECT = "select";
 	private static final String LOCATION_NAME = "locationName";
 	private static final String LOCATION_ABBREVIATION = "locationAbbreviation";
-	private static final String PROGRAM_SPECIFIC = "programUUID";
 	private static final String LATITUDE = "latitude";
 	private static final String LONGITUDE = "longitude";
 	private static final String ALTITUDE = "altitude";
@@ -89,7 +87,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_NAME, "Name");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_ABBREVIATION, "abbr.");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LOCATION_ID, "Location id");
-		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.PROGRAM_SPECIFIC, "Program Specific");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.COUNTRY, "Country");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.PROVINCE, "Province");
 		ProgramLocationsView.TABLE_COLUMNS.put(ProgramLocationsView.LATITUDE, "Lat");
@@ -123,17 +120,10 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 	private Button addToFavoriteBtn;
 	private Button removeToFavoriteBtn;
 
-	private Boolean cropOnly = false;
 	private Button searchGoBtn;
 
 	public ProgramLocationsView(final Project project) {
 		this.presenter = new ProgramLocationsPresenter(this, project);
-	}
-
-	public ProgramLocationsView(final CropType cropType) {
-		this.presenter = new ProgramLocationsPresenter(this, cropType);
-		this.cropOnly = true;
-
 	}
 
 	private void initializeComponents() {
@@ -464,17 +454,14 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 
 		titleContainer.addComponent(heading);
 
-		if (!this.cropOnly) {
-			titleContainer.addComponent(this.addNewLocationsBtn);
-			titleContainer.setComponentAlignment(this.addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
-		}
+		titleContainer.addComponent(this.addNewLocationsBtn);
+		titleContainer.setComponentAlignment(this.addNewLocationsBtn, Alignment.MIDDLE_RIGHT);
 
 		String content = "To choose Favorite Locations for your program, "
-				+ "select entries from the Available Locations table at the top and drag them " + "into the lower table.";
+				+ "select entries from the Available Locations table at the top and drag them "
+				+ "into the lower table."
+			    + " You can also add any new locations that you need for managing your program.";
 
-		if (!this.cropOnly) {
-			content += " You can also add any new locations that you need for managing your program.";
-		}
 
 		final Label headingDesc = new Label(content);
 		headingDesc.setDebugId("headingDesc");
@@ -496,10 +483,7 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 		selectedLocationsTitle.setStyleName(Bootstrap.Typography.H3.styleName());
 
 		layout.addComponent(selectedLocationsTitle);
-
-		if (!this.cropOnly) {
-			layout.addComponent(this.saveFavouritesBtn);
-		}
+		layout.addComponent(this.saveFavouritesBtn);
 
 		layout.setExpandRatio(selectedLocationsTitle, 1.0F);
 
@@ -706,19 +690,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			}
 		});
 
-		table.addGeneratedColumn(ProgramLocationsView.PROGRAM_SPECIFIC, new Table.ColumnGenerator() {
-
-			@Override
-			public Object generateCell(final Table source, final Object itemId, final Object colId) {
-
-				final LocationViewModel locationViewModel = (LocationViewModel) itemId;
-
-				return locationViewModel.getProgramUUID() == null ? "NO" : "YES";
-			}
-		});
-
-		table.setSortContainerPropertyId(ProgramLocationsView.PROGRAM_SPECIFIC);
-
 		// Add behavior to table when selected/has new Value (must be immediate)
 		final Table.ValueChangeListener vcl = new Property.ValueChangeListener() {
 
@@ -875,8 +846,6 @@ public class ProgramLocationsView extends CustomComponent implements Initializin
 			beanToUpdate.setAltitude(locationViewModel.getAltitude());
 			beanToUpdate.setLatitude(locationViewModel.getLatitude());
 			beanToUpdate.setLongitude(locationViewModel.getLongitude());
-			beanToUpdate.setCropAccessible(locationViewModel.getCropAccessible());
-			beanToUpdate.setProgramUUID(locationViewModel.getProgramUUID());
 		}
 
 	}

@@ -26,6 +26,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 import { SearchResult } from '../shared/search-result.model';
+import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
+import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 
 declare var $: any;
@@ -46,6 +48,9 @@ export class ListComponent implements OnInit {
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS'
     ];
+
+    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS];
+    GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
 
     readonly STATIC_FILTERS = {
         ENTRY_NO: {
@@ -145,7 +150,8 @@ export class ListComponent implements OnInit {
                 private alertService: AlertService,
                 private principal: Principal,
                 private modalService: NgbModal,
-                public translateService: TranslateService
+                public translateService: TranslateService,
+                private paramContext: ParamContext
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -332,6 +338,23 @@ export class ListComponent implements OnInit {
             return this.filters[column.alias];
         }
         return this.filters[this.getNotStaticFilterKey(column)];
+    }
+
+    exportDataAndLabels() {
+        this.paramContext.resetQueryParams('/germplasm-list/').then(() => {
+            /*
+             * FIXME workaround for history.back() with base-href
+             *  Find solution for IBP-3534 / IBP-4177 that doesn't involve base-href
+             *  or 'inventory-manager' string
+             */
+            window.history.pushState({}, '', window.location.hash);
+
+            window.location.href = '/ibpworkbench/controller/jhipster#label-printing'
+                + '?cropName=' + this.paramContext.cropName
+                + '&programUUID=' + this.paramContext.programUUID
+                + '&printingLabelType=' + GERMPLASM_LIST_LABEL_PRINTING_TYPE
+                + '&listId=' + this.listId;
+        });
     }
 
     isPageSelected() {

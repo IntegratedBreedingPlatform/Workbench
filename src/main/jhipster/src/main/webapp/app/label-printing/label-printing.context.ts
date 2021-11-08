@@ -7,4 +7,5 @@ export class LabelPrintingContext {
     datasetId: number;
     printingLabelType: LabelPrintingType;
     searchRequestId: number;
+    listId: number;
 }

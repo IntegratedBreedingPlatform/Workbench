@@ -21,7 +21,6 @@ export class LocationComponent implements OnInit {
     selectedCountry: LocationModel;
     selectedProvince: LocationModel;
     selectedLocationType: LocationType;
-    accessible = false;
     editable = false;
 
     constructor(public activeModal: NgbActiveModal,
@@ -31,7 +30,6 @@ export class LocationComponent implements OnInit {
     ngOnInit(): void {
         this.locationService.queryBreedingLocation(this.locationId).toPromise().then((breedingLocation) => {
             this.breedingLocation = breedingLocation;
-            this.accessible = breedingLocation.programUUID === '';
         }).then(() => {
             this.locationService.queryLocationsByType([LocationTypeEnum.COUNTRY], false).toPromise().then((resp) => {
                 const locations = resp.body;

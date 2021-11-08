@@ -17,21 +17,21 @@
 					<div class="col">
 						<div class="form-check form-check-inline">
 							<input type="radio" class="form-check-input" name="applyToAll" id="radioCloseAllLots"
-								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.CLOSE">
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.CLOSE" (change)="applyToAllNonSelectedGermplasm()">
 							<label class="form-check-label" for="radioCloseAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.closeLots">
 							</label>
 						</div>
 						<br/>
 						<div class="form-check form-check-inline">
 							<input type="radio" class="form-check-input" name="applyToAll" id="radioMigrateAllLots"
-								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.MIGRATE">
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.MIGRATE" (change)="applyToAllNonSelectedGermplasm()">
 							<label class="form-check-label" for="radioMigrateAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.associateLots">
 							</label>
 						</div>
 						<br/>
 						<div class="form-check form-check-inline">
 							<input type="radio" class="form-check-input" name="applyToAll" id="radioOmitAllLots"
-								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.OMIT">
+								   [(ngModel)]="applyToAll" [value]="lotMergeOptionsEnum.OMIT" (change)="applyToAllNonSelectedGermplasm()">
 							<label class="form-check-label" for="radioOmitAllLots" jhiTranslate="merge-germplasm.action.apply.to.all.omitLots">
 							</label>
 						</div>
@@ -39,10 +39,46 @@
 				</div>
 			</div>
 		</div>
-		<div *ngFor="let nonSelectedGermplasm of germplasmMergeRequest.nonSelectedGermplasm">
-			<jhi-collapsible *ngIf="gidsWithLots.includes(nonSelectedGermplasm.germplasmId)" heading="{{'GID:' + nonSelectedGermplasm.germplasmId}}">
-				<jhi-merge-germplasm-lot-table [nonSelectedGermplasm]="nonSelectedGermplasm" [(applyToAll)]="applyToAll"></jhi-merge-germplasm-lot-table>
-			</jhi-collapsible>
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered table-curved">
+				<thead>
+				<tr>
+					<th><span jhiTranslate="merge-germplasm.action.omit.germplasm"></span></th>
+					<th><span jhiTranslate="search-germplasm.column.gid"></span></th>
+					<th><span jhiTranslate="merge-germplasm.column.designation"></span></th>
+					<th><span jhiTranslate="search-germplasm.column.lotCount"></span></th>
+					<th><span jhiTranslate="merge-germplasm.action.lot.options"></span></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let nonSelected of germplasmMergeRequest.nonSelectedGermplasm">
+					<td>
+						<div class="form-check form-check-inline">
+							<input type="checkbox" class="form-check-input" [name]="'migrateLotsOption' + nonSelected.germplasmId" [attr.id]="'radioOmit' + nonSelected.germplasmId"
+							   [(ngModel)]="nonSelected.omit">
+						</div>
+					</td>
+					<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + nonSelected.germplasmId } }]" queryParamsHandling="merge">{{nonSelected.germplasmId}}</a></td>
+					<td>{{nonSelected.germplasm.germplasmPeferredName}}</td>
+					<td><a *ngIf="nonSelected.germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
+						   [queryParams]="{gid: nonSelected.germplasmId}" queryParamsHandling="merge">{{nonSelected.germplasm.lotCount}}</a>
+					</td>
+					<td>
+						<div class="form-check form-check-inline">
+							<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelected.germplasmId" [attr.id]="'radioCloseLots' + nonSelected.germplasmId"
+								   [(ngModel)]="nonSelected.migrateLots" [value]="false">
+							<label class="form-check-label" [attr.for]="'radioCloseLots' + nonSelected.germplasmId" jhiTranslate="merge-germplasm.action.closeLots">
+							</label>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" class="form-check-input" [name]="'migrateLotsOption' + nonSelected.germplasmId" [attr.id]="'radioAssociateLots' + nonSelected.germplasmId"
+								   [(ngModel)]="nonSelected.migrateLots" [value]="true">
+							<label class="form-check-label" [attr.for]="'radioAssociateLots' + nonSelected.germplasmId" jhiTranslate="merge-germplasm.action.associateLots">
+							</label>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
