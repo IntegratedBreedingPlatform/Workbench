@@ -1,4 +1,4 @@
-import { ListEntry, ListModel } from '../list-builder/model/list.model';
+import { ListEntry, ListModel } from '../../list-builder/model/list.model';
 
 export class SampleList extends ListModel {
     constructor(

@@ -54,10 +54,23 @@
             "already.exsits": "Specified variable is already associated to the list"
         },
         "actions": {
-            "import-list":"Import list"
+            "import-list":"Import list",
+            "import-list.update":"Import list update"
+
         },
         "import": {
             "header": "Import List",
+            "variable.matches": {
+                "update": {
+                    "header": "Import List Update"
+                },
+                "entry.details": "Entry Details",
+                "columns": {
+                    "name": "VARIABLE NAME",
+                    "description": "DESCRIPTION",
+                    "status": "STATUS"
+                }
+            },
             "file": {
                 "input.description": "Choose the file you would like to import in format: Excel",
                 "validation": {
@@ -67,7 +80,11 @@
                     "gid.format": "Some GID values are not a positive integer. Please correct them and try again",
                     "unknown.column": "Some columns were not recognized in the system or are not relevant to the import list and were thus ignored ({{param}})",
                     "entry.code": "ENTRY_CODE column should either be specified for all entries, or not at all",
-                    "entry.code.max.length": "ENTRY_CODE must not exceed 47 characters"
+                    "entry.code.max.length": "ENTRY_CODE must not exceed 47 characters",
+                    "entry.details.no.column": "No suitable column found for entry detail variables. Please check the Entry Details sheet",
+                    "entry.no": "The ENTRY_NO column is mandatory",
+                    "entry.no.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
+                    "entry.no.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again"
                 }
             },
             "multi": {

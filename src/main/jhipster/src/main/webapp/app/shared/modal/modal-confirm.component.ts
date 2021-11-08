@@ -12,7 +12,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 				<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
 					<span class="fa fa-ban"></span>&nbsp;<span>{{cancelLabel}}</span>
 				</button>
-				<button (click)="confirm()" class="btn btn-primary">
+				<button (click)="confirm()" class="btn btn-primary" data-test="modalConfirmButton">
 					<span class="fa fa-save"></span>&nbsp;<span>{{confirmLabel}}</span>
 				</button>
 			</div>

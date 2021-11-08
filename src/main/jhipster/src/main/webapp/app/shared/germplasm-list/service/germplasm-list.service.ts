@@ -13,7 +13,7 @@ import { GermplasmListSearchRequest } from '../model/germplasm-list-search-reque
 import { GermplasmListSearchResponse } from '../model/germplasm-list-search-response.model';
 import { createRequestOption } from '../..';
 import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-search-response.model';
-import { GermplasmList } from '../../model/germplasm-list';
+import { GermplasmList } from '../../list-creation/model/germplasm-list';
 import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
@@ -90,8 +90,8 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
-    downloadGermplasmTemplate() {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls?programUUID=${this.context.programUUID}`;
+    downloadGermplasmTemplate(isGermplasListmUpdateFormat: boolean) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls/${isGermplasListmUpdateFormat}?programUUID=${this.context.programUUID}`;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
     }
 
@@ -144,4 +144,8 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
+    germplasmListUpdates(germplasmListGenerator: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
+        return this.http.patch(url, germplasmListGenerator, { observe: 'response' });
+    }
 }

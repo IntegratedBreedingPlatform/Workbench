@@ -7,10 +7,11 @@
 	<div class="row">
 		<div class="col">
 			<div ngbDropdown class="float-right" placement="bottom-right">
-				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *jhiHasAnyAuthority="ACTION_BUTTON_PERMISSIONS" jhiTranslate="actions"></button>
+				<button class="btn btn-info" id="actionMenu" data-test="actionMenu" ngbDropdownToggle *jhiHasAnyAuthority="ACTION_BUTTON_PERMISSIONS" jhiTranslate="actions"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
 					<button class="dropdown-item" type="submit"  *jhiHasAnyAuthority="IMPORT_GERMPLASM_LIST_PERMISSION" jhiTranslate="germplasm-list.actions.import-list"
-							[routerLink]="['/', { outlets: { popup: 'import-germplasm-list'} }]"
+							data-test="importListButton"
+							[routerLink]="['/', { outlets: { popup: 'germplasm-list-import'} }]"
 							replaceUrl="true"
 							queryParamsHandling="merge">
 					</button>

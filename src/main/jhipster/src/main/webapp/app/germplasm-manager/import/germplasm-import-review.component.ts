@@ -20,7 +20,7 @@ import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
-import { GermplasmListEntry } from '../../shared/model/germplasm-list';
+import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { toUpper } from '../../shared/util/to-upper';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';

@@ -102,6 +102,7 @@ export class GermplasmListComponent implements OnInit {
 
                         this.listId = germplasmLists[germplasmLists.length - 1].id;
                         this.setActive(this.listId);
+                        this.router.navigate([`/germplasm-list/list/${this.listId}`], { queryParams: { listId: this.listId } });
                     }
                     this.activeModal.close();
                 }, () => this.activeModal.dismiss());

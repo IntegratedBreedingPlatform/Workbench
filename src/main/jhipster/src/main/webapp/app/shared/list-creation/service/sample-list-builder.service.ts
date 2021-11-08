@@ -1,7 +1,7 @@
 import { Component, Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ListBuilderService } from './list-builder.service';
-import { SampleListEntry } from '../../model/sample-list';
+import { SampleListEntry } from '../model/sample-list';
 import { SampleListCreationComponent } from '../sample-list-creation.component';
 import { ParamContext } from '../../service/param.context';
 import { HttpClient } from '@angular/common/http';

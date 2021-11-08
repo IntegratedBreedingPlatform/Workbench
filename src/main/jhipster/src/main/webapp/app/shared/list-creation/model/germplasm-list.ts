@@ -1,6 +1,6 @@
-import { SearchComposite } from './search-composite';
-import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
-import { ListEntry, ListModel } from '../list-builder/model/list.model';
+import { SearchComposite } from '../../model/search-composite';
+import { GermplasmSearchRequest } from '../../../entities/germplasm/germplasm-search-request.model';
+import { ListEntry, ListModel } from '../../list-builder/model/list.model';
 
 export class GermplasmList extends ListModel {
     constructor(
@@ -16,6 +16,10 @@ export class GermplasmListEntry extends ListEntry {
         public entryCode?: string,
         public seedSource?: string,
         public groupName?: string,
+        /**
+         * { <variableId>: <GermplasmListObservationDto> }
+         */
+        public data?: {[key: number]: {value: string}}
     ) {
         super();
     }

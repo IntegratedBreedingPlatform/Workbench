@@ -19,8 +19,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
-import { GermplasmListEntry } from '../../shared/model/germplasm-list';
+import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ListModel } from '../../shared/list-builder/model/list.model';
+import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -60,6 +61,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     selectManualMatchesResult: any = {};
     selectMultipleMatchesResult: any = {};
+    variableMatchesResult: any = {};
 
     constructor(
         private translateService: TranslateService,
@@ -82,6 +84,14 @@ export class GermplasmListImportReviewComponent implements OnInit {
         const guids = [];
         const gids = [];
         const names = [];
+
+        this.context.newVariables.forEach((variable) => {
+            if (variable.alias) {
+                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
+            }
+            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
+
+        });
 
         this.context.data.forEach((row) => {
             if (row[HEADERS['GUID']]) {
@@ -161,8 +171,14 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     back() {
         this.modal.close();
-        const modalRef = this.modalService.open(GermplasmListImportComponent as Component,
-            { size: 'lg', backdrop: 'static' });
+        const variables = [...this.context.newVariables, ...this.context.unknownVariableNames]
+
+        if (variables && variables.length) {
+            const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+            modalRef.componentInstance.isGermplasmListImport = true;
+        } else {
+            this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
+        }
     }
 
     keys(obj) {
@@ -224,6 +240,10 @@ export class GermplasmListImportReviewComponent implements OnInit {
                     Boolean(matchEntry[HEADERS.ROW_NUMBER] === row[HEADERS.ROW_NUMBER])
                 );
 
+                Object.keys(this.variableMatchesResult).forEach((variableName) => {
+                    germplasmList[variableName] = row[variableName];
+                });
+
                 // Single Match
                 if (singleMatch) {
                     germplasmList[HEADERS.ROW_NUMBER] = ++index;
@@ -255,6 +275,12 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 entry.gid = row[HEADERS.GID];
                 entry.entryCode = row[HEADERS.ENTRY_CODE];
                 entry.entryNo = Number(row[HEADERS.ROW_NUMBER]);
+                entry.data = Object.keys(this.variableMatchesResult).reduce((map, variableName) => {
+                    if (row[variableName]) {
+                        map[this.variableMatchesResult[variableName]] = { value: row[variableName] };
+                    }
+                    return map;
+                }, {});
                 return entry
             });
 

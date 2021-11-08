@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ListBuilderService } from './list-builder.service';
 import { GermplasmListCreationComponent } from '../germplasm-list-creation.component';
 import { ParamContext } from '../../service/param.context';
-import { GermplasmListEntry } from '../../model/germplasm-list';
+import { GermplasmListEntry } from '../model/germplasm-list';
 import { HttpClient } from '@angular/common/http';
 import { ColumnLabels } from '../../../germplasm-manager/germplasm-search.component';
 

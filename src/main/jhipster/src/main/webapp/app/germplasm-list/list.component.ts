@@ -24,11 +24,11 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 import { SearchResult } from '../shared/search-result.model';
 import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
-import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -38,11 +38,18 @@ declare var $: any;
 })
 export class ListComponent implements OnInit {
 
-    static readonly GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX = 'GermplasmListViewChanged';
     static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
+    static readonly GERMPLASM_LIST_CHANGED = 'GermplasmListViewChanged';
 
-    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS];
+    IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
+    REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
+
+    ACTION_BUTTON_PERMISSIONS = [
+        ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
+        'IMPORT_GERMPLASM_LIST_UPDATES',
+        'REORDER_ENTRIES_GERMPLASM_LISTS'
+    ];
 
     readonly STATIC_FILTERS = {
         ENTRY_NO: {
@@ -100,8 +107,6 @@ export class ListComponent implements OnInit {
             key: 'reference', placeholder: 'Contains Text', type: FilterType.TEXT, category: GermplasmListColumnCategory.STATIC
         }
     };
-
-    REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
 
     public isCollapsed = false;
     variables: VariableDetails[];
@@ -165,13 +170,20 @@ export class ListComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
 
-        this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).subscribe(
+        this.registerEvents();
+        this.load();
+    }
+
+    async load() {
+        await this.loadEntryDetails();
+        this.refreshTable();
+    }
+
+    private loadEntryDetails() {
+        return this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise().then(
             (res: HttpResponse<VariableDetails[]>) => this.variables = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
-
-        this.registerEvents();
-        this.refreshTable();
     }
 
     private refreshTable() {
@@ -259,8 +271,8 @@ export class ListComponent implements OnInit {
     }
 
     registerEvents() {
-        this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASMLIST_VIEW_CHANGED_EVENT_SUFFIX, (event) => {
-            this.resetTable();
+        this.eventSubscriber = this.eventManager.subscribe(this.listId + ListComponent.GERMPLASM_LIST_CHANGED, (event) => {
+            this.load();
         });
 
         this.eventManager.subscribe(ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, (event) => {

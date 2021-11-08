@@ -1,16 +1,8 @@
-import { Component, Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { SERVER_API_URL } from '../../app.constants';
+import { Component } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
-import { map, finalize } from 'rxjs/operators';
-import { GermplasmList, GermplasmListEntry } from '../model/germplasm-list';
-import { SearchComposite } from '../model/search-composite';
-import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
-import { ListType } from '../list-builder/model/list-type.model';
-import { ListBuilderService } from './service/list-builder.service';
+import { finalize } from 'rxjs/operators';
 import { ListCreationComponent } from './list-creation.component';
-import { ColumnLabels } from '../../germplasm-manager/germplasm-search.component';
 import { NgbActiveModal, NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../tree/tree.service';
 import { GermplasmTreeService } from '../tree/germplasm/germplasm-tree.service';
@@ -21,7 +13,6 @@ import { TreeDragDropService } from 'primeng/api';
 import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
 import { Principal } from '..';
 import { ListModel } from '../list-builder/model/list.model';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
 
