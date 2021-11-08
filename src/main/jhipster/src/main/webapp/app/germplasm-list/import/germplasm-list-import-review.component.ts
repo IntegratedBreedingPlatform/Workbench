@@ -174,7 +174,8 @@ export class GermplasmListImportReviewComponent implements OnInit {
         const variables = [...this.context.newVariables, ...this.context.unknownVariableNames]
 
         if (variables && variables.length) {
-            this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+            const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+            modalRef.componentInstance.isGermplasmListImport = true;
         } else {
             this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
         }
