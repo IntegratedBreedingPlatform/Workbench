@@ -86,11 +86,10 @@ export class MergeGermplasmSelectionComponent implements OnInit {
     }
 
     confirm() {
-        const nonSelectedGids = this.gids.filter((gid) => this.selectedGid !== gid);
-        if (this.hasValidationError(nonSelectedGids)) {
+        const nonSelectedGermplasmList = this.germplasmList.filter((germplasm) => this.selectedGid !== germplasm.gid);
+        if (this.hasValidationError(nonSelectedGermplasmList)) {
             return;
         }
-
         const germplasmMergeRequest = new GermplasmMergeRequest();
         germplasmMergeRequest.mergeOptions = new MergeOptions();
         germplasmMergeRequest.mergeOptions.migrateAttributesData = this.isTransferAttributesData;
@@ -99,16 +98,16 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         germplasmMergeRequest.targetGermplasmId = this.selectedGid;
         germplasmMergeRequest.nonSelectedGermplasm = [];
 
-        nonSelectedGids.forEach((nonSelectedGid) => {
+        nonSelectedGermplasmList.forEach((germplasm) => {
             const nonSelectedGermplasm = new NonSelectedGermplasm();
-            nonSelectedGermplasm.germplasmId = nonSelectedGid;
+            nonSelectedGermplasm.germplasm = germplasm;
+            nonSelectedGermplasm.germplasmId = germplasm.gid;
             nonSelectedGermplasm.migrateLots = false;
             nonSelectedGermplasm.omit = false;
             germplasmMergeRequest.nonSelectedGermplasm.push(nonSelectedGermplasm);
         });
 
-        const gidsWithLots = this.germplasmList.filter((germplasm) => (germplasm.lotCount > 0 && nonSelectedGids.includes(germplasm.gid)))
-            .map((germplasm) => germplasm.gid);
+        const gidsWithLots = nonSelectedGermplasmList.filter((germplasm) => (germplasm.lotCount > 0)).map((germplasm) => germplasm.gid);
 
         if (gidsWithLots.length > 0) {
             const mergeGermplasmExistingLotsModal = this.modalService.open(MergeGermplasmExistingLotsComponent as Component, { windowClass: 'modal-autofit', backdrop: 'static' });
@@ -122,27 +121,23 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         }
     }
 
-    private hasValidationError(nonSelectedGids: number[]): boolean {
-        const fixedGids = this.germplasmList.filter((germplasm) => (germplasm.groupId !== 0 && nonSelectedGids.includes(germplasm.gid)))
-            .map((germplasm) => germplasm.gid);
+    private hasValidationError(nonSelectedGermplasmList: Germplasm[]): boolean {
+        const fixedGids = nonSelectedGermplasmList.filter((germplasm) => (germplasm.groupId !== 0)).map((germplasm) => germplasm.gid);
         if (fixedGids.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-fixed', { param: fixedGids.join() });
             return true;
         }
-        const gidsWithProgeny = this.germplasmList.filter((germplasm) => (germplasm.hasProgeny && nonSelectedGids.includes(germplasm.gid)))
-            .map((germplasm) => germplasm.gid);
+        const gidsWithProgeny = nonSelectedGermplasmList.filter((germplasm) => (germplasm.hasProgeny)).map((germplasm) => germplasm.gid);
         if (gidsWithProgeny.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-has-progeny', { param: this.getGidsToDisplay(gidsWithProgeny) });
             return true;
         }
-        const gidsInLockedList = this.germplasmList.filter((germplasm) => (germplasm.usedInLockedList && nonSelectedGids.includes(germplasm.gid)))
-            .map((germplasm) => germplasm.gid);
+        const gidsInLockedList = nonSelectedGermplasmList.filter((germplasm) => (germplasm.usedInLockedList)).map((germplasm) => germplasm.gid);
         if (gidsInLockedList.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-in-locked-list', { param: this.getGidsToDisplay(gidsInLockedList) });
             return true;
         }
-        const gidsInLockedStudy = this.germplasmList.filter((germplasm) => (germplasm.usedInLockedStudy && nonSelectedGids.includes(germplasm.gid)))
-            .map((germplasm) => germplasm.gid);
+        const gidsInLockedStudy = nonSelectedGermplasmList.filter((germplasm) => (germplasm.usedInLockedStudy)).map((germplasm) => germplasm.gid);
         if (gidsInLockedStudy.length > 0) {
             this.alertService.error('merge-germplasm.non-selected-germplasm-in-locked-study', { param: this.getGidsToDisplay(gidsInLockedStudy) });
             return true;

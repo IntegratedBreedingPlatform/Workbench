@@ -266,6 +266,8 @@
        "action.apply.to.all.closeLots": "Close Lot/s from all germplasm",
        "action.apply.to.all.associateLots": "Associate lot/s to target germplasm for all germplasm",
        "action.apply.to.all.omitLots": "Omit all germplasm from the merge",
+       "action.omit.germplasm": "Omit",
+       "action.lot.options": "Lot Options",
        "no.germplasm.to.be.merged": "There is no germplasm to be merged",
        "progeny.title": "Germplasm Progeny:",
        "review.title": "Merge Germplasm - Review",

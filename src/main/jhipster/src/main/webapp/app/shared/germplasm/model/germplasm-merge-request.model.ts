@@ -1,3 +1,5 @@
+import { Germplasm } from '../../../entities/germplasm/germplasm.model';
+
 export class GermplasmMergeRequest {
     constructor(
         public mergeOptions?: MergeOptions,
@@ -18,6 +20,7 @@ export class MergeOptions {
 
 export class NonSelectedGermplasm {
     constructor(
+        public germplasm?: Germplasm,
         public germplasmId?: number,
         public migrateLots?: boolean,
         public omit?: boolean
