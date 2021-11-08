@@ -60,9 +60,16 @@
         },
         "import": {
             "header": "Import List",
-            "update": {
-                "header": "Import List Update",
-                "entry.details.header": "Entry Details"
+            "variable.matches": {
+                "update": {
+                    "header": "Import List Update"
+                },
+                "entry.details": "Entry Details",
+                "columns": {
+                    "name": "VARIABLE NAME",
+                    "description": "DESCRIPTION",
+                    "status": "STATUS"
+                }
             },
             "file": {
                 "input.description": "Choose the file you would like to import in format: Excel",

@@ -1,7 +1,7 @@
 <div class="modal-header">
 	<h4 class="modal-title font-weight-bold">
 		<span *ngIf="isGermplasmListImport" jhiTranslate="germplasm-list.import.header"></span>
-		<span *ngIf="!isGermplasmListImport" jhiTranslate="germplasm-list.import.update.header"></span>
+		<span *ngIf="!isGermplasmListImport" jhiTranslate="germplasm-list.import.variable.matches.update.header"></span>
 
 	</h4>
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -9,7 +9,7 @@
 	</button>
 </div>
 <div class="modal-body">
-	<h3 jhiTranslate="germplasm-list.import.update.entry.details.header"></h3>
+	<h3 jhiTranslate="germplasm-list.import.variable.matches.entry.details"></h3>
 	<br/>
 	<div>
 		<div class="row">
@@ -17,9 +17,9 @@
 				<div class="table-responsive">
 					<table class="table table-striped table-bordered table-curved">
 						<thead>
-						<th>VARIABLE NAME</th>
-						<th>DESCRIPTION</th>
-						<th>STATUS</th>
+						<th jhiTranslate="germplasm-list.import.variable.matches.columns.name"></th>
+						<th jhiTranslate="germplasm-list.import.variable.matches.columns.description"></th>
+						<th jhiTranslate="germplasm-list.import.variable.matches.columns.status"></th>
 						</thead>
 						<tbody *ngIf="rows && rows.length else nodata">
 						<tr *ngFor="let variable of rows | slice: (page-1) * pageSize : page * pageSize">
