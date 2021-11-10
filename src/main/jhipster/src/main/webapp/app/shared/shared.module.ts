@@ -81,6 +81,7 @@ import { VariableContainerComponent } from './variable-container/variable-contai
 import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
+import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
 
 @NgModule({
     imports: [
@@ -138,7 +139,8 @@ import { RouterModule } from '@angular/router';
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     providers: [
         LoginService,
@@ -185,7 +187,8 @@ import { RouterModule } from '@angular/router';
         FileDeleteOptionsComponent,
         GermplasmListCreationComponent,
         SampleListCreationComponent,
-        VariableSelectModalComponent
+        VariableSelectModalComponent,
+        FeedbackDialogComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -238,7 +241,8 @@ import { RouterModule } from '@angular/router';
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

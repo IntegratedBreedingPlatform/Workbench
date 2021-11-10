@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { AlertService } from '../../shared/alert/alert.service';
@@ -9,6 +9,8 @@ import { GermplasmListReorderEntriesRequestModel } from '../../shared/germplasm-
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { JhiEventManager } from 'ng-jhipster';
 import { ListComponent } from '../list.component';
+import { openSurvey } from '../../shared/feedback/feedback-utils';
+import { FeedbackFeatureEnum } from '../../shared/feedback/feedback-feature.enum';
 
 @Component({
     selector: 'jhi-germplasm-list-reorder-entries-dialog',
@@ -31,7 +33,8 @@ export class GermplasmListReorderEntriesDialogComponent implements OnInit {
                 private activeModal: NgbActiveModal,
                 private activatedRoute: ActivatedRoute,
                 private germplasmListService: GermplasmListService,
-                private eventManager: JhiEventManager) {
+                private eventManager: JhiEventManager,
+                private modalService: NgbModal) {
         this.isLoading = false;
     }
 
@@ -78,6 +81,8 @@ export class GermplasmListReorderEntriesDialogComponent implements OnInit {
         this.alertService.success('germplasm-list.list-data.reorder-entries.reorder.success');
         this.eventManager.broadcast({ name: ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, content: '' });
         this.modal.close();
+
+        openSurvey(this.modalService, FeedbackFeatureEnum.REORDER_ENTRIES);
     }
 
     private onError(response: HttpErrorResponse) {

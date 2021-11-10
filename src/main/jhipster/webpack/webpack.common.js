@@ -60,7 +60,8 @@ module.exports = (options) => ({
                 SERVER_API_URL: `'/bmsapi/'`,
                 MAX_PAGE_SIZE: `'${appProperties.get('pagedresult.max.page.size')}'`,
                 INSTITUTE_LOGO_PATH: `'${appProperties.get('institute.logo.path')}'`,
-                FILE_UPLOAD_SUPPORTED_TYPES: `'${appProperties.get('file.upload.supported.types')}'`
+                FILE_UPLOAD_SUPPORTED_TYPES: `'${appProperties.get('file.upload.supported.types')}'`,
+                FEEDBACK_EMBED_SURVEY_ID: `'${appProperties.get('feedback.embed.survey.id')}'`
             }
         }),
         new CopyWebpackPlugin([
