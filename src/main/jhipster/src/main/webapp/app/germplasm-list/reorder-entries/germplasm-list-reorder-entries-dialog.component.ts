@@ -11,7 +11,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { ListComponent } from '../list.component';
 import { FeedbackFeatureEnum } from '../../entities/feedback/feedback-feature.enum';
 import { FeedbackService } from '../../shared/feedback/service/feedback.service';
-import { FeedbackDialogComponent } from '../../entities/feedback/feedback-dialog.component';
+import { openSurvey } from '../../entities/feedback/feedback-utils';
 
 @Component({
     selector: 'jhi-germplasm-list-reorder-entries-dialog',
@@ -84,11 +84,7 @@ export class GermplasmListReorderEntriesDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, content: '' });
         this.modal.close();
 
-        // TODO: move this logic
-        this.feedbackService.shouldShowFeedback(FeedbackFeatureEnum.REORDER_ENTRIES).subscribe(
-            (res: HttpResponse<boolean>) => this.shouldOpenSurvey(res.body, FeedbackFeatureEnum.REORDER_ENTRIES),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        openSurvey(this.modalService, FeedbackFeatureEnum.REORDER_ENTRIES);
     }
 
     private onError(response: HttpErrorResponse) {
@@ -97,14 +93,6 @@ export class GermplasmListReorderEntriesDialogComponent implements OnInit {
             this.alertService.error('error.custom', { param: msg });
         } else {
             this.alertService.error('error.general');
-        }
-    }
-
-    // TODO: move this logic
-    private shouldOpenSurvey(shouldOpen: boolean, feature: FeedbackFeatureEnum) {
-        if (shouldOpen) {
-            const feedbackModal = this.modalService.open(FeedbackDialogComponent as Component);
-            feedbackModal.componentInstance.feature = feature;
         }
     }
 
