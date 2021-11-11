@@ -11,7 +11,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { ListComponent } from '../list.component';
 import { FeedbackFeatureEnum } from '../../entities/feedback/feedback-feature.enum';
 import { FeedbackService } from '../../shared/feedback/service/feedback.service';
-import { openSurvey } from '../../entities/feedback/feedback-utils';
+import { openSurvey } from '../../entities/feedback/feedback-helper';
 
 @Component({
     selector: 'jhi-germplasm-list-reorder-entries-dialog',
@@ -84,7 +84,7 @@ export class GermplasmListReorderEntriesDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, content: '' });
         this.modal.close();
 
-        openSurvey(this.modalService, FeedbackFeatureEnum.REORDER_ENTRIES);
+        openSurvey(FeedbackFeatureEnum.REORDER_ENTRIES, this.feedbackService, this.modalService);
     }
 
     private onError(response: HttpErrorResponse) {

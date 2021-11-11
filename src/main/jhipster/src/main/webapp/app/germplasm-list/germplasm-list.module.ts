@@ -38,7 +38,6 @@ import { FeedbackService } from '../shared/feedback/service/feedback.service';
     providers: [
         GermplasmListService,
         GermplasmListImportContext,
-        // TODO: set this provider globally
         FeedbackService
     ]
 })
