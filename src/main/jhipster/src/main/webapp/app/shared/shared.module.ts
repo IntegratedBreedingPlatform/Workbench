@@ -81,7 +81,7 @@ import { VariableContainerComponent } from './variable-container/variable-contai
 import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
-import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
+import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.component';
 
 @NgModule({
     imports: [
