@@ -360,6 +360,7 @@ export class ListComponent implements OnInit {
         return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
     }
 
+    // TODO parameterize
     size() {
         return Object.keys(this.selectedItems).length;
     }
@@ -416,6 +417,21 @@ export class ListComponent implements OnInit {
         const groupGermplasmModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
         groupGermplasmModal.componentInstance.listId = this.listId;
         groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
+    }
+
+    calculateCop() {
+        // TODO select all max 20
+        if (this.entries.length === 0 || (this.size() === 0 || this.size() > 20)) {
+            this.alertService.error('germplasm-list.list-data.cop.no.entries.error', {max: 20});
+            return false;
+        }
+
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(',')
+            }
+        });
     }
 
     private getFilters() {

@@ -31,7 +31,8 @@
             "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})",
             "actions": {
                 "reorder-entries": "Reorder entries",
-                "export-data-and-labels": "Export list data and labels"
+                "export-data-and-labels": "Export list data and labels",
+                "calculate-cop": "Calculate Coefficient of parentage (Beta)"
             },
             "selection": {
                 "empty": "Please select at least one entry."
@@ -46,6 +47,9 @@
                 },
                 "reorder-action": "Reorder",
                 "reorder.success": "Successfully reorder of entries."
+            },
+            "cop": {
+                "no.entries.error": "Please select at least 1 and up to {{max}} entries"
             }
         },
         "variables": {

@@ -27,6 +27,7 @@ import { PrototypeModule } from './prototype/prototype.module';
 import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
 import { MetadataManagerModule } from './metadata-manager/metadata-manager.module';
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
+import { CopModule } from './cop/cop.module';
 
 @NgModule({
     imports: [
@@ -44,6 +45,7 @@ import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
         ReleaseNotesModule,
         UserProfileModule,
         FileManagerModule,
+        CopModule,
         PrototypeModule,
         MetadataManagerModule,
         VariableDetailsModule,
