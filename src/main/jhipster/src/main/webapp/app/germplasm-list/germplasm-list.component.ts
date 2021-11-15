@@ -62,10 +62,7 @@ export class GermplasmListComponent implements OnInit {
         this.hideSearchTab = true;
 
         this.lists.forEach((list: GermplasmListTab) => {
-            list.active = false;
-            if (list.id === listId) {
-                list.active = true;
-            }
+            list.active = (list.id === listId) ? true : false;
         });
     }
 

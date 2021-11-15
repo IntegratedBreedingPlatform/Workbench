@@ -17,7 +17,7 @@
 					<tbody>
 					<tr *ngFor="let list of lists">
 						<td>
-							<a href (click)="urlService.openList(list.listId, context.program)">
+							<a href (click)="urlService.openList(list.listId, list.name, context.program)">
 								{{list.name}}
 							</a>
 						</td>
