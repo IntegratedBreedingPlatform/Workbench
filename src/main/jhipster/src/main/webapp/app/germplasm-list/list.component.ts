@@ -291,7 +291,10 @@ export class ListComponent implements OnInit {
                 .pipe(finalize(() => {
                     this.isLoading = false;
                 })).subscribe(
-                (res: void) => this.refreshTable(),
+                (res: void) => {
+                    this.alertService.success('germplasm-list.list-data.add-entries.success');
+                    this.refreshTable();
+                },
                 (res: HttpErrorResponse) => this.onError(res)
             );
         });
@@ -622,7 +625,7 @@ export class ListComponent implements OnInit {
             Number(x.id) === Number(variable.id));
 
         if (variableAdded.length > 0) {
-            this.alertService.warning('germplasm-list.variables.already.exsits');
+            this.alertService.warning('germplasm-list.variables.already.exists');
             return;
         }
 
