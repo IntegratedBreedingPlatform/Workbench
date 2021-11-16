@@ -26,6 +26,11 @@
 							jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()">
 					</button>
+					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.add-entries"
+							*jhiHasAnyAuthority="ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS"
+							(click)="openGermplasmSelectorModal()" >
+					</button>
 				</div>
 				<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
 								  [listId]="this.listId"

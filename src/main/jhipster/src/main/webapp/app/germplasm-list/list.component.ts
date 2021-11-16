@@ -29,6 +29,8 @@ import { SearchResult } from '../shared/search-result.model';
 import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
+import { SearchComposite } from '../shared/model/search-composite';
+import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 
 declare var $: any;
 
@@ -44,11 +46,14 @@ export class ListComponent implements OnInit {
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
     REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
+    ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
+
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
         'IMPORT_GERMPLASM_LIST_UPDATES',
-        'REORDER_ENTRIES_GERMPLASM_LISTS'
+        'REORDER_ENTRIES_GERMPLASM_LISTS',
+        'ADD_GERMPLASM_LIST_ENTRIES'
     ];
 
     readonly STATIC_FILTERS = {
@@ -132,7 +137,6 @@ export class ListComponent implements OnInit {
     predicate: any;
     reverse: any;
     resultSearch: SearchResult;
-
     isLoading: boolean;
 
     germplasmListFilters: any;
@@ -279,6 +283,18 @@ export class ListComponent implements OnInit {
             this.clearSelectedItems();
             this.loadAll();
         });
+
+        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
+            const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+            searchComposite.itemIds = event.content.split(',');
+            this.germplasmListService.addGermplasmEntriesToList(this.listId, searchComposite)
+                .pipe(finalize(() => {
+                    this.isLoading = false;
+                })).subscribe(
+                (res: void) => this.refreshTable(),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        });
     }
 
     resetTable() {
@@ -416,6 +432,19 @@ export class ListComponent implements OnInit {
         const groupGermplasmModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
         groupGermplasmModal.componentInstance.listId = this.listId;
         groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
+    }
+
+    openGermplasmSelectorModal() {
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-selector-dialog' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                cropName: this.paramContext.cropName,
+                loggedInUserId: this.paramContext.loggedInUserId,
+                programUUID: this.paramContext.programUUID,
+                authToken: this.paramContext.authToken,
+                selectMultiple: true
+            }
+        });
     }
 
     private getFilters() {
