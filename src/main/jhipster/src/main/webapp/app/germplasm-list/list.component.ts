@@ -459,12 +459,8 @@ export class ListComponent implements OnInit {
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         searchComposite.itemIds = [];
         this.entries.forEach(entry => {
-            console.log(entry);
-            console.log(entry.data['GID']);
-            console.log(entry.data["GID"]);
-           searchComposite.itemIds.push(entry.data["GID"]);
+            searchComposite.itemIds.push(entry.data["GID"]);
         });
-        console.log(searchComposite.itemIds);
         this.germplasmManagerContext.searchComposite = searchComposite;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
