@@ -22,7 +22,8 @@ export class GermplasmDto {
         public otherProgenitors?: number[],
         public names?: GermplasmName[],
         public attributes?: GermplasmAttribute[],
-        public germplasmOrigin?: GermplasmOrigin
+        public germplasmOrigin?: GermplasmOrigin,
+        public externalReferences?: GermplasmExternalReference[]
     ) {
     }
 }
@@ -115,6 +116,14 @@ export class GermplasmProgenitorsDetails {
         public groupSource?: GermplasmDto,
         public immediateSource?: GermplasmDto,
         public numberOfDerivativeProgeny?: number
+    ) {
+    }
+}
+
+export class GermplasmExternalReference {
+    constructor(
+        public referenceID?: string,
+        public referenceSource?: string
     ) {
     }
 }

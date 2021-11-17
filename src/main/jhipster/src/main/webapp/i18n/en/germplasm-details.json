@@ -44,6 +44,11 @@
             "x": "X",
             "y": "Y"
         },
+        "external-references": {
+            "title": "EXTERNAL REFERENCES",
+            "reference-id": "Reference ID",
+            "reference-source": "Reference Source"
+        },
         "no-germplasm-origin": "Imported germplasm. Origin observation unit id is undefined."
     },
     "attributes": {
