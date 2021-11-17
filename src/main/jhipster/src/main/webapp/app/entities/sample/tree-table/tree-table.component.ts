@@ -16,7 +16,7 @@ declare var $: any;
 
 /**
  * TODO tree state persist
- * TODO: refactor. Implement inherit from TreeComponent
+ * TODO: remove it. Use TreeComponent
  */
 @Component({
     selector: 'jhi-tree-table',
