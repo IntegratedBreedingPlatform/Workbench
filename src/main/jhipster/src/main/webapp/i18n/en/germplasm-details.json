@@ -128,7 +128,8 @@
         "title": "LISTS",
         "name": "Name",
         "date": "Date",
-        "description": "Description"
+        "description": "Description",
+        "locked": "Locked"
     },
     "samples": {
         "title": "SAMPLES",
