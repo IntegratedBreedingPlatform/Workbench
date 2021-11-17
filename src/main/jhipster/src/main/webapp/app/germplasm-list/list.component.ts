@@ -31,6 +31,8 @@ import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 import { SearchComposite } from '../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
+import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
+import { forEach } from '@angular/router/src/utils/collection';
 
 declare var $: any;
 
@@ -47,13 +49,15 @@ export class ListComponent implements OnInit {
     REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
     ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
+    ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
 
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS',
-        'ADD_GERMPLASM_LIST_ENTRIES'
+        'ADD_GERMPLASM_LIST_ENTRIES',
+        'ADD_ENTRIES_TO_LIST'
     ];
 
     readonly STATIC_FILTERS = {
@@ -154,7 +158,8 @@ export class ListComponent implements OnInit {
                 private principal: Principal,
                 private modalService: NgbModal,
                 public translateService: TranslateService,
-                private paramContext: ParamContext
+                private paramContext: ParamContext,
+                private germplasmManagerContext: GermplasmManagerContext
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -447,6 +452,23 @@ export class ListComponent implements OnInit {
                 authToken: this.paramContext.authToken,
                 selectMultiple: true
             }
+        });
+    }
+
+    openAddToList() {
+        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+        searchComposite.itemIds = [];
+        this.entries.forEach(entry => {
+            console.log(entry);
+            console.log(entry.data['GID']);
+            console.log(entry.data["GID"]);
+           searchComposite.itemIds.push(entry.data["GID"]);
+        });
+        console.log(searchComposite.itemIds);
+        this.germplasmManagerContext.searchComposite = searchComposite;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
         });
     }
 
