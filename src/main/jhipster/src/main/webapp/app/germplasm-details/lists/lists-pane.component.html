@@ -8,6 +8,7 @@
 						<th scope="col" jhiTranslate="lists.name">Name</th>
 						<th scope="col" jhiTranslate="lists.date">Date</th>
 						<th scope="col" jhiTranslate="lists.description">Description</th>
+						<th scope="col" jhiTranslate="lists.locked">Locked</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -18,6 +19,9 @@
 						</td>
 						<td>{{germplasmList.creationDate}}</td>
 						<td>{{germplasmList.description}}</td>
+						<td>
+							<i [ngClass]="germplasmList.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true"></i>
+						</td>
 					</tr>
 					</tbody>
 				</table>
