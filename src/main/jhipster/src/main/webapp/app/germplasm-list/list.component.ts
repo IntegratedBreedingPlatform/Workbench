@@ -303,6 +303,12 @@ export class ListComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res)
             );
         });
+
+        this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
+            if(this.listId === event.content) {
+                this.load();
+            }
+        });
     }
 
     resetTable() {
