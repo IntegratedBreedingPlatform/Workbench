@@ -38,11 +38,11 @@ export class GermplasmListAddComponent extends TreeComponent {
                 private paramContext: ParamContext,
                 private germplasmManagerContext: GermplasmManagerContext,
                 public germplasmListService: GermplasmListService,
-                private alertService: AlertService,
-                private translateService: TranslateService,
-                private modalService: NgbModal
+                public alertService: AlertService,
+                public translateService: TranslateService,
+                public modalService: NgbModal
     ) {
-        super(service, modal);
+        super(false, service, modal, alertService, translateService, modalService);
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }

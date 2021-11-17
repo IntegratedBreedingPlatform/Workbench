@@ -6,13 +6,12 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../../alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 
-// TODO: remove it when user would be able to create/rename/delete folders. Instead use GermplasmListTreeTableComponent
 @Component({
     selector: 'jhi-germplasm-tree-table',
     templateUrl: '../tree-table.component.html',
     providers: [{ provide: TreeService, useClass: GermplasmTreeService }]
 })
-export class GermplasmTreeTableComponent extends TreeComponent {
+export class GermplasmListTreeTableComponent extends TreeComponent {
 
     title = 'Browse for lists';
 
@@ -21,6 +20,6 @@ export class GermplasmTreeTableComponent extends TreeComponent {
                 public alertService: AlertService,
                 public translateService: TranslateService,
                 public modalService: NgbModal) {
-        super(true, service, activeModal, alertService, translateService, modalService);
+        super(false, service, activeModal, alertService, translateService, modalService);
     }
 }

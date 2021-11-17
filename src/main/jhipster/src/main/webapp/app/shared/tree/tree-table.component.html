@@ -1,17 +1,47 @@
 <div class="modal-header">
-    <h4 class="modal-title" >{{title}}</h4>
+    <h4 class="modal-title">{{title}}</h4>
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
             (click)="closeModal()">&times;</button>
 </div>
 <div class="modal-body">
+    <div *ngIf="!this.isReadOnly" class="row form-group modal-popover ">
+        <div class="col-md-7">
+        </div>
+        <div class="col-md-5">
+            <div class="pull-right">
+                <img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
+                     [ngClass]="{ 'disable-image': this.isAddActionDisabled() }" [attr.title]="this.isAddActionDisabled() ? this.disabledAddActionMessage : ''"/>
+                <img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
+                     [ngClass]="{ 'disable-image': this.isRenameActionDisabled() }" [attr.title]="this.isRenameActionDisabled() ? this.disabledRenameActionMessage : ''"/>
+                <img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
+                     [ngClass]="{ 'disable-image': this.isDeleteActionDisabled() }" [attr.title]="this.isDeleteActionDisabled() ? this.disabledDeleteActionMessage : ''"/>
+            </div>
+        </div>
+    </div>
     <div class="row form-group">
         <div class="col-xs-12 col-md-12">
-			<div class="table-responsive" >
+            <div *ngIf="!this.isReadOnly" class="form-horizontal form-group">
+                <div id="addFolderDiv" *ngIf="mode == Modes.Add || mode == Modes.Rename">
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label font-weight-bold">{{ Modes[mode] }} Folder</label>
+                        <input type="text" class="form-control col-md-6" placeholder="Folder Name" [(ngModel)]="this.name" [required]="true"  maxlength="{{ NAME_MAX_LENGTH }}"/>
+                        <button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolder()">
+                            <span class="fa fa-check"></span>
+                        </button>
+                        <button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="table-responsive" >
                 <p-treeTable [value]="nodes"
                              (onNodeExpand)="onNodeExpand($event)"
                              selectionMode="multiple"
                              autoLayout="true"
-                             [(selection)]="selectedNodes"
+                             [(selection)]="this.selectedNodes"
                              (onNodeSelect)="onNodeSelect($event)"
                              styleClass="tree-table">
                     <ng-template pTemplate="header">
@@ -26,14 +56,23 @@
                     <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-i="rowIndex">
                         <tr [ttSelectableRow]="rowNode">
                             <td>
-                                <p-treeTableToggler
-                                    [rowNode]="rowNode"
-                                ></p-treeTableToggler>
+                                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                                 <span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
-                                {{rowData.name}}
+                                <span *ngIf="this.isReadOnly">{{rowData.name}}</span>
+                                <span *ngIf="!this.isReadOnly"
+                                    pDraggable="treedragdrop"
+                                    pDroppable="treedragdrop"
+                                    (onDragStart)="onDragStart($event, rowNode.node)"
+                                    (onDragEnd)="onDragEnd($event, rowNode.node)"
+                                    (onDrop)="onDrop($event, rowNode.node)"
+                                    (onDragEnter)="onDragEnter($event, rowNode.node)"
+                                    (onDragLeave)="onDragLeave($event, rowNode.node)"
+                                    type="text">
+											{{rowData.name}}
+									</span>
                             </td>
                             <td>{{rowData.owner}}</td>
-                            <td>{{rowData.description}}</td>
+                            <td><span class="text-ellipsis" title="{{rowData.description}}">{{rowData.description}}</span></td>
                             <td>{{rowData.type}}</td>
                             <td>{{rowData.noOfEntries}}</td>
                         </tr>

@@ -18,7 +18,15 @@
           "delete.question": "Are you sure you want to delete {{ id }} folder?",
           "name.too.long": "The name exceeds the limit of {{ length }} characters",
           "delete.not.owner": "You cannot delete a list that you do not own",
-          "cannot.delete.has.children": "Can not delete, {{ folder }} has children"
+          "cannot.delete.has.children": "Can not delete, {{ folder }} has children",
+          "select.one.folder": "Please, select one folder."
+        },
+        "disabled": {
+          "no.folder.selected": "Disabled because there is no folder selected.",
+          "several.items.selected": "Disabled because more than one item selected.",
+          "crop.folder.selected" : "Disabled because crop lists folder is selected.",
+          "not.folder.selected": "Disabled because the item selected is not a folder.",
+          "root.folder.selected": "Disabled because a crop or program folder is selected"
         },
         "error": "{{ param }}"
       },
