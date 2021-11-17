@@ -419,6 +419,7 @@ export class ListComponent implements OnInit {
         groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
     }
 
+    // TODO split into view/calculate
     calculateCop() {
         // TODO select all max 20
         if (this.entries.length === 0 || (this.size() === 0 || this.size() > 20)) {

@@ -2,6 +2,7 @@
   "cop": {
     "matrix": {
       "header": "Coefficient of parentage"
-    }
+    },
+    "async.in.progress": "Calculation in progress"
   }
 }
