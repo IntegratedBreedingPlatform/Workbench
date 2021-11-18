@@ -64,7 +64,7 @@ export class GermplasmListComponent implements OnInit {
     registerDeleteGermplasmList() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
             this.lists.forEach((list: GermplasmListTab) => {
-                if(event.content === list.id) {
+                if (event.content === list.id) {
                     this.closeTab(list);
                 }
             });

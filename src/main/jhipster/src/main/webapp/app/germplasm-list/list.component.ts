@@ -52,7 +52,6 @@ export class ListComponent implements OnInit {
     ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
     DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
 
-
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
         'IMPORT_GERMPLASM_LIST_UPDATES',
@@ -307,7 +306,7 @@ export class ListComponent implements OnInit {
         });
 
         this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
-            if(this.listId === event.content) {
+            if (this.listId === event.content) {
                 this.load();
             }
         });
@@ -466,8 +465,8 @@ export class ListComponent implements OnInit {
     openAddToList() {
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         searchComposite.itemIds = [];
-        this.entries.forEach(entry => {
-            searchComposite.itemIds.push(entry.data["GID"]);
+        this.entries.forEach((entry) => {
+            searchComposite.itemIds.push(entry.data['GID']);
         });
         this.germplasmManagerContext.searchComposite = searchComposite;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
