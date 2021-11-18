@@ -37,7 +37,7 @@
 							(click)="openAddToList()" >
 					</button>
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
-							jhiTranslate="germplasm-list.list-data.actions.add-to-list"
+							jhiTranslate="germplasm-list.list-data.actions.delete-list"
 							*jhiHasAnyAuthority="DELETE_LIST_PERMISSIONS"
 							(click)="deleteList()" >
 					</button>

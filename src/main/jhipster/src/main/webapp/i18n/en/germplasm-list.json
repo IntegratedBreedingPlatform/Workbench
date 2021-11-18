@@ -33,7 +33,8 @@
                 "reorder-entries": "Reorder entries",
                 "export-data-and-labels": "Export list data and labels",
                 "add-entries": "Add entries",
-                "add-to-list": "Add to list"
+                "add-to-list": "Add to list",
+                "delete-list": "Delete list"
             },
             "selection": {
                 "empty": "Please select at least one entry."
