@@ -50,6 +50,7 @@ export class ListComponent implements OnInit {
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
     ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
     ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
+    DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
 
 
     ACTION_BUTTON_PERMISSIONS = [
@@ -57,7 +58,8 @@ export class ListComponent implements OnInit {
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS',
         'ADD_GERMPLASM_LIST_ENTRIES',
-        'ADD_ENTRIES_TO_LIST'
+        'ADD_ENTRIES_TO_LIST',
+        'DELETE_GERMPLASM_LIST'
     ];
 
     readonly STATIC_FILTERS = {
@@ -472,6 +474,26 @@ export class ListComponent implements OnInit {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });
+    }
+
+    deleteList() {
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.list-data.delete-list.message');
+        confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.list-data.delete-list.header');
+
+        confirmModalRef.result.then(() => {
+                this.submitDeleteList();
+        }, () => confirmModalRef.dismiss());
+    }
+
+    submitDeleteList() {
+        this.germplasmListService.deleteGermplasmList(this.listId)
+            .subscribe(
+                () => {
+                    
+                },
+                (error) => this.onError(error)
+            );
     }
 
     private getFilters() {

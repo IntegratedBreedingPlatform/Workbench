@@ -115,6 +115,11 @@ export class GermplasmListService implements ListService {
         return this.http.delete<any>(url, { observe: 'response' });
     }
 
+    deleteGermplasmList(listId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}?programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
     getVariables(listId: number, variableTypeId: number): Observable<HttpResponse<VariableDetails[]>> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables?variableTypeId=${variableTypeId}&programUUID=` + this.context.programUUID;
         return this.http.get<VariableDetails[]>(url, { observe: 'response' });

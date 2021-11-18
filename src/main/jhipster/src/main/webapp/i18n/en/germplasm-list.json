@@ -41,7 +41,7 @@
             "add-entries": {
                 "success": "Germplasm entries added to list successfully!"
             },
-            "reorder-entries":{
+            "reorder-entries": {
                 "header": "Reorder entries",
                 "description": "Please, define the starting position of the entry number:",
                 "position-labels": {
@@ -51,6 +51,11 @@
                 },
                 "reorder-action": "Reorder",
                 "reorder.success": "Successfully reorder of entries."
+            },
+            "delete-list": {
+                "header": "Delete Germplasm List",
+                "message": "Are you sure that you want to delete this list?",
+                "success": "Successfully deleted list."
             }
         },
         "variables": {
