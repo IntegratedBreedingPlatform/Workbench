@@ -490,7 +490,7 @@ export class ListComponent implements OnInit {
         this.germplasmListService.deleteGermplasmList(this.listId)
             .subscribe(
                 () => {
-                    
+                    this.eventManager.broadcast({ name: 'germplasmListDeleted', content: this.listId });
                 },
                 (error) => this.onError(error)
             );
