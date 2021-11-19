@@ -419,7 +419,6 @@ export class ListComponent implements OnInit {
         groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
     }
 
-    // TODO split into view/calculate
     calculateCop() {
         // TODO select all max 20
         if (this.entries.length === 0 || (this.size() === 0 || this.size() > 20)) {
@@ -430,7 +429,24 @@ export class ListComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
             queryParamsHandling: 'merge',
             queryParams: {
-                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(',')
+                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
+                calculate: true
+            }
+        });
+    }
+
+    viewCop() {
+        // TODO select all max 20
+        if (this.entries.length === 0 || (this.size() === 0 || this.size() > 20)) {
+            this.alertService.error('germplasm-list.list-data.cop.no.entries.error', {max: 20});
+            return false;
+        }
+
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
+                calculate: false
             }
         });
     }

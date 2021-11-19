@@ -8,23 +8,34 @@
 	<div>
 		<i class="throbber" *ngIf="isLoading"></i>
 	</div>
-	<div class="table-responsive" *ngIf="!isProcessing() else asyncInProgress">
+	<div class="table-responsive" *ngIf="response && response.array else asyncInProgress">
 		<table class="table table-striped table-bordered table-curved">
 			<thead>
 			<tr>
-				<th *ngFor="let gid of array[0]">{{gid}}</th>
+				<th *ngFor="let gid of response.array[0]">{{gid}}</th>
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let row of array.slice(1)">
+			<tr *ngFor="let row of response.array.slice(1)">
 				<td *ngFor="let col of row; index as i" [class.font-weight-bold]="i === 0">{{col}}</td>
 			</tr>
 			</tbody>
 		</table>
 	</div>
 	<ng-template #asyncInProgress>
-		<div class="alert alert-success" role="alert">
-			<i class="fa fa-check"></i><span class="pl-3" jhiTranslate="cop.async.in.progress"></span>
+		<div *ngIf="!isLoading && response">
+			<div class="alert alert-success" role="alert" *ngIf="calculate else progressBar">
+				<i class="fa fa-check"></i><span class="pl-3" jhiTranslate="cop.async.in.progress"></span>
+			</div>
+			<ng-template #progressBar>
+				<div jhiTranslate="cop.async.in.progress" class="mb-3"></div>
+				<div class="progress">
+					<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+						 [attr.aria-valuenow]="response.progress" aria-valuemin="0" aria-valuemax="100"
+						 [style.width.%]="response.progress">{{response.progress | number}} %
+					</div>
+				</div>
+			</ng-template>
 		</div>
 	</ng-template>
 </div>

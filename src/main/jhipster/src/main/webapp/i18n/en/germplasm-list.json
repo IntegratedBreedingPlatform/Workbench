@@ -32,7 +32,8 @@
             "actions": {
                 "reorder-entries": "Reorder entries",
                 "export-data-and-labels": "Export list data and labels",
-                "calculate-cop": "Calculate Coefficient of parentage (Beta)"
+                "calculate-cop": "Calculate Coefficient of parentage (Beta)",
+                "view-cop": "View Coefficient of parentage (Beta)"
             },
             "selection": {
                 "empty": "Please select at least one entry."

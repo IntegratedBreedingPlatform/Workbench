@@ -7,6 +7,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
+import { CopResponse } from './cop.model';
 
 @Component({
     selector: 'jhi-cop-matrix',
@@ -14,7 +15,8 @@ import { AlertService } from '../shared/alert/alert.service';
 })
 export class CopMatrixComponent {
     isLoading = false;
-    array: string[][] = [];
+    calculate: boolean;
+    response: CopResponse;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -22,18 +24,18 @@ export class CopMatrixComponent {
         private copService: CopService,
         private alertService: AlertService
     ) {
-        const gids: number[] = this.route.snapshot.queryParamMap.get('gids').split(',').map((g) => Number(g));
-        // TODO async
+        const queryParamMap = this.route.snapshot.queryParamMap;
+        const gids: number[] = queryParamMap.get('gids').split(',').map((g) => Number(g));
+        this.calculate = queryParamMap.get('calculate') === 'true';
         this.isLoading = true;
-        this.copService.getCopMatrixAs2dArray(gids).pipe(
+        const copObservable = this.calculate
+            ? this.copService.calculateCop(gids)
+            : this.copService.getCop(gids);
+        copObservable.pipe(
             finalize(() => this.isLoading = false)
-        ).subscribe((array: string[][]) => {
-            this.array = array;
+        ).subscribe((resp) => {
+            this.response = resp;
         }, (error) => this.onError(error));
-    }
-
-    isProcessing() {
-        return this.array.length === 1 && this.array[0].length === 1
     }
 
     close() {

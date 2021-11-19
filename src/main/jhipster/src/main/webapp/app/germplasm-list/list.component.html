@@ -30,6 +30,10 @@
 							jhiTranslate="germplasm-list.list-data.actions.calculate-cop"
 							(click)="calculateCop()">
 					</button>
+					<button class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.view-cop"
+							(click)="viewCop()">
+					</button>
 				</div>
 				<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
 								  [listId]="this.listId"
