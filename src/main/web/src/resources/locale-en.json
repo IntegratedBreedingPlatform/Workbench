@@ -220,7 +220,8 @@
 		  	"datasets": "Datasets",
 			"germplasm": "Germplasm",
             "breedingMethods": "BreedingMethods",
-            "lists": "Lists"
+            "lists": "Lists",
+			"system.variable":"Is System Variable"
 		}
 	},
 
