@@ -73,6 +73,7 @@ export class GermplasmListSearchComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.registerColumnFiltersChanged();
         this.registerFilterBy();
+        this.registerEvents();
         this.loadAll(this.request);
     }
 
@@ -169,6 +170,20 @@ export class GermplasmListSearchComponent implements OnInit {
                 type: MatchType.EXACTMATCH,
                 value: event.content
             }
+            this.resetTable();
+        });
+    }
+
+    registerEvents() {
+        this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
+            this.resetTable();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
+            this.resetTable();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
             this.resetTable();
         });
     }

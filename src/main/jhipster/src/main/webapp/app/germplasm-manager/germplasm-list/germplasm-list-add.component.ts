@@ -15,6 +15,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
+import { JhiEventManager } from 'ng-jhipster';
 
 declare var $: any;
 
@@ -40,7 +41,8 @@ export class GermplasmListAddComponent extends TreeComponent {
                 public germplasmListService: GermplasmListService,
                 private alertService: AlertService,
                 private translateService: TranslateService,
-                private modalService: NgbModal
+                private modalService: NgbModal,
+                private eventManager: JhiEventManager
     ) {
         super(service, modal);
         if (!this.paramContext.cropName) {
@@ -100,6 +102,7 @@ export class GermplasmListAddComponent extends TreeComponent {
 
     private onSaveSuccess() {
         this.alertService.success('germplasm-list-add.success');
+        this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.selectedNode.data.id });
         this.modal.close();
     }
 
