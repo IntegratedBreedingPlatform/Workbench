@@ -91,18 +91,30 @@ export class GermplasmListAddComponent extends TreeComponent {
     submitAddEntries() {
         this.isLoading = true;
 
-        this.germplasmListService.addGermplasmEntriesToList(this.selectedNode.data.id, this.germplasmManagerContext.searchComposite)
-            .pipe(finalize(() => {
-                this.isLoading = false;
-            })).subscribe(
-            (res: void) => this.onSaveSuccess(),
-            (res: HttpErrorResponse) => this.onError(res)
-        );
+        if(this.germplasmManagerContext.searchComposite) {
+            this.germplasmListService.addGermplasmEntriesToList(this.selectedNode.data.id, this.germplasmManagerContext.searchComposite)
+                .pipe(finalize(() => {
+                    this.isLoading = false;
+                })).subscribe(
+                (res: void) => this.onSaveSuccess(),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        } else {
+            this.germplasmListService.addGermplasmListEntriesToAnotherList(this.selectedNode.data.id, this.germplasmManagerContext.sourceListId)
+                .pipe(finalize(() => {
+                    this.isLoading = false;
+                })).subscribe(
+                (res: void) => this.onSaveSuccess(),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }
     }
 
     private onSaveSuccess() {
         this.alertService.success('germplasm-list-add.success');
-        this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.selectedNode.data.id });
+        if(this.germplasmManagerContext.sourceListId) {
+            this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.selectedNode.data.id });
+        }
         this.modal.close();
     }
 

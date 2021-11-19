@@ -47,6 +47,11 @@ export class GermplasmListService implements ListService {
         return this.http.post<void>(url, searchComposite);
     }
 
+    addGermplasmListEntriesToAnotherList(germplasmListId: number, sourceGermplasmListId): Observable<void> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries/${sourceGermplasmListId}?programUUID=` + this.context.programUUID;
+        return this.http.post<void>(url, { observe: 'response' });
+    }
+
     searchList(req: GermplasmListSearchRequest, pagination: any): Observable<HttpResponse<GermplasmListSearchResponse[]>> {
         const params = createRequestOption(pagination);
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/search?programUUID=` + this.context.programUUID;

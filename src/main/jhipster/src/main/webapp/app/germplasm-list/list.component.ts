@@ -298,8 +298,8 @@ export class ListComponent implements OnInit {
                     this.isLoading = false;
                 })).subscribe(
                 (res: void) => {
+                    this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.listId });
                     this.alertService.success('germplasm-list.list-data.add-entries.success');
-                    this.refreshTable();
                 },
                 (res: HttpErrorResponse) => this.onError(res)
             );
@@ -463,12 +463,8 @@ export class ListComponent implements OnInit {
     }
 
     openAddToList() {
-        const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
-        searchComposite.itemIds = [];
-        this.entries.forEach((entry) => {
-            searchComposite.itemIds.push(entry.data['GID']);
-        });
-        this.germplasmManagerContext.searchComposite = searchComposite;
+        this.germplasmManagerContext.searchComposite = null;
+        this.germplasmManagerContext.sourceListId = this.listId;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'

@@ -179,10 +179,6 @@ export class GermplasmListSearchComponent implements OnInit {
             this.resetTable();
         });
 
-        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
-            this.resetTable();
-        });
-
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
             this.resetTable();
         });
