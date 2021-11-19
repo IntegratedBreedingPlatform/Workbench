@@ -176,6 +176,7 @@ export class GermplasmListSearchComponent implements OnInit {
 
     registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
+            this.alertService.success('germplasm-list.list-data.delete-list.success');
             this.resetTable();
         });
 

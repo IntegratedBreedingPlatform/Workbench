@@ -91,7 +91,7 @@ export class GermplasmListAddComponent extends TreeComponent {
     submitAddEntries() {
         this.isLoading = true;
 
-        if(this.germplasmManagerContext.searchComposite) {
+        if (this.germplasmManagerContext.searchComposite) {
             this.germplasmListService.addGermplasmEntriesToList(this.selectedNode.data.id, this.germplasmManagerContext.searchComposite)
                 .pipe(finalize(() => {
                     this.isLoading = false;
@@ -112,7 +112,7 @@ export class GermplasmListAddComponent extends TreeComponent {
 
     private onSaveSuccess() {
         this.alertService.success('germplasm-list-add.success');
-        if(this.germplasmManagerContext.sourceListId) {
+        if (this.germplasmManagerContext.sourceListId) {
             this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.selectedNode.data.id });
         }
         this.modal.close();
