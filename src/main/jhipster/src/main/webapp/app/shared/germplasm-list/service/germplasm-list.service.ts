@@ -19,6 +19,7 @@ import { GermplasmListObservationVariable } from '../model/germplasm-list-observ
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
 import { VariableDetails } from '../../ontology/model/variable-details';
 import { GermplasmListReorderEntriesRequestModel } from '../model/germplasm-list-reorder-entries-request.model';
+import { GermplasmListDataSearchRequest } from '../../../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -47,9 +48,9 @@ export class GermplasmListService implements ListService {
         return this.http.post<void>(url, searchComposite);
     }
 
-    addGermplasmListEntriesToAnotherList(germplasmListId: number, sourceGermplasmListId): Observable<void> {
+    addGermplasmListEntriesToAnotherList(germplasmListId: number, sourceGermplasmListId: number, searchComposite: SearchComposite<GermplasmListDataSearchRequest, number>): Observable<void> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries/${sourceGermplasmListId}?programUUID=` + this.context.programUUID;
-        return this.http.post<void>(url, { observe: 'response' });
+        return this.http.post<void>(url, searchComposite);
     }
 
     searchList(req: GermplasmListSearchRequest, pagination: any): Observable<HttpResponse<GermplasmListSearchResponse[]>> {

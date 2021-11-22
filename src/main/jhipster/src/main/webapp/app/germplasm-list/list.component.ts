@@ -33,6 +33,7 @@ import { SearchComposite } from '../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
 import { forEach } from '@angular/router/src/utils/collection';
+import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 
 declare var $: any;
 
@@ -463,7 +464,17 @@ export class ListComponent implements OnInit {
     }
 
     openAddToList() {
-        this.germplasmManagerContext.searchComposite = null;
+        if (!this.validateSelection()) {
+            return;
+        }
+        const searchRequest = new GermplasmListDataSearchRequest();
+        searchRequest.entryNumbers = [];
+        this.getSelectedItemIds().forEach(selectedItemId => {
+            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data['ENTRY_NO']);
+        });
+        const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
+        searchComposite.searchRequest = searchRequest;
+        this.germplasmManagerContext.searchComposite = searchComposite;
         this.germplasmManagerContext.sourceListId = this.listId;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
