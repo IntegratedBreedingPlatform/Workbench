@@ -92,7 +92,8 @@ export class GermplasmListAddComponent extends TreeComponent {
         this.isLoading = true;
 
         if (this.germplasmManagerContext.sourceListId) {
-            this.germplasmListService.addGermplasmListEntriesToAnotherList(this.selectedNode.data.id, this.germplasmManagerContext.sourceListId, this.germplasmManagerContext.searchComposite)
+            this.germplasmListService.addGermplasmListEntriesToAnotherList(this.selectedNode.data.id,
+                this.germplasmManagerContext.sourceListId, this.germplasmManagerContext.searchComposite)
                 .pipe(finalize(() => {
                     this.isLoading = false;
                 })).subscribe(

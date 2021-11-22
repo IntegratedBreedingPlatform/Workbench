@@ -469,7 +469,7 @@ export class ListComponent implements OnInit {
         }
         const searchRequest = new GermplasmListDataSearchRequest();
         searchRequest.entryNumbers = [];
-        this.getSelectedItemIds().forEach(selectedItemId => {
+        this.getSelectedItemIds().forEach((selectedItemId) => {
             searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data['ENTRY_NO']);
         });
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
