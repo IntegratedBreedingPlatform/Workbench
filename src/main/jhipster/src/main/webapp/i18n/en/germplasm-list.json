@@ -22,7 +22,7 @@
         "list-data": {
             "show-columns-button": "Columns",
             "columns": {
-                "types" : {
+                "types": {
                     "names": "NAMES",
                     "passport": "PASSPORT",
                     "attributes": "ATTRIBUTES"
@@ -31,21 +31,27 @@
             "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})",
             "actions": {
                 "reorder-entries": "Reorder entries",
-                "export-data-and-labels": "Export list data and labels"
+                "export-data-and-labels": "Export list data and labels",
+                "remove-entries": "Remove entries"
             },
             "selection": {
                 "empty": "Please select at least one entry."
             },
-            "reorder-entries":{
+            "reorder-entries": {
                 "header": "Reorder entries",
                 "description": "Please, define the starting position of the entry number:",
                 "position-labels": {
-                    "beginning":  "At the beginning of the list",
-                    "end":  "At the end of the list",
-                    "fixed":  "Select a specific position:"
+                    "beginning": "At the beginning of the list",
+                    "end": "At the end of the list",
+                    "fixed": "Select a specific position:"
                 },
                 "reorder-action": "Reorder",
                 "reorder.success": "Successfully reorder of entries."
+            },
+            "remove-entries": {
+                "confirm.message": "Are you sure you want to remove the selected entries from the list?",
+                "confirm.header": "Remove entries",
+                "remove.success": "Successfully removed entries."
             }
         },
         "variables": {
@@ -54,9 +60,8 @@
             "already.exsits": "Specified variable is already associated to the list"
         },
         "actions": {
-            "import-list":"Import list",
-            "import-list.update":"Import list update"
-
+            "import-list": "Import list",
+            "import-list.update": "Import list update"
         },
         "import": {
             "header": "Import List",
@@ -103,7 +108,7 @@
                 "header": "Review import list",
                 "description": "The system has matched using the following priority: GUID if available, then GID if available and lastly DESIGNATION",
                 "show.matches": "Show matches",
-                "skip.multi.matches" : "Skip data with multiple matches",
+                "skip.multi.matches": "Skip data with multiple matches",
                 "skip.data.with.out.matches": "Skip data without matches",
                 "summary": {
                     "title": "Confirmation",
