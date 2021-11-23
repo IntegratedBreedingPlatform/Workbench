@@ -186,19 +186,14 @@ export class GermplasmListSearchComponent implements OnInit {
         });
 
         this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
-            this.openClonedList(event.content);
-        });
-    }
-
-    async openClonedList(listName: string) {
-        this.resetFilters();
-        await this.resetTable();
-
-        this.germplasmLists.forEach((list) => {
-            if (list.listName === listName) {
-                this.alertService.success('germplasm-list.list-data.clone-list.success');
-                this.openList(list);
-            }
+            const list = event.content;
+            this.resetTable();
+            this.alertService.success('germplasm-list.list-data.clone-list.success');
+            this.router.navigate([`/germplasm-list/list/${list.id}`], {queryParams: {
+                    listId: list.id,
+                    listName: list.name
+                }
+            });
         });
     }
 

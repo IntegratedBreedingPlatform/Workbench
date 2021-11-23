@@ -46,6 +46,7 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
         public http: HttpClient,
         public context: ParamContext,
         public eventManager: JhiEventManager,
+        public germplasmListService: GermplasmListService
     ) {
         super(
             modal,
@@ -73,24 +74,34 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
             parentFolderId: this.selectedNode.data.id
         });
 
-        if (this.germplasmManagerContext.sourceListId) {
-            listModel.sourceListId = this.germplasmManagerContext.sourceListId;
-        } else if (this.entries && this.entries.length) {
-            listModel.entries = this.entries;
-        } else {
-            listModel.searchComposite = this.germplasmManagerContext.searchComposite;
+        if (!this.germplasmManagerContext.sourceListId) {
+            if (this.entries && this.entries.length) {
+                listModel.entries = this.entries;
+            } else {
+                listModel.searchComposite = this.germplasmManagerContext.searchComposite;
+            }
         }
 
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.listService.save(listModel)
-                .pipe(finalize(() => {
-                    this._isLoading = false;
-                })).subscribe(
-                (res) => this.onSuccess(res),
-                (res: HttpErrorResponse) => this.onError(res)
-            );
+            if (this.germplasmManagerContext.sourceListId) {
+                this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceListId, listModel)
+                    .pipe(finalize(() => {
+                        this._isLoading = false;
+                    })).subscribe(
+                    (res) => this.onCloneSuccess(res),
+                    (res: HttpErrorResponse) => this.onError(res)
+                );
+            } else {
+                this.listService.save(listModel)
+                    .pipe(finalize(() => {
+                        this._isLoading = false;
+                    })).subscribe(
+                    (res) => this.onSaveSuccess(),
+                    (res: HttpErrorResponse) => this.onError(res)
+                );
+            }
         });
     }
 
@@ -98,13 +109,9 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
         return this._isLoading;
     }
 
-    onSuccess(listModel: ListModel) {
-        if (this.germplasmManagerContext.sourceListId) {
-            this.eventManager.broadcast({ name: 'clonedGermplasmList', content: listModel.name });
-            this.modal.close();
-        } else {
-            this.onSaveSuccess();
-        }
+    onCloneSuccess(listModel: ListModel) {
+        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: listModel });
+        this.modal.close();
     }
 
 }
