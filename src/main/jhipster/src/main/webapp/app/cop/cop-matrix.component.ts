@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { CopResponse } from './cop.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-cop-matrix',
@@ -17,25 +18,44 @@ export class CopMatrixComponent {
     isLoading = false;
     calculate: boolean;
     response: CopResponse;
+    cancelTooltip;
+    gids: number[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private route: ActivatedRoute,
         private copService: CopService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private translateService: TranslateService
     ) {
         const queryParamMap = this.route.snapshot.queryParamMap;
-        const gids: number[] = queryParamMap.get('gids').split(',').map((g) => Number(g));
+        this.gids = queryParamMap.get('gids').split(',').map((g) => Number(g));
         this.calculate = queryParamMap.get('calculate') === 'true';
+
         this.isLoading = true;
         const copObservable = this.calculate
-            ? this.copService.calculateCop(gids)
-            : this.copService.getCop(gids);
+            ? this.copService.calculateCop(this.gids)
+            : this.copService.getCop(this.gids);
         copObservable.pipe(
             finalize(() => this.isLoading = false)
         ).subscribe((resp) => {
             this.response = resp;
         }, (error) => this.onError(error));
+
+        this.cancelTooltip = this.translateService.instant('cop.async.cancel.tooltip');
+    }
+
+    cancelJobs() {
+        this.isLoading = true;
+        this.copService.cancelJobs(this.gids).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe(
+            () => {
+                this.response = null;
+                this.alertService.success('cop.async.cancel.success');
+            },
+            (error) => this.onError(error)
+        );
     }
 
     close() {

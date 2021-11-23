@@ -18,6 +18,13 @@ export class CopService {
         return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID, gids);
     }
 
+    cancelJobs(gids: number[]) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        const params = {};
+        params['gids'] = gids;
+        return this.http.delete(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID, { params });
+    }
+
     getCop(gids: number[]): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const params = {};

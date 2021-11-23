@@ -3,6 +3,8 @@
     "matrix": {
       "header": "Coefficient of parentage"
     },
-    "async.in.progress": "Calculation in progress"
+    "async.in.progress": "Calculation in progress",
+    "async.cancel.tooltip": "Cancel jobs for the current gid selection (this might affect other users)",
+    "async.cancel.success": "Job cancelled successfully"
   }
 }
