@@ -300,7 +300,6 @@ export class ListComponent implements OnInit {
                 })).subscribe(
                 (res: void) => {
                     this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.listId });
-                    this.alertService.success('germplasm-list.list-data.add-entries.success');
                 },
                 (res: HttpErrorResponse) => this.onError(res)
             );
