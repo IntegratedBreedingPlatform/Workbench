@@ -31,7 +31,8 @@
             "out.of.range.warning": "The specified value ({{value}}) is out of the expected range ({{min}}-{{max}})",
             "actions": {
                 "reorder-entries": "Reorder entries",
-                "export-data-and-labels": "Export list data and labels"
+                "export-data-and-labels": "Export list data and labels",
+                "clone-list": "Clone list"
             },
             "selection": {
                 "empty": "Please select at least one entry."
@@ -46,6 +47,9 @@
                 },
                 "reorder-action": "Reorder",
                 "reorder.success": "Successfully reorder of entries."
+            },
+            "clone-list": {
+                "success": "Germplasm list cloned successfully!"
             }
         },
         "variables": {

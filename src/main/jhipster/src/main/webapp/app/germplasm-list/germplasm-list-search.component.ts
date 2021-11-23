@@ -73,6 +73,7 @@ export class GermplasmListSearchComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.registerColumnFiltersChanged();
         this.registerFilterBy();
+        this.registerEvents();
         this.loadAll(this.request);
     }
 
@@ -173,6 +174,24 @@ export class GermplasmListSearchComponent implements OnInit {
         });
     }
 
+    registerEvents() {
+        this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
+           this.openClonedList(event.content);
+        });
+    }
+
+    async openClonedList(listName: string) {
+        this.resetFilters();
+        await this.resetTable();
+
+        this.germplasmLists.forEach((list) => {
+            if (list.listName === listName) {
+                this.alertService.success('germplasm-list.list-data.clone-list.success');
+                this.openList(list);
+            }
+        });
+    }
+
     private resetFilters() {
         this.filters = this.getInitialFilters();
         this.request = new GermplasmListSearchRequest();
@@ -187,7 +206,10 @@ export class GermplasmListSearchComponent implements OnInit {
 
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
+        this.openList(list);
+    }
 
+    openList(list: GermplasmListSearchResponse) {
         this.router.navigate([`/germplasm-list/list/${list.listId}`], {queryParams: {
                 listId: list.listId,
                 listName: list.listName

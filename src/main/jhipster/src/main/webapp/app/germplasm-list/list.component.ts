@@ -29,6 +29,7 @@ import { SearchResult } from '../shared/search-result.model';
 import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
+import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
 
 declare var $: any;
 
@@ -44,11 +45,13 @@ export class ListComponent implements OnInit {
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
     REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
+    CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'CLONE_GERMPLASM_LIST'];
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
         'IMPORT_GERMPLASM_LIST_UPDATES',
-        'REORDER_ENTRIES_GERMPLASM_LISTS'
+        'REORDER_ENTRIES_GERMPLASM_LISTS',
+        'CLONE_GERMPLASM_LIST'
     ];
 
     readonly STATIC_FILTERS = {
@@ -150,7 +153,8 @@ export class ListComponent implements OnInit {
                 private principal: Principal,
                 private modalService: NgbModal,
                 public translateService: TranslateService,
-                private paramContext: ParamContext
+                private paramContext: ParamContext,
+                private germplasmManagerContext: GermplasmManagerContext
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -353,6 +357,14 @@ export class ListComponent implements OnInit {
                 + '&programUUID=' + this.paramContext.programUUID
                 + '&printingLabelType=' + GERMPLASM_LIST_LABEL_PRINTING_TYPE
                 + '&listId=' + this.listId;
+        });
+    }
+
+    openCreateGermplasmList() {
+        this.germplasmManagerContext.sourceListId = this.listId;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
         });
     }
 

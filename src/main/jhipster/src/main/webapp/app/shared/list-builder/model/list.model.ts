@@ -8,6 +8,7 @@ export class ListModel {
         public date?: any,
         public notes?: string,
         public parentFolderId?: string,
+        public sourceListId?: number,
         public entries?: ListEntry[],
         public searchComposite?: SearchComposite<any, any>
     ) {
