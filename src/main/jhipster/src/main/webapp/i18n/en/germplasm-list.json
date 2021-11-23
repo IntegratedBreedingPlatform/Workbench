@@ -32,12 +32,18 @@
             "actions": {
                 "reorder-entries": "Reorder entries",
                 "export-data-and-labels": "Export list data and labels",
+                "add-entries": "Add entries",
+                "add-to-list": "Add to list",
+                "delete-list": "Delete list",
                 "clone-list": "Clone list"
             },
             "selection": {
                 "empty": "Please select at least one entry."
             },
-            "reorder-entries":{
+            "add-entries": {
+                "success": "Germplasm entries added to list successfully!"
+            },
+            "reorder-entries": {
                 "header": "Reorder entries",
                 "description": "Please, define the starting position of the entry number:",
                 "position-labels": {
@@ -48,6 +54,11 @@
                 "reorder-action": "Reorder",
                 "reorder.success": "Successfully reorder of entries."
             },
+            "delete-list": {
+                "header": "Delete Germplasm List",
+                "message": "Are you sure that you want to delete this list?",
+                "success": "Successfully deleted list."
+            },
             "clone-list": {
                 "success": "Germplasm list cloned successfully!"
             }
@@ -55,7 +66,7 @@
         "variables": {
             "confirm.delete.title": "Delete confirmation",
             "confirm.delete.warning": "Specified variable(s) already have data associated. Do you want to proceed?",
-            "already.exsits": "Specified variable is already associated to the list"
+            "already.exists": "Specified variable is already associated to the list"
         },
         "actions": {
             "import-list":"Import list",
