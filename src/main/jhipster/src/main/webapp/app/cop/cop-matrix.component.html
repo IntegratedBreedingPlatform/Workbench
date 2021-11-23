@@ -17,7 +17,9 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let row of response.array.slice(1)">
-				<td *ngFor="let col of row; index as i" [class.font-weight-bold]="i === 0">{{col}}</td>
+				<td *ngFor="let col of row; index as i" [class.font-weight-bold]="i === 0">
+					{{i === 0 ? col : col | number: '1.0-4'}}
+				</td>
 			</tr>
 			</tbody>
 		</table>
