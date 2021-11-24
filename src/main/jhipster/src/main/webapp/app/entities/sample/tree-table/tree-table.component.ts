@@ -1,10 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TreeNode } from './tree-node.model';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/api';
 import { ModalAnimation } from '../../../shared/animations/modal.animation';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +16,7 @@ declare var $: any;
 
 /**
  * TODO tree state persist
+ * TODO: remove it. Use TreeComponent
  */
 @Component({
     selector: 'jhi-tree-table',
@@ -29,8 +29,6 @@ declare var $: any;
 export class TreeTableComponent implements OnInit {
 
     readonly NAME_MAX_LENGTH: number = 50;
-
-    private paramSubscription: Subscription;
 
     public mode: Mode = Mode.None;
     public Modes = Mode;

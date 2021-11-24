@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ParamContext } from '../shared/service/param.context';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_GERMPLASM_LIST } from '../app.constants';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -21,6 +21,7 @@ export class GermplasmListComponent implements OnInit {
 
     private listId: number;
     private queryParamSubscription: Subscription;
+    eventSubscriber: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private paramContext: ParamContext,
@@ -28,7 +29,8 @@ export class GermplasmListComponent implements OnInit {
                 private jhiLanguageService: JhiLanguageService,
                 private modalService: NgbModal,
                 private activeModal: NgbActiveModal,
-                private router: Router
+                private router: Router,
+                private eventManager: JhiEventManager
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -56,6 +58,18 @@ export class GermplasmListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.registerDeleteGermplasmList();
+    }
+
+    registerDeleteGermplasmList() {
+        this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
+            this.lists.forEach((list: GermplasmListTab) => {
+                if (event.content === list.id) {
+                    this.closeTab(list);
+                }
+            });
+            this.setSearchTabActive();
+        });
     }
 
     setActive(listId: number) {
@@ -88,7 +102,7 @@ export class GermplasmListComponent implements OnInit {
     browseList($event) {
         $event.preventDefault();
 
-        this.modalService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
+        this.modalService.open(GermplasmListTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
             .result.then((germplasmLists) => {
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {

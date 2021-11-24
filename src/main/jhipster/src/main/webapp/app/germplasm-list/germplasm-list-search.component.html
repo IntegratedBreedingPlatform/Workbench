@@ -28,7 +28,7 @@
 	</div>
 	<br/>
 	<div class="table-responsive" *ngIf="germplasmLists">
-		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmLists.length else nodata">
+		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmLists.length else nodata" data-test="germplasmListSearchTable">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 				<th [jhiSortBy]="ColumnLabels.LIST_NAME"><span jhiTranslate="germplasm-list.search.columns.list-name"></span> <span class="fa fa-sort"></span></th>

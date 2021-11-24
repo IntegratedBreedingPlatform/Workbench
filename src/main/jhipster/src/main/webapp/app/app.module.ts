@@ -28,6 +28,7 @@ import { VariableDetailsModule } from './ontology/variable-details/variable-deta
 import { MetadataManagerModule } from './metadata-manager/metadata-manager.module';
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
 import { CopModule } from './cop/cop.module';
+import { GermplasmListTreeTableComponent } from './shared/tree/germplasm/germplasm-list-tree-table.component';
 
 @NgModule({
     imports: [
@@ -57,10 +58,12 @@ import { CopModule } from './cop/cop.module';
         PageRibbonComponent,
         ErrorComponent,
         GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
         StudyTreeComponent
     ],
     entryComponents: [
         GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
         StudyTreeComponent
     ],
     providers: [

@@ -19,6 +19,7 @@ import { GermplasmListObservationVariable } from '../model/germplasm-list-observ
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
 import { VariableDetails } from '../../ontology/model/variable-details';
 import { GermplasmListReorderEntriesRequestModel } from '../model/germplasm-list-reorder-entries-request.model';
+import { GermplasmListDataSearchRequest } from '../../../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -44,6 +45,13 @@ export class GermplasmListService implements ListService {
 
     addGermplasmEntriesToList(germplasmListId: number, searchComposite: SearchComposite<GermplasmSearchRequest, number>): Observable<void> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries?programUUID=` + this.context.programUUID;
+        return this.http.post<void>(url, searchComposite);
+    }
+
+    addGermplasmListEntriesToAnotherList(germplasmListId: number, sourceGermplasmListId: number,
+                                         searchComposite: SearchComposite<GermplasmListDataSearchRequest, number>): Observable<void> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries/import?sourceGermplasmListId=${sourceGermplasmListId}&programUUID=`
+            + this.context.programUUID;
         return this.http.post<void>(url, searchComposite);
     }
 
@@ -112,6 +120,11 @@ export class GermplasmListService implements ListService {
 
     removeObservation(listId: number, observationId) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/observations/${observationId}?programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
+    deleteGermplasmList(listId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}?programUUID=` + this.context.programUUID;
         return this.http.delete<any>(url, { observe: 'response' });
     }
 
