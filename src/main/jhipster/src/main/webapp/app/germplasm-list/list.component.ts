@@ -32,7 +32,6 @@ import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/ge
 import { SearchComposite } from '../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
-import { forEach } from '@angular/router/src/utils/collection';
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 
 declare var $: any;
@@ -489,7 +488,7 @@ export class ListComponent implements OnInit {
         confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.list-data.delete-list.header');
 
         confirmModalRef.result.then(() => {
-                this.submitDeleteList();
+            this.submitDeleteList();
         }, () => confirmModalRef.dismiss());
     }
 
