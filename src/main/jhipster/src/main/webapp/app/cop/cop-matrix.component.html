@@ -26,23 +26,18 @@
 	</div>
 	<ng-template #asyncInProgress>
 		<div *ngIf="!isLoading && response">
-			<div class="alert alert-success" role="alert" *ngIf="calculate else progressBar">
-				<i class="fa fa-check"></i><span class="pl-3" jhiTranslate="cop.async.in.progress"></span>
+			<div class="mb-3">
+				<span jhiTranslate="cop.async.in.progress"></span>
+				<button type="button" class="btn btn-secondary ml-3" (click)="cancelJobs()">
+					<span class="fa fa-ban"></span>&nbsp;<span [title]="cancelTooltip" jhiTranslate="entity.action.cancel"></span>
+				</button>
 			</div>
-			<ng-template #progressBar>
-				<div class="mb-3">
-					<span jhiTranslate="cop.async.in.progress"></span>
-					<button type="button" class="btn btn-secondary ml-3" (click)="cancelJobs()">
-						<span class="fa fa-ban"></span>&nbsp;<span [title]="cancelTooltip" jhiTranslate="entity.action.cancel"></span>
-					</button>
+			<div class="progress">
+				<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
+					 [attr.aria-valuenow]="response.progress" aria-valuemin="0" aria-valuemax="100"
+					 [style.width.%]="response.progress">{{response.progress | number}} %
 				</div>
-				<div class="progress">
-					<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
-						 [attr.aria-valuenow]="response.progress" aria-valuemin="0" aria-valuemax="100"
-						 [style.width.%]="response.progress">{{response.progress | number}} %
-					</div>
-				</div>
-			</ng-template>
+			</div>
 		</div>
 	</ng-template>
 </div>
