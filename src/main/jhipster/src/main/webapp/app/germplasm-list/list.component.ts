@@ -389,8 +389,8 @@ export class ListComponent implements OnInit {
         });
     }
 
-    openCreateGermplasmList() {
-        this.germplasmManagerContext.sourceListId = this.listId;
+    openCloneGermplasmList() {
+        this.germplasmManagerContext.sourceGermplasmList = this.germplasmList;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-clone-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
@@ -484,7 +484,7 @@ export class ListComponent implements OnInit {
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
         this.germplasmManagerContext.searchComposite = searchComposite;
-        this.germplasmManagerContext.sourceListId = this.listId;
+        this.germplasmManagerContext.sourceGermplasmList = this.germplasmList;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'

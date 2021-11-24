@@ -45,7 +45,7 @@
 					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CLONE_GERMPLASM_LIST_PERMISSIONS"
 						jhiTranslate="germplasm-list.list-data.actions.clone-list"
-						(click)="openCreateGermplasmList()">
+						(click)="openCloneGermplasmList()">
 					</button>
 				</div>
 				<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"

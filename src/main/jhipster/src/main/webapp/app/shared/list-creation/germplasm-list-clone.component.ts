@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
 import { finalize } from 'rxjs/operators';
 import { ListCreationComponent } from './list-creation.component';
-import { NgbActiveModal, NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../tree/tree.service';
 import { GermplasmTreeService } from '../tree/germplasm/germplasm-tree.service';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
@@ -55,10 +55,20 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
             treeDragDropService,
             listService,
             germplasmManagerContext,
-            calendar,
             modalService,
             principal,
         );
+    }
+
+    ngOnInit() {
+        const germplasmList = this.germplasmManagerContext.sourceGermplasmList;
+        this.model.type = germplasmList.type;
+        this.model.notes = germplasmList.notes;
+        this.model.description = germplasmList.description;
+        const dateArray = germplasmList.creationDate.split('-');
+        this.selectedDate = new NgbDate(parseInt(dateArray[0]), parseInt(dateArray[1]), parseInt(dateArray[2]));
+
+        super.ngOnInit();
     }
 
     save() {
@@ -74,7 +84,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceListId, listModel)
+            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceGermplasmList.listId, listModel)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(
