@@ -60,7 +60,8 @@ export class ListComponent implements OnInit {
         'REORDER_ENTRIES_GERMPLASM_LISTS',
         'ADD_GERMPLASM_LIST_ENTRIES',
         'ADD_ENTRIES_TO_LIST',
-        'DELETE_GERMPLASM_LIST'
+        'DELETE_GERMPLASM_LIST',
+        'REMOVE_ENTRIES_GERMPLASM_LISTS'
     ];
 
     readonly STATIC_FILTERS = {

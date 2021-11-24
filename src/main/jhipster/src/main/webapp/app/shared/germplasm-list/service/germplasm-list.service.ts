@@ -157,7 +157,7 @@ export class GermplasmListService implements ListService {
     }
 
     removeEntries(listId: number, selectedEntries: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?programUUID=` + this.context.programUUID + `&selectedEntries=${selectedEntries}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}`;
         return this.http.delete<any>(url, { observe: 'response' });
     }
 
