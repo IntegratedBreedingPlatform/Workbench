@@ -48,10 +48,13 @@ export class CopMatrixComponent {
                 this.alertService.success('cop.async.started');
             }
             this.response = resp;
+            this.watchProgress();
         }, (error) => this.onError(error));
 
         this.cancelTooltip = this.translateService.instant('cop.async.cancel.tooltip');
+    }
 
+    private watchProgress() {
         // TODO increasing intervals? (5s, 10, 15, 15...)
         this.timer = timer(0, COP_ASYNC_PROGRESS_REFRESH_MILLIS).pipe(
             switchMap(() => this.copService.getCop(this.gids)),
