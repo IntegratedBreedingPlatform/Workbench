@@ -15,6 +15,7 @@ import { Principal } from '..';
 import { ListModel } from '../list-builder/model/list.model';
 import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
+import { GermplasmListMetadataRequest } from '../germplasm-list/model/germplasm-list-metadata-request.model';
 
 @Component({
     selector: 'jhi-germplasm-list-clone',
@@ -73,11 +74,11 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
     }
 
     save() {
-        const listModel = <ListModel>({
+        const germplasmListMetadata = <GermplasmListMetadataRequest>({
             name: this.model.name,
-            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
-            type: this.model.type,
             description: this.model.description,
+            type: this.model.type,
+            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
             notes: this.model.notes,
             parentFolderId: this.selectedNode.data.id
         });
@@ -85,7 +86,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceGermplasmList.listId, listModel)
+            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceGermplasmList.listId, germplasmListMetadata)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(
