@@ -391,7 +391,7 @@ export class ListComponent implements OnInit {
 
     openCreateGermplasmList() {
         this.germplasmManagerContext.sourceListId = this.listId;
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-clone-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
         });

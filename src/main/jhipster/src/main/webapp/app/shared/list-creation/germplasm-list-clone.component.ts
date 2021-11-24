@@ -6,7 +6,7 @@ import { ListCreationComponent } from './list-creation.component';
 import { NgbActiveModal, NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../tree/tree.service';
 import { GermplasmTreeService } from '../tree/germplasm/germplasm-tree.service';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../alert/alert.service';
 import { TreeDragDropService } from 'primeng/api';
@@ -17,14 +17,14 @@ import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
 
 @Component({
-    selector: 'jhi-germplasm-list-creation',
+    selector: 'jhi-germplasm-list-clone',
     templateUrl: './list-creation.component.html',
     providers: [
         { provide: TreeService, useClass: GermplasmTreeService },
         { provide: ListService, useClass: GermplasmListService }
     ]
 })
-export class GermplasmListCreationComponent extends ListCreationComponent {
+export class GermplasmListCloneComponent extends ListCreationComponent {
 
     _isLoading: boolean;
 
@@ -42,7 +42,8 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
         public modalService: NgbModal,
         public principal: Principal,
         public http: HttpClient,
-        public context: ParamContext,
+        public eventManager: JhiEventManager,
+        public germplasmListService: GermplasmListService
     ) {
         super(
             modal,
@@ -69,19 +70,15 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
             notes: this.model.notes,
             parentFolderId: this.selectedNode.data.id
         });
-        if (this.entries && this.entries.length) {
-            listModel.entries = this.entries;
-        } else {
-            listModel.searchComposite = this.germplasmManagerContext.searchComposite;
-        }
+
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.listService.save(listModel)
+            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceListId, listModel)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(
-                (res) => this.onSaveSuccess(),
+                (res) => this.onCloneSuccess(res),
                 (res: HttpErrorResponse) => this.onError(res)
             );
         });
@@ -89,6 +86,11 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
 
     get isLoading() {
         return this._isLoading;
+    }
+
+    onCloneSuccess(listModel: ListModel) {
+        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: listModel });
+        this.modal.close();
     }
 
 }
