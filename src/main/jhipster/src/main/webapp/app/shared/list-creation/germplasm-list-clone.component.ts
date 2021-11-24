@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
 import { finalize } from 'rxjs/operators';
 import { ListCreationComponent } from './list-creation.component';
-import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../tree/tree.service';
 import { GermplasmTreeService } from '../tree/germplasm/germplasm-tree.service';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
@@ -55,6 +55,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
             treeDragDropService,
             listService,
             germplasmManagerContext,
+            calendar,
             modalService,
             principal,
         );
