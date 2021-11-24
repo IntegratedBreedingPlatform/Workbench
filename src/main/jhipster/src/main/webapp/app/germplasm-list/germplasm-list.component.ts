@@ -4,9 +4,9 @@ import { HelpService } from '../shared/service/help.service';
 import { HELP_GERMPLASM_LIST } from '../app.constants';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -102,7 +102,7 @@ export class GermplasmListComponent implements OnInit {
     browseList($event) {
         $event.preventDefault();
 
-        this.modalService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
+        this.modalService.open(GermplasmListTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
             .result.then((germplasmLists) => {
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {
