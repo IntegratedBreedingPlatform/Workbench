@@ -276,8 +276,10 @@
 						}
 
 						if ($scope.isAliasDisabled) {
-							$scope.model.alias = '';
-							$scope.model.metadata.disableFields.push('alias');
+							if($scope.model && $scope.model.metadata && $scope.model.metadata.disableFields){
+								$scope.model.alias = '';
+								$scope.model.metadata.disableFields.push('alias');
+							}
 
 						} else if ($scope.model && $scope.model.metadata) {
 							$scope.model.metadata.disableFields = [];
