@@ -24,6 +24,11 @@
 							*jhiHasAnyAuthority="REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
 							(click)="openReorderEntries()" >
 					</button>
+					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.remove-entries"
+							*jhiHasAnyAuthority="REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
+							(click)="removeEntries()" >
+					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS"
 							jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()">

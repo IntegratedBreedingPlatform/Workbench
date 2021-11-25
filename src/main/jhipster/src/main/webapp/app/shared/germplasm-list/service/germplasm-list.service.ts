@@ -157,6 +157,11 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
+    removeEntries(listId: number, selectedEntries: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}`;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
     germplasmListUpdates(germplasmListGenerator: any) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
         return this.http.patch(url, germplasmListGenerator, { observe: 'response' });
