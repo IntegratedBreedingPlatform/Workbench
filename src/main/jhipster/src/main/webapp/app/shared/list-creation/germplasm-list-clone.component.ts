@@ -68,7 +68,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
         this.model.notes = germplasmList.notes;
         this.model.description = germplasmList.description;
         const dateArray = germplasmList.creationDate.split('-');
-        this.selectedDate = new NgbDate(parseInt(dateArray[0]), parseInt(dateArray[1]), parseInt(dateArray[2]));
+        this.selectedDate = new NgbDate(parseInt(dateArray[0], 10), parseInt(dateArray[1], 10), parseInt(dateArray[2], 10));
 
         super.ngOnInit();
     }
