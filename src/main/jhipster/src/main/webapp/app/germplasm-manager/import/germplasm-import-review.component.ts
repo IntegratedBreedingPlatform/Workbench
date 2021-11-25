@@ -192,11 +192,6 @@ export class GermplasmImportReviewComponent implements OnInit {
          * ENTRY_NO LNAME DRVNM
          * 1        NAME1
          * 2              NAME1
-         *
-         * Note, this is a valid scenario and won't be validated (preferred name LNAME):
-         * ENTRY_NO LNAME DRVNM
-         * 1        NAME1 NAME1
-         * 2        NAME2 NAME1
          */
         {
             const preferredNameNote = this.translateService.instant('germplasm.import.review.new.records.dupes.preferred.name.note');
