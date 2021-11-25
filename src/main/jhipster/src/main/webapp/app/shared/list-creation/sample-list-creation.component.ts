@@ -67,7 +67,7 @@ export class SampleListCreationComponent extends ListCreationComponent {
             type: this.model.type,
             description: this.model.description,
             notes: this.model.notes,
-            parentFolderId: this.selectedNode.data.id
+            parentFolderId: this.selectedNodes[0].data.id
         });
         listModel.entries = this.entries;
         this._isLoading = true;

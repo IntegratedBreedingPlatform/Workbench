@@ -12,7 +12,7 @@
                         (onNodeExpand)="onNodeExpand($event)"
                         selectionMode="multiple"
                         autoLayout="true"
-                        [(selection)]="selectedNodes"
+                        [(selection)]="this.selectedNodes"
                         (onNodeSelect)="onNodeSelect($event)"
                         styleClass="tree-table">
                     <ng-template pTemplate="default" let-node>
