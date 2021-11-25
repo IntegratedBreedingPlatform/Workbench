@@ -256,7 +256,14 @@
 						model.favourite = !model.favourite;
 						$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
 						$scope.updateSelectedVariable($scope.selectedVariable);
-						variablesService.updateVariable(id, $scope.selectedVariable);
+						variablesService.updateVariable(id, $scope.selectedVariable).then(function () {
+						}, function (response) {
+							model.favourite = !model.favourite;
+							$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
+							$scope.updateSelectedVariable($scope.selectedVariable);
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							resetSubmissionState();
+						});
 					};
 
 					$scope.debouncedToggleFavourites = debounce($scope.toggleFavourites, DEBOUNCE_TIME, true);
