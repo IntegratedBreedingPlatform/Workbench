@@ -183,6 +183,9 @@
                 "create.new": "Create new records",
                 "automatic.matches": "Automatically select existing matches",
                 "automatic.not.possible": "Automatic match is not possible for some entries (> 1 name matches by preferred name). For those, manual selection will be needed.",
+                "new.records.dupes": "There are <strong>duplicated names</strong> (columns: {{columns}}) for germplasm with no matches (duplicated germplasm will be created)",
+                "new.records.dupes.preferred.name.note": " (duplicates across columns used as preferred name)",
+                "new.records.dupes": "There are <strong>duplicated names</strong> (columns: {{columns}}) for the ignored matches (duplicated germplasm will be created)",
                 "summary": {
                     "message": "<h4>Import summary:</h4><p>{{param}}</p>",
                     "new": "{{param}} entries have no matches <strong>(new records will be created)</strong>",
