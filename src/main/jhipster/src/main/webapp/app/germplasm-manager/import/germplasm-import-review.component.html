@@ -24,6 +24,13 @@
 					<option [value]="SHOW_MATCHES_OPTIONS.NEW_RECORDS">New records only</option>
 				</select>
 			</div>
+			<div class="col-sm-5" *ngIf="size(columnNamesWithDupes)">
+				<div class="alert alert-warning" role="alert">
+					<i class="fa fa-warning"></i>
+					<span class="ml-3" jhiTranslate="germplasm.import.review.new.records.dupes"
+						  [translateValues]="{columns: listPreview(keys(columnNamesWithDupes))}"></span>
+				</div>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col">
