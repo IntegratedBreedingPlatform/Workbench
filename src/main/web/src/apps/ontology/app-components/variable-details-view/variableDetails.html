@@ -138,7 +138,7 @@
 			<div class="col-sm-offset-3 col-sm-9">
 				<om-error-list om-errors-already-translated="clientErrors.deleteVariableErrorMessage">
 				</om-error-list>
-				<div ng-hide="isVariableSystem">
+				<div ng-if="!isVariableSystem">
 					<div ng-hide="editing || confirmationNecessary">
 						<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
 
