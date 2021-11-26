@@ -12,11 +12,10 @@ import { ActivatedRoute } from '@angular/router';
 import { DateHelperService } from '../service/date.helper.service';
 import { JhiEventManager } from 'ng-jhipster';
 
-
 export class ListMetadataComponent implements OnInit {
 
     listTypes: ListType[];
-    @Input() listId:number;
+    @Input() listId: number;
     model: ListModel;
 
     isLoading: boolean;

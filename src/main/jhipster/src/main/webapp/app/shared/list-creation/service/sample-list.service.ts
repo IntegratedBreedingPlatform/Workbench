@@ -10,7 +10,6 @@ import { ListService } from './list.service';
 @Injectable()
 export class SampleListService implements ListService {
 
-
     constructor(private http: HttpClient,
                 private context: ParamContext) {
 
@@ -38,11 +37,11 @@ export class SampleListService implements ListService {
     }
 
     updateListMetadata(listId: number, list: ListModel) {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 
     getById(listId: number): Observable<ListModel> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 
 }

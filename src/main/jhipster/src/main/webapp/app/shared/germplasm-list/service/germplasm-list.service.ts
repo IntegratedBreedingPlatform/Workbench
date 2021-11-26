@@ -190,9 +190,9 @@ export class GermplasmListService implements ListService {
         })
     }
 
-    private toGermplasmList(listId:number, item: ListModel): GermplasmList {
+    private toGermplasmList(germplasmListId: number, item: ListModel): GermplasmList {
         return <GermplasmList>({
-            listId: listId,
+            listId: germplasmListId,
             listName: item.name,
             description: item.description,
             listType: item.type,
@@ -202,4 +202,3 @@ export class GermplasmListService implements ListService {
     }
 
 }
-

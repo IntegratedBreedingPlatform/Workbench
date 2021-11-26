@@ -14,5 +14,4 @@ import { PopupService } from '../shared/modal/popup.service';
 })
 export class GermplasmListMetadataComponent extends ListMetadataComponent {
 
-
 }

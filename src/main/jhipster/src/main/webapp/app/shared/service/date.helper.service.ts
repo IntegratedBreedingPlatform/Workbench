@@ -4,6 +4,8 @@ import { NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 @Injectable()
 export class DateHelperService {
 
+    public readonly YYYY_MM_DD_DASH_FORMAT = 'yyyy-mm-dd';
+
     constructor(
         private calendar: NgbCalendar
     ) {
@@ -13,9 +15,7 @@ export class DateHelperService {
         return '' + date.year + this.twoDigit(date.month) + this.twoDigit(date.day);
     }
 
-    public readonly YYYY_MM_DD_DASH_FORMAT = 'yyyy-mm-dd';
-
-    convertFormattedDateStringToNgbDate(dateString: string, format:string): NgbDate {
+    convertFormattedDateStringToNgbDate(dateString: string, format: string): NgbDate {
         // Convert date strings in the format to yyyy-mm-dd
         if (dateString && format && dateString.length === format.length) {
             if (format === this.YYYY_MM_DD_DASH_FORMAT) {
