@@ -52,6 +52,7 @@ export class ListComponent implements OnInit {
     ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
     ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
     DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
+    REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
     EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EDIT_LIST_METADATA'];
 
     ACTION_BUTTON_PERMISSIONS = [
@@ -60,7 +61,8 @@ export class ListComponent implements OnInit {
         'REORDER_ENTRIES_GERMPLASM_LISTS',
         'ADD_GERMPLASM_LIST_ENTRIES',
         'ADD_ENTRIES_TO_LIST',
-        'DELETE_GERMPLASM_LIST'
+        'DELETE_GERMPLASM_LIST',
+        'REMOVE_ENTRIES_GERMPLASM_LISTS'
     ];
 
     readonly STATIC_FILTERS = {
@@ -493,7 +495,7 @@ export class ListComponent implements OnInit {
         confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.list-data.delete-list.header');
 
         confirmModalRef.result.then(() => {
-                this.submitDeleteList();
+            this.submitDeleteList();
         }, () => confirmModalRef.dismiss());
     }
 
@@ -708,18 +710,35 @@ export class ListComponent implements OnInit {
             }
         }
 
-         this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
-             const variableDeleted = this.variables.filter((variable) =>
-                 variableIds.indexOf(variable.id.toString()) !== -1
-             );
+        this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
+            const variableDeleted = this.variables.filter((variable) =>
+                variableIds.indexOf(variable.id.toString()) !== -1
+            );
 
-             variableDeleted.forEach((variable) => {
-                 this.variables.splice(this.variables.indexOf(variable), 1);
-                 delete this.selectedVariables[variable.id];
-             });
+            variableDeleted.forEach((variable) => {
+                this.variables.splice(this.variables.indexOf(variable), 1);
+                delete this.selectedVariables[variable.id];
+            });
 
-             this.refreshTable();
-         });
+            this.refreshTable();
+        });
+    }
+
+    removeEntries() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.list-data.remove-entries.confirm.message');
+        confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.list-data.remove-entries.confirm.header');
+
+        confirmModalRef.result.then(() => {
+            this.germplasmListService.removeEntries(this.listId, this.getSelectedItemIds()).subscribe(() => {
+                this.clearSelectedItems();
+                this.refreshTable();
+                this.alertService.success('germplasm-list.list-data.remove-entries.remove.success');
+            });
+        }, () => confirmModalRef.dismiss());
     }
 
     private validateSelection() {

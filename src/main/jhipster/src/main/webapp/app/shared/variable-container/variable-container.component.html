@@ -5,9 +5,10 @@
 		<strong class="d-inline-flex p-2">{{title}}</strong>
 	</label>
 	<div id="collapseTable" [ngbCollapse]="isCollapsed">
-		<span *ngIf="!hideAddAndRemove" class="btn btn-info pull-right" style="margin-bottom: 10px;" (click)="openSelectVariable()">Add</span>
+		<span *ngIf="!hideAddAndRemove" class="btn btn-info pull-right" data-test="addEntryDetailsButton"
+			  style="margin-bottom: 10px;" (click)="openSelectVariable()">Add</span>
 		<div>
-			<table class="table table-striped table-bordered table-curved ">
+			<table class="table table-striped table-bordered table-curved" data-test="entryDetailsTable">
 				<thead>
 				<tr>
 					<th style="width: 30px;">

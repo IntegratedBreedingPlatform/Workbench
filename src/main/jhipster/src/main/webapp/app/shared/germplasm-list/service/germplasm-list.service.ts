@@ -63,7 +63,8 @@ export class GermplasmListService implements ListService {
 
     addGermplasmListEntriesToAnotherList(germplasmListId: number, sourceGermplasmListId: number,
                                          searchComposite: SearchComposite<GermplasmListDataSearchRequest, number>): Observable<void> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries/${sourceGermplasmListId}?programUUID=` + this.context.programUUID;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/entries/import?sourceGermplasmListId=${sourceGermplasmListId}&programUUID=`
+            + this.context.programUUID;
         return this.http.post<void>(url, searchComposite);
     }
 
@@ -167,6 +168,11 @@ export class GermplasmListService implements ListService {
     reorderEntries(listId: number, request: GermplasmListReorderEntriesRequestModel) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries/reorder?programUUID=` + this.context.programUUID;
         return this.http.put<any>(url, request, { observe: 'response' });
+    }
+
+    removeEntries(listId: number, selectedEntries: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}`;
+        return this.http.delete<any>(url, { observe: 'response' });
     }
 
     germplasmListUpdates(germplasmListGenerator: any) {
