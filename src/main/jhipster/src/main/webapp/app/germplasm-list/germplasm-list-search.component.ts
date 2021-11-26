@@ -186,14 +186,7 @@ export class GermplasmListSearchComponent implements OnInit {
         });
 
         this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
-            const list = event.content;
             this.resetTable();
-            this.alertService.success('germplasm-list.list-data.clone-list.success');
-            this.router.navigate([`/germplasm-list/list/${list.id}`], {queryParams: {
-                    listId: list.id,
-                    listName: list.name
-                }
-            });
         });
     }
 

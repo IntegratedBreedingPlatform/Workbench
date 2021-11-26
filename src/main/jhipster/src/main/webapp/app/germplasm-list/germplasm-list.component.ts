@@ -104,6 +104,7 @@ export class GermplasmListComponent implements OnInit {
 
         this.modalService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
             .result.then((germplasmLists) => {
+                console.log("HERE")
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {
                             if (!this.exists(germplasmList.id)) {

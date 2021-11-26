@@ -15,6 +15,7 @@ import { Principal } from '..';
 import { ListModel } from '../list-builder/model/list.model';
 import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
+import { Router } from '@angular/router';
 import { GermplasmListMetadataRequest } from '../germplasm-list/model/germplasm-list-metadata-request.model';
 
 @Component({
@@ -44,7 +45,8 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
         public principal: Principal,
         public http: HttpClient,
         public eventManager: JhiEventManager,
-        public germplasmListService: GermplasmListService
+        public germplasmListService: GermplasmListService,
+        private router: Router
     ) {
         super(
             modal,
@@ -101,7 +103,13 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
     }
 
     onCloneSuccess(listModel: ListModel) {
-        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: listModel });
+        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: '' });
+        this.alertService.success('germplasm-list.list-data.clone-list.success');
+        this.router.navigate([`/germplasm-list/list/${listModel.id}`], {queryParams: {
+                listId: listModel.id,
+                listName: listModel.name
+            }
+        });
         this.modal.close();
     }
 
