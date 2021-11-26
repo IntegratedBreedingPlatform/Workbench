@@ -5,6 +5,8 @@ export class GermplasmList {
                 public description: string,
                 public programUUID: string,
                 public locked: boolean,
-                public ownerId: number) {
+                public ownerId: number,
+                public listType: string,
+                public notes?: string) {
     }
 }
