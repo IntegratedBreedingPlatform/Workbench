@@ -10,6 +10,7 @@ import { AlertService } from '../alert/alert.service';
 import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
 import { ActivatedRoute } from '@angular/router';
 import { DateHelperService } from '../service/date.helper.service';
+import { JhiEventManager } from 'ng-jhipster';
 
 
 export class ListMetadataComponent implements OnInit {
@@ -22,6 +23,7 @@ export class ListMetadataComponent implements OnInit {
     selectedDate: NgbDate;
 
     constructor(public modal: NgbActiveModal,
+                private eventManager: JhiEventManager,
                 public paramContext: ParamContext,
                 public alertService: AlertService,
                 public listService: ListService,
@@ -60,6 +62,7 @@ export class ListMetadataComponent implements OnInit {
     onSaveSuccess() {
         this.isLoading = false;
         this.alertService.success('edit-list-metadata.success');
+        this.eventManager.broadcast({ name: 'listMetadataUpdated', content: this.listId });
         this.modal.close();
     }
 

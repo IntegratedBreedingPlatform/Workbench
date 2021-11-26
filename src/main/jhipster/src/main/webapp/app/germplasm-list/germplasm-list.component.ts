@@ -7,6 +7,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
+import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { formatErrorList } from '../shared/alert/format-error-list';
+import { AlertService } from '../shared/alert/alert.service';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -30,7 +35,9 @@ export class GermplasmListComponent implements OnInit {
                 private modalService: NgbModal,
                 private activeModal: NgbActiveModal,
                 private router: Router,
-                private eventManager: JhiEventManager
+                private eventManager: JhiEventManager,
+                private germplasmListService: GermplasmListService,
+                private alertService: AlertService,
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = params['listId'];
@@ -59,6 +66,7 @@ export class GermplasmListComponent implements OnInit {
 
     ngOnInit() {
         this.registerDeleteGermplasmList();
+        this.registerListMetadataUpdated();
     }
 
     registerDeleteGermplasmList() {
@@ -69,6 +77,19 @@ export class GermplasmListComponent implements OnInit {
                 }
             });
             this.setSearchTabActive();
+        });
+    }
+
+    registerListMetadataUpdated() {
+        this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
+            this.lists.forEach((list: GermplasmListTab) => {
+                if (event.content === list.id) {
+                    this.germplasmListService.getGermplasmListById(list.id).subscribe(
+                        (res: HttpResponse<GermplasmList>) => list.listName = res.body.listName,
+                        (res: HttpErrorResponse) => this.onError(res)
+                    );
+                }
+            });
         });
     }
 
@@ -121,6 +142,15 @@ export class GermplasmListComponent implements OnInit {
 
     private exists(listId: number) {
         return this.lists.some((list) => list.id === listId);
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
     }
 
 }
