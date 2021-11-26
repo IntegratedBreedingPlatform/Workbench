@@ -16,11 +16,11 @@
 				<div class="col">
 					<div class="pull-right">
 						<img (click)="setMode(FolderModes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
-							 [ngClass]="{ 'disable-image': !selectedNode || selectedNode.data.id === 'CROPLISTS' || selectedNode && selectedNode.leaf }"/>
+							 [ngClass]="{ 'disable-image': this.isAddActionDisabled() }"/>
 						<img (click)="setMode(FolderModes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
-							 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
+							 [ngClass]="{ 'disable-image': this.isRenameActionDisabled() }"/>
 						<img (click)="setMode(FolderModes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
-							 [ngClass]="{ 'disable-image': !selectedNode ||  isRootFolder() || selectedNode && selectedNode.leaf }"/>
+							 [ngClass]="{ 'disable-image': this.isDeleteActionDisabled() }"/>
 					</div>
 				</div>
 			</div>
@@ -29,7 +29,7 @@
 				<div class="form-group row">
 					<label class="col-sm-5 col-form-label font-weight-bold">{{ FolderModes[mode] }} Folder<span class="required">*</span></label>
 					<div class="col-sm-7 input-group" style="height: 34px">
-						<input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="name" maxlength="{{ NAME_MAX_LENGTH }}"/>
+						<input type="text" class="form-control" placeholder="Folder Name" [(ngModel)]="this.name" maxlength="{{ NAME_MAX_LENGTH }}"/>
 						<button class="btn btn-success" [title]="FolderModes[mode]" (click)="submitAddOrRenameFolder()">
 							<span class="fa fa-check"></span>
 						</button>
@@ -43,12 +43,12 @@
 			<div class="clearfix"></div>
 			<div class="table-responsive">
 				<p-tree [value]="nodes"
-						[(selection)]="selectedNode"
+						[(selection)]="this.selectedNode"
 						[draggableNodes]="true"
 						[droppableNodes]="true"
 						[validateDrop]="true"
 						(onNodeSelect)="onNodeSelect($event)"
-						(onNodeDrop)="onDrop($event, $event.dragNode, $event.dropNode)"
+						(onNodeDrop)="onNodeDrop($event, $event.dragNode, $event.dropNode)"
 						(onNodeExpand)="onNodeExpand($event)"
 						autoLayout="true"
 						selectionMode="single"
