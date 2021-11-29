@@ -1,12 +1,13 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'jhi-modal-confirm',
     template: `
 		<jhi-modal [title]="title">
-			<div class="modal-body word-wrap" [innerHTML]="message">
+			<div class="modal-body word-wrap" [innerHTML]="sanitizer.bypassSecurityTrustHtml(message)">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
@@ -26,7 +27,8 @@ export class ModalConfirmComponent {
     @Input() confirmLabel = this.translateService.instant('confirm');
 
     constructor(private modal: NgbActiveModal,
-                private translateService: TranslateService) {
+                private translateService: TranslateService,
+                public sanitizer: DomSanitizer) {
     }
 
     confirm() {
