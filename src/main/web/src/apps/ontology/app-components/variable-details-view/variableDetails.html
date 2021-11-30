@@ -138,7 +138,7 @@
 			<div class="col-sm-offset-3 col-sm-9">
 				<om-error-list om-errors-already-translated="clientErrors.deleteVariableErrorMessage">
 				</om-error-list>
-				<div ng-if="!isVariableSystem">
+				<div ng-if="!isSystemVariable">
 					<div ng-hide="editing || confirmationNecessary">
 						<button class="btn btn-primary" ng-click="editVariable($event)">{{'button.edit' | translate}}</button>
 
@@ -298,7 +298,7 @@
 				<div class="form-group">
 					<label for="omLists" class="col-sm-3 control-label">{{'variablesList.details.system.variable' | translate}}</label>
 					<div class="col-sm-9">
-						<div class="form-control-static">{{model.metadata.usage.isVariableSystem ? true : false}}</div>
+						<div class="form-control-static">{{model.metadata.usage.isSystemVariable ? true : false}}</div>
 					</div>
 				</div>
 				<div class="form-group">
