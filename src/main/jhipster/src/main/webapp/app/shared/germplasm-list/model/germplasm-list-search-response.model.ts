@@ -13,6 +13,6 @@ export class GermplasmListSearchResponse extends GermplasmList {
                 public numberOfEntries: number,
                 public parentFolderName: string,
                 public notes?: string) {
-        super(listId, listName, creationDate, description, programUUID, locked, ownerId);
+        super(listId, listName, creationDate, description, programUUID, locked, ownerId, listType, notes);
     }
 }

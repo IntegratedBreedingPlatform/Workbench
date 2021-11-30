@@ -92,6 +92,16 @@
         "notes": "Notes",
         "success": "Germplasm list saved successfully!"
     },
+    "edit-list-metadata": {
+        "header": "Edit List Metadata",
+        "details-section-title": "List details",
+        "name": "List name",
+        "description": "Description",
+        "type": "List type",
+        "date": "List date",
+        "notes": "Notes",
+        "success": "List metadata saved successfully!"
+    },
     "germplasm-list-add": {
         "header": "Add entries to list",
         "add-action": "Add",
