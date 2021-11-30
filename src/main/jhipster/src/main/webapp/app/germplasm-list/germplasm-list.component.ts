@@ -70,26 +70,13 @@ export class GermplasmListComponent implements OnInit {
             });
             this.setSearchTabActive();
         });
-
-        this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
-            const listModel = event.content;
-            const listId = parseInt(listModel.id, 10);
-            this.lists.push(new GermplasmListTab(listId, listModel.name, false));
-            this.setActive(listId);
-            this.router.navigate([`/germplasm-list/list/${listId}`], {
-                queryParams: {
-                    listId: listId,
-                    listName: listModel.name
-                }
-            });
-        });
     }
 
     setActive(listId: number) {
         this.hideSearchTab = true;
 
         this.lists.forEach((list: GermplasmListTab) => {
-            list.active = (list.id === listId) ? true : false;
+            list.active = (list.id === listId);
         });
     }
 

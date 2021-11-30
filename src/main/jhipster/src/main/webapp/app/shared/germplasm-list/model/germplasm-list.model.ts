@@ -1,4 +1,4 @@
-export class GermplasmList {
+export class GermplasmListModel {
     constructor(public listId: number,
                 public listName: string,
                 public creationDate: string,
@@ -6,7 +6,8 @@ export class GermplasmList {
                 public programUUID: string,
                 public locked: boolean,
                 public ownerId: number,
-                public type: string,
-                public notes?: string) {
+                public listType: string,
+                public notes?: string,
+                public parentFolderId?: string) {
     }
 }

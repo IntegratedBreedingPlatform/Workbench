@@ -11,7 +11,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../shared/alert/alert.service';
-import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { Principal } from '../shared';
 import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
@@ -134,7 +134,7 @@ export class ListComponent implements OnInit {
 
     user?: any;
 
-    germplasmList: GermplasmList;
+    germplasmList: GermplasmListModel;
     header: GermplasmListObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
     eventSubscriber: Subscription;
@@ -180,7 +180,7 @@ export class ListComponent implements OnInit {
         this.user = identity;
 
         this.germplasmListService.getGermplasmListById(this.listId).subscribe(
-            (res: HttpResponse<GermplasmList>) => this.germplasmList = res.body,
+            (res: HttpResponse<GermplasmListModel>) => this.germplasmList = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
 

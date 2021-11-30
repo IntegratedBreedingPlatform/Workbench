@@ -16,7 +16,7 @@ import { ListModel } from '../list-builder/model/list.model';
 import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
 import { Router } from '@angular/router';
-import { GermplasmListMetadataRequest } from '../germplasm-list/model/germplasm-list-metadata-request.model';
+import { GermplasmListModel } from '../germplasm-list/model/germplasm-list.model';
 
 @Component({
     selector: 'jhi-germplasm-list-clone',
@@ -66,7 +66,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
 
     ngOnInit() {
         const germplasmList = this.germplasmManagerContext.sourceGermplasmList;
-        this.model.type = germplasmList.type;
+        this.model.type = germplasmList.listType;
         this.model.notes = germplasmList.notes;
         this.model.description = germplasmList.description;
         const dateArray = germplasmList.creationDate.split('-');
@@ -76,11 +76,11 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
     }
 
     save() {
-        const germplasmListMetadata = <GermplasmListMetadataRequest>({
-            name: this.model.name,
+        const germplasmList = <GermplasmListModel>({
+            listName: this.model.name,
+            creationDate: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
             description: this.model.description,
-            type: this.model.type,
-            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
+            listType: this.model.type,
             notes: this.model.notes,
             parentFolderId: this.selectedNode.data.id
         });
@@ -88,7 +88,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceGermplasmList.listId, germplasmListMetadata)
+            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceGermplasmList.listId, germplasmList)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(
@@ -102,8 +102,14 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
         return this._isLoading;
     }
 
-    onCloneSuccess(listModel: ListModel) {
-        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: listModel });
+    async onCloneSuccess(listModel: ListModel) {
+        await this.router.navigate([`/germplasm-list/list/${listModel.id}`], {
+            queryParams: {
+                listId: listModel.id,
+                listName: listModel.name
+            }
+        });
+        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: '' });
         this.alertService.success('germplasm-list.list-data.clone-list.success');
         this.modal.close();
     }
