@@ -14,7 +14,7 @@ export class ListMetadataComponent implements OnInit {
 
     listTypes: ListType[];
     @Input() listId: number;
-    model: ListModel;
+    model: ListModel = {};
 
     isLoading: boolean;
     selectedDate: NgbDate;
