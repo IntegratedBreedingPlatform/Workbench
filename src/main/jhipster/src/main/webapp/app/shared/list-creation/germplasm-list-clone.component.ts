@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
 import { finalize } from 'rxjs/operators';
@@ -26,7 +26,7 @@ import { GermplasmListModel } from '../germplasm-list/model/germplasm-list.model
         { provide: ListService, useClass: GermplasmListService }
     ]
 })
-export class GermplasmListCloneComponent extends ListCreationComponent {
+export class GermplasmListCloneComponent extends ListCreationComponent implements OnInit {
 
     _isLoading: boolean;
 
