@@ -33,7 +33,7 @@ export class GermplasmListComponent implements OnInit {
                 private eventManager: JhiEventManager
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.listId = params['listId'];
+            this.listId = parseInt(params['listId'], 10);
 
             if (!this.listId) {
                 return;
@@ -58,10 +58,10 @@ export class GermplasmListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerDeleteGermplasmList();
+        this.registerEvents();
     }
 
-    registerDeleteGermplasmList() {
+    registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
             this.lists.forEach((list: GermplasmListTab) => {
                 if (event.content === list.id) {
@@ -69,6 +69,19 @@ export class GermplasmListComponent implements OnInit {
                 }
             });
             this.setSearchTabActive();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
+            const listModel = event.content;
+            const listId = parseInt(listModel.id, 10);
+            this.lists.push(new GermplasmListTab(listId, listModel.name, false));
+            this.setActive(listId);
+            this.router.navigate([`/germplasm-list/list/${listId}`], {
+                queryParams: {
+                    listId: listId,
+                    listName: listModel.name
+                }
+            });
         });
     }
 
@@ -104,7 +117,6 @@ export class GermplasmListComponent implements OnInit {
 
         this.modalService.open(GermplasmListTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
             .result.then((germplasmLists) => {
-                console.log("HERE")
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {
                             if (!this.exists(germplasmList.id)) {

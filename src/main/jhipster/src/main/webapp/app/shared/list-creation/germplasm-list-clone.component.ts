@@ -103,13 +103,8 @@ export class GermplasmListCloneComponent extends ListCreationComponent {
     }
 
     onCloneSuccess(listModel: ListModel) {
-        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: '' });
+        this.eventManager.broadcast({ name: 'clonedGermplasmList', content: listModel });
         this.alertService.success('germplasm-list.list-data.clone-list.success');
-        this.router.navigate([`/germplasm-list/list/${listModel.id}`], {queryParams: {
-                listId: listModel.id,
-                listName: listModel.name
-            }
-        });
         this.modal.close();
     }
 
