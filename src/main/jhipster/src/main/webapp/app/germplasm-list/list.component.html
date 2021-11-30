@@ -59,6 +59,11 @@
 	<div class="row mt-2 mb-2">
 		<div class="col">
 			<div style="float: right">
+				<button class="btn btn-light" [hidden]="this.germplasmList?.locked"
+						*jhiHasAnyAuthority="EDIT_LIST_METADATA_PERMISSIONS"
+						(click)="openEditListMetadata()">
+					<i [ngClass]="'fa fa-edit'"></i>
+				</button>
 				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="user?.id !== germplasmList?.ownerId">
 					<i [ngClass]="germplasmList?.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true"></i>
 				</button>
