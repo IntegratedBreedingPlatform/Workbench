@@ -7,8 +7,6 @@ import { ListType } from '../list-builder/model/list-type.model';
 import { ListService } from './service/list.service';
 import { formatErrorList } from '../alert/format-error-list';
 import { AlertService } from '../alert/alert.service';
-import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
-import { ActivatedRoute } from '@angular/router';
 import { DateHelperService } from '../service/date.helper.service';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -22,7 +20,7 @@ export class ListMetadataComponent implements OnInit {
     selectedDate: NgbDate;
 
     constructor(public modal: NgbActiveModal,
-                private eventManager: JhiEventManager,
+                public eventManager: JhiEventManager,
                 public paramContext: ParamContext,
                 public alertService: AlertService,
                 public listService: ListService,
