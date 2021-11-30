@@ -9,7 +9,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 
@@ -82,7 +82,7 @@ export class GermplasmListComponent implements OnInit {
             this.lists.forEach((list: GermplasmListTab) => {
                 if (event.content === list.id) {
                     this.germplasmListService.getGermplasmListById(list.id).subscribe(
-                        (res: HttpResponse<GermplasmList>) => list.listName = res.body.listName,
+                        (res: HttpResponse<GermplasmListModel>) => list.listName = res.body.listName,
                         (res: HttpErrorResponse) => this.onError(res)
                     );
                 }
