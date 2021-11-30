@@ -7,7 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
     selector: 'jhi-modal-confirm',
     template: `
 		<jhi-modal [title]="title">
-			<div class="modal-body word-wrap" [innerHTML]="sanitizer.bypassSecurityTrustHtml(message)">
+			<div class="modal-body" [innerHTML]="sanitizer.bypassSecurityTrustHtml(message)">
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
