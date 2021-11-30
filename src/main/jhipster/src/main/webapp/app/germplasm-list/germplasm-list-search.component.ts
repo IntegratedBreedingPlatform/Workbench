@@ -188,6 +188,10 @@ export class GermplasmListSearchComponent implements OnInit {
         this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
             this.resetTable();
         });
+
+        this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
+            this.resetTable();
+        });
     }
 
     private resetFilters() {

@@ -17,6 +17,7 @@ import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
 import { Router } from '@angular/router';
 import { GermplasmListModel } from '../germplasm-list/model/germplasm-list.model';
+import { DateHelperService } from '../service/date.helper.service';
 
 @Component({
     selector: 'jhi-germplasm-list-clone',
@@ -46,7 +47,8 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         public http: HttpClient,
         public eventManager: JhiEventManager,
         public germplasmListService: GermplasmListService,
-        private router: Router
+        private router: Router,
+        private dateHelperService: DateHelperService
     ) {
         super(
             modal,
@@ -69,8 +71,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         this.model.type = germplasmList.listType;
         this.model.notes = germplasmList.notes;
         this.model.description = germplasmList.description;
-        const dateArray = germplasmList.creationDate.split('-');
-        this.selectedDate = new NgbDate(parseInt(dateArray[0], 10), parseInt(dateArray[1], 10), parseInt(dateArray[2], 10));
+        this.selectedDate = this.dateHelperService.convertFormattedDateStringToNgbDate(germplasmList.creationDate, this.dateHelperService.YYYY_MM_DD_DASH_FORMAT);
 
         super.ngOnInit();
     }

@@ -33,6 +33,7 @@ import { SearchComposite } from '../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
 import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
+import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 
 declare var $: any;
 
@@ -53,6 +54,7 @@ export class ListComponent implements OnInit {
     DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
     CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'CLONE_GERMPLASM_LIST'];
     REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
+    EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EDIT_LIST_METADATA'];
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
@@ -455,9 +457,9 @@ export class ListComponent implements OnInit {
             return;
         }
 
-        const groupGermplasmModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
-        groupGermplasmModal.componentInstance.listId = this.listId;
-        groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
+        const reOrderEntriesModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
+        reOrderEntriesModal.componentInstance.listId = this.listId;
+        reOrderEntriesModal.componentInstance.selectedEntries = this.getSelectedItemIds();
     }
 
     openGermplasmSelectorModal() {
@@ -471,6 +473,11 @@ export class ListComponent implements OnInit {
                 selectMultiple: true
             }
         });
+    }
+
+    openEditListMetadata() {
+        const editListMetadataModal = this.modalService.open(GermplasmListMetadataComponent as Component);
+        editListMetadataModal.componentInstance.listId = this.listId;
     }
 
     openAddToList() {
