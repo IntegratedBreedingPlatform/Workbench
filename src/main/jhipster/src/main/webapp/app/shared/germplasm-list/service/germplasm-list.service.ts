@@ -45,9 +45,9 @@ export class GermplasmListService implements ListService {
         return this.http.post<ListModel>(url, list);
     }
 
-    cloneGermplasmList(germplasmListId: number, germplasmListModel: GermplasmListModel): Observable<ListModel> {
+    cloneGermplasmList(germplasmListId: number, germplasmListModel: GermplasmListModel): Observable<GermplasmListModel> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/clone?programUUID=` + this.context.programUUID;
-        return this.http.post<ListModel>(url, germplasmListModel);
+        return this.http.post<GermplasmListModel>(url, germplasmListModel);
     }
 
     updateListMetadata(listId: number, list: ListModel) {

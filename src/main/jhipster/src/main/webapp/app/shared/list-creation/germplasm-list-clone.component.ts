@@ -12,7 +12,6 @@ import { AlertService } from '../alert/alert.service';
 import { TreeDragDropService } from 'primeng/api';
 import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
 import { Principal } from '..';
-import { ListModel } from '../list-builder/model/list.model';
 import { ListService } from './service/list.service';
 import { GermplasmListService } from '../germplasm-list/service/germplasm-list.service';
 import { Router } from '@angular/router';
@@ -103,11 +102,11 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         return this._isLoading;
     }
 
-    async onCloneSuccess(listModel: ListModel) {
-        await this.router.navigate([`/germplasm-list/list/${listModel.id}`], {
+    async onCloneSuccess(listModel: GermplasmListModel) {
+        await this.router.navigate([`/germplasm-list/list/${listModel.listId}`], {
             queryParams: {
-                listId: listModel.id,
-                listName: listModel.name
+                listId: listModel.listId,
+                listName: listModel.listName
             }
         });
         this.eventManager.broadcast({ name: 'clonedGermplasmList', content: '' });
