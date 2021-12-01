@@ -88,9 +88,7 @@ export class BasicDetailsPaneComponent implements OnInit {
 
     deleteGermplasmName(germplasmName: GermplasmName): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = '<span class="word-wrap">'
-            + this.translateService.instant('germplasm-name-modal.delete.warning', { param: germplasmName.name })
-            + '</span>';
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-name-modal.delete.warning', { param: germplasmName.name });
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, germplasmName.id).toPromise().then((result) => {
