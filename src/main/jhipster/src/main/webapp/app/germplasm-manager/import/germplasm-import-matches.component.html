@@ -11,8 +11,7 @@
 		<div class="row mb-sm-3">
 			<div class="col">
 				<span jhiTranslate="germplasm.import.matches.matches.were.found" [translateValues]="{entryNo: entryNo, matchNumber: matchNumber, unassignedCount: unassignedCount}"></span>
-				<span *ngIf="!!puiMatch" jhiTranslate="germplasm.import.matches.with.pui.match" [translateValues]="{pui: puiMatch.germplasmPUI}"></span>
-				<span *ngIf="!puiMatch" jhiTranslate="germplasm.import.matches.click.on.an.entry"></span>
+				<span jhiTranslate="germplasm.import.matches.click.on.an.entry"></span>
 			</div>
 		</div>
 		<div class="row">
@@ -29,9 +28,8 @@
 						</thead>
 						<tbody>
 						<tr [@tableAnimation] *ngFor="let germplasm of matches | slice: (page-1) * pageSize : page * pageSize"
-							[class.selected]="selectMatchesResult[dataRow[HEADERS.ENTRY_NO]] == germplasm.gid || puiMatch?.gid == germplasm.gid"
-							[class.selectable]="!puiMatch"
-							(click)="!puiMatch && onSelectMatch(germplasm)">
+							[class.selected]="selectMatchesResult[dataRow[HEADERS.ENTRY_NO]] == germplasm.gid"
+							(click)="onSelectMatch(germplasm)">
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
 							<td><span *ngFor="let name of germplasm.names; let last = last">{{name.name}}<span *ngIf="!last">, </span></span></td>
@@ -65,7 +63,7 @@
 			<div class="col">
 				<div class="form-check form-check-inline">
 					<input type="checkbox" class="form-check-input" name="ignoreMatch" id="ignoreMatch"
-						   [(ngModel)]="isIgnoreMatch" [disabled]="isIgnoreAllRemaining || !!puiMatch"
+						   [(ngModel)]="isIgnoreMatch" [disabled]="isIgnoreAllRemaining"
 						   (change)="onIgnoreMatch()">
 					<label class="form-check-label" for="ignoreMatch" jhiTranslate="germplasm.import.matches.ignore.match">
 					</label>
@@ -76,7 +74,7 @@
 			<div class="col">
 				<div class="form-check form-check-inline">
 					<input type="checkbox" class="form-check-input" name="ignoreAllRemaining" id="ignoreAllRemaining"
-						   [(ngModel)]="isIgnoreAllRemaining" [disabled]="!!puiMatch"
+						   [(ngModel)]="isIgnoreAllRemaining"
 						   (change)="onIgnoreAllRemaining()">
 					<label class="form-check-label" for="ignoreAllRemaining" jhiTranslate="germplasm.import.matches.ignore.all.remaining">
 					</label>
@@ -94,7 +92,7 @@
 			(click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreAllRemaining || isIgnoreMatch || puiMatch || selectMatchesResult[dataRow[HEADERS.ENTRY_NO]])">
+	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreAllRemaining || isIgnoreMatch || selectMatchesResult[dataRow[HEADERS.ENTRY_NO]])">
 		<span *ngIf="isFinish(); else nextButton" jhiTranslate="finish"></span>
 		<ng-template #nextButton><span jhiTranslate="next"></span></ng-template>
 	</button>
