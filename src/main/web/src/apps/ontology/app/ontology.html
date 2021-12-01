@@ -22,25 +22,25 @@
 	<header>
 		<h1 class="om-title">{{'title' | translate}} <om-help module="MANAGE_ONTOLOGIES"></om-help></h1>
 
-		<button class="btn btn-default om-add-new-btn" ng-click="addNewSelection()">{{'button.addNew' | translate}}</button>
+		<button class="btn btn-default om-add-new-btn" ng-click="addNewSelection()" data-test="addNewOntologyTermButton">{{'button.addNew' | translate}}</button>
 		<nav>
 			<ol class="nav nav-tabs">
-				<li role="presentation" ng-class="{active : activeTab === 'variables'}">
+				<li role="presentation" ng-class="{active : activeTab === 'variables'}" data-test="variablesTab">
 					<a href="#variables" ng-click="setAsActive('variables')">
 						{{'variables' | translate}}
 					</a>
 				</li>
-				<li role="presentation" ng-class="{active : activeTab === 'properties'}">
+				<li role="presentation" ng-class="{active : activeTab === 'properties'}" data-test="propertiesTab">
 					<a href="#properties" ng-click="setAsActive('properties')">
 						{{'properties' | translate}}
 					</a>
 				</li>
-				<li role="presentation" ng-class="{active : activeTab === 'methods'}">
+				<li role="presentation" ng-class="{active : activeTab === 'methods'}" data-test="methodsTab">
 					<a href="#methods" ng-click="setAsActive('methods')">
 						{{'methods' | translate}}
 					</a>
 				</li>
-				<li role="presentation" ng-class="{active : activeTab === 'scales'}">
+				<li role="presentation" ng-class="{active : activeTab === 'scales'}" data-test="scalesTab">
 					<a href="#scales" ng-click="setAsActive('scales')">
 						{{'scales' | translate}}
 					</a>
@@ -59,10 +59,10 @@
 		</div>
 		<div class="om-panel-content">
 			<ol class="om-add-new">
-				<li ng-click="addNew($event, 'variable')"><span>{{'addNew.variable.menuItem' | translate}}</span></li>
-				<li ng-click="addNew($event, 'property')"><span>{{'addNew.property.menuItem' | translate}}</span></li>
-				<li ng-click="addNew($event, 'method')"><span>{{'addNew.method.menuItem' | translate}}</span></li>
-				<li ng-click="addNew($event, 'scale')"><span>{{'addNew.scale.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'variable')" data-test="variableTerm"><span>{{'addNew.variable.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'property')" data-test="propertyTerm"><span>{{'addNew.property.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'method')" data-test="methodTerm"><span>{{'addNew.method.menuItem' | translate}}</span></li>
+				<li ng-click="addNew($event, 'scale')" data-test="scaleTerm"><span>{{'addNew.scale.menuItem' | translate}}</span></li>
 			</ol>
 		</div>
 	</om-panel>

@@ -29,6 +29,11 @@ import { SearchResult } from '../shared/search-result.model';
 import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
+import { SearchComposite } from '../shared/model/search-composite';
+import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
+import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
+import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
+import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 
 declare var $: any;
 
@@ -44,11 +49,20 @@ export class ListComponent implements OnInit {
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
     REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
     GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
+    ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
+    ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
+    DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
+    REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
+    EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EDIT_LIST_METADATA'];
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
         'IMPORT_GERMPLASM_LIST_UPDATES',
-        'REORDER_ENTRIES_GERMPLASM_LISTS'
+        'REORDER_ENTRIES_GERMPLASM_LISTS',
+        'ADD_GERMPLASM_LIST_ENTRIES',
+        'ADD_ENTRIES_TO_LIST',
+        'DELETE_GERMPLASM_LIST',
+        'REMOVE_ENTRIES_GERMPLASM_LISTS'
     ];
 
     readonly STATIC_FILTERS = {
@@ -132,7 +146,6 @@ export class ListComponent implements OnInit {
     predicate: any;
     reverse: any;
     resultSearch: SearchResult;
-
     isLoading: boolean;
 
     germplasmListFilters: any;
@@ -150,7 +163,8 @@ export class ListComponent implements OnInit {
                 private principal: Principal,
                 private modalService: NgbModal,
                 public translateService: TranslateService,
-                private paramContext: ParamContext
+                private paramContext: ParamContext,
+                private germplasmManagerContext: GermplasmManagerContext
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -278,6 +292,26 @@ export class ListComponent implements OnInit {
         this.eventManager.subscribe(ListComponent.GERMPLASMLIST_REORDER_EVENT_SUFFIX, (event) => {
             this.clearSelectedItems();
             this.loadAll();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
+            const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+            searchComposite.itemIds = event.content.split(',');
+            this.germplasmListService.addGermplasmEntriesToList(this.listId, searchComposite)
+                .pipe(finalize(() => {
+                    this.isLoading = false;
+                })).subscribe(
+                (res: void) => {
+                    this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.listId });
+                },
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
+            if (this.listId === event.content) {
+                this.load();
+            }
         });
     }
 
@@ -413,9 +447,66 @@ export class ListComponent implements OnInit {
             return;
         }
 
-        const groupGermplasmModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
-        groupGermplasmModal.componentInstance.listId = this.listId;
-        groupGermplasmModal.componentInstance.selectedEntries = this.getSelectedItemIds();
+        const reOrderEntriesModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
+        reOrderEntriesModal.componentInstance.listId = this.listId;
+        reOrderEntriesModal.componentInstance.selectedEntries = this.getSelectedItemIds();
+    }
+
+    openGermplasmSelectorModal() {
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-selector-dialog' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                cropName: this.paramContext.cropName,
+                loggedInUserId: this.paramContext.loggedInUserId,
+                programUUID: this.paramContext.programUUID,
+                authToken: this.paramContext.authToken,
+                selectMultiple: true
+            }
+        });
+    }
+
+    openEditListMetadata() {
+        const editListMetadataModal = this.modalService.open(GermplasmListMetadataComponent as Component);
+        editListMetadataModal.componentInstance.listId = this.listId;
+    }
+
+    openAddToList() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        const searchRequest = new GermplasmListDataSearchRequest();
+        searchRequest.entryNumbers = [];
+        this.getSelectedItemIds().forEach((selectedItemId) => {
+            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data['ENTRY_NO']);
+        });
+        const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
+        searchComposite.searchRequest = searchRequest;
+        this.germplasmManagerContext.searchComposite = searchComposite;
+        this.germplasmManagerContext.sourceListId = this.listId;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
+    deleteList() {
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.list-data.delete-list.message');
+        confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.list-data.delete-list.header');
+
+        confirmModalRef.result.then(() => {
+            this.submitDeleteList();
+        }, () => confirmModalRef.dismiss());
+    }
+
+    submitDeleteList() {
+        this.germplasmListService.deleteGermplasmList(this.listId)
+            .subscribe(
+                () => {
+                    this.eventManager.broadcast({ name: 'germplasmListDeleted', content: this.listId });
+                },
+                (error) => this.onError(error)
+            );
     }
 
     private getFilters() {
@@ -593,7 +684,7 @@ export class ListComponent implements OnInit {
             Number(x.id) === Number(variable.id));
 
         if (variableAdded.length > 0) {
-            this.alertService.warning('germplasm-list.variables.already.exsits');
+            this.alertService.warning('germplasm-list.variables.already.exists');
             return;
         }
 
@@ -619,18 +710,35 @@ export class ListComponent implements OnInit {
             }
         }
 
-         this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
-             const variableDeleted = this.variables.filter((variable) =>
-                 variableIds.indexOf(variable.id.toString()) !== -1
-             );
+        this.germplasmListService.deleteVariables(this.listId, variableIds).subscribe(() => {
+            const variableDeleted = this.variables.filter((variable) =>
+                variableIds.indexOf(variable.id.toString()) !== -1
+            );
 
-             variableDeleted.forEach((variable) => {
-                 this.variables.splice(this.variables.indexOf(variable), 1);
-                 delete this.selectedVariables[variable.id];
-             });
+            variableDeleted.forEach((variable) => {
+                this.variables.splice(this.variables.indexOf(variable), 1);
+                delete this.selectedVariables[variable.id];
+            });
 
-             this.refreshTable();
-         });
+            this.refreshTable();
+        });
+    }
+
+    removeEntries() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.list-data.remove-entries.confirm.message');
+        confirmModalRef.componentInstance.title = this.translateService.instant('germplasm-list.list-data.remove-entries.confirm.header');
+
+        confirmModalRef.result.then(() => {
+            this.germplasmListService.removeEntries(this.listId, this.getSelectedItemIds()).subscribe(() => {
+                this.clearSelectedItems();
+                this.refreshTable();
+                this.alertService.success('germplasm-list.list-data.remove-entries.remove.success');
+            });
+        }, () => confirmModalRef.dismiss());
     }
 
     private validateSelection() {
