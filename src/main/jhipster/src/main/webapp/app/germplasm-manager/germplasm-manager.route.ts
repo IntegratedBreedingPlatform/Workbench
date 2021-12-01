@@ -15,7 +15,6 @@ import { GermplasmImportUpdatePopupComponent } from './germplasm-import-update-d
 import { GermplasmListAddPopupComponent } from './germplasm-list/germplasm-list-add.component';
 import { GermplasmSelectorPopupComponent } from './selector/germplasm-selector-modal.component';
 import { GermplasmProgenyPopupComponent } from './merge/germplasm-progeny-modal.component';
-import { GermplasmListClonePopupComponent } from './germplasm-list/germplasm-list-clone-popup.component';
 
 export const GERMPLASM_MANAGER_ROUTES: Routes = [
     ...breedingMethodRoutes,
@@ -60,11 +59,6 @@ export const GERMPLASM_MANAGER_ROUTES: Routes = [
     {
         path: 'germplasm-list-creation-dialog',
         component: GermplasmListCreationPopupComponent,
-        outlet: 'popup',
-    },
-    {
-        path: 'germplasm-list-clone-dialog',
-        component: GermplasmListClonePopupComponent,
         outlet: 'popup',
     },
     {

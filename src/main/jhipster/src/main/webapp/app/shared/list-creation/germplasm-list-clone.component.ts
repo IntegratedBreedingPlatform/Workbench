@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
 import { finalize } from 'rxjs/operators';
 import { ListCreationComponent } from './list-creation.component';
-import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbCalendar, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeService } from '../tree/tree.service';
 import { GermplasmTreeService } from '../tree/germplasm/germplasm-tree.service';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
@@ -67,11 +67,11 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
     }
 
     ngOnInit() {
-        const germplasmList = this.germplasmManagerContext.sourceGermplasmList;
-        this.model.type = germplasmList.listType;
-        this.model.notes = germplasmList.notes;
-        this.model.description = germplasmList.description;
-        this.selectedDate = this.dateHelperService.convertFormattedDateStringToNgbDate(germplasmList.creationDate, this.dateHelperService.YYYY_MM_DD_DASH_FORMAT);
+        this.listService.getById(this.germplasmManagerContext.sourceListId).subscribe((listModel) => {
+            this.model = listModel;
+            this.model.name = null;
+            this.selectedDate =  this.dateHelperService.convertFormattedDateStringToNgbDate(listModel.date, 'yyyy-mm-dd');
+        });
 
         super.ngOnInit();
     }
@@ -89,7 +89,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceGermplasmList.listId, germplasmList)
+            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceListId, germplasmList)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(

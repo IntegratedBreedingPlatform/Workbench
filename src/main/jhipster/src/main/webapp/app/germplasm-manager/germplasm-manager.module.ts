@@ -8,7 +8,6 @@ import { GermplasmSearchResolvePagingParams } from './germplasm-search-resolve-p
 import { GermplasmManagerComponent } from './germplasm-manager.component';
 import { GermplasmSelectorComponent } from './selector/germplasm-selector.component';
 import { GermplasmListCreationPopupComponent } from './germplasm-list/germplasm-list-creation-popup.component';
-import { GermplasmListClonePopupComponent } from './germplasm-list/germplasm-list-clone-popup.component';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { GermplasmImportModule } from './import/germplasm-import.module';
 import { GermplasmImportUpdateDialogComponent, GermplasmImportUpdatePopupComponent } from './germplasm-import-update-dialog.component';
@@ -38,7 +37,6 @@ import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.co
         GermplasmManagerComponent,
         GermplasmSearchComponent,
         GermplasmListCreationPopupComponent,
-        GermplasmListClonePopupComponent,
         GermplasmSelectorComponent,
         GermplasmImportUpdateDialogComponent,
         GermplasmImportUpdateDescriptorsConfirmationDialogComponent,
@@ -65,7 +63,6 @@ import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.co
         GermplasmManagerComponent,
         GermplasmSearchComponent,
         GermplasmListCreationPopupComponent,
-        GermplasmListClonePopupComponent,
         GermplasmSelectorComponent,
         GermplasmImportUpdateDialogComponent,
         GermplasmImportUpdateDescriptorsConfirmationDialogComponent,

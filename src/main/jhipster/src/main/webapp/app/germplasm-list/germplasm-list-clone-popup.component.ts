@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../../shared/modal/popup.service';
-import { GermplasmListCloneComponent } from '../../shared/list-creation/germplasm-list-clone.component';
+import { PopupService } from '../shared/modal/popup.service';
+import { GermplasmListCloneComponent } from '../shared/list-creation/germplasm-list-clone.component';
 
 @Component({
     selector: 'jhi-germplasm-list-creation-popup',
