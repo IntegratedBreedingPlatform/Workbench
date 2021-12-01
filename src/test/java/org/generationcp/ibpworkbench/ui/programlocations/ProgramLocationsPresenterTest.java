@@ -208,16 +208,20 @@ public class ProgramLocationsPresenterTest {
 
 	private Location createTestLocation(final Integer countryId, final Integer locationType, final String locationName,
 		final Integer locId) {
-		final Location location = new Location();
-		location.setLocid(locId);
-		location.setLname(locationName);
-		location.setLabbr(LOCATION_ABBREVIATION);
-		location.setLtype(locationType);
-		location.setCntryid(countryId);
-		location.setSnl1id(PROVINCE_ID);
-		location.setAltitude(ALTITUDE);
-		location.setLatitude(LATITUDE);
-		location.setLongitude(LONGITUDE);
+		final Location location = Mockito.mock(Location.class);
+		Mockito.when(location.getLocid()).thenReturn(locId);
+		Mockito.when(location.getLname()).thenReturn(locationName);
+		Mockito.when(location.getLabbr()).thenReturn(LOCATION_ABBREVIATION);
+		Mockito.when(location.getLtype()).thenReturn(locationType);
+		Mockito.when(location.getSnl1id()).thenReturn(PROVINCE_ID);
+		Mockito.when(location.getAltitude()).thenReturn(ALTITUDE);
+		Mockito.when(location.getLatitude()).thenReturn(LATITUDE);
+		Mockito.when(location.getLongitude()).thenReturn(LONGITUDE);
+
+		if (countryId != null) {
+			final Location country = this.createTestLocation(null, locationType, locationName, countryId);
+			Mockito.when(location.getCountry()).thenReturn(country);
+		}
 		return location;
 	}
 
