@@ -12,6 +12,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -334,11 +335,14 @@ public class ProgramLocationsPresenterTest {
 		final boolean isEditedFromAvailableTable = true;
 		final LocationViewModel locationViewModel = createLocationViewModel();
 
+		final Location country = Mockito.mock(Location.class);
+		Mockito.when(this.locationDataManager.getLocationByID(CNTRYID)).thenReturn(country);
+
 		this.controller.updateLocation(locationViewModel, isEditedFromAvailableTable);
 
-		Mockito.verify(this.locationDataManager).addLocation(this.controller.convertLocationViewToLocation(locationViewModel));
+		Mockito.verify(this.locationDataManager).addLocation(ArgumentMatchers.any(Location.class));
 		Mockito.verify(this.programLocationsView).refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
-
+		Mockito.verify(this.locationDataManager).getLocationByID(CNTRYID);
 	}
 
 	private LocationViewModel createLocationViewModel() {
