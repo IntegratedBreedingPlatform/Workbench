@@ -163,7 +163,12 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
 		viewModel.setLtype(location.getLtype());
-		viewModel.setProvinceId(location.getSnl1id());
+
+		final Location province = location.getProvince();
+		if (province != null) {
+			viewModel.setProvinceId(province.getLocid());
+		}
+
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
@@ -270,7 +275,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 
 		if (locationViewModel.getCntryid() != null) {
 			final Location country = this.locationDataManager.getLocationByID(locationViewModel.getCntryid());
-			location.setCountry(country.getCountry());
+			location.setCountry(country);
 		}
 
 		location.setLatitude(locationViewModel.getLatitude());
@@ -281,10 +286,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		location.setNllp(0);
 		location.setSnl3id(0);
 		location.setSnl2id(0);
-		location.setSnl1id(locationViewModel.getProvinceId());
 
-		if (location.getSnl1id() == null) {
-			location.setSnl1id(0);
+		if (locationViewModel.getProvinceId() != null) {
+			final Location province = this.locationDataManager.getLocationByID(locationViewModel.getProvinceId());
+			location.setProvince(province);
 		}
 
 		location.setLdefault(locationViewModel.getlDefault());

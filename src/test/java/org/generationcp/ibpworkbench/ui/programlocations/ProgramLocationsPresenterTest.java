@@ -214,7 +214,11 @@ public class ProgramLocationsPresenterTest {
 		Mockito.when(location.getLname()).thenReturn(locationName);
 		Mockito.when(location.getLabbr()).thenReturn(LOCATION_ABBREVIATION);
 		Mockito.when(location.getLtype()).thenReturn(locationType);
-		Mockito.when(location.getSnl1id()).thenReturn(PROVINCE_ID);
+
+		final Location province = Mockito.mock(Location.class);
+		Mockito.when(province.getLocid()).thenReturn(PROVINCE_ID);
+		Mockito.when(location.getProvince()).thenReturn(province);
+
 		Mockito.when(location.getAltitude()).thenReturn(ALTITUDE);
 		Mockito.when(location.getLatitude()).thenReturn(LATITUDE);
 		Mockito.when(location.getLongitude()).thenReturn(LONGITUDE);
