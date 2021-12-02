@@ -90,7 +90,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceListId, germplasmList)
+            this.germplasmListService.cloneGermplasmList(this.germplasmListManagerContext.activeGermplasmListId, germplasmList)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(
