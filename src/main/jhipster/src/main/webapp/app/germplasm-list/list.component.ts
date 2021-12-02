@@ -298,7 +298,7 @@ export class ListComponent implements OnInit {
         });
 
         this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
-            if(this.listId === this.germplasmListManagerContext.activeGermplasmListId) {
+            if (this.listId === this.germplasmListManagerContext.activeGermplasmListId) {
                 const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
                 searchComposite.itemIds = event.content.split(',');
                 this.germplasmListService.addGermplasmEntriesToList(this.listId, searchComposite)
