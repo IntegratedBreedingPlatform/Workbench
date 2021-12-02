@@ -268,8 +268,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		location.setLabbr(locationViewModel.getLocationAbbreviation());
 		location.setLtype(locationViewModel.getLtype());
 
-		final Location country = this.locationDataManager.getLocationByID(locationViewModel.getCntryid());
-		location.setCountry(country.getCountry());
+		if (locationViewModel.getCntryid() != null) {
+			final Location country = this.locationDataManager.getLocationByID(locationViewModel.getCntryid());
+			location.setCountry(country.getCountry());
+		}
 
 		location.setLatitude(locationViewModel.getLatitude());
 		location.setLongitude(locationViewModel.getLongitude());
