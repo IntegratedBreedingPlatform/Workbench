@@ -184,6 +184,11 @@ export class GermplasmListSearchComponent implements OnInit {
             this.alertService.success('germplasm-list.list-data.delete-list.success');
             this.resetTable();
         });
+
+        this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
+            this.resetTable();
+        });
+
         this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
             this.resetTable();
         });
@@ -203,7 +208,6 @@ export class GermplasmListSearchComponent implements OnInit {
 
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
-
         this.router.navigate([`/germplasm-list/list/${list.listId}`], {queryParams: {
                 listId: list.listId,
                 listName: list.listName

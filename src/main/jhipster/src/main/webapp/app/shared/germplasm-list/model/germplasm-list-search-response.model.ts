@@ -1,6 +1,6 @@
-import { GermplasmList } from './germplasm-list.model';
+import { GermplasmListModel } from './germplasm-list.model';
 
-export class GermplasmListSearchResponse extends GermplasmList {
+export class GermplasmListSearchResponse extends GermplasmListModel {
     constructor(public listId: number,
                 public listName: string,
                 public creationDate: string,
