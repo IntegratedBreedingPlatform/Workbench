@@ -87,6 +87,8 @@
 			"from": "From",
 			"to": "To"
 		},
+		"yes.text": "Yes",
+		"no.text": "No",
 		"inUseInVariables": "Used in Variables",
 		"calculation": "Calculation"
 	},
