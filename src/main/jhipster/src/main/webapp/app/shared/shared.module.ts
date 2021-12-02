@@ -81,6 +81,7 @@ import { VariableContainerComponent } from './variable-container/variable-contai
 import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
+import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
 
 @NgModule({
     imports: [
@@ -128,6 +129,7 @@ import { RouterModule } from '@angular/router';
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
+        GermplasmListCloneComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
         GeojsonMapComponent,
@@ -184,6 +186,7 @@ import { RouterModule } from '@angular/router';
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
         GermplasmListCreationComponent,
+        GermplasmListCloneComponent,
         SampleListCreationComponent,
         VariableSelectModalComponent
     ],
@@ -228,6 +231,7 @@ import { RouterModule } from '@angular/router';
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
+        GermplasmListCloneComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
         GeojsonMapComponent,

@@ -24,6 +24,11 @@
 							*jhiHasAnyAuthority="REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
 							(click)="openReorderEntries()" >
 					</button>
+					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.remove-entries"
+							*jhiHasAnyAuthority="REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
+							(click)="removeEntries()" >
+					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS"
 							jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()">
@@ -51,6 +56,10 @@
 							*jhiHasAnyAuthority="DELETE_LIST_PERMISSIONS"
 							(click)="deleteList()" >
 					</button>
+					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CLONE_GERMPLASM_LIST_PERMISSIONS"
+						jhiTranslate="germplasm-list.list-data.actions.clone-list"
+						(click)="openCloneGermplasmList()">
+					</button>
 				</div>
 				<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
 								  [listId]="this.listId"
@@ -62,6 +71,11 @@
 	<div class="row mt-2 mb-2">
 		<div class="col">
 			<div style="float: right">
+				<button class="btn btn-light" [hidden]="this.germplasmList?.locked"
+						*jhiHasAnyAuthority="EDIT_LIST_METADATA_PERMISSIONS"
+						(click)="openEditListMetadata()">
+					<i [ngClass]="'fa fa-edit'"></i>
+				</button>
 				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="user?.id !== germplasmList?.ownerId">
 					<i [ngClass]="germplasmList?.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true"></i>
 				</button>

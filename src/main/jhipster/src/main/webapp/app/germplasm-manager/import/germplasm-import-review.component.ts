@@ -24,6 +24,7 @@ import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-l
 import { toUpper } from '../../shared/util/to-upper';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
+import { listPreview } from '../../shared/util/list-preview';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -69,6 +70,11 @@ export class GermplasmImportReviewComponent implements OnInit {
     selectMatchesResult: any = {};
     inventoryData: any;
     importResult: ImportGermplasmResultType = {};
+
+    // name columns with duplicates
+    columnNamesWithDupes = {};
+
+    listPreview = listPreview;
 
     constructor(
         private translateService: TranslateService,
@@ -157,6 +163,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 }
             });
             this.rows = [...this.dataMatches, ...this.newRecords];
+            this.columnNamesWithDupes = this.findDupesInNewRecords(this.newRecords);
         });
 
         this.inventoryData = this.context.data.filter((row) => row[HEADERS['STOCK ID']]
@@ -165,9 +172,87 @@ export class GermplasmImportReviewComponent implements OnInit {
             || row[HEADERS['AMOUNT']]);
     }
 
+    private findDupesInNewRecords(newEntries: any[]) {
+        const columnNamesWithDupes = {};
+        // check every name column for dupes
+        this.context.nametypesCopy.forEach((nameType) => {
+            const namesSeen = {};
+            newEntries.forEach((row) => {
+                if (namesSeen[row[nameType.code]]) {
+                    columnNamesWithDupes[nameType.code] = true;
+                }
+                if (row[nameType.code]) {
+                    namesSeen[row[nameType.code]] = true;
+                }
+            });
+        });
+
+        /*
+         * check dupes across preferred names:
+         * ENTRY_NO LNAME DRVNM
+         * 1        NAME1
+         * 2              NAME1
+         */
+        {
+            const preferredNameNote = this.translateService.instant('germplasm.import.review.new.records.dupes.preferred.name.note');
+            const namesSeen = {};
+            newEntries.forEach((row) => {
+                /*
+                 * If the column used for preferred name does not already contains duplicates inside the same column
+                 * but it contains duplicates across different columns used as preferred name
+                 */
+                if (!columnNamesWithDupes[row[HEADERS['PREFERRED NAME']]]
+                    && namesSeen[row[row[HEADERS['PREFERRED NAME']]]]) {
+                    columnNamesWithDupes[HEADERS['PREFERRED NAME'] + preferredNameNote] = true;
+                }
+                namesSeen[row[row[HEADERS['PREFERRED NAME']]]] = true;
+            });
+        }
+        return columnNamesWithDupes;
+    }
+
+    /**
+     * Check duplicates again in case the user skips some of the matches and decide to add new records from there
+     */
+    private async checkDupesInNewRecords(newEntries: any[]) {
+        /*
+         * If we are already showing the warning for new records, no need to add another confirmation step.
+         * The user is already aware that duplicates are going to be created.
+         */
+        if (this.size(this.columnNamesWithDupes)) {
+            return true;
+        }
+        const columnNamesWithDupes = this.findDupesInNewRecords(newEntries);
+        if (!this.size(columnNamesWithDupes)) {
+            return true;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
+            { windowClass: 'modal-medium', backdrop: 'static' });
+        confirmModalRef.componentInstance.message = '<span style="word-break: break-word">' + this.translateService.instant('germplasm.import.review.new.records.dupes', {
+            columns: listPreview(this.keys(columnNamesWithDupes))
+        }) + '</span>';
+        confirmModalRef.componentInstance.confirmLabel = this.translateService.instant('continue');
+        try {
+            await confirmModalRef.result;
+        } catch (rejected) {
+            return false;
+        }
+        return true;
+    }
+
     async save() {
         try {
             let doContinue = await this.processMatches();
+            if (!doContinue) {
+                return;
+            }
+
+            const newEntries = this.context.data.filter((row) => {
+                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByPUI[toUpper(row[HEADERS.PUI])];
+            });
+
+            doContinue = await this.checkDupesInNewRecords(newEntries);
             if (!doContinue) {
                 return;
             }
@@ -178,10 +263,6 @@ export class GermplasmImportReviewComponent implements OnInit {
             }
 
             // Proceed with save
-
-            const newEntries = this.context.data.filter((row) => {
-                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByPUI[toUpper(row[HEADERS.PUI])];
-            });
 
             if (newEntries.length) {
                 this.isSaving = true;

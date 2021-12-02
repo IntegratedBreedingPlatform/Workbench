@@ -13,13 +13,13 @@ import { GermplasmListSearchRequest } from '../model/germplasm-list-search-reque
 import { GermplasmListSearchResponse } from '../model/germplasm-list-search-response.model';
 import { createRequestOption } from '../..';
 import { GermplasmListDataSearchResponse } from '../model/germplasm-list-data-search-response.model';
-import { GermplasmList } from '../../list-creation/model/germplasm-list';
 import { GermplasmListColumn } from '../model/germplasm-list-column.model';
 import { GermplasmListObservationVariable } from '../model/germplasm-list-observation-variable.model';
 import { GermplasmListDataUpdateViewRequest } from '../model/germplasm-list-data-update-view-request.model';
 import { VariableDetails } from '../../ontology/model/variable-details';
 import { GermplasmListReorderEntriesRequestModel } from '../model/germplasm-list-reorder-entries-request.model';
 import { GermplasmListDataSearchRequest } from '../../../entities/germplasm-list-data/germplasm-list-data-search-request.model';
+import { GermplasmListModel } from '../model/germplasm-list.model';
 
 @Injectable()
 export class GermplasmListService implements ListService {
@@ -28,6 +28,8 @@ export class GermplasmListService implements ListService {
                 private context: ParamContext) {
 
     }
+
+    // ==== INTERFACE METHODS
 
     getListTypes(): Observable<ListType[]> {
         return this.http.get<ListType[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-list-types?programUUID=` + this.context.programUUID,
@@ -41,6 +43,20 @@ export class GermplasmListService implements ListService {
     save(list: ListModel): Observable<ListModel> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
         return this.http.post<ListModel>(url, list);
+    }
+
+    cloneGermplasmList(germplasmListId: number, germplasmListModel: GermplasmListModel): Observable<GermplasmListModel> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${germplasmListId}/clone?programUUID=` + this.context.programUUID;
+        return this.http.post<GermplasmListModel>(url, germplasmListModel);
+    }
+
+    updateListMetadata(listId: number, list: ListModel) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}?programUUID=` + this.context.programUUID;
+        return this.http.patch<ListModel>(url, this.toGermplasmList(listId, list));
+    }
+
+    getById(listId: number): Observable<ListModel> {
+        return this.getGermplasmListById(listId).pipe(map((res: HttpResponse<GermplasmListModel>) => this.toListModel(res.body)));
     }
 
     addGermplasmEntriesToList(germplasmListId: number, searchComposite: SearchComposite<GermplasmSearchRequest, number>): Observable<void> {
@@ -73,8 +89,8 @@ export class GermplasmListService implements ListService {
         return this.http.get<GermplasmListDataSearchResponse[]>(url, { params, observe: 'response' });
     }
 
-    getGermplasmListById(listId: number): Observable<HttpResponse<GermplasmList>> {
-        return this.http.get<GermplasmList>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}?programUUID=` + this.context.programUUID,
+    getGermplasmListById(listId: number): Observable<HttpResponse<GermplasmListModel>> {
+        return this.http.get<GermplasmListModel>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}?programUUID=` + this.context.programUUID,
             { observe: 'response' });
     }
 
@@ -157,8 +173,35 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
+    removeEntries(listId: number, selectedEntries: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}`;
+        return this.http.delete<any>(url, { observe: 'response' });
+    }
+
     germplasmListUpdates(germplasmListGenerator: any) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists?programUUID=` + this.context.programUUID;
         return this.http.patch(url, germplasmListGenerator, { observe: 'response' });
     }
+
+    private toListModel(item: GermplasmListModel): ListModel {
+        return <ListModel>({
+            name: item.listName,
+            description: item.description,
+            type: item.listType,
+            date: item.creationDate,
+            notes: item.notes
+        })
+    }
+
+    private toGermplasmList(germplasmListId: number, item: ListModel): GermplasmListModel {
+        return <GermplasmListModel>({
+            listId: germplasmListId,
+            listName: item.name,
+            description: item.description,
+            listType: item.type,
+            creationDate: item.date,
+            notes: item.notes
+        });
+    }
+
 }

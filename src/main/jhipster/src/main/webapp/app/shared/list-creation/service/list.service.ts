@@ -11,4 +11,8 @@ export abstract class ListService {
     abstract getListType(): Observable<string>;
 
     abstract save(list: ListModel): Observable<ListModel>;
+
+    abstract updateListMetadata(listId: number, list: ListModel);
+
+    abstract getById(listId: number): Observable<ListModel>;
 }

@@ -6,6 +6,7 @@ import { GermplasmListComponent } from './germplasm-list.component';
 import { ListComponent } from './list.component';
 import { GermplasmListImportPopupComponent } from './import/germplasm-list-import.component';
 import { GermplasmListImportUpdatePopupComponent } from './import/germplasm-list-import-update.component';
+import { GermplasmListClonePopupComponent } from './germplasm-list-clone-popup.component';
 
 export const GERMPLASM_LIST_ROUTES: Routes = [
     {
@@ -48,5 +49,10 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
         outlet: 'popup',
         data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS', 'IMPORT_GERMPLASM_LIST_UPDATES'] },
         canActivate: [RouteAccessService]
+    },
+    {
+        path: 'germplasm-list-clone-dialog',
+        component: GermplasmListClonePopupComponent,
+        outlet: 'popup',
     }
 ];

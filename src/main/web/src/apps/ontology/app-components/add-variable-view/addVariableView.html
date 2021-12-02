@@ -48,7 +48,7 @@
 			<label for="omProperty" class="col-sm-2 control-label label-required">{{'formField.property' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omProperty" om-name="om-property" om-property="property" om-adding="true" ng-model="variable" om-options="data.properties" om-required="true"></om-select>
-				<a href="#" ng-click="addNew($event, 'property')">{{'addNew.variable.addProperty' | translate}}</a>
+				<a href="#" ng-click="addNew($event, 'property')" data-test="addNewPropertyButton">{{'addNew.variable.addProperty' | translate}}</a>
 				<ng-messages for="avForm.omProperty.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
 				</ng-messages>
@@ -60,7 +60,7 @@
 			<label for="omMethod" class="col-sm-2 control-label label-required">{{'formField.method' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omMethod" om-name="om-method" om-property="method" om-adding="true" ng-model="variable" om-options="data.methods" om-required="true"></om-select>
-				<a href="#" ng-click="addNew($event, 'method')">{{'addNew.variable.addMethod' | translate}}</a>
+				<a href="#" ng-click="addNew($event, 'method')" data-test="addNewMethodButton">{{'addNew.variable.addMethod' | translate}}</a>
 				<ng-messages for="avForm.omMethod.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
 				</ng-messages>
@@ -72,7 +72,7 @@
 			<label for="omScale" class="col-sm-2 control-label label-required">{{'formField.scale' | translate}}</label>
 			<div class="col-sm-7">
 				<om-select name="omScale" om-name="om-scale" om-property="scale" om-adding="true" ng-model="variable" om-options="data.scales" om-required="true"></om-select>
-				<a href="#" ng-click="addNew($event, 'scale')">{{'addNew.variable.addScale' | translate}}</a>
+				<a href="#" ng-click="addNew($event, 'scale')" data-test="addNewScaleButton">{{'addNew.variable.addScale' | translate}}</a>
 				<ng-messages for="avForm.omScale.$error" ng-if="avForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
 				</ng-messages>
@@ -106,7 +106,7 @@
 
 		<div class="form-group">
 			<div ng-hide="confirmationNecessary" class="col-sm-offset-2 col-sm-7">
-				<button class="btn btn-primary" type="submit">
+				<button class="btn btn-primary" type="submit" data-test="saveVariableButton">
 					{{'button.save' | translate}}
 					<span ng-show="submitted" class="throbber-btn-wrapper">
 						<span class="throbber throbber-btn throbber-white"></span>

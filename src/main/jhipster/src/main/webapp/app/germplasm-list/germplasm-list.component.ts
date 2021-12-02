@@ -7,6 +7,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
+import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
+import { formatErrorList } from '../shared/alert/format-error-list';
+import { AlertService } from '../shared/alert/alert.service';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -30,10 +35,12 @@ export class GermplasmListComponent implements OnInit {
                 private modalService: NgbModal,
                 private activeModal: NgbActiveModal,
                 private router: Router,
-                private eventManager: JhiEventManager
+                private eventManager: JhiEventManager,
+                private germplasmListService: GermplasmListService,
+                private alertService: AlertService,
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.listId = params['listId'];
+            this.listId = parseInt(params['listId'], 10);
 
             if (!this.listId) {
                 return;
@@ -58,10 +65,10 @@ export class GermplasmListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerDeleteGermplasmList();
+        this.registerEvents();
     }
 
-    registerDeleteGermplasmList() {
+    registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
             this.lists.forEach((list: GermplasmListTab) => {
                 if (event.content === list.id) {
@@ -70,13 +77,24 @@ export class GermplasmListComponent implements OnInit {
             });
             this.setSearchTabActive();
         });
+
+        this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
+            this.lists.forEach((list: GermplasmListTab) => {
+                if (event.content === list.id) {
+                    this.germplasmListService.getGermplasmListById(list.id).subscribe(
+                        (res: HttpResponse<GermplasmListModel>) => list.listName = res.body.listName,
+                        (res: HttpErrorResponse) => this.onError(res)
+                    );
+                }
+            });
+        });
     }
 
     setActive(listId: number) {
         this.hideSearchTab = true;
 
         this.lists.forEach((list: GermplasmListTab) => {
-            list.active = (list.id === listId) ? true : false;
+            list.active = (list.id === listId);
         });
     }
 
@@ -121,6 +139,15 @@ export class GermplasmListComponent implements OnInit {
 
     private exists(listId: number) {
         return this.lists.some((list) => list.id === listId);
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
     }
 
 }
