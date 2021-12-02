@@ -61,7 +61,9 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         super.ngOnInit();
 
         this.listService.getListTypes().subscribe((listTypes) => this.listTypes = listTypes);
-        this.listService.getListType().subscribe((listType) => this.model.type = listType);
+        if (!this.model.type) {
+            this.listService.getListType().subscribe((listType) => this.model.type = listType);
+        }
     }
 
     onNodeDrop(event, source: PrimeNgTreeNode, target: PrimeNgTreeNode) {

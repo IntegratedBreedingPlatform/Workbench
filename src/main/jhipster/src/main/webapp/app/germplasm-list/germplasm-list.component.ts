@@ -9,7 +9,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
 import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 
@@ -40,7 +40,7 @@ export class GermplasmListComponent implements OnInit {
                 private alertService: AlertService,
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.listId = params['listId'];
+            this.listId = parseInt(params['listId'], 10);
 
             if (!this.listId) {
                 return;
@@ -65,11 +65,10 @@ export class GermplasmListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.registerDeleteGermplasmList();
-        this.registerListMetadataUpdated();
+        this.registerEvents();
     }
 
-    registerDeleteGermplasmList() {
+    registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
             this.lists.forEach((list: GermplasmListTab) => {
                 if (event.content === list.id) {
@@ -78,14 +77,12 @@ export class GermplasmListComponent implements OnInit {
             });
             this.setSearchTabActive();
         });
-    }
 
-    registerListMetadataUpdated() {
         this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
             this.lists.forEach((list: GermplasmListTab) => {
                 if (event.content === list.id) {
                     this.germplasmListService.getGermplasmListById(list.id).subscribe(
-                        (res: HttpResponse<GermplasmList>) => list.listName = res.body.listName,
+                        (res: HttpResponse<GermplasmListModel>) => list.listName = res.body.listName,
                         (res: HttpErrorResponse) => this.onError(res)
                     );
                 }
@@ -97,7 +94,7 @@ export class GermplasmListComponent implements OnInit {
         this.hideSearchTab = true;
 
         this.lists.forEach((list: GermplasmListTab) => {
-            list.active = (list.id === listId) ? true : false;
+            list.active = (list.id === listId);
         });
     }
 

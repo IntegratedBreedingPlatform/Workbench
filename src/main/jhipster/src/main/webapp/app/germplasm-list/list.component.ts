@@ -11,7 +11,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { AlertService } from '../shared/alert/alert.service';
-import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { Principal } from '../shared';
 import { GermplasmListObservationVariable } from '../shared/germplasm-list/model/germplasm-list-observation-variable.model';
@@ -52,6 +52,7 @@ export class ListComponent implements OnInit {
     ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
     ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
     DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
+    CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'CLONE_GERMPLASM_LIST'];
     REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
     EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EDIT_LIST_METADATA'];
 
@@ -62,6 +63,7 @@ export class ListComponent implements OnInit {
         'ADD_GERMPLASM_LIST_ENTRIES',
         'ADD_ENTRIES_TO_LIST',
         'DELETE_GERMPLASM_LIST',
+        'CLONE_GERMPLASM_LIST',
         'REMOVE_ENTRIES_GERMPLASM_LISTS'
     ];
 
@@ -134,7 +136,7 @@ export class ListComponent implements OnInit {
 
     user?: any;
 
-    germplasmList: GermplasmList;
+    germplasmList: GermplasmListModel;
     header: GermplasmListObservationVariable[];
     entries: GermplasmListDataSearchResponse[];
     eventSubscriber: Subscription;
@@ -180,7 +182,7 @@ export class ListComponent implements OnInit {
         this.user = identity;
 
         this.germplasmListService.getGermplasmListById(this.listId).subscribe(
-            (res: HttpResponse<GermplasmList>) => this.germplasmList = res.body,
+            (res: HttpResponse<GermplasmListModel>) => this.germplasmList = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
 
@@ -390,6 +392,14 @@ export class ListComponent implements OnInit {
         });
     }
 
+    openCloneGermplasmList() {
+        this.germplasmManagerContext.sourceListId = this.germplasmList.listId;
+        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-clone-dialog' }, }], {
+            replaceUrl: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
     isPageSelected() {
         return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
     }
@@ -482,7 +492,7 @@ export class ListComponent implements OnInit {
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
         this.germplasmManagerContext.searchComposite = searchComposite;
-        this.germplasmManagerContext.sourceListId = this.listId;
+        this.germplasmManagerContext.sourceListId = this.germplasmList.listId;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'

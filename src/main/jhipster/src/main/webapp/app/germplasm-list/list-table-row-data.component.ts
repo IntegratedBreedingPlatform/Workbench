@@ -9,7 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { JhiEventManager } from 'ng-jhipster';
-import { GermplasmList } from '../shared/germplasm-list/model/germplasm-list.model';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
 import { VariableValidationService } from '../shared/ontology/service/variable-validation.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ListDataRowComponent implements OnInit {
 
     @Input() listId: number;
-    @Input() germplasmList: GermplasmList;
+    @Input() germplasmList: GermplasmListModel;
     @Input() column: GermplasmListObservationVariable;
     @Input() entry: GermplasmListDataSearchResponse;
 
