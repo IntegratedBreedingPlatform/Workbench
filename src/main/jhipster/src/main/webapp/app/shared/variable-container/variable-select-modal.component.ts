@@ -1,13 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgbActiveModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 import { VariableService } from '../ontology/service/variable.service';
 import { VariableValidationService } from '../ontology/service/variable-validation.service';
 import { VariableTypeEnum } from '../ontology/variable-type.enum';
 import { VariableDetails } from '../ontology/model/variable-details';
-import { LocationModel } from '../location/model/location.model';
-import { DataTypeEnum } from '../ontology/data-type.enum';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

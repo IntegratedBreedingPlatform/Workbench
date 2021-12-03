@@ -13,14 +13,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { LocationService } from '../../shared/location/service/location.service';
-import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { toUpper } from '../../shared/util/to-upper';
-import { VariableValidationStatusType, VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
-import { DataTypeEnum } from '../../shared/ontology/data-type.enum';
+import { VariableValidationService, VariableValidationStatusType } from '../../shared/ontology/service/variable-validation.service';
+import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -114,7 +113,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 transport: function(params, success, failure) {
                     params.data.page = params.data.page || 1;
                     const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    this.locationService.queryLocationsByType(
+                    this.locationService.searchLocations(
                         locationTypes,
                         this.useFavoriteLocations,
                         params.data.term,

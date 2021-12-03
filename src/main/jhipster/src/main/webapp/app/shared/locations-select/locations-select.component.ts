@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LocationService } from '../location/service/location.service';
-import { LocationTypeEnum } from '../location/model/location.model';
 import { Select2OptionData } from 'ng-select2';
+import { LocationTypeEnum } from '../location/model/location-type.enum';
 
 @Component({
     selector: 'jhi-locations-select',
@@ -38,7 +38,7 @@ export class LocationsSelectComponent implements OnInit {
         // The locations are retrieved only when the dropdown is opened, so we have to manually set the initial selected item on first load.
         // Get the location method and add it to the initial data.
         if (this.locationSelected) {
-            this.locationService.queryBreedingLocation(this.locationSelected).toPromise().then((location) => {
+            this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
             });
         }
@@ -48,7 +48,7 @@ export class LocationsSelectComponent implements OnInit {
                 delay: 500,
                 transport: function(params, success, failure) {
                     const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    this.locationService.queryLocationsByType(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
+                    this.locationService.searchLocations(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
                         this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
                         success(res.body);
                     }, failure);
