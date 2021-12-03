@@ -12,6 +12,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
+import { GermplasmListManagerContext } from './germplasm-list-manager.context';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -38,6 +39,7 @@ export class GermplasmListComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmListService: GermplasmListService,
                 private alertService: AlertService,
+                private germplasmListManagerContext: GermplasmListManagerContext
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             this.listId = parseInt(params['listId'], 10);
@@ -96,12 +98,14 @@ export class GermplasmListComponent implements OnInit {
         this.lists.forEach((list: GermplasmListTab) => {
             list.active = (list.id === listId);
         });
+        this.germplasmListManagerContext.activeGermplasmListId = listId;
     }
 
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.listId = null;
         this.lists.forEach((list: GermplasmListTab) => list.active = false);
+        this.germplasmListManagerContext.activeGermplasmListId = null;
     }
 
     closeTab(list: GermplasmListTab) {

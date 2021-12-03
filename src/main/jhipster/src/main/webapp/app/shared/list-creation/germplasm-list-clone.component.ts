@@ -17,6 +17,7 @@ import { GermplasmListService } from '../germplasm-list/service/germplasm-list.s
 import { Router } from '@angular/router';
 import { GermplasmListModel } from '../germplasm-list/model/germplasm-list.model';
 import { DateHelperService } from '../service/date.helper.service';
+import { GermplasmListManagerContext } from '../../germplasm-list/germplasm-list-manager.context';
 
 @Component({
     selector: 'jhi-germplasm-list-clone',
@@ -47,7 +48,8 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         public eventManager: JhiEventManager,
         public germplasmListService: GermplasmListService,
         private router: Router,
-        private dateHelperService: DateHelperService
+        private dateHelperService: DateHelperService,
+        private germplasmListManagerContext: GermplasmListManagerContext
     ) {
         super(
             modal,
@@ -66,7 +68,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
     }
 
     ngOnInit() {
-        this.listService.getById(this.germplasmManagerContext.sourceListId).subscribe((listModel) => {
+        this.listService.getById(this.germplasmListManagerContext.activeGermplasmListId).subscribe((listModel) => {
             this.model = listModel;
             this.model.name = null;
             this.selectedDate =  this.dateHelperService.convertFormattedDateStringToNgbDate(listModel.date, 'yyyy-mm-dd');
@@ -88,7 +90,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
         this._isLoading = true;
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            this.germplasmListService.cloneGermplasmList(this.germplasmManagerContext.sourceListId, germplasmList)
+            this.germplasmListService.cloneGermplasmList(this.germplasmListManagerContext.activeGermplasmListId, germplasmList)
                 .pipe(finalize(() => {
                     this._isLoading = false;
                 })).subscribe(
