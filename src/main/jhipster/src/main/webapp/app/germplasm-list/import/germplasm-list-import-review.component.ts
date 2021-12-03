@@ -175,7 +175,13 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
         if (variables && variables.length) {
             const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
-            modalRef.componentInstance.isGermplasmListImport = true;
+            modalRef.result.then((variableMatchesResult) => {
+                if (variableMatchesResult) {
+                    this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
+                } else {
+                    this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
+                }
+            });
         } else {
             this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
         }
