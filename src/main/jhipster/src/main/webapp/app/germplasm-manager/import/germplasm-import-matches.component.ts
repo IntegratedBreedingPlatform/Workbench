@@ -5,6 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { HEADERS } from './germplasm-import.component';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { toUpper } from '../../shared/util/to-upper';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
 
 @Component({
     selector: 'jhi-germplasm-import-matches',
@@ -28,7 +29,6 @@ export class GermplasmImportMatchesComponent implements OnInit {
     // modal input
     unassignedMatches: any[] = [];
     matchesByName: { [key: string]: GermplasmDto[] };
-    matchesByPUI: { [key: string]: GermplasmDto };
     // ENTRY_NO -> gid or null (new)
     selectMatchesResult: { [key: string]: number };
 
@@ -39,7 +39,6 @@ export class GermplasmImportMatchesComponent implements OnInit {
     dataRow: any = {};
     entryNo: string;
     name: string;
-    puiMatch: GermplasmDto = null;
     isIgnoreAllRemaining: boolean;
     isIgnoreMatch: boolean;
 
@@ -60,22 +59,7 @@ export class GermplasmImportMatchesComponent implements OnInit {
         this.isIgnoreMatch = false;
 
         this.dataRow = this.unassignedMatches[matchNumber - 1];
-        this.puiMatch = this.matchesByPUI[toUpper(this.dataRow[HEADERS.PUI])];
-        const gidMap = {};
-        this.matches = this.context.nametypesCopy
-            .filter((nameType) => Boolean(this.matchesByName[toUpper(this.dataRow[nameType.code])]))
-            .reduce((array, nameType) => array.concat(this.matchesByName[toUpper(this.dataRow[nameType.code])]), [])
-            // dedup
-            .filter((germplasm: GermplasmDto) => {
-                if (!gidMap[germplasm.gid]) {
-                    gidMap[germplasm.gid] = true;
-                    return true;
-                }
-                return false;
-            });
-        if (this.puiMatch && !gidMap[this.puiMatch.gid]) {
-            this.matches.unshift(this.puiMatch);
-        }
+        this.matches = getRowMatches(this.dataRow, this.context.nametypesCopy, this.matchesByName);
         this.entryNo = this.dataRow[HEADERS.ENTRY_NO];
     }
 
@@ -127,4 +111,26 @@ export class GermplasmImportMatchesComponent implements OnInit {
         return this.matchNumber === this.unassignedCount
             || this.isIgnoreAllRemaining;
     }
+}
+
+/**
+ * Return matches for a row and nameTypes. If same germplasm match by more than name, return a single copy
+ */
+export function getRowMatches(
+    row,
+    nametypes: NameType[],
+    matchesByName: { [key: string]: GermplasmDto[]; }
+): GermplasmDto[] {
+    const gidMap = {};
+    return nametypes
+        .filter((nameType) => Boolean(matchesByName[toUpper(row[nameType.code])]))
+        .reduce((array, nameType) => array.concat(matchesByName[toUpper(row[nameType.code])]), [])
+        // dedup
+        .filter((germplasm: GermplasmDto) => {
+            if (!gidMap[germplasm.gid]) {
+                gidMap[germplasm.gid] = true;
+                return true;
+            }
+            return false;
+        });
 }
