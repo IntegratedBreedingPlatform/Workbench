@@ -34,6 +34,7 @@ import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-r
 import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
+import { GermplasmListManagerContext } from './germplasm-list-manager.context';
 
 declare var $: any;
 
@@ -166,7 +167,7 @@ export class ListComponent implements OnInit {
                 private modalService: NgbModal,
                 public translateService: TranslateService,
                 private paramContext: ParamContext,
-                private germplasmManagerContext: GermplasmManagerContext
+                private germplasmListManagerContext: GermplasmListManagerContext
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -297,17 +298,19 @@ export class ListComponent implements OnInit {
         });
 
         this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
-            const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
-            searchComposite.itemIds = event.content.split(',');
-            this.germplasmListService.addGermplasmEntriesToList(this.listId, searchComposite)
-                .pipe(finalize(() => {
-                    this.isLoading = false;
-                })).subscribe(
-                (res: void) => {
-                    this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.listId });
-                },
-                (res: HttpErrorResponse) => this.onError(res)
-            );
+            if (this.listId === this.germplasmListManagerContext.activeGermplasmListId) {
+                const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
+                searchComposite.itemIds = event.content.split(',');
+                this.germplasmListService.addGermplasmEntriesToList(this.listId, searchComposite)
+                    .pipe(finalize(() => {
+                        this.isLoading = false;
+                    })).subscribe(
+                    (res: void) => {
+                        this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.listId });
+                    },
+                    (res: HttpErrorResponse) => this.onError(res)
+                );
+            }
         });
 
         this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
@@ -393,7 +396,6 @@ export class ListComponent implements OnInit {
     }
 
     openCloneGermplasmList() {
-        this.germplasmManagerContext.sourceListId = this.germplasmList.listId;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-clone-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'
@@ -491,8 +493,8 @@ export class ListComponent implements OnInit {
         });
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
-        this.germplasmManagerContext.searchComposite = searchComposite;
-        this.germplasmManagerContext.sourceListId = this.germplasmList.listId;
+        this.germplasmListManagerContext.searchComposite = searchComposite;
+        this.germplasmListManagerContext.activeGermplasmListId = this.listId;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
             replaceUrl: true,
             queryParamsHandling: 'merge'

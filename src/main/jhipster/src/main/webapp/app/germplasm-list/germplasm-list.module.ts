@@ -14,6 +14,7 @@ import { ListDataRowComponent } from './list-table-row-data.component';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 import { GermplasmListClonePopupComponent } from './germplasm-list-clone-popup.component';
+import { GermplasmListManagerContext } from './germplasm-list-manager.context';
 
 @NgModule({
     imports: [
@@ -43,7 +44,8 @@ import { GermplasmListClonePopupComponent } from './germplasm-list-clone-popup.c
     ],
     providers: [
         GermplasmListService,
-        GermplasmListImportContext
+        GermplasmListImportContext,
+        GermplasmListManagerContext
     ]
 })
 export class GermplasmListModule {
