@@ -124,14 +124,18 @@ export class GermplasmListComponent implements OnInit {
             .result.then((germplasmLists) => {
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {
-                            if (!this.exists(germplasmList.id)) {
-                                this.lists.push(new GermplasmListTab(germplasmList.id, germplasmList.name, false));
+                            const germplasmListId = parseInt(germplasmList.id, 10);
+                            if (!this.exists(germplasmListId)) {
+                                this.lists.push(new GermplasmListTab(germplasmListId, germplasmList.name, false));
                             }
                         });
 
-                        this.listId = germplasmLists[germplasmLists.length - 1].id;
+                        this.listId = parseInt(germplasmLists[germplasmLists.length - 1].id, 10);
                         this.setActive(this.listId);
-                        this.router.navigate([`/germplasm-list/list/${this.listId}`], { queryParams: { listId: this.listId } });
+                        this.router.navigate([`/germplasm-list/list/${this.listId}`], { queryParams: {
+                                listId: this.listId,
+                                listName: germplasmLists[germplasmLists.length - 1].name
+                            }});
                     }
                     this.activeModal.close();
                 }, () => this.activeModal.dismiss());
