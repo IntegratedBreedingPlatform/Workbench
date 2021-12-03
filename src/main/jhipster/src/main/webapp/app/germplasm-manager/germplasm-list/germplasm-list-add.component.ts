@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { JhiEventManager } from 'ng-jhipster';
+import { GermplasmListManagerContext } from '../../germplasm-list/germplasm-list-manager.context';
 
 declare var $: any;
 
@@ -42,7 +43,8 @@ export class GermplasmListAddComponent extends TreeComponent {
                 public alertService: AlertService,
                 public translateService: TranslateService,
                 public modalService: NgbModal,
-                private eventManager: JhiEventManager
+                private eventManager: JhiEventManager,
+                private germplasmListManagerContext: GermplasmListManagerContext
     ) {
         super(false, service, modal, alertService, translateService, modalService);
         if (!this.paramContext.cropName) {
@@ -91,9 +93,9 @@ export class GermplasmListAddComponent extends TreeComponent {
     submitAddEntries() {
         this.isLoading = true;
 
-        if (this.germplasmManagerContext.sourceListId) {
+        if (this.germplasmListManagerContext.activeGermplasmListId) {
             this.germplasmListService.addGermplasmListEntriesToAnotherList(this.selectedNode.data.id,
-                this.germplasmManagerContext.sourceListId, this.germplasmManagerContext.searchComposite)
+                this.germplasmListManagerContext.activeGermplasmListId, this.germplasmListManagerContext.searchComposite)
                 .pipe(finalize(() => {
                     this.isLoading = false;
                 })).subscribe(
@@ -113,8 +115,8 @@ export class GermplasmListAddComponent extends TreeComponent {
 
     private onSaveSuccess() {
         this.alertService.success('germplasm-list-add.success');
-        if (this.germplasmManagerContext.sourceListId) {
-            this.eventManager.broadcast({ name: 'addToGermplasmList', content: this.selectedNode.data.id });
+        if (this.germplasmListManagerContext.activeGermplasmListId) {
+            this.eventManager.broadcast({ name: 'addToGermplasmList', content: parseInt(this.selectedNode.data.id, 10) });
         }
         this.modal.close();
     }

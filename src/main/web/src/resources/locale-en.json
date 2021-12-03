@@ -87,6 +87,8 @@
 			"from": "From",
 			"to": "To"
 		},
+		"yes.text": "Yes",
+		"no.text": "No",
 		"inUseInVariables": "Used in Variables",
 		"calculation": "Calculation"
 	},
@@ -220,7 +222,8 @@
 		  	"datasets": "Datasets",
 			"germplasm": "Germplasm",
             "breedingMethods": "BreedingMethods",
-            "lists": "Lists"
+            "lists": "Lists",
+			"system.variable":"System Variable"
 		}
 	},
 
