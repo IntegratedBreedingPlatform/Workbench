@@ -233,9 +233,9 @@ export class GermplasmImportReviewComponent implements OnInit {
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
-        confirmModalRef.componentInstance.message = '<span style="word-break: break-word">' + this.translateService.instant('germplasm.import.review.new.records.dupes', {
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.review.new.records.dupes', {
             columns: listPreview(this.keys(columnNamesWithDupes))
-        }) + '</span>';
+        });
         confirmModalRef.componentInstance.confirmLabel = this.translateService.instant('continue');
         try {
             await confirmModalRef.result;
