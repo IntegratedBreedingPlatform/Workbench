@@ -56,6 +56,7 @@ export class ListComponent implements OnInit {
     CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'CLONE_GERMPLASM_LIST'];
     REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
     EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EDIT_LIST_METADATA'];
+    ADMIN_PERMISSIONS = ['ADMIN'];
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
@@ -163,7 +164,7 @@ export class ListComponent implements OnInit {
                 private germplasmListService: GermplasmListService,
                 private router: Router,
                 private alertService: AlertService,
-                private principal: Principal,
+                public principal: Principal,
                 private modalService: NgbModal,
                 public translateService: TranslateService,
                 private paramContext: ParamContext,
