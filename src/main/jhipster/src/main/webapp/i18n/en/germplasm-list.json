@@ -80,17 +80,6 @@
         },
         "import": {
             "header": "Import List",
-            "variable.matches": {
-                "update": {
-                    "header": "Import List Update"
-                },
-                "entry.details": "Entry Details",
-                "columns": {
-                    "name": "VARIABLE NAME",
-                    "description": "DESCRIPTION",
-                    "status": "STATUS"
-                }
-            },
             "file": {
                 "input.description": "Choose the file you would like to import in format: Excel",
                 "validation": {
@@ -137,6 +126,19 @@
             },
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"
+        },
+        "import-updates": {
+            "header": "Import List Update",
+            "confirmation": "You are going to import {{param}} entry updates. Proceed?"
+        },
+        "variable.matches": {
+            "header": "Variables",
+            "entry.details": "Entry Details",
+            "columns": {
+                "name": "VARIABLE NAME",
+                "description": "DESCRIPTION",
+                "status": "STATUS"
+            }
         }
     }
 }

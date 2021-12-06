@@ -7,14 +7,16 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { parseFile, saveFile } from '../../shared/util/file-utils';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { GermplasmListImportContext } from './germplasm-list-import.context';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../shared/util/to-upper';
-import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
+import { ListComponent } from '../list.component';
+import { JhiEventManager } from 'ng-jhipster';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 
 @Component({
     selector: 'jhi-germplasm-list-import-update',
@@ -46,6 +48,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         private germplasmService: GermplasmService,
         private variableService: VariableService,
         private context: GermplasmListImportContext,
+        private eventManager: JhiEventManager,
         private germplasmListService: GermplasmListService
     ) {
     }
@@ -89,13 +92,74 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             this.isLoading = false;
             if (valid) {
                 this.modal.close();
-                const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
-                modalRef.componentInstance.isGermplasmListImport = false;
+                if (this.hasVariables()) {
+                    const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+                    modalRef.result.then((variableMatchesResult) => {
+                        if (variableMatchesResult) {
+                            this.save(variableMatchesResult);
+                        } else {
+                            this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
+                        }
+                    });
+                } else {
+                    this.save({});
+                }
             }
         }, (res) => {
             this.isLoading = false;
             this.onError(res);
         });
+    }
+
+    async save(variableMatchesResult) {
+
+        const doContinue = await this.showSummaryConfirmation();
+        if (!doContinue) {
+            return;
+        }
+
+        this.isLoading = true;
+        const listId = Number(this.route.snapshot.queryParamMap.get('listId'));
+        const germplasmListGenerator = { id: listId, entries: [] };
+        for (const row of this.context.data) {
+            const entry = {
+                entryNo: row[HEADERS.ENTRY_NO],
+                // Temporary workaround to allow users to edit ENTRY_CODE
+                entryCode: row[HEADERS.ENTRY_CODE],
+                data: Object.keys(variableMatchesResult).reduce((map, variableName) => {
+                    if (row[variableName]) {
+                        map[variableMatchesResult[variableName]] = { value: row[variableName] };
+                    }
+                    return map;
+                }, {})
+            };
+            germplasmListGenerator.entries.push(entry);
+        }
+
+        this.germplasmListService.germplasmListUpdates(germplasmListGenerator).subscribe(
+            () => {
+                this.isLoading = false;
+                this.modal.close();
+                this.eventManager.broadcast({ name: listId + ListComponent.GERMPLASM_LIST_CHANGED });
+            },
+            (error) => {
+                this.isLoading = false;
+                this.onError(error);
+            }
+        );
+
+    }
+
+    private async showSummaryConfirmation() {
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
+            { windowClass: 'modal-medium', backdrop: 'static' });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import-updates.confirmation', {param: this.context.data.length});
+        try {
+            await confirmModalRef.result;
+        } catch (rejected) {
+            return false;
+        }
+        return true;
     }
 
     private async validateFile() {
@@ -124,9 +188,8 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         }
 
         await this.processEntryDetailVariables();
-        const variables = [...this.context.newVariables, ...this.context.unknownVariableNames, ...this.context.variablesOfTheList]
 
-        if (!variables || !variables.length) {
+        if (!this.hasEntryCode() && !this.hasVariables()) {
             this.alertService.error('germplasm-list.import.file.validation.entry.details.no.column');
             return false;
         }
@@ -218,6 +281,17 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         }
     }
 
+    private hasEntryCode() {
+        return this.context.data.some((row) => row[HEADERS.ENTRY_CODE]);
+    }
+
+    private hasVariables() {
+        return [
+            ...this.context.newVariables,
+            ...this.context.unknownVariableNames,
+            ...this.context.variablesOfTheList
+        ].length;
+    }
 }
 
 @Component({
@@ -246,5 +320,6 @@ export class GermplasmListImportUpdatePopupComponent implements OnInit, OnDestro
 }
 
 export enum HEADERS {
-    'ENTRY_NO' = 'ENTRY_NO'
+    'ENTRY_NO' = 'ENTRY_NO',
+    'ENTRY_CODE' = 'ENTRY_CODE'
 }
