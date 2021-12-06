@@ -189,7 +189,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
         await this.processEntryDetailVariables();
 
-        if (!this.hasEntryCode() && this.hasVariables()) {
+        if (!this.hasEntryCode() && !this.hasVariables()) {
             this.alertService.error('germplasm-list.import.file.validation.entry.details.no.column');
             return false;
         }
