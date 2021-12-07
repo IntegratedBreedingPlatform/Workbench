@@ -18,6 +18,7 @@
 							(click)="openCreateList()" >
 					</button>
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.add-to-list"
+							*jhiHasAnyAuthority="ADD_GERMPLASM_ENTRIES_TO_LIST_PERMISSIONS"
 							(click)="openAddToList()" >
 					</button>
 					<button class="dropdown-item" type="submit"  jhiTranslate="search-germplasm.actions.import"
