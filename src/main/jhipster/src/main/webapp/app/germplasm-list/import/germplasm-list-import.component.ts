@@ -179,6 +179,10 @@ export class GermplasmListImportComponent implements OnInit {
         let hasEntryCodeEmpty = false;
 
         for (const row of this.context.data) {
+            if (!(row[HEADERS.GID] || row[HEADERS.GUID] || row[HEADERS.DESIGNATION])) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.header'));
+                break;
+            }
             if (row[HEADERS.GID] && (isNaN(row[HEADERS.GID])
                 || !Number.isInteger(Number(row[HEADERS.GID])) || row[HEADERS.GID] < 0)) {
                 errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.gid.format'));
