@@ -115,7 +115,7 @@
 		<ng-template #nodata>
 			<tbody>
 			<tr>
-				<td [attr.colspan]="this.header?.length" jhiTranslate="no.data"></td>
+				<td [attr.colspan]="(this.header.length)+1" jhiTranslate="no.data"></td>
 			</tr>
 			</tbody>
 		</ng-template>
