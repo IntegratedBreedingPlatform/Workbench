@@ -10,47 +10,47 @@
 	<div class="row pt-4">
 		<div class="col">
 			<div ngbDropdown class="float-right" placement="bottom-right">
-				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *jhiHasAnyAuthority="ACTION_BUTTON_PERMISSIONS" jhiTranslate="actions"></button>
+				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *jhiHasAnyAuthority="ACTION_BUTTON_PERMISSIONS" jhiTranslate="actions" data-test="germplasmListActionButton"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							*jhiHasAnyAuthority="IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION"
 							jhiTranslate="germplasm-list.actions.import-list.update"
 							[routerLink]="['/', { outlets: { popup: 'germplasm-list-import-update'} }]"
 							replaceUrl="true"
-							queryParamsHandling="merge">
+							queryParamsHandling="merge" data-test="importListButton">
 					</button>
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.reorder-entries"
 							*jhiHasAnyAuthority="REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
-							(click)="openReorderEntries()" >
+							(click)="openReorderEntries()" data-test="reorderEntriesButton">
 					</button>
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.remove-entries"
 							*jhiHasAnyAuthority="REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS"
-							(click)="removeEntries()" >
+							(click)="removeEntries()" data-test="removeEntriesButton">
 					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS"
 							jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
-							(click)="exportDataAndLabels()">
+							(click)="exportDataAndLabels()" data-test="exportListButton">
 					</button>
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.add-entries"
 							*jhiHasAnyAuthority="ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS"
-							(click)="openGermplasmSelectorModal()" >
+							(click)="openGermplasmSelectorModal()" data-test="addEntriesButton">
 					</button>
 					<button class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.add-to-list"
 							*jhiHasAnyAuthority="ADD_ENTRIES_TO_LIST_PERMISSIONS"
-							(click)="openAddToList()" >
+							(click)="openAddToList()" data-test="addToListButton">
 					</button>
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.delete-list"
 							*jhiHasAnyAuthority="DELETE_LIST_PERMISSIONS"
-							(click)="deleteList()" >
+							(click)="deleteList()" data-test="deleteListButton">
 					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CLONE_GERMPLASM_LIST_PERMISSIONS"
 						jhiTranslate="germplasm-list.list-data.actions.clone-list"
-						(click)="openCloneGermplasmList()">
+						(click)="openCloneGermplasmList()" data-test="cloneListButton">
 					</button>
 				</div>
 				<jhi-list-columns *ngIf="!this.germplasmList?.locked" class="ml-2 float-right"
