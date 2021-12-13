@@ -164,7 +164,7 @@ export class GermplasmListService implements ListService {
     }
 
     countObservationsByVariables(listId: number, variableIds: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}?programUUID=`
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}&programUUID=`
             + this.context.programUUID;
         return this.http.head(url, { observe: 'response' });
     }
@@ -175,7 +175,7 @@ export class GermplasmListService implements ListService {
     }
 
     removeEntries(listId: number, selectedEntries: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}?programUUID=` + this.context.programUUID;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}&programUUID=` + this.context.programUUID;
         return this.http.delete<any>(url, { observe: 'response' });
     }
 
