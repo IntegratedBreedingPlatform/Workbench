@@ -747,6 +747,9 @@ export class ListComponent implements OnInit {
 
         confirmModalRef.result.then(() => {
             this.germplasmListService.removeEntries(this.listId, this.getSelectedItemIds()).subscribe(() => {
+                if (this.isPageSelected() && this.page === Math.ceil(this.totalItems / this.itemsPerPage)) {
+                    this.page = 1;
+                }
                 this.clearSelectedItems();
                 this.refreshTable();
                 this.alertService.success('germplasm-list.list-data.remove-entries.remove.success');
