@@ -163,7 +163,7 @@
         <div class="container-fluid pb-3">
             <div class="row">
                 <div class="col">
-                    <table class="table table-striped table-bordered table-curved"
+                    <table class="table table-striped table-bordered table-curved table-fixed"
                         *ngIf="germplasm?.externalReferences.length else nodata">
                         <thead>
                         <tr>
@@ -173,7 +173,7 @@
                         </thead>
                         <tbody>
                         <tr *ngFor="let reference of germplasm?.externalReferences">
-                            <td>{{reference.referenceID}}</td>
+                            <td class="word-wrap">{{reference.referenceID}}</td>
                             <td>{{reference.referenceSource}}</td>
                         </tr>
                         </tbody>

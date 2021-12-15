@@ -16,7 +16,7 @@ import { SearchResult } from '../shared/search-result.model';
 import { ListType } from '../shared/list-builder/model/list-type.model';
 import { ColumnFilterRadioButtonOption } from '../shared/column-filter/column-filter-radio-component';
 import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
-import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_GERMPLASM_LIST_PERMISSION } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -28,8 +28,8 @@ export class GermplasmListSearchComponent implements OnInit {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
 
-    IMPORT_GERMPLASM_LIST_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LISTS'];
-    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LISTS'];
+    IMPORT_GERMPLASM_LIST_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LISTS'];
+    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LISTS'];
     COLUMN_FILTER_EVENT_NAME = GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME;
 
     itemsPerPage = 20;

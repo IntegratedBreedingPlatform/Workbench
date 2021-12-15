@@ -89,7 +89,13 @@ export class GermplasmListImportComponent implements OnInit {
 
                 if (variables && variables.length) {
                     const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
-                    modalRef.componentInstance.isGermplasmListImport = true;
+                    modalRef.result.then((variableMatchesResult) => {
+                        if (variableMatchesResult) {
+                            this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
+                        } else {
+                            this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
+                        }
+                    });
                 } else {
                     this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
                 }
@@ -173,6 +179,10 @@ export class GermplasmListImportComponent implements OnInit {
         let hasEntryCodeEmpty = false;
 
         for (const row of this.context.data) {
+            if (!(row[HEADERS.GID] || row[HEADERS.GUID] || row[HEADERS.DESIGNATION])) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.header'));
+                break;
+            }
             if (row[HEADERS.GID] && (isNaN(row[HEADERS.GID])
                 || !Number.isInteger(Number(row[HEADERS.GID])) || row[HEADERS.GID] < 0)) {
                 errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.gid.format'));

@@ -24,7 +24,7 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_GERMPLASM_LIST_PERMISSION } from '../shared/auth/permissions';
 import { SearchResult } from '../shared/search-result.model';
 import { GERMPLASM_LIST_LABEL_PRINTING_TYPE } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
@@ -47,18 +47,19 @@ export class ListComponent implements OnInit {
     static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
     static readonly GERMPLASM_LIST_CHANGED = 'GermplasmListViewChanged';
 
-    IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LIST_UPDATES'];
-    REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
-    GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'GERMPLASM_LIST_LABEL_PRINTING'];
-    ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_GERMPLASM_LIST_ENTRIES'];
-    ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'ADD_ENTRIES_TO_LIST'];
-    DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'DELETE_GERMPLASM_LIST'];
-    CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'CLONE_GERMPLASM_LIST'];
-    REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
-    EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'EDIT_LIST_METADATA'];
+    IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LIST_UPDATES'];
+    REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
+    GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'GERMPLASM_LIST_LABEL_PRINTING'];
+    ADD_GERMPLASM_LIST_ENTRIES_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'ADD_GERMPLASM_LIST_ENTRIES'];
+    ADD_ENTRIES_TO_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'ADD_ENTRIES_TO_LIST'];
+    DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'DELETE_GERMPLASM_LIST'];
+    CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'CLONE_GERMPLASM_LIST'];
+    REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
+    EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'EDIT_LIST_METADATA'];
+    ADMIN_PERMISSIONS = ['ADMIN'];
 
     ACTION_BUTTON_PERMISSIONS = [
-        ...MANAGE_GERMPLASM_LIST_PERMISSIONS,
+        ...MANAGE_GERMPLASM_LIST_PERMISSION,
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS',
         'ADD_GERMPLASM_LIST_ENTRIES',
@@ -163,7 +164,7 @@ export class ListComponent implements OnInit {
                 private germplasmListService: GermplasmListService,
                 private router: Router,
                 private alertService: AlertService,
-                private principal: Principal,
+                public principal: Principal,
                 private modalService: NgbModal,
                 public translateService: TranslateService,
                 private paramContext: ParamContext,
@@ -746,6 +747,9 @@ export class ListComponent implements OnInit {
 
         confirmModalRef.result.then(() => {
             this.germplasmListService.removeEntries(this.listId, this.getSelectedItemIds()).subscribe(() => {
+                if (this.isPageSelected() && this.page === Math.ceil(this.totalItems / this.itemsPerPage)) {
+                    this.page = 1;
+                }
                 this.clearSelectedItems();
                 this.refreshTable();
                 this.alertService.success('germplasm-list.list-data.remove-entries.remove.success');

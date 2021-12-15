@@ -11,7 +11,7 @@ import { JhiEventManager } from 'ng-jhipster';
 @Component({
     selector: 'jhi-germplasm-selector-modal',
     template: `
-		<div class="container">
+		<div class="container" data-test="germplasmSelectorModal">
 			<div class="modal-header">
 				<div class="col-xs-11 col-md-11">
 				</div>
