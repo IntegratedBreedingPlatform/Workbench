@@ -159,7 +159,7 @@
     "template.download": {
         "description": "You can download a template",
         "here": "here",
-        "warning":"Provide a file with either the GID, the GUID or the DESIGNATION of the germplasm to include in the list. If you provide multiple values for a record the system will use the following order: GUID, GID, DESIGNATION for retrieval"
+        "instruction":"Provide a file with either the GID, the GUID or the DESIGNATION of the germplasm to include in the list. If you provide multiple values for a record the system will use the following order: GUID, GID, DESIGNATION for retrieval"
     },
     "breeding-location": {
         "title": "Breeding Location"
