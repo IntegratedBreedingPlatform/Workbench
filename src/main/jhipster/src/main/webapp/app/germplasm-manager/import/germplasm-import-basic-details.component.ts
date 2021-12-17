@@ -114,13 +114,15 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 transport: function(params, success, failure) {
                     params.data.page = params.data.page || 1;
 
+                    const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+                    locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
+                    locationSearchRequest.locationName = params.data.term;
+
                     const pagination = {
                         page: (params.data.page - 1),
                         size: 300
                     };
-                    const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
-                    locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    locationSearchRequest.locationName = params.data.term;
+
                     this.locationService.searchLocations(
                         locationSearchRequest,
                         this.useFavoriteLocations,
