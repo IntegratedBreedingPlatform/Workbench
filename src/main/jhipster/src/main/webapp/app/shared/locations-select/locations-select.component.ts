@@ -47,18 +47,20 @@ export class LocationsSelectComponent implements OnInit {
             ajax: {
                 delay: 500,
                 transport: function(params, success, failure) {
+                    params.data.page = params.data.page || 1;
                     const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
                     this.locationService.queryLocationsByType(locationTypes,
                         this.useFavoriteLocations,
                         params.data.term,
-                        (params.data.page) ? params.data.page : 0,
-                        300).subscribe((res) => {
+                        (params.data.page - 1),
+                        300
+                    ).subscribe((res) => {
                         this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
                         success(res.body);
                     }, failure);
                 }.bind(this),
                 processResults: function(locations, params) {
-                    params.page = params.page || 0;
+                    params.page = params.page || 1;
 
                     return {
                         results: locations.map((location) => {
