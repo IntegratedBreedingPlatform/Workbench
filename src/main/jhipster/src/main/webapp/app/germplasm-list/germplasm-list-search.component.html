@@ -52,7 +52,10 @@
 				<td>{{list.numberOfEntries}}</td>
 				<td>{{list.locked ? 'Yes' : 'No'}}</td>
 				<td><span class="text-ellipsis" title="{{list.notes}}">{{list.notes}}</span></td>
-				<td>{{list.creationDate ? list.creationDate : 'null'}}</td>
+				<td>
+					<span *ngIf="!list.creationDate" jhiTranslate="germplasm-list.search.invalid-date"></span>
+					<span *ngIf="list.creationDate">{{list.creationDate}}</span>
+				</td>
 			</tr>
 			</tbody>
 		</table>
