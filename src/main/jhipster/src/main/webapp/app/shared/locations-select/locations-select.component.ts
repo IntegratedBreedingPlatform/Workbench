@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LocationService } from '../location/service/location.service';
 import { Select2OptionData } from 'ng-select2';
 import { LocationTypeEnum } from '../location/model/location-type.enum';
+import { LocationSearchRequest } from '../location/model/location-search-request.model';
 
 @Component({
     selector: 'jhi-locations-select',
@@ -47,14 +48,20 @@ export class LocationsSelectComponent implements OnInit {
             ajax: {
                 delay: 500,
                 transport: function(params, success, failure) {
-                    const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    this.locationService.searchLocations(locationTypes, this.useFavoriteLocations, params.data.term, params.page, 300).subscribe((res) => {
-                        this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
+                    const pagination = {
+                        page: (params.data.page) ? params.data.page : 0,
+                        size: 300
+                    };
+                    const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+                    locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
+                    locationSearchRequest.locationName = params.data.term;
+                    this.locationService.searchLocations(locationSearchRequest, this.useFavoriteLocations, pagination).subscribe((res) => {
+                        this.locationsFilteredItemsCount = res.headers.get('X-Total-Count');
                         success(res.body);
                     }, failure);
                 }.bind(this),
                 processResults: function(locations, params) {
-                    params.page = params.page || 1;
+                    params.page = params.page || 0;
 
                     return {
                         results: locations.map((location) => {

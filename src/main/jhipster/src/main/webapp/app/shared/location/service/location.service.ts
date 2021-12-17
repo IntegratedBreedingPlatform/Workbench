@@ -32,7 +32,7 @@ export class LocationService {
         }
 
         const params = createRequestOption(pagination);
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/search`;
         return this.http.post<Location[]>(url, request, { params, observe: 'response' });
     }
 }
