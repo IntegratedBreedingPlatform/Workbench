@@ -266,8 +266,7 @@
 				}
 
 				var params = variableIds.join(",")
-					+ '?authToken=' + configService.getAuthToken()
-					+ '&selectedProjectId=' + configService.getSelectedProjectId()
+					+ '?selectedProjectId=' + configService.getSelectedProjectId()
 					+ '&loggedInUserId=' + configService.getLoggedInUserId();
 
 				request = [
