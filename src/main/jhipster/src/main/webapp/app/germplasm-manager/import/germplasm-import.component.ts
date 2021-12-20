@@ -15,12 +15,15 @@ import { GermplasmImportContext } from './germplasm-import.context';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../shared/util/to-upper';
+import { HELP_MANAGE_GERMPLASM_IMPORT } from '../../app.constants';
+import { HelpService } from '../../shared/service/help.service';
 
 @Component({
     selector: 'jhi-germplasm-import',
     templateUrl: 'germplasm-import.component.html'
 })
 export class GermplasmImportComponent implements OnInit {
+    helpLink: string;
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -42,8 +45,14 @@ export class GermplasmImportComponent implements OnInit {
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
         private variableService: VariableService,
-        public context: GermplasmImportContext
+        public context: GermplasmImportContext,
+        private helpService: HelpService,
     ) {
+        this.helpService.getHelpLink(HELP_MANAGE_GERMPLASM_IMPORT).subscribe((response) => {
+            if (response.body) {
+                this.helpLink = response.body;
+            }
+        });
     }
 
     ngOnInit(): void {

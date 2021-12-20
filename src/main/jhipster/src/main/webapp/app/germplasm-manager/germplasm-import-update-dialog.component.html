@@ -1,6 +1,9 @@
 <div class="container">
 	<div class="modal-header">
-		<h4 class="modal-title font-weight-bold" id="importLotHeader" jhitranslate="germplasm-import-updates.title">Import Germplasm Updates</h4>
+		<h4 class="modal-title font-weight-bold">
+			<span jhitranslate="germplasm-import-updates.title">Import Germplasm Updates</span>
+			<a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon ml-2" aria-hidden="true"></i></a>
+		</h4>
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
 				(click)="close()">&times;
 		</button>
