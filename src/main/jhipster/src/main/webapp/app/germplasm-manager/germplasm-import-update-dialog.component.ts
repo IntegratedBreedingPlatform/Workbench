@@ -16,12 +16,16 @@ import { toUpper } from '../shared/util/to-upper';
 import { VariableValidationService, VariableValidationStatusType } from '../shared/ontology/service/variable-validation.service';
 import { GermplasmImportUpdateDescriptorsConfirmationDialogComponent } from './germplasm-import-update-descriptors-confirmation-dialog.component';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { HelpService } from '../shared/service/help.service';
+import { HELP_MANAGE_GERMPLASM_IMPORT_UPDATES, HELP_MANAGE_GERMPLASM_IMPORT_UPDATES_TEMPLATE } from '../app.constants';
 
 @Component({
     selector: 'jhi-germplasm-import-update-dialog',
     templateUrl: './germplasm-import-update-dialog.component.html'
 })
 export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
+    helpLink: string;
+    templateHelpLink: string;
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -46,9 +50,19 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
         private translateService: TranslateService,
         private germplasmService: GermplasmService,
         private variableService: VariableService,
-        private variableValidationService: VariableValidationService
+        private variableValidationService: VariableValidationService,
+        private helpService: HelpService,
     ) {
-
+        this.helpService.getHelpLink(HELP_MANAGE_GERMPLASM_IMPORT_UPDATES).subscribe((response) => {
+            if (response.body) {
+                this.helpLink = response.body;
+            }
+        });
+        this.helpService.getHelpLink(HELP_MANAGE_GERMPLASM_IMPORT_UPDATES_TEMPLATE).subscribe((response) => {
+            if (response.body) {
+                this.templateHelpLink = response.body;
+            }
+        });
     }
 
     ngOnDestroy(): void {

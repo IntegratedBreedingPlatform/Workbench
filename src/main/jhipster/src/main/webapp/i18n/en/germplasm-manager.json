@@ -122,6 +122,7 @@
         "details.title": "Germplasm Details",
         "import": {
             "header": "Import germplasm",
+            "description.extra": "Problems understanding the columns? Check the documentation",
             "file": {
                 "input.description": "Choose the file you would like to import with the format: Excel or CSV",
                 "validation": {
