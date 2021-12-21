@@ -17,8 +17,7 @@
                 "locked": "LOCKED",
                 "notes": "NOTES",
                 "list-date": "LIST DATE"
-            },
-            "invalid-date": "Invalid"
+            }
         },
         "list-data": {
             "show-columns-button": "Columns",
