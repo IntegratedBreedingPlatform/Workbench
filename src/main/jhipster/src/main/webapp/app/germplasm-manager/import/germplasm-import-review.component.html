@@ -19,10 +19,18 @@
 				<select class="form-control" id="showMatchesDropdown" name="showMatchesDropdown"
 						(change)="onShowMatchesOptionChange()"
 						[(ngModel)]="showMatchesOption" #showMatchesDropdown="ngModel">
-					<option [value]="SHOW_MATCHES_OPTIONS.ALL">All</option>
-					<option [value]="SHOW_MATCHES_OPTIONS.ONLY_MATCHES">With existing matches only</option>
-					<option [value]="SHOW_MATCHES_OPTIONS.NEW_RECORDS">New records only</option>
+					<option [value]="SHOW_MATCHES_OPTIONS.ALL" jhiTranslate="germplasm.import.review.show.matches.all"></option>
+					<option [value]="SHOW_MATCHES_OPTIONS.WITH_A_SINGLE_MATCH" jhiTranslate="germplasm.import.review.show.matches.single"></option>
+					<option [value]="SHOW_MATCHES_OPTIONS.WITH_MULTIPLE_MATCHES" jhiTranslate="germplasm.import.review.show.matches.multi"></option>
+					<option [value]="SHOW_MATCHES_OPTIONS.NEW_RECORDS" jhiTranslate="germplasm.import.review.show.matches.new"></option>
 				</select>
+			</div>
+			<div class="col-sm-5" *ngIf="size(columnNamesWithDupes)">
+				<div class="alert alert-warning" role="alert">
+					<i class="fa fa-warning"></i>
+					<span class="ml-3" jhiTranslate="germplasm.import.review.new.records.dupes"
+						  [translateValues]="{columns: listPreview(keys(columnNamesWithDupes))}"></span>
+				</div>
 			</div>
 		</div>
 		<div class="row">

@@ -81,6 +81,7 @@ import { VariableContainerComponent } from './variable-container/variable-contai
 import { VariableSelectModalComponent } from './variable-container/variable-select-modal.component';
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
+import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
 import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.component';
 
 @NgModule({
@@ -129,6 +130,7 @@ import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.co
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
+        GermplasmListCloneComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
         GeojsonMapComponent,
@@ -186,6 +188,7 @@ import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.co
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
         GermplasmListCreationComponent,
+        GermplasmListCloneComponent,
         SampleListCreationComponent,
         VariableSelectModalComponent,
         FeedbackDialogComponent
@@ -231,6 +234,7 @@ import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.co
         LocationSelect2DataPipe,
         ListBuilderComponent,
         GermplasmListCreationComponent,
+        GermplasmListCloneComponent,
         SampleListCreationComponent,
         CollapsibleComponent,
         GeojsonMapComponent,

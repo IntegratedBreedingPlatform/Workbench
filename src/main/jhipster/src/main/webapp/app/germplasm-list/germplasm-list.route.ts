@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { RouteAccessService } from '../shared';
-import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_GERMPLASM_LIST_PERMISSION, SEARCH_GERMPLASM_LISTS_PERMISSION } from '../shared/auth/permissions';
 import { GermplasmListSearchComponent } from './germplasm-list-search.component';
 import { GermplasmListComponent } from './germplasm-list.component';
 import { ListComponent } from './list.component';
 import { GermplasmListImportPopupComponent } from './import/germplasm-list-import.component';
 import { GermplasmListImportUpdatePopupComponent } from './import/germplasm-list-import-update.component';
+import { GermplasmListClonePopupComponent } from './germplasm-list-clone-popup.component';
 
 export const GERMPLASM_LIST_ROUTES: Routes = [
     {
@@ -20,7 +21,7 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
             {
                 path: 'germplasm-lists-search',
                 component: GermplasmListSearchComponent,
-                data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS'] },
+                data: { authorities: [...SEARCH_GERMPLASM_LISTS_PERMISSION] },
                 canActivate: [RouteAccessService]
             },
             {
@@ -30,7 +31,7 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
                  */
                 path: 'list/:listId',
                 component: ListComponent,
-                data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS'] },
+                data: { authorities: [...SEARCH_GERMPLASM_LISTS_PERMISSION] },
                 canActivate: [RouteAccessService]
             }
         ]
@@ -39,14 +40,19 @@ export const GERMPLASM_LIST_ROUTES: Routes = [
         path: 'germplasm-list-import',
         component: GermplasmListImportPopupComponent,
         outlet: 'popup',
-        data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS', 'IMPORT_GERMPLASM_LISTS'] },
+        data: { authorities: [...SEARCH_GERMPLASM_LISTS_PERMISSION, 'IMPORT_GERMPLASM_LISTS'] },
         canActivate: [RouteAccessService]
     },
     {
         path: 'germplasm-list-import-update',
         component: GermplasmListImportUpdatePopupComponent,
         outlet: 'popup',
-        data: { authorities: [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'SEARCH_GERMPLASM_LISTS', 'IMPORT_GERMPLASM_LIST_UPDATES'] },
+        data: { authorities: [...SEARCH_GERMPLASM_LISTS_PERMISSION, 'IMPORT_GERMPLASM_LIST_UPDATES'] },
         canActivate: [RouteAccessService]
+    },
+    {
+        path: 'germplasm-list-clone-dialog',
+        component: GermplasmListClonePopupComponent,
+        outlet: 'popup',
     }
 ];

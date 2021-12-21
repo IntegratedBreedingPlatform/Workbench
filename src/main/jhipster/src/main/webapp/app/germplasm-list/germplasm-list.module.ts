@@ -11,6 +11,9 @@ import { GermplasmListImportContext } from './import/germplasm-list-import.conte
 import { ListColumnsComponent } from './list-columns.component';
 import { ListDataRowComponent } from './list-table-row-data.component';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
+import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
+import { GermplasmListClonePopupComponent } from './germplasm-list-clone-popup.component';
+import { GermplasmListManagerContext } from './germplasm-list-manager.context';
 import { FeedbackService } from '../shared/feedback/service/feedback.service';
 
 @NgModule({
@@ -25,7 +28,9 @@ import { FeedbackService } from '../shared/feedback/service/feedback.service';
         ListComponent,
         ListColumnsComponent,
         ListDataRowComponent,
-        GermplasmListReorderEntriesDialogComponent
+        GermplasmListReorderEntriesDialogComponent,
+        GermplasmListMetadataComponent,
+        GermplasmListClonePopupComponent
     ],
     entryComponents: [
         GermplasmListComponent,
@@ -33,11 +38,14 @@ import { FeedbackService } from '../shared/feedback/service/feedback.service';
         ListComponent,
         ListColumnsComponent,
         ListDataRowComponent,
-        GermplasmListReorderEntriesDialogComponent
+        GermplasmListReorderEntriesDialogComponent,
+        GermplasmListMetadataComponent,
+        GermplasmListClonePopupComponent
     ],
     providers: [
         GermplasmListService,
         GermplasmListImportContext,
+        GermplasmListManagerContext,
         FeedbackService
     ]
 })

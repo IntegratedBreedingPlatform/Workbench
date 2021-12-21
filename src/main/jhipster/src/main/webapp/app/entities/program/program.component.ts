@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramService } from '../../shared/program/service/program.service';
 import { Program } from '../../shared/program/model/program';
-import { HttpResponse } from '@angular/common/http';
 import { finalize, map } from 'rxjs/operators';
 import { Principal } from '../../shared';
 import { INSTITUTE_LOGO_PATH } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 import { JhiLanguageService } from 'ng-jhipster';
 import { CropService } from '../../shared/crop/service/crop.service';
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramContext } from './program.context';
 import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
-import { MANAGE_STUDIES_VIEW_PERMISSIONS, GERMPLASM_LISTS_PERMISSIONS } from '../../shared/auth/permissions';
+import { MANAGE_STUDIES_VIEW_PERMISSIONS, SEARCH_GERMPLASM_LISTS_PERMISSION } from '../../shared/auth/permissions';
 import { Select2OptionData } from 'ng-select2';
 import { ProgramUsageService } from '../../shared/service/program-usage.service';
 
@@ -26,10 +25,10 @@ import { ProgramUsageService } from '../../shared/service/program-usage.service'
 export class ProgramComponent implements OnInit {
 
     MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
-    GERMPLASM_LISTS_PERMISSIONS = GERMPLASM_LISTS_PERMISSIONS;
+    SEARCH_GERMPLASM_LISTS_PERMISSION = SEARCH_GERMPLASM_LISTS_PERMISSION;
     PERMISSIONS = [
         ...MANAGE_STUDIES_VIEW_PERMISSIONS,
-        ...GERMPLASM_LISTS_PERMISSIONS
+        ...SEARCH_GERMPLASM_LISTS_PERMISSION
     ];
 
     instituteLogoPath = '/ibpworkbench/controller/' + INSTITUTE_LOGO_PATH;
@@ -151,7 +150,7 @@ export class ProgramComponent implements OnInit {
                     programUUID: this.programModel
                 }
             })
-        } else if (this.principal.hasAnyAuthorityDirect(GERMPLASM_LISTS_PERMISSIONS)) {
+        } else if (this.principal.hasAnyAuthorityDirect(SEARCH_GERMPLASM_LISTS_PERMISSION)) {
             this.router.navigate(['my-lists'], {
                 relativeTo: this.route,
                 queryParams: {

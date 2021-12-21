@@ -92,6 +92,16 @@
         "notes": "Notes",
         "success": "Germplasm list saved successfully!"
     },
+    "edit-list-metadata": {
+        "header": "Edit List Metadata",
+        "details-section-title": "List details",
+        "name": "List name",
+        "description": "Description",
+        "type": "List type",
+        "date": "List date",
+        "notes": "Notes",
+        "success": "List metadata saved successfully!"
+    },
     "germplasm-list-add": {
         "header": "Add entries to list",
         "add-action": "Add",
@@ -179,16 +189,23 @@
             "review": {
                 "header": "Review",
                 "show.matches": "Show matches",
+                "show.matches.all": "All",
+                "show.matches.single": "With a single match",
+                "show.matches.multi": "With multiple matches",
+                "show.matches.new": "New records only",
                 "creation.options": "Creation options",
                 "select.existing": "Select existing germplasm whenever found",
                 "create.new": "Create new records",
                 "automatic.matches": "Automatically select existing matches",
                 "automatic.not.possible": "Automatic match is not possible for some entries (> 1 name matches by preferred name). For those, manual selection will be needed.",
+                "new.records.dupes": "There are new germplasm names appearing multiple times in the import file (columns: {{columns}}). <strong>Quit</strong> the import process and correct your file. <strong>Warning</strong>: If you proceed, multiple germplasm records for the same name will be generated",
+                "new.records.dupes.preferred.name.note": " (duplicates across columns used as preferred name)",
                 "summary": {
                     "message": "<h4>Import summary:</h4><p>{{param}}</p>",
                     "new": "{{param}} entries have no matches <strong>(new records will be created)</strong>",
                     "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
-                    "match.by.name": "{{param}} entries with matches <b>by name</b> were selected (no records will be created)",
+                    "match.by.name.multi": "{{param}} entries with <b>multiple</b> matches <b>by name</b> were selected (no records will be created)",
+                    "match.by.name.single": "{{param}} entries with <b>single</b> matches <b>by name</b> were automatically selected (no records will be created)",
                     "match.by.pui": "{{param}} entries with matches <b>by PUI</b> were automatically selected (no records will be created)",
                     "inventory": "{{param}} lots will be created",
                     "progenitors": "{{param}} entries will be connected with progenitors"

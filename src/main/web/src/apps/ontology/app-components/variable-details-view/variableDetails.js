@@ -48,6 +48,7 @@
 						$scope.model = angular.copy(variable);
 						$scope.variableName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = Boolean(variable && variable.metadata && variable.metadata.deletable);
+						$scope.isSystemVariable = Boolean(variable && variable.metadata && variable.metadata.usage && variable.metadata.usage.isSystemVariable);
 						$scope.formulaInUsed = Boolean(!$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId);
 						$scope.showAlias = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(isVariableTypeAllowed).length > 0;
 
@@ -255,7 +256,14 @@
 						model.favourite = !model.favourite;
 						$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
 						$scope.updateSelectedVariable($scope.selectedVariable);
-						variablesService.updateVariable(id, $scope.selectedVariable);
+						variablesService.updateVariable(id, $scope.selectedVariable).then(function () {
+						}, function (response) {
+							model.favourite = !model.favourite;
+							$scope.selectedVariable.favourite = !$scope.selectedVariable.favourite;
+							$scope.updateSelectedVariable($scope.selectedVariable);
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							resetSubmissionState();
+						});
 					};
 
 					$scope.debouncedToggleFavourites = debounce($scope.toggleFavourites, DEBOUNCE_TIME, true);
@@ -275,8 +283,10 @@
 						}
 
 						if ($scope.isAliasDisabled) {
-							$scope.model.alias = '';
-							$scope.model.metadata.disableFields.push('alias');
+							if($scope.model && $scope.model.metadata && $scope.model.metadata.disableFields){
+								$scope.model.alias = '';
+								$scope.model.metadata.disableFields.push('alias');
+							}
 
 						} else if ($scope.model && $scope.model.metadata) {
 							$scope.model.metadata.disableFields = [];

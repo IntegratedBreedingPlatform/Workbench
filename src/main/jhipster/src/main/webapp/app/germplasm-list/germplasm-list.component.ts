@@ -2,11 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { ParamContext } from '../shared/service/param.context';
 import { HelpService } from '../shared/service/help.service';
 import { HELP_GERMPLASM_LIST } from '../app.constants';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GermplasmTreeTableComponent } from '../shared/tree/germplasm/germplasm-tree-table.component';
 import { Subscription } from 'rxjs';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmListTreeTableComponent } from '../shared/tree/germplasm/germplasm-list-tree-table.component';
+import { GermplasmListService } from '../shared/germplasm-list/service/germplasm-list.service';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-list.model';
+import { formatErrorList } from '../shared/alert/format-error-list';
+import { AlertService } from '../shared/alert/alert.service';
+import { GermplasmListManagerContext } from './germplasm-list-manager.context';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -21,6 +27,7 @@ export class GermplasmListComponent implements OnInit {
 
     private listId: number;
     private queryParamSubscription: Subscription;
+    eventSubscriber: Subscription;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private paramContext: ParamContext,
@@ -28,10 +35,14 @@ export class GermplasmListComponent implements OnInit {
                 private jhiLanguageService: JhiLanguageService,
                 private modalService: NgbModal,
                 private activeModal: NgbActiveModal,
-                private router: Router
+                private router: Router,
+                private eventManager: JhiEventManager,
+                private germplasmListService: GermplasmListService,
+                private alertService: AlertService,
+                private germplasmListManagerContext: GermplasmListManagerContext
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.listId = params['listId'];
+            this.listId = parseInt(params['listId'], 10);
 
             if (!this.listId) {
                 return;
@@ -56,23 +67,45 @@ export class GermplasmListComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.registerEvents();
+    }
+
+    registerEvents() {
+        this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
+            this.lists.forEach((list: GermplasmListTab) => {
+                if (event.content === list.id) {
+                    this.closeTab(list);
+                }
+            });
+            this.setSearchTabActive();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
+            this.lists.forEach((list: GermplasmListTab) => {
+                if (event.content === list.id) {
+                    this.germplasmListService.getGermplasmListById(list.id).subscribe(
+                        (res: HttpResponse<GermplasmListModel>) => list.listName = res.body.listName,
+                        (res: HttpErrorResponse) => this.onError(res)
+                    );
+                }
+            });
+        });
     }
 
     setActive(listId: number) {
         this.hideSearchTab = true;
 
         this.lists.forEach((list: GermplasmListTab) => {
-            list.active = false;
-            if (list.id === listId) {
-                list.active = true;
-            }
+            list.active = (list.id === listId);
         });
+        this.germplasmListManagerContext.activeGermplasmListId = listId;
     }
 
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.listId = null;
         this.lists.forEach((list: GermplasmListTab) => list.active = false);
+        this.germplasmListManagerContext.activeGermplasmListId = null;
     }
 
     closeTab(list: GermplasmListTab) {
@@ -91,18 +124,22 @@ export class GermplasmListComponent implements OnInit {
     browseList($event) {
         $event.preventDefault();
 
-        this.modalService.open(GermplasmTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
+        this.modalService.open(GermplasmListTreeTableComponent as Component, { size: 'lg', backdrop: 'static' })
             .result.then((germplasmLists) => {
                     if (germplasmLists && germplasmLists.length > 0) {
                         germplasmLists.forEach((germplasmList) => {
-                            if (!this.exists(germplasmList.id)) {
-                                this.lists.push(new GermplasmListTab(germplasmList.id, germplasmList.name, false));
+                            const germplasmListId = parseInt(germplasmList.id, 10);
+                            if (!this.exists(germplasmListId)) {
+                                this.lists.push(new GermplasmListTab(germplasmListId, germplasmList.name, false));
                             }
                         });
 
-                        this.listId = germplasmLists[germplasmLists.length - 1].id;
+                        this.listId = parseInt(germplasmLists[germplasmLists.length - 1].id, 10);
                         this.setActive(this.listId);
-                        this.router.navigate([`/germplasm-list/list/${this.listId}`], { queryParams: { listId: this.listId } });
+                        this.router.navigate([`/germplasm-list/list/${this.listId}`], { queryParams: {
+                                listId: this.listId,
+                                listName: germplasmLists[germplasmLists.length - 1].name
+                            }});
                     }
                     this.activeModal.close();
                 }, () => this.activeModal.dismiss());
@@ -110,6 +147,15 @@ export class GermplasmListComponent implements OnInit {
 
     private exists(listId: number) {
         return this.lists.some((list) => list.id === listId);
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
     }
 
 }

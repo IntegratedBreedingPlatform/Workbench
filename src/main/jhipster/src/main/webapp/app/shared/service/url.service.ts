@@ -23,18 +23,19 @@ export class UrlService {
         return false;
     }
 
-    openList(listId: any, program: Program = null) {
-        const queryParams = `?restartApplication&lists=${listId}`;
+    openList(listId: number, listName: string, program: Program = null) {
+        const queryParams = `listId=${listId}&listName=${listName}`;
+        const url = `${GERMPLASM_LIST_MANAGER_URL}/list/${listId}?${queryParams}`;
         let message: NavbarMessageEvent;
         if (program) {
             message = {
                 programSelected: program,
-                toolSelected: GERMPLASM_LIST_MANAGER_URL + queryParams
+                toolSelected: url
             }
         } else {
             // TODO untested
             message = {
-                toolSelected: GERMPLASM_LIST_MANAGER_URL + queryParams
+                toolSelected: url
             }
         }
         window.top.postMessage(message, '*');

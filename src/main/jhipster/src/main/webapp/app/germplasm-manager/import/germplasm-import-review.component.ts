@@ -19,11 +19,12 @@ import { JhiEventManager } from 'ng-jhipster';
 import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotImportRequest, LotImportRequestLotList } from '../../shared/inventory/model/lot-import-request';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { GermplasmImportMatchesComponent } from './germplasm-import-matches.component';
+import { GermplasmImportMatchesComponent, getRowMatches } from './germplasm-import-matches.component';
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { toUpper } from '../../shared/util/to-upper';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
+import { listPreview } from '../../shared/util/list-preview';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -47,7 +48,8 @@ export class GermplasmImportReviewComponent implements OnInit {
     // Review table html section
 
     // rows from file/data that matches
-    dataMatches: any[] = [];
+    dataSingleMatches: any[] = [];
+    dataMultipleMatches: any[] = [];
     // rows from file/data that doesn't match
     newRecords: any[] = [];
     // table displayed in html
@@ -63,12 +65,18 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     // matches from db
     matches: GermplasmDto[];
+    // matches by pui are treated specially because they can't be ignored
     matchesByPUI: { [key: string]: GermplasmDto; } = {};
     matchesByName: { [key: string]: GermplasmDto[]; } = {};
 
     selectMatchesResult: any = {};
     inventoryData: any;
     importResult: ImportGermplasmResultType = {};
+
+    // name columns with duplicates
+    columnNamesWithDupes = {};
+
+    listPreview = listPreview;
 
     constructor(
         private translateService: TranslateService,
@@ -123,32 +131,29 @@ export class GermplasmImportReviewComponent implements OnInit {
 
             this.context.data.forEach((row) => {
                 const puiMatch = this.matchesByPUI[toUpper(row[HEADERS.PUI])];
-                const nameMatches = this.context.nametypesCopy.filter((nameType) => {
-                    return Boolean(this.matchesByName[toUpper(row[nameType.code])]);
-                });
+                const rowMatches = getRowMatches(row, this.context.nametypesCopy, this.matchesByName);
+
                 if (puiMatch) {
-                    this.dataMatches.push(row);
+                    this.dataSingleMatches.push(row);
                     row[HEADERS['GID MATCHES']] = puiMatch.gid;
-                } else if (nameMatches.length) {
-                    this.dataMatches.push(row);
-                    row[HEADERS['GID MATCHES']] = nameMatches
-                        .reduce((array, nameType) => array.concat(this.matchesByName[toUpper(row[nameType.code])].map((m) => m.gid)), [])
-                        // dedup
-                        .filter((gid, i, array) => array.indexOf(gid) === i)
-                        .join(', ');
+                } else if (rowMatches.length) {
+                    if (rowMatches.length > 1) {
+                        this.dataMultipleMatches.push(row);
+                    } else {
+                        this.dataSingleMatches.push(row);
+                    }
+
+                    row[HEADERS['GID MATCHES']] = rowMatches.map((m) => m.gid).join(', ');
 
                     const matchesByPrefName = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
                     if (matchesByPrefName && matchesByPrefName.length === 1) {
-                        // noop - full auto-match still posible
+                        // noop - full auto-match still possible
                     } else if (matchesByPrefName && matchesByPrefName.length > 1) {
                         // more than one match by pref name
                         this.isFullAutomaticMatchNotPossible = true;
-                    } else if (nameMatches.length) {
+                    } else if (rowMatches.length > 1) {
                         /*
                          * Preferred name is new (no match), but other names have matches.
-                         * Even if it's only one match, the system will show the manual
-                         * selection process anyway, so that's it is clear we are not
-                         * using the preferred name.
                          */
                         this.isFullAutomaticMatchNotPossible = true;
                     }
@@ -156,7 +161,8 @@ export class GermplasmImportReviewComponent implements OnInit {
                     this.newRecords.push(row);
                 }
             });
-            this.rows = [...this.dataMatches, ...this.newRecords];
+            this.rows = this.getAllRows();
+            this.columnNamesWithDupes = this.findDupesInNewRecords(this.newRecords);
         });
 
         this.inventoryData = this.context.data.filter((row) => row[HEADERS['STOCK ID']]
@@ -165,9 +171,92 @@ export class GermplasmImportReviewComponent implements OnInit {
             || row[HEADERS['AMOUNT']]);
     }
 
+    private getAllRows() {
+        return [...this.dataSingleMatches, ...this.dataMultipleMatches, ...this.newRecords]
+            .sort(((a, b) => Number(a[HEADERS.ENTRY_NO]) > Number(b[HEADERS.ENTRY_NO]) ? 1 : -1));
+    }
+
+    private findDupesInNewRecords(newEntries: any[]) {
+        const columnNamesWithDupes = {};
+        // check every name column for dupes
+        this.context.nametypesCopy.forEach((nameType) => {
+            const namesSeen = {};
+            newEntries.forEach((row) => {
+                if (namesSeen[row[nameType.code]]) {
+                    columnNamesWithDupes[nameType.code] = true;
+                }
+                if (row[nameType.code]) {
+                    namesSeen[row[nameType.code]] = true;
+                }
+            });
+        });
+
+        /*
+         * check dupes across preferred names:
+         * ENTRY_NO LNAME DRVNM
+         * 1        NAME1
+         * 2              NAME1
+         */
+        {
+            const preferredNameNote = this.translateService.instant('germplasm.import.review.new.records.dupes.preferred.name.note');
+            const namesSeen = {};
+            newEntries.forEach((row) => {
+                /*
+                 * If the column used for preferred name does not already contains duplicates inside the same column
+                 * but it contains duplicates across different columns used as preferred name
+                 */
+                if (!columnNamesWithDupes[row[HEADERS['PREFERRED NAME']]]
+                    && namesSeen[row[row[HEADERS['PREFERRED NAME']]]]) {
+                    columnNamesWithDupes[HEADERS['PREFERRED NAME'] + preferredNameNote] = true;
+                }
+                namesSeen[row[row[HEADERS['PREFERRED NAME']]]] = true;
+            });
+        }
+        return columnNamesWithDupes;
+    }
+
+    /**
+     * Check duplicates again in case the user skips some of the matches and decide to add new records from there
+     */
+    private async checkDupesInNewRecords(newEntries: any[]) {
+        /*
+         * If we are already showing the warning for new records, no need to add another confirmation step.
+         * The user is already aware that duplicates are going to be created.
+         */
+        if (this.size(this.columnNamesWithDupes)) {
+            return true;
+        }
+        const columnNamesWithDupes = this.findDupesInNewRecords(newEntries);
+        if (!this.size(columnNamesWithDupes)) {
+            return true;
+        }
+
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
+            { windowClass: 'modal-medium', backdrop: 'static' });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.review.new.records.dupes', {
+            columns: listPreview(this.keys(columnNamesWithDupes))
+        });
+        confirmModalRef.componentInstance.confirmLabel = this.translateService.instant('continue');
+        try {
+            await confirmModalRef.result;
+        } catch (rejected) {
+            return false;
+        }
+        return true;
+    }
+
     async save() {
         try {
             let doContinue = await this.processMatches();
+            if (!doContinue) {
+                return;
+            }
+
+            const newEntries = this.context.data.filter((row) => {
+                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByPUI[toUpper(row[HEADERS.PUI])];
+            });
+
+            doContinue = await this.checkDupesInNewRecords(newEntries);
             if (!doContinue) {
                 return;
             }
@@ -178,10 +267,6 @@ export class GermplasmImportReviewComponent implements OnInit {
             }
 
             // Proceed with save
-
-            const newEntries = this.context.data.filter((row) => {
-                return !this.selectMatchesResult[row[HEADERS.ENTRY_NO]] && !this.matchesByPUI[toUpper(row[HEADERS.PUI])];
-            });
 
             if (newEntries.length) {
                 this.isSaving = true;
@@ -230,47 +315,56 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     private async processMatches(): Promise<boolean> {
-        const unassignedMatches = this.dataMatches;
-        this.selectMatchesResult = {};
+        let unassignedMatches = this.dataMultipleMatches;
 
-        if (unassignedMatches.length) {
-            if (this.creationOption === CREATION_OPTIONS.SELECT_EXISTING) {
-                if (this.isSelectMatchesAutomatically) {
-                    unassignedMatches.forEach((row) => {
-                        const puiMatch = this.matchesByPUI[toUpper(row[HEADERS.PUI])];
-                        if (!puiMatch) {
-                            const matches = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
-                            if (matches && matches.length === 1) {
-                                this.selectMatchesResult[row[HEADERS.ENTRY_NO]] = matches[0].gid;
-                            }
-                        }
-                    });
-                }
-                /*
-                 * if 1) auto-matching didn't work:
-                 *      a) multiple gids for preferred name or..
-                 *      b) preferred name does not exist, but other names have matches
-                 *    2) auto-matching unchecked
-                 * -> open manual
-                 */
-                if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
-                    && !this.matchesByPUI[toUpper(row[HEADERS.PUI])])) {
-
-                    const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
-                        { size: 'lg', backdrop: 'static' });
-                    selectMatchesModalRef.componentInstance.unassignedMatches = unassignedMatches;
-                    selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
-                    selectMatchesModalRef.componentInstance.matchesByPUI = this.matchesByPUI;
-                    selectMatchesModalRef.componentInstance.selectMatchesResult = this.selectMatchesResult;
-                    try {
-                        await selectMatchesModalRef.result;
-                    } catch (rejected) {
-                        return false;
-                    }
-                }
-            } else if (this.creationOption === CREATION_OPTIONS.CREATE_NEW) {
-                this.selectMatchesResult = {};
+        /*
+         * Initialize matchesResult with auto-selected single matches.
+         * Considering it a match result simplifies other processes like "ignore and create new".
+         */
+        this.selectMatchesResult = this.dataSingleMatches.reduce((map, row) => {
+            if (this.matchesByPUI[toUpper(row[HEADERS.PUI])]) {
+                return map;
             }
+            const singleMatch = getRowMatches(row, this.context.nametypesCopy, this.matchesByName)[0];
+            map[row[HEADERS.ENTRY_NO]] = singleMatch.gid;
+            return map;
+        }, {});
+
+        if (this.creationOption === CREATION_OPTIONS.SELECT_EXISTING) {
+            if (this.isSelectMatchesAutomatically) {
+                unassignedMatches.forEach((row) => {
+                    const matches = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
+                    if (matches && matches.length === 1) {
+                        this.selectMatchesResult[row[HEADERS.ENTRY_NO]] = matches[0].gid;
+                    }
+                });
+            }
+            /*
+             * if 1) auto-matching didn't work:
+             *      a) multiple gids for preferred name or..
+             *      b) preferred name does not exist, but other names have matches
+             *    2) auto-matching unchecked
+             * -> open manual
+             */
+            if (unassignedMatches.some((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]
+                && !this.matchesByPUI[toUpper(row[HEADERS.PUI])])) {
+
+                // remove auto-matched rows so far by pref name
+                unassignedMatches = unassignedMatches.filter((row) => !this.selectMatchesResult[row[HEADERS.ENTRY_NO]]);
+
+                const selectMatchesModalRef = this.modalService.open(GermplasmImportMatchesComponent as Component,
+                    { size: 'lg', backdrop: 'static' });
+                selectMatchesModalRef.componentInstance.unassignedMatches = unassignedMatches;
+                selectMatchesModalRef.componentInstance.matchesByName = this.matchesByName;
+                selectMatchesModalRef.componentInstance.selectMatchesResult = this.selectMatchesResult;
+                try {
+                    await selectMatchesModalRef.result;
+                } catch (rejected) {
+                    return false;
+                }
+            }
+        } else if (this.creationOption === CREATION_OPTIONS.CREATE_NEW) {
+            this.selectMatchesResult = {};
         }
 
         return true;
@@ -278,9 +372,15 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     private async showSummaryConfirmation() {
         const countMatchByPUI = this.context.data.filter((row) => this.matchesByPUI[toUpper(row[HEADERS.PUI])]).length,
-            countMatchByName = this.context.data.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]).length,
+
+            // of the initial matches, how many were finally accepted
+            countMultiMatches = this.dataMultipleMatches.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]).length,
+            countSingleMatches = this.dataSingleMatches.filter((row) => this.selectMatchesResult[row[HEADERS.ENTRY_NO]]).length,
+
             countNew = this.newRecords.length,
-            countIgnored = this.dataMatches.length - countMatchByName - countMatchByPUI;
+            countIgnored = this.dataMultipleMatches.length + this.dataSingleMatches.length
+                - countMultiMatches - countSingleMatches - countMatchByPUI;
+
         const messages = [];
         if (countNew) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.new', { param: countNew }));
@@ -288,8 +388,11 @@ export class GermplasmImportReviewComponent implements OnInit {
         if (countIgnored) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.ignored', { param: countIgnored }));
         }
-        if (countMatchByName) {
-            messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.name', { param: countMatchByName }));
+        if (countMultiMatches) {
+            messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.name.multi', { param: countMultiMatches }));
+        }
+        if (countSingleMatches) {
+            messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.name.single', { param: countSingleMatches }));
         }
         if (countMatchByPUI) {
             messages.push(this.translateService.instant('germplasm.import.review.summary.match.by.pui', { param: countMatchByPUI }));
@@ -419,10 +522,13 @@ export class GermplasmImportReviewComponent implements OnInit {
     onShowMatchesOptionChange() {
         switch (this.showMatchesOption) {
             case SHOW_MATCHES_OPTIONS.ALL:
-                this.rows = [...this.dataMatches, ...this.newRecords];
+                this.rows = this.getAllRows();
                 break;
-            case SHOW_MATCHES_OPTIONS.ONLY_MATCHES:
-                this.rows = this.dataMatches;
+            case SHOW_MATCHES_OPTIONS.WITH_A_SINGLE_MATCH:
+                this.rows = this.dataSingleMatches;
+                break;
+            case SHOW_MATCHES_OPTIONS.WITH_MULTIPLE_MATCHES:
+                this.rows = this.dataMultipleMatches;
                 break;
             case SHOW_MATCHES_OPTIONS.NEW_RECORDS:
                 this.rows = this.newRecords;
@@ -433,7 +539,8 @@ export class GermplasmImportReviewComponent implements OnInit {
 
 enum SHOW_MATCHES_OPTIONS {
     ALL = 'ALL',
-    ONLY_MATCHES = 'ONLY_MATCHES',
+    WITH_A_SINGLE_MATCH = 'WITH_A_SINGLE_MATCH',
+    WITH_MULTIPLE_MATCHES = 'WITH_MULTIPLE_MATCHES',
     NEW_RECORDS = 'NEW_RECORDS'
 }
 

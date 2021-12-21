@@ -16,7 +16,7 @@ import { SearchResult } from '../shared/search-result.model';
 import { ListType } from '../shared/list-builder/model/list-type.model';
 import { ColumnFilterRadioButtonOption } from '../shared/column-filter/column-filter-radio-component';
 import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
-import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_GERMPLASM_LIST_PERMISSION } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -28,8 +28,8 @@ export class GermplasmListSearchComponent implements OnInit {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
 
-    IMPORT_GERMPLASM_LIST_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LISTS'];
-    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSIONS, 'IMPORT_GERMPLASM_LISTS'];
+    IMPORT_GERMPLASM_LIST_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LISTS'];
+    ACTION_BUTTON_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LISTS'];
     COLUMN_FILTER_EVENT_NAME = GermplasmListSearchComponent.COLUMN_FILTER_EVENT_NAME;
 
     itemsPerPage = 20;
@@ -73,6 +73,7 @@ export class GermplasmListSearchComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.registerColumnFiltersChanged();
         this.registerFilterBy();
+        this.registerEvents();
         this.loadAll(this.request);
     }
 
@@ -173,6 +174,26 @@ export class GermplasmListSearchComponent implements OnInit {
         });
     }
 
+    registerEvents() {
+        this.eventSubscriber = this.eventManager.subscribe('addToGermplasmList', (event) => {
+            this.alertService.success('germplasm-list.list-data.add-entries.success');
+            this.resetTable();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
+            this.alertService.success('germplasm-list.list-data.delete-list.success');
+            this.resetTable();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('clonedGermplasmList', (event) => {
+            this.resetTable();
+        });
+
+        this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
+            this.resetTable();
+        });
+    }
+
     private resetFilters() {
         this.filters = this.getInitialFilters();
         this.request = new GermplasmListSearchRequest();
@@ -187,7 +208,6 @@ export class GermplasmListSearchComponent implements OnInit {
 
     selectList($event, list: GermplasmListSearchResponse) {
         $event.preventDefault();
-
         this.router.navigate([`/germplasm-list/list/${list.listId}`], {queryParams: {
                 listId: list.listId,
                 listName: list.listName

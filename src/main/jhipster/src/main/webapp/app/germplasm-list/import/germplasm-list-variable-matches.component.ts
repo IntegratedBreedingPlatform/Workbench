@@ -31,7 +31,6 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 
     rows = [];
     variableMatchesResult: any = {};
-    isGermplasmListImport: boolean;
 
     constructor(
         private route: ActivatedRoute,
@@ -91,54 +90,18 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 
     back() {
         this.modal.close();
-        if (this.isGermplasmListImport) {
-            this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
-        } else {
-            this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
-        }
     }
 
     dismiss() {
-        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { backdrop: 'static' });
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import.cancel.confirm');
-        confirmModalRef.result.then(() => this.modal.dismiss());
+        this.modal.dismiss();
     }
 
     next() {
-        this.modal.close();
-        this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
+        this.modal.close(this.variableMatchesResult);
     }
 
     save() {
-        this.isLoading = true;
-        const keys = Object.keys(this.context.data[0]);
-        const listId = Number(this.route.snapshot.queryParamMap.get('listId'));
-        const germplasmListGenerator = { id: listId, entries: [] };
-        for (const row of this.context.data) {
-            const entry = {
-                entryNo: row[HEADERS.ENTRY_NO],
-                data: Object.keys(this.variableMatchesResult).reduce((map, variableName) => {
-                    if (row[variableName]) {
-                        map[this.variableMatchesResult[variableName]] = { value: row[variableName] };
-                    }
-                    return map;
-                }, {})
-            };
-            germplasmListGenerator.entries.push(entry);
-        }
-
-        this.germplasmListService.germplasmListUpdates(germplasmListGenerator).subscribe(
-            () => {
-                this.isLoading = false;
-                this.modal.close();
-                this.eventManager.broadcast({ name: listId + ListComponent.GERMPLASM_LIST_CHANGED });
-            },
-            (error) => {
-                this.isLoading = false;
-                this.onError(error);
-            }
-        );
-
+        this.modal.close(this.variableMatchesResult);
     }
 
     private onError(response: HttpErrorResponse) {
@@ -154,6 +117,8 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 
 export enum HEADERS {
     'ENTRY_NO' = 'ENTRY_NO',
+    // Temporary workaround to allow users to edit ENTRY_CODE
+    'ENTRY_CODE' = 'ENTRY_CODE',
     'ID' = 'ID',
     'NAME' = 'NAME',
     'DESCRIPTION' = 'DESCRIPTION'
