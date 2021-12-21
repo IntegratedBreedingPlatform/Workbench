@@ -15,7 +15,7 @@ import { GermplasmImportContext } from './germplasm-import.context';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../shared/util/to-upper';
-import { HELP_MANAGE_GERMPLASM_IMPORT } from '../../app.constants';
+import { HELP_MANAGE_GERMPLASM_IMPORT, HELP_MANAGE_GERMPLASM_IMPORT_TEMPLATE } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 
 @Component({
@@ -24,6 +24,7 @@ import { HelpService } from '../../shared/service/help.service';
 })
 export class GermplasmImportComponent implements OnInit {
     helpLink: string;
+    templateHelpLink: string;
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -51,6 +52,11 @@ export class GermplasmImportComponent implements OnInit {
         this.helpService.getHelpLink(HELP_MANAGE_GERMPLASM_IMPORT).subscribe((response) => {
             if (response.body) {
                 this.helpLink = response.body;
+            }
+        });
+        this.helpService.getHelpLink(HELP_MANAGE_GERMPLASM_IMPORT_TEMPLATE).subscribe((response) => {
+            if (response.body) {
+                this.templateHelpLink = response.body;
             }
         });
     }

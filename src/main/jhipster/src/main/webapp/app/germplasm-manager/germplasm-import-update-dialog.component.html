@@ -12,9 +12,12 @@
 		<div class="col-xs-12 col-md-12">
 		</div>
 	</div>
-	<div class="col-8 form-group form-inline">
-        <p>You can download a template&nbsp;<a href (click)="export($event)">here</a>.</p>
-    </div>
+	<div class="row form-group">
+		<div class="col">
+			<span jhiTranslate="template.download.description"></span>&nbsp;<a href (click)="export($event)" jhiTranslate="template.download.here"></a>.
+			<span jhiTranslate="germplasm.import.description.extra"></span>&nbsp;<a target="_blank" [href]="templateHelpLink" jhiTranslate="template.download.here"></a>.
+		</div>
+	</div>
 	<div class="row form-group add_top_padding" style="margin-bottom: 35px;">
 		<div class="col-2"></div>
 		<div class="col-md-8">
