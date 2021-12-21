@@ -269,6 +269,7 @@
        "transfer-passport-data" : "Transfer passport data from deleted germplasm to target germplasm",
        "transfer-attributes-data" : "Transfer attributes data from deleted germplasm to target germplasm",
        "transfer-names-types-data" : "Transfer name-types data from deleted germplasm to target germplasm",
+       "transfer-files" : "Transfer files from deleted germplasm to target germplasm",
        "non-selected-germplasm-has-progeny": "Some of the germplasm to be deleted has progeny associated: {{param}}. Please manually edit such progeny so that it points to a different progenitor in order to proceed with the merge.",
        "non-selected-germplasm-fixed": "Some of the germplasm to be deleted is grouped: {{param}}. Please ungroup this germplasm in order to proceed with the merge.",
        "non-selected-germplasm-in-locked-list": "Some of the germplasm to be deleted is part of a locked germplasm list: {{param}}. Please unlock such list/s in order to proceed with the merge.",
@@ -297,6 +298,9 @@
        "review.transfer-passport-data" : "Passport data will be transferred to target germplasm.",
        "review.transfer-attributes-data" : "Attributes data will be transferred to target germplasm.",
        "review.transfer-names-types-data" : "Name-types data will be transferred to target germplasm.",
-       "review.no-transfer-germplasm-data" : "No passport, attributes and name-types data will be transferred to target germplasm."
+       "review.transfer-passport-files" : "Passport files will be transferred to target germplasm.",
+       "review.transfer-attributes-files" : "Attributes files will be transferred to target germplasm.",
+       "review.transfer-detached-files" : "Detached files (files that are not associated to any variable) will be transferred to target germplasm.",
+       "review.no-transfer-germplasm-data" : "No passport, attributes, name-types data and files will be transferred to target germplasm."
    }
 }
