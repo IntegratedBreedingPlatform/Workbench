@@ -54,6 +54,11 @@ function GraphicalFilter() {
 			gfilter.filteredData.length = 0;
 
 			var currentFilter = gfilter.root.getFilter();
+
+			// clear the previous custom filter
+			// we only add custom filters here, so this should be safe
+			$.fn.dataTableExt.afnFiltering.pop();
+
 			$.fn.dataTableExt.afnFiltering.push(function (_1, _2, dataIndex) {
 				var currentData = gfilter.data[dataIndex];
 				var applyFilter = currentFilter(currentData);
@@ -64,7 +69,6 @@ function GraphicalFilter() {
 				return applyFilter;
 			});
 			gfilter.results_table.draw();
-			$.fn.dataTableExt.afnFiltering.pop();
 		}
 		gfilter.redraw();
 	};
