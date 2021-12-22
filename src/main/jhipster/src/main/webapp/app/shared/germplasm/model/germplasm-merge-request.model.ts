@@ -13,7 +13,8 @@ export class MergeOptions {
     constructor(
         public migrateAttributesData?: boolean,
         public migrateNameTypes?: boolean,
-        public migratePassportData?: boolean
+        public migratePassportData?: boolean,
+        public migrateFiles?: boolean
     ) {
     }
 }

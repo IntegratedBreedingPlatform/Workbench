@@ -19,20 +19,20 @@
 	<br/><br/>
 	<span jhiTranslate="merge-germplasm.review.transfer-data"></span>
 	<br/>
-	<span *ngIf="germplasmMergeRequest.mergeOptions.migratePassportData || germplasmMergeRequest.mergeOptions.migrateAttributesData ||
-		germplasmMergeRequest.mergeOptions.migrateNameTypes">
-		<span *ngIf="germplasmMergeRequest.mergeOptions.migratePassportData" jhiTranslate="merge-germplasm.review.transfer-passport-data"></span>
-		<br/>
-		<span *ngIf="germplasmMergeRequest.mergeOptions.migrateAttributesData" jhiTranslate="merge-germplasm.review.transfer-attributes-data"></span>
-		<br/>
-		<span *ngIf="germplasmMergeRequest.mergeOptions.migrateNameTypes" jhiTranslate="merge-germplasm.review.transfer-names-types-data"></span>
-		<br/>
-	</span>
-	<span *ngIf="!germplasmMergeRequest.mergeOptions.migratePassportData && !germplasmMergeRequest.mergeOptions.migrateAttributesData &&
-		!germplasmMergeRequest.mergeOptions.migrateNameTypes">
+	<div *ngIf="germplasmMergeRequest.mergeOptions.migratePassportData || germplasmMergeRequest.mergeOptions.migrateAttributesData ||
+		germplasmMergeRequest.mergeOptions.migrateNameTypes || germplasmMergeRequest.mergeOptions.migrateFiles">
+		<div *ngIf="germplasmMergeRequest.mergeOptions.migratePassportData" jhiTranslate="merge-germplasm.review.transfer-passport-data"></div>
+		<div *ngIf="germplasmMergeRequest.mergeOptions.migrateAttributesData" jhiTranslate="merge-germplasm.review.transfer-attributes-data"></div>
+		<div *ngIf="germplasmMergeRequest.mergeOptions.migrateNameTypes" jhiTranslate="merge-germplasm.review.transfer-names-types-data"></div>
+		<div *ngIf="germplasmMergeRequest.mergeOptions.migratePassportData && germplasmMergeRequest.mergeOptions.migrateFiles" jhiTranslate="merge-germplasm.review.transfer-passport-files"></div>
+		<div *ngIf="germplasmMergeRequest.mergeOptions.migrateAttributesData && germplasmMergeRequest.mergeOptions.migrateFiles" jhiTranslate="merge-germplasm.review.transfer-attributes-files"></div>
+		<div *ngIf="germplasmMergeRequest.mergeOptions.migrateFiles" jhiTranslate="merge-germplasm.review.transfer-detached-files"></div>
+	</div>
+	<div *ngIf="!germplasmMergeRequest.mergeOptions.migratePassportData && !germplasmMergeRequest.mergeOptions.migrateAttributesData &&
+		!germplasmMergeRequest.mergeOptions.migrateNameTypes && !germplasmMergeRequest.mergeOptions.migrateFiles">
 		<span jhiTranslate="merge-germplasm.review.no-transfer-germplasm-data"></span>
 		<br/>
-	</span>
+	</div>
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" [disabled]="isLoading">

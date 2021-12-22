@@ -6,7 +6,7 @@
 <div class="modal-body">
 	<div class="row">
 		<div class="col">
-			<span jhiTranslate="release-notes.description"></span>
+			<span *ngIf="showDescription" jhiTranslate="release-notes.description"></span>
 		</div>
 	</div>
 	<br/>
@@ -31,7 +31,7 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<div class="form-check form-check-inline">
+	<div *ngIf="showAgainCheckbox" class="form-check form-check-inline">
 		<input type="checkbox" class="form-check-input" name="dontShowAgain" id="dontShowAgain" [(ngModel)]="dontShowAgain">
 		<label class="form-check-label" for="dontShowAgain" jhiTranslate="release-notes.dont-show-again-checkbox">
 		</label>
