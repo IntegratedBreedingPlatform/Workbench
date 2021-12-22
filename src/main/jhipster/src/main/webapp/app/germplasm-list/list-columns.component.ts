@@ -68,8 +68,11 @@ export class ListColumnsComponent implements OnInit {
     }
 
     private filterColumns(columns: GermplasmListColumnModel[], searchString: string) {
-        columns.filter((column: GermplasmListColumnModel) => !column.displayName.toLowerCase().includes(searchString))
-            .map((column: GermplasmListColumnModel) => column.visible = false);
+        columns.forEach((column: GermplasmListColumnModel) => {
+           if (!column.displayName.toLowerCase().includes(searchString)) {
+               column.visible = false;
+           }
+        });
     }
 
     private onGetColumnsSuccess(columns: GermplasmListColumn[]) {
@@ -105,7 +108,7 @@ export class ListColumnsComponent implements OnInit {
     }
 
     private resetColumns() {
-        this.concatAllColumns().map((column: GermplasmListColumnModel) => column.visible = true);
+        this.concatAllColumns().forEach((column: GermplasmListColumnModel) => column.visible = true);
     }
 
     private concatAllColumns(): GermplasmListColumnModel[] {
