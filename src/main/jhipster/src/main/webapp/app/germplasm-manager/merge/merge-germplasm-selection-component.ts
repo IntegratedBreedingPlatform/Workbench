@@ -29,6 +29,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
     isTransferPassportData: boolean;
     isTransferAttributesData: boolean;
     isTransferNameTypesData: boolean;
+    isTransferFiles: boolean;
 
     constructor(
         private alertService: AlertService,
@@ -95,6 +96,7 @@ export class MergeGermplasmSelectionComponent implements OnInit {
         germplasmMergeRequest.mergeOptions.migrateAttributesData = this.isTransferAttributesData;
         germplasmMergeRequest.mergeOptions.migrateNameTypes = this.isTransferNameTypesData;
         germplasmMergeRequest.mergeOptions.migratePassportData = this.isTransferPassportData;
+        germplasmMergeRequest.mergeOptions.migrateFiles = this.isTransferFiles;
         germplasmMergeRequest.targetGermplasmId = this.selectedGid;
         germplasmMergeRequest.nonSelectedGermplasm = [];
 
