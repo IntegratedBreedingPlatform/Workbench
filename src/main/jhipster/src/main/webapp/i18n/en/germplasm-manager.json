@@ -122,6 +122,7 @@
         "details.title": "Germplasm Details",
         "import": {
             "header": "Import germplasm",
+            "description.extra": "Problems understanding the columns? Check the documentation",
             "file": {
                 "input.description": "Choose the file you would like to import with the format: Excel or CSV",
                 "validation": {
@@ -205,7 +206,7 @@
                     "new": "{{param}} entries have no matches <strong>(new records will be created)</strong>",
                     "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
                     "match.by.name.multi": "{{param}} entries with <b>multiple</b> matches <b>by name</b> were selected (no records will be created)",
-                    "match.by.name.single": "{{param}} entries with <b>single</b> matches <b>by name</b> were automatically selected (no records will be created)",
+                    "match.by.name.single": "{{param}} entries with <b>single</b> matches <b>by name</b> were selected (no records will be created)",
                     "match.by.pui": "{{param}} entries with matches <b>by PUI</b> were automatically selected (no records will be created)",
                     "inventory": "{{param}} lots will be created",
                     "progenitors": "{{param}} entries will be connected with progenitors"
@@ -269,6 +270,7 @@
        "transfer-passport-data" : "Transfer passport data from deleted germplasm to target germplasm",
        "transfer-attributes-data" : "Transfer attributes data from deleted germplasm to target germplasm",
        "transfer-names-types-data" : "Transfer name-types data from deleted germplasm to target germplasm",
+       "transfer-files" : "Transfer files from deleted germplasm to target germplasm",
        "non-selected-germplasm-has-progeny": "Some of the germplasm to be deleted has progeny associated: {{param}}. Please manually edit such progeny so that it points to a different progenitor in order to proceed with the merge.",
        "non-selected-germplasm-fixed": "Some of the germplasm to be deleted is grouped: {{param}}. Please ungroup this germplasm in order to proceed with the merge.",
        "non-selected-germplasm-in-locked-list": "Some of the germplasm to be deleted is part of a locked germplasm list: {{param}}. Please unlock such list/s in order to proceed with the merge.",
@@ -297,6 +299,9 @@
        "review.transfer-passport-data" : "Passport data will be transferred to target germplasm.",
        "review.transfer-attributes-data" : "Attributes data will be transferred to target germplasm.",
        "review.transfer-names-types-data" : "Name-types data will be transferred to target germplasm.",
-       "review.no-transfer-germplasm-data" : "No passport, attributes and name-types data will be transferred to target germplasm."
+       "review.transfer-passport-files" : "Passport files will be transferred to target germplasm.",
+       "review.transfer-attributes-files" : "Attributes files will be transferred to target germplasm.",
+       "review.transfer-detached-files" : "Detached files (files that are not associated to any variable) will be transferred to target germplasm.",
+       "review.no-transfer-germplasm-data" : "No passport, attributes, name-types data and files will be transferred to target germplasm."
    }
 }
