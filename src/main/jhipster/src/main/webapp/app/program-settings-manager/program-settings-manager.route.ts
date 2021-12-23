@@ -14,6 +14,11 @@ export const PROGRAM_SETTINGS_MANAGER_ROUTES: Routes = [
         },
         children: [
             {
+                path: '',
+                redirectTo: 'basic-details',
+                pathMatch: 'full'
+            },
+            {
                 path: 'basic-details',
                 component: BasicDetailsPaneComponent
             },
