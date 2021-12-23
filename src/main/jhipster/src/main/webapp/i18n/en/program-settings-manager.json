@@ -6,6 +6,23 @@
       "members": "Members",
       "locations": "Locations",
       "breeding-methods": "Breeding Methods"
+    },
+    "members": {
+      "heading": "Program members",
+      "description": "Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right.",
+      "left.column": {
+        "heading": "Available Users",
+        "table": {
+          "column.user.name": "User name"
+        }
+      },
+      "right.column": {
+        "heading": "Program members",
+        "table": {
+          "column.user.name": "User name",
+          "role": "Role"
+        }
+      }
     }
   }
 }

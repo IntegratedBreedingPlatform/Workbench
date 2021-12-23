@@ -82,6 +82,7 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
+import { MembersService } from './user/service/members.service';
 
 @NgModule({
     imports: [
@@ -149,6 +150,7 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         SecureImagePipe,
         Principal,
         AccountService,
+        MembersService,
         InventoryService,
         LotService,
         TransactionService,

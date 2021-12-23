@@ -1,1 +1,34 @@
-members
+<div class="row">
+	<div class="col">
+		<h3 jhiTranslate="program-settings-manager.members.heading"></h3>
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		<span jhiTranslate="program-settings-manager.members.description"></span>
+	</div>
+</div>
+<div class="row mt-3">
+	<div class="col">
+		<div class="row">
+			<div class="col">
+				<h4 jhiTranslate="program-settings-manager.members.left.column.heading"></h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<jhi-user-table [users]="eligibleUsers" (onLoad)="loadEligibleUsers($event.page, $event.pageSize)"></jhi-user-table>
+			</div>
+		</div>
+	</div>
+	<div class="col">
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" data-test="resetButton" (click)="reset()">
+		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="reset"></span>
+	</button>
+	<button class="btn btn-primary" data-test="saveButton" (click)="save()">
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+	</button>
+</div>

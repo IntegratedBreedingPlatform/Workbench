@@ -5,8 +5,9 @@ import { ProgramSettingsManagerComponent } from './program-settings-manager.comp
 import { BasicDetailsPaneComponent } from './tabs/basic-details/basic-details-pane.component';
 import { LocationsPaneComponent } from './tabs/locations/locations-pane.component';
 import { BreedingMethodsPaneComponent } from './tabs/breeding-methods/breeding-methods-pane.component';
-import { MemberPaneComponent } from './tabs/members/member-pane.component';
+import { MembersPaneComponent } from './tabs/members/members-pane.component';
 import { PROGRAM_SETTINGS_MANAGER_ROUTES } from './program-settings-manager.route';
+import { UserTableComponent } from './tabs/members/user-table.component';
 
 @NgModule({
     imports: [
@@ -16,14 +17,16 @@ import { PROGRAM_SETTINGS_MANAGER_ROUTES } from './program-settings-manager.rout
     ],
     declarations: [
         ProgramSettingsManagerComponent,
-        MemberPaneComponent,
+        MembersPaneComponent,
+        UserTableComponent,
         BasicDetailsPaneComponent,
         LocationsPaneComponent,
         BreedingMethodsPaneComponent
     ],
     entryComponents: [
         ProgramSettingsManagerComponent,
-        MemberPaneComponent,
+        MembersPaneComponent,
+        UserTableComponent,
         BasicDetailsPaneComponent,
         LocationsPaneComponent,
         BreedingMethodsPaneComponent
