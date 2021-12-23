@@ -29,6 +29,8 @@ import { MetadataManagerModule } from './metadata-manager/metadata-manager.modul
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
 import { GermplasmListTreeTableComponent } from './shared/tree/germplasm/germplasm-list-tree-table.component';
 import { AboutModule } from './about/about.module';
+import { ProgramSettingsManagerComponent } from './program-settings-manager/program-settings-manager.component';
+import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
 
 @NgModule({
     imports: [
@@ -50,6 +52,7 @@ import { AboutModule } from './about/about.module';
         MetadataManagerModule,
         VariableDetailsModule,
         GermplasmListModule,
+        ProgramSettingsManagerModule,
         AboutModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],

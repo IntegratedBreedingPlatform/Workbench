@@ -1,0 +1,11 @@
+{
+  "program-settings-manager": {
+    "title": "Manage Program Settings",
+    "tabs": {
+      "basic-details": "Basic Details",
+      "members": "Members",
+      "locations": "Locations",
+      "breeding-methods": "Breeding Methods"
+    }
+  }
+}
