@@ -33,6 +33,7 @@
                 "reorder-entries": "Reorder entries",
                 "export-data-and-labels": "Export list data and labels",
                 "add-entries": "Add entries",
+                "add-entries-to-another": "Add entries to another list",
                 "add-to-list": "Add to list",
                 "delete-list": "Delete list",
                 "clone-list": "Clone list",
@@ -80,6 +81,7 @@
         },
         "import": {
             "header": "Import List",
+            "template.download.instruction": "Provide a file with either the GID, the GUID or the DESIGNATION of the germplasm to include in the list. If you provide multiple values for a record the system will use the following order: GUID, GID, DESIGNATION for retrieval.",
             "file": {
                 "input.description": "Choose the file you would like to import in format: Excel",
                 "validation": {

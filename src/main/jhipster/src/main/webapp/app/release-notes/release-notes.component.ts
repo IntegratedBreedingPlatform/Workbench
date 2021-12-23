@@ -24,8 +24,10 @@ export class ReleaseNotesDialogComponent implements OnInit {
     dontShowAgain;
 
     hasComingSoon = false;
-    releaseNoteFileName: string
-    comingSoonFileName: string
+    releaseNoteFileName: string;
+    comingSoonFileName: string;
+    showAgainCheckbox: boolean;
+    showDescription: boolean;
 
     constructor(
         private modal: NgbActiveModal,
@@ -35,6 +37,9 @@ export class ReleaseNotesDialogComponent implements OnInit {
         private paramContext: ReleaseNoteContext
     ) {
         const queryParams = this.route.snapshot.queryParams;
+        this.showAgainCheckbox = queryParams.showAgainCheckbox ? (queryParams.showAgainCheckbox === 'true') ? true : false : true;
+        this.showDescription = this.showAgainCheckbox;
+
         this.paramContext.fileName = queryParams.fileName;
 
         this.releaseNoteFileName = queryParams.fileName;
@@ -79,15 +84,21 @@ export class ReleaseNotesWrapperComponent implements OnInit {
 
     constructor(private activeModal: NgbActiveModal,
                 private sanitizer: DomSanitizer,
-                private releaseNoteService: ReleaseNotesService) {
+                private releaseNoteService: ReleaseNotesService,
+                private route: ActivatedRoute) {
 
         this.releaseNoteService.getLatest().subscribe((resp: HttpResponse<ReleaseNote>) => {
             const releaseNote: ReleaseNote = resp.body;
-            const url = '/ibpworkbench/main/#release-notes-dialog?' +
+            const queryParams = this.route.snapshot.queryParams;
+
+            let url = '/ibpworkbench/main/#release-notes-dialog?' +
                 '&version=' + releaseNote.version +
                 '&hasComingSoon=' + releaseNote.hasComingSoon +
                 '&fileName=' + releaseNote.fileName;
 
+            if (queryParams.showAgainCheckbox) {
+                url = url + '&showAgainCheckbox=' + queryParams.showAgainCheckbox;
+            }
             this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
         });
     }
