@@ -1,6 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { AlertService } from '../../../shared/alert/alert.service';
+import { ProgramService } from '../../../shared/program/service/program.service';
+import { ParamContext } from '../../../shared/service/param.context';
 import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../../../shared/alert/format-error-list';
+import { DateHelperService } from '../../../shared/service/date.helper.service';
+import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import { NavbarMessageEvent } from '../../../shared/model/navbar-message.event';
 import { Program } from '../../../shared/program/model/program';
 
 @Component({
@@ -11,11 +21,16 @@ import { Program } from '../../../shared/program/model/program';
 export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
 
     isLoading: boolean;
-    program: Program = new Program();
+    program: Program;
     programOrg: Program;
     startDate: NgbDate;
 
-    constructor() {
+    constructor(private alertService: AlertService,
+                private programService: ProgramService,
+                private context: ParamContext,
+                public dateHelperService: DateHelperService,
+                private modalService: NgbModal,
+                private translateService: TranslateService) {
         this.program = {};
     }
 
@@ -23,13 +38,52 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.programService.getPrograms(this.context.cropName, '', null).subscribe(
+            (res) => {
+                const programs = res.body;
+                this.program = programs.filter((program) => program.uniqueID === this.context.programUUID)[0];
+                this.startDate = this.dateHelperService.convertFormattedDateStringToNgbDate(this.program.startDate, 'yyyy-mm-dd');
+                this.programOrg = Object.assign({}, this.program);
+            }, (res: HttpErrorResponse) => {
+                this.onError(res)
+            }
+        );
     }
 
     delete() {
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = this.translateService.instant('program-settings-manager.basic-details.delete.question');
+        confirmModalRef.componentInstance.title = this.translateService.instant('program-settings-manager.basic-details.delete.title');
+        confirmModalRef.result.then(() => {
+            this.programService.deleteProgram(this.context.cropName, this.context.programUUID).subscribe(
+                () => {
+                    const message: NavbarMessageEvent = { programDeleted: true };
+                    window.parent.postMessage(message, '*');
+                    this.alertService.success('program-settings-manager.basic-details.delete.success');
+                }, (res: HttpErrorResponse) => {
+                    this.onError(res)
+                }, () => confirmModalRef.dismiss()
+            );
+        });
     }
 
     save() {
-
+        this.isLoading = true;
+        const programBasicDetails = {};
+        programBasicDetails['name'] = this.program.name;
+        this.program.startDate = this.dateHelperService.convertFormattedNgbDateToString(this.startDate, '-');
+        programBasicDetails['startDate'] = this.program.startDate;
+        const message: NavbarMessageEvent = { programUpdated: this.program };
+        this.programService.updateProgram(programBasicDetails, this.program.crop, this.program.uniqueID).subscribe(() => {
+                this.programOrg = Object.assign({}, this.program);
+                window.parent.postMessage(message, '*');
+                this.alertService.success('program-settings-manager.basic-details.update.success');
+            }, (res: HttpErrorResponse) => {
+                this.onError(res)
+            }, () => {
+                this.isLoading = false;
+            }
+        );
     }
 
     isFormValid(f) {
@@ -38,8 +92,16 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     }
 
     reset() {
+        this.program = Object.assign({}, this.programOrg);
+        this.startDate = this.dateHelperService.convertFormattedDateStringToNgbDate(this.program.startDate, 'yyyy-mm-dd');
     }
 
     private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
     }
 }
