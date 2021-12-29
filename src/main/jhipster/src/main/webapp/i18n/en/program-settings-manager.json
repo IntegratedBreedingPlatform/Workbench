@@ -6,6 +6,19 @@
       "members": "Members",
       "locations": "Locations",
       "breeding-methods": "Breeding Methods"
+    },
+    "basic-details": {
+      "crop": "Crop",
+      "program-name": "Program Name",
+      "program-start-date": "Program Start Date",
+      "update": {
+        "success": "the program was updated successfully"
+      },
+      "delete": {
+        "title": "Delete Program",
+        "question": "Are you sure you want to delete the program?",
+        "success": "the program was deleted successfully"
+      }
     }
   }
 }
