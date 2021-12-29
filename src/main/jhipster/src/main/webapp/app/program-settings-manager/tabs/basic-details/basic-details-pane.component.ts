@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgbActiveModal, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { ProgramService } from '../../../shared/program/service/program.service';
 import { ParamContext } from '../../../shared/service/param.context';
@@ -9,7 +8,6 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { DateHelperService } from '../../../shared/service/date.helper.service';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { NavbarMessageEvent } from '../../../shared/model/navbar-message.event';
 import { Program } from '../../../shared/program/model/program';
 
