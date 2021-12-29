@@ -31,6 +31,7 @@ import { GermplasmListTreeTableComponent } from './shared/tree/germplasm/germpla
 import { AboutModule } from './about/about.module';
 import { ProgramSettingsManagerComponent } from './program-settings-manager/program-settings-manager.component';
 import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
+import { CreateProgramModule } from './entities/create-program/create-program.module';
 
 @NgModule({
     imports: [
@@ -53,7 +54,8 @@ import { ProgramSettingsManagerModule } from './program-settings-manager/program
         VariableDetailsModule,
         GermplasmListModule,
         ProgramSettingsManagerModule,
-        AboutModule
+        AboutModule,
+        CreateProgramModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

@@ -4,6 +4,8 @@
         "no-data": "No records found or you don't have the proper permissions.",
         "crop": "Crop",
         "program": "Program",
+        "program-name": "Program Name",
+        "program-start-date": "Program Start Date",
         "launch": "Launch",
         "my.studies": {
             "tab.name": "My Studies",
@@ -21,6 +23,10 @@
             "col.type": "Type",
             "col.date": "Date",
             "col.folder": "Folder"
+        },
+        "create": {
+            "title": "Add a new Program",
+            "success": "the program was created successfully"
         }
     }
 }
