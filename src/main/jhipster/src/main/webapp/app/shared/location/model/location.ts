@@ -1,3 +1,5 @@
+import { ProgramFavorite } from '../../program/model/program-favorite.model';
+
 export class Location {
     constructor(
         public id?: number,
@@ -9,7 +11,12 @@ export class Location {
         public altitude?: number,
         public countryId?: number,
         public provinceId?: number,
-        public programUUID?: string
+        public programUUID?: string,
+        public countryName?: string,
+        public provinceName?: string,
+        public locationTypeName?: string,
+        public countryCode?: string,
+        public programFavorites?: ProgramFavorite[],
     ) {
     }
 }

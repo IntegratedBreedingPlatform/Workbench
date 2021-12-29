@@ -21,6 +21,7 @@ import { toUpper } from '../../shared/util/to-upper';
 import { VariableValidationService, VariableValidationStatusType } from '../../shared/ontology/service/variable-validation.service';
 import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
 import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
+import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -116,7 +117,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
                     const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
                     locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    locationSearchRequest.locationName = params.data.term;
+                    locationSearchRequest.locationNameFilter = {
+                        type: MatchType.STARTSWITH,
+                        value: params.data.term
+                    };
 
                     const pagination = {
                         page: (params.data.page - 1),
