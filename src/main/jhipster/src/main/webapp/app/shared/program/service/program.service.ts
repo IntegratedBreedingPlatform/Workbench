@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SERVER_API_URL } from '../../../app.constants';
 import { Program } from '../model/program';
 import { Observable } from 'rxjs';
@@ -22,5 +22,20 @@ export class ProgramService {
             params: createRequestOption(params),
             observe: 'response'
         });
+    }
+
+    addProgram(programBasicDetails: any, crop: string) {
+        const url = SERVER_API_URL + `crops/${crop}/programs`;
+        return this.http.post(url, programBasicDetails);
+    }
+
+    updateProgram(programBasicDetails: any, crop: string, programUUID: any) {
+        const url = SERVER_API_URL + `crops/${crop}/programs/${programUUID}`;
+        return this.http.patch(url, programBasicDetails);
+    }
+
+    deleteProgram(crop: any, programUUID: any) {
+        const url = SERVER_API_URL + `crops/${crop}/programs/${programUUID}`;
+        return this.http.delete(url);
     }
 }
