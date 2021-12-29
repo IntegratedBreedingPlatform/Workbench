@@ -26,7 +26,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="reset()">
+		<button (click)="reset()" class="btn btn-secondary">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.reset"></span>
 		</button>
 		<button (click)="delete()" class="btn btn-outline-info" jhiTranslate="entity.action.delete">
