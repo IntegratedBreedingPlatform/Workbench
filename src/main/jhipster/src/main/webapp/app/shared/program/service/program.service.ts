@@ -28,6 +28,11 @@ export class ProgramService {
         });
     }
 
+    getProgramByProgramUUID(cropName: string, programUUID: string): Observable<HttpResponse<Program>> {
+        const url = SERVER_API_URL + `crops/${cropName}/programs/${programUUID}`;
+        return this.http.get<Program>(url, { observe: 'response' });
+    }
+
     addProgram(programBasicDetails: any, crop: string) {
         const url = SERVER_API_URL + `crops/${crop}/programs`;
         return this.http.post(url, programBasicDetails);

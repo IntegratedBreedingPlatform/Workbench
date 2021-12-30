@@ -36,10 +36,9 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.programService.getPrograms(this.context.cropName, '', null).subscribe(
+        this.programService.getProgramByProgramUUID(this.context.cropName, this.context.programUUID).subscribe(
             (res) => {
-                const programs = res.body;
-                this.program = programs.filter((program) => program.uniqueID === this.context.programUUID)[0];
+                this.program = res.body;
                 this.startDate = this.dateHelperService.convertFormattedDateStringToNgbDate(this.program.startDate, 'yyyy-mm-dd');
                 this.programOrg = Object.assign({}, this.program);
             }, (res: HttpErrorResponse) => {
