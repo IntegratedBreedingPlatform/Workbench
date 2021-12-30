@@ -1,0 +1,18 @@
+{
+  "location": {
+    "search": {
+      "columns": {
+        "location-name": "NAME",
+        "abbreviation": "ABBR.",
+        "location-id": "LOCATION ID",
+        "country": "COUNTRY",
+        "province": "PROVINCE",
+        "latitude": "LAT",
+        "longitude": "LONG",
+        "altitude": "ALT",
+        "location-type": "TYPE",
+        "program-favorite": "PROGRAM FAVORITE"
+      }
+    }
+  }
+}

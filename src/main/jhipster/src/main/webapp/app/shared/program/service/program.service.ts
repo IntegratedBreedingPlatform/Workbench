@@ -5,11 +5,15 @@ import { Program } from '../model/program';
 import { Observable } from 'rxjs';
 import { createRequestOption } from '../..';
 import { Pageable } from '../../model/pageable';
+import { ProgramFavoriteAddRequest } from '../model/program-favorite-add-request.model';
+import { ParamContext } from '../../service/param.context';
+import { ProgramFavorite } from '../model/program-favorite.model';
 
 @Injectable()
 export class ProgramService {
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,
+                private context: ParamContext) {
     }
 
     getPrograms(cropName, query: string, pageable: Pageable): Observable<HttpResponse<Program[]>> {
@@ -38,4 +42,15 @@ export class ProgramService {
         const url = SERVER_API_URL + `crops/${crop}/programs/${programUUID}`;
         return this.http.delete(url);
     }
+
+    addProgramFavorite(request: ProgramFavoriteAddRequest): Observable<HttpResponse<ProgramFavorite[]>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/favorites`;
+        return this.http.post<ProgramFavorite[]>(url, request, { observe: 'response' });
+    }
+
+    removeProgramFavorite(entityIds: number[]): Observable<void> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/favorites?programFavoriteIds=${entityIds}`;
+        return this.http.delete<void>(url);
+    }
+
 }
