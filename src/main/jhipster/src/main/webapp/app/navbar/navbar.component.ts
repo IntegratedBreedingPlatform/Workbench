@@ -168,7 +168,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         } else if (event.data.programDeleted) {
             this.program = null;
             this.toolUrl = '';
-            window.top.location.href = '/ibpworkbench/main/';
         } else if (event.data.toolSelected) {
             this.openTool(event.data.toolSelected);
             this.expandParent();
