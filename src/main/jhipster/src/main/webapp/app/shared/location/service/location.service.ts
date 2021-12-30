@@ -28,6 +28,7 @@ export class LocationService {
 
     searchLocations(request: LocationSearchRequest, favoriteLocation: boolean, pagination: any): Observable<HttpResponse<Location[]>> {
         if (favoriteLocation) {
+            request.filterFavoriteProgramUUID = true;
             request.favoriteProgramUUID = this.context.programUUID;
         }
 
