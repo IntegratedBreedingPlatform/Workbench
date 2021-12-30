@@ -66,10 +66,13 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
 
     save() {
         this.isLoading = true;
-        const programBasicDetails = {};
-        programBasicDetails['name'] = this.program.name;
         this.program.startDate = this.dateHelperService.convertFormattedNgbDateToString(this.startDate, '-');
-        programBasicDetails['startDate'] = this.program.startDate;
+
+        const programBasicDetails = {
+            name: this.program.name,
+            startDate: this.program.startDate
+        };
+
         const message: NavbarMessageEvent = { programUpdated: this.program };
         this.programService.updateProgram(programBasicDetails, this.program.crop, this.program.uniqueID).subscribe(() => {
                 this.programOrg = Object.assign({}, this.program);
