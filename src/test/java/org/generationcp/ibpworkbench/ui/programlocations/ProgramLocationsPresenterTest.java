@@ -224,15 +224,21 @@ public class ProgramLocationsPresenterTest {
 		Mockito.when(location.getLongitude()).thenReturn(LONGITUDE);
 
 		if (countryId != null) {
-			final Location country = this.createTestLocation(null, locationType, locationName, countryId);
+			final Country country = this.createCountry(countryId);
 			Mockito.when(location.getCountry()).thenReturn(country);
 		}
 		return location;
 	}
 
+	private Country createCountry(final Integer countryId) {
+		final Country country = Mockito.mock(Country.class);
+		Mockito.when(country.getCntryid()).thenReturn(countryId);
+		return country;
+	}
+
 	@Test
 	public void testGetSavedProgramLocations() {
-		final String entityType = "C";
+		final ProgramFavorite.FavoriteType entityType = FavoriteType.LOCATION;
 		List<LocationViewModel> results = new ArrayList<LocationViewModel>();
 		final Integer locationType = 1;
 
@@ -248,7 +254,7 @@ public class ProgramLocationsPresenterTest {
 				ProgramLocationsPresenterTest.NO_OF_FAVORITES == results.size());
 	}
 
-	private void setUpFavoriteLocations(final String entityType) throws MiddlewareQueryException {
+	private void setUpFavoriteLocations(final ProgramFavorite.FavoriteType entityType) throws MiddlewareQueryException {
 		final List<ProgramFavorite> favorites = new ArrayList<ProgramFavorite>();
 
 		for (int i = 0; i < ProgramLocationsPresenterTest.NO_OF_FAVORITES; i++) {
@@ -339,14 +345,14 @@ public class ProgramLocationsPresenterTest {
 		final boolean isEditedFromAvailableTable = true;
 		final LocationViewModel locationViewModel = createLocationViewModel();
 
-		final Location country = Mockito.mock(Location.class);
-		Mockito.when(this.locationDataManager.getLocationByID(CNTRYID)).thenReturn(country);
+		final Country country = Mockito.mock(Country.class);
+		Mockito.when(this.locationDataManager.getCountryById(CNTRYID)).thenReturn(country);
 
 		this.controller.updateLocation(locationViewModel, isEditedFromAvailableTable);
 
 		Mockito.verify(this.locationDataManager).addLocation(ArgumentMatchers.any(Location.class));
 		Mockito.verify(this.programLocationsView).refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
-		Mockito.verify(this.locationDataManager).getLocationByID(CNTRYID);
+		Mockito.verify(this.locationDataManager).getCountryById(CNTRYID);
 	}
 
 	private LocationViewModel createLocationViewModel() {

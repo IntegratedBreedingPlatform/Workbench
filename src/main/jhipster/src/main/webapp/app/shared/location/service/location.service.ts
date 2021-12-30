@@ -28,11 +28,12 @@ export class LocationService {
 
     searchLocations(request: LocationSearchRequest, favoriteLocation: boolean, pagination: any): Observable<HttpResponse<Location[]>> {
         if (favoriteLocation) {
+            request.filterFavoriteProgramUUID = true;
             request.favoriteProgramUUID = this.context.programUUID;
         }
 
         const params = createRequestOption(pagination);
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/search`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/search?programUUID=${this.context.programUUID}`;
         return this.http.post<Location[]>(url, request, { params, observe: 'response' });
     }
 }
