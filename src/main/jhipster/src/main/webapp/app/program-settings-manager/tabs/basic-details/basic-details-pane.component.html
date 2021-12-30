@@ -1,1 +1,40 @@
-basic details
+<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="basic-details-tab">
+	<div class="modal-body">
+		<form name="form" #f="ngForm">
+			<div class="form-group row required">
+				<label for="crop" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.basic-details.crop">Crop</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" name="crop" id="crop" [(ngModel)]="program.crop" #crop="ngModel" [disabled]="true"/>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="programName" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.basic-details.program-name">Program Name</label>
+				<div class="col-sm-3">
+					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="program.name" #programName="ngModel" [maxLength]="50"/>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.basic-details.program-start-date">Program Start Date</label>
+				<div class="input-group col-sm-2">
+					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="startDate"
+						   ngbDatepicker #date="ngbDatepicker" id="date" name="date" required/>
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button (click)="reset()" class="btn btn-secondary">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.reset"></span>
+		</button>
+		<button (click)="delete()" class="btn btn-outline-info" jhiTranslate="entity.action.delete">
+			<i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Delete
+		</button>
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save"></span>
+		</button>
+	</div>
+<div>
