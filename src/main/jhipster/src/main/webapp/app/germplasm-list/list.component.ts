@@ -31,7 +31,6 @@ import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 import { SearchComposite } from '../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
-import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 import { GermplasmListManagerContext } from './germplasm-list-manager.context';

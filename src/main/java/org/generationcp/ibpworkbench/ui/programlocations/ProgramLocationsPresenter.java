@@ -127,7 +127,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		for (final LocationViewModel locationViewModel : selectedLocations) {
 			final ProgramFavorite favorite = new ProgramFavorite();
 			favorite.setEntityId(locationViewModel.getLocationId());
-			favorite.setEntityType(FavoriteType.LOCATION.getName());
+			favorite.setEntityType(FavoriteType.LOCATION);
 			favorite.setUniqueID(project.getUniqueID());
 			list.add(favorite);
 		}
@@ -175,9 +175,9 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setlDefault(location.getLdefault());
 
 		if (location.getCountry() != null) {
-			viewModel.setCntryid(location.getCountry().getLocid());
+			viewModel.setCntryid(location.getCountry().getCntryid());
 
-			final Country country = this.locationDataManager.getCountryById(location.getCountry().getLocid());
+			final Country country = this.locationDataManager.getCountryById(location.getCountry().getCntryid());
 			if (country != null) {
 				viewModel.setCntryFullName(country.getIsofull());
 			}
@@ -274,7 +274,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		location.setLtype(locationViewModel.getLtype());
 
 		if (locationViewModel.getCntryid() != null) {
-			final Location country = this.locationDataManager.getLocationByID(locationViewModel.getCntryid());
+			final Country country = this.locationDataManager.getCountryById(locationViewModel.getCntryid());
 			location.setCountry(country);
 		}
 

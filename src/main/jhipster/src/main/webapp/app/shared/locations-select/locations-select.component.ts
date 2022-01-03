@@ -3,6 +3,7 @@ import { LocationService } from '../location/service/location.service';
 import { Select2OptionData } from 'ng-select2';
 import { LocationTypeEnum } from '../location/model/location-type.enum';
 import { LocationSearchRequest } from '../location/model/location-search-request.model';
+import { MatchType } from '../column-filter/column-filter-text-with-match-options-component';
 
 @Component({
     selector: 'jhi-locations-select',
@@ -52,7 +53,10 @@ export class LocationsSelectComponent implements OnInit {
 
                     const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
                     locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    locationSearchRequest.locationName = params.data.term;
+                    locationSearchRequest.locationNameFilter = {
+                        type: MatchType.STARTSWITH,
+                        value: params.data.term
+                    };
 
                     const pagination = {
                         page: (params.data.page - 1),

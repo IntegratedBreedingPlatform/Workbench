@@ -121,10 +121,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
     }
 
-    addProgram() {
-        this.openTool('/ibpworkbench/workbenchtools/create_program');
-    }
-
     myPrograms() {
         this.program = null;
         this.toolUrl = '';
@@ -171,7 +167,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             this.program.name = event.data.programUpdated.name;
         } else if (event.data.programDeleted) {
             this.program = null;
-            window.top.location.href = '/ibpworkbench/main/';
+            this.toolUrl = '';
         } else if (event.data.toolSelected) {
             this.openTool(event.data.toolSelected);
             this.expandParent();
@@ -247,6 +243,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     openMyProfile() {
         this.router.navigate(['/', { outlets: { popup: 'user-profile-update'}, }], {
+            replaceUrl: false,
+            skipLocationChange: true,
+            queryParamsHandling: 'merge'
+        });
+    }
+
+    addProgram() {
+        this.router.navigate(['/', { outlets: { popup: 'create-program'}, }], {
             replaceUrl: false,
             skipLocationChange: true,
             queryParamsHandling: 'merge'

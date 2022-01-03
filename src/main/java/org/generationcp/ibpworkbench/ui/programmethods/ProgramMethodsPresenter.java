@@ -224,7 +224,7 @@ public class ProgramMethodsPresenter {
 					mID = m.getMid();
 				}
 
-				favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD.getName());
+				favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD);
 				favorite.setEntityId(mID);
 				favorite.setUniqueID(project.getUniqueID());
 				list.add(favorite);
