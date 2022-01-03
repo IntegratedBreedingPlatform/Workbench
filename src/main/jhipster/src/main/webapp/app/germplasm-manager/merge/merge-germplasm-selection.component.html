@@ -33,7 +33,7 @@
 				</td>
 				<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
 				<td>{{germplasm.locationName}}</td>
-				<td>{{germplasm.germplasmPeferredName}}</td>
+				<td>{{germplasm.germplasmPreferredName}}</td>
 				<td><a *ngIf="germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">{{germplasm.lotCount}}</a>
 					<span *ngIf="germplasm.lotCount === 0">-</span></td>
 				<td><a *ngIf="germplasm.hasProgeny" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-progeny-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">YES</a><span *ngIf="!germplasm.hasProgeny">NO</span></td>
