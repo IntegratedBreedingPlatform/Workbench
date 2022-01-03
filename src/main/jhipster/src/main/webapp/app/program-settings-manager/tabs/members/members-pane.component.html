@@ -1,10 +1,5 @@
 <div class="row">
 	<div class="col">
-		<h3 jhiTranslate="program-settings-manager.members.heading"></h3>
-	</div>
-</div>
-<div class="row">
-	<div class="col">
 		<span jhiTranslate="program-settings-manager.members.description"></span>
 	</div>
 </div>
@@ -12,23 +7,92 @@
 	<div class="col">
 		<div class="row">
 			<div class="col">
-				<h4 jhiTranslate="program-settings-manager.members.left.column.heading"></h4>
+				<h4 jhiTranslate="program-settings-manager.members.left.heading"></h4>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col">
-				<jhi-user-table [users]="eligibleUsers" (onLoad)="loadEligibleUsers($event.page, $event.pageSize)"></jhi-user-table>
+				<table class="table table-striped table-bordered table-curved" 
+					   [id]="AVAILABLEDROPLIST" cdkDropList [cdkDropListConnectedTo]="MEMBERSDROPLIST" (cdkDropListDropped)="removeMember($event)">
+					<thead>
+					<tr>
+						<th></th>
+						<th jhiTranslate="program-settings-manager.members.left.table.column.username"></th>
+						<th jhiTranslate="program-settings-manager.members.left.table.column.fullname"></th>
+						<th jhiTranslate="program-settings-manager.members.left.table.column.email"></th>
+					</tr>
+					</thead>
+					<tbody *ngIf="left.users && left.users.length else nodataleft">
+					<tr *ngFor="let user of left.users; index as index" cdkDrag>
+					<div *cdkDragPlaceholder>&nbsp;</div>
+						<td><input type="checkbox" [checked]="left.isSelected(user)" (click)="left.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
+						<td>{{user.username}}</td>
+						<td>{{user.firstName + ' ' + user.lastName}}</td>
+						<td>{{user.email}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<ng-template #nodataleft>
+					<tbody>
+					<tr>
+						<td colspan="4" jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</ng-template>
+				<div class="pagination-container">
+					<div class="pagination-box pagination-box-left"></div>
+					<div class="pagination-box">
+						<ngb-pagination [collectionSize]="left.totalCount" [(page)]="left.page" [pageSize]="left.pageSize" 
+										[maxSize]="5" [rotate]="true" (pageChange)="loadEligibleUsers()"></ngb-pagination>
+					</div>
+					<div class="pagination-box pagination-box-right"></div>
+				</div>
 			</div>
 		</div>
 	</div>
 	<div class="col">
+		<div class="row">
+			<div class="col">
+				<h4 jhiTranslate="program-settings-manager.members.right.heading"></h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-striped table-bordered table-curved"
+					   [id]="MEMBERSDROPLIST" cdkDropList (cdkDropListDropped)="dropMember($event)" [cdkDropListConnectedTo]="AVAILABLEDROPLIST">
+					<thead>
+					<tr>
+						<th></th>
+						<th jhiTranslate="program-settings-manager.members.right.table.column.username"></th>
+						<th jhiTranslate="program-settings-manager.members.right.table.column.fullname"></th>
+						<th jhiTranslate="program-settings-manager.members.right.table.column.role"></th>
+					</tr>
+					</thead>
+					<tbody *ngIf="right.users && right.users.length else nodataright">
+					<tr *ngFor="let user of right.users; index as index" cdkDrag [cdkDragDisabled]="!isRemovable(user)">
+						<td><input *ngIf="isRemovable(user)" type="checkbox" [checked]="right.isSelected(user)" (click)="right.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
+						<td>{{user.username}}</td>
+						<td>{{user.firstName + ' ' + user.lastName}}</td>
+						<td>{{user.role.name}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<ng-template #nodataright>
+					<tbody>
+					<tr>
+						<td colspan="4" jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</ng-template>
+				<div class="pagination-container">
+					<div class="pagination-box pagination-box-right"></div>
+					<div class="pagination-box">
+						<ngb-pagination [collectionSize]="right.totalCount" [(page)]="right.page" [pageSize]="right.pageSize"
+										[maxSize]="5" [rotate]="true" (pageChange)="loadMembers()"></ngb-pagination>
+					</div>
+					<div class="pagination-box pagination-box-right"></div>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" data-test="resetButton" (click)="reset()">
-		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="reset"></span>
-	</button>
-	<button class="btn btn-primary" data-test="saveButton" (click)="save()">
-		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
-	</button>
 </div>

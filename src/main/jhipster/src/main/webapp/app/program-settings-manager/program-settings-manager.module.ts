@@ -7,7 +7,6 @@ import { LocationsPaneComponent } from './tabs/locations/locations-pane.componen
 import { BreedingMethodsPaneComponent } from './tabs/breeding-methods/breeding-methods-pane.component';
 import { MembersPaneComponent } from './tabs/members/members-pane.component';
 import { PROGRAM_SETTINGS_MANAGER_ROUTES } from './program-settings-manager.route';
-import { UserTableComponent } from './tabs/members/user-table.component';
 
 @NgModule({
     imports: [
@@ -18,7 +17,6 @@ import { UserTableComponent } from './tabs/members/user-table.component';
     declarations: [
         ProgramSettingsManagerComponent,
         MembersPaneComponent,
-        UserTableComponent,
         BasicDetailsPaneComponent,
         LocationsPaneComponent,
         BreedingMethodsPaneComponent
@@ -26,7 +24,6 @@ import { UserTableComponent } from './tabs/members/user-table.component';
     entryComponents: [
         ProgramSettingsManagerComponent,
         MembersPaneComponent,
-        UserTableComponent,
         BasicDetailsPaneComponent,
         LocationsPaneComponent,
         BreedingMethodsPaneComponent
