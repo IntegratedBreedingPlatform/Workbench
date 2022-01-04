@@ -20,7 +20,7 @@
                             </ng-container>
                         </select>
                         <div class="input-group-append">
-                            <button class="btn btn-info float-right fa fa-plus" (click)="AddFilter()" [disabled]="!hasFiltersAvailable()" >
+                            <button class="btn btn-info float-right fa fa-plus" (click)="AddFilter()" [disabled]="!hasFiltersAvailable()" data-test="addFilterButton">
                             </button>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                 <i class="fa fa-close"></i>
             </button>
             <div class="clearfix"></div>
-            <div><a href (click)="resetAll($event)">reset all filters</a></div>
+            <div><a href (click)="resetAll($event)" data-test="resetAllFilters">reset all filters</a></div>
         </div>
     </div>
 </div>

@@ -7,50 +7,58 @@
 				<input type="text" class="form-control" placeholder="{{ 'search' | translate }}" (keyup)="onSearchColumn($event)" />
 			</div>
 			<div class="columns-container">
-				<div *ngIf="filteredStaticColumns.length > 0">
-					<div class="form-check" *ngFor="let column of filteredStaticColumns">
-						<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
-							   id="check-static-{{column.id}}" name="'check-static-{{column.id}}'"
-							   [disabled]="column.id === TermIdEnum.ENTRY_NO">
-						<label class="form-check-label" for="check-static-{{column.id}}">
-							{{column.displayName}}
-						</label>
+				<div *ngIf="this.checkAreColumnsVisible(this.staticColumns)">
+					<div class="form-check" *ngFor="let column of this.staticColumns">
+						<div *ngIf="column.visible">
+							<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+								   id="check-static-{{column.id}}" name="'check-static-{{column.id}}'"
+								   [disabled]="column.id === TermIdEnum.ENTRY_NO">
+							<label class="form-check-label" for="check-static-{{column.id}}">
+								{{column.displayName}}
+							</label>
+						</div>
 					</div>
 				</div>
 
-				<div *ngIf="filteredNameColumns.length > 0" class="mt-3">
+				<div *ngIf="this.checkAreColumnsVisible(this.nameColumns)" class="mt-3">
 					<label class="form-check-label font-weight-bold" jhiTranslate="germplasm-list.list-data.columns.types.names">NAMES</label>
 					<hr class="mt-1 mb-1" />
-					<div class="form-check" *ngFor="let column of filteredNameColumns">
-						<input class="form-check-input" type="checkbox"  [(ngModel)]="column.selected"
-							   id="check-name-{{column.id}}" name="'check-name-{{column.id}}'">
-						<label class="form-check-label" for="check-name-{{column.id}}">
-							{{column.displayName}}
-						</label>
+					<div class="form-check" *ngFor="let column of this.nameColumns">
+						<div *ngIf="column.visible">
+							<input class="form-check-input" type="checkbox"  [(ngModel)]="column.selected"
+								   id="check-name-{{column.id}}" name="'check-name-{{column.id}}'">
+							<label class="form-check-label" for="check-name-{{column.id}}">
+								{{column.displayName}}
+							</label>
+						</div>
 					</div>
 				</div>
 
-				<div *ngIf="filteredPassportColumns.length > 0" class="mt-3">
+				<div *ngIf="this.checkAreColumnsVisible(this.passportColumns)" class="mt-3">
 					<label class="form-check-label font-weight-bold" jhiTranslate="germplasm-list.list-data.columns.types.passport">PASSPORT</label>
 					<hr class="mt-1 mb-1" />
-					<div class="form-check" *ngFor="let column of filteredPassportColumns">
-						<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
-							   id="check-passport-{{column.id}}" name="'check-passport-{{column.id}}'">
-						<label class="form-check-label" for="check-passport-{{column.id}}">
-							{{column.displayName}}
-						</label>
+					<div class="form-check" *ngFor="let column of this.passportColumns">
+						<div *ngIf="column.visible">
+							<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+								   id="check-passport-{{column.id}}" name="'check-passport-{{column.id}}'">
+							<label class="form-check-label" for="check-passport-{{column.id}}">
+								{{column.displayName}}
+							</label>
+						</div>
 					</div>
 				</div>
 
-				<div *ngIf="filteredAttributesColumns.length > 0" class="mt-3">
+				<div *ngIf="this.checkAreColumnsVisible(this.attributesColumns)" class="mt-3">
 					<label class="form-check-label font-weight-bold" jhiTranslate="germplasm-list.list-data.columns.types.attributes">ATTRIBUTES</label>
 					<hr class="mt-1 mb-1" />
-					<div class="form-check" *ngFor="let column of filteredAttributesColumns">
-						<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
-							   id="check-attributes-{{column.id}}" name="'check-attributes-{{column.id}}'">
-						<label class="form-check-label" for="check-attributes-{{column.id}}">
-							{{column.displayName}}
-						</label>
+					<div class="form-check" *ngFor="let column of this.attributesColumns">
+						<div *ngIf="column.visible">
+							<input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+								   id="check-attributes-{{column.id}}" name="'check-attributes-{{column.id}}'">
+							<label class="form-check-label" for="check-attributes-{{column.id}}">
+								{{column.displayName}}
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>
