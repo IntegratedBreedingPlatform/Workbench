@@ -154,7 +154,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	protected void deleteAllProgramFavorites(final Project project) {
 		final List<ProgramFavorite> favoriteLocations =
 				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
-		final List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, project.getUniqueID());
+		final List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHODS, project.getUniqueID());
 		germplasmDataManager.deleteProgramFavorites(favoriteLocations);
 		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
 
