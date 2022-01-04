@@ -36,7 +36,8 @@
 					<tr *ngFor="let user of left.users; index as index"
 						[class.selected]="left.isSelected(user)"
 						(click)="left.toggleSelect($event, index, user)"
-						cdkDrag>
+						cdkDrag
+						(cdkDragEntered)="dragStart($event, user, left)">
 					<div *cdkDragPlaceholder>&nbsp;</div>
 						<td><input type="checkbox" [checked]="left.isSelected(user)" (click)="left.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
 						<td>{{user.username}}</td>
@@ -86,7 +87,8 @@
 					<tr *ngFor="let user of right.users; index as index"
 						[class.selected]="right.isSelected(user)"
 						(click)="isRemovable(user) && right.toggleSelect($event, index, user)"
-						cdkDrag [cdkDragDisabled]="!isRemovable(user) || !isAvailableVisible">
+						cdkDrag [cdkDragDisabled]="!isRemovable(user) || !isAvailableVisible"
+						(cdkDragEntered)="dragStart($event, user, right)">
 						<td><input *ngIf="isRemovable(user)" type="checkbox" [checked]="right.isSelected(user)" (click)="right.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
 						<td>{{user.username}}</td>
 						<td>{{user.firstName + ' ' + user.lastName}}</td>

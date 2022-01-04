@@ -60,11 +60,11 @@ class UserTable {
 
 /**
  * TODO:
- *  - assign role modal
  *  - filters
  *  - empty table height
  *  - remove link
  *  - add count in select role
+ *  - select all, selected count
  */
 @Component({
     selector: 'jhi-members-pane',
@@ -77,6 +77,7 @@ export class MembersPaneComponent {
 
     left: UserTable;
     right: UserTable;
+    draggedItems = {}
 
     isAvailableVisible = false;
 
@@ -126,6 +127,17 @@ export class MembersPaneComponent {
         });
     }
 
+    dragStart($event, dragged: UserDetail | ProgramMember, table: UserTable) {
+        this.draggedItems = {};
+        const id = 'id' in dragged ? dragged.id : dragged.userId;
+        // if dragging the selected region, drag them all, otherwise just the item
+        if (table.selectedItems[id]) {
+            this.draggedItems = table.selectedItems;
+        } else {
+            this.draggedItems[id] = dragged;
+        }
+    }
+
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
@@ -140,7 +152,7 @@ export class MembersPaneComponent {
         if (event.previousContainer.connectedTo !== this.MEMBERSDROPLIST) {
             return;
         }
-        const ids = Object.keys(this.left.selectedItems).map((key) => Number(key));
+        const ids = Object.keys(this.draggedItems).map((key) => Number(key));
         if (!ids.length) {
             return;
         }
@@ -168,7 +180,7 @@ export class MembersPaneComponent {
         if (event.previousContainer.connectedTo !== this.AVAILABLEDROPLIST) {
             return;
         }
-        const ids = Object.keys(this.right.selectedItems).map((key) => Number(key));
+        const ids = Object.keys(this.draggedItems).map((key) => Number(key));
         if (!ids.length) {
             return;
         }
