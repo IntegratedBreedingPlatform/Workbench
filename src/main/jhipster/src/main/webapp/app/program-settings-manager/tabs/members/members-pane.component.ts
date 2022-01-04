@@ -10,9 +10,12 @@ import { map } from 'rxjs/operators';
 import { ProgramMember } from '../../../shared/user/model/program-member.model';
 import { RoleTypeEnum } from '../../../shared/user/model/role-type.enum';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { Role } from '../../../shared/user/model/role.model';
+import { RoleService } from '../../../shared/user/service/role.service';
+import { RoleFilter } from '../../../shared/user/model/role-filter.model';
 
 class UserTable {
     page = 1;
@@ -62,6 +65,7 @@ class UserTable {
  *  - filters
  *  - empty table height
  *  - remove link
+ *  - overflow, long texts
  */
 @Component({
     selector: 'jhi-members-pane',
@@ -132,17 +136,29 @@ export class MembersPaneComponent {
         }
     }
 
-    async dropMember(event: CdkDragDrop<any>) {
+    async dropMembers(event: CdkDragDrop<any>) {
         // See also https://github.com/angular/components/issues/13938
         if (event.previousContainer.connectedTo !== this.MEMBERSDROPLIST) {
             return;
         }
+        const ids = Object.keys(this.left.selectedItems).map((key) => Number(key));
+        if (!ids.length) {
+            return;
+        }
+
+        let roleId: number;
         try {
-            await this.openRoleSelectionModal();
+            roleId = await this.modalService.open(SelectRoleComponent as Component).result;
         } catch (e) {
             return;
         }
-        this.load();
+        this.membersService.addProgramRoleToUsers(roleId, ids).subscribe(
+            () => {
+                this.alertService.success('program-settings-manager.members.add.success');
+                this.load()
+            },
+            (error) => this.onError(error)
+        );
     }
 
     isRemovable(user: ProgramMember) {
@@ -173,9 +189,60 @@ export class MembersPaneComponent {
             (error) => this.onError(error)
         );
     }
+}
 
-    private async openRoleSelectionModal() {
-        // TODO
-        this.modalService.open(ModalConfirmComponent as Component);
+@Component({
+    selector: 'jhi-select-role-component',
+    template: `
+		<div class="modal-header">
+			<h4 class="modal-title font-weight-bold" jhiTranslate="program-settings-manager.members.select.role.header"></h4>
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="dismiss()">&times;
+			</button>
+		</div>
+		<div class="modal-body word-wrap">
+			<form>
+				<div class="form-group row">
+					<div class="col" jhiTranslate="program-settings-manager.members.select.role.message"></div>
+				</div>
+				<div class="form-group row required">
+					<label class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.members.select.role.label"></label>
+					<div class="col-sm-8">
+						<ng-select name="role" [(ngModel)]="selectedRole">
+							<ng-option *ngFor="let role of roles" [value]="role.id">{{role.name}}</ng-option>
+						</ng-select>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+				<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+			</button>
+			<button (click)="save()" class="btn btn-primary" data-test="saveMembersButton" [disabled]="!selectedRole">
+				<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+			</button>
+		</div>
+    `
+})
+export class SelectRoleComponent {
+    selectedRole: number;
+    roles: Role[] = [];
+
+    constructor(
+        private modal: NgbActiveModal,
+        private translateService: TranslateService,
+        private roleService: RoleService
+    ) {
+        const roleFilter = <RoleFilter>({ roleTypeId: RoleTypeEnum.PROGRAM.id });
+        this.roleService.getFilteredRoles(roleFilter).subscribe((roles) => this.roles = roles);
+    }
+
+    save() {
+        this.modal.close(this.selectedRole);
+    }
+
+    dismiss() {
+        this.modal.dismiss();
     }
 }

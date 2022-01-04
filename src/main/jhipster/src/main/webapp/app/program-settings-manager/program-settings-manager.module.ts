@@ -5,7 +5,7 @@ import { ProgramSettingsManagerComponent } from './program-settings-manager.comp
 import { BasicDetailsPaneComponent } from './tabs/basic-details/basic-details-pane.component';
 import { LocationsPaneComponent } from './tabs/locations/locations-pane.component';
 import { BreedingMethodsPaneComponent } from './tabs/breeding-methods/breeding-methods-pane.component';
-import { MembersPaneComponent } from './tabs/members/members-pane.component';
+import { MembersPaneComponent, SelectRoleComponent } from './tabs/members/members-pane.component';
 import { PROGRAM_SETTINGS_MANAGER_ROUTES } from './program-settings-manager.route';
 
 @NgModule({
@@ -17,6 +17,7 @@ import { PROGRAM_SETTINGS_MANAGER_ROUTES } from './program-settings-manager.rout
     declarations: [
         ProgramSettingsManagerComponent,
         MembersPaneComponent,
+        SelectRoleComponent,
         BasicDetailsPaneComponent,
         LocationsPaneComponent,
         BreedingMethodsPaneComponent
@@ -24,6 +25,7 @@ import { PROGRAM_SETTINGS_MANAGER_ROUTES } from './program-settings-manager.rout
     entryComponents: [
         ProgramSettingsManagerComponent,
         MembersPaneComponent,
+        SelectRoleComponent,
         BasicDetailsPaneComponent,
         LocationsPaneComponent,
         BreedingMethodsPaneComponent

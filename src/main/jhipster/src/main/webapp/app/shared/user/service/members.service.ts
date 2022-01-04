@@ -33,4 +33,9 @@ export class MembersService {
         params['userIds'] = userIds;
         return this.http.delete<UserDetail[]>(baseUrl, { observe: 'response', params });
     }
+
+    addProgramRoleToUsers(roleId: number, userIds: number[]) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members';
+        return this.http.post<UserDetail[]>(baseUrl, { roleId, userIds }, { observe: 'response' });
+    }
 }

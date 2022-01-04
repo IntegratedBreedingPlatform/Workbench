@@ -42,7 +42,13 @@
         }
       },
       "delete.confirm": "Remove {{param}} member(s) from this program? (Users will no longer have a role associated to access current program)",
-      "delete.success": "Member removed successfully"
+      "delete.success": "Member(s) removed successfully",
+      "add.success": "Member(s) added successfully",
+      "select.role": {
+        "header": "Assign role",
+        "message": "Select a Program role for the user(s) selected.",
+        "label": "Role"
+      }
     }
   }
 }
