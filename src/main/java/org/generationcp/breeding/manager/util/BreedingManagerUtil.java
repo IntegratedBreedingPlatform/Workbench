@@ -3,7 +3,6 @@ package org.generationcp.breeding.manager.util;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,9 +32,6 @@ import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Window;
@@ -290,7 +286,7 @@ public class BreedingManagerUtil {
 	public static boolean hasFavoriteMethods(final GermplasmDataManager germplasmDataManager, final String programUUID) {
 		boolean hasFavMethod = false;
 		try {
-			final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, programUUID);
+			final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHODS, 1000, programUUID);
 			if (list != null && !list.isEmpty()) {
 				hasFavMethod = true;
 			}
@@ -354,7 +350,7 @@ public class BreedingManagerUtil {
 
 		try {
 
-			final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, programUUID);
+			final List<ProgramFavorite> list = germplasmDataManager.getProgramFavorites(FavoriteType.METHODS, 1000, programUUID);
 			for (final ProgramFavorite f : list) {
 				favoriteMethodIds.add(f.getEntityId());
 			}

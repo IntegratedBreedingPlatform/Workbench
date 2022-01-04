@@ -84,7 +84,7 @@ public class BreedingMethodFieldTest {
 	public void testinitPopulateFavMethodReturnsFalseWhenThereAreNoFavouriteMethodAndHasNoDefaultValue() throws MiddlewareQueryException {
 
 		ArrayList<ProgramFavorite> favouriteMethods = new ArrayList<ProgramFavorite>();
-		Mockito.when(germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, BreedingMethodFieldTest.PROGRAM_UUID))
+		Mockito.when(germplasmDataManager.getProgramFavorites(FavoriteType.METHODS, 1000, BreedingMethodFieldTest.PROGRAM_UUID))
 				.thenReturn(favouriteMethods);
 		breedingMethodField.setHasDefaultValue(false);
 		Assert.assertFalse("Expecting a false return value when there are no favourite method and no default value.",
@@ -108,7 +108,7 @@ public class BreedingMethodFieldTest {
 
 		ArrayList<ProgramFavorite> favouriteMethods = new ArrayList<ProgramFavorite>();
 		favouriteMethods.add(Mockito.mock(ProgramFavorite.class));
-		Mockito.when(germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, 1000, BreedingMethodFieldTest.PROGRAM_UUID))
+		Mockito.when(germplasmDataManager.getProgramFavorites(FavoriteType.METHODS, 1000, BreedingMethodFieldTest.PROGRAM_UUID))
 				.thenReturn(favouriteMethods);
 
 		breedingMethodField.setHasDefaultValue(false);
