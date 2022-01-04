@@ -46,6 +46,11 @@
     font-size: 13px;
 }
 
+.list-group-content {
+    height: 50vh;
+    overflow-y: auto;
+}
+
 .field-group{
     margin-bottom: 0px
 }
@@ -54,6 +59,7 @@
     background-color: #c8c6c6;
 }
 
+/* Fix the overlapping with the labels when the scroll is activated */
 .fix-list-group {
     padding: 20px 10px;
     display: flex;
