@@ -61,6 +61,7 @@ class UserTable {
  *  - assign role modal
  *  - filters
  *  - empty table height
+ *  - remove link
  */
 @Component({
     selector: 'jhi-members-pane',
@@ -73,6 +74,8 @@ export class MembersPaneComponent {
 
     left: UserTable;
     right: UserTable;
+
+    isAvailableVisible = false;
 
     constructor(
         private membersService: MembersService,

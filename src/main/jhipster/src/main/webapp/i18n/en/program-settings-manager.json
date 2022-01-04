@@ -22,7 +22,9 @@
     },
     "members": {
       "heading": "Program members",
-      "description": "Choose team members for this program by dragging available users from the list on the left into the Program Members list on the right. To remove them, drag them to the left.",
+      "description": "Choose team members for this program by dragging available users into the Program Members list on the right.",
+      "show.available.users": "Show available users",
+      "hide.available.users": "Hide available users",
       "left": {
         "heading": "Available Users",
         "table": {

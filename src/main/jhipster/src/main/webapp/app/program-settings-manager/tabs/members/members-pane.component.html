@@ -5,6 +5,15 @@
 </div>
 <div class="row mt-3">
 	<div class="col">
+		<button class="btn btn-outline-info" (click)="isAvailableVisible = !isAvailableVisible">
+			<i class="fa mr-3" [ngClass]="isAvailableVisible ? 'fa-angle-left': 'fa-angle-right'"></i>
+			<span *ngIf="isAvailableVisible" jhiTranslate="program-settings-manager.members.hide.available.users"></span>
+			<span *ngIf="!isAvailableVisible" jhiTranslate="program-settings-manager.members.show.available.users"></span>
+		</button>
+	</div>
+</div>
+<div class="row mt-3">
+	<div class="col" *ngIf="isAvailableVisible">
 		<div class="row">
 			<div class="col">
 				<h4 jhiTranslate="program-settings-manager.members.left.heading"></h4>
@@ -69,7 +78,7 @@
 					</tr>
 					</thead>
 					<tbody *ngIf="right.users && right.users.length else nodataright">
-					<tr *ngFor="let user of right.users; index as index" cdkDrag [cdkDragDisabled]="!isRemovable(user)">
+					<tr *ngFor="let user of right.users; index as index" cdkDrag [cdkDragDisabled]="!isRemovable(user) || !isAvailableVisible">
 						<td><input *ngIf="isRemovable(user)" type="checkbox" [checked]="right.isSelected(user)" (click)="right.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
 						<td>{{user.username}}</td>
 						<td>{{user.firstName + ' ' + user.lastName}}</td>
