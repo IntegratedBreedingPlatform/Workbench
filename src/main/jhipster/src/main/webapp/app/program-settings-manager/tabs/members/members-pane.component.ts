@@ -60,11 +60,11 @@ class UserTable {
 
 /**
  * TODO:
- *  - shift/right click
  *  - assign role modal
  *  - filters
  *  - empty table height
  *  - remove link
+ *  - add count in select role
  */
 @Component({
     selector: 'jhi-members-pane',
