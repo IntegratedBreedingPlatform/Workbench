@@ -25,7 +25,7 @@ import { UserProfileModule } from './entities/user-profile/user-profile.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
 import { PrototypeModule } from './prototype/prototype.module';
 import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
-import { MetadataManagerModule } from './metadata-manager/metadata-manager.module';
+import { MetadataManagerModule } from './crop-settings-manager/metadata-manager.module';
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
 import { GermplasmListTreeTableComponent } from './shared/tree/germplasm/germplasm-list-tree-table.component';
 import { AboutModule } from './about/about.module';
