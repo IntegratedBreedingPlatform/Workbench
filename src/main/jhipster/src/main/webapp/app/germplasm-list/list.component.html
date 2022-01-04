@@ -65,7 +65,8 @@
 			<div style="float: right">
 				<button class="btn btn-light" [hidden]="this.germplasmList?.locked"
 						*jhiHasAnyAuthority="EDIT_LIST_METADATA_PERMISSIONS"
-						(click)="openEditListMetadata()">
+						(click)="openEditListMetadata()"
+						data-test="editListMetadataButton">
 					<i [ngClass]="'fa fa-edit'"></i>
 				</button>
 				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="!(principal.hasAnyAuthorityDirect(ADMIN_PERMISSIONS) || user?.id === germplasmList?.ownerId)" data-test="lockListButton">
