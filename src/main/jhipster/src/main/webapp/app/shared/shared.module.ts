@@ -83,6 +83,7 @@ import { FileDeleteOptionsComponent } from './file/component/file-delete-options
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
 import { MembersService } from './user/service/members.service';
+import { RoleService } from './user/service/role.service';
 
 @NgModule({
     imports: [
@@ -151,6 +152,7 @@ import { MembersService } from './user/service/members.service';
         Principal,
         AccountService,
         MembersService,
+        RoleService,
         InventoryService,
         LotService,
         TransactionService,
