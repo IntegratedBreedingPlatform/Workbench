@@ -13,7 +13,8 @@
 	</div>
 </div>
 <div class="row mt-3">
-	<div class="col" *ngIf="isAvailableVisible">
+	<!-- Left table -->
+	<div class="col-6" style="overflow-x: auto" *ngIf="isAvailableVisible">
 		<div class="row">
 			<div class="col">
 				<h4 jhiTranslate="program-settings-manager.members.left.heading"></h4>
@@ -59,7 +60,8 @@
 			</div>
 		</div>
 	</div>
-	<div class="col">
+	<!-- Left table -->
+	<div class="col" style="overflow-x: auto">
 		<div class="row">
 			<div class="col">
 				<h4 jhiTranslate="program-settings-manager.members.right.heading"></h4>

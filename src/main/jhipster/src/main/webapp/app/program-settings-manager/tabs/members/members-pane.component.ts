@@ -65,7 +65,6 @@ class UserTable {
  *  - filters
  *  - empty table height
  *  - remove link
- *  - overflow, long texts
  */
 @Component({
     selector: 'jhi-members-pane',
