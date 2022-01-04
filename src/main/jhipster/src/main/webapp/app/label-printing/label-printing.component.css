@@ -42,8 +42,7 @@
 #leftSelectedFields li,
 #rightSelectedFields li,
 .non-pdf-selected-fields li {
-    margin: 5px;
-    padding: 5px;
+    padding: 10px;
     font-size: 13px;
 }
 
