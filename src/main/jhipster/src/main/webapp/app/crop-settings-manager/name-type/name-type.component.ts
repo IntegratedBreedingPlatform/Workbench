@@ -158,11 +158,11 @@ export class NameTypeComponent implements OnInit {
 
     deleteNameType(nameType: any) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = this.translateService.instant('metadata-manager.name-type.modal.confirmation.title');
-        confirmModalRef.componentInstance.message = this.translateService.instant('metadata-manager.name-type.modal.delete.warning', { param: nameType.name });
+        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.name-type.modal.confirmation.title');
+        confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', { param: nameType.name });
         confirmModalRef.result.then(() => {
             this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
-                this.alertService.success('metadata-manager.name-type.modal.delete.success');
+                this.alertService.success('crop-settings-manager.name-type.modal.delete.success');
                 this.loadNameType();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });

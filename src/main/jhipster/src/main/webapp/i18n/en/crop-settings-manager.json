@@ -1,6 +1,6 @@
 {
-  "metadata-manager": {
-    "title": "Manage Metadata",
+  "crop-settings-manager": {
+    "title": "Manage Crop settings",
     "name-type": {
       "title": "Germplasm Name Types",
       "code": "Code",

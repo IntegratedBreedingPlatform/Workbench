@@ -38,7 +38,7 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
         if (this.nameTypeId) {
             this.isLoading = true;
             this.nameTypeService.updateNameType(this.nameType, this.nameTypeId).toPromise().then((result) => {
-                this.alertService.success('metadata-manager.name-type.modal.edit.success');
+                this.alertService.success('crop-settings-manager.name-type.modal.edit.success');
                 this.notifyChanges();
                 this.isLoading = false;
             }).catch((response) => {
@@ -48,7 +48,7 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
         } else {
             this.isLoading = true;
             this.nameTypeService.createNameType(this.nameType).toPromise().then((result) => {
-                this.alertService.success('metadata-manager.name-type.modal.create.success');
+                this.alertService.success('crop-settings-manager.name-type.modal.create.success');
                 this.notifyChanges();
                 this.isLoading = false;
             }).catch((response) => {
