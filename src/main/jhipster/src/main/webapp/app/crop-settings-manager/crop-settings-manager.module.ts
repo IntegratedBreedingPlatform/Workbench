@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { BmsjHipsterSharedModule } from '../shared';
 import { RouterModule } from '@angular/router';
 import { CropSettingsManagerComponent } from './crop-settings-manager.component';
-import { NameTypeComponent } from './name-type/name-type.component';
-import { NameTypeResolvePagingParams } from './name-type/name-type-resolve-paging-params';
+import { NameTypesPaneComponent } from './name-types/name-types-pane.component';
 import { NameTypeService } from '../shared/name-type/service/name-type.service';
-import { NameTypeEditDialogComponent, NameTypeEditPopupComponent } from './name-type/name-type-edit-dialog.component';
-import { NameTypeContext } from './name-type/name-type.context';
+import { NameTypeEditDialogComponent, NameTypeEditPopupComponent } from './name-types/name-type-edit-dialog.component';
+import { NameTypeContext } from './name-types/name-type.context';
 import { CROP_SETTINGS_MANAGER_ROUTES } from './crop-settings-manager.route';
+import { LocationsPaneComponent } from './locations/locations-pane.component';
+import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
 
 @NgModule({
     imports: [
@@ -17,18 +18,20 @@ import { CROP_SETTINGS_MANAGER_ROUTES } from './crop-settings-manager.route';
     ],
     declarations: [
         CropSettingsManagerComponent,
-        NameTypeComponent,
+        NameTypesPaneComponent,
+        LocationsPaneComponent,
         NameTypeEditDialogComponent,
         NameTypeEditPopupComponent
     ],
     entryComponents: [
         CropSettingsManagerComponent,
-        NameTypeComponent,
+        NameTypesPaneComponent,
+        LocationsPaneComponent,
         NameTypeEditDialogComponent,
         NameTypeEditPopupComponent
     ],
     providers: [
-        NameTypeResolvePagingParams,
+        NameTypesResolvePagingParams,
         NameTypeService,
         NameTypeContext
     ]
