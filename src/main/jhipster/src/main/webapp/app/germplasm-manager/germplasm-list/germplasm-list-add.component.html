@@ -15,7 +15,8 @@
 							 autoLayout="true"
 							 [(selection)]="selectedNode"
 							 (onNodeSelect)="onNodeSelect($event)"
-							 styleClass="tree-table">
+							 styleClass="tree-table"
+							 data-test="addToListTable">
 					<ng-template pTemplate="header">
 						<tr>
 							<th>Name</th>
@@ -51,6 +52,6 @@
 	</button>
 	<button (click)="validate()" [disabled]="isLoading" class="btn btn-primary">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
-		<span class="fa fa-plus"></span>&nbsp;<span jhiTranslate="germplasm-list-add.add-action"></span>
+		<span class="fa fa-plus"></span>&nbsp;<span jhiTranslate="germplasm-list-add.add-action" data-test="addToListModalButton"></span>
 	</button>
 </div>
