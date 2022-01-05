@@ -472,7 +472,6 @@ export class ListComponent implements OnInit {
                 cropName: this.paramContext.cropName,
                 loggedInUserId: this.paramContext.loggedInUserId,
                 programUUID: this.paramContext.programUUID,
-                authToken: this.paramContext.authToken,
                 selectMultiple: true
             }
         });
