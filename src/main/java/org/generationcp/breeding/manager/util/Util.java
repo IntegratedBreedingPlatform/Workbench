@@ -296,20 +296,4 @@ public class Util {
 		 return germplasmListsMap;
 	 }
 
-	public static String getAdditionalParams(WorkbenchDataManager workbenchDataManager) {
-		String addtlParams = "";
-
-		try {
-			Long projectId = ContextUtil.getProjectInContext(workbenchDataManager, ContextApplication.currentRequest()).getProjectId();
-			Integer userId = ContextUtil.getCurrentWorkbenchUserId(ContextApplication.currentRequest());
-			String authenticationTokenString =
-				ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
-
-			addtlParams = ContextUtil.getContextParameterString(userId, projectId) + authenticationTokenString;
-		 } catch (MiddlewareQueryException e) {
-			 Util.LOG.error("Error occured while resolving context parameters: " + e.getMessage(), e);
-		 }
-		return addtlParams;
-	 }
-
 }

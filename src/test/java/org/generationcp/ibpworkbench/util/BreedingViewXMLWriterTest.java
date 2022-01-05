@@ -95,10 +95,6 @@ public class BreedingViewXMLWriterTest {
 		this.createBreedingViewDirectories();
 
 		final SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-		final Authentication authentication = Mockito.mock(Authentication.class);
-		Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-		Mockito.when(authentication.getName()).thenReturn(BreedingViewXMLWriterTest.USER_NAME);
-
 		SecurityContextHolder.setContext(securityContext);
 
 	}

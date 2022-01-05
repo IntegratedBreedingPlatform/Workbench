@@ -46,7 +46,7 @@ public class UserProgramController {
         final Project project = this.workbenchDataManager.getProjectByUuid(programUUID);
         if (project != null) {
             org.generationcp.commons.util.ContextUtil.setContextInfo(this.request,
-                    this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId(), null);
+                    this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
 
             this.authorizationService.reloadAuthorities(project);
         }

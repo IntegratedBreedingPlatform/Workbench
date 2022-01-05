@@ -195,9 +195,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 	private static String getAuthParams(final ContextUtil contextUtil) {
-		final String authToken = contextUtil.getContextInfoFromSession().getAuthToken();
 		return "loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId=" + contextUtil
-			.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + (authToken != null ? authToken : "");
+			.getContextInfoFromSession().getSelectedProjectId();
 	}
 
 	public Table getSampleTable() {

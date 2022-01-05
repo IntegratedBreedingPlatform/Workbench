@@ -55,8 +55,8 @@ public class WorkbenchAuthenticationSuccessHandler implements AuthenticationSucc
 		final boolean shouldShowReleaseNote = this.releaseNoteService.shouldShowReleaseNote(user.getUserid());
 
 		// Initialize the ContextInfo to set the userId of the authenticated user.
-		// The projectId and token will be populated later when a program is opened/loaded.
-		ContextUtil.setContextInfo(request, user.getUserid(), null, null, shouldShowReleaseNote);
+		// The projectId will be populated later when a program is opened/loaded.
+		ContextUtil.setContextInfo(request, user.getUserid(), null, shouldShowReleaseNote);
 
 		this.userService.incrementUserLogInCount(user.getUserid());
 
