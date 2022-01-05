@@ -1,6 +1,11 @@
 {
   "crop-settings-manager": {
     "title": "Manage Crop settings",
+    "tabs": {
+      "locations": "Locations",
+      "breeding-methods": "Breeding Methods",
+      "name-type": "Germplasm Name Types"
+    },
     "name-type": {
       "title": "Germplasm Name Types",
       "code": "Code",
