@@ -4,7 +4,7 @@ import { SORT_PREDICATE_NONE } from '../../germplasm-manager/germplasm-search-re
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class NameTypeResolvePagingParams implements Resolve<any> {
+export class NameTypesResolvePagingParams implements Resolve<any> {
     constructor(private paginationUtil: JhiPaginationUtil) {
     }
 

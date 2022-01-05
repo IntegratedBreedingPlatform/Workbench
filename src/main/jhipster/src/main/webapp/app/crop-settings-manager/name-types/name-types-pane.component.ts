@@ -17,9 +17,9 @@ import { FilterType } from '../../shared/column-filter/column-filter.component';
 
 @Component({
     selector: 'jhi-name-type',
-    templateUrl: './name-type.component.html'
+    templateUrl: './name-types-pane.component.html'
 })
-export class NameTypeComponent implements OnInit {
+export class NameTypesPaneComponent implements OnInit {
 
     nameTypes: NameTypeDetails[];
     private routeData: any;
