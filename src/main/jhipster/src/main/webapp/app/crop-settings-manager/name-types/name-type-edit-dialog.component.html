@@ -2,8 +2,8 @@
 	<div class="modal-header">
 		<div class="col-xs-11 col-md-11">
 			<h4 class="modal-title font-weight-bold">
-				<span *ngIf="nameTypeId" jhiTranslate="metadata-manager.name-type.modal.edit.header"></span>
-				<span *ngIf="!nameTypeId" jhiTranslate="metadata-manager.name-type.modal.create.header"></span>
+				<span *ngIf="nameTypeId" jhiTranslate="crop-settings-manager.name-type.modal.edit.header"></span>
+				<span *ngIf="!nameTypeId" jhiTranslate="crop-settings-manager.name-type.modal.create.header"></span>
 			</h4>
 		</div>
 		<div class="col-xs-1 col-md-1">
@@ -15,19 +15,19 @@
 	<div class="modal-body">
 		<form name="form" #f="ngForm">
 			<div class="form-group row required">
-				<label for="nameTypeCode" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="metadata-manager.name-type.code">Code</label>
+				<label for="nameTypeCode" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.name-type.code">Code</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" name="code" id="code" [(ngModel)]="nameType.code" #nameTypeCode="ngModel" [maxLength]="50"/>
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="nameTypeName" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="metadata-manager.name-type.name">Name</label>
+				<label for="nameTypeName" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.name-type.name">Name</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="nameType.name" #nameTypeName="ngModel" [maxLength]="50"/>
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="nameTypeDescription" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="metadata-manager.name-type.description">Description</label>
+				<label for="nameTypeDescription" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.name-type.description">Description</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" name="description" id="description" [(ngModel)]="nameType.description" #nameTypeDescription="ngModel" [maxLength]="255"/>
 				</div>
