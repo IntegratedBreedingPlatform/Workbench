@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UserDetail } from '../../../shared/user/model/user-detail.model';
 import { MembersService } from '../../../shared/user/service/members.service';
 import { AlertService } from '../../../shared/alert/alert.service';
@@ -63,7 +63,6 @@ class UserTable {
  *  - filters
  *  - empty table height
  *  - remove link
- *  - add count in select role
  *  - select all, selected count
  */
 @Component({
@@ -159,7 +158,9 @@ export class MembersPaneComponent {
 
         let roleId: number;
         try {
-            roleId = await this.modalService.open(SelectRoleComponent as Component).result;
+            const modal = this.modalService.open(SelectRoleComponent as Component);
+            modal.componentInstance.count = ids.length;
+            roleId = await modal.result;
         } catch (e) {
             return;
         }
@@ -214,7 +215,7 @@ export class MembersPaneComponent {
 		<div class="modal-body word-wrap">
 			<form>
 				<div class="form-group row">
-					<div class="col" jhiTranslate="program-settings-manager.members.select.role.message"></div>
+					<div class="col" jhiTranslate="program-settings-manager.members.select.role.message" [translateValues]="{count: count}"></div>
 				</div>
 				<div class="form-group row required">
 					<label class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.members.select.role.label"></label>
@@ -239,6 +240,7 @@ export class MembersPaneComponent {
 export class SelectRoleComponent {
     selectedRole: number;
     roles: Role[] = [];
+    @Input() count: number;
 
     constructor(
         private modal: NgbActiveModal,

@@ -46,7 +46,7 @@
       "add.success": "Member(s) added successfully",
       "select.role": {
         "header": "Assign role",
-        "message": "Select a Program role for the user(s) selected.",
+        "message": "Assigning {{count}} user(s) to the program. Please select a Program role:",
         "label": "Role"
       }
     }
