@@ -5,8 +5,12 @@
 	<nav>
 		<ul class="nav nav-tabs">
 			<li class="nav-item">
-				<a class="nav-link" [routerLink]="['/name-type']"
-				   [routerLinkActive]="['active']" queryParamsHandling="merge" jhiTranslate="crop-settings-manager.name-type.title">Germplasm Name Types</a>
+				<a class="nav-link" [routerLink]="['locations']" [routerLinkActive]="['active']" queryParamsHandling="merge"
+				   jhiTranslate="crop-settings-manager.tabs.locations"></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['name-types']" [routerLinkActive]="['active']" queryParamsHandling="merge"
+				   jhiTranslate="crop-settings-manager.tabs.name-type"></a>
 			</li>
 		</ul>
 	</nav>
