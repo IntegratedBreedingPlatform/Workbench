@@ -89,6 +89,7 @@
         "clear-sort": "Clear sort",
         "selected": "Selected",
         "select.all": "Select all pages",
+        "select.all.items": "Select all",
         "total.entries": "Total entries"
     },
     "entity": {
