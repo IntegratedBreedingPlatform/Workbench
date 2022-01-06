@@ -48,7 +48,8 @@
         "header": "Assign role",
         "message": "Assigning {{count}} user(s) to the program. Please select a Program role:",
         "label": "Role"
-      }
+      },
+      "remove.link.button": "Remove selected members"
     }
   }
 }

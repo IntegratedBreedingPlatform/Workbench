@@ -75,8 +75,6 @@ class UserTable {
 
 /**
  * TODO:
- *  - empty table height
- *  - remove link
  *  - select all, selected count
  */
 @Component({
@@ -213,7 +211,7 @@ export class MembersPaneComponent {
         }
     }
 
-    async dropMembers(event: CdkDragDrop<any>) {
+    async dropAvailableUsers(event: CdkDragDrop<any>) {
         // See also https://github.com/angular/components/issues/13938
         if (event.previousContainer.connectedTo !== this.MEMBERSDROPLIST) {
             return;
@@ -244,7 +242,7 @@ export class MembersPaneComponent {
         return user.role.type === RoleTypeEnum.PROGRAM.name;
     }
 
-    async removeMember(event: CdkDragDrop<any>) {
+    dropMembers(event: CdkDragDrop<any>) {
         if (event.previousContainer.connectedTo !== this.AVAILABLEDROPLIST) {
             return;
         }
@@ -252,6 +250,18 @@ export class MembersPaneComponent {
         if (!ids.length) {
             return;
         }
+        this.removeMembers(ids);
+    }
+
+    removeSelected() {
+        const ids = Object.keys(this.right.selectedItems).map((key) => Number(key));
+        if (!ids.length) {
+            return;
+        }
+        this.removeMembers(ids);
+    }
+
+    private async removeMembers(ids) {
 
         const modal = this.modalService.open(ModalConfirmComponent as Component);
         modal.componentInstance.message = this.translateService.instant('program-settings-manager.members.delete.confirm', { param: ids.length });
