@@ -22,8 +22,6 @@ import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
-import org.generationcp.middleware.pojos.GermplasmPedigreeTree;
-import org.generationcp.middleware.pojos.GermplasmPedigreeTreeNode;
 import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
@@ -134,8 +132,8 @@ public class GermplasmQueryTest {
 			pedigreeString.put(gid, GermplasmQueryTest.TEST_CROSS_EXPANSION_STRING);
 			germplasm.setGermplasmNamesString("NAME 1, NAME 2, NAME 3");
 			germplasm.setGermplasmDate("20050101");
-			germplasm.setGermplasmPeferredId("Preferred Id");
-			germplasm.setGermplasmPeferredName("Preferred Name");
+			germplasm.setGermplasmPreferredId("Preferred Id");
+			germplasm.setGermplasmPreferredName("Preferred Name");
 			germplasm.setMethodCode("ABC");
 			germplasm.setMethodId(100);
 			germplasm.setMethodGroup("123");
@@ -235,8 +233,8 @@ public class GermplasmQueryTest {
 		Assert.assertTrue(listeners.iterator().next() instanceof GidLinkButtonClickListener);
 		
 		// Verify added columns
-		Assert.assertEquals(germplasm.getGermplasmPeferredName(), item.getItemProperty(ColumnLabels.PREFERRED_NAME.getName()).getValue());
-		Assert.assertEquals(germplasm.getGermplasmPeferredId(), item.getItemProperty(ColumnLabels.PREFERRED_ID.getName()).getValue());
+		Assert.assertEquals(germplasm.getGermplasmPreferredName(), item.getItemProperty(ColumnLabels.PREFERRED_NAME.getName()).getValue());
+		Assert.assertEquals(germplasm.getGermplasmPreferredId(), item.getItemProperty(ColumnLabels.PREFERRED_ID.getName()).getValue());
 		Assert.assertEquals(germplasm.getGermplasmDate(), item.getItemProperty(ColumnLabels.GERMPLASM_DATE.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodCode(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName()).getValue());
 		Assert.assertEquals(germplasm.getMethodId(), item.getItemProperty(ColumnLabels.BREEDING_METHOD_NUMBER.getName()).getValue());
