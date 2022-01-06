@@ -7,6 +7,8 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { Pageable } from '../../model/pageable';
 import { createRequestOption } from '../../model/request-util';
 import { UserSearchRequest } from '../model/user-search-request.model';
+import { getAllRecords } from '../../util/get-all-records';
+import { ProgramMember } from '../model/program-member.model';
 
 @Injectable()
 export class MembersService {
@@ -16,16 +18,32 @@ export class MembersService {
     ) {
     }
 
-    getMembersEligibleUsers(searchRequest: UserSearchRequest, pageable: Pageable): Observable<HttpResponse<UserDetail[]>> {
+    getEligibleUsers(searchRequest: UserSearchRequest, pageable: Pageable): Observable<HttpResponse<UserDetail[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members/eligible-users/search';
         const params = createRequestOption(pageable);
         return this.http.post<UserDetail[]>(baseUrl, searchRequest, { observe: 'response', params });
     }
 
-    getMembers(searchRequest: UserSearchRequest, pageable: Pageable): Observable<HttpResponse<UserDetail[]>> {
+    getAllEligibleUsers(searchRequest: UserSearchRequest): Observable<UserDetail[]> {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members/eligible-users/search';
+        return getAllRecords<UserDetail>((page, pageSize) => {
+            const params = createRequestOption({ page, size: pageSize });
+            return this.http.post<UserDetail[]>(baseUrl, searchRequest, { params });
+        });
+    }
+
+    getMembers(searchRequest: UserSearchRequest, pageable: Pageable): Observable<HttpResponse<ProgramMember[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members/search';
         const params = createRequestOption(pageable);
-        return this.http.post<UserDetail[]>(baseUrl, searchRequest, { observe: 'response', params });
+        return this.http.post<ProgramMember[]>(baseUrl, searchRequest, { observe: 'response', params });
+    }
+
+    getAllMembers(searchRequest: UserSearchRequest): Observable<ProgramMember[]> {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members/search';
+        return getAllRecords<ProgramMember>((page, pageSize) => {
+            const params = createRequestOption({ page, size: pageSize });
+            return this.http.post<ProgramMember[]>(baseUrl, searchRequest, { params });
+        });
     }
 
     removeMembers(userIds: number[]) {

@@ -22,6 +22,16 @@
 		</div>
 		<div class="row">
 			<div class="col">
+				<div class="row my-2">
+					<div class="col form-inline">
+						<span class="mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+						<span>{{size(left.selectedItems)}}</span>
+						<div class="form-check form-check-inline ml-3">
+							<input type="checkbox" [(ngModel)]="left.isSelectAll" (ngModelChange)="selectAllLeft()" id="left-select-all" />
+							<label class="form-check-label ml-1" for="left-select-all" jhiTranslate="global.select.all.items"></label>
+						</div>
+					</div>
+				</div>
 				<table class="table table-striped table-bordered table-curved"
 					   [id]="AVAILABLEDROPLIST" cdkDropList [cdkDropListConnectedTo]="MEMBERSDROPLIST" (cdkDropListDropped)="dropMembers($event)">
 					<thead>
@@ -97,6 +107,16 @@
 		</div>
 		<div class="row">
 			<div class="col">
+				<div class="row my-2">
+					<div class="col form-inline">
+						<span class="mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+						<span>{{size(right.selectedItems)}}</span>
+						<div class="form-check form-check-inline ml-3">
+							<input type="checkbox" [(ngModel)]="right.isSelectAll" (ngModelChange)="selectAllRight()" id="right-select-all" />
+							<label class="form-check-label ml-1" for="right-select-all" jhiTranslate="global.select.all.items"></label>
+						</div>
+					</div>
+				</div>
 				<table class="table table-striped table-bordered table-curved"
 					   [id]="MEMBERSDROPLIST" cdkDropList (cdkDropListDropped)="dropAvailableUsers($event)" [cdkDropListConnectedTo]="AVAILABLEDROPLIST">
 					<thead>

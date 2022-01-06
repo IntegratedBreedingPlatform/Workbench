@@ -32,6 +32,15 @@ class UserTable {
     reverse: any;
 
     toggleSelect($event, index, user: UserDetail | ProgramMember, checkbox = false) {
+        /*
+         * in this module the select all action works a little differently:
+         * select all retrieves all items and and put them in the selectedItems map,
+         * For this reason, to simplify, select all checkbox will not necessarily be in sync
+         * with whats selected in the table. E.g, selecting all, then ctrl-click twice
+         * over an item will not return the select all checkbox to the selected state.
+         */
+        this.isSelectAll = false;
+
         if (!$event.ctrlKey && !checkbox) {
             this.selectedItems = {};
         }
@@ -73,10 +82,6 @@ class UserTable {
     }
 }
 
-/**
- * TODO:
- *  - select all, selected count
- */
 @Component({
     selector: 'jhi-members-pane',
     templateUrl: 'members-pane.component.html'
@@ -154,7 +159,7 @@ export class MembersPaneComponent {
     }
 
     loadEligibleUsers() {
-        this.membersService.getMembersEligibleUsers(<UserSearchRequest>({
+        this.membersService.getEligibleUsers(<UserSearchRequest>({
                 username: this.filtersLeft.username.value,
                 fullName: this.filtersLeft.fullName.value,
                 email: this.filtersLeft.email.value
@@ -209,6 +214,10 @@ export class MembersPaneComponent {
         } else {
             this.alertService.error('error.general', null, null);
         }
+    }
+
+    size(obj) {
+        return Object.keys(obj).length;
     }
 
     async dropAvailableUsers(event: CdkDragDrop<any>) {
@@ -293,6 +302,42 @@ export class MembersPaneComponent {
 
     sortRight() {
         this.loadMembers();
+    }
+
+    selectAllRight() {
+        if (!this.right.isSelectAll) {
+            this.right.selectedItems = {};
+            return;
+        }
+        this.membersService.getAllMembers(<UserSearchRequest>({
+            username: this.filtersRight.username.value,
+            fullName: this.filtersRight.fullName.value,
+            roleName: this.filtersRight.roleName.value
+        })).subscribe((allMembers) => {
+            this.right.selectedItems = allMembers.reduce((obj, member) => {
+                if (member.role.type === RoleTypeEnum.PROGRAM.name) {
+                    obj[member.userId] = member;
+                }
+                return obj;
+            }, {});
+        }, (error) => this.onError(error));
+    }
+
+    selectAllLeft() {
+        if (!this.left.isSelectAll) {
+            this.left.selectedItems = {};
+            return;
+        }
+        this.membersService.getAllEligibleUsers(<UserSearchRequest>({
+            username: this.filtersLeft.username.value,
+            fullName: this.filtersLeft.fullName.value,
+            email: this.filtersLeft.email.value
+        })).subscribe((users) => {
+            this.left.selectedItems = users.reduce((obj, user) => {
+                obj[user.id] = user;
+                return obj;
+            }, {});
+        }, (error) => this.onError(error));
     }
 }
 
