@@ -40,7 +40,6 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
-import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
 import { ListBuilderComponent } from './list-builder/list-builder.component';
 import { ListBuilderContext } from './list-builder/list-builder.context';
@@ -121,7 +120,6 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ColumnFilterDropdownComponent,
         KeyValuePipe,
         SecureImagePipe,
-        BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
@@ -201,7 +199,6 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         DatePipe,
         KeyValuePipe,
         SecureImagePipe,
-        BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
