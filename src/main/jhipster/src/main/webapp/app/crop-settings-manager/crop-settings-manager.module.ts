@@ -5,10 +5,10 @@ import { CropSettingsManagerComponent } from './crop-settings-manager.component'
 import { NameTypesPaneComponent } from './name-types/name-types-pane.component';
 import { NameTypeService } from '../shared/name-type/service/name-type.service';
 import { NameTypeEditDialogComponent, NameTypeEditPopupComponent } from './name-types/name-type-edit-dialog.component';
-import { NameTypeContext } from './name-types/name-type.context';
 import { CROP_SETTINGS_MANAGER_ROUTES } from './crop-settings-manager.route';
 import { LocationsPaneComponent } from './locations/locations-pane.component';
 import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
+import { CropSettingsContext } from './crop-Settings.context';
 
 @NgModule({
     imports: [
@@ -33,7 +33,7 @@ import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-pa
     providers: [
         NameTypesResolvePagingParams,
         NameTypeService,
-        NameTypeContext
+        CropSettingsContext
     ]
 })
 export class CropSettingsManagerModule {

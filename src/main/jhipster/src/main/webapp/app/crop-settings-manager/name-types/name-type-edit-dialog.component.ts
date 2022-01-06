@@ -1,14 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { NameTypeService } from '../../shared/name-type/service/name-type.service';
 import { AlertService } from '../../shared/alert/alert.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ParamContext } from '../../shared/service/param.context';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PopupService } from '../../shared/modal/popup.service';
-import { NameTypeContext } from './name-type.context';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
+import { CropSettingsContext } from '../crop-Settings.context';
 
 @Component({
     selector: 'jhi-name-type-edit-dialog',
@@ -27,7 +24,7 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
                 private eventManager: JhiEventManager,
                 private nameTypeService: NameTypeService,
                 private alertService: AlertService,
-                private nameTypeContext: NameTypeContext) {
+                private cropSettingsContext: CropSettingsContext) {
     }
 
     clear() {
@@ -69,16 +66,16 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (this.nameTypeContext.nameTypeDetails) {
-            this.nameTypeId = this.nameTypeContext.nameTypeDetails.id;
-            this.nameType.code = this.nameTypeContext.nameTypeDetails.code;
-            this.nameType.name = this.nameTypeContext.nameTypeDetails.name;
-            this.nameType.description = this.nameTypeContext.nameTypeDetails.description;
+        if (this.cropSettingsContext.nameTypeDetails) {
+            this.nameTypeId = this.cropSettingsContext.nameTypeDetails.id;
+            this.nameType.code = this.cropSettingsContext.nameTypeDetails.code;
+            this.nameType.name = this.cropSettingsContext.nameTypeDetails.name;
+            this.nameType.description = this.cropSettingsContext.nameTypeDetails.description;
         }
     }
 
     ngOnDestroy(): void {
-        this.nameTypeContext.nameTypeDetails = null;
+        this.cropSettingsContext.nameTypeDetails = null;
     }
 }
 

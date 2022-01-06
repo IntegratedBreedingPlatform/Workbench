@@ -11,9 +11,9 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { NameTypeContext } from './name-type.context';
 import { Subscription } from 'rxjs';
 import { FilterType } from '../../shared/column-filter/column-filter.component';
+import { CropSettingsContext } from '../crop-Settings.context';
 
 @Component({
     selector: 'jhi-name-type',
@@ -65,7 +65,7 @@ export class NameTypesPaneComponent implements OnInit {
                 private alertService: AlertService,
                 private router: Router,
                 private modalService: NgbModal,
-                private nameTypeContext: NameTypeContext,
+                private cropSettingsContext: CropSettingsContext,
                 private eventManager: JhiEventManager,
 
     ) {
@@ -152,7 +152,7 @@ export class NameTypesPaneComponent implements OnInit {
     }
 
     editNameType(nameType: any) {
-        this.nameTypeContext.nameTypeDetails = nameType;
+        this.cropSettingsContext.nameTypeDetails = nameType;
         this.router.navigate(['/', { outlets: { popup: 'name-type-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
