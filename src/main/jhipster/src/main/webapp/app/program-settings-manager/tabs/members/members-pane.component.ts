@@ -16,6 +16,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Role } from '../../../shared/user/model/role.model';
 import { RoleService } from '../../../shared/user/service/role.service';
 import { RoleFilter } from '../../../shared/user/model/role-filter.model';
+import { FilterType } from '../../../shared/column-filter/column-filter.component';
+import { UserSearchRequest } from '../../../shared/user/model/user-search-request.model';
 
 class UserTable {
     page = 1;
@@ -26,6 +28,8 @@ class UserTable {
     lastClickIndex?: any;
     users: (UserDetail | ProgramMember)[];
     totalCount: any;
+    predicate: any;
+    reverse: any;
 
     toggleSelect($event, index, user: UserDetail | ProgramMember, checkbox = false) {
         if (!$event.ctrlKey && !checkbox) {
@@ -56,11 +60,21 @@ class UserTable {
         const id = 'id' in user ? user.id : user.userId;
         return this.selectedItems[id];
     }
+
+    getSort() {
+        if (!this.predicate) {
+            return '';
+        }
+        const order = this.reverse ? 'asc' : 'desc';
+        if (this.predicate === Columns.FULLNAME) {
+            return ['firstName,' + order, 'lastName,' + order]
+        }
+        return [this.predicate + ',' + order];
+    }
 }
 
 /**
  * TODO:
- *  - filters
  *  - empty table height
  *  - remove link
  *  - select all, selected count
@@ -73,10 +87,45 @@ export class MembersPaneComponent {
 
     readonly MEMBERSDROPLIST = 'membersDropList';
     readonly AVAILABLEDROPLIST = 'availableDropList';
+    readonly Columns = Columns;
 
     left: UserTable;
     right: UserTable;
     draggedItems = {}
+    filtersLeft = {
+        username: {
+            key: 'username',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        fullName: {
+            key: 'fullName',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        email: {
+            key: 'email',
+            type: FilterType.TEXT,
+            value: ''
+        },
+    }
+    filtersRight = {
+        username: {
+            key: 'username',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        fullName: {
+            key: 'fullName',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        roleName: {
+            key: 'roleName',
+            type: FilterType.TEXT,
+            value: ''
+        },
+    }
 
     isAvailableVisible = false;
 
@@ -86,44 +135,62 @@ export class MembersPaneComponent {
         private modalService: NgbModal,
         private translateService: TranslateService
     ) {
-        this.load();
+        this.reset();
     }
 
-    load() {
+    reset() {
+        this.resetEligibleUsers();
+        this.resetMembers();
+    }
+
+    resetEligibleUsers() {
         this.left = new UserTable();
-        this.right = new UserTable();
+        this.left.predicate = Columns.FULLNAME;
         this.loadEligibleUsers();
+    }
+
+    resetMembers() {
+        this.right = new UserTable();
+        this.right.predicate = Columns.FULLNAME;
         this.loadMembers();
     }
 
     loadEligibleUsers() {
-        this.membersService.getMembersEligibleUsers(
+        this.membersService.getMembersEligibleUsers(<UserSearchRequest>({
+                username: this.filtersLeft.username.value,
+                fullName: this.filtersLeft.fullName.value,
+                email: this.filtersLeft.email.value
+            }),
             <Pageable>({
                 page: this.left.page - 1,
                 size: this.left.pageSize,
-                sort: null
+                sort: this.left.getSort()
             })
         ).pipe(map((resp) => {
             this.left.totalCount = resp.headers.get('X-Total-Count')
             return resp;
         })).subscribe((resp) => {
             this.left.users = resp.body
-        });
+        }, (error) => this.onError(error));
     }
 
     loadMembers() {
-        this.membersService.getMembers(
+        this.membersService.getMembers(<UserSearchRequest>({
+                username: this.filtersRight.username.value,
+                fullName: this.filtersRight.fullName.value,
+                roleName: this.filtersRight.roleName.value
+            }),
             <Pageable>({
                 page: this.right.page - 1,
                 size: this.right.pageSize,
-                sort: null
+                sort: this.right.getSort(),
             })
         ).pipe(map((resp) => {
             this.right.totalCount = resp.headers.get('X-Total-Count')
             return resp;
         })).subscribe((resp) => {
             this.right.users = resp.body
-        });
+        }, (error) => this.onError(error));
     }
 
     dragStart($event, dragged: UserDetail | ProgramMember, table: UserTable) {
@@ -167,7 +234,7 @@ export class MembersPaneComponent {
         this.membersService.addProgramRoleToUsers(roleId, ids).subscribe(
             () => {
                 this.alertService.success('program-settings-manager.members.add.success');
-                this.load()
+                this.reset()
             },
             (error) => this.onError(error)
         );
@@ -196,10 +263,26 @@ export class MembersPaneComponent {
         this.membersService.removeMembers(ids).subscribe(
             () => {
                 this.alertService.success('program-settings-manager.members.delete.success');
-                this.load()
+                this.reset()
             },
             (error) => this.onError(error)
         );
+    }
+
+    applyFiltersLeft() {
+        this.resetEligibleUsers();
+    }
+
+    applyFiltersRight() {
+        this.resetMembers();
+    }
+
+    sortLeft() {
+        this.loadEligibleUsers();
+    }
+
+    sortRight() {
+        this.loadMembers();
     }
 }
 
@@ -258,4 +341,11 @@ export class SelectRoleComponent {
     dismiss() {
         this.modal.dismiss();
     }
+}
+
+export enum Columns {
+    USERNAME = 'userName',
+    FULLNAME = 'fullName',
+    EMAIL = 'email',
+    ROLENAME = 'roleName'
 }
