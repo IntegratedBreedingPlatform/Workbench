@@ -50,6 +50,36 @@
         "label": "Role"
       },
       "remove.link.button": "Remove selected members"
+    },
+    "locations": {
+      "search": {
+        "columns": {
+          "location-name": "NAME",
+          "abbreviation": "ABBR.",
+          "location-id": "LOCATION ID",
+          "country": "COUNTRY",
+          "province": "PROVINCE",
+          "latitude": "LAT",
+          "longitude": "LONG",
+          "altitude": "ALT",
+          "location-type": "TYPE",
+          "program-favorite": "PROGRAM FAVORITE"
+        }
+      }
+    },
+    "breeding-methods": {
+      "search": {
+        "columns": {
+          "method-name": "METHOD NAME",
+          "description": "DESCRIPTION",
+          "group": "GROUP",
+          "code": "CODE",
+          "type": "TYPE",
+          "date": "DATE",
+          "class": "CLASS",
+          "program-favorite": "PROGRAM FAVORITE"
+        }
+      }
     }
   }
 }
