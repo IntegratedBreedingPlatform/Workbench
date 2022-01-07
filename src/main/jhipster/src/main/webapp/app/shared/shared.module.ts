@@ -40,7 +40,6 @@ import { CustomMinEqualsValidatorDirective } from './validators/custom-min-equal
 import { ItemCountCustomComponent } from './component/item-count-custom.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './alert/alert.service';
-import { BreedingMethodSelect2DataPipe } from './breeding-method/model/breeding-method-select2.pipe';
 import { LocationSelect2DataPipe } from './location/model/location-select2.pipe';
 import { ListBuilderComponent } from './list-builder/list-builder.component';
 import { ListBuilderContext } from './list-builder/list-builder.context';
@@ -82,6 +81,8 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
+import { MembersService } from './user/service/members.service';
+import { RoleService } from './user/service/role.service';
 
 @NgModule({
     imports: [
@@ -121,7 +122,6 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ColumnFilterDropdownComponent,
         KeyValuePipe,
         SecureImagePipe,
-        BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
@@ -149,6 +149,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         SecureImagePipe,
         Principal,
         AccountService,
+        MembersService,
+        RoleService,
         InventoryService,
         LotService,
         TransactionService,
@@ -201,7 +203,6 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         DatePipe,
         KeyValuePipe,
         SecureImagePipe,
-        BreedingMethodSelect2DataPipe,
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,

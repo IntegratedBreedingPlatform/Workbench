@@ -1,1 +1,190 @@
-members
+<div class="row">
+	<div class="col">
+		<span jhiTranslate="program-settings-manager.members.description"></span>
+	</div>
+</div>
+<div class="row mt-3">
+	<div class="col">
+		<button class="btn btn-outline-info" (click)="isAvailableVisible = !isAvailableVisible">
+			<i class="fa mr-3" [ngClass]="isAvailableVisible ? 'fa-angle-left': 'fa-angle-right'"></i>
+			<span *ngIf="isAvailableVisible" jhiTranslate="program-settings-manager.members.hide.available.users"></span>
+			<span *ngIf="!isAvailableVisible" jhiTranslate="program-settings-manager.members.show.available.users"></span>
+		</button>
+	</div>
+</div>
+<div class="row mt-3">
+	<!-- Left table -->
+	<div class="col-6" style="overflow-x: auto" *ngIf="isAvailableVisible">
+		<div class="row">
+			<div class="col">
+				<h4 jhiTranslate="program-settings-manager.members.left.heading"></h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="row my-2">
+					<div class="col form-inline">
+						<span class="mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+						<span>{{size(left.selectedItems)}}</span>
+						<div class="form-check form-check-inline ml-3">
+							<input type="checkbox" [(ngModel)]="left.isSelectAll" (ngModelChange)="selectAllLeft()" id="left-select-all" />
+							<label class="form-check-label ml-1" for="left-select-all" jhiTranslate="global.select.all.items"></label>
+						</div>
+					</div>
+				</div>
+				<table class="table table-striped table-bordered table-curved"
+					   [id]="AVAILABLEDROPLIST" cdkDropList [cdkDropListConnectedTo]="MEMBERSDROPLIST" (cdkDropListDropped)="dropMembers($event)">
+					<thead>
+					<tr jhiSort [(predicate)]="left.predicate" [(ascending)]="left.reverse" [callback]="sortLeft.bind(this)">
+						<th></th>
+						<th>
+							<span [jhiSortBy]="Columns.USERNAME">
+								<span jhiTranslate="program-settings-manager.members.left.table.column.username"></span>
+								<span class="fa fa-sort"></span>
+							</span>
+							<jhi-column-filter-inline [filter]="filtersLeft.username"
+													  (onApply)="applyFiltersLeft()"
+													  (onReset)="applyFiltersLeft()"></jhi-column-filter-inline>
+						</th>
+						<th>
+							<span [jhiSortBy]="Columns.FULLNAME">
+								<span jhiTranslate="program-settings-manager.members.left.table.column.fullname"></span>
+								<span class="fa fa-sort"></span>
+							</span>
+							<jhi-column-filter-inline [filter]="filtersLeft.fullName"
+													  (onApply)="applyFiltersLeft()"
+													  (onReset)="applyFiltersLeft()"></jhi-column-filter-inline>
+						</th>
+						<th>
+							<span [jhiSortBy]="Columns.EMAIL">
+								<span jhiTranslate="program-settings-manager.members.left.table.column.email"></span>
+								<span class="fa fa-sort"></span>
+							</span>
+							<jhi-column-filter-inline [filter]="filtersLeft.email"
+													  (onApply)="applyFiltersLeft()"
+													  (onReset)="applyFiltersLeft()"></jhi-column-filter-inline>
+						</th>
+					</tr>
+					</thead>
+					<tbody *ngIf="left.users && left.users.length else nodataleft">
+					<tr *ngFor="let user of left.users; index as index"
+						[class.selected]="left.isSelected(user)"
+						(click)="left.toggleSelect($event, index, user)"
+						cdkDrag
+						(cdkDragEntered)="dragStart($event, user, left)">
+						<div *cdkDragPlaceholder>&nbsp;</div>
+						<td><input type="checkbox" [checked]="left.isSelected(user)" (click)="left.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
+						<td>{{user.username}}</td>
+						<td>{{user.firstName + ' ' + user.lastName}}</td>
+						<td>{{user.email}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<ng-template #nodataleft>
+					<tbody>
+					<tr>
+						<td colspan="4" jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</ng-template>
+				<div class="pagination-container">
+					<div class="pagination-box pagination-box-left"></div>
+					<div class="pagination-box">
+						<ngb-pagination [collectionSize]="left.totalCount" [(page)]="left.page" [pageSize]="left.pageSize"
+										[maxSize]="5" [rotate]="true" (pageChange)="loadEligibleUsers()"></ngb-pagination>
+					</div>
+					<div class="pagination-box pagination-box-right"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Right table -->
+	<div class="col" style="overflow-x: auto">
+		<div class="row">
+			<div class="col">
+				<h4 jhiTranslate="program-settings-manager.members.right.heading"></h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="row my-2">
+					<div class="col form-inline">
+						<span class="mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+						<span>{{size(right.selectedItems)}}</span>
+						<div class="form-check form-check-inline ml-3">
+							<input type="checkbox" [(ngModel)]="right.isSelectAll" (ngModelChange)="selectAllRight()" id="right-select-all" />
+							<label class="form-check-label ml-1" for="right-select-all" jhiTranslate="global.select.all.items"></label>
+						</div>
+					</div>
+				</div>
+				<table class="table table-striped table-bordered table-curved"
+					   [id]="MEMBERSDROPLIST" cdkDropList (cdkDropListDropped)="dropAvailableUsers($event)" [cdkDropListConnectedTo]="AVAILABLEDROPLIST">
+					<thead>
+					<tr jhiSort [(predicate)]="right.predicate" [(ascending)]="right.reverse" [callback]="sortRight.bind(this)">
+						<th></th>
+						<th>
+							<span [jhiSortBy]="Columns.USERNAME">
+								<span jhiTranslate="program-settings-manager.members.right.table.column.username"></span>
+								<span class="fa fa-sort"></span>
+							</span>
+							<jhi-column-filter-inline [filter]="filtersRight.username"
+													  (onApply)="applyFiltersRight()"
+													  (onReset)="applyFiltersRight()"></jhi-column-filter-inline>
+						</th>
+						<th>
+							<span [jhiSortBy]="Columns.FULLNAME">
+								<span jhiTranslate="program-settings-manager.members.right.table.column.fullname"></span>
+								<span class="fa fa-sort"></span>
+							</span>
+							<jhi-column-filter-inline [filter]="filtersRight.fullName"
+													  (onApply)="applyFiltersRight()"
+													  (onReset)="applyFiltersRight()"></jhi-column-filter-inline>
+						</th>
+						<th>
+							<span [jhiSortBy]="Columns.ROLENAME">
+								<span jhiTranslate="program-settings-manager.members.right.table.column.role"></span>
+								<span class="fa fa-sort"></span>
+							</span>
+							<jhi-column-filter-inline [filter]="filtersRight.roleName"
+													  (onApply)="applyFiltersRight()"
+													  (onReset)="applyFiltersRight()"></jhi-column-filter-inline>
+						</th>
+					</tr>
+					</thead>
+					<tbody *ngIf="right.users && right.users.length else nodataright">
+					<tr *ngFor="let user of right.users; index as index"
+						[class.selected]="right.isSelected(user)"
+						(click)="isRemovable(user) && right.toggleSelect($event, index, user)"
+						cdkDrag [cdkDragDisabled]="!isRemovable(user) || !isAvailableVisible"
+						(cdkDragEntered)="dragStart($event, user, right)">
+						<td><input *ngIf="isRemovable(user)" type="checkbox" [checked]="right.isSelected(user)" (click)="right.toggleSelect($event, index, user, true); $event.stopPropagation()"></td>
+						<td>{{user.username}}</td>
+						<td>{{user.firstName + ' ' + user.lastName}}</td>
+						<td>{{user.role.name}}</td>
+					</tr>
+					</tbody>
+				</table>
+				<ng-template #nodataright>
+					<tbody>
+					<tr>
+						<td colspan="4" jhiTranslate="no.data"></td>
+					</tr>
+					</tbody>
+				</ng-template>
+				<div class="row justify-content-end">
+					<div class="col-auto">
+						<button class="btn btn-link p-0" (click)="removeSelected()" jhiTranslate="program-settings-manager.members.remove.link.button"></button>
+					</div>
+				</div>
+				<div class="pagination-container">
+					<div class="pagination-box pagination-box-right"></div>
+					<div class="pagination-box">
+						<ngb-pagination [collectionSize]="right.totalCount" [(page)]="right.page" [pageSize]="right.pageSize"
+										[maxSize]="5" [rotate]="true" (pageChange)="loadMembers()"></ngb-pagination>
+					</div>
+					<div class="pagination-box pagination-box-right"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
