@@ -56,8 +56,8 @@ export class LocationsPaneComponent implements OnInit {
     totalItems: number;
     locationFilters: any;
 
-
-    constructor(private activatedRoute: ActivatedRoute,
+    constructor(public translateService: TranslateService,
+                private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private locationService: LocationService,
@@ -82,6 +82,7 @@ export class LocationsPaneComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.registerColumnFiltersChanged();
         this.loadAll(this.request);
+        this.registerLocationChanged();
     }
 
     get request() {
@@ -175,10 +176,20 @@ export class LocationsPaneComponent implements OnInit {
         });
     }
 
+    async loadLocations() {
+        this.loadAll(this.request);
+    }
+
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
         this.loadAll(this.request);
+    }
+
+    registerLocationChanged() {
+        this.eventSubscriber = this.eventManager.subscribe('locationViewChanged', (event) => {
+            this.loadAll(this.request);
+        });
     }
 
     private getInitialFilters() {
