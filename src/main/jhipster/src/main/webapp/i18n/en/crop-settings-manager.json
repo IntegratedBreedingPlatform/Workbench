@@ -6,6 +6,9 @@
       "breeding-methods": "Breeding Methods",
       "name-type": "Germplasm Name Types"
     },
+    "confirmation": {
+      "title": "Confirmation"
+    },
     "name-type": {
       "title": "Germplasm Name Types",
       "code": "Code",
@@ -14,9 +17,6 @@
       "date": "Date",
       "action": "Action",
       "modal": {
-        "confirmation": {
-          "title": "Confirmation"
-        },
         "delete": {
           "success": "Name Type deleted successfully.",
           "warning": "Are you sure you want to delete the Name Type {{param}}?"
@@ -28,6 +28,31 @@
         "edit": {
           "header": "Edit Name Type",
           "success": "Name type updated successfully"
+        }
+      }
+    },
+    "location": {
+      "location-name": "Location Name",
+      "location-abbr": "Location Abbreviation",
+      "location-type": "Location Type",
+      "country": "Country",
+      "province": "Province",
+      "geographical-details": "Geographical Details",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "altitude": "Altitude",
+      "modal": {
+        "delete": {
+          "success": "Location deleted successfully.",
+          "warning": "Are you sure you want to delete the Location {{param}}?"
+        },
+        "create": {
+          "header": "Create Location",
+          "success": "Location created successfully"
+        },
+        "edit": {
+          "header": "Edit Location",
+          "success": "Location updated successfully"
         }
       }
     }
