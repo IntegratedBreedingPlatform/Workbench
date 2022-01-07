@@ -16,10 +16,12 @@ import { ColumnFilterTransitionEventModel } from '../../shared/column-filter/col
 import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 import { Select2OptionData } from 'ng-select2';
 import { LocationType } from '../../shared/location/model/location-type';
-import { ColumnFilterRadioButtonOption } from '../../shared/column-filter/column-filter-radio-component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { Location } from '../../shared/location/model/location';
-
+import { CropSettingsContext } from '../crop-Settings.context';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var $: any;
 
@@ -65,6 +67,8 @@ export class LocationsPaneComponent implements OnInit {
                 private router: Router,
                 private alertService: AlertService,
                 private context: ParamContext,
+                private modalService: NgbModal,
+                private cropSettingsContext: CropSettingsContext,
                 private programService: ProgramService
     ) {
         this.page = 1;
@@ -277,11 +281,23 @@ export class LocationsPaneComponent implements OnInit {
     }
 
     editLocation(location: any) {
+        this.cropSettingsContext.location = location;
+        this.router.navigate(['/', { outlets: { popup: 'location-edit-dialog' }, }], { queryParamsHandling: 'merge' });
 
     }
 
     deleteLocation(location: any) {
-
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
+        confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.location.modal.delete.warning', { param: location.name });
+        confirmModalRef.result.then(() => {
+            this.locationService.deleteLocation(location.id).toPromise().then((result) => {
+                this.alertService.success('crop-settings-manager.location.modal.delete.success');
+                this.loadLocations();
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            });
+        }, () => confirmModalRef.dismiss());
     }
 }
 
