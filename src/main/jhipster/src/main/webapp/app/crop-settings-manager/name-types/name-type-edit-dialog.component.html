@@ -14,16 +14,16 @@
 	</div>
 	<div class="modal-body">
 		<form name="form" #f="ngForm">
-			<div class="form-group row required">
+			<div class="form-group row">
 				<label for="nameTypeCode" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.name-type.code">Code</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" name="code" id="code" [(ngModel)]="nameType.code" #nameTypeCode="ngModel" [maxLength]="50"/>
+					<input type="text" class="form-control" name="code" id="code" [(ngModel)]="nameType.code" #nameTypeCode="ngModel" [maxLength]="50" [required]="true"/>
 				</div>
 			</div>
-			<div class="form-group row required">
+			<div class="form-group row">
 				<label for="nameTypeName" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.name-type.name">Name</label>
 				<div class="col-sm-9">
-					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="nameType.name" #nameTypeName="ngModel" [maxLength]="50"/>
+					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="nameType.name" #nameTypeName="ngModel" [maxLength]="50" [required]="true"/>
 				</div>
 			</div>
 			<div class="form-group row">
