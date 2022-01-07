@@ -1,5 +1,6 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="name-type-tab">
 	<br/>
+	<br/>
 	<div class="pull-right pb-3">
 		<button class="btn btn-outline-info" [routerLink]="['/', { outlets: { popup: 'name-type-edit-dialog' } }]" queryParamsHandling="merge"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 	</div>
@@ -60,6 +61,9 @@
 			<div class="col">
 				<div class="pagination-container">
 					<div class="pagination-box pagination-box-left">
+						<div>
+							<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+						</div>
 					</div>
 					<div class="pagination-box">
 						<ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [disabled]="isLoading"
