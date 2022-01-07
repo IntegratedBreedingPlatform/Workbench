@@ -22,6 +22,7 @@ import { CropSettingsContext } from '../crop-Settings.context';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
+import { Pageable } from '../../shared/model/pageable';
 
 declare var $: any;
 
@@ -105,11 +106,11 @@ export class LocationsPaneComponent implements OnInit {
         this.isLoading = true;
         this.locationService.searchLocations(
             request, false,
-            {
+            <Pageable>({
                 page: this.page - 1,
                 size: this.itemsPerPage,
                 sort: this.getSort()
-            }
+            })
         ).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe(
@@ -128,12 +129,6 @@ export class LocationsPaneComponent implements OnInit {
     transition() {
         this.router.navigate(['./'], {
             queryParamsHandling: 'merge',
-            queryParams: {
-                page: this.page,
-                size: this.itemsPerPage,
-                search: this.currentSearch,
-                sort: this.getSort()
-            },
             relativeTo: this.activatedRoute
         });
         this.loadAll(this.request);
@@ -147,7 +142,7 @@ export class LocationsPaneComponent implements OnInit {
     }
 
     private clearSort() {
-        this.predicate = SORT_PREDICATE_NONE;
+        this.predicate = this.predicate = [ColumnLabels.LOCATION_NAME];
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
