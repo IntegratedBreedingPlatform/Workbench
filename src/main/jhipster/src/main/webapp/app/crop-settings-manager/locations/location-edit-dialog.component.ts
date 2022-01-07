@@ -61,7 +61,27 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     }
 
     save() {
-
+        if (this.locationId) {
+            this.isLoading = true;
+            this.locationService.updateLocation(this.locationRequest, this.locationId).toPromise().then((result) => {
+                this.alertService.success('crop-settings-manager.location.modal.edit.success');
+                this.notifyChanges();
+                this.isLoading = false;
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
+            });
+        } else {
+            this.isLoading = true;
+            this.locationService.createLocation(this.locationRequest).toPromise().then((result) => {
+                this.alertService.success('crop-settings-manager.location.modal.create.success');
+                this.notifyChanges();
+                this.isLoading = false;
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
+            });
+        }
     }
 
     isFormValid(f) {
@@ -70,21 +90,89 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-
+        this.eventManager.broadcast({ name: 'locationViewChanged' });
+        this.clear();
     }
 
     ngOnInit(): void {
+        const countriesSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+        countriesSearchRequest.locationTypeIds = [LocationTypeEnum.COUNTRY];
+        this.locationService.searchLocations(countriesSearchRequest, false, this.PAGINATION)
+            .subscribe(
+                (resp: HttpResponse<Location[]>) => {
+                    this.countries = resp.body;
+                    if (this.cropSettingsContext.location) {
+                        this.selectedCountry = resp.body.find((e) => e.id === this.cropSettingsContext.location.countryId);
+                        this.locationRequest.countryId = this.selectedCountry.id;
+                    }
+                    this.countries.unshift(this.nonSpecifyLocation);
+                },
+                (res: HttpErrorResponse) => this.onError(res)
+            );
 
+        if (this.cropSettingsContext.location && this.cropSettingsContext.location.countryId) {
+            const provincesSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+            provincesSearchRequest.countryIds = [this.cropSettingsContext.location.countryId];
+            provincesSearchRequest.locationTypeIds = [LocationTypeEnum.PROVINCE];
+            this.locationService.searchLocations(provincesSearchRequest, false, this.PAGINATION)
+                .subscribe(
+                    (resp: HttpResponse<Location[]>) => {
+                        this.provinces = resp.body;
+                        this.selectedProvince = resp.body.find((e) => e.id === this.cropSettingsContext.location.provinceId);
+                        this.locationRequest.provinceId = this.selectedProvince.id;
+                        this.provinces.unshift(this.nonSpecifyLocation);
+
+                    },
+                    (res: HttpErrorResponse) => this.onError(res)
+                );
+        }
+        this.locationService.getLocationTypes().toPromise().then((locationTypes: LocationType[]) => {
+            this.locationTypes = locationTypes;
+            if (this.cropSettingsContext.location) {
+                this.selectedLocationType = locationTypes.find((e) => e.id === this.cropSettingsContext.location.type);
+                this.locationRequest.type = this.selectedLocationType.id;
+            }
+
+        });
+
+        if (this.cropSettingsContext.location) {
+            this.locationId = this.cropSettingsContext.location.id;
+            this.locationRequest.name = this.cropSettingsContext.location.name;
+            this.locationRequest.abbreviation = this.cropSettingsContext.location.abbreviation;
+
+            this.locationRequest.latitude = this.cropSettingsContext.location.latitude;
+            this.locationRequest.longitude = this.cropSettingsContext.location.longitude;
+            this.locationRequest.altitude = this.cropSettingsContext.location.altitude;
+
+        }
     }
 
     countryChanged(): void {
-
+        if (this.locationRequest.countryId !== this.NON_SPECIFY_LOCATION_ID) {
+            const provincesSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+            provincesSearchRequest.countryIds = [this.locationRequest.countryId];
+            provincesSearchRequest.locationTypeIds = [LocationTypeEnum.PROVINCE];
+            this.locationService.searchLocations(provincesSearchRequest, false, this.PAGINATION)
+                .subscribe(
+                    (resp: HttpResponse<Location[]>) => {
+                        this.provinces = resp.body;
+                        this.provinces.unshift(this.nonSpecifyLocation);
+                    },
+                    (res: HttpErrorResponse) => this.onError(res)
+                );
+        } else {
+            this.locationRequest.countryId = null;
+            this.provinces = [];
+        }
+        this.locationRequest.provinceId = null;
     }
 
     provinceChanged(): void {
+        this.locationRequest.provinceId = this.locationRequest.provinceId === this.NON_SPECIFY_LOCATION_ID ? null : this.locationRequest.provinceId;
     }
 
     ngOnDestroy(): void {
+        this.cropSettingsContext.location = null;
     }
 
     private onError(response: HttpErrorResponse) {
