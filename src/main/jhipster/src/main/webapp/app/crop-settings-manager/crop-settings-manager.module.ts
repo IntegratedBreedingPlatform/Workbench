@@ -9,6 +9,7 @@ import { CROP_SETTINGS_MANAGER_ROUTES } from './crop-settings-manager.route';
 import { LocationsPaneComponent } from './locations/locations-pane.component';
 import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
 import { CropSettingsContext } from './crop-Settings.context';
+import { LocationEditDialogComponent, LocationEditPopupComponent } from './locations/location-edit-dialog.component';
 
 @NgModule({
     imports: [
@@ -21,14 +22,18 @@ import { CropSettingsContext } from './crop-Settings.context';
         NameTypesPaneComponent,
         LocationsPaneComponent,
         NameTypeEditDialogComponent,
-        NameTypeEditPopupComponent
+        NameTypeEditPopupComponent,
+        LocationEditDialogComponent,
+        LocationEditPopupComponent
     ],
     entryComponents: [
         CropSettingsManagerComponent,
         NameTypesPaneComponent,
         LocationsPaneComponent,
         NameTypeEditDialogComponent,
-        NameTypeEditPopupComponent
+        NameTypeEditPopupComponent,
+        LocationEditDialogComponent,
+        LocationEditPopupComponent
     ],
     providers: [
         NameTypesResolvePagingParams,

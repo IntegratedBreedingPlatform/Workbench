@@ -6,6 +6,7 @@ import { LocationsPaneComponent } from './locations/locations-pane.component';
 import { NameTypesPaneComponent } from './name-types/name-types-pane.component';
 import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
 import { NameTypeEditPopupComponent } from './name-types/name-type-edit-dialog.component';
+import { LocationEditPopupComponent } from './locations/location-edit-dialog.component';
 
 export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
     {
@@ -38,6 +39,11 @@ export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
     {
         path: 'name-type-edit-dialog',
         component: NameTypeEditPopupComponent,
+        outlet: 'popup'
+    },
+    {
+        path: 'location-edit-dialog',
+        component: LocationEditPopupComponent,
         outlet: 'popup'
     }
 
