@@ -35,14 +35,12 @@ export class LocationsPaneComponent implements OnInit {
 
     COLUMN_FILTER_EVENT_NAME = LocationsPaneComponent.COLUMN_FILTER_EVENT_NAME;
 
-
     ColumnLabels = ColumnLabels;
 
     eventSubscriber: Subscription;
     locations: Location[];
 
     currentSearch: string;
-
 
     itemsPerPage: any = 20;
     page: number;
@@ -54,7 +52,6 @@ export class LocationsPaneComponent implements OnInit {
     isLoading: boolean;
 
     locationSearchRequest: LocationSearchRequest;
-
 
     totalItems: number;
     locationFilters: any;
@@ -188,19 +185,18 @@ export class LocationsPaneComponent implements OnInit {
         const me = this;
 
         return [
-            {
-                key: 'locationNameFilter', name: 'Location Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+            { key: 'locationNameFilter', name: 'Location Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
                 matchType: MatchType.STARTSWITH, default: true
             },
             { key: 'locationAbbreviations', name: 'Abbreviation', placeholder: 'Match Text', type: FilterType.TEXT,
                 transform(req) {
                     req[this.key] = [this.value];
-                }},
+                }
+            },
             { key: 'locationIds', name: 'Location ID', type: FilterType.LIST },
-            { key: 'countryName', name: 'Country Name', placeholder: 'Contains Text',  type: FilterType.TEXT },
-            { key: 'provinceName', name: 'Province Name', placeholder: 'Contains Text',  type: FilterType.TEXT },
-            {
-                key: 'latitude', name: 'Latitude', type: FilterType.NUMBER_RANGE,
+            { key: 'countryName', name: 'Country Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'provinceName', name: 'Province Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'latitude', name: 'Latitude', type: FilterType.NUMBER_RANGE,
                 fromKey: 'latitudeFrom',
                 toKey: 'latitudeTo',
                 transform(req) {
@@ -214,8 +210,7 @@ export class LocationsPaneComponent implements OnInit {
                     this.to = req[this.toKey];
                 }
             },
-            {
-                key: 'longitude', name: 'Longitude', type: FilterType.NUMBER_RANGE,
+            { key: 'longitude', name: 'Longitude', type: FilterType.NUMBER_RANGE,
                 fromKey: 'longitudeFrom',
                 toKey: 'longitudeTo',
                 transform(req) {
@@ -229,8 +224,7 @@ export class LocationsPaneComponent implements OnInit {
                     this.to = req[this.toKey];
                 }
             },
-            {
-                key: 'altitude', name: 'Altitude', type: FilterType.NUMBER_RANGE,
+            { key: 'altitude', name: 'Altitude', type: FilterType.NUMBER_RANGE,
                 fromKey: 'altitudeFrom',
                 toKey: 'altitudeTo',
                 transform(req) {
@@ -244,8 +238,7 @@ export class LocationsPaneComponent implements OnInit {
                     this.to = req[this.toKey];
                 }
             },
-            {
-                key: 'locationTypeIds', name: 'Location type', type: FilterType.DROPDOWN, values: this.getLocationTypesOptions(), multipleSelect: true,
+            { key: 'locationTypeIds', name: 'Location type', type: FilterType.DROPDOWN, values: this.getLocationTypesOptions(), multipleSelect: true,
                 transform(req) {
                     ColumnFilterComponent.transformDropdownFilter(this, req);
                 },
@@ -259,10 +252,10 @@ export class LocationsPaneComponent implements OnInit {
     private getLocationTypesOptions(): Promise<Select2OptionData[]> {
         return this.locationService.getLocationTypes().toPromise().then((locationTypes: LocationType[]) => {
             return locationTypes.map((locationType: LocationType) => {
-                    return { id: locationType.id.toString(),
-                        text: locationType.name
-                    }
-                });
+                return { id: locationType.id.toString(),
+                    text: locationType.name
+                }
+            });
         });
     }
 
