@@ -10,6 +10,8 @@ import { LocationsPaneComponent } from './locations/locations-pane.component';
 import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
 import { CropSettingsContext } from './crop-Settings.context';
 import { LocationEditDialogComponent, LocationEditPopupComponent } from './locations/location-edit-dialog.component';
+import { BreedingMethodsPaneComponent } from './breeding-methods/breeding-methods-pane.component';
+import { BreedingMethodEditDialogComponent, BreedingMethodEditPopupComponent } from './breeding-methods/breeding-method-edit-dialog.component';
 
 @NgModule({
     imports: [
@@ -21,6 +23,7 @@ import { LocationEditDialogComponent, LocationEditPopupComponent } from './locat
         CropSettingsManagerComponent,
         NameTypesPaneComponent,
         LocationsPaneComponent,
+        BreedingMethodsPaneComponent,
         NameTypeEditDialogComponent,
         NameTypeEditPopupComponent,
         LocationEditDialogComponent,
@@ -30,6 +33,7 @@ import { LocationEditDialogComponent, LocationEditPopupComponent } from './locat
         CropSettingsManagerComponent,
         NameTypesPaneComponent,
         LocationsPaneComponent,
+        BreedingMethodsPaneComponent,
         NameTypeEditDialogComponent,
         NameTypeEditPopupComponent,
         LocationEditDialogComponent,

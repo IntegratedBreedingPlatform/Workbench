@@ -7,6 +7,8 @@ import { NameTypesPaneComponent } from './name-types/name-types-pane.component';
 import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
 import { NameTypeEditPopupComponent } from './name-types/name-type-edit-dialog.component';
 import { LocationEditPopupComponent } from './locations/location-edit-dialog.component';
+import { BreedingMethodsPaneComponent } from './breeding-methods/breeding-methods-pane.component';
+import { BreedingMethodEditPopupComponent } from './breeding-methods/breeding-method-edit-dialog.component';
 
 export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
     {
@@ -28,6 +30,10 @@ export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
                 component: LocationsPaneComponent
             },
             {
+                path: 'breeding-methods',
+                component: BreedingMethodsPaneComponent
+            },
+            {
                 path: 'name-types',
                 component: NameTypesPaneComponent,
                 resolve: {
@@ -44,6 +50,11 @@ export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
     {
         path: 'location-edit-dialog',
         component: LocationEditPopupComponent,
+        outlet: 'popup'
+    },
+    {
+        path: 'breeding-method-edit-dialog',
+        component: BreedingMethodEditPopupComponent,
         outlet: 'popup'
     }
 

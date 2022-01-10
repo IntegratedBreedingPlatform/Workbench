@@ -38,6 +38,40 @@
         "action": "ACTION"
       }
     },
+    "breeding-method": {
+      "action": "Action",
+      "modal": {
+        "breeding-method-name": "Breeding Method Name",
+        "code": "Code",
+        "description": "Description",
+        "generation-advancement-type": "Generation Advancement Type",
+        "crop-reproductive-system": "Crop Reproductive System",
+        "class": "Class",
+
+        "delete": {
+          "success": "Breeding Method deleted successfully.",
+          "warning": "Are you sure you want to delete the Breeding Method {{param}}?"
+        },
+        "create": {
+          "header": "Create Breeding Method",
+          "success": "Breeding Method created successfully"
+        },
+        "edit": {
+          "header": "Breeding Method Location",
+          "success": "Breeding Method updated successfully"
+        }
+      },
+      "columns": {
+        "method-name": "METHOD NAME",
+        "description": "DESCRIPTION",
+        "group": "GROUP",
+        "code": "CODE",
+        "type": "TYPE",
+        "date": "DATE",
+        "class": "CLASS",
+        "action": "ACTION"
+      }
+    },
     "location": {
       "location-name": "Location Name",
       "location-abbr": "Location Abbreviation",
