@@ -57,7 +57,7 @@
           "success": "Breeding Method created successfully"
         },
         "edit": {
-          "header": "Breeding Method Location",
+          "header": "Edit Breeding Method",
           "success": "Breeding Method updated successfully"
         }
       },
