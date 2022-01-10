@@ -8,6 +8,36 @@
 			<span *ngIf="!listBuilderContext.visible" jhiTranslate="list-builder.show"></span>
 		</button>
 	</div>
+
+	<div class="row">
+		<div class="col">
+			<button class="btn btn-info float-right dropdown-toggle" mat-button [matMenuTriggerFor]="animals">Actions (Nested Menu)</button>
+
+			<mat-menu #animals="matMenu">
+				<button mat-menu-item [matMenuTriggerFor]="imports">Imports</button>
+				<button mat-menu-item *jhiHasAnyAuthority="CREATE_GERMPLASM_LIST_PERMISSIONS" [matMenuTriggerFor]="lists">List</button>
+				<button mat-menu-item [matMenuTriggerFor]="group">Group</button>
+				<button mat-menu-item>Delete selected germplasm records</button>
+				<button mat-menu-item *jhiHasAnyAuthority="'PERMISSION_X'">Not has permission</button>
+			</mat-menu>
+
+			<mat-menu #imports="matMenu">
+				<button mat-menu-item>New Germplasms</button>
+				<button mat-menu-item>Update Germplasms</button>
+			</mat-menu>
+
+			<mat-menu #lists="matMenu">
+				<button mat-menu-item *jhiHasAnyAuthority="CREATE_GERMPLASM_LIST_PERMISSIONS">Create new List</button>
+				<button mat-menu-item *jhiHasAnyAuthority="ADD_GERMPLASM_ENTRIES_TO_LIST_PERMISSIONS">Add to existing list</button>
+			</mat-menu>
+
+			<mat-menu #group="matMenu">
+				<button mat-menu-item>Group</button>
+				<button mat-menu-item>Ungroup</button>
+			</mat-menu>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col">
 			<div ngbDropdown class="float-right" placement="bottom-right">

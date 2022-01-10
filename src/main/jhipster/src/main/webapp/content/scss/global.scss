@@ -631,4 +631,11 @@ Text ellipsis
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+/* ==========================================================================
+Nested menu
+========================================================================== */
+.mat-menu-item {
+    font-size: inherit;
+    line-height: 25px !important;
+    height: 25px !important;
+}

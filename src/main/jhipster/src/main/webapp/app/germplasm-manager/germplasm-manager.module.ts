@@ -24,12 +24,14 @@ import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-select
 import { MergeGermplasmExistingLotsComponent } from './merge/merge-germplasm-existing-lots.component';
 import { GermplasmProgenyModalComponent, GermplasmProgenyPopupComponent } from './merge/germplasm-progeny-modal.component';
 import { MergeGermplasmReviewComponent } from './merge/merge-germplasm-review.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
     imports: [
         BmsjHipsterSharedModule,
         RouterModule.forChild(GERMPLASM_MANAGER_ROUTES),
-        GermplasmImportModule
+        GermplasmImportModule,
+        MatMenuModule
     ],
     declarations: [
         LotCreationDialogComponent,
