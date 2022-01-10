@@ -39,10 +39,6 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     countries: Location[] = [];
     provinces: Location[] = [];
 
-    selectedCountry: Location;
-    selectedProvince: Location;
-    selectedLocationType: LocationType;
-
     nonSpecifyLocation: Location = new Location(-1);
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
@@ -101,11 +97,10 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp: HttpResponse<Location[]>) => {
                     this.countries = resp.body;
-                    if (this.cropSettingsContext.location) {
-                        this.selectedCountry = resp.body.find((e) => e.id === this.cropSettingsContext.location.countryId);
-                        this.locationRequest.countryId = this.selectedCountry.id;
-                    }
                     this.countries.unshift(this.nonSpecifyLocation);
+                    if (this.cropSettingsContext.location) {
+                        this.locationRequest.countryId = this.cropSettingsContext.location.countryId;
+                    }
                 },
                 (res: HttpErrorResponse) => this.onError(res)
             );
@@ -118,10 +113,8 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
                 .subscribe(
                     (resp: HttpResponse<Location[]>) => {
                         this.provinces = resp.body;
-                        this.selectedProvince = resp.body.find((e) => e.id === this.cropSettingsContext.location.provinceId);
-                        this.locationRequest.provinceId = this.selectedProvince.id;
                         this.provinces.unshift(this.nonSpecifyLocation);
-
+                        this.locationRequest.provinceId = this.cropSettingsContext.location.provinceId;
                     },
                     (res: HttpErrorResponse) => this.onError(res)
                 );
@@ -129,8 +122,7 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
         this.locationService.getLocationTypes().toPromise().then((locationTypes: LocationType[]) => {
             this.locationTypes = locationTypes;
             if (this.cropSettingsContext.location) {
-                this.selectedLocationType = locationTypes.find((e) => e.id === this.cropSettingsContext.location.type);
-                this.locationRequest.type = this.selectedLocationType.id;
+                this.locationRequest.type = this.cropSettingsContext.location.type;
             }
 
         });
