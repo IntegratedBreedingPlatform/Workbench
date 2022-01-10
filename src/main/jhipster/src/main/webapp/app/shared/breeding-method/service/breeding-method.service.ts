@@ -48,4 +48,19 @@ export class BreedingMethodService {
         return this.http.post<BreedingMethod[]>(url, request, { params, observe: 'response' });
     }
 
+    createBreedingMethod(breedingMethodRequest: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods?programUUID=` + this.context.programUUID;
+        return this.http.post(url, breedingMethodRequest);
+    }
+
+    updateBreedingMethod(breedingMethodRequest: any, breedingMethodDbId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods/${breedingMethodDbId}?programUUID=` + this.context.programUUID;
+        return this.http.put(url, breedingMethodRequest);
+
+    }
+
+    deleteBreedingMethod(breedingMethodDbId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods/${breedingMethodDbId}?programUUID=` + this.context.programUUID;
+        return this.http.delete(url);
+    }
 }
