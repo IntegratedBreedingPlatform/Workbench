@@ -27,7 +27,9 @@ import { BreedingMethodEditDialogComponent, BreedingMethodEditPopupComponent } f
         NameTypeEditDialogComponent,
         NameTypeEditPopupComponent,
         LocationEditDialogComponent,
-        LocationEditPopupComponent
+        LocationEditPopupComponent,
+        BreedingMethodEditDialogComponent,
+        BreedingMethodEditPopupComponent
     ],
     entryComponents: [
         CropSettingsManagerComponent,
@@ -37,7 +39,9 @@ import { BreedingMethodEditDialogComponent, BreedingMethodEditPopupComponent } f
         NameTypeEditDialogComponent,
         NameTypeEditPopupComponent,
         LocationEditDialogComponent,
-        LocationEditPopupComponent
+        LocationEditPopupComponent,
+        BreedingMethodEditDialogComponent,
+        BreedingMethodEditPopupComponent
     ],
     providers: [
         NameTypesResolvePagingParams,

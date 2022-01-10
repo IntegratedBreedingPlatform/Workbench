@@ -1,0 +1,78 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">
+				<span *ngIf="breedingMethodId" jhiTranslate="crop-settings-manager.breeding-method.modal.edit.header"></span>
+				<span *ngIf="!breedingMethodId" jhiTranslate="crop-settings-manager.breeding-method.modal.create.header"></span>
+			</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="clear()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm">
+			<div class="form-group row">
+				<label for="breedingMethodName" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.breeding-method-name">Breeding Method Name</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" name="name" id="code" [(ngModel)]="breedingMethodRequest.name" #breedingMethodName="ngModel" [maxLength]="60" [required]="true"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="code" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.code">Code</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" name="abbreviation" id="name" [(ngModel)]="breedingMethodRequest.code" #code="ngModel" [maxLength]="12" [required]="true"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.description">Description</label>
+				<div class="col-sm-7">
+					<textarea rows="3" class="form-control" name="description" id="name" [(ngModel)]="breedingMethodRequest.description" #description="ngModel" [maxLength]="255" [required]="true"></textarea>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-5 control-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.generation-advancement-type">Generation Advancement Type</label>
+				<!--<div class="col-sm-8">
+					<select class="form-control" name="locationType" [(ngModel)]="breedingMethodRequest.type" #type="ngModel" [required]="true">
+						<option *ngFor="let locationType of locationTypes" [value]="locationType.id">
+							<label>{{locationType.name}}</label>
+						</option>
+					</select>
+				</div>-->
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-5 control-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.crop-reproductive-system">Crop Reproductive System</label>
+				<!--<div class="col-sm-8">
+					<select class="form-control" name="locationType" [(ngModel)]="breedingMethodRequest.type" #type="ngModel" [required]="true">
+						<option *ngFor="let locationType of locationTypes" [value]="locationType.id">
+							<label>{{locationType.name}}</label>
+						</option>
+					</select>
+				</div>-->
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-5 control-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.class">Class</label>
+				<!--<div class="col-sm-8">
+					<select class="form-control" name="locationType" [(ngModel)]="breedingMethodRequest.type" #type="ngModel" [required]="true">
+						<option *ngFor="let locationType of locationTypes" [value]="locationType.id">
+							<label>{{locationType.name}}</label>
+						</option>
+					</select>
+				</div>-->
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+		</button>
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;
+			<span *ngIf="breedingMethodId" jhiTranslate="update"></span>
+			<span *ngIf="!breedingMethodId" jhiTranslate="create"></span>
+		</button>
+	</div>
+</div>
