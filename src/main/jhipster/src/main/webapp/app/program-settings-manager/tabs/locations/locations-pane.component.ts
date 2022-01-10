@@ -130,16 +130,6 @@ export class LocationsPaneComponent implements OnInit {
     }
 
     transition() {
-        this.router.navigate(['./'], {
-            queryParamsHandling: 'merge',
-            queryParams: {
-                page: this.page,
-                size: this.itemsPerPage,
-                search: this.currentSearch,
-                sort: this.getSort()
-            },
-            relativeTo: this.activatedRoute
-        });
         this.loadAll(this.request);
     }
 
