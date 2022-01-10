@@ -8,27 +8,27 @@
 		<table class="table table-striped table-bordered table-curved">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
-				<th><span jhiSortBy="fcode"><span jhiTranslate="crop-settings-manager.name-type.code">Code</span><span class="fa fa-sort"></span></span>
+				<th><span jhiSortBy="fcode"><span jhiTranslate="crop-settings-manager.name-type.columns.code"></span><span class="fa fa-sort"></span></span>
 					<jhi-column-filter-inline [filter]="filters.code"
 											  (onApply)="applyFilters()"
 											  (onReset)="resetFilters()"></jhi-column-filter-inline>
 				</th>
-				<th><span jhiSortBy="fname"><span jhiTranslate="crop-settings-manager.name-type.name">Name Type</span><span class="fa fa-sort"></span></span>
+				<th><span jhiSortBy="fname"><span jhiTranslate="crop-settings-manager.name-type.columns.name"></span><span class="fa fa-sort"></span></span>
 					<jhi-column-filter-inline [filter]="filters.name"
 											  (onApply)="applyFilters()"
 											  (onReset)="resetFilters()"></jhi-column-filter-inline>
 				</th>
-				<th><span jhiSortBy="fdesc"><span jhiTranslate="crop-settings-manager.name-type.description">Description</span><span class="fa fa-sort"></span></span>
+				<th><span jhiSortBy="fdesc"><span jhiTranslate="crop-settings-manager.name-type.columns.description"></span><span class="fa fa-sort"></span></span>
 					<jhi-column-filter-inline [filter]="filters.description"
 											  (onApply)="applyFilters()"
 											  (onReset)="resetFilters()"></jhi-column-filter-inline>
 				</th>
-				<th style="width: 90px;"><span jhiSortBy="fdate"><span jhiTranslate="crop-settings-manager.name-type.date">Date</span><span class="fa fa-sort"></span></span>
+				<th style="width: 90px;"><span jhiSortBy="fdate"><span jhiTranslate="crop-settings-manager.name-type.columns.date"></span><span class="fa fa-sort"></span></span>
 					<jhi-column-filter-inline [filter]="filters.date"
 											  (onApply)="applyFilters()"
 											  (onReset)="resetFilters()"></jhi-column-filter-inline>
 				</th>
-				<th style="width: 95px;"><span jhiTranslate="crop-settings-manager.name-type.action">Action</span></th>
+				<th style="width: 95px;"><span jhiTranslate="crop-settings-manager.name-type.columns.action"></span></th>
 			</tr>
 			</thead>
 			<tbody *ngIf="nameTypes.length else nodata">

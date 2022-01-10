@@ -15,7 +15,6 @@
       "name": "Name",
       "description": "Description",
       "date": "Date",
-      "action": "Action",
       "modal": {
         "delete": {
           "success": "Name Type deleted successfully.",
@@ -29,6 +28,14 @@
           "header": "Edit Name Type",
           "success": "Name type updated successfully"
         }
+      },
+      "columns": {
+        "code": "CODE",
+        "name": "NAME",
+        "description": "DESCRIPTION",
+        "code": "CODE",
+        "date": "DATE",
+        "action": "ACTION"
       }
     },
     "location": {
@@ -54,6 +61,18 @@
           "header": "Edit Location",
           "success": "Location updated successfully"
         }
+      },
+      "columns": {
+        "location-name": "NAME",
+        "abbreviation": "ABBR.",
+        "location-id": "LOCATION ID",
+        "country": "COUNTRY",
+        "province": "PROVINCE",
+        "latitude": "LATITUDE",
+        "longitude": "LONGITUDE",
+        "altitude": "ALTITUDE",
+        "location-type": "TYPE",
+        "action": "ACTION"
       }
     }
   }
