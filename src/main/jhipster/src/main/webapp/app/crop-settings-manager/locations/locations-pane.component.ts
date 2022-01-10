@@ -3,15 +3,12 @@ import { SearchResult } from '../../shared/search-result.model';
 import { Subscription } from 'rxjs';
 import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { LocationService } from '../../shared/location/service/location.service';
 import { AlertService } from '../../shared/alert/alert.service';
-import { ParamContext } from '../../shared/service/param.context';
-import { ProgramService } from '../../shared/program/service/program.service';
 import { ColumnFilterComponent, FilterType } from '../../shared/column-filter/column-filter.component';
 import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { SORT_PREDICATE_NONE } from '../../germplasm-manager/germplasm-search-resolve-paging-params';
 import { ColumnFilterTransitionEventModel } from '../../shared/column-filter/column-filter-transition-event.model';
 import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 import { Select2OptionData } from 'ng-select2';
@@ -23,6 +20,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { Pageable } from '../../shared/model/pageable';
+import { JhiLanguageService } from 'ng-jhipster/src/language';
 
 declare var $: any;
 
@@ -64,10 +62,8 @@ export class LocationsPaneComponent implements OnInit {
                 private locationService: LocationService,
                 private router: Router,
                 private alertService: AlertService,
-                private context: ParamContext,
                 private modalService: NgbModal,
                 private cropSettingsContext: CropSettingsContext,
-                private programService: ProgramService
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -142,7 +138,7 @@ export class LocationsPaneComponent implements OnInit {
     }
 
     private clearSort() {
-        this.predicate = this.predicate = [ColumnLabels.LOCATION_NAME];
+        this.predicate = [ColumnLabels.LOCATION_NAME];
         this.reverse = '';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
