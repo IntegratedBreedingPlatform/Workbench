@@ -47,7 +47,10 @@
         "generation-advancement-type": "Generation Advancement Type",
         "crop-reproductive-system": "Crop Reproductive System",
         "class": "Class",
-
+        "separator": "Separator",
+        "prefix": "Prefix",
+        "count": "Count",
+        "suffix": "Suffix",
         "delete": {
           "success": "Breeding Method deleted successfully.",
           "warning": "Are you sure you want to delete the Breeding Method {{param}}?"
