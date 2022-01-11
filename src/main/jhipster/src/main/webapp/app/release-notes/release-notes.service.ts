@@ -23,7 +23,7 @@ export class ReleaseNotesService {
     }
 
     dontShowAgain(): Observable<void> {
-       return this.http.put<void>(this.resourceUrl + `/show-again/${false}`, {});
+       return this.http.put<void>(this.resourceUrl + '/toggle?showAgain=' + false, {});
     }
 
 }
