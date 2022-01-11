@@ -17,19 +17,19 @@
 			<div class="form-group row">
 				<label for="breedingMethodName" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.breeding-method-name">Breeding Method Name</label>
 				<div class="col-sm-7">
-					<input type="text" class="form-control" name="name" id="code" [(ngModel)]="breedingMethodRequest.name" #breedingMethodName="ngModel" [maxLength]="50" [required]="true"/>
+					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="breedingMethodRequest.name" #breedingMethodName="ngModel" [maxLength]="50" [required]="true"/>
 				</div>
 			</div>
 			<div class="form-group row">
 				<label for="code" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.code">Code</label>
 				<div class="col-sm-7">
-					<input type="text" class="form-control" name="abbreviation" id="name" [(ngModel)]="breedingMethodRequest.code" #code="ngModel" [maxLength]="8" [required]="true"/>
+					<input type="text" class="form-control" name="abbreviation" id="code" [(ngModel)]="breedingMethodRequest.code" #code="ngModel" [maxLength]="8" [required]="true"/>
 				</div>
 			</div>
 			<div class="form-group row">
 				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.description">Description</label>
 				<div class="col-sm-7">
-					<textarea rows="3" class="form-control" name="description" id="name" [(ngModel)]="breedingMethodRequest.description" #description="ngModel" [maxLength]="255" [required]="true"></textarea>
+					<textarea rows="3" class="form-control" name="description" id="description" [(ngModel)]="breedingMethodRequest.description" #description="ngModel" [maxLength]="255" [required]="true"></textarea>
 				</div>
 			</div>
 			<div class="form-group row">
@@ -60,6 +60,30 @@
 							<label>{{breedingMethodClass.name}}</label>
 						</option>
 					</select>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.separator">Separator</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" name="separator" id="separator" [(ngModel)]="breedingMethodRequest.separator" #separator="ngModel" [maxLength]="255"></input>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.prefix">Prefix</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" name="prefix" id="prefix" [(ngModel)]="breedingMethodRequest.prefix" #prefix="ngModel" [maxLength]="255"></input>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.count">Count</label>
+				<div class="col-sm-7">
+					<input class="form-control" name="count" id="count" [(ngModel)]="breedingMethodRequest.count" #count="ngModel" [maxLength]="255"></input>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.suffix">Suffix</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" name="suffix" id="suffix" [(ngModel)]="breedingMethodRequest.suffix" #suffix="ngModel" [maxLength]="255"></input>
 				</div>
 			</div>
 		</form>
