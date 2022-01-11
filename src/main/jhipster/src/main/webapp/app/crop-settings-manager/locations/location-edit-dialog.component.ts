@@ -57,8 +57,8 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        this.isLoading = true;
         if (this.locationId) {
-            this.isLoading = true;
             this.locationService.updateLocation(this.locationRequest, this.locationId).toPromise().then((result) => {
                 this.alertService.success('crop-settings-manager.location.modal.edit.success');
                 this.notifyChanges();
@@ -68,7 +68,6 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
                 this.isLoading = false;
             });
         } else {
-            this.isLoading = true;
             this.locationService.createLocation(this.locationRequest).toPromise().then((result) => {
                 this.alertService.success('crop-settings-manager.location.modal.create.success');
                 this.notifyChanges();
