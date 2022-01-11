@@ -98,6 +98,26 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     }
 
     save() {
+        this.isLoading = true;
+        if (this.breedingMethodId) {
+            this.breedingMethodService.updateBreedingMethod(this.breedingMethodRequest, this.breedingMethodId).toPromise().then((result) => {
+                this.alertService.success('crop-settings-manager.breeding-method.modal.edit.success');
+                this.notifyChanges();
+                this.isLoading = false;
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
+            });
+        } else {
+            this.breedingMethodService.createBreedingMethod(this.breedingMethodRequest).toPromise().then((result) => {
+                this.alertService.success('crop-settings-manager.breeding-method.modal.create.success');
+                this.notifyChanges();
+                this.isLoading = false;
+            }).catch((response) => {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                this.isLoading = false;
+            });
+        }
 
     }
 
