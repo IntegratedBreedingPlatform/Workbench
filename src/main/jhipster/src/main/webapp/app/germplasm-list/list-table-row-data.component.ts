@@ -14,6 +14,7 @@ import { VariableValidationService } from '../shared/ontology/service/variable-v
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -120,7 +121,9 @@ export class ListDataRowComponent implements OnInit {
     }
 
     isEditable() {
-        return this.column.columnCategory === GermplasmListColumnCategory.VARIABLE;
+        return this.column.columnCategory === GermplasmListColumnCategory.VARIABLE &&
+            this.column.variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_PASSPORT] &&
+                this.column.variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_ATTRIBUTE];
     }
 
     edit() {
