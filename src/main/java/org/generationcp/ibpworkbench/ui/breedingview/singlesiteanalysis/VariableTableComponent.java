@@ -200,7 +200,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	protected VariableTableItem transformVariableTypeToVariableTableItem(final DMSVariableType variableType) {
 		final VariableTableItem variableTableItem = new VariableTableItem();
-		variableTableItem.setId(variableType.getRank());
+		variableTableItem.setId(variableType.getId());
 		variableTableItem.setName(variableType.getLocalName());
 		variableTableItem.setDescription(variableType.getLocalDescription());
 		variableTableItem.setScale(variableType.getStandardVariable().getScale().getName());
