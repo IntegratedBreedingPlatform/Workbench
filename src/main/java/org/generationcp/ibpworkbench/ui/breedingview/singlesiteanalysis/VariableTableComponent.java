@@ -33,13 +33,13 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	public interface SelectionChangedListener {
 
-		public void onSelectionChanged(final VariableTableItem variableTableItem);
+		void onSelectionChanged(final VariableTableItem variableTableItem);
 	}
 
 
 	public interface SelectAllChangedListener {
 
-		public void onSelectionChanged(boolean isChecked);
+		void onSelectionChanged(boolean isChecked);
 	}
 
 
@@ -50,20 +50,12 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	private Property.ValueChangeListener selectAllListener;
 
-	private SelectionChangedListener selectionChangedListener = new SelectionChangedListener() {
-
-		@Override
-		public void onSelectionChanged(final VariableTableItem variableTableItem) {
-			// do nothing
-		}
+	private SelectionChangedListener selectionChangedListener = variableTableItem -> {
+		// do nothing
 	};
 
-	private SelectAllChangedListener selectAllChangedListener = new SelectAllChangedListener() {
-
-		@Override
-		public void onSelectionChanged(boolean isChecked) {
-			// do nothing
-		}
+	private SelectAllChangedListener selectAllChangedListener = isChecked -> {
+		// do nothing
 	};
 
 	private CheckBox selectAll;
@@ -98,7 +90,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 		this.table.setColumnHeader(SCALE_NAME_COLUMN, SCALE_COLUMN_HEADER);
 		this.table.addGeneratedColumn(CHECKBOX_COLUMN, new TableColumnGenerator());
 		this.table.setColumnWidth(CHECKBOX_COLUMN, 18);
-		this.initializeTableContainer(new ArrayList<VariableTableItem>());
+		this.initializeTableContainer(new ArrayList<>());
 
 		this.selectAllListener = new SelectAllListener();
 
@@ -168,7 +160,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 		final BeanItem<VariableTableItem> item = (BeanItem<VariableTableItem>) this.table.getItem(id);
 		if (item != null) {
 			final VariableTableItem variableTableItem = item.getBean();
-			variableTableItem.setActive(variableTableItem.isNonNumeric() ? false : isActive);
+			variableTableItem.setActive(!variableTableItem.isNonNumeric() && isActive);
 			variableTableItem.setDisabled(isDisabled);
 			checkboxValuesMap.put(variableTableItem.getName(), variableTableItem.getActive());
 			this.table.refreshRowCache();
@@ -176,7 +168,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 	}
 
 	public void resetAllCheckbox() {
-		for (Object itemId : this.table.getItemIds()) {
+		for (final Object itemId : this.table.getItemIds()) {
 			final BeanItem<VariableTableItem> item = (BeanItem<VariableTableItem>) this.table.getItem(itemId);
 			final VariableTableItem variableTableItem = item.getBean();
 			variableTableItem.setActive(false);
@@ -188,7 +180,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 
 	protected void initializeTableContainer(final List<VariableTableItem> variableTableItems) {
 
-		final BeanContainer<Integer, VariableTableItem> container = new BeanContainer<Integer, VariableTableItem>(VariableTableItem.class);
+		final BeanContainer<Integer, VariableTableItem> container = new BeanContainer<>(VariableTableItem.class);
 		container.setBeanIdProperty("id");
 		for (final VariableTableItem variableTableItem : variableTableItems) {
 			container.addBean(variableTableItem);
@@ -231,7 +223,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 			final BeanContainer<Integer, VariableTableItem> container =
 					(BeanContainer<Integer, VariableTableItem>) VariableTableComponent.this.table.getContainerDataSource();
 			final VariableTableItem vm = container.getItem(itemId).getBean();
-			return String.format(this.DESCRIPTION, vm.getName(), vm.getProperty(), vm.getScale(), vm.getMethod(), vm.getDatatype());
+			return String.format(DESCRIPTION, vm.getName(), vm.getProperty(), vm.getScale(), vm.getMethod(), vm.getDatatype());
 		}
 	}
 
@@ -301,7 +293,7 @@ public class VariableTableComponent extends VerticalLayout implements Initializi
 					(BeanContainer<Integer, VariableTableItem>) VariableTableComponent.this.table.getContainerDataSource();
 			for (final Object itemId : container.getItemIds()) {
 				final VariableTableItem variateModel = container.getItem(itemId).getBean();
-				variateModel.setActive(variateModel.isDisabled() ? false : val);
+				variateModel.setActive(!variateModel.isDisabled() && val);
 			}
 			table.refreshRowCache();
 			for (final Map.Entry<String, Boolean> entry : VariableTableComponent.this.checkboxValuesMap.entrySet()) {

@@ -184,7 +184,7 @@ public class VariableTableComponentTest {
 		final BeanItem<VariableTableItem> beanItem1 = new BeanItem<VariableTableItem>(item1);
 		final BeanItem<VariableTableItem> beanItem2 = new BeanItem<VariableTableItem>(item2);
 
-		List itemIds = new ArrayList();
+		final List itemIds = new ArrayList();
 		itemIds.add(variableId1);
 		itemIds.add(variableId2);
 		when(table.getItemIds()).thenReturn(itemIds);
@@ -260,7 +260,7 @@ public class VariableTableComponentTest {
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItem(Mockito.any(Object.class))).thenReturn(beanItem);
 
-		VariableTableComponent.TableItemDescriptionGenerator tableItemDescriptionGenerator =
+		final VariableTableComponent.TableItemDescriptionGenerator tableItemDescriptionGenerator =
 				variableTableComponent.new TableItemDescriptionGenerator();
 
 		final String result = tableItemDescriptionGenerator.generateDescription(null, 1, null);
@@ -416,8 +416,8 @@ public class VariableTableComponentTest {
 
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItemIds()).thenReturn(Arrays.asList(1, 2));
-		when(container.getItem((Object) 1)).thenReturn(beanItem1);
-		when(container.getItem((Object) 2)).thenReturn(beanItem2);
+		when(container.getItem(1)).thenReturn(beanItem1);
+		when(container.getItem(2)).thenReturn(beanItem2);
 
 		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
 		final Property property = Mockito.mock(Property.class);
@@ -464,8 +464,8 @@ public class VariableTableComponentTest {
 
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItemIds()).thenReturn(Arrays.asList(1, 2));
-		when(container.getItem((Object) 1)).thenReturn(beanItem1);
-		when(container.getItem((Object) 2)).thenReturn(beanItem2);
+		when(container.getItem(1)).thenReturn(beanItem1);
+		when(container.getItem(2)).thenReturn(beanItem2);
 
 		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
 		final Property property = Mockito.mock(Property.class);
@@ -510,8 +510,8 @@ public class VariableTableComponentTest {
 
 		when(table.getContainerDataSource()).thenReturn(container);
 		when(container.getItemIds()).thenReturn(Arrays.asList(1, 2));
-		when(container.getItem((Object) 1)).thenReturn(beanItem1);
-		when(container.getItem((Object) 2)).thenReturn(beanItem2);
+		when(container.getItem(1)).thenReturn(beanItem1);
+		when(container.getItem(2)).thenReturn(beanItem2);
 
 		final Property.ValueChangeEvent event = Mockito.mock(Property.ValueChangeEvent.class);
 		final Property property = Mockito.mock(Property.class);
@@ -555,7 +555,7 @@ public class VariableTableComponentTest {
 
 	}
 
-	private VariableTableItem createVariableTableItem(int id) {
+	private VariableTableItem createVariableTableItem(final int id) {
 
 		final VariableTableItem item = new VariableTableItem();
 		item.setId(id);
