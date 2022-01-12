@@ -158,7 +158,7 @@ export class NameTypesPaneComponent implements OnInit {
 
     deleteNameType(nameType: any) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.name-type.modal.confirmation.title');
+        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
         confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', { param: nameType.name });
         confirmModalRef.result.then(() => {
             this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
