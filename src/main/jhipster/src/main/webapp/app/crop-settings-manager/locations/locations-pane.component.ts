@@ -118,16 +118,8 @@ export class LocationsPaneComponent implements OnInit {
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
-            this.transition();
+            this.loadAll(this.request);
         }
-    }
-
-    transition() {
-        this.router.navigate(['./'], {
-            queryParamsHandling: 'merge',
-            relativeTo: this.activatedRoute
-        });
-        this.loadAll(this.request);
     }
 
     private getSort() {
@@ -146,12 +138,12 @@ export class LocationsPaneComponent implements OnInit {
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
-        this.transition();
+        this.loadAll(this.request);
     }
 
     sort() {
         this.page = 1;
-        this.transition();
+        this.loadAll(this.request);
     }
 
     trackId(index: number, item: Location) {

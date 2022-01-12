@@ -125,20 +125,12 @@ export class BreedingMethodsPaneComponent implements OnInit {
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
-            this.transition();
+            this.loadAll(this.request);
         }
     }
 
     sort() {
         this.page = 1;
-        this.transition();
-    }
-
-    transition() {
-        this.router.navigate(['./'], {
-            queryParamsHandling: 'merge',
-            relativeTo: this.activatedRoute
-        });
         this.loadAll(this.request);
     }
 
@@ -159,7 +151,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
     onClearSort($event) {
         $event.preventDefault();
         this.clearSort();
-        this.transition();
+        this.loadAll(this.request);
     }
 
     trackId(index: number, item: Location) {
