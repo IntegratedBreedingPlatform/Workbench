@@ -131,7 +131,7 @@ export class LocationsPaneComponent implements OnInit {
 
     private clearSort() {
         this.predicate = [ColumnLabels.LOCATION_NAME];
-        this.reverse = '';
+        this.reverse = 'asc';
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
