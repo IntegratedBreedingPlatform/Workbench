@@ -12,6 +12,7 @@ import { LocationSearchRequest } from '../../shared/location/model/location-sear
 import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 @Component({
     selector: 'jhi-location-edit-dialog',
@@ -59,23 +60,21 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     save() {
         this.isLoading = true;
         if (this.locationId) {
-            this.locationService.updateLocation(this.locationRequest, this.locationId).toPromise().then((result) => {
+            this.locationService.updateLocation(this.locationRequest, this.locationId).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
                 this.alertService.success('crop-settings-manager.location.modal.edit.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
         } else {
-            this.locationService.createLocation(this.locationRequest).toPromise().then((result) => {
+            this.locationService.createLocation(this.locationRequest).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
                 this.alertService.success('crop-settings-manager.location.modal.create.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
         }
     }
 

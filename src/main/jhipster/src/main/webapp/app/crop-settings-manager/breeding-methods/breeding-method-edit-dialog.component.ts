@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
 import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding-method-group.model';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 @Component({
     selector: 'jhi-breeding-method-edit-dialog',
@@ -100,25 +101,21 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     save() {
         this.isLoading = true;
         if (this.breedingMethodId) {
-            this.breedingMethodService.updateBreedingMethod(this.breedingMethodRequest, this.breedingMethodId).toPromise().then((result) => {
+            this.breedingMethodService.updateBreedingMethod(this.breedingMethodRequest, this.breedingMethodId).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
                 this.alertService.success('crop-settings-manager.breeding-method.modal.edit.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
         } else {
-            this.breedingMethodService.createBreedingMethod(this.breedingMethodRequest).toPromise().then((result) => {
+            this.breedingMethodService.createBreedingMethod(this.breedingMethodRequest).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
                 this.alertService.success('crop-settings-manager.breeding-method.modal.create.success');
                 this.notifyChanges();
-                this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
         }
-
     }
 
     isFormValid(f) {

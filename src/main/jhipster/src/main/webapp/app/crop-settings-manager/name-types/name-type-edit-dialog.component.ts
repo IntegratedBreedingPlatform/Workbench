@@ -6,6 +6,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PopupService } from '../../shared/modal/popup.service';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { CropSettingsContext } from '../crop-Settings.context';
+import { finalize } from 'rxjs/internal/operators/finalize';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-name-type-edit-dialog',
@@ -34,24 +37,31 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
     save() {
         if (this.nameTypeId) {
             this.isLoading = true;
-            this.nameTypeService.updateNameType(this.nameType, this.nameTypeId).toPromise().then((result) => {
+            this.nameTypeService.updateNameType(this.nameType, this.nameTypeId).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
                 this.alertService.success('crop-settings-manager.name-type.modal.edit.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
         } else {
             this.isLoading = true;
-            this.nameTypeService.createNameType(this.nameType).toPromise().then((result) => {
+            this.nameTypeService.createNameType(this.nameType).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
                 this.alertService.success('crop-settings-manager.name-type.modal.create.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
+        }
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
         }
     }
 
