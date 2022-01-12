@@ -39,10 +39,7 @@ declare var $: any;
 
 @Component({
     selector: 'jhi-list',
-    templateUrl: './list.component.html',
-    styleUrls: [
-        './list.component.scss'
-    ]
+    templateUrl: './list.component.html'
 })
 export class ListComponent implements OnInit {
 
