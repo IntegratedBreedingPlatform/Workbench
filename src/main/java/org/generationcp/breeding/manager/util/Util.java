@@ -12,6 +12,18 @@ package org.generationcp.breeding.manager.util;
  *
  *******************************************************************************/
 
+import com.vaadin.Application;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.TabSheet.Tab;
+import org.generationcp.breeding.manager.exception.BreedingManagerException;
+import org.generationcp.breeding.manager.listmanager.util.GermplasmListTreeUtil;
+import org.generationcp.middleware.exceptions.MiddlewareQueryException;
+import org.generationcp.middleware.manager.api.GermplasmListManager;
+import org.generationcp.middleware.pojos.GermplasmList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -19,24 +31,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.dellroad.stuff.vaadin.ContextApplication;
-import org.generationcp.breeding.manager.exception.BreedingManagerException;
-import org.generationcp.breeding.manager.listmanager.util.GermplasmListTreeUtil;
-import org.generationcp.commons.context.ContextConstants;
-import org.generationcp.commons.security.SecurityUtil;
-import org.generationcp.commons.util.ContextUtil;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.GermplasmListManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
-import org.generationcp.middleware.pojos.GermplasmList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.vaadin.Application;
-import com.vaadin.ui.Accordion;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.Tab;
 
 public class Util {
 
@@ -48,11 +42,11 @@ public class Util {
 		// do nothing
 	}
 
-	public static boolean isTabExist(TabSheet tabSheet, String tabCaption) {
+	public static boolean isTabExist(final TabSheet tabSheet, final String tabCaption) {
 
-		int countTabSheet = tabSheet.getComponentCount();
+		final int countTabSheet = tabSheet.getComponentCount();
 		for (int i = 0; i < countTabSheet; i++) {
-			Tab tab = tabSheet.getTab(i);
+			final Tab tab = tabSheet.getTab(i);
 			if (tab.getCaption().equals(tabCaption)) {
 				return true;
 			}
@@ -61,13 +55,13 @@ public class Util {
 
 	}
 
-	public static boolean isTabDescriptionExist(TabSheet tabSheet, String tabDescription) {
+	public static boolean isTabDescriptionExist(final TabSheet tabSheet, final String tabDescription) {
 
-		int countTabSheet = tabSheet.getComponentCount();
+		final int countTabSheet = tabSheet.getComponentCount();
 		for (int i = 0; i < countTabSheet; i++) {
-			Tab tab = tabSheet.getTab(i);
+			final Tab tab = tabSheet.getTab(i);
 
-			String currentTabDescription = tab.getDescription();
+			final String currentTabDescription = tab.getDescription();
 			if (currentTabDescription != null && currentTabDescription.equals(tabDescription)) {
 				return true;
 			}
@@ -76,11 +70,11 @@ public class Util {
 
 	}
 
-	public static boolean isAccordionDatasetExist(Accordion accordion, String accordionCaption) {
-		int countAccordionTab = accordion.getComponentCount();
+	public static boolean isAccordionDatasetExist(final Accordion accordion, final String accordionCaption) {
+		final int countAccordionTab = accordion.getComponentCount();
 
 		for (int i = 0; i < countAccordionTab; i++) {
-			Tab tab = accordion.getTab(i);
+			final Tab tab = accordion.getTab(i);
 			if (tab.getCaption().equals(accordionCaption)) {
 				return true;
 			}
@@ -89,10 +83,10 @@ public class Util {
 		return false;
 	}
 
-	public static Tab getTabAlreadyExist(TabSheet tabSheet, String tabCaption) {
+	public static Tab getTabAlreadyExist(final TabSheet tabSheet, final String tabCaption) {
 
 		for (int i = 0; i < tabSheet.getComponentCount(); i++) {
-			Tab tab = tabSheet.getTab(i);
+			final Tab tab = tabSheet.getTab(i);
 			if (tab.getCaption().equals(tabCaption)) {
 				return tab;
 			}
@@ -101,11 +95,11 @@ public class Util {
 
 	}
 
-	public static Tab getTabWithDescription(TabSheet tabSheet, String tabDescription) {
+	public static Tab getTabWithDescription(final TabSheet tabSheet, final String tabDescription) {
 
 		for (int i = 0; i < tabSheet.getComponentCount(); i++) {
-			Tab tab = tabSheet.getTab(i);
-			String description = tab.getDescription();
+			final Tab tab = tabSheet.getTab(i);
+			final String description = tab.getDescription();
 			if (description != null && description.equals(tabDescription)) {
 				return tab;
 			}
@@ -114,11 +108,11 @@ public class Util {
 
 	}
 
-	public static Tab getTabToFocus(TabSheet tabSheet, String tabCaption) {
+	public static Tab getTabToFocus(final TabSheet tabSheet, final String tabCaption) {
 		Tab tabToFocus = tabSheet.getTab(0);
 		boolean rightTab = false;
 		for (int i = 0; i < tabSheet.getComponentCount(); i++) {
-			Tab tab = tabSheet.getTab(i);
+			final Tab tab = tabSheet.getTab(i);
 			if (rightTab) {
 				tabToFocus = tab;
 				return tabToFocus;
@@ -137,7 +131,7 @@ public class Util {
 
 	}
 
-	public static void closeAllTab(TabSheet tabSheet) {
+	public static void closeAllTab(final TabSheet tabSheet) {
 
 		for (int i = tabSheet.getComponentCount() - 1; i >= 0; i--) {
 			tabSheet.removeTab(tabSheet.getTab(i));
@@ -151,9 +145,9 @@ public class Util {
 	 * @param path
 	 * @return true if the given path is a directory
 	 */
-	public static boolean isDirectory(String path) {
+	public static boolean isDirectory(final String path) {
 		boolean isValid = true;
-		File f = new File(path);
+		final File f = new File(path);
 		if (!f.exists()) {
 			isValid = false;
 		} else if (!f.isDirectory()) {
@@ -168,16 +162,15 @@ public class Util {
 	 *
 	 * @param application
 	 * @return file pointing to desktop or application path
-	 *
 	 */
-	public static File getDefaultBrowseDirectory(Application application) throws BreedingManagerException {
+	public static File getDefaultBrowseDirectory(final Application application) throws BreedingManagerException {
 
 		// Initially gets the Desktop path of the user
-		String desktopPath = System.getProperty(Util.USER_HOME) + File.separator + "Desktop";
+		final String desktopPath = System.getProperty(Util.USER_HOME) + File.separator + "Desktop";
 		File file = new File(desktopPath);
 
 		// If desktop path is inaccessible, get the applicaton's base directory
-		if (!Util.isDirectory(desktopPath) || file == null || !file.canRead() || file.getAbsolutePath() == null) {
+		if (!Util.isDirectory(desktopPath) || !file.canRead() || file.getAbsolutePath() == null) {
 			file = application.getContext().getBaseDirectory();
 		}
 
@@ -196,10 +189,10 @@ public class Util {
 	 * @return file pointing to the path
 	 * @throws BreedingManagerException
 	 */
-	public static File getDefaultBrowseDirectory(String path) throws BreedingManagerException {
-		File file = new File(path);
+	public static File getDefaultBrowseDirectory(final String path) throws BreedingManagerException {
+		final File file = new File(path);
 
-		if (file != null && Util.isDirectory(path) && file.canRead() && file.getAbsolutePath() != null) {
+		if (Util.isDirectory(path) && file.canRead() && file.getAbsolutePath() != null) {
 			return file;
 		} else {
 			throw new BreedingManagerException("Invalid path");
@@ -213,13 +206,13 @@ public class Util {
 	 * @param path
 	 * @return
 	 */
-	public static String getOneFolderUp(String path) {
+	public static String getOneFolderUp(final String path) {
 		String newPath = path;
 
 		if (path != null && path.length() > 0) {
 			try {
 				newPath = path.substring(0, path.lastIndexOf(File.separator));
-			} catch (StringIndexOutOfBoundsException e) {
+			} catch (final StringIndexOutOfBoundsException e) {
 				Util.LOG.error(e.getMessage(), e);
 				newPath = "";
 			}
@@ -235,27 +228,27 @@ public class Util {
 	}
 
 	/**
-	  * Generates a string concatenation of full path of a folder eg. output "Program Lists > Folder 1 > Sub Folder 1 >"
+	 * Generates a string concatenation of full path of a folder eg. output "Program Lists > Folder 1 > Sub Folder 1 >"
+	 * <p>
+	 * where "Sub Folder 1" is the name of the folder
 	 *
-	  * where "Sub Folder 1" is the name of the folder
-	  *
-	  * @param germplasmListManager
-	  * @param folder
-	  * @return
-	  * @throws MiddlewareQueryException
-	  */
-	 public static String generateListFolderPathLabel(GermplasmListManager germplasmListManager, GermplasmList folder)
-			throws MiddlewareQueryException {
+	 * @param germplasmListManager
+	 * @param folder
+	 * @return
+	 * @throws MiddlewareQueryException
+	 */
+	public static String generateListFolderPathLabel(final GermplasmListManager germplasmListManager, final GermplasmList folder)
+		throws MiddlewareQueryException {
 
-		Deque<GermplasmList> parentFolders = new ArrayDeque<>();
+		final Deque<GermplasmList> parentFolders = new ArrayDeque<>();
 		GermplasmListTreeUtil.traverseParentsOfList(germplasmListManager, folder, parentFolders);
 
-		StringBuilder locationFolderString = new StringBuilder();
+		final StringBuilder locationFolderString = new StringBuilder();
 		locationFolderString.append("Program Lists");
 
 		while (!parentFolders.isEmpty()) {
 			locationFolderString.append(" > ");
-			GermplasmList parentFolder = parentFolders.pop();
+			final GermplasmList parentFolder = parentFolders.pop();
 			locationFolderString.append(parentFolder.getName());
 		}
 
@@ -269,31 +262,32 @@ public class Util {
 			returnString = folder.getName().substring(0, 47);
 
 		} else if (locationFolderString.length() > 47) {
-			int lengthOfFolderName = folder.getName().length();
+			final int lengthOfFolderName = folder.getName().length();
 			returnString = locationFolderString.substring(0, 47 - lengthOfFolderName - 6) + "... > " + folder.getName();
 		}
 
 		returnString += " > ";
 
 		return returnString;
-	 }
+	}
 
-	public static Map<Integer, GermplasmList> getGermplasmLists(GermplasmListManager germplasmListManager, List<Integer> germplasmListIds) {
-		 Map<Integer, GermplasmList> germplasmListsMap = new HashMap<>();
-		 List<GermplasmList> lists = new ArrayList<>();
+	public static Map<Integer, GermplasmList> getGermplasmLists(final GermplasmListManager germplasmListManager,
+		final List<Integer> germplasmListIds) {
+		final Map<Integer, GermplasmList> germplasmListsMap = new HashMap<>();
+		List<GermplasmList> lists = new ArrayList<>();
 
 		try {
-			 lists = germplasmListManager.getAllGermplasmLists(0, Integer.MAX_VALUE);
-			 for (GermplasmList list : lists) {
-				 Integer listId = list.getId();
-				 if (germplasmListIds.contains(listId)) {
-					 germplasmListsMap.put(listId, list);
-				 }
-			 }
-		 } catch (MiddlewareQueryException e) {
-			 Util.LOG.error("Error retrieving all germplasm list", e);
-		 }
-		 return germplasmListsMap;
-	 }
+			lists = germplasmListManager.getAllGermplasmLists(0, Integer.MAX_VALUE);
+			for (final GermplasmList list : lists) {
+				final Integer listId = list.getId();
+				if (germplasmListIds.contains(listId)) {
+					germplasmListsMap.put(listId, list);
+				}
+			}
+		} catch (final MiddlewareQueryException e) {
+			Util.LOG.error("Error retrieving all germplasm list", e);
+		}
+		return germplasmListsMap;
+	}
 
 }
