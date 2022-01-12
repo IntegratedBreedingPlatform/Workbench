@@ -211,7 +211,7 @@ public class VariableTableComponentTest {
 		final DMSVariableType dmsVariableType = createDMSVariableType();
 		final VariableTableItem variableTableItem = variableTableComponent.transformVariableTypeToVariableTableItem(dmsVariableType);
 
-		assertEquals(dmsVariableType.getRank(), variableTableItem.getId().intValue());
+		assertEquals(dmsVariableType.getId(), variableTableItem.getId().intValue());
 		assertEquals(dmsVariableType.getLocalName(), variableTableItem.getName());
 		assertEquals(dmsVariableType.getLocalDescription(), variableTableItem.getDescription());
 		assertEquals(dmsVariableType.getStandardVariable().getScale().getName(), variableTableItem.getScale());
@@ -231,7 +231,7 @@ public class VariableTableComponentTest {
 		dmsVariableType.getStandardVariable().setDataType(new Term(TermId.CATEGORICAL_VARIABLE.getId(), "Categorical Variable", ""));
 		final VariableTableItem variableTableItem = variableTableComponent.transformVariableTypeToVariableTableItem(dmsVariableType);
 
-		assertEquals(dmsVariableType.getRank(), variableTableItem.getId().intValue());
+		assertEquals(dmsVariableType.getId(), variableTableItem.getId().intValue());
 		assertEquals(dmsVariableType.getLocalName(), variableTableItem.getName());
 		assertEquals(dmsVariableType.getLocalDescription(), variableTableItem.getDescription());
 		assertEquals(dmsVariableType.getStandardVariable().getScale().getName(), variableTableItem.getScale());
