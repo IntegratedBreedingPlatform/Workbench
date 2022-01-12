@@ -12,6 +12,10 @@ export class BreedingMethod {
         public mid?: number,
         public numberOfProgenitors?: number,
         public creationDate?: string,
+        public separator?: string,
+        public prefix?: string,
+        public count?: string,
+        public suffix?: string,
         public programFavorites?: ProgramFavorite[]
     ) {
     }

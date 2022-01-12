@@ -36,4 +36,20 @@ export class LocationService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/search?programUUID=${this.context.programUUID}`;
         return this.http.post<Location[]>(url, request, { params, observe: 'response' });
     }
+
+    createLocation(locationRequest: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations?programUUID=` + this.context.programUUID;
+        return this.http.post(url, locationRequest);
+    }
+
+    updateLocation(locationRequest: any, locationId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/${locationId}?programUUID=` + this.context.programUUID;
+        return this.http.put(url, locationRequest);
+
+    }
+
+    deleteLocation(locationId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/${locationId}?programUUID=` + this.context.programUUID;
+        return this.http.delete(url);
+    }
 }
