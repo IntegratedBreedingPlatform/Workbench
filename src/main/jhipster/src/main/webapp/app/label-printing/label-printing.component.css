@@ -42,9 +42,13 @@
 #leftSelectedFields li,
 #rightSelectedFields li,
 .non-pdf-selected-fields li {
-    margin: 5px;
-    padding: 5px;
+    padding: 10px;
     font-size: 13px;
+}
+
+.list-group-content {
+    height: 50vh;
+    overflow-y: auto;
 }
 
 .field-group{
@@ -53,4 +57,12 @@
 .field-group .list-group-item{
     padding: 5px 10px;
     background-color: #c8c6c6;
+}
+
+/* Fix the overlapping with the labels when the scroll is activated */
+.fix-list-group {
+    padding: 20px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

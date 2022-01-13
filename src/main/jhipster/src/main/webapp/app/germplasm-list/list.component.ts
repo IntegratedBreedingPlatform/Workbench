@@ -31,7 +31,6 @@ import { ParamContext } from '../shared/service/param.context';
 import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/germplasm-list-reorder-entries-dialog.component';
 import { SearchComposite } from '../shared/model/search-composite';
 import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-request.model';
-import { GermplasmManagerContext } from '../germplasm-manager/germplasm-manager.context';
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 import { GermplasmListManagerContext } from './germplasm-list-manager.context';
@@ -62,6 +61,7 @@ export class ListComponent implements OnInit {
         ...MANAGE_GERMPLASM_LIST_PERMISSION,
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS',
+        'GERMPLASM_LIST_LABEL_PRINTING',
         'ADD_GERMPLASM_LIST_ENTRIES',
         'ADD_ENTRIES_TO_LIST',
         'DELETE_GERMPLASM_LIST',

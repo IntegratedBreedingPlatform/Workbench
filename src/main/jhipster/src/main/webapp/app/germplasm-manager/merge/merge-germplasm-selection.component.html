@@ -33,7 +33,7 @@
 				</td>
 				<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
 				<td>{{germplasm.locationName}}</td>
-				<td>{{germplasm.germplasmPeferredName}}</td>
+				<td>{{germplasm.germplasmPreferredName}}</td>
 				<td><a *ngIf="germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">{{germplasm.lotCount}}</a>
 					<span *ngIf="germplasm.lotCount === 0">-</span></td>
 				<td><a *ngIf="germplasm.hasProgeny" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-progeny-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">YES</a><span *ngIf="!germplasm.hasProgeny">NO</span></td>
@@ -71,6 +71,13 @@
 				<input type="checkbox" class="form-check-input" name="transferNameTypesData" id="transferNameTypesData"
 					   [(ngModel)]="isTransferNameTypesData">
 				<label class="form-check-label" for="transferNameTypesData" jhiTranslate="merge-germplasm.transfer-names-types-data">
+				</label>
+			</div>
+			<br/>
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="transferFiles" id="transferFiles"
+					   [(ngModel)]="isTransferFiles">
+				<label class="form-check-label" for="transferFiles" jhiTranslate="merge-germplasm.transfer-files">
 				</label>
 			</div>
 		</div>

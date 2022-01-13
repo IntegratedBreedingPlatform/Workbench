@@ -212,9 +212,9 @@
 																{{labelType.title}}</label>
 														</li>
 													</ul>
-													<ul id="label-type-fields" class="list-group droppable availableFields"
+													<ul id="label-type-fields" class="list-group droppable availableFields list-group-content"
 														[attr.data-label-type-key]="labelType.key">
-														<li class="list-group-item text-truncate" *ngFor="let item of labelType.fields"
+														<li class="fix-list-group list-group-item text-truncate" *ngFor="let item of labelType.fields"
 															[attr.id]="item.id"
 															[attr.data-label-type-key]="labelType.key">{{item.name}}</li>
 													</ul>
@@ -235,7 +235,7 @@
 														</label>
 													</li>
 												</ul>
-												<ul id="leftSelectedFields" class="list-group-flush droppable print-fields">
+												<ul id="leftSelectedFields" class="list-group-flush droppable print-fields list-group-content">
 												</ul>
 											</div>
 											<div class="col-md-6">
@@ -247,7 +247,7 @@
 															</label>
 														</li>
 													</ul>
-													<ul id="rightSelectedFields" class="list-group droppable print-fields">
+													<ul id="rightSelectedFields" class="list-group droppable print-fields list-group-content">
 													</ul>
 												</div>
 											</div>

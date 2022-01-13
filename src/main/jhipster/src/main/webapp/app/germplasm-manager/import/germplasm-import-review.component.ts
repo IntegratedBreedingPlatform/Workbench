@@ -315,23 +315,14 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     private async processMatches(): Promise<boolean> {
-        let unassignedMatches = this.dataMultipleMatches;
-
-        /*
-         * Initialize matchesResult with auto-selected single matches.
-         * Considering it a match result simplifies other processes like "ignore and create new".
-         */
-        this.selectMatchesResult = this.dataSingleMatches.reduce((map, row) => {
-            if (this.matchesByPUI[toUpper(row[HEADERS.PUI])]) {
-                return map;
-            }
-            const singleMatch = getRowMatches(row, this.context.nametypesCopy, this.matchesByName)[0];
-            map[row[HEADERS.ENTRY_NO]] = singleMatch.gid;
-            return map;
-        }, {});
+        this.selectMatchesResult = {};
 
         if (this.creationOption === CREATION_OPTIONS.SELECT_EXISTING) {
+
+            // Data with multiple matches
+            let unassignedMatches = [...this.dataMultipleMatches];
             if (this.isSelectMatchesAutomatically) {
+                // try to find single matches by pref name in entries with multiple matches
                 unassignedMatches.forEach((row) => {
                     const matches = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
                     if (matches && matches.length === 1) {
@@ -339,6 +330,22 @@ export class GermplasmImportReviewComponent implements OnInit {
                     }
                 });
             }
+
+            // Data with single matches
+            if (this.isSelectMatchesAutomatically) {
+                // auto select single matches
+                this.dataSingleMatches.forEach((row) => {
+                    // matches by pui cannot ignored, hence treated differently
+                    if (this.matchesByPUI[toUpper(row[HEADERS.PUI])]) {
+                        return;
+                    }
+                    const singleMatch = getRowMatches(row, this.context.nametypesCopy, this.matchesByName)[0];
+                    this.selectMatchesResult[row[HEADERS.ENTRY_NO]] = singleMatch.gid;
+                });
+            } else {
+                unassignedMatches.push(...this.dataSingleMatches);
+            }
+
             /*
              * if 1) auto-matching didn't work:
              *      a) multiple gids for preferred name or..
@@ -363,8 +370,6 @@ export class GermplasmImportReviewComponent implements OnInit {
                     return false;
                 }
             }
-        } else if (this.creationOption === CREATION_OPTIONS.CREATE_NEW) {
-            this.selectMatchesResult = {};
         }
 
         return true;
