@@ -60,7 +60,8 @@ export class GermplasmService {
             return this.http.post<GermplasmDto[]>(url, {
                 germplasmPUIs, germplasmUUIDs, names, gids
             }, {
-                params: createRequestOption({ page, size: pageSize })
+                params: createRequestOption({ page, size: pageSize }),
+                observe: 'response'
             });
         });
     }
