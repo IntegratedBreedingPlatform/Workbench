@@ -256,6 +256,7 @@ function GraphicalFilter() {
 			.attr("type", "button")
 			.attr("id", dropID)
 			.attr("data-toggle", "dropdown")
+			.attr("data-test", "addFilterButton")
 			.attr("aria-haspopup", "true")
 			.attr("aria-expanded", "false");
 		var newFilterMenuContents = newFilterMenu.append("ul")
@@ -264,6 +265,7 @@ function GraphicalFilter() {
 
 		newFilterMenuContents.append("li").append("a").text("New Range")
 			.attr("href", "")
+			.attr("data-test", "newRangeOption")
 			.classed("dropdown-item", true)
 			.on("click", function (d) {
 				d3.event.preventDefault();
@@ -418,6 +420,7 @@ function GraphicalFilter() {
 				.classed("panel-body", true);
 			var select = heading.append("select")
 				.classed("form-control", true)
+				.attr("data-test", "selectTrait")
 				.on("change", function () {
 					var fr = d3.select(this).datum();
 					fr.filterTrait = $(this).val();
