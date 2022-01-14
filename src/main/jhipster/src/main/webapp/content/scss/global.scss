@@ -279,6 +279,10 @@ $tab-border: $border-width solid $nav-tabs-border-color;
     border-spacing: 0;
 }
 
+table th.non-editable {
+    background-color: #a4a4a4;
+}
+
 .table tr.selected {
     color: olivedrab;
     background-color: #bed6b2 !important;
@@ -631,4 +635,3 @@ Text ellipsis
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
