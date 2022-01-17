@@ -189,7 +189,12 @@ export class ListComponent implements OnInit {
         this.user = identity;
 
         this.germplasmListService.getGermplasmListById(this.listId).subscribe(
-            (res: HttpResponse<GermplasmListModel>) => this.germplasmList = res.body,
+            (res: HttpResponse<GermplasmListModel>) => {
+                this.germplasmList = res.body
+                if (this.germplasmList.generationLevel) {
+                    this.generationLevel = this.germplasmList.generationLevel;
+                }
+            },
             (res: HttpErrorResponse) => this.onError(res)
         );
 

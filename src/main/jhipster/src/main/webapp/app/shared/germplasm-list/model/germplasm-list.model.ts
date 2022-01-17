@@ -8,6 +8,7 @@ export class GermplasmListModel {
                 public ownerId: number,
                 public listType: string,
                 public notes?: string,
-                public parentFolderId?: string) {
+                public parentFolderId?: string,
+                public generationLevel?: number) {
     }
 }
