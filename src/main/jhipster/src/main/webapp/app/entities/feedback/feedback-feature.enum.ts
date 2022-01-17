@@ -1,3 +1,3 @@
 export enum FeedbackFeatureEnum {
-    REORDER_ENTRIES= 'REORDER_ENTRIES'
+    GERMPLASM_LIST = 'GERMPLASM_LIST'
 }

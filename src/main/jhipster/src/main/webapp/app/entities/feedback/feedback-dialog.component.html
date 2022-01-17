@@ -4,10 +4,11 @@
     </h4>
 </div>
 <div class="modal-body">
-    <div id="surveyhero-embed-{{this.FEEDBACK_EMBED_SURVEY_ID}}"
+    <div id="surveyhero-embed-{{this.FEEDBACK_SURVEY_ID}}"
          [attr.data-crop]="this.context.cropName"
-         [attr.data-program]="this.context.programUUID"
-         [attr.data-feature]="this.feature"></div>
+         [attr.data-program-uuid]="this.context.programUUID"
+         [attr.data-feature]="this.feature"
+         [attr.data-ratingtext]="this.ratingText"></div>
 </div>
 <div class="modal-footer">
     <div class="form-check form-check-inline">

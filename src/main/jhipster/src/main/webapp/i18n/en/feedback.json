@@ -1,6 +1,9 @@
 {
   "feedback": {
     "title": "Feedback",
-    "dont-show-again-checkbox": "Don't show again"
+    "dont-show-again-checkbox": "Don't show again",
+    "rating-text": {
+      "GERMPLASM_LIST": "How was your experience with the new list manager?"
+    }
   }
 }
