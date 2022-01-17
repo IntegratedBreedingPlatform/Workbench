@@ -68,6 +68,9 @@
                 "confirm.message": "Are you sure you want to remove the selected entries from the list?",
                 "confirm.header": "Remove entries",
                 "remove.success": "Successfully removed entries."
+            },
+            "cross": {
+                "generation.level.label": "Specify expansion level"
             }
         },
         "variables": {
