@@ -771,13 +771,13 @@ export class ListComponent implements OnInit {
         return Object.keys(this.selectedItems).map((listDataId: string) => Number(listDataId));
     }
 
-    availableActionMenu() {
+    isActionMenuAvailable() {
         return this.principal.hasAnyAuthorityDirect(this.ACTION_BUTTON_PERMISSIONS) ||
-            this.availableDeleteActionItem() ||
+            this.isDeleteActionItemAvailable() ||
             (!this.germplasmList.locked && this.principal.hasAnyAuthorityDirect(this.ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION));
     }
 
-    availableDeleteActionItem() {
+    isDeleteActionItemAvailable() {
         return !this.germplasmList.locked && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
     }
 
