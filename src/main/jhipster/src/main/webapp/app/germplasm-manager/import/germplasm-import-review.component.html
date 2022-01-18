@@ -63,6 +63,7 @@
 						</tbody>
 					</table>
 				</div>
+				<div style="margin-top: 10px;"><a *ngIf="rows.length > 0" href (click)="exportTableToExcel($event)" jhiTranslate="germplasm.import.review.export.table"> Export table as-is</a></div>
 				<div class="row">
 					<div class="col">
 						<div class="pagination-container">

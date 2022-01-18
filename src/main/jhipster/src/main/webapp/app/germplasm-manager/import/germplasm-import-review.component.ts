@@ -25,6 +25,7 @@ import { toUpper } from '../../shared/util/to-upper';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { listPreview } from '../../shared/util/list-preview';
+import { exportDataJsonToExcel } from '../../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -539,6 +540,11 @@ export class GermplasmImportReviewComponent implements OnInit {
                 this.rows = this.newRecords;
                 break;
         }
+    }
+
+    exportTableToExcel($event) {
+        $event.preventDefault();
+        exportDataJsonToExcel('reviewImportGermpĺasm.xlsx', 'Observations', this.rows);
     }
 }
 

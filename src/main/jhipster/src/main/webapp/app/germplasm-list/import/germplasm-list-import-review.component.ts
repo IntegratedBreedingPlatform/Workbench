@@ -22,6 +22,7 @@ import { GermplasmListCreationComponent } from '../../shared/list-creation/germp
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ListModel } from '../../shared/list-builder/model/list.model';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
+import { exportDataJsonToExcel } from '../../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -383,6 +384,30 @@ export class GermplasmListImportReviewComponent implements OnInit {
         } else {
             this.alertService.error('error.general');
         }
+    }
+
+    exportTableToExcel($event) {
+        $event.preventDefault();
+        const jsonPreview = [];
+        const variableHeader = [];
+        this.rows.forEach((row) => {
+            const data = {};
+            data[HEADERS.GID] = row[HEADERS.GID];
+            data[HEADERS.GUID] = row[HEADERS.GUID];
+            data[HEADERS.DESIGNATION] = row[HEADERS.DESIGNATION];
+            data[HEADERS.ENTRY_CODE] = row[HEADERS.ENTRY_CODE];
+            this.context.newVariables.forEach((variable) => {
+                if (row[toUpper(variable.alias)]) {
+                    data[variable.alias] = row[toUpper(variable.alias)]
+                } else {
+                    data[variable.name] = row[toUpper(variable.name)]
+                }
+            });
+            data[HEADERS.GID_MATCHES] = row['GID MATCHES'].map((germplasm) => germplasm.gid).join(',');
+            jsonPreview.push(data);
+        });
+
+        exportDataJsonToExcel('reviewImportGermpĺasmList.xlsx', 'Observations', jsonPreview);
     }
 }
 
