@@ -771,16 +771,14 @@ export class ListComponent implements OnInit {
         return Object.keys(this.selectedItems).map((listDataId: string) => Number(listDataId));
     }
 
-    hideActionMenu() {
-        const hidden = !this.principal.hasAnyAuthorityDirect(this.ACTION_BUTTON_PERMISSIONS) &&
-            this.hideDeleteActionItem() &&
-            (this.germplasmList.locked || !this.principal.hasAnyAuthorityDirect(this.ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION));
-
-        return hidden;
+    availableActionMenu() {
+        return this.principal.hasAnyAuthorityDirect(this.ACTION_BUTTON_PERMISSIONS) ||
+            this.availableDeleteActionItem() ||
+            (!this.germplasmList.locked && this.principal.hasAnyAuthorityDirect(this.ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION));
     }
 
-    hideDeleteActionItem() {
-        return (this.germplasmList.locked || (!this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) && this.user.id !== this.germplasmList.ownerId));
+    availableDeleteActionItem() {
+        return !this.germplasmList.locked && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
     }
 
 }

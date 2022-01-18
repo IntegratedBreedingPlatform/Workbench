@@ -10,7 +10,7 @@
 	<div class="row pt-4">
 		<div class="col">
 			<div ngbDropdown class="float-right" placement="bottom-right">
-				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle [hidden]="hideActionMenu()" jhiTranslate="actions" data-test="germplasmListActionButton"></button>
+				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *ngIf="availableActionMenu()" jhiTranslate="actions" data-test="germplasmListActionButton"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							*jhiHasAnyAuthority="IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION"
@@ -39,7 +39,7 @@
 							*jhiHasAnyAuthority="ADD_ENTRIES_TO_LIST_PERMISSIONS"
 							(click)="openAddToList()" data-test="addToListButton">
 					</button>
-					<button [hidden]="hideDeleteActionItem()" class="dropdown-item" type="submit"
+					<button *ngIf="availableDeleteActionItem()" class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.delete-list"
 							(click)="deleteList()" data-test="deleteListButton">
 					</button>
@@ -68,7 +68,7 @@
 						data-test="editListMetadataButton">
 					<i [ngClass]="'fa fa-edit'"></i>
 				</button>
-				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="!principal.hasAnyAuthorityDirect(LOCK_UNLOCK_PERMISSIONS) && user?.id !== germplasmList?.ownerId" data-test="lockListButton">
+				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="!(principal.hasAnyAuthorityDirect(LOCK_UNLOCK_PERMISSIONS) || user?.id === germplasmList?.ownerId)" data-test="lockListButton">
 					<i [ngClass]="germplasmList?.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true" data-test="lockListIcon"></i>
 				</button>
 			</div>
