@@ -55,7 +55,6 @@
 							</td>
 							<td *ngIf="this.matchesByGUID[toUpper(row[HEADERS.GUID])]">
 								{{row[HEADERS.GUID]}} <span class="fa fa-check-circle text-success"></span>
-
 							</td>
 							<td *ngIf="!this.matchesByGUID[toUpper(row[HEADERS.GUID])]">
 								<span>{{row[HEADERS.GUID]}}</span>
@@ -82,7 +81,7 @@
 					<ng-template #nodata>
 						<tbody>
 						<tr>
-							<td colspan="6" jhiTranslate="no.data"></td>
+							<td [attr.colspan]="(this.context.newVariables.length)+6"><span jhiTranslate="no.data"></span></td>
 						</tr>
 						</tbody>
 					</ng-template>
