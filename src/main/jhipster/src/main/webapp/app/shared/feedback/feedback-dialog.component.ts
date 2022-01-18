@@ -1,12 +1,12 @@
 import { Component, Inject, Input, OnInit, Renderer2 } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DOCUMENT } from '@angular/common';
-import { ParamContext } from '../../shared/service/param.context';
+import { ParamContext } from '../service/param.context';
 import { FEEDBACK_SURVEY_ID } from '../../app.constants';
 import { FeedbackFeatureEnum } from './feedback-feature.enum';
-import { FeedbackService } from '../../shared/feedback/service/feedback.service';
+import { FeedbackService } from './service/feedback.service';
 import { finalize } from 'rxjs/operators';
-import { AlertService } from '../../shared/alert/alert.service';
+import { AlertService } from '../alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

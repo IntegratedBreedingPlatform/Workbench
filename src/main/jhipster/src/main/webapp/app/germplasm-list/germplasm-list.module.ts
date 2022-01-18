@@ -14,7 +14,6 @@ import { GermplasmListReorderEntriesDialogComponent } from './reorder-entries/ge
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 import { GermplasmListClonePopupComponent } from './germplasm-list-clone-popup.component';
 import { GermplasmListManagerContext } from './germplasm-list-manager.context';
-import { FeedbackService } from '../shared/feedback/service/feedback.service';
 
 @NgModule({
     imports: [
@@ -45,8 +44,7 @@ import { FeedbackService } from '../shared/feedback/service/feedback.service';
     providers: [
         GermplasmListService,
         GermplasmListImportContext,
-        GermplasmListManagerContext,
-        FeedbackService
+        GermplasmListManagerContext
     ]
 })
 export class GermplasmListModule {

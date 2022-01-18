@@ -19,8 +19,8 @@ import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
 import { MANAGE_GERMPLASM_LIST_PERMISSION } from '../shared/auth/permissions';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FeedbackService } from '../shared/feedback/service/feedback.service';
-import { openSurvey } from '../entities/feedback/feedback-helper';
-import { FeedbackFeatureEnum } from '../entities/feedback/feedback-feature.enum';
+import { openSurvey } from '../shared/feedback/feedback-helper';
+import { FeedbackFeatureEnum } from '../shared/feedback/feedback-feature.enum';
 
 declare var $: any;
 

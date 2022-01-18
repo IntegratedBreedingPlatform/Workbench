@@ -82,7 +82,8 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
-import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.component';
+import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
+import { FeedbackService } from './feedback/service/feedback.service';
 
 @NgModule({
     imports: [
@@ -181,7 +182,8 @@ import { FeedbackDialogComponent } from '../entities/feedback/feedback-dialog.co
         VariableService,
         VariableValidationService,
         GermplasmGroupingService,
-        InlineEditorService
+        InlineEditorService,
+        FeedbackService
     ],
     entryComponents: [
         ModalComponent,

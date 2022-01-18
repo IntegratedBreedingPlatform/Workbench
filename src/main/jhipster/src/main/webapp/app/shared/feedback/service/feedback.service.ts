@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { FeedbackFeatureEnum } from '../../../entities/feedback/feedback-feature.enum';
+import { FeedbackFeatureEnum } from '../feedback-feature.enum';
 import { SERVER_API_URL } from '../../../app.constants';
 
 @Injectable()
