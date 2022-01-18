@@ -46,7 +46,7 @@ export class GermplasmListSearchComponent implements OnInit {
     page: number;
     previousPage: number;
     predicate: any;
-    reverse: any;
+    reverse: boolean;
 
     isLoading: boolean;
 
@@ -62,8 +62,8 @@ export class GermplasmListSearchComponent implements OnInit {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
-        this.predicate = ColumnLabels.LIST_NAME;
-        this.reverse = 'asc';
+        this.predicate = ColumnLabels.CREATION_DATE;
+        this.reverse = false;
         this.resultSearch = new SearchResult('');
         this.searchRequest = new GermplasmListSearchRequest();
     }
@@ -139,7 +139,7 @@ export class GermplasmListSearchComponent implements OnInit {
 
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
+        this.reverse = null;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
