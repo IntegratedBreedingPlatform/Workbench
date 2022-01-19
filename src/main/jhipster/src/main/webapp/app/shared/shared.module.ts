@@ -82,6 +82,10 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
+import { GermplasmTreeTableComponent } from './tree/germplasm/germplasm-tree-table.component';
+import { GermplasmListTreeTableComponent } from './tree/germplasm/germplasm-list-tree-table.component';
+import { StudyTreeComponent } from './tree/study/study-tree.component';
+import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm-list-folder-selector.component';
 
 @NgModule({
     imports: [
@@ -90,6 +94,7 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ReactiveFormsModule,
         TableModule,
         TreeModule,
+        TreeTableModule,
         DragDropModule,
         CdkDragDropModule,
         LeafletModule,
@@ -127,6 +132,10 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
@@ -185,6 +194,10 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ModalComponent,
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
         SampleListCreationComponent,
@@ -229,6 +242,10 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ColumnFilterDropdownComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,

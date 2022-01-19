@@ -18,10 +18,23 @@ export class TreeComponent implements OnInit {
 
     mode: Mode = Mode.None;
     Modes = Mode;
+    isFolderSelectionMode = false;
+    selectionMode: 'single' | 'multiple' = 'multiple';
 
     public nodes: PrimeNgTreeNode[] = [];
-    selectedNodes: PrimeNgTreeNode[] = [];
     name: string;
+    // primeng sets either one or the depending on the mode
+    _selectedNodes: PrimeNgTreeNode[] | PrimeNgTreeNode;
+
+    get selectedNodes(): PrimeNgTreeNode[] {
+        if (!this._selectedNodes) {
+            return [];
+        }
+        if (this.selectionMode === 'multiple') {
+            return this._selectedNodes as PrimeNgTreeNode[];
+        }
+        return [this._selectedNodes as PrimeNgTreeNode];
+    }
 
     disabledAddActionMessage: string;
     disabledRenameActionMessage: string;
@@ -58,6 +71,9 @@ export class TreeComponent implements OnInit {
     }
 
     addNode(node: TreeNode) {
+        if (this.isFolderSelectionMode && !node.isFolder) {
+            return;
+        }
         return this.nodes.push(this.toPrimeNgNode(node));
     }
 
@@ -74,16 +90,18 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    selectLists() {
+    finish() {
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            const selected = this.selectedNodes.filter((node: PrimeNgTreeNode) => node.leaf)
-                .map((node: PrimeNgTreeNode) => {
-                    return {
-                        id: node.data.id,
-                        name: node.data.name
-                    };
+            const selected: TreeComponentResult[] = this.selectedNodes.filter((node: PrimeNgTreeNode) => {
+                const isFolder = !Boolean(node.leaf);
+                return this.isFolderSelectionMode ? isFolder : !isFolder;
+            }).map((node: PrimeNgTreeNode) => {
+                return <TreeComponentResult>({
+                    id: node.data.id,
+                    name: node.data.name
                 });
+            });
             this.activeModal.close(selected);
         });
     }
@@ -189,6 +207,9 @@ export class TreeComponent implements OnInit {
             parent.expanded = true;
             // Recursively add "grand" children nodes as well
             children.forEach((node) => {
+                if (this.isFolderSelectionMode && !node.isFolder) {
+                    return;
+                }
                 const child = this.toPrimeNgNode(node, parent);
                 parent.children.push(child);
                 if (node.children) {
@@ -422,4 +443,10 @@ export enum Mode {
     Rename,
     Delete,
     None
+}
+
+// TODO reword usages of modal return, making explicit that result is entity agnostic
+export interface TreeComponentResult {
+    id: number;
+    name: string;
 }

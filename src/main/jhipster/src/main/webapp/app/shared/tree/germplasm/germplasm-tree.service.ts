@@ -54,6 +54,11 @@ export class GermplasmTreeService extends TreeService {
         const params = {
             newParentId: target
         };
+        /*
+         * TODO Review backend. program should be sent always to resolve permissions
+         *  but doing so while moving to folders inside crop section throws an error.
+         *  May/may not relates to IBP-5285
+         */
         if (!isParentCropList && this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }

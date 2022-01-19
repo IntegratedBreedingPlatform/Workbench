@@ -34,12 +34,16 @@ import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-r
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 import { GermplasmListManagerContext } from './germplasm-list-manager.context';
+import { GermplasmListFolderSelectorComponent } from '../shared/tree/germplasm/germplasm-list-folder-selector.component';
+import { TreeComponentResult } from '../shared/tree';
+import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.service';
 
 declare var $: any;
 
 @Component({
     selector: 'jhi-list',
-    templateUrl: './list.component.html'
+    templateUrl: './list.component.html',
+    providers: [{ provide: GermplasmTreeService, useClass: GermplasmTreeService }]
 })
 export class ListComponent implements OnInit {
 
@@ -54,6 +58,7 @@ export class ListComponent implements OnInit {
     DELETE_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'DELETE_GERMPLASM_LIST'];
     CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'CLONE_GERMPLASM_LIST'];
     REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
+    // Used also for "move to folders" for now
     EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'EDIT_LIST_METADATA'];
     ADMIN_PERMISSIONS = ['ADMIN'];
 
@@ -162,6 +167,7 @@ export class ListComponent implements OnInit {
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private germplasmListService: GermplasmListService,
+                private germplasmTreeService: GermplasmTreeService,
                 private router: Router,
                 private alertService: AlertService,
                 public principal: Principal,
@@ -520,6 +526,16 @@ export class ListComponent implements OnInit {
                 },
                 (error) => this.onError(error)
             );
+    }
+
+    moveToFolder() {
+        const modal = this.modalService.open(GermplasmListFolderSelectorComponent as Component, { size: 'lg', backdrop: 'static' });
+        modal.result.then((result: TreeComponentResult[]) => {
+            this.germplasmTreeService.move(String(this.listId), String(result[0].id), false).subscribe(
+                () => this.alertService.success('germplasm-list.list-data.move-to-folder.success'),
+                (error) => this.onError(error)
+            );
+        });
     }
 
     private getFilters() {
