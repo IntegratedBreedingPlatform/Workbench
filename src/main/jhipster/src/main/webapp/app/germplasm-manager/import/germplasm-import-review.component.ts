@@ -544,7 +544,23 @@ export class GermplasmImportReviewComponent implements OnInit {
 
     exportTableToExcel($event) {
         $event.preventDefault();
-        exportDataJsonToExcel('reviewImportGermpĺasm.xlsx', 'Observations', this.rows);
+        const dataTable = [];
+        this.rows.forEach((row) => {
+            const data = {};
+            Object.keys(HEADERS).forEach((header) => {
+                data[header] = row[header];
+            });
+            this.context.nametypesCopy.forEach((nameType) => {
+                data[nameType.code] = row[toUpper(nameType.code)];
+            });
+
+            this.context.attributesCopy.forEach((attributeType) => {
+                data[attributeType.alias || attributeType.name] = row[toUpper(attributeType.alias)] || row[toUpper(attributeType.name)];
+            });
+
+            dataTable.push(data);
+        });
+        exportDataJsonToExcel('reviewImportGermplasm.xlsx', 'Observations', dataTable);
     }
 }
 
