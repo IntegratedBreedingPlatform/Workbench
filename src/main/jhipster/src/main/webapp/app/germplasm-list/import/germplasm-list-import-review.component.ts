@@ -388,8 +388,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     exportTableToExcel($event) {
         $event.preventDefault();
-        const jsonPreview = [];
-        const variableHeader = [];
+        const dataTable = [];
         this.rows.forEach((row) => {
             const data = {};
             data[HEADERS.GID] = row[HEADERS.GID];
@@ -404,10 +403,10 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 }
             });
             data[HEADERS.GID_MATCHES] = row['GID MATCHES'].map((germplasm) => germplasm.gid).join(',');
-            jsonPreview.push(data);
+            dataTable.push(data);
         });
 
-        exportDataJsonToExcel('reviewImportGermpĺasmList.xlsx', 'Observations', jsonPreview);
+        exportDataJsonToExcel('reviewImportGermplasmList.xlsx', 'Observations', dataTable);
     }
 }
 
