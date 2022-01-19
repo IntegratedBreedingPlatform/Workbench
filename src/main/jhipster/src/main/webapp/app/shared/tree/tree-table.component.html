@@ -48,6 +48,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Owner</th>
+                            <th>Locked</th>
                             <th>Description</th>
                             <th>Type</th>
                             <th># of entries</th>
@@ -72,6 +73,7 @@
 									</span>
                             </td>
                             <td>{{rowData.owner}}</td>
+                            <td>{{rowNode.node.leaf ? (rowData.isLocked ? 'Yes' : 'No') : ''}}</td>
                             <td><span class="text-ellipsis" title="{{rowData.description}}">{{rowData.description}}</span></td>
                             <td>{{rowData.type}}</td>
                             <td>{{rowData.noOfEntries}}</td>

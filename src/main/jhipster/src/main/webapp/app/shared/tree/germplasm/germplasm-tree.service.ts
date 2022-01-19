@@ -117,6 +117,7 @@ export class GermplasmTreeService extends TreeService {
             noOfEntries: item.noOfEntries,
             numOfChildren: item.numOfChildren,
             isFolder: item.isFolder,
+            isLocked: item.isLocked,
             children: []
         });
         if (item.children) {
