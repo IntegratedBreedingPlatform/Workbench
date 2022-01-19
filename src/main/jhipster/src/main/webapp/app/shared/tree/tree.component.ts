@@ -260,10 +260,6 @@ export class TreeComponent implements OnInit {
         }
 
         const folder: PrimeNgTreeNode = this.selectedNodes[0];
-        if (folder.data.id === this.CROP_LIST_FOLDER) {
-            this.disabledAddActionMessage = this.translateService.instant('bmsjHipsterApp.tree-table.messages.disabled.crop.folder.selected');
-            return true;
-        }
 
         if (folder.leaf) {
             this.disabledAddActionMessage = this.translateService.instant('bmsjHipsterApp.tree-table.messages.disabled.not.folder.selected');
