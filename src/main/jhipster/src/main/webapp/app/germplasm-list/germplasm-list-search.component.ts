@@ -17,6 +17,10 @@ import { ListType } from '../shared/list-builder/model/list-type.model';
 import { ColumnFilterRadioButtonOption } from '../shared/column-filter/column-filter-radio-component';
 import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
 import { MANAGE_GERMPLASM_LIST_PERMISSION } from '../shared/auth/permissions';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FeedbackService } from '../shared/feedback/service/feedback.service';
+import { openSurvey } from '../shared/feedback/feedback-helper';
+import { FeedbackFeatureEnum } from '../shared/feedback/feedback-feature.enum';
 
 declare var $: any;
 
@@ -57,7 +61,9 @@ export class GermplasmListSearchComponent implements OnInit {
                 private eventManager: JhiEventManager,
                 private germplasmListService: GermplasmListService,
                 private router: Router,
-                private alertService: AlertService
+                private alertService: AlertService,
+                private modalService: NgbModal,
+                private feedbackService: FeedbackService
     ) {
         this.page = 1;
         this.totalItems = 0;
@@ -287,6 +293,8 @@ export class GermplasmListSearchComponent implements OnInit {
     private onSuccess(data: GermplasmListSearchResponse[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.germplasmLists = data;
+
+        openSurvey(FeedbackFeatureEnum.GERMPLASM_LIST, this.feedbackService, this.modalService);
     }
 
     private onError(response: HttpErrorResponse) {
