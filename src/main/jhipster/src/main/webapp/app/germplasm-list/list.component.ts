@@ -57,17 +57,19 @@ export class ListComponent implements OnInit {
     CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'CLONE_GERMPLASM_LIST'];
     REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
     EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'EDIT_LIST_METADATA'];
-    ADMIN_PERMISSIONS = ['ADMIN'];
+    LOCK_UNLOCK_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'LOCK_UNLOCK_GERMPLASM_LIST'];
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSION,
+        'ADD_ENTRIES_TO_LIST',
+        'CLONE_GERMPLASM_LIST',
+        'GERMPLASM_LIST_LABEL_PRINTING'
+    ];
+
+    ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION = [
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS',
-        'GERMPLASM_LIST_LABEL_PRINTING',
         'ADD_GERMPLASM_LIST_ENTRIES',
-        'ADD_ENTRIES_TO_LIST',
-        'DELETE_GERMPLASM_LIST',
-        'CLONE_GERMPLASM_LIST',
         'REMOVE_ENTRIES_GERMPLASM_LISTS'
     ];
 
@@ -787,6 +789,16 @@ export class ListComponent implements OnInit {
             () => this.refreshTable(),
             (error) => this.onError(error)
         );
+    }
+
+    isActionMenuAvailable() {
+        return this.principal.hasAnyAuthorityDirect(this.ACTION_BUTTON_PERMISSIONS) ||
+            this.isDeleteActionItemAvailable() ||
+            (!this.germplasmList.locked && this.principal.hasAnyAuthorityDirect(this.ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION));
+    }
+
+    isDeleteActionItemAvailable() {
+        return !this.germplasmList.locked && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
     }
 
 }
