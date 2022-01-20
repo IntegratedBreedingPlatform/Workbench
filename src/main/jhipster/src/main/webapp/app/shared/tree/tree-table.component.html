@@ -48,6 +48,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Owner</th>
+                            <th>Locked</th>
                             <th>Description</th>
                             <th>Type</th>
                             <th># of entries</th>
@@ -58,8 +59,8 @@
                             <td>
                                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                                 <span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
-                                <span *ngIf="this.isReadOnly">{{rowData.name}}</span>
-                                <span *ngIf="!this.isReadOnly"
+                                <span *ngIf="this.isReadOnly || rowData.isLocked">{{rowData.name}}</span>
+                                <span *ngIf="!this.isReadOnly && !rowData.isLocked"
                                     pDraggable="treedragdrop"
                                     pDroppable="treedragdrop"
                                     (onDragStart)="onDragStart($event, rowNode.node)"
@@ -72,6 +73,7 @@
 									</span>
                             </td>
                             <td>{{rowData.owner}}</td>
+                            <td>{{rowNode.node.leaf ? (rowData.isLocked ? 'Yes' : 'No') : ''}}</td>
                             <td><span class="text-ellipsis" title="{{rowData.description}}">{{rowData.description}}</span></td>
                             <td>{{rowData.type}}</td>
                             <td>{{rowData.noOfEntries}}</td>

@@ -82,6 +82,8 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
+import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
+import { FeedbackService } from './feedback/service/feedback.service';
 
 @NgModule({
     imports: [
@@ -140,7 +142,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     providers: [
         LoginService,
@@ -179,7 +182,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         VariableService,
         VariableValidationService,
         GermplasmGroupingService,
-        InlineEditorService
+        InlineEditorService,
+        FeedbackService
     ],
     entryComponents: [
         ModalComponent,
@@ -188,7 +192,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
         SampleListCreationComponent,
-        VariableSelectModalComponent
+        VariableSelectModalComponent,
+        FeedbackDialogComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -242,7 +247,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

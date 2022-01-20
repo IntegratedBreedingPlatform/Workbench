@@ -10,7 +10,8 @@ export class TreeNode {
         public isFolder?: boolean,
         public children?: Array<TreeNode>,
         public numOfChildren?: number,
-        public noOfEntries?: number
+        public noOfEntries?: number,
+        public isLocked?: boolean
     ) {
     }
 }
