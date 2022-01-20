@@ -244,6 +244,10 @@ ui bootstrap tweaks
     white-space: nowrap;
  }
 
+/* TODO for some reason this not being done automatically.. */
+[role="button"] {
+    cursor: pointer;
+}
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 
 /* ==========================================================================
