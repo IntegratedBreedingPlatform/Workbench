@@ -206,6 +206,7 @@ export class TreeComponent implements OnInit {
                 id: node.key,
                 name: node.name || '',
                 owner: node.owner || '',
+                isLocked: node.isLocked || '',
                 description: node.description || (parent && '-'), // omit for root folders
                 type: node.type || '',
                 noOfEntries: node.noOfEntries || ''

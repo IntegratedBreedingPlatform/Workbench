@@ -68,6 +68,9 @@
                 "confirm.message": "Are you sure you want to remove the selected entries from the list?",
                 "confirm.header": "Remove entries",
                 "remove.success": "Successfully removed entries."
+            },
+            "cross": {
+                "generation.level.label": "Specify expansion level"
             }
         },
         "variables": {
@@ -124,7 +127,8 @@
                     "single.matches": "{{param}} entries selected with single matches",
                     "manual.matches": "{{param}} entries selected manually",
                     "omitted.matches": "{{param}} entries omitted"
-                }
+                },
+                "export.table": "Download this table"
             },
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"

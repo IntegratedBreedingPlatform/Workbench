@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        <span jhiTranslate="feedback.title"></span>
+    </h4>
+</div>
+<div class="modal-body">
+    <div id="surveyhero-embed-{{this.FEEDBACK_SURVEY_ID}}"
+         [attr.data-crop]="this.context.cropName"
+         [attr.data-program-uuid]="this.context.programUUID"
+         [attr.data-feature]="this.feature"
+         [attr.data-ratingtext]="this.ratingText"></div>
+</div>
+<div class="modal-footer">
+    <div class="form-check form-check-inline">
+        <input type="checkbox" class="form-check-input" name="dontShowAgain" id="dontShowAgain" [(ngModel)]="dontShowAgain">
+        <label class="form-check-label" for="dontShowAgain" jhiTranslate="feedback.dont-show-again-checkbox">
+        </label>
+    </div>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="dismiss()">
+        <span jhiTranslate="ok"></span>
+    </button>
+</div>

@@ -34,6 +34,7 @@ import { GermplasmSearchRequest } from '../entities/germplasm/germplasm-search-r
 import { GermplasmListDataSearchRequest } from '../entities/germplasm-list-data/germplasm-list-data-search-request.model';
 import { GermplasmListMetadataComponent } from './germplasm-list-metadata.component';
 import { GermplasmListManagerContext } from './germplasm-list-manager.context';
+import { TermIdEnum } from '../shared/ontology/model/termid.enum';
 
 declare var $: any;
 
@@ -45,6 +46,7 @@ export class ListComponent implements OnInit {
 
     static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
     static readonly GERMPLASM_LIST_CHANGED = 'GermplasmListViewChanged';
+    readonly TermIdEnum = TermIdEnum;
 
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LIST_UPDATES'];
     REORDER_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'REORDER_ENTRIES_GERMPLASM_LISTS'];
@@ -55,17 +57,19 @@ export class ListComponent implements OnInit {
     CLONE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'CLONE_GERMPLASM_LIST'];
     REMOVE_ENTRIES_GERMPLASM_LISTS_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'REMOVE_ENTRIES_GERMPLASM_LISTS'];
     EDIT_LIST_METADATA_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'EDIT_LIST_METADATA'];
-    ADMIN_PERMISSIONS = ['ADMIN'];
+    LOCK_UNLOCK_PERMISSIONS = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'LOCK_UNLOCK_GERMPLASM_LIST'];
 
     ACTION_BUTTON_PERMISSIONS = [
         ...MANAGE_GERMPLASM_LIST_PERMISSION,
+        'ADD_ENTRIES_TO_LIST',
+        'CLONE_GERMPLASM_LIST',
+        'GERMPLASM_LIST_LABEL_PRINTING'
+    ];
+
+    ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION = [
         'IMPORT_GERMPLASM_LIST_UPDATES',
         'REORDER_ENTRIES_GERMPLASM_LISTS',
-        'GERMPLASM_LIST_LABEL_PRINTING',
         'ADD_GERMPLASM_LIST_ENTRIES',
-        'ADD_ENTRIES_TO_LIST',
-        'DELETE_GERMPLASM_LIST',
-        'CLONE_GERMPLASM_LIST',
         'REMOVE_ENTRIES_GERMPLASM_LISTS'
     ];
 
@@ -158,6 +162,9 @@ export class ListComponent implements OnInit {
     isSelectAll: boolean;
     lastClickIndex: any;
 
+    generationLevels = Array.from(Array(10).keys()).map((k) => k + 1);
+    generationLevel = 1;
+
     constructor(private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
@@ -184,7 +191,12 @@ export class ListComponent implements OnInit {
         this.user = identity;
 
         this.germplasmListService.getGermplasmListById(this.listId).subscribe(
-            (res: HttpResponse<GermplasmListModel>) => this.germplasmList = res.body,
+            (res: HttpResponse<GermplasmListModel>) => {
+                this.germplasmList = res.body
+                if (this.germplasmList.generationLevel) {
+                    this.generationLevel = this.germplasmList.generationLevel;
+                }
+            },
             (res: HttpErrorResponse) => this.onError(res)
         );
 
@@ -204,7 +216,7 @@ export class ListComponent implements OnInit {
         );
     }
 
-    private refreshTable() {
+    refreshTable() {
         this.germplasmListService.getGermplasmListDataTableHeader(this.listId).subscribe(
             (res: HttpResponse<GermplasmListObservationVariable[]>) => this.onGetTableHeaderSuccess(res.body),
             (res: HttpErrorResponse) => this.onError(res));
@@ -767,6 +779,26 @@ export class ListComponent implements OnInit {
 
     private getSelectedItemIds() {
         return Object.keys(this.selectedItems).map((listDataId: string) => Number(listDataId));
+    }
+
+    fillWithCrossExpansion() {
+        this.isLoading = true;
+        this.germplasmListService.fillWithCrossExpansion(this.listId, this.generationLevel).pipe(
+            finalize(() => this.isLoading = false)
+        ).subscribe(
+            () => this.refreshTable(),
+            (error) => this.onError(error)
+        );
+    }
+
+    isActionMenuAvailable() {
+        return this.principal.hasAnyAuthorityDirect(this.ACTION_BUTTON_PERMISSIONS) ||
+            this.isDeleteActionItemAvailable() ||
+            (!this.germplasmList.locked && this.principal.hasAnyAuthorityDirect(this.ACTION_ITEM_PERMISSIONS_WITH_LOCK_RESTRICTION));
+    }
+
+    isDeleteActionItemAvailable() {
+        return !this.germplasmList.locked && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
     }
 
 }
