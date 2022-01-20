@@ -10,7 +10,7 @@
 	<div class="row pt-4">
 		<div class="col">
 			<div ngbDropdown class="float-right" placement="bottom-right">
-				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *jhiHasAnyAuthority="ACTION_BUTTON_PERMISSIONS" jhiTranslate="actions" data-test="germplasmListActionButton"></button>
+				<button class="btn btn-info" id="actionMenu" ngbDropdownToggle *ngIf="isActionMenuAvailable()" jhiTranslate="actions" data-test="germplasmListActionButton"></button>
 				<div ngbDropdownMenu aria-labelledby="actionMenu">
 					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
 							*jhiHasAnyAuthority="IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION"
@@ -39,9 +39,8 @@
 							*jhiHasAnyAuthority="ADD_ENTRIES_TO_LIST_PERMISSIONS"
 							(click)="openAddToList()" data-test="addToListButton">
 					</button>
-					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
+					<button *ngIf="isDeleteActionItemAvailable()" class="dropdown-item" type="submit"
 							jhiTranslate="germplasm-list.list-data.actions.delete-list"
-							*jhiHasAnyAuthority="DELETE_LIST_PERMISSIONS"
 							(click)="deleteList()" data-test="deleteListButton">
 					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="CLONE_GERMPLASM_LIST_PERMISSIONS"
@@ -74,7 +73,7 @@
 						data-test="editListMetadataButton">
 					<i [ngClass]="'fa fa-edit'"></i>
 				</button>
-				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="!(principal.hasAnyAuthorityDirect(ADMIN_PERMISSIONS) || user?.id === germplasmList?.ownerId)" data-test="lockListButton">
+				<button class="btn btn-light" (click)="toggleListStatus()" [disabled]="!(principal.hasAnyAuthorityDirect(LOCK_UNLOCK_PERMISSIONS) || user?.id === germplasmList?.ownerId)" data-test="lockListButton">
 					<i [ngClass]="germplasmList?.locked ? 'fa fa-lock': 'fa fa-unlock'" aria-hidden="true" data-test="lockListIcon"></i>
 				</button>
 			</div>
@@ -102,7 +101,15 @@
 						<span>{{this.getHeaderDisplayName(column)}}</span>
 						<span class="fa fa-sort"></span>
 					</span>
-					<span *ngIf="!isColumnSortable(column)">{{this.getHeaderDisplayName(column)}}</span>
+					<span *ngIf="!isColumnSortable(column)">
+						{{this.getHeaderDisplayName(column)}}
+						<span *ngIf="column.termId === TermIdEnum.CROSS && !this.germplasmList?.locked">
+							<!-- TODO [title] with translation not resolving correctly when opening from my-lists -->
+							<i class="fa fa-edit ml-2" role="button" title="Fill with cross expansion"
+							   [ngbPopover]="crossOptionsPopover" [placement]="['bottom', 'left']" [autoClose]="'outside'"
+							></i>
+						</span>
+					</span>
 					<jhi-column-filter-inline *ngIf="isColumnFilterable(column)" [filter]="this.getFilter(column)"
 											  (onApply)="this.applyFilters()"
 											  (onReset)="this.resetFilters()"></jhi-column-filter-inline>
@@ -155,3 +162,18 @@
 		</div>
 	</div>
 </div>
+<ng-template #crossOptionsPopover>
+	<form>
+		<div class="form-group">
+			<label for="generationLevel" class="font-weight-bold" jhiTranslate="germplasm-list.list-data.cross.generation.level.label"></label>
+			<select class="form-control" id="generationLevel" name="generationLevel" [(ngModel)]="generationLevel">
+				<option *ngFor="let level of generationLevels" [value]="level">{{level}}</option>
+			</select>
+		</div>
+		<div class="footer text-center"><br>
+			<button type="submit" class="btn btn-primary btn-sm" jhiTranslate="apply"
+					[disabled]="isLoading"
+					(click)="fillWithCrossExpansion()"></button>
+		</div>
+	</form>
+</ng-template>

@@ -82,6 +82,8 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
+import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
+import { FeedbackService } from './feedback/service/feedback.service';
 import { GermplasmTreeTableComponent } from './tree/germplasm/germplasm-tree-table.component';
 import { GermplasmListTreeTableComponent } from './tree/germplasm/germplasm-list-tree-table.component';
 import { StudyTreeComponent } from './tree/study/study-tree.component';
@@ -149,7 +151,8 @@ import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     providers: [
         LoginService,
@@ -188,7 +191,8 @@ import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm
         VariableService,
         VariableValidationService,
         GermplasmGroupingService,
-        InlineEditorService
+        InlineEditorService,
+        FeedbackService
     ],
     entryComponents: [
         ModalComponent,
@@ -201,7 +205,8 @@ import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
         SampleListCreationComponent,
-        VariableSelectModalComponent
+        VariableSelectModalComponent,
+        FeedbackDialogComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -259,7 +264,8 @@ import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

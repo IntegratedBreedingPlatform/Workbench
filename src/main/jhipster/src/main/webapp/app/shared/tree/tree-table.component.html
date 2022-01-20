@@ -59,8 +59,8 @@
                             <td>
                                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                                 <span [ngClass]="{ 'folder': !rowNode.node.leaf, 'file': rowNode.node.leaf }"></span>
-                                <span *ngIf="this.isReadOnly">{{rowData.name}}</span>
-                                <span *ngIf="!this.isReadOnly"
+                                <span *ngIf="this.isReadOnly || rowData.isLocked">{{rowData.name}}</span>
+                                <span *ngIf="!this.isReadOnly && !rowData.isLocked"
                                     pDraggable="treedragdrop"
                                     pDroppable="treedragdrop"
                                     (onDragStart)="onDragStart($event, rowNode.node)"

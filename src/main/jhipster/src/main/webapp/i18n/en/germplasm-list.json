@@ -72,6 +72,9 @@
             },
             "move-to-folder": {
                 "success": "Successfully moved to folder"
+            },
+            "cross": {
+                "generation.level.label": "Specify expansion level"
             }
         },
         "variables": {
@@ -128,7 +131,8 @@
                     "single.matches": "{{param}} entries selected with single matches",
                     "manual.matches": "{{param}} entries selected manually",
                     "omitted.matches": "{{param}} entries omitted"
-                }
+                },
+                "export.table": "Download this table"
             },
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"
