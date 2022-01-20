@@ -1,20 +1,34 @@
 import { Observable } from 'rxjs';
-import { expand, reduce } from 'rxjs/operators';
+import { expand, map, reduce } from 'rxjs/operators';
+import { HttpResponse } from '@angular/common/http';
 
 const GET_ALL_PAGE_SIZE = 1000;
 const GET_ALL_LIMIT = 50000;
 
 /**
  * Consume a paginated api until no more records are found
- * @param f function that does the http request
+ * @param f function that does the http request (page should be 0-indexed)
  */
-export function getAllRecords<T>(f: (page: number, pageSize: number) => Observable<T[]>): Observable<T[]> {
+export function getAllRecords<T>(f: (page: number, pageSize: number) => Observable<HttpResponse<T[]>>): Observable<T[]> {
     let page = 0;
+    let count;
+
+    const mapReponse = () => {
+        return map((resp: HttpResponse<T[]>) => {
+            const totalCount = resp.headers.get('X-Total-Count');
+            const filteredCount = resp.headers.get('X-Filtered-Count');
+            count = filteredCount ? filteredCount : totalCount;
+            return resp.body;
+        });
+    }
+
     return f(page, GET_ALL_PAGE_SIZE).pipe(
+        mapReponse(),
         expand((resp) => {
-            if (resp.length && ((page + 1) * GET_ALL_PAGE_SIZE) <= GET_ALL_LIMIT) {
+            const nextPageRecord = (page + 1) * GET_ALL_PAGE_SIZE;
+            if (resp.length && nextPageRecord < GET_ALL_LIMIT && nextPageRecord < count) {
                 page++;
-                return f(page, GET_ALL_PAGE_SIZE);
+                return f(page, GET_ALL_PAGE_SIZE).pipe(mapReponse());
             } else {
                 return [];
             }

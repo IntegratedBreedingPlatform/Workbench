@@ -26,13 +26,13 @@
 			<mat-icon fontSet="fa" fontIcon="fa-comments"></mat-icon>
 		</a>
 
-		<button mat-button [matMenuTriggerFor]="memberMenu">
+		<button mat-button [matMenuTriggerFor]="memberMenu" data-test="userProfileMenu">
 			<i class="fa fa-user"></i><span style="margin-left: 5px">{{user?.username}}</span>
 		</button>
 		<mat-menu #memberMenu="matMenu" yPosition="below" [overlapTrigger]="false">
 			<div class="container">
 				<div class="form-group" style="margin-bottom: 0px;">
-					<button mat-icon-button id="menu" (click)="openMyProfile()">
+					<button mat-icon-button id="menu" (click)="openMyProfile()" data-test="openUserProfileButton">
 						<i class="fa fa-pencil-square-o"></i><span style="margin-left: 5px">{{user?.firstName}} {{user?.lastName}}</span>
 					</button>
 				</div>
@@ -40,7 +40,7 @@
 					<h6 class=col>{{user?.email}}</h6>
 				</div>
 			</div>
-			<button class="btn btn-primary" style="margin-left: 15px; margin-top: 10px;" (click)="logout()">Sign out</button>
+			<button class="btn btn-primary" style="margin-left: 15px; margin-top: 10px;" (click)="logout()" data-test="signOutButton">Sign out</button>
 		</mat-menu>
 
 	</mat-toolbar>

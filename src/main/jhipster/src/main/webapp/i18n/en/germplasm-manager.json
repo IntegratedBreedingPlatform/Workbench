@@ -44,8 +44,8 @@
             "methodCode": "METHOD CODE",
             "methodNumber": "METHOD NUMBER",
             "methodGroup": "METHOD GROUP",
-            "germplasmPeferredName": "PREFERRED NAME",
-            "germplasmPeferredId": "PREFERRED ID",
+            "germplasmPreferredName": "PREFERRED NAME",
+            "germplasmPreferredId": "PREFERRED ID",
             "groupSourceGID": "GROUP SOURCE GID",
             "groupSourcePreferredName": "GROUP SOURCE PREFERRED NAME",
             "immediateSourceGID": "IMMEDIATE SOURCE GID",
@@ -210,7 +210,8 @@
                     "match.by.pui": "{{param}} entries with matches <b>by PUI</b> were automatically selected (no records will be created)",
                     "inventory": "{{param}} lots will be created",
                     "progenitors": "{{param}} entries will be connected with progenitors"
-                }
+                },
+                "export.table": "Download this table"
             },
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"

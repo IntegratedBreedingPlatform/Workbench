@@ -74,7 +74,7 @@
 				</button>
 			</div>
 			<div class="form-group form-inline">
-				<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+				<jhi-item-count-custom [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count-custom>
 				<span style="margin-left: 20px;">Selected:</span>
 				<span style="padding-left: 5px;" class="font-weight-bold">
 					{{this.size()}}
@@ -91,8 +91,8 @@
 		<table class="table table-striped table-bordered table-curved" data-test="germplasmListTable">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="this.transition.bind(this)">
-				<th *ngIf="!isSelectAll"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" data-test="selectCurrentPageCheckbox"></th>
-				<th *ngFor="let column of header">
+				<th *ngIf="!isSelectAll" class="non-editable"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" data-test="selectCurrentPageCheckbox"></th>
+				<th *ngFor="let column of header" [ngClass]="{'non-editable': !isEntryDetailColumn(column.variableType)}">
 					<span *ngIf="isColumnSortable(column)" jhiSortBy="{{this.getColumnSortName(column)}}">
 						<span>{{this.getHeaderDisplayName(column)}}</span>
 						<span class="fa fa-sort"></span>
@@ -127,7 +127,7 @@
 				<div class="pagination-container">
 					<div class="pagination-box pagination-box-left">
 						<div>
-							<jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+							<jhi-item-count-custom [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count-custom>
 						</div>
 					</div>
 					<div class="pagination-box">
