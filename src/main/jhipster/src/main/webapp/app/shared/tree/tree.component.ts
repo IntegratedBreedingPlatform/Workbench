@@ -96,33 +96,22 @@ export class TreeComponent implements OnInit {
     }
 
     onDrop(event, node: PrimeNgTreeNode) {
-        if (this.draggedNode) {
-            if (this.draggedNode.children && this.draggedNode.children.length !== 0) {
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
-                this.draggedNode = null;
-                return;
-            } else if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
-                this.draggedNode = null;
-                return;
-            } else if (node.leaf) {
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
-                this.draggedNode = null;
-                return;
-            }
-            const isParentCropList = this.isParentCropList(node);
-            this.service.move(this.draggedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
-                    if (!node.children) {
-                        node.children = [];
-                    }
-                    node.children.push(this.draggedNode);
-                    this.removeParent(this.draggedNode);
-                    this.draggedNode.parent = node;
-                    this.redrawNodes();
-                    this.draggedNode = null;
-                },
-                (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+        if (this.draggedNode && this.validateSelectedNodes(node)){
+            this.selectedNodes.forEach(selectedNode => {
+                const isParentCropList = this.isParentCropList(node);
+                this.service.move(selectedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
+                        if (!node.children) {
+                            node.children = [];
+                        }
+                        node.children.push(selectedNode);
+                        this.removeParent(selectedNode);
+                        selectedNode.parent = node;
+                        this.redrawNodes();
+                        this.draggedNode = null;
+                    },
+                    (res: HttpErrorResponse) =>
+                        this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+            });
         }
     }
 
@@ -130,6 +119,32 @@ export class TreeComponent implements OnInit {
     }
 
     onDragLeave(event, node: PrimeNgTreeNode) {
+    }
+
+    private validateSelectedNodes (node: PrimeNgTreeNode) : boolean {
+        if (node.leaf) {
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
+            this.draggedNode = null;
+            return false;
+        }
+
+        for (var selectedNode of this.selectedNodes) {
+            if (selectedNode.children && selectedNode.children.length !== 0) {
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: selectedNode.data.name });
+                this.draggedNode = null;
+                return false;
+            } else if (node.data.id === 'CROPLISTS' && !selectedNode.leaf) {
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
+                this.draggedNode = null;
+                return false;
+            } else if (selectedNode.data.isLocked) {
+                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.list.is.locked', { list: selectedNode.data.name });
+                this.draggedNode = null;
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private removeParent(node: PrimeNgTreeNode) {
@@ -210,7 +225,7 @@ export class TreeComponent implements OnInit {
                 id: node.key,
                 name: node.name || '',
                 owner: node.owner || '',
-                isLocked: node.isLocked || '',
+                isLocked: node.isLocked,
                 description: node.description || (parent && '-'), // omit for root folders
                 type: node.type || '',
                 noOfEntries: node.noOfEntries || ''
