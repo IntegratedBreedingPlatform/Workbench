@@ -20,8 +20,7 @@ export class GermplasmListFolderSelectorComponent extends TreeComponent {
                 public alertService: AlertService,
                 public translateService: TranslateService,
                 public modalService: NgbModal) {
-        super(false, service, activeModal, alertService, translateService, modalService);
+        super(false, 'single', service, activeModal, alertService, translateService, modalService);
         this.isFolderSelectionMode = true;
-        this.selectionMode = 'single';
     }
 }

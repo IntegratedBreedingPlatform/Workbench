@@ -10,7 +10,7 @@
             <div class="table-responsive">
                 <p-tree [value]="nodes"
                         (onNodeExpand)="onNodeExpand($event)"
-                        selectionMode="multiple"
+                        [selectionMode]="selectionMode"
                         autoLayout="true"
                         [(selection)]="_selectedNodes"
                         (onNodeSelect)="onNodeSelect($event)"

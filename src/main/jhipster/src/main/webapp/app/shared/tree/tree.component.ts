@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 declare var $: any;
+export type SelectionMode = 'single' | 'multiple';
 
 export class TreeComponent implements OnInit {
 
@@ -19,7 +20,6 @@ export class TreeComponent implements OnInit {
     mode: Mode = Mode.None;
     Modes = Mode;
     isFolderSelectionMode = false;
-    selectionMode: 'single' | 'multiple' = 'multiple';
 
     public nodes: PrimeNgTreeNode[] = [];
     name: string;
@@ -30,7 +30,7 @@ export class TreeComponent implements OnInit {
         if (!this._selectedNodes) {
             return [];
         }
-        if (this.selectionMode === 'multiple') {
+        if (this.selectionMode === 'multiple' && 'length' in this._selectedNodes) {
             return this._selectedNodes as PrimeNgTreeNode[];
         }
         return [this._selectedNodes as PrimeNgTreeNode];
@@ -43,6 +43,7 @@ export class TreeComponent implements OnInit {
     private draggedNode: PrimeNgTreeNode;
 
     constructor(public isReadOnly: boolean,
+                public selectionMode: SelectionMode,
                 public service: TreeService,
                 public activeModal: NgbActiveModal,
                 public alertService: AlertService,
