@@ -96,8 +96,8 @@ export class TreeComponent implements OnInit {
     }
 
     onDrop(event, node: PrimeNgTreeNode) {
-        if (this.draggedNode && this.validateSelectedNodes(node)){
-            this.selectedNodes.forEach(selectedNode => {
+        if (this.draggedNode && this.validateSelectedNodes(node)) {
+            this.selectedNodes.forEach((selectedNode) => {
                 const isParentCropList = this.isParentCropList(node);
                 this.service.move(selectedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
                         if (!node.children) {
@@ -121,14 +121,14 @@ export class TreeComponent implements OnInit {
     onDragLeave(event, node: PrimeNgTreeNode) {
     }
 
-    private validateSelectedNodes (node: PrimeNgTreeNode) : boolean {
+    private validateSelectedNodes(node: PrimeNgTreeNode): boolean {
         if (node.leaf) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
             this.draggedNode = null;
             return false;
         }
 
-        for (var selectedNode of this.selectedNodes) {
+        for (const selectedNode of this.selectedNodes) {
             if (selectedNode.children && selectedNode.children.length !== 0) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: selectedNode.data.name });
                 this.draggedNode = null;
@@ -396,7 +396,7 @@ export class TreeComponent implements OnInit {
         let message = '';
         if (folder) {
             message = this.translateService.instant('bmsjHipsterApp.tree-table.messages.folder.delete.question',
-                {id: folder.data.name});
+                { id: folder.data.name });
         } else {
             return;
         }
