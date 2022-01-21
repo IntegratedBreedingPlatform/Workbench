@@ -14,8 +14,6 @@ import { ErrorComponent, JhiMainComponent, PageRibbonComponent } from './layouts
 import { LabelPrintingModule } from './label-printing/label-printing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GermplasmManagerModule } from './germplasm-manager/germplasm-manager.module';
-import { GermplasmTreeTableComponent } from './shared/tree/germplasm/germplasm-tree-table.component';
-import { StudyTreeComponent } from './shared/tree/study/study-tree.component';
 import { AuthExpiredInterceptor } from './blocks/interceptor/auth-expired.interceptor';
 import { InventoryDetailsModule } from './germplasm-manager/inventory/details/inventory-details.module';
 import { NavbarModule } from './navbar/navbar.module';
@@ -27,7 +25,6 @@ import { PrototypeModule } from './prototype/prototype.module';
 import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
 import { MetadataManagerModule } from './metadata-manager/metadata-manager.module';
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
-import { GermplasmListTreeTableComponent } from './shared/tree/germplasm/germplasm-list-tree-table.component';
 import { AboutModule } from './about/about.module';
 
 @NgModule({
@@ -56,15 +53,9 @@ import { AboutModule } from './about/about.module';
     declarations: [
         JhiMainComponent,
         PageRibbonComponent,
-        ErrorComponent,
-        GermplasmTreeTableComponent,
-        GermplasmListTreeTableComponent,
-        StudyTreeComponent
+        ErrorComponent
     ],
     entryComponents: [
-        GermplasmTreeTableComponent,
-        GermplasmListTreeTableComponent,
-        StudyTreeComponent
     ],
     providers: [
         RouteAccessService,

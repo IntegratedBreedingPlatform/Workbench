@@ -84,7 +84,7 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
             description: this.model.description,
             listType: this.model.type,
             notes: this.model.notes,
-            parentFolderId: this.selectedNode.data.id
+            parentFolderId: this.selectedNodes[0].data.id
         });
 
         this._isLoading = true;
