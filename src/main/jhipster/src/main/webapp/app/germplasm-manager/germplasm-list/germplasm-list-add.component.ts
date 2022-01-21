@@ -46,7 +46,8 @@ export class GermplasmListAddComponent extends TreeComponent {
                 private eventManager: JhiEventManager,
                 private germplasmListManagerContext: GermplasmListManagerContext
     ) {
-        super(false, service, modal, alertService, translateService, modalService);
+        // TODO See if it's possible and makes sense to use selectedNodes and selectionMode from base component
+        super(false, 'single', service, modal, alertService, translateService, modalService);
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
