@@ -27,6 +27,7 @@ export class SampleTreeService implements TreeService {
     move(source: string, target: string): Observable<any> {
         this.setCropAndProgram(this.context.cropName, this.context.programUUID);
 
+        // FIXME IBP-5413
         const isCropList = target === 'CROPLISTS';
         const sourceId = source === 'LISTS' || source === 'CROPLISTS' ? 0 : source;
         const targetId = target === 'LISTS' || target === 'CROPLISTS' ? 0 : target;
