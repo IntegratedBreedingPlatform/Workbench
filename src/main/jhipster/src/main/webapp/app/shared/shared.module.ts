@@ -84,6 +84,10 @@ import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
 import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
 import { FeedbackService } from './feedback/service/feedback.service';
+import { GermplasmTreeTableComponent } from './tree/germplasm/germplasm-tree-table.component';
+import { GermplasmListTreeTableComponent } from './tree/germplasm/germplasm-list-tree-table.component';
+import { StudyTreeComponent } from './tree/study/study-tree.component';
+import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm-list-folder-selector.component';
 
 @NgModule({
     imports: [
@@ -92,6 +96,7 @@ import { FeedbackService } from './feedback/service/feedback.service';
         ReactiveFormsModule,
         TableModule,
         TreeModule,
+        TreeTableModule,
         DragDropModule,
         CdkDragDropModule,
         LeafletModule,
@@ -129,6 +134,10 @@ import { FeedbackService } from './feedback/service/feedback.service';
         AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
@@ -189,6 +198,10 @@ import { FeedbackService } from './feedback/service/feedback.service';
         ModalComponent,
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
         SampleListCreationComponent,
@@ -234,6 +247,10 @@ import { FeedbackService } from './feedback/service/feedback.service';
         ColumnFilterDropdownComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,

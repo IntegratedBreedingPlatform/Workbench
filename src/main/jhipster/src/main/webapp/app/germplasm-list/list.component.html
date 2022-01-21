@@ -47,6 +47,11 @@
 						jhiTranslate="germplasm-list.list-data.actions.clone-list"
 						(click)="openCloneGermplasmList()" data-test="cloneListButton">
 					</button>
+					<button [hidden]="this.germplasmList?.locked" class="dropdown-item" type="submit"
+							jhiTranslate="germplasm-list.list-data.actions.move-to-folder"
+							*jhiHasAnyAuthority="EDIT_LIST_METADATA_PERMISSIONS"
+							(click)="moveToFolder()" data-test="moveToFolderButton">
+					</button>
 					<button class="dropdown-item" type="submit" *jhiHasAnyAuthority="GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS"
 							jhiTranslate="germplasm-list.list-data.actions.export-data-and-labels"
 							(click)="exportDataAndLabels()" data-test="exportListButton">
