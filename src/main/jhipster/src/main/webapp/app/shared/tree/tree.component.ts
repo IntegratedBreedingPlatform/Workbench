@@ -100,7 +100,9 @@ export class TreeComponent implements OnInit {
             }).map((node: PrimeNgTreeNode) => {
                 return <TreeComponentResult>({
                     id: node.data.id,
-                    name: node.data.name
+                    name: node.data.name,
+                    // FIXME IBP-5413
+                    isParentCropList: this.isParentCropList(node)
                 });
             });
             this.activeModal.close(selected);
@@ -442,4 +444,6 @@ export enum Mode {
 export interface TreeComponentResult {
     id: number;
     name: string;
+    // FIXME IBP-5413
+    isParentCropList: boolean
 }
