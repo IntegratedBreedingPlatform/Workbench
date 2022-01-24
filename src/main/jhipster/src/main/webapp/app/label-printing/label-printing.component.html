@@ -233,7 +233,9 @@
 														<label class="col-form-label font-weight-bold" *ngIf="fileType !== FILE_TYPES.PDF"
 															   jhiTranslate="label-printing.main.selected.fields">
 														</label>
-														<a href (click)="resetSelectFields($event,'#leftSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+														<label class="col-form-label float-right">
+															<a href (click)="resetSelectFields($event,'#leftSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+														</label>
 													</li>
 												</ul>
 												<ul id="leftSelectedFields" class="list-group-flush droppable print-fields list-group-content">
@@ -246,7 +248,9 @@
 															<label class="col-form-label font-weight-bold"
 																		   jhiTranslate="label-printing.right.selected.fields">
 															</label>
-															<a href (click)="resetSelectFields($event,'#rightSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+															<label class="col-form-label float-right">
+																<a href (click)="resetSelectFields($event,'#rightSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+															</label>
 														</li>
 													</ul>
 													<ul id="rightSelectedFields" class="list-group droppable print-fields list-group-content">
