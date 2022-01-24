@@ -270,7 +270,7 @@ export class LabelPrintingComponent implements OnInit {
         }
     }
 
-    reloadTable(selected) {
+    reloadFields(selected) {
         const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
         const labelFieldsSelected = new Array();
         selected.forEach((idsSelected) => {
@@ -326,7 +326,7 @@ export class LabelPrintingComponent implements OnInit {
                 fieldsSelected.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
             }
         }
-        this.reloadTable(fieldsSelected);
+        this.reloadFields(fieldsSelected);
 
     }
 
