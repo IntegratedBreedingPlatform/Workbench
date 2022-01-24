@@ -30,7 +30,7 @@ export class TreeComponent implements OnInit {
         if (!this._selectedNodes) {
             return [];
         }
-        if (this.selectionMode === 'multiple' && 'length' in this._selectedNodes) {
+        if (this.selectionMode === 'multiple' && Array.isArray(this._selectedNodes)) {
             return this._selectedNodes as PrimeNgTreeNode[];
         }
         return [this._selectedNodes as PrimeNgTreeNode];
@@ -110,7 +110,7 @@ export class TreeComponent implements OnInit {
     }
 
     onDragStart(event, node: PrimeNgTreeNode) {
-        this._selectedNodes = [node];
+        this.setSelectedNodes(node);
         this.draggedNode = node;
     }
 
@@ -436,6 +436,25 @@ export class TreeComponent implements OnInit {
             this.name = '';
         } else if (this.mode === Mode.Rename) {
             this.name = folder.data.name;
+        }
+    }
+
+    /**
+     * Not a real setter due to union type param
+     */
+    private setSelectedNodes(selectedNodes: PrimeNgTreeNode[] | PrimeNgTreeNode) {
+        if (this.selectionMode === 'multiple') {
+            if (Array.isArray(selectedNodes)) {
+                this._selectedNodes = selectedNodes;
+            } else {
+                this._selectedNodes = [selectedNodes];
+            }
+        } else if (this.selectionMode === 'single' ) {
+            if (Array.isArray(selectedNodes)) {
+                // programming error
+                throw new Error('Set a single element for selectionMode "single"');
+            }
+            this._selectedNodes = selectedNodes;
         }
     }
 
