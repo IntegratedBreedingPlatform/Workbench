@@ -815,7 +815,9 @@ export class ListComponent implements OnInit {
     }
 
     isDeleteActionItemAvailable() {
-        return !this.germplasmList.locked && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
+        return this.germplasmList
+            && !this.germplasmList.locked
+            && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
     }
 
 }

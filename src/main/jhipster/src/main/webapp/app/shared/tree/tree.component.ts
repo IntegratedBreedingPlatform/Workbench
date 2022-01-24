@@ -122,10 +122,6 @@ export class TreeComponent implements OnInit {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
                 this.draggedNode = null;
                 return;
-            } else if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
-                this.draggedNode = null;
-                return;
             } else if (node.leaf) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
                 this.draggedNode = null;
@@ -285,10 +281,6 @@ export class TreeComponent implements OnInit {
         }
 
         const folder: PrimeNgTreeNode = this.selectedNodes[0];
-        if (folder.data.id === this.CROP_LIST_FOLDER) {
-            this.disabledAddActionMessage = this.translateService.instant('bmsjHipsterApp.tree-table.messages.disabled.crop.folder.selected');
-            return true;
-        }
 
         if (folder.leaf) {
             this.disabledAddActionMessage = this.translateService.instant('bmsjHipsterApp.tree-table.messages.disabled.not.folder.selected');

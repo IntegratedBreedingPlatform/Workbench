@@ -84,11 +84,6 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
             return;
         }
 
-        if (target.data.id === 'CROPLISTS' && !source.leaf) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.program.to.crop.list.not.allowed');
-            return;
-        }
-
         if (target.leaf) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
             return;
