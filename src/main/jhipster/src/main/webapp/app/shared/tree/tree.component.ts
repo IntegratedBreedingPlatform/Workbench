@@ -110,6 +110,7 @@ export class TreeComponent implements OnInit {
     }
 
     onDragStart(event, node: PrimeNgTreeNode) {
+        this._selectedNodes = [node];
         this.draggedNode = node;
     }
 
