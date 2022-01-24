@@ -11,6 +11,7 @@
           "rename.successfully": "Folder renamed successfully",
           "delete.successfully": "Folder Deleted Successfully",
           "cannot.move.has.children": "Can not move, {{ folder }} has children",
+          "cannot.move.list.is.locked": "Can not move, {{ list }} is locked",
           "move.not.allowed": "Movement not allowed",
           "move.to.crop.list.not.allowed": "Moving of a Sample list folder to Crop lists is not allowed",
           "move.program.to.crop.list.not.allowed": "Moving of a Program list folder to Crop lists is not allowed",
