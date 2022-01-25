@@ -25,6 +25,7 @@ import { toUpper } from '../../shared/util/to-upper';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { listPreview } from '../../shared/util/list-preview';
+import { exportDataJsonToExcel } from '../../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -233,9 +234,9 @@ export class GermplasmImportReviewComponent implements OnInit {
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
-        confirmModalRef.componentInstance.message = '<span style="word-break: break-word">' + this.translateService.instant('germplasm.import.review.new.records.dupes', {
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm.import.review.new.records.dupes', {
             columns: listPreview(this.keys(columnNamesWithDupes))
-        }) + '</span>';
+        });
         confirmModalRef.componentInstance.confirmLabel = this.translateService.instant('continue');
         try {
             await confirmModalRef.result;
@@ -315,23 +316,14 @@ export class GermplasmImportReviewComponent implements OnInit {
     }
 
     private async processMatches(): Promise<boolean> {
-        let unassignedMatches = this.dataMultipleMatches;
-
-        /*
-         * Initialize matchesResult with auto-selected single matches.
-         * Considering it a match result simplifies other processes like "ignore and create new".
-         */
-        this.selectMatchesResult = this.dataSingleMatches.reduce((map, row) => {
-            if (this.matchesByPUI[toUpper(row[HEADERS.PUI])]) {
-                return map;
-            }
-            const singleMatch = getRowMatches(row, this.context.nametypesCopy, this.matchesByName)[0];
-            map[row[HEADERS.ENTRY_NO]] = singleMatch.gid;
-            return map;
-        }, {});
+        this.selectMatchesResult = {};
 
         if (this.creationOption === CREATION_OPTIONS.SELECT_EXISTING) {
+
+            // Data with multiple matches
+            let unassignedMatches = [...this.dataMultipleMatches];
             if (this.isSelectMatchesAutomatically) {
+                // try to find single matches by pref name in entries with multiple matches
                 unassignedMatches.forEach((row) => {
                     const matches = this.matchesByName[toUpper(row[row[HEADERS['PREFERRED NAME']]])];
                     if (matches && matches.length === 1) {
@@ -339,6 +331,22 @@ export class GermplasmImportReviewComponent implements OnInit {
                     }
                 });
             }
+
+            // Data with single matches
+            if (this.isSelectMatchesAutomatically) {
+                // auto select single matches
+                this.dataSingleMatches.forEach((row) => {
+                    // matches by pui cannot ignored, hence treated differently
+                    if (this.matchesByPUI[toUpper(row[HEADERS.PUI])]) {
+                        return;
+                    }
+                    const singleMatch = getRowMatches(row, this.context.nametypesCopy, this.matchesByName)[0];
+                    this.selectMatchesResult[row[HEADERS.ENTRY_NO]] = singleMatch.gid;
+                });
+            } else {
+                unassignedMatches.push(...this.dataSingleMatches);
+            }
+
             /*
              * if 1) auto-matching didn't work:
              *      a) multiple gids for preferred name or..
@@ -363,8 +371,6 @@ export class GermplasmImportReviewComponent implements OnInit {
                     return false;
                 }
             }
-        } else if (this.creationOption === CREATION_OPTIONS.CREATE_NEW) {
-            this.selectMatchesResult = {};
         }
 
         return true;
@@ -534,6 +540,27 @@ export class GermplasmImportReviewComponent implements OnInit {
                 this.rows = this.newRecords;
                 break;
         }
+    }
+
+    exportTableToExcel($event) {
+        $event.preventDefault();
+        const dataTable = [];
+        this.rows.forEach((row) => {
+            const data = {};
+            Object.keys(HEADERS).forEach((header) => {
+                data[header] = row[header];
+            });
+            this.context.nametypesCopy.forEach((nameType) => {
+                data[nameType.code] = row[toUpper(nameType.code)];
+            });
+
+            this.context.attributesCopy.forEach((attributeType) => {
+                data[attributeType.alias || attributeType.name] = row[toUpper(attributeType.alias)] || row[toUpper(attributeType.name)];
+            });
+
+            dataTable.push(data);
+        });
+        exportDataJsonToExcel('reviewImportGermplasm.xlsx', 'Observations', dataTable);
     }
 }
 

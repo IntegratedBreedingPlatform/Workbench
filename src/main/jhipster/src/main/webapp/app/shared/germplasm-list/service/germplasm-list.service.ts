@@ -114,6 +114,11 @@ export class GermplasmListService implements ListService {
         return this.http.put<any>(url, request, { observe: 'response' });
     }
 
+    fillWithCrossExpansion(listId: number, generationLevel: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/pedigree-generation-level?programUUID=` + this.context.programUUID;
+        return this.http.put(url, generationLevel, { observe: 'response' });
+    }
+
     downloadGermplasmTemplate(isGermplasListmUpdateFormat: boolean) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/templates/xls/${isGermplasListmUpdateFormat}?programUUID=${this.context.programUUID}`;
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
@@ -164,7 +169,8 @@ export class GermplasmListService implements ListService {
     }
 
     countObservationsByVariables(listId: number, variableIds: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/variables/observations?variableIds=${variableIds}&programUUID=`
+            + this.context.programUUID;
         return this.http.head(url, { observe: 'response' });
     }
 
@@ -174,7 +180,7 @@ export class GermplasmListService implements ListService {
     }
 
     removeEntries(listId: number, selectedEntries: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/entries?selectedEntries=${selectedEntries}&programUUID=` + this.context.programUUID;
         return this.http.delete<any>(url, { observe: 'response' });
     }
 
@@ -203,5 +209,4 @@ export class GermplasmListService implements ListService {
             notes: item.notes
         });
     }
-
 }

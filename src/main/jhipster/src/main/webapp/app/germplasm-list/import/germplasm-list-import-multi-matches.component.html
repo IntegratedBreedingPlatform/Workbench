@@ -20,6 +20,7 @@
 						<thead>
 						<th>GID</th>
 						<th>DESIGNATION</th>
+						<th>CROSS</th>
 						<th>LOCATION</th>
 						<th>BREEDING METHOD</th>
 						<th>CREATION DATE</th>
@@ -30,6 +31,7 @@
 							(click)="onSelectMatch(germplasm)">
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
+							<td>{{germplasm.pedigreeString}}</td>
 							<td>{{germplasm.breedingLocation}}</td>
 							<td>{{germplasm.breedingMethod}}</td>
 							<td>{{germplasm.creationDate}}</td>

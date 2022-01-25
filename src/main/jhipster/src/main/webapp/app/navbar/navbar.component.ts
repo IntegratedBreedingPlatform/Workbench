@@ -136,7 +136,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     about() {
-        this.openTool('/ibpworkbench/controller/about/')
+        this.openTool('/ibpworkbench/controller/jhipster#about')
     }
 
     isSideNavAvailable() {

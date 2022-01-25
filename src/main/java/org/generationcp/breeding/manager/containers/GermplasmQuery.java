@@ -34,7 +34,6 @@ import org.generationcp.middleware.domain.inventory.GermplasmInventory;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.PedigreeDataManager;
 import org.generationcp.middleware.pojos.Germplasm;
-import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
@@ -208,8 +207,8 @@ public class GermplasmQuery implements Query {
 
 		// Added Columns
 		propertyMap.put(ColumnLabels.GERMPLASM_DATE.getName(), new ObjectProperty<>(germplasm.getGermplasmDate()));
-		propertyMap.put(ColumnLabels.PREFERRED_ID.getName(), new ObjectProperty<>(germplasm.getGermplasmPeferredId()));
-		propertyMap.put(ColumnLabels.PREFERRED_NAME.getName(), new ObjectProperty<>(germplasm.getGermplasmPeferredName()));
+		propertyMap.put(ColumnLabels.PREFERRED_ID.getName(), new ObjectProperty<>(germplasm.getGermplasmPreferredId()));
+		propertyMap.put(ColumnLabels.PREFERRED_NAME.getName(), new ObjectProperty<>(germplasm.getGermplasmPreferredName()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_ABBREVIATION.getName(), new ObjectProperty<>(germplasm.getMethodCode()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_NUMBER.getName(), new ObjectProperty<>(germplasm.getMethodId()));
 		propertyMap.put(ColumnLabels.BREEDING_METHOD_GROUP.getName(), new ObjectProperty<>(germplasm.getMethodGroup()));

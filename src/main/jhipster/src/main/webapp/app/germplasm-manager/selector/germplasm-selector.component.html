@@ -18,8 +18,8 @@
 					<jhi-col-vis-button [colName]="ColumnLabels.LOT_UNITS" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.unit"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels.LOTS" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.lotCount"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels.CROSS" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.pedigreeString"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="ColumnLabels['PREFERRED ID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['PREFERRED ID']], ColumnLabels['PREFERRED ID'])"><span jhiTranslate="search-germplasm.column.germplasmPeferredId"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="ColumnLabels['PREFERRED NAME']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['PREFERRED NAME']], ColumnLabels['PREFERRED NAME'])"><span jhiTranslate="search-germplasm.column.germplasmPeferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['PREFERRED ID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['PREFERRED ID']], ColumnLabels['PREFERRED ID'])"><span jhiTranslate="search-germplasm.column.germplasmPreferredId"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['PREFERRED NAME']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['PREFERRED NAME']], ColumnLabels['PREFERRED NAME'])"><span jhiTranslate="search-germplasm.column.germplasmPreferredName"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['GERMPLASM DATE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['GERMPLASM DATE']], ColumnLabels['GERMPLASM DATE'])"><span jhiTranslate="search-germplasm.column.germplasmDate"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels.LOCATIONS" [hiddenColumns]="hiddenColumns"><span jhiTranslate="search-germplasm.column.locationName"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['METHOD ABBREV']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['METHOD ABBREV']], ColumnLabels['METHOD ABBREV'])"><span jhiTranslate="search-germplasm.column.methodCode"></span></jhi-col-vis-button>
@@ -57,10 +57,10 @@
 	</div>
 	<br/>
 	<div class="table-responsive" *ngIf="germplasmList">
-		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata">
+		<table class="table table-striped table-bordered table-curved" *ngIf="germplasmList.length else nodata" data-test="germplasmSelectorTable">
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
-				<th *ngIf="!isSelectAllPages"><input *ngIf="selectMultiple" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'"></th>
+				<th *ngIf="!isSelectAllPages"><input *ngIf="selectMultiple" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" data-test="selectAllCurrentPage"></th>
 				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns[ColumnLabels.GID]"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GROUP ID']" [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="search-germplasm.column.groupId"></span><span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NAMES" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="search-germplasm.column.names"></span> <span class="fa fa-sort"></span></th>
@@ -68,8 +68,8 @@
 				<th [jhiSortBy]="ColumnLabels.LOT_UNITS" [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]"><span jhiTranslate="search-germplasm.column.unit"></span> <span class="fa fa-sort"></span></th>
 				<th [hidden]="hiddenColumns[ColumnLabels.LOTS]"><span jhiTranslate="search-germplasm.column.lotCount"></span></th>
 				<th [hidden]="hiddenColumns[ColumnLabels.CROSS]"><span jhiTranslate="search-germplasm.column.pedigreeString">CROSS</span></th>
-				<th [jhiSortBy]="ColumnLabels['PREFERRED ID']" [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]"><span jhiTranslate="search-germplasm.column.germplasmPeferredId"></span> <span class="fa fa-sort"></span></th>
-				<th [jhiSortBy]="ColumnLabels['PREFERRED NAME']" [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]"><span jhiTranslate="search-germplasm.column.germplasmPeferredName">PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['PREFERRED ID']" [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]"><span jhiTranslate="search-germplasm.column.germplasmPreferredId"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['PREFERRED NAME']" [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]"><span jhiTranslate="search-germplasm.column.germplasmPreferredName">PREFERRED NAME</span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GERMPLASM DATE']" [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]"><span jhiTranslate="search-germplasm.column.germplasmDate"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.LOCATIONS" [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><span jhiTranslate="search-germplasm.column.locationName"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['METHOD NAME']" [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><span jhiTranslate="search-germplasm.column.methodName"></span> <span class="fa fa-sort"></span></th>
@@ -105,8 +105,8 @@
 				<td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{germplasm.unit}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOTS]">{{germplasm.lotCount}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.CROSS]">{{germplasm.pedigreeString}}</td>
-				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]">{{germplasm.germplasmPeferredId}}</td>
-				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]">{{germplasm.germplasmPeferredName}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]">{{germplasm.germplasmPreferredId}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]">{{germplasm.germplasmPreferredName}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]">{{germplasm.germplasmDate}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><a [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]">{{germplasm.locationName}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><a [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]">{{germplasm.methodName}}</a></td>
@@ -176,7 +176,7 @@
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
             <span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
-		<button (click)="selectGermplasm()" [disabled]="!isSelectAllPages && selectedItems.length == 0" class="btn btn-primary">
+		<button data-test="selectButton" (click)="selectGermplasm()" [disabled]="!isSelectAllPages && selectedItems.length == 0" class="btn btn-primary">
 			<span jhiTranslate="entity.action.select">Select</span>
 		</button>
 	</div>

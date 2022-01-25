@@ -43,7 +43,7 @@
 			<div class="clearfix"></div>
 			<div class="table-responsive">
 				<p-tree [value]="nodes"
-						[(selection)]="this.selectedNode"
+						[(selection)]="_selectedNodes"
 						[draggableNodes]="true"
 						[droppableNodes]="true"
 						[validateDrop]="true"
@@ -51,7 +51,7 @@
 						(onNodeDrop)="onNodeDrop($event, $event.dragNode, $event.dropNode)"
 						(onNodeExpand)="onNodeExpand($event)"
 						autoLayout="true"
-						selectionMode="single"
+						[selectionMode]="selectionMode"
 						draggableScope="self"
 						droppableScope="self"
 						styleClass="tree-table">
@@ -110,7 +110,7 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading" data-test="cancelSaveList">
 		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
 	</button>
 	<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary" data-test="saveList">

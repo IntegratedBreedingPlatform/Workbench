@@ -8,7 +8,6 @@ import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { NgbDropdown } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListColumnCategory } from '../shared/germplasm-list/model/germplasm-list-column-category.type';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
-import { MANAGE_GERMPLASM_LIST_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-list-columns',
@@ -32,11 +31,6 @@ export class ListColumnsComponent implements OnInit {
     passportColumns: GermplasmListColumnModel[] = [];
     attributesColumns: GermplasmListColumnModel[] = [];
 
-    filteredStaticColumns: GermplasmListColumnModel[] = [];
-    filteredNameColumns: GermplasmListColumnModel[] = [];
-    filteredPassportColumns: GermplasmListColumnModel[] = [];
-    filteredAttributesColumns: GermplasmListColumnModel[] = [];
-
     constructor(private germplasmListService: GermplasmListService,
                 private alertService: AlertService) {
     }
@@ -59,22 +53,26 @@ export class ListColumnsComponent implements OnInit {
         const searchString = evt.target.value.toLowerCase();
 
         if (searchString) {
-            this.filteredStaticColumns = this.filterColumns(this.staticColumns, searchString);
-            this.filteredNameColumns = this.filterColumns(this.nameColumns, searchString);
-            this.filteredPassportColumns = this.filterColumns(this.passportColumns, searchString);
-            this.filteredAttributesColumns = this.filterColumns(this.attributesColumns, searchString);
+            this.filterColumns(this.concatAllColumns(), searchString);
         } else {
             this.resetColumns();
         }
     }
 
-    private getSelectedColumns(): GermplasmListColumnModel[] {
-        return [].concat(this.filteredStaticColumns, this.filteredNameColumns, this.filteredPassportColumns, this.filteredAttributesColumns)
-            .filter((column: GermplasmListColumnModel) => column.selected);
+    checkAreColumnsVisible(columns: GermplasmListColumnModel[]): boolean {
+        return columns.filter((column: GermplasmListColumnModel) => column.visible).length > 0;
     }
 
-    private filterColumns(columns: GermplasmListColumnModel[], searchString: string): GermplasmListColumnModel[] {
-        return columns.filter((column: GermplasmListColumnModel) => column.displayName.toLowerCase().includes(searchString));
+    private getSelectedColumns(): GermplasmListColumnModel[] {
+        return this.concatAllColumns().filter((column: GermplasmListColumnModel) => column.selected);
+    }
+
+    private filterColumns(columns: GermplasmListColumnModel[], searchString: string) {
+        columns.forEach((column: GermplasmListColumnModel) => {
+           if (!column.displayName.toLowerCase().includes(searchString)) {
+               column.visible = false;
+           }
+        });
     }
 
     private onGetColumnsSuccess(columns: GermplasmListColumn[]) {
@@ -110,10 +108,11 @@ export class ListColumnsComponent implements OnInit {
     }
 
     private resetColumns() {
-        this.filteredStaticColumns = this.staticColumns;
-        this.filteredNameColumns = this.nameColumns;
-        this.filteredPassportColumns = this.passportColumns;
-        this.filteredAttributesColumns = this.attributesColumns;
+        this.concatAllColumns().forEach((column: GermplasmListColumnModel) => column.visible = true);
+    }
+
+    private concatAllColumns(): GermplasmListColumnModel[] {
+        return [].concat(this.staticColumns, this.nameColumns, this.passportColumns, this.attributesColumns);
     }
 
     private onError(response: HttpErrorResponse) {
@@ -134,7 +133,8 @@ export class GermplasmListColumnModel {
         public displayName: string,
         public category: GermplasmListColumnCategory,
         public selected: boolean,
-        public typeId?: number) {
+        public typeId?: number,
+        public visible = true) {
     }
 
 }

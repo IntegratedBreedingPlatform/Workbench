@@ -59,7 +59,7 @@
 						</div>
 					</td>
 					<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + nonSelected.germplasmId } }]" queryParamsHandling="merge">{{nonSelected.germplasmId}}</a></td>
-					<td>{{nonSelected.germplasm.germplasmPeferredName}}</td>
+					<td>{{nonSelected.germplasm.germplasmPreferredName}}</td>
 					<td><a *ngIf="nonSelected.germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
 						   [queryParams]="{gid: nonSelected.germplasmId}" queryParamsHandling="merge">{{nonSelected.germplasm.lotCount}}</a>
 					</td>

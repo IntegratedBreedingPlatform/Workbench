@@ -22,6 +22,7 @@ import { GermplasmListCreationComponent } from '../../shared/list-creation/germp
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ListModel } from '../../shared/list-builder/model/list.model';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
+import { exportDataJsonToExcel } from '../../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -175,7 +176,13 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
         if (variables && variables.length) {
             const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
-            modalRef.componentInstance.isGermplasmListImport = true;
+            modalRef.result.then((variableMatchesResult) => {
+                if (variableMatchesResult) {
+                    this.modalService.open(GermplasmListImportReviewComponent as Component, { size: 'lg', backdrop: 'static' });
+                } else {
+                    this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
+                }
+            });
         } else {
             this.modalService.open(GermplasmListImportComponent as Component, { size: 'lg', backdrop: 'static' });
         }
@@ -377,6 +384,29 @@ export class GermplasmListImportReviewComponent implements OnInit {
         } else {
             this.alertService.error('error.general');
         }
+    }
+
+    exportTableToExcel($event) {
+        $event.preventDefault();
+        const dataTable = [];
+        this.rows.forEach((row) => {
+            const data = {};
+            data[HEADERS.GID] = row[HEADERS.GID];
+            data[HEADERS.GUID] = row[HEADERS.GUID];
+            data[HEADERS.DESIGNATION] = row[HEADERS.DESIGNATION];
+            data[HEADERS.ENTRY_CODE] = row[HEADERS.ENTRY_CODE];
+            this.context.newVariables.forEach((variable) => {
+                if (row[toUpper(variable.alias)]) {
+                    data[variable.alias] = row[toUpper(variable.alias)]
+                } else {
+                    data[variable.name] = row[toUpper(variable.name)]
+                }
+            });
+            data[HEADERS.GID_MATCHES] = row['GID MATCHES'].map((germplasm) => germplasm.gid).join(',');
+            dataTable.push(data);
+        });
+
+        exportDataJsonToExcel('reviewImportGermplasmList.xlsx', 'Observations', dataTable);
     }
 }
 

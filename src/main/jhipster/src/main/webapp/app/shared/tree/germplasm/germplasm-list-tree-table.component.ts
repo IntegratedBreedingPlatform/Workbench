@@ -20,6 +20,6 @@ export class GermplasmListTreeTableComponent extends TreeComponent {
                 public alertService: AlertService,
                 public translateService: TranslateService,
                 public modalService: NgbModal) {
-        super(false, service, activeModal, alertService, translateService, modalService);
+        super(false, 'multiple', service, activeModal, alertService, translateService, modalService);
     }
 }
