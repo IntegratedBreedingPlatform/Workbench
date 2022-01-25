@@ -161,6 +161,8 @@ export class LabelPrintingComponent implements OnInit {
 
     loadPresetSetting(presetSetting: PresetSetting) {
         this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
+        this.selectedfileType = this.fileType;
+
         const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
         const labelFieldsSelected = new Array();
 
