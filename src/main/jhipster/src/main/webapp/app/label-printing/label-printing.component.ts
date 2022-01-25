@@ -32,6 +32,7 @@ export class LabelPrintingComponent implements OnInit {
     labelTypesOrig: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
+    selectedfileType: FileType = FileType.NONE;
     presetSettingId: number;
     loadSavedSettings = false;
     fieldsSelected: LabelType[];
@@ -259,7 +260,10 @@ export class LabelPrintingComponent implements OnInit {
     }
 
     reset() {
-        if (this.fileType === FileType.PDF || this.fileType === FileType.NONE) {
+        if ((this.selectedfileType !== this.fileType && //
+                (this.selectedfileType === FileType.PDF || this.selectedfileType === FileType.NONE) && //
+                (this.fileType === FileType.EXCEL || this.fileType === FileType.CSV))
+            || this.fileType === FileType.NONE || this.fileType === FileType.PDF) {
             this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
             this.labelPrintingData.barcodeNeeded = false;
             this.labelPrintingData.includeHeadings = true;
@@ -268,6 +272,7 @@ export class LabelPrintingComponent implements OnInit {
             $('#rightSelectedFields').empty();
             this.initDragAndDrop();
         }
+        this.selectedfileType =  this.fileType;
     }
 
     reloadFields(selected) {
