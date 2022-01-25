@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 declare var $: any;
+export type SelectionMode = 'single' | 'multiple';
 
 export class TreeComponent implements OnInit {
 
@@ -18,10 +19,22 @@ export class TreeComponent implements OnInit {
 
     mode: Mode = Mode.None;
     Modes = Mode;
+    isFolderSelectionMode = false;
 
     public nodes: PrimeNgTreeNode[] = [];
-    selectedNodes: PrimeNgTreeNode[] = [];
     name: string;
+    // primeng sets either one or the depending on the mode
+    _selectedNodes: PrimeNgTreeNode[] | PrimeNgTreeNode;
+
+    get selectedNodes(): PrimeNgTreeNode[] {
+        if (!this._selectedNodes) {
+            return [];
+        }
+        if (this.selectionMode === 'multiple' && Array.isArray(this._selectedNodes)) {
+            return this._selectedNodes as PrimeNgTreeNode[];
+        }
+        return [this._selectedNodes as PrimeNgTreeNode];
+    }
 
     disabledAddActionMessage: string;
     disabledRenameActionMessage: string;
@@ -30,6 +43,7 @@ export class TreeComponent implements OnInit {
     private draggedNode: PrimeNgTreeNode;
 
     constructor(public isReadOnly: boolean,
+                public selectionMode: SelectionMode,
                 public service: TreeService,
                 public activeModal: NgbActiveModal,
                 public alertService: AlertService,
@@ -58,6 +72,9 @@ export class TreeComponent implements OnInit {
     }
 
     addNode(node: TreeNode) {
+        if (this.isFolderSelectionMode && !node.isFolder) {
+            return;
+        }
         return this.nodes.push(this.toPrimeNgNode(node));
     }
 
@@ -74,21 +91,26 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    selectLists() {
+    finish() {
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
-            const selected = this.selectedNodes.filter((node: PrimeNgTreeNode) => node.leaf)
-                .map((node: PrimeNgTreeNode) => {
-                    return {
-                        id: node.data.id,
-                        name: node.data.name
-                    };
+            const selected: TreeComponentResult[] = this.selectedNodes.filter((node: PrimeNgTreeNode) => {
+                const isFolder = !Boolean(node.leaf);
+                return this.isFolderSelectionMode ? isFolder : !isFolder;
+            }).map((node: PrimeNgTreeNode) => {
+                return <TreeComponentResult>({
+                    id: node.data.id,
+                    name: node.data.name,
+                    // FIXME IBP-5413
+                    isParentCropList: this.isParentCropList(node)
                 });
+            });
             this.activeModal.close(selected);
         });
     }
 
     onDragStart(event, node: PrimeNgTreeNode) {
+        this.setSelectedNodes(node);
         this.draggedNode = node;
     }
 
@@ -99,10 +121,6 @@ export class TreeComponent implements OnInit {
         if (this.draggedNode) {
             if (this.draggedNode.children && this.draggedNode.children.length !== 0) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
-                this.draggedNode = null;
-                return;
-            } else if (node.data.id === 'CROPLISTS' && !this.draggedNode.leaf) {
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.to.crop.list.not.allowed');
                 this.draggedNode = null;
                 return;
             } else if (node.leaf) {
@@ -189,6 +207,9 @@ export class TreeComponent implements OnInit {
             parent.expanded = true;
             // Recursively add "grand" children nodes as well
             children.forEach((node) => {
+                if (this.isFolderSelectionMode && !node.isFolder) {
+                    return;
+                }
                 const child = this.toPrimeNgNode(node, parent);
                 parent.children.push(child);
                 if (node.children) {
@@ -261,10 +282,6 @@ export class TreeComponent implements OnInit {
         }
 
         const folder: PrimeNgTreeNode = this.selectedNodes[0];
-        if (folder.data.id === this.CROP_LIST_FOLDER) {
-            this.disabledAddActionMessage = this.translateService.instant('bmsjHipsterApp.tree-table.messages.disabled.crop.folder.selected');
-            return true;
-        }
 
         if (folder.leaf) {
             this.disabledAddActionMessage = this.translateService.instant('bmsjHipsterApp.tree-table.messages.disabled.not.folder.selected');
@@ -414,6 +431,25 @@ export class TreeComponent implements OnInit {
         }
     }
 
+    /**
+     * Not a real setter due to union type param
+     */
+    private setSelectedNodes(selectedNodes: PrimeNgTreeNode[] | PrimeNgTreeNode) {
+        if (this.selectionMode === 'multiple') {
+            if (Array.isArray(selectedNodes)) {
+                this._selectedNodes = selectedNodes;
+            } else {
+                this._selectedNodes = [selectedNodes];
+            }
+        } else if (this.selectionMode === 'single' ) {
+            if (Array.isArray(selectedNodes)) {
+                // programming error
+                throw new Error('Set a single element for selectionMode "single"');
+            }
+            this._selectedNodes = selectedNodes;
+        }
+    }
+
 }
 
 // TODO: move to enum
@@ -422,4 +458,12 @@ export enum Mode {
     Rename,
     Delete,
     None
+}
+
+// TODO reword usages of modal return, making explicit that result is entity agnostic
+export interface TreeComponentResult {
+    id: number;
+    name: string;
+    // FIXME IBP-5413
+    isParentCropList: boolean
 }

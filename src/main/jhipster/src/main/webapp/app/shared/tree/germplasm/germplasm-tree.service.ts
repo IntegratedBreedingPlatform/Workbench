@@ -54,6 +54,10 @@ export class GermplasmTreeService extends TreeService {
         const params = {
             newParentId: target
         };
+        /*
+         * TODO IBP-5413. program should be sent always to resolve permissions
+         *  but doing so while moving to folders inside crop section throws an error.
+         */
         if (!isParentCropList && this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
@@ -75,6 +79,10 @@ export class GermplasmTreeService extends TreeService {
             folderName,
             parentId
         };
+        /*
+         * TODO IBP-5413. program should be sent always to resolve permissions
+         *  but doing so while moving to folders inside crop section throws an error.
+         */
         if (!isParentCropList && this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
