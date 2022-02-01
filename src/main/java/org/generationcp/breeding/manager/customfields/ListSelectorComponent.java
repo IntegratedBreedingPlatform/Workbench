@@ -397,8 +397,7 @@ public abstract class ListSelectorComponent extends CssLayout implements Initial
 
 		try {
 			germplasmListChildren = this.germplasmListManager
-					.getGermplasmListByParentFolderIdBatched(parentGermplasmListId, this.getCurrentProgramUUID(),
-							ListSelectorComponent.BATCH_SIZE);
+					.getGermplasmListByParentFolderId(parentGermplasmListId, this.getCurrentProgramUUID());
 			germplasmListManager.populateGermplasmListCreatedByName(germplasmListChildren);
 			this.addGermplasmListNodeToComponent(germplasmListChildren, parentGermplasmListId);
 

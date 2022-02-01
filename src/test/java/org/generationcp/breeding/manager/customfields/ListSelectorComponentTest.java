@@ -4,7 +4,6 @@ import com.vaadin.data.Item;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.MouseEvents;
 import com.vaadin.terminal.ThemeResource;
-import org.junit.Assert;
 import org.generationcp.breeding.manager.constants.AppConstants;
 import org.generationcp.breeding.manager.customcomponent.GermplasmListSource;
 import org.generationcp.breeding.manager.customcomponent.GermplasmListTreeTable;
@@ -22,6 +21,7 @@ import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.ListMetadata;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.service.api.user.UserService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -131,8 +131,7 @@ public class ListSelectorComponentTest {
 		final List<GermplasmList> germplasmListChildren = new ArrayList<>();
 		germplasmListChildren.add(germplasmList);
 		Mockito.when(this.germplasmListManager
-				.getGermplasmListByParentFolderIdBatched(parentGermplasmListId, ListSelectorComponentTest.PROGRAM_UUID,
-						ListSelectorComponent.BATCH_SIZE)).thenReturn(germplasmListChildren);
+				.getGermplasmListByParentFolderId(parentGermplasmListId, ListSelectorComponentTest.PROGRAM_UUID)).thenReturn(germplasmListChildren);
 
 		listSelectorComponent.instantiateGermplasmListSourceComponent();
 		listSelectorComponent.setGermplasmListManager(this.germplasmListManager);
@@ -156,8 +155,7 @@ public class ListSelectorComponentTest {
 		final List<GermplasmList> germplasmListChildren = new ArrayList<>();
 		germplasmListChildren.add(germplasmList);
 		Mockito.when(this.germplasmListManager
-				.getGermplasmListByParentFolderIdBatched(parentGermplasmListId, ListSelectorComponentTest.PROGRAM_UUID,
-						ListSelectorComponent.BATCH_SIZE)).thenReturn(germplasmListChildren);
+				.getGermplasmListByParentFolderId(parentGermplasmListId, ListSelectorComponentTest.PROGRAM_UUID)).thenReturn(germplasmListChildren);
 
 		final Integer expectedNoOfEntries = 10;
 		final Map<Integer, ListMetadata> allListMetaData = new HashMap<>();
