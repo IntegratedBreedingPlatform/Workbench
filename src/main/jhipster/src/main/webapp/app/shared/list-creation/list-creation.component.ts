@@ -22,7 +22,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
     listTypes: ListType[];
 
     model = new ListModel();
-    selectedDate: NgbDate;
+    creationDate: NgbDate;
 
     public FolderModes = Mode;
 
@@ -47,7 +47,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
-        this.selectedDate = calendar.getToday();
+        this.creationDate = calendar.getToday();
     }
 
     abstract save();
@@ -61,8 +61,8 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         super.ngOnInit();
 
         this.listService.getListTypes().subscribe((listTypes) => this.listTypes = listTypes);
-        if (!this.model.type) {
-            this.listService.getListType().subscribe((listType) => this.model.type = listType);
+        if (!this.model.listType) {
+            this.listService.getListType().subscribe((listType) => this.model.listType = listType);
         }
     }
 

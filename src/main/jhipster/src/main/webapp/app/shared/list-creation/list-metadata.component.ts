@@ -34,7 +34,7 @@ export class ListMetadataComponent implements OnInit {
         this.listService.getListTypes().subscribe((listTypes) => this.listTypes = listTypes);
         this.listService.getById(this.listId).subscribe((listModel) => {
             this.model = listModel;
-            this.selectedDate =  this.dateHelperService.convertFormattedDateStringToNgbDate(this.model.date, 'yyyy-mm-dd');
+            this.selectedDate =  this.dateHelperService.convertFormattedDateStringToNgbDate(this.model.creationDate, 'yyyy-mm-dd');
         });
     }
 
@@ -48,7 +48,7 @@ export class ListMetadataComponent implements OnInit {
 
     save() {
         this.isLoading = true;
-        this.model.date = `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`
+        this.model.creationDate = `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`
         this.listService.updateListMetadata(this.listId, this.model)
             .subscribe(
                 (res) => this.onSaveSuccess(),

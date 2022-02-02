@@ -120,7 +120,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
         this.isLoading = true;
         const listId = Number(this.route.snapshot.queryParamMap.get('listId'));
-        const germplasmListGenerator = { id: listId, entries: [] };
+        const germplasmListGenerator = { listId: listId, entries: [] };
         for (const row of this.context.data) {
             const entry = {
                 entryNo: row[HEADERS.ENTRY_NO],
