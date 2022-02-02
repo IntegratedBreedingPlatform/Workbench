@@ -83,7 +83,7 @@ export class GermplasmTreeService extends TreeService {
          * TODO IBP-5413. program should be sent always to resolve permissions
          *  but doing so while moving to folders inside crop section throws an error.
          */
-        if (!isParentCropList && this.paramContext.programUUID) {
+        if (this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
         return this.http.post<HttpResponse<number>>(url, { observe: 'response' }, {params});
