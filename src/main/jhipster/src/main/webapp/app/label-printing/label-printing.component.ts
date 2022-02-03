@@ -12,7 +12,8 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { ParamContext } from '../shared/service/param.context';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER, HELP_LABEL_PRINTING_GERMPLASM_MANAGER, HELP_LABEL_PRINTING_INVENTORY_MANAGER, HELP_LABEL_PRINTING_STUDY_MANAGER } from '../app.constants';
+import { HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER, HELP_LABEL_PRINTING_GERMPLASM_MANAGER,
+    HELP_LABEL_PRINTING_INVENTORY_MANAGER, HELP_LABEL_PRINTING_STUDY_MANAGER } from '../app.constants';
 
 declare const $: any;
 
@@ -139,14 +140,14 @@ export class LabelPrintingComponent implements OnInit {
     }
 
     getHelpLinkString() {
-        if(this.context.printingLabelType === LabelPrintingType.GERMPLASM) {
+        if (this.context.printingLabelType === LabelPrintingType.GERMPLASM) {
             return HELP_LABEL_PRINTING_GERMPLASM_MANAGER;
-        } else if(this.context.printingLabelType === LabelPrintingType.GERMPLASM_LIST) {
+        } else if (this.context.printingLabelType === LabelPrintingType.GERMPLASM_LIST) {
             return HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER;
-        } else if(this.context.printingLabelType === LabelPrintingType.SUBOBSERVATION_DATASET
+        } else if (this.context.printingLabelType === LabelPrintingType.SUBOBSERVATION_DATASET
             || this.context.printingLabelType === LabelPrintingType.OBSERVATION_DATASET ) {
             return HELP_LABEL_PRINTING_STUDY_MANAGER;
-        } else if(this.context.printingLabelType = LabelPrintingType.LOT) {
+        } else if (this.context.printingLabelType = LabelPrintingType.LOT) {
             return HELP_LABEL_PRINTING_INVENTORY_MANAGER;
         }
     }
