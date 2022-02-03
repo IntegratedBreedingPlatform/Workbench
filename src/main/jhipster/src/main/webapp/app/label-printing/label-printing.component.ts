@@ -147,7 +147,7 @@ export class LabelPrintingComponent implements OnInit {
         } else if (this.context.printingLabelType === LabelPrintingType.SUBOBSERVATION_DATASET
             || this.context.printingLabelType === LabelPrintingType.OBSERVATION_DATASET ) {
             return HELP_LABEL_PRINTING_STUDY_MANAGER;
-        } else if (this.context.printingLabelType = LabelPrintingType.LOT) {
+        } else if (this.context.printingLabelType === LabelPrintingType.LOT) {
             return HELP_LABEL_PRINTING_INVENTORY_MANAGER;
         }
     }
