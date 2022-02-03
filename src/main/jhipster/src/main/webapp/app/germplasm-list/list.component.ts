@@ -544,7 +544,7 @@ export class ListComponent implements OnInit {
         const modal = this.modalService.open(GermplasmListFolderSelectorComponent as Component, { size: 'lg', backdrop: 'static' });
         modal.result.then((selectedNodes: TreeComponentResult[]) => {
             const node = selectedNodes[0];
-            this.germplasmTreeService.move(String(this.listId), String(node.id), node.isParentCropList).subscribe(
+            this.germplasmTreeService.move(String(this.listId), String(node.id)).subscribe(
                 () => this.alertService.success('germplasm-list.list-data.move-to-folder.success'),
                 (error) => this.onError(error)
             );

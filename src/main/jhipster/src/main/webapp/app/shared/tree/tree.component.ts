@@ -128,8 +128,7 @@ export class TreeComponent implements OnInit {
                 this.draggedNode = null;
                 return;
             }
-            const isParentCropList = this.isParentCropList(node);
-            this.service.move(this.draggedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
+            this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
                     if (!node.children) {
                         node.children = [];
                     }
@@ -354,8 +353,7 @@ export class TreeComponent implements OnInit {
 
         const folder: PrimeNgTreeNode = this.selectedNodes[0];
         if (this.mode === Mode.Add) {
-            const isParentCropList = this.isParentCropList(folder);
-            this.service.create(this.name, folder.data.id, isParentCropList).subscribe((res) => {
+            this.service.create(this.name, folder.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(folder);
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');

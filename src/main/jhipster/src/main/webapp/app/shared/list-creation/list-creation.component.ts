@@ -91,8 +91,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
 
         event.accept();
 
-        const isParentCropList = this.isParentCropList(target);
-        this.treeService.move(source.data.id, target.data.id, isParentCropList).subscribe(
+        this.treeService.move(source.data.id, target.data.id).subscribe(
             (res) => {},
             (res: HttpErrorResponse) => {
                 // TODO: FIX ME! Due to primeng7 does not support accepting the event within subscribe, we are handling the re-render of the component by calling the expand method.
