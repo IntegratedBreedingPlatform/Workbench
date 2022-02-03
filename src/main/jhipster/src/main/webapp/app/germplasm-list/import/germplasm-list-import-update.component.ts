@@ -17,12 +17,15 @@ import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable
 import { ListComponent } from '../list.component';
 import { JhiEventManager } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { HELP_GERMPLASM_LIST_IMPORT, HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../app.constants';
+import { HelpService } from '../../shared/service/help.service';
 
 @Component({
     selector: 'jhi-germplasm-list-import-update',
     templateUrl: 'germplasm-list-import-update.component.html'
 })
 export class GermplasmListImportUpdateComponent implements OnInit {
+    helpLink: string;
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -49,8 +52,14 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         private variableService: VariableService,
         private context: GermplasmListImportContext,
         private eventManager: JhiEventManager,
-        private germplasmListService: GermplasmListService
+        private germplasmListService: GermplasmListService,
+        private helpService: HelpService,
     ) {
+        this.helpService.getHelpLink(HELP_GERMPLASM_LIST_IMPORT_UPDATE).subscribe((response) => {
+            if (response.body) {
+                this.helpLink = response.body;
+            }
+        });
     }
 
     ngOnInit(): void {
