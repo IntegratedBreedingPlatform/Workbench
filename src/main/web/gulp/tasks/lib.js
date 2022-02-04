@@ -1,7 +1,10 @@
 var gulp = require('gulp');
+var flatten = require('gulp-flatten');
 
-gulp.task('lib', ['brapi-fieldmap', 'common-libs', 'brapi-study-comparison', 'brapi-sync', 'brapi-sync-js']);
+gulp.task('lib', ['brapi-fieldmap', 'common-libs', 'brapi-study-comparison', 'brapi-sync']);
 gulp.task('brapi-fieldmap', ['brapi-fieldmap-js', 'brapi-fieldmap-css']);
+gulp.task('brapi-sync', ['brapi-sync-main', 'brapi-sync-static']);
+
 
 gulp.task('common-libs', function() {
 
@@ -42,24 +45,19 @@ gulp.task('brapi-study-comparison', function() {
 		.pipe(gulp.dest('../webapp/WEB-INF/static/js/lib'));
 });
 
-gulp.task('brapi-sync', function() {
 
+gulp.task('brapi-sync-main', function() {
 	return gulp.src([
-		'brapi-sync/dist/brapi-sync-angular/index.html',
-		'brapi-sync/dist/brapi-sync-angular/main.js'
-	], { cwd: 'node_modules/**' }) /* Glob required here. */
-		.pipe(gulp.dest('../webapp/WEB-INF/pages'));
+		'brapi-sync/dist/brapi-sync-angular/*.*'
+	], { cwd: 'node_modules/**' })/* Glob required here. */
+		.pipe(flatten())
+		.pipe(gulp.dest('../webapp/WEB-INF/pages/brapi-sync'));
 });
 
-gulp.task('brapi-sync-js', function() {
-
+gulp.task('brapi-sync-static', function() {
 	return gulp.src([
-		'brapi-sync/dist/brapi-sync-angular/runtime.js',
-		'brapi-sync/dist/brapi-sync-angular/polyfills.js',
-		'brapi-sync/dist/brapi-sync-angular/scripts.js',
-		'brapi-sync/dist/brapi-sync-angular/vendor.js',
-		'brapi-sync/dist/brapi-sync-angular/styles.css',
-		'brapi-sync/dist/brapi-sync-angular/faveicon.ico'
-	], { cwd: 'node_modules/**' }) /* Glob required here. */
-		.pipe(gulp.dest('../webapp/WEB-INF/static/js/lib'));
+		'brapi-sync/dist/brapi-sync-angular/static/**'
+	], { cwd: 'node_modules/**' })/* Glob required here. */
+		.pipe(flatten())
+		.pipe(gulp.dest('../webapp/WEB-INF/pages/brapi-sync/static'));
 });
