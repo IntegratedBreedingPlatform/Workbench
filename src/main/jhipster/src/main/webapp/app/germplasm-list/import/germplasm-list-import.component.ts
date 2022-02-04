@@ -15,7 +15,7 @@ import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../shared/util/to-upper';
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
-import { HELP_GERMPLASM_LIST_IMPORT, HELP_MANAGE_GERMPLASM_IMPORT } from '../../app.constants';
+import { HELP_GERMPLASM_LIST_IMPORT } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 
 @Component({
