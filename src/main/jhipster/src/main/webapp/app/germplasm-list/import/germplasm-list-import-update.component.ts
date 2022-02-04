@@ -17,7 +17,7 @@ import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable
 import { ListComponent } from '../list.component';
 import { JhiEventManager } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { HELP_GERMPLASM_LIST_IMPORT, HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../app.constants';
+import { HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
 
 @Component({
