@@ -244,6 +244,10 @@ ui bootstrap tweaks
     white-space: nowrap;
  }
 
+/* TODO for some reason this not being done automatically.. */
+[role="button"] {
+    cursor: pointer;
+}
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 
 /* ==========================================================================
@@ -277,6 +281,10 @@ $tab-border: $border-width solid $nav-tabs-border-color;
 .table {
     white-space: nowrap;
     border-spacing: 0;
+}
+
+table th.non-editable {
+    background-color: #a4a4a4;
 }
 
 .table tr.selected {
@@ -631,4 +639,3 @@ Text ellipsis
     overflow: hidden;
     text-overflow: ellipsis;
 }
-

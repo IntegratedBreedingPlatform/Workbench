@@ -11,7 +11,8 @@
 				   [items]="observationVariable.possibleValues" [(ngModel)]="value"
 				   bindValue="name" bindLabel="name"
 				   [searchFn]="searchCategorical"
-				   (blur)="submit(f)">
+				   (blur)="submit(f)"
+				   [dropdownPosition]="'bottom'">
 			<ng-template ng-option-tmp let-possibleValue="item">
 				<div title="{{possibleValue.description}}">{{possibleValue.name}}</div>
 			</ng-template>

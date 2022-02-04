@@ -43,7 +43,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
                 public calendar: NgbCalendar,
                 public modalService: NgbModal,
                 public principal: Principal) {
-        super(true, treeService, modal, alertService, translateService, modalService);
+        super(true, 'single', treeService, modal, alertService, translateService, modalService);
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
@@ -81,11 +81,6 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         if (source.children && source.children.length !== 0) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
                 { folder: source.data.name });
-            return;
-        }
-
-        if (target.data.id === 'CROPLISTS' && !source.leaf) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.program.to.crop.list.not.allowed');
             return;
         }
 
@@ -129,13 +124,4 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
     isSelectable(node: TreeNode) {
         return node.isFolder;
     }
-
-    set selectedNode(node: PrimeNgTreeNode) {
-        this.selectedNodes[0] = node;
-    }
-
-    get selectedNode(): PrimeNgTreeNode {
-        return this.selectedNodes[0];
-    }
-
 }

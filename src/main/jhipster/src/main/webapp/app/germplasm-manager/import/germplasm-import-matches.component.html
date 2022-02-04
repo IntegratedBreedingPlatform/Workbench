@@ -22,6 +22,7 @@
 						<th>GID</th>
 						<th>PREFERRED NAME</th>
 						<th>NAMES</th>
+						<th>CROSS</th>
 						<th>LOCATION</th>
 						<th>BREEDING METHOD</th>
 						<th>CREATION DATE</th>
@@ -33,6 +34,7 @@
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.gid}}</a></td>
 							<td><a [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" [queryParams]="{designation: germplasm.preferredName}">{{germplasm.preferredName}}</a></td>
 							<td><span *ngFor="let name of germplasm.names; let last = last">{{name.name}}<span *ngIf="!last">, </span></span></td>
+							<td>{{germplasm.pedigreeString}}</td>
 							<td>{{germplasm.breedingLocation}}</td>
 							<td>{{germplasm.breedingMethod}}</td>
 							<td>{{germplasm.creationDate}}</td>
