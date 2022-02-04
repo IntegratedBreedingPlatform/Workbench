@@ -12,6 +12,6 @@ public class BrAPISyncController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String index(Model model) throws MiddlewareQueryException {
-		return "brapi-sync/index";
+		return "brapi-sync/dist/brapi-sync-angular/index";
 	}
 }
