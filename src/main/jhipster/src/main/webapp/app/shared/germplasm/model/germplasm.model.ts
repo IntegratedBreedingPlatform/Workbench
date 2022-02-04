@@ -19,6 +19,7 @@ export class GermplasmDto {
         public groupId?: number,
         public gpid1?: number,
         public gpid2?: number,
+        public pedigreeString?: string,
         public otherProgenitors?: number[],
         public names?: GermplasmName[],
         public attributes?: GermplasmAttribute[],

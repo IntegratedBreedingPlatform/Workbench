@@ -37,7 +37,8 @@
                 "add-to-list": "Add to list",
                 "delete-list": "Delete list",
                 "clone-list": "Clone list",
-                "remove-entries": "Remove entries"
+                "remove-entries": "Remove entries",
+                "move-to-folder": "Move to folder"
             },
             "selection": {
                 "empty": "Please select at least one entry."
@@ -68,6 +69,12 @@
                 "confirm.message": "Are you sure you want to remove the selected entries from the list?",
                 "confirm.header": "Remove entries",
                 "remove.success": "Successfully removed entries."
+            },
+            "move-to-folder": {
+                "success": "Successfully moved to folder"
+            },
+            "cross": {
+                "generation.level.label": "Specify expansion level"
             }
         },
         "variables": {
@@ -124,7 +131,8 @@
                     "single.matches": "{{param}} entries selected with single matches",
                     "manual.matches": "{{param}} entries selected manually",
                     "omitted.matches": "{{param}} entries omitted"
-                }
+                },
+                "export.table": "Download this table"
             },
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Germplasm imported successfully!"

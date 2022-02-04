@@ -1,4 +1,3 @@
-
 import { NgModule } from '@angular/core';
 import { BmsjHipsterSharedModule } from '../shared';
 import { RouterModule } from '@angular/router';
@@ -30,7 +29,7 @@ import { GermplasmListManagerContext } from './germplasm-list-manager.context';
         ListDataRowComponent,
         GermplasmListReorderEntriesDialogComponent,
         GermplasmListMetadataComponent,
-        GermplasmListClonePopupComponent,
+        GermplasmListClonePopupComponent
     ],
     entryComponents: [
         GermplasmListComponent,
@@ -40,7 +39,7 @@ import { GermplasmListManagerContext } from './germplasm-list-manager.context';
         ListDataRowComponent,
         GermplasmListReorderEntriesDialogComponent,
         GermplasmListMetadataComponent,
-        GermplasmListClonePopupComponent,
+        GermplasmListClonePopupComponent
     ],
     providers: [
         GermplasmListService,

@@ -82,6 +82,12 @@ import { VariableSelectModalComponent } from './variable-container/variable-sele
 import { FileDeleteOptionsComponent } from './file/component/file-delete-options.component';
 import { RouterModule } from '@angular/router';
 import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clone.component';
+import { FeedbackDialogComponent } from './feedback/feedback-dialog.component';
+import { FeedbackService } from './feedback/service/feedback.service';
+import { GermplasmTreeTableComponent } from './tree/germplasm/germplasm-tree-table.component';
+import { GermplasmListTreeTableComponent } from './tree/germplasm/germplasm-list-tree-table.component';
+import { StudyTreeComponent } from './tree/study/study-tree.component';
+import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm-list-folder-selector.component';
 
 @NgModule({
     imports: [
@@ -90,6 +96,7 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ReactiveFormsModule,
         TableModule,
         TreeModule,
+        TreeTableModule,
         DragDropModule,
         CdkDragDropModule,
         LeafletModule,
@@ -127,6 +134,10 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         AttributeSelect2DataPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
@@ -140,7 +151,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     providers: [
         LoginService,
@@ -179,16 +191,22 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         VariableService,
         VariableValidationService,
         GermplasmGroupingService,
-        InlineEditorService
+        InlineEditorService,
+        FeedbackService
     ],
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
         SampleListCreationComponent,
-        VariableSelectModalComponent
+        VariableSelectModalComponent,
+        FeedbackDialogComponent
     ],
     exports: [
         BmsjHipsterSharedCommonModule,
@@ -229,6 +247,10 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         ColumnFilterDropdownComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
+        GermplasmTreeTableComponent,
+        GermplasmListTreeTableComponent,
+        StudyTreeComponent,
+        GermplasmListFolderSelectorComponent,
         ListBuilderComponent,
         GermplasmListCreationComponent,
         GermplasmListCloneComponent,
@@ -242,7 +264,8 @@ import { GermplasmListCloneComponent } from './list-creation/germplasm-list-clon
         InlineEditorComponent,
         VariableSelectComponent,
         VariableSelectModalComponent,
-        VariableContainerComponent
+        VariableContainerComponent,
+        FeedbackDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

@@ -58,6 +58,7 @@
         "left.selected.fields": "Left Side Fields",
         "right.selected.fields": "Right Side Fields",
         "main.selected.fields": "Selected Fields",
+        "remove.selected.fields": "Remove all",
         "bar.code.needed.error": "Please choose if the barcode is needed",
         "bar.code.field.error": "Please choose at least 1 barcode field",
         "filename.description": "Specify the name of the file",

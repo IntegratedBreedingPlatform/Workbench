@@ -43,7 +43,7 @@
 			<div class="clearfix"></div>
 			<div class="table-responsive">
 				<p-tree [value]="nodes"
-						[(selection)]="this.selectedNode"
+						[(selection)]="_selectedNodes"
 						[draggableNodes]="true"
 						[droppableNodes]="true"
 						[validateDrop]="true"
@@ -51,7 +51,7 @@
 						(onNodeDrop)="onNodeDrop($event, $event.dragNode, $event.dropNode)"
 						(onNodeExpand)="onNodeExpand($event)"
 						autoLayout="true"
-						selectionMode="single"
+						[selectionMode]="selectionMode"
 						draggableScope="self"
 						droppableScope="self"
 						styleClass="tree-table">

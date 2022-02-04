@@ -102,4 +102,14 @@ export class LabelPrintingService {
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets/${presetId}`;
         return this.http.delete<PresetSetting>(this.baseUrl + resourceUrl);
     }
+
+    getDefaultSettings() {
+        const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${this.context.printingLabelType}/default-settings`;
+        return this.http.post<PresetSetting>(this.baseUrl + resourceUrl, {
+            datasetId: this.context.datasetId,
+            studyId: this.context.studyId,
+            searchRequestId: this.context.searchRequestId,
+            listId: this.context.listId
+        });
+    }
 }

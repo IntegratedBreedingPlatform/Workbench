@@ -61,15 +61,21 @@ function GraphicalFilter() {
 
 			$.fn.dataTableExt.afnFiltering.push(function (_1, _2, dataIndex) {
 				var currentData = gfilter.data[dataIndex];
-				var applyFilter = currentFilter(currentData);
-				if (applyFilter) {
-					// applyFilter is true when the data fits the filter rule.
-					gfilter.filteredData.push(currentData);
-				}
-				return applyFilter;
+				return currentFilter(currentData);
 			});
 			gfilter.results_table.draw();
 		}
+
+		// Retrieve the filtered results directly from the table after it has been completely drawn.
+		gfilter.results_table.on('draw.dt', function() {
+			gfilter.filteredData.length = 0;
+			// This will return the rows that match the filters applied to the table.
+			var rows = gfilter.results_table.rows( { filter : 'applied' } ).data().toArray();
+			for (var i = 0; i < rows.length; i++) {
+				gfilter.filteredData.push(rows[i]);
+			}
+		});
+
 		gfilter.redraw();
 	};
 
