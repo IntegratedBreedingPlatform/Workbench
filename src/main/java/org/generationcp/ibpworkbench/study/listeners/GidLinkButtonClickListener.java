@@ -19,7 +19,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
 import org.apache.commons.lang3.ArrayUtils;
-import org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService;
+import org.generationcp.breeding.manager.service.GermplasmDetailsUrlService;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
 import org.generationcp.ibpworkbench.study.TableViewerComponent;

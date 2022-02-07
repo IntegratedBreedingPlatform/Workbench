@@ -1,4 +1,4 @@
-package org.generationcp.breeding.manager.listmanager;
+package org.generationcp.breeding.manager.service;
 
 import com.vaadin.terminal.ExternalResource;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
