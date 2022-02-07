@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { NameType } from '../../../shared/germplasm/model/name-type.model';
-import { LocationModel } from '../../../shared/location/model/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { GermplasmNameContext } from './germplasm-name.context';
@@ -18,7 +17,6 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
     gid: number;
     nameTypes: Promise<NameType[]>;
-    locations: LocationModel[];
     isLoading: boolean;
 
     nameId: number;

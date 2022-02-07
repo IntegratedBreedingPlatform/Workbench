@@ -22,18 +22,22 @@ $(document).ready(function () {
 function loadLocations() {
 
 	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
-		+ "/locations?page=0&size=10000&programUUID=" + getUrlParameter("programUUID") + "&favoritesOnly=false&locationTypes";
+		+ "/locations/search?page=0&size=10000&programUUID=" + getUrlParameter("programUUID");
 
 	return Promise.all([$.ajax({
-		type: "GET",
+		type: "POST",
+		data: '{}',
 		url: url,
 		beforeSend: beforeSend,
 		error: error,
 		contentType: "application/json; charset=utf-8",
 		dataType: "json"
 	}), $.ajax({
-		type: "GET",
-		url: url + '=410,411,412',
+		type: "POST",
+		data: JSON.stringify({
+			locationTypeIds: [410, 411, 412]
+		}),
+		url: url,
 		beforeSend: beforeSend,
 		error: error,
 		contentType: "application/json; charset=utf-8",

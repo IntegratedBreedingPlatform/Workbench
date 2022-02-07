@@ -113,24 +113,6 @@ public class ProgramMethodsPresenterTest {
 		
 	}
 
-	private void setUpFavoriteMethods(final String entityType) throws MiddlewareQueryException {
-		final List<ProgramFavorite> favorites = new ArrayList<ProgramFavorite>();
-
-		for (int i = 0; i < ProgramMethodsPresenterTest.NO_OF_FAVORITES; i++) {
-			final Integer methodId = i + 1;
-			final ProgramFavorite favorite = new ProgramFavorite();
-			favorite.setEntityId(methodId);
-			favorite.setEntityType(entityType);
-			favorite.setUniqueID(ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID);
-
-			favorites.add(favorite);
-		}
-
-		Mockito.when(this.gerplasmDataManager.getProgramFavorites(FavoriteType.METHOD, ProgramMethodsPresenterTest.DUMMY_PROGRAM_UUID))
-				.thenReturn(favorites);
-
-	}
-
 	public void setupGetFilteredResults(String mgroup, String mtype, String mname)
 			throws MiddlewareQueryException {
 		mgroup = mgroup != null ? mgroup : "";
