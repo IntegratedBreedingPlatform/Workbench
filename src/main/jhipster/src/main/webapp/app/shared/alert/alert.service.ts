@@ -10,7 +10,6 @@ export class AlertService {
 
     // wrapper so that error() won't close automatically
     error(msg: string, params?: any, timeout?: number): JhiAlert {
-        this.jhiAlertService.clear();
         return this.jhiAlertService.addAlert({
             msg,
             params,
@@ -21,7 +20,6 @@ export class AlertService {
     }
 
     success(msg: string, params?: any, timeout?: number): JhiAlert {
-        this.jhiAlertService.clear();
         return this.jhiAlertService.addAlert({
             msg,
             params,
@@ -33,7 +31,6 @@ export class AlertService {
     }
 
     warning(msg: string, params?: any, timeout?: number): JhiAlert {
-        this.jhiAlertService.clear();
         return this.jhiAlertService.addAlert({
             msg,
             params,
