@@ -1,5 +1,5 @@
 
-package org.generationcp.breeding.manager.listimport.util;
+package org.generationcp.breeding.manager.customfields;
 
 import java.util.HashMap;
 import java.util.List;

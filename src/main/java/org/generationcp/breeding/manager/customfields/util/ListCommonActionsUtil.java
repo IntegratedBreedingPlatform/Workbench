@@ -1,4 +1,4 @@
-package org.generationcp.breeding.manager.listmanager.util;
+package org.generationcp.breeding.manager.customfields.util;
 
 import com.vaadin.ui.Window;
 import org.generationcp.breeding.manager.application.Message;

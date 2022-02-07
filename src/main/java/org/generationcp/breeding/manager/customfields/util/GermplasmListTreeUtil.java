@@ -1,4 +1,4 @@
-package org.generationcp.breeding.manager.listmanager.util;
+package org.generationcp.breeding.manager.customfields.util;
 
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.TextField;

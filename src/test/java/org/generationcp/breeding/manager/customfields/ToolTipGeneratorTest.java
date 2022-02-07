@@ -1,5 +1,5 @@
 
-package org.generationcp.breeding.manager.listimport.util;
+package org.generationcp.breeding.manager.customfields;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.breeding.manager.customcomponent.ViewListHeaderWindow;
+import org.generationcp.breeding.manager.customfields.ToolTipGenerator;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.UserDefinedField;

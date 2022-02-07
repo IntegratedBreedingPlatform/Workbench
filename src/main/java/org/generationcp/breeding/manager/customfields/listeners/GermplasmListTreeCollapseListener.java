@@ -9,7 +9,7 @@
  *
  *******************************************************************************/
 
-package org.generationcp.breeding.manager.listmanager.listeners;
+package org.generationcp.breeding.manager.customfields.listeners;
 
 import org.generationcp.breeding.manager.customfields.ListSelectorComponent;
 

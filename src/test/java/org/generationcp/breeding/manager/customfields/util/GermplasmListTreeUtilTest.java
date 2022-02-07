@@ -1,5 +1,5 @@
 
-package org.generationcp.breeding.manager.listmanager.util;
+package org.generationcp.breeding.manager.customfields.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;

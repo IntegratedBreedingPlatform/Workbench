@@ -1,8 +1,8 @@
 
-package org.generationcp.breeding.manager.listmanager.listeners.test;
+package org.generationcp.breeding.manager.customfields.listeners.test;
 
 import org.generationcp.breeding.manager.customfields.ListSelectorComponent;
-import org.generationcp.breeding.manager.listmanager.listeners.GermplasmListTreeCollapseListener;
+import org.generationcp.breeding.manager.customfields.listeners.GermplasmListTreeCollapseListener;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

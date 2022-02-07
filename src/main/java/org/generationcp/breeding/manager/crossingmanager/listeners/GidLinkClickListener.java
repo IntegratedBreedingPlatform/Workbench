@@ -9,7 +9,7 @@
  *
  *******************************************************************************/
 
-package org.generationcp.breeding.manager.listimport.listeners;
+package org.generationcp.breeding.manager.crossingmanager.listeners;
 
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
