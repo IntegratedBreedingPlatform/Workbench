@@ -100,7 +100,7 @@ export class GermplasmTreeService extends TreeService {
         return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
     }
 
-    persist(foldersParam: string[]): any {
+    persist(cropFolders: string[], programFolders: string[]): any {
         const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
         const params = {};
         if (this.paramContext.programUUID) {
@@ -108,7 +108,8 @@ export class GermplasmTreeService extends TreeService {
         }
         const body = {
             userId: this.paramContext.loggedInUserId,
-            folders: foldersParam
+            cropFolders,
+            programFolders
         };
         return this.http.post(url, body, {params});
     }
