@@ -39,7 +39,6 @@ export class GermplasmDetailsModalComponent implements OnInit {
                 private germplasmService: GermplasmService) {
         const queryParams = '?cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
-            + '&authToken=' + this.paramContext.authToken
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectedProjectId=' + this.paramContext.selectedProjectId
             + '&modal=true'; // Tell the page that it is shown as a modal.

@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.service;
 
-import com.google.common.collect.ImmutableSet;
 import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.context.ContextInfo;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -39,7 +38,6 @@ import java.util.Set;
 public class ProgramServiceTest {
 
 	private static final int USER_ID = 123;
-	private static final String SAMPLE_AUTH_TOKEN_VALUE = "RANDOM_TOKEN";
 
 	@Mock
 	private HttpServletRequest request;
@@ -82,9 +80,6 @@ public class ProgramServiceTest {
 	public void setup() {
 
 		Mockito.when(this.request.getSession()).thenReturn(this.httpSession);
-		Mockito.when(this.cookie.getName()).thenReturn(ContextConstants.PARAM_AUTH_TOKEN);
-		Mockito.when(this.cookie.getValue()).thenReturn(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE);
-		Mockito.when(this.request.getCookies()).thenReturn(new Cookie[] {this.cookie});
 
 		this.initializeTestPersonsAndUsers();
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(ProgramServiceTest.USER_ID);
@@ -116,7 +111,7 @@ public class ProgramServiceTest {
 
 		// Other WorkbenchDataManager mocks
 		Mockito.when(this.workbenchDataManager.getCropTypeByName(ArgumentMatchers.anyString()))
-				.thenReturn(project.getCropType());
+			.thenReturn(project.getCropType());
 		Mockito.when(this.locationDataManager.retrieveLocIdOfUnspecifiedLocation()).thenReturn(String.valueOf(unspecifiedLocationID));
 
 		// Call the method to test
@@ -138,11 +133,10 @@ public class ProgramServiceTest {
 		// Verify session attribute was set
 		final ArgumentCaptor<Object> contextInfoCaptor = ArgumentCaptor.forClass(Object.class);
 		Mockito.verify(this.httpSession).setAttribute(ArgumentMatchers.eq(ContextConstants.SESSION_ATTR_CONTEXT_INFO),
-				contextInfoCaptor.capture());
+			contextInfoCaptor.capture());
 		final ContextInfo contextInfo = (ContextInfo) contextInfoCaptor.getValue();
 		Assert.assertEquals(ProgramServiceTest.USER_ID, contextInfo.getLoggedInUserId().intValue());
 		Assert.assertEquals(project.getProjectId(), contextInfo.getSelectedProjectId());
-		Assert.assertEquals(ProgramServiceTest.SAMPLE_AUTH_TOKEN_VALUE, contextInfo.getAuthToken());
 	}
 
 	@Test
