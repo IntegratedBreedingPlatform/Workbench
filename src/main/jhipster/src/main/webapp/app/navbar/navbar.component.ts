@@ -111,13 +111,19 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         const cropName = this.program ? this.program.crop : null;
         const programUUID = this.program ? this.program.uniqueID : null;
         const selectedProjectId = this.program ? this.program.id : null;
-        const authParams = (hasParams ? '&' : '?') + 'cropName=' + cropName
+        var authParams = (hasParams ? '&' : '?') + 'cropName=' + cropName
             + '&programUUID=' + programUUID
             // Deprecated, not needed
             // + '&authToken=' + localStorage['authToken']
             + '&selectedProjectId=' + selectedProjectId
-            + '&loggedInUserId=' + this.user.id
-            + '&restartApplication';
+            + '&loggedInUserId=' + this.user.id;
+        if(url.includes('/brapi-sync')) {
+            authParams += '&destinationToken=' + JSON.parse(localStorage['bms.xAuthToken']).token
+                + '&destination=' + window.location.origin + '/bmsapi/' + cropName + '/brapi/v2'
+                + '&silentRefreshRedirectUri=' + window.location.origin
+                + '/ibpworkbench/controller/pages/brapi-sync/static/silent-refresh.html'
+        }
+        authParams += '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
     }
 
