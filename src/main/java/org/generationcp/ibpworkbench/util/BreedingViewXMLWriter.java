@@ -14,7 +14,6 @@ package org.generationcp.ibpworkbench.util;
 import org.generationcp.commons.breedingview.xml.Covariate;
 import org.generationcp.commons.breedingview.xml.SSAParameters;
 import org.generationcp.commons.breedingview.xml.Trait;
-import org.generationcp.commons.context.ContextConstants;
 import org.generationcp.commons.sea.xml.BreedingViewProject;
 import org.generationcp.commons.sea.xml.BreedingViewSession;
 import org.generationcp.commons.sea.xml.DataConfiguration;
@@ -23,14 +22,12 @@ import org.generationcp.commons.sea.xml.Design;
 import org.generationcp.commons.sea.xml.Environments;
 import org.generationcp.commons.sea.xml.Pipeline;
 import org.generationcp.commons.sea.xml.Pipelines;
-import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.BreedingViewUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.model.SeaEnvironmentModel;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -188,11 +185,8 @@ public class BreedingViewXMLWriter implements InitializingBean, Serializable {
 		final String contextParameterString = org.generationcp.commons.util.ContextUtil
 			.getContextParameterString(this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
 
-		final String authenticationTokenString = org.generationcp.commons.util.ContextUtil
-			.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
-
 		String webApiUrlWithCropName = this.replaceCropNameInWebApiUrl(url, project.getCropType().getCropName());
-		webApiUrlWithCropName += contextParameterString + authenticationTokenString;
+		webApiUrlWithCropName += contextParameterString;
 		return webApiUrlWithCropName;
 	}
 

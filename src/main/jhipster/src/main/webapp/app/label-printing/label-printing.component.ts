@@ -8,11 +8,12 @@ import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from '../shared/alert/alert.service';
 import { HelpService } from '../shared/service/help.service';
-import { GERMPLASM_LABEL_PRINTING_TYPE, GERMPLASM_LIST_LABEL_PRINTING_TYPE, HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS } from '../app.constants';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { ParamContext } from '../shared/service/param.context';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER, HELP_LABEL_PRINTING_GERMPLASM_MANAGER,
+    HELP_LABEL_PRINTING_INVENTORY_MANAGER, HELP_LABEL_PRINTING_STUDY_MANAGER } from '../app.constants';
 
 declare const $: any;
 
@@ -22,7 +23,6 @@ declare const $: any;
     styleUrls: ['./label-printing.component.css']
 })
 export class LabelPrintingComponent implements OnInit {
-    GERMPLASM_LABEL_PRINTING_TYPE = GERMPLASM_LABEL_PRINTING_TYPE;
     initComplete: boolean;
 
     labelPrintingData: LabelPrintingData = new LabelPrintingData();
@@ -33,6 +33,7 @@ export class LabelPrintingComponent implements OnInit {
     labelTypesOrig: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
+    selectedfileType: FileType = FileType.NONE;
     presetSettingId: number;
     loadSavedSettings = false;
     fieldsSelected: LabelType[];
@@ -44,6 +45,7 @@ export class LabelPrintingComponent implements OnInit {
     sortableFields: Sortable[];
     sortBySelected: any = '';
     isLoading: boolean;
+    defaultPresetSetting: PresetSetting;
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -101,15 +103,28 @@ export class LabelPrintingComponent implements OnInit {
             this.sortableFields = sortables;
         });
 
+        const defaultSelectionPromise = this.service.getDefaultSettings().toPromise();
+        defaultSelectionPromise.then((defaultSelection) => {
+            this.defaultPresetSetting = defaultSelection;
+        }).catch((response) => {
+            this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            this.initComplete = true;
+            return;
+        });
+
         Promise.all([
             labelsNeededPromise,
             metadataPromise,
             fieldsPromise,
             presetPromise,
-            sorteableFieldsPromise
+            sorteableFieldsPromise,
+            defaultSelectionPromise
         ]).then(() => {
             this.initDragAndDrop();
             this.initComplete = true;
+            if (this.defaultPresetSetting) {
+                this.loadPresetSetting(this.defaultPresetSetting);
+            }
         });
 
         this.labelPrintingData.sizeOfLabelSheet = '1';
@@ -117,9 +132,23 @@ export class LabelPrintingComponent implements OnInit {
 
         // Get helplink url
         if (!this.helpLink || !this.helpLink.length) {
-            this.helpService.getHelpLink(HELP_MANAGE_STUDIES_CREATE_PLANTING_LABELS).toPromise().then((response) => {
+
+            this.helpService.getHelpLink(this.getHelpLinkString()).toPromise().then((response) => {
                 this.helpLink = response.body;
             }).catch((error) => {});
+        }
+    }
+
+    getHelpLinkString() {
+        if (this.context.printingLabelType === LabelPrintingType.GERMPLASM) {
+            return HELP_LABEL_PRINTING_GERMPLASM_MANAGER;
+        } else if (this.context.printingLabelType === LabelPrintingType.GERMPLASM_LIST) {
+            return HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER;
+        } else if (this.context.printingLabelType === LabelPrintingType.SUBOBSERVATION_DATASET
+            || this.context.printingLabelType === LabelPrintingType.OBSERVATION_DATASET ) {
+            return HELP_LABEL_PRINTING_STUDY_MANAGER;
+        } else if (this.context.printingLabelType === LabelPrintingType.LOT) {
+            return HELP_LABEL_PRINTING_INVENTORY_MANAGER;
         }
     }
 
@@ -141,74 +170,79 @@ export class LabelPrintingComponent implements OnInit {
     applySelectedSetting() {
         const presetId = Number(this.presetSettingId);
         if (presetId !== 0) {
-            const presetSetting = this.presetSettings.filter((preset) => preset.id === presetId)[0];
-            this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
-            const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
-            const labelFieldsSelected = new Array();
+            this.loadPresetSetting(this.presetSettings.filter((preset) => preset.id === presetId)[0]);
+        }
+    }
 
-            presetSetting.selectedFields.forEach((idsSelected) => {
-                const fieldsSelected: LabelType[] = new Array();
-                labelTypeList.forEach((label: LabelType) => {
-                    const labelType = new LabelType(label.title, label.key, []);
-                    labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
-                    fieldsSelected.push(labelType);
-                    const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
-                    label.fields = filteredList;
-                });
-                labelFieldsSelected.push(fieldsSelected);
+    loadPresetSetting(presetSetting: PresetSetting) {
+        this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
+        this.selectedfileType = this.fileType;
+
+        const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
+        const labelFieldsSelected = new Array();
+
+        presetSetting.selectedFields.forEach((idsSelected) => {
+            const fieldsSelected: LabelType[] = new Array();
+            labelTypeList.forEach((label: LabelType) => {
+                const labelType = new LabelType(label.title, label.key, []);
+                labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
+                fieldsSelected.push(labelType);
+                const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
+                label.fields = filteredList;
             });
+            labelFieldsSelected.push(fieldsSelected);
+        });
 
-            this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
-            this.fieldsSelected = labelFieldsSelected;
-            this.sortBySelected = (presetSetting.sortBy) ? presetSetting.sortBy : '';
+        this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
+        this.fieldsSelected = labelFieldsSelected;
+        this.sortBySelected = (presetSetting.sortBy) ? presetSetting.sortBy : '';
 
-            setTimeout(() => {
-                $('#leftSelectedFields').empty();
-                $('#rightSelectedFields').empty();
+        setTimeout(() => {
+            $('#leftSelectedFields').empty();
+            $('#rightSelectedFields').empty();
 
-                let listElem = '#leftSelectedFields';
-                labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
-                    fieldsList.forEach((labelsType: LabelType) => {
-                        const key = labelsType.key;
-                        labelsType.fields.forEach((field) => {
-                            $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
-                                .attr('id', field.id).attr('data-label-type-key', key) //
-                                .text(field.name).appendTo(listElem);
-                        });
+            let listElem = '#leftSelectedFields';
+            labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
+                fieldsList.forEach((labelsType: LabelType) => {
+                    const key = labelsType.key;
+                    labelsType.fields.forEach((field) => {
+                        $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
+                            .attr('id', field.id).attr('data-label-type-key', key) //
+                            .text(field.name).appendTo(listElem);
                     });
-                    if (labelFieldsSelected.length > 1) {
-                        listElem = '#rightSelectedFields';
-                    }
                 });
+                if (labelFieldsSelected.length > 1) {
+                    listElem = '#rightSelectedFields';
+                }
             });
+        });
 
-            this.initDragAndDrop();
-            if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
-                this.labelPrintingData.numberOfRowsPerPage = presetSetting.fileConfiguration.numberOfRowsPerPage;
-                this.labelPrintingData.sizeOfLabelSheet = presetSetting.fileConfiguration.sizeOfLabelSheet;
+        this.initDragAndDrop();
+        if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
+            this.labelPrintingData.numberOfRowsPerPage = presetSetting.fileConfiguration.numberOfRowsPerPage;
+            this.labelPrintingData.sizeOfLabelSheet = presetSetting.fileConfiguration.sizeOfLabelSheet;
+        }
+
+        this.labelPrintingData.settingsName = presetSetting.name;
+        this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
+        this.labelPrintingData.barcodeGeneratedAutomatically = presetSetting.barcodeSetting.automaticBarcode;
+        this.labelPrintingData.includeHeadings = presetSetting.includeHeadings;
+
+        if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
+            this.labelPrintingData.firstBarcodeField = 0;
+            this.labelPrintingData.secondBarcodeField = 0;
+            this.labelPrintingData.thirdBarcodeField = 0;
+
+            if (presetSetting.barcodeSetting.barcodeFields[0]) {
+                this.labelPrintingData.firstBarcodeField = presetSetting.barcodeSetting.barcodeFields[0];
+            }
+            if (presetSetting.barcodeSetting.barcodeFields[1]) {
+                this.labelPrintingData.secondBarcodeField = presetSetting.barcodeSetting.barcodeFields[1];
+            }
+            if (presetSetting.barcodeSetting.barcodeFields[2]) {
+                this.labelPrintingData.thirdBarcodeField = presetSetting.barcodeSetting.barcodeFields[2];
             }
 
-            this.labelPrintingData.settingsName = presetSetting.name;
-            this.labelPrintingData.barcodeNeeded = presetSetting.barcodeSetting.barcodeNeeded;
-            this.labelPrintingData.barcodeGeneratedAutomatically = presetSetting.barcodeSetting.automaticBarcode;
-            this.labelPrintingData.includeHeadings = presetSetting.includeHeadings;
-
-            if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
-                this.labelPrintingData.firstBarcodeField = 0;
-                this.labelPrintingData.secondBarcodeField = 0;
-                this.labelPrintingData.thirdBarcodeField = 0;
-
-                if (presetSetting.barcodeSetting.barcodeFields[0]) {
-                    this.labelPrintingData.firstBarcodeField = presetSetting.barcodeSetting.barcodeFields[0];
-                }
-                if (presetSetting.barcodeSetting.barcodeFields[1]) {
-                    this.labelPrintingData.secondBarcodeField = presetSetting.barcodeSetting.barcodeFields[1];
-                }
-                if (presetSetting.barcodeSetting.barcodeFields[2]) {
-                    this.labelPrintingData.thirdBarcodeField = presetSetting.barcodeSetting.barcodeFields[2];
-                }
-
-            }
         }
     }
 
@@ -243,13 +277,79 @@ export class LabelPrintingComponent implements OnInit {
     }
 
     reset() {
-        this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
-        this.labelPrintingData.barcodeNeeded = false;
-        this.labelPrintingData.includeHeadings = true;
-        this.sortBySelected = '';
-        $('#leftSelectedFields').empty();
-        $('#rightSelectedFields').empty();
+        if ((this.selectedfileType !== this.fileType && //
+                (this.selectedfileType === FileType.PDF || this.selectedfileType === FileType.NONE) && //
+                (this.fileType === FileType.EXCEL || this.fileType === FileType.CSV))
+            || this.fileType === FileType.NONE || this.fileType === FileType.PDF) {
+            this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+            this.labelPrintingData.barcodeNeeded = false;
+            this.labelPrintingData.includeHeadings = true;
+            this.sortBySelected = '';
+            $('#leftSelectedFields').empty();
+            $('#rightSelectedFields').empty();
+            this.initDragAndDrop();
+        }
+        this.selectedfileType =  this.fileType;
+    }
+
+    reloadFields(selected) {
+        const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
+        const labelFieldsSelected = new Array();
+        selected.forEach((idsSelected) => {
+            const fieldsSelected: LabelType[] = new Array();
+            labelTypeList.forEach((label: LabelType) => {
+                const labelType = new LabelType(label.title, label.key, []);
+                labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
+                fieldsSelected.push(labelType);
+                const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
+                label.fields = filteredList;
+            });
+            labelFieldsSelected.push(fieldsSelected);
+        });
+
+        this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
+        this.fieldsSelected = labelFieldsSelected;
+
+        setTimeout(() => {
+            $('#leftSelectedFields').empty();
+            $('#rightSelectedFields').empty();
+
+            let listElem = '#leftSelectedFields';
+            labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
+                fieldsList.forEach((labelsType: LabelType) => {
+                    const key = labelsType.key;
+                    labelsType.fields.forEach((field) => {
+                        $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
+                            .attr('id', field.id).attr('data-label-type-key', key) //
+                            .text(field.name).appendTo(listElem);
+                    });
+                });
+                if (labelFieldsSelected.length > 1) {
+                    listElem = '#rightSelectedFields';
+                }
+            });
+        });
+
         this.initDragAndDrop();
+
+    }
+
+    resetSelectFields($event, selectedFields: string) {
+        $event.preventDefault();
+        const fieldsSelected: number[][] = [];
+        $(selectedFields).empty();
+
+        if (selectedFields === '#leftSelectedFields' && this.fileType === FileType.PDF) {
+            if ($('#rightSelectedFields').sortable('toArray').length > 0) {
+                fieldsSelected.push([], $('#rightSelectedFields').sortable('toArray').map((i) => Number(i)));
+            }
+        } else {
+            if ($('#leftSelectedFields').sortable('toArray').length > 0) {
+                fieldsSelected.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
+            }
+        }
+        this.reloadFields(fieldsSelected);
+
     }
 
     initDragAndDrop() {

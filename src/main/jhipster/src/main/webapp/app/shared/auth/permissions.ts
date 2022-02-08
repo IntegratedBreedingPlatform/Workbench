@@ -143,3 +143,21 @@ export const MANAGE_GERMPLASM_LIST_PERMISSION = [
 export const SEARCH_GERMPLASM_LISTS_PERMISSION = [
     ...MANAGE_GERMPLASM_LIST_PERMISSION, 'SEARCH_GERMPLASM_LISTS'
 ];
+
+export const GERMPLASM_LIST_LABEL_PRINTING_PERMISSIONS = [
+    ...MANAGE_GERMPLASM_LIST_PERMISSION,
+    'GERMPLASM_LIST_LABEL_PRINTING'
+];
+
+/**
+ * To simplify, we don't specify here which specific granular permission
+ * needs access to the germplasm selector (e.g ADD_GERMPLASM_LIST_ENTRIES),
+ * we just add the "View" type permission that gives access to the module.
+ */
+export const GERMPLASM_SELECTOR_PERMISSIONS = [
+    ...SEARCH_GERMPLASM_PERMISSIONS,
+    ...SEARCH_GERMPLASM_LISTS_PERMISSION,
+    ...MANAGE_STUDIES_PERMISSIONS,
+    'QUERIES',
+    'GRAPHICAL_QUERIES',
+];

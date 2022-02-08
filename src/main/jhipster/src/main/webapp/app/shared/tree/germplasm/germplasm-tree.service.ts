@@ -54,6 +54,10 @@ export class GermplasmTreeService extends TreeService {
         const params = {
             newParentId: target
         };
+        /*
+         * TODO IBP-5413. program should be sent always to resolve permissions
+         *  but doing so while moving to folders inside crop section throws an error.
+         */
         if (!isParentCropList && this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
@@ -75,6 +79,10 @@ export class GermplasmTreeService extends TreeService {
             folderName,
             parentId
         };
+        /*
+         * TODO IBP-5413. program should be sent always to resolve permissions
+         *  but doing so while moving to folders inside crop section throws an error.
+         */
         if (!isParentCropList && this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
@@ -92,7 +100,7 @@ export class GermplasmTreeService extends TreeService {
         return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
     }
 
-    persist(foldersParam: string[]): any {
+    persist(cropFolders: string[], programFolders: string[]): any {
         const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
         const params = {};
         if (this.paramContext.programUUID) {
@@ -100,7 +108,8 @@ export class GermplasmTreeService extends TreeService {
         }
         const body = {
             userId: this.paramContext.loggedInUserId,
-            folders: foldersParam
+            cropFolders,
+            programFolders
         };
         return this.http.post(url, body, {params});
     }
@@ -117,6 +126,7 @@ export class GermplasmTreeService extends TreeService {
             noOfEntries: item.noOfEntries,
             numOfChildren: item.numOfChildren,
             isFolder: item.isFolder,
+            isLocked: item.isLocked,
             children: []
         });
         if (item.children) {

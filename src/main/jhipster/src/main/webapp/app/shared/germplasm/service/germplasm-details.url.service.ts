@@ -15,7 +15,6 @@ export class GermplasmDetailsUrlService {
     ) {
         this.queryParams = '?cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
-            + '&authToken=' + this.paramContext.authToken
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectedProjectId=' + this.paramContext.selectedProjectId;
     }

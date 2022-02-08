@@ -25,7 +25,6 @@ import org.junit.Assert;
 public class StudyButtonRendererTest {
 
 	private static final String STUDY_NAME = "TEST STUDY";
-	private static final String TOKEN = RandomStringUtils.randomAlphanumeric(10);
 	private static final Integer USER_ID = 2;
 	private static final Long PROJECT_ID = Long.valueOf("15");
 	private static final Integer STUDY_ID = 123;
@@ -49,7 +48,7 @@ public class StudyButtonRendererTest {
 	private StudyButtonRenderer buttonRenderer;
 
 	private static final String PARAMS =
-			"?restartApplication&loggedInUserId=" + USER_ID + "&selectedProjectId=" + PROJECT_ID + "&authToken=" + TOKEN;
+			"?restartApplication&loggedInUserId=" + USER_ID + "&selectedProjectId=" + PROJECT_ID;
 
 	private static final String URL = StudyButtonRenderer.URL_STUDY_TRIAL[0] + STUDY_ID + PARAMS + StudyButtonRenderer.URL_STUDY_TRIAL[1];
 
@@ -62,7 +61,6 @@ public class StudyButtonRendererTest {
 		Mockito.doReturn(this.contextInfo).when(this.contextUtil).getContextInfoFromSession();
 		Mockito.doReturn(PROJECT_ID).when(this.contextInfo).getSelectedProjectId();
 		Mockito.doReturn(USER_ID).when(this.contextInfo).getLoggedInUserId();
-		Mockito.doReturn(TOKEN).when(this.contextInfo).getAuthToken();
 		Mockito.doReturn(false).when(this.studyPermissionValidator).userLacksPermissionForStudy(this.study);
 		Mockito.doReturn(STUDY_NAME).when(this.study).getName();
 		Mockito.doReturn(STUDY_ID).when(this.study).getId();

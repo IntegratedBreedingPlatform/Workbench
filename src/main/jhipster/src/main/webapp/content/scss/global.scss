@@ -121,6 +121,11 @@ a:hover {
 Custom alerts for notification
 ========================================================================== */
 .alerts {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000000;
+
     .alert {
         text-overflow: ellipsis;
         span{
@@ -133,23 +138,6 @@ Custom alerts for notification
         }
         .popover span {
             font-size: 10px;
-        }
-    }
-    .toast {
-        position: fixed;
-        width: 100%;
-        z-index: 10000000;
-        &.left {
-            left: 20px;
-        }
-        &.right {
-            right: 20px;
-        }
-        &.top {
-            top: 20px;
-        }
-        &.bottom {
-            bottom: 55px;
         }
     }
 }
@@ -244,6 +232,10 @@ ui bootstrap tweaks
     white-space: nowrap;
  }
 
+/* TODO for some reason this not being done automatically.. */
+[role="button"] {
+    cursor: pointer;
+}
 /* jhipster-needle-scss-add-main JHipster will add new css style */
 
 /* ==========================================================================
@@ -277,6 +269,10 @@ $tab-border: $border-width solid $nav-tabs-border-color;
 .table {
     white-space: nowrap;
     border-spacing: 0;
+}
+
+table th.non-editable {
+    background-color: #a4a4a4;
 }
 
 .table tr.selected {
@@ -638,3 +634,4 @@ Favorite
     color: #225691;
     cursor: pointer;
 }
+

@@ -33,6 +33,16 @@ export function parseFile(file: File, sheetName): Observable<Array<Array<any>>> 
     return observable;
 }
 
+export function exportDataJsonToExcel(fileName: string, sheetName: string, data: any): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    /* generate workbook and add the worksheet */
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+    /* save to file */
+    XLSX.writeFile(workbook, fileName);
+}
+
 export function readAsDataURL(file: File): Promise<string> {
     return new Promise<string>((resolve) => {
         const reader = new FileReader();

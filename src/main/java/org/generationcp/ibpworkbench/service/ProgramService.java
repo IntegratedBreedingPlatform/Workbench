@@ -79,9 +79,7 @@ public class ProgramService {
 	}
 
 	private void setContextInfoAndCurrentCrop(final Project program) {
-		final Cookie authToken = WebUtils.getCookie(this.request, ContextConstants.PARAM_AUTH_TOKEN);
-		ContextUtil.setContextInfo(this.request, this.contextUtil.getCurrentWorkbenchUserId(), program.getProjectId(),
-				authToken != null ? authToken.getValue() : null);
+		ContextUtil.setContextInfo(this.request, this.contextUtil.getCurrentWorkbenchUserId(), program.getProjectId());
 
 		ContextHolder.setCurrentCrop(program.getCropType().getCropName());
 		ContextHolder.setCurrentProgram(program.getUniqueID());

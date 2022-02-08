@@ -228,10 +228,13 @@
 												<ul class="list-group field-group">
 													<li class="list-group-item">
 														<label class="col-form-label font-weight-bold" *ngIf="fileType === FILE_TYPES.PDF"
-																	   jhiTranslate="label-printing.left.selected.fields">
+															   jhiTranslate="label-printing.left.selected.fields">
 														</label>
 														<label class="col-form-label font-weight-bold" *ngIf="fileType !== FILE_TYPES.PDF"
-																	   jhiTranslate="label-printing.main.selected.fields">
+															   jhiTranslate="label-printing.main.selected.fields">
+														</label>
+														<label class="col-form-label float-right">
+															<a href (click)="resetSelectFields($event,'#leftSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
 														</label>
 													</li>
 												</ul>
@@ -244,6 +247,9 @@
 														<li class="list-group-item">
 															<label class="col-form-label font-weight-bold"
 																		   jhiTranslate="label-printing.right.selected.fields">
+															</label>
+															<label class="col-form-label float-right">
+																<a href (click)="resetSelectFields($event,'#rightSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
 															</label>
 														</li>
 													</ul>

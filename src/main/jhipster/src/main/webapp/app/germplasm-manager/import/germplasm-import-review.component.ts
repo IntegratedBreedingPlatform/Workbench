@@ -25,6 +25,7 @@ import { toUpper } from '../../shared/util/to-upper';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { listPreview } from '../../shared/util/list-preview';
+import { exportDataJsonToExcel } from '../../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -467,8 +468,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 })
             ).toPromise().then(
                 () => {
-                    // TODO IBP-4293
-                    // this.alertService.success('germplasm.import.inventory.success', { param: this.inventoryData.length })
+                    this.alertService.success('germplasm.import.inventory.success', { param: this.inventoryData.length })
                 }
             );
         }
@@ -539,6 +539,27 @@ export class GermplasmImportReviewComponent implements OnInit {
                 this.rows = this.newRecords;
                 break;
         }
+    }
+
+    exportTableToExcel($event) {
+        $event.preventDefault();
+        const dataTable = [];
+        this.rows.forEach((row) => {
+            const data = {};
+            Object.keys(HEADERS).forEach((header) => {
+                data[header] = row[header];
+            });
+            this.context.nametypesCopy.forEach((nameType) => {
+                data[nameType.code] = row[toUpper(nameType.code)];
+            });
+
+            this.context.attributesCopy.forEach((attributeType) => {
+                data[attributeType.alias || attributeType.name] = row[toUpper(attributeType.alias)] || row[toUpper(attributeType.name)];
+            });
+
+            dataTable.push(data);
+        });
+        exportDataJsonToExcel('reviewImportGermplasm.xlsx', 'Observations', dataTable);
     }
 }
 
