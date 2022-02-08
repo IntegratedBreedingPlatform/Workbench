@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { LocationModel } from '../../../shared/location/model/location.model';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
@@ -23,7 +22,6 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 
     isEditMode: boolean;
     gid: number;
-    locations: LocationModel[];
     isLoading: boolean;
     VariableType = VariableTypeEnum;
     DataType = DataTypeEnum;

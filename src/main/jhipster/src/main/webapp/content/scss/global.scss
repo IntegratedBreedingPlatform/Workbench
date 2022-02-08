@@ -121,6 +121,11 @@ a:hover {
 Custom alerts for notification
 ========================================================================== */
 .alerts {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000000;
+
     .alert {
         text-overflow: ellipsis;
         span{
@@ -133,23 +138,6 @@ Custom alerts for notification
         }
         .popover span {
             font-size: 10px;
-        }
-    }
-    .toast {
-        position: fixed;
-        width: 100%;
-        z-index: 10000000;
-        &.left {
-            left: 20px;
-        }
-        &.right {
-            right: 20px;
-        }
-        &.top {
-            top: 20px;
-        }
-        &.bottom {
-            bottom: 55px;
         }
     }
 }

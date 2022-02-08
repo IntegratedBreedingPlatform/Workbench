@@ -12,6 +12,7 @@ import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -208,22 +209,36 @@ public class ProgramLocationsPresenterTest {
 
 	private Location createTestLocation(final Integer countryId, final Integer locationType, final String locationName,
 		final Integer locId) {
-		final Location location = new Location();
-		location.setLocid(locId);
-		location.setLname(locationName);
-		location.setLabbr(LOCATION_ABBREVIATION);
-		location.setLtype(locationType);
-		location.setCntryid(countryId);
-		location.setSnl1id(PROVINCE_ID);
-		location.setAltitude(ALTITUDE);
-		location.setLatitude(LATITUDE);
-		location.setLongitude(LONGITUDE);
+		final Location location = Mockito.mock(Location.class);
+		Mockito.when(location.getLocid()).thenReturn(locId);
+		Mockito.when(location.getLname()).thenReturn(locationName);
+		Mockito.when(location.getLabbr()).thenReturn(LOCATION_ABBREVIATION);
+		Mockito.when(location.getLtype()).thenReturn(locationType);
+
+		final Location province = Mockito.mock(Location.class);
+		Mockito.when(province.getLocid()).thenReturn(PROVINCE_ID);
+		Mockito.when(location.getProvince()).thenReturn(province);
+
+		Mockito.when(location.getAltitude()).thenReturn(ALTITUDE);
+		Mockito.when(location.getLatitude()).thenReturn(LATITUDE);
+		Mockito.when(location.getLongitude()).thenReturn(LONGITUDE);
+
+		if (countryId != null) {
+			final Country country = this.createCountry(countryId);
+			Mockito.when(location.getCountry()).thenReturn(country);
+		}
 		return location;
+	}
+
+	private Country createCountry(final Integer countryId) {
+		final Country country = Mockito.mock(Country.class);
+		Mockito.when(country.getCntryid()).thenReturn(countryId);
+		return country;
 	}
 
 	@Test
 	public void testGetSavedProgramLocations() {
-		final String entityType = "C";
+		final ProgramFavorite.FavoriteType entityType = FavoriteType.LOCATION;
 		List<LocationViewModel> results = new ArrayList<LocationViewModel>();
 		final Integer locationType = 1;
 
@@ -239,7 +254,7 @@ public class ProgramLocationsPresenterTest {
 				ProgramLocationsPresenterTest.NO_OF_FAVORITES == results.size());
 	}
 
-	private void setUpFavoriteLocations(final String entityType) throws MiddlewareQueryException {
+	private void setUpFavoriteLocations(final ProgramFavorite.FavoriteType entityType) throws MiddlewareQueryException {
 		final List<ProgramFavorite> favorites = new ArrayList<ProgramFavorite>();
 
 		for (int i = 0; i < ProgramLocationsPresenterTest.NO_OF_FAVORITES; i++) {
@@ -330,11 +345,14 @@ public class ProgramLocationsPresenterTest {
 		final boolean isEditedFromAvailableTable = true;
 		final LocationViewModel locationViewModel = createLocationViewModel();
 
+		final Country country = Mockito.mock(Country.class);
+		Mockito.when(this.locationDataManager.getCountryById(CNTRYID)).thenReturn(country);
+
 		this.controller.updateLocation(locationViewModel, isEditedFromAvailableTable);
 
-		Mockito.verify(this.locationDataManager).addLocation(this.controller.convertLocationViewToLocation(locationViewModel));
+		Mockito.verify(this.locationDataManager).addLocation(ArgumentMatchers.any(Location.class));
 		Mockito.verify(this.programLocationsView).refreshLocationViewItemInTable(isEditedFromAvailableTable, locationViewModel);
-
+		Mockito.verify(this.locationDataManager).getCountryById(CNTRYID);
 	}
 
 	private LocationViewModel createLocationViewModel() {

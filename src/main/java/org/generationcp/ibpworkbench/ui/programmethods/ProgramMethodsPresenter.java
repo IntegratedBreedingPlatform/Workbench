@@ -67,7 +67,7 @@ public class ProgramMethodsPresenter {
 		final List<Method> result = new ArrayList<>();
 		try {
 			final List<ProgramFavorite> favorites =
-					this.gerplasmDataManager.getProgramFavorites(FavoriteType.METHOD, this.project.getUniqueID());
+					this.gerplasmDataManager.getProgramFavorites(FavoriteType.METHODS, this.project.getUniqueID());
 
 			for (final ProgramFavorite favorite : favorites) {
 				final Method m = this.gerplasmDataManager.getMethodByID(favorite.getEntityId());
@@ -181,7 +181,7 @@ public class ProgramMethodsPresenter {
 			final ContextUtil contextUtil, final WorkbenchDataManager workbenchDataManager, final GermplasmDataManager gdm) {
 		List<ProgramFavorite> favorites = null;
 		try {
-			favorites = gdm.getProgramFavorites(ProgramFavorite.FavoriteType.METHOD, project.getUniqueID());
+			favorites = gdm.getProgramFavorites(ProgramFavorite.FavoriteType.METHODS, project.getUniqueID());
 
 			// TODO: THIS IS A VERY UGLY CODE THAT WAS INHERITED IN THE OLD ProjectBreedingMethodsPanel Code, Replace the logic if possible
 
@@ -224,7 +224,7 @@ public class ProgramMethodsPresenter {
 					mID = m.getMid();
 				}
 
-				favorite.setEntityType(ProgramFavorite.FavoriteType.METHOD.getName());
+				favorite.setEntityType(ProgramFavorite.FavoriteType.METHODS);
 				favorite.setEntityId(mID);
 				favorite.setUniqueID(project.getUniqueID());
 				list.add(favorite);

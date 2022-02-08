@@ -13,8 +13,6 @@ import org.generationcp.ibpworkbench.ui.common.LinkButton;
 import org.generationcp.middleware.domain.sample.SampleDTO;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.service.api.SampleService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -34,7 +32,6 @@ import java.util.List;
 public class SampleInfoComponent extends VerticalLayout implements InitializingBean, InternationalizableComponent {
 
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOG = LoggerFactory.getLogger(SampleInfoComponent.class);
 
 	// Sample Information Model
 	private static final String SAMPLE_ID = "SAMPLE ID";
@@ -65,7 +62,6 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
-
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
@@ -78,7 +74,7 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 
 	@Override
 	public void updateLabels() {
-
+		// do nothing here
 	}
 
 	@Override
@@ -89,7 +85,6 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 	private void initializeComponents() {
-
 
 		this.noDataAvailableLabel = new Label("There is no sample information.");
 
@@ -115,11 +110,13 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		this.getSampleTable().setColumnReorderingAllowed(true);
 		this.getSampleTable().setColumnCollapsingAllowed(true);
 
-
 		this.getSampleTable().setVisibleColumns(
-			new String[] {SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.STUDY_NAME,
-				SampleInfoComponent.TAKEN_BY, SampleInfoComponent.SAMPLING_DATE, SampleInfoComponent.DATASET_TYPE, SampleInfoComponent.OBS_UNIT_ID,
-				SampleInfoComponent.ENUMERATOR, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL, SampleInfoComponent.GENOTYPING_DATA});
+			new String[] {
+				SampleInfoComponent.SAMPLE_ID, SampleInfoComponent.SAMPLE_LIST, SampleInfoComponent.STUDY_NAME,
+				SampleInfoComponent.TAKEN_BY, SampleInfoComponent.SAMPLING_DATE, SampleInfoComponent.DATASET_TYPE,
+				SampleInfoComponent.OBS_UNIT_ID,
+				SampleInfoComponent.ENUMERATOR, SampleInfoComponent.PLATE_ID, SampleInfoComponent.WELL,
+				SampleInfoComponent.GENOTYPING_DATA});
 	}
 
 	private void initializeValues() {
@@ -167,7 +164,9 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 			}
 
 			this.sampleTable.addItem(
-				new Object[] {sample.getSampleBusinessKey(), sample.getSampleList(), linkStudyButton, sample.getTakenBy(), sample.getSamplingDate() != null ? formatter.format(sample.getSamplingDate()) : "-",
+				new Object[] {
+					sample.getSampleBusinessKey(), sample.getSampleList(), linkStudyButton, sample.getTakenBy(),
+					sample.getSamplingDate() != null ? formatter.format(sample.getSamplingDate()) : "-",
 					sample.getDatasetType(), sample.getObservationUnitId(), sample.getEnumerator(), sample.getPlateId(), sample.getWell(),
 					horizontalLayoutForDatasetButton}, count);
 			count++;
@@ -187,7 +186,6 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 		}
 	}
 
-
 	private static ExternalResource getURLStudy(final Integer studyId, final String authParams) {
 		final String aditionalParameters = "?restartApplication&" + authParams;
 
@@ -195,9 +193,8 @@ public class SampleInfoComponent extends VerticalLayout implements InitializingB
 	}
 
 	private static String getAuthParams(final ContextUtil contextUtil) {
-		final String authToken = contextUtil.getContextInfoFromSession().getAuthToken();
 		return "loggedInUserId=" + contextUtil.getContextInfoFromSession().getLoggedInUserId() + "&selectedProjectId=" + contextUtil
-			.getContextInfoFromSession().getSelectedProjectId() + "&authToken=" + (authToken != null ? authToken : "");
+			.getContextInfoFromSession().getSelectedProjectId();
 	}
 
 	public Table getSampleTable() {

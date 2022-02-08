@@ -201,7 +201,6 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                 cropName: this.paramContext.cropName,
                 loggedInUserId: this.paramContext.loggedInUserId,
                 programUUID: this.paramContext.programUUID,
-                authToken: this.paramContext.authToken,
                 selectMultiple
             }
         });
