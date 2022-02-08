@@ -13,20 +13,27 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { LocationService } from '../../shared/location/service/location.service';
-import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { toUpper } from '../../shared/util/to-upper';
-import { VariableValidationStatusType, VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
-import { DataTypeEnum } from '../../shared/ontology/data-type.enum';
+import { VariableValidationService, VariableValidationStatusType } from '../../shared/ontology/service/variable-validation.service';
+import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
+import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
+import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
+import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
+import { HttpResponse } from '@angular/common/http';
+import { Location } from '../../shared/location/model/location';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
     templateUrl: './germplasm-import-basic-details.component.html'
 })
 export class GermplasmImportBasicDetailsComponent implements OnInit {
+
+    static readonly LOCATIONS_PAGE_SIZE = 300;
+    static readonly BREEDING_METHODS_PAGE_SIZE = 300;
 
     dataBackupPrev = [];
 
@@ -39,8 +46,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     draggedCode: string;
     attributeStatusById: { [key: number]: VariableValidationStatusType } = {};
 
-    breedingMethods: Promise<BreedingMethod[]>;
-    favoriteBreedingMethods: Promise<BreedingMethod[]>;
+    breedingMethodOptions: any;
     breedingMethodSelected: string;
 
     useFavoriteBreedingMethods = true;
@@ -50,6 +56,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     isBreedingAndCountryLocationsOnly = false;
 
     locationsFilteredItemsCount;
+    breedingMethodsFilteredItemsCount;
 
     creationDateSelected: NgbDate | null;
 
@@ -113,15 +120,25 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 delay: 500,
                 transport: function(params, success, failure) {
                     params.data.page = params.data.page || 1;
-                    const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    this.locationService.queryLocationsByType(
-                        locationTypes,
+
+                    const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+                    locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
+                    locationSearchRequest.locationNameFilter = {
+                        type: MatchType.STARTSWITH,
+                        value: params.data.term
+                    };
+
+                    const pagination = {
+                        page: (params.data.page - 1),
+                        size: GermplasmImportBasicDetailsComponent.LOCATIONS_PAGE_SIZE
+                    };
+
+                    this.locationService.searchLocations(
+                        locationSearchRequest,
                         this.useFavoriteLocations,
-                        params.data.term,
-                        (params.data.page - 1),
-                        300
-                    ).subscribe((res) => {
-                        this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
+                        pagination
+                    ).subscribe((res: HttpResponse<Location[]>) => {
+                        this.locationsFilteredItemsCount = res.headers.get('X-Total-Count');
                         success(res.body);
                     }, failure);
                 }.bind(this),
@@ -129,14 +146,14 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                     params.page = params.page || 1;
 
                     return {
-                        results: locations.map((location) => {
+                        results: locations.map((location: Location) => {
                             return {
                                 id: location.abbreviation ? location.abbreviation : location.name,
                                 text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name
                             };
                         }),
                         pagination: {
-                            more: (params.page * 300) < this.locationsFilteredItemsCount
+                            more: (params.page * GermplasmImportBasicDetailsComponent.LOCATIONS_PAGE_SIZE) < this.locationsFilteredItemsCount
                         }
                     };
                 }.bind(this)
@@ -198,8 +215,49 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     }
 
     loadBreedingMethods() {
-        this.breedingMethods = this.breedingMethodService.getBreedingMethods().toPromise();
-        this.favoriteBreedingMethods = this.breedingMethodService.getBreedingMethods(true).toPromise();
+        this.breedingMethodOptions = {
+            ajax: {
+                delay: 500,
+                transport: function(params, success, failure) {
+                    params.data.page = params.data.page || 1;
+
+                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
+                    breedingMethodSearchRequest.nameFilter = {
+                        type: MatchType.STARTSWITH,
+                        value: params.data.term
+                    };
+
+                    const pagination = {
+                        page: (params.data.page - 1),
+                        size: GermplasmImportBasicDetailsComponent.BREEDING_METHODS_PAGE_SIZE
+                    };
+
+                    this.breedingMethodService.searchBreedingMethods(
+                        breedingMethodSearchRequest,
+                        this.useFavoriteBreedingMethods,
+                        pagination
+                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
+                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
+                        success(res.body);
+                    }, failure);
+                }.bind(this),
+                processResults: function(methods, params) {
+                    params.page = params.page || 1;
+
+                    return {
+                        results: methods.map((method: BreedingMethod) => {
+                            return {
+                                id: method.code,
+                                text: method.code + ' - ' + method.name
+                            };
+                        }),
+                        pagination: {
+                            more: (params.page * GermplasmImportBasicDetailsComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
+                        }
+                    };
+                }.bind(this)
+            }
+        };
     }
 
     openBreedingMethodManager() {

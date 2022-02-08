@@ -9,10 +9,13 @@ import { GermplasmImportReviewComponent } from './germplasm-import-review.compon
 import { GermplasmImportContext } from './germplasm-import.context';
 import { LocationService } from '../../shared/location/service/location.service';
 import { InventoryService } from '../../shared/inventory/service/inventory.service';
-import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { Location } from '../../shared/location/model/location';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
+import { MAX_PAGE_SIZE } from '../../app.constants';
+import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'jhi-germplasm-import-inventory',
@@ -148,10 +151,17 @@ export class GermplasmImportInventoryComponent implements OnInit {
     }
 
     loadLocations() {
-        this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], false).subscribe((resp) => {
+        const pagination = {
+            page: 0,
+            size: MAX_PAGE_SIZE
+        };
+
+        const seedStorageLocationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+        seedStorageLocationSearchRequest.locationTypeIds = [LocationTypeEnum.SEED_STORAGE_LOCATION];
+        this.locationService.searchLocations(seedStorageLocationSearchRequest, false, pagination).subscribe((resp: HttpResponse<Location[]>) => {
             this.seedStorageLocations = resp.body;
         });
-        this.locationService.queryLocationsByType([LocationTypeEnum.SEED_STORAGE_LOCATION], true).subscribe((resp) => {
+        this.locationService.searchLocations(seedStorageLocationSearchRequest, true, pagination).subscribe((resp: HttpResponse<Location[]>) => {
             this.favoriteSeedStorageLocations = resp.body;
         });
     }

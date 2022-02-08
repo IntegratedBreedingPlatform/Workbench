@@ -8,8 +8,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
-import org.generationcp.commons.context.ContextConstants;
-import org.generationcp.commons.security.SecurityUtil;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
@@ -46,23 +44,21 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		Tool tool = this.workbenchDataManager.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.getName());
+		final Tool tool = this.workbenchDataManager.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.getName());
 
 		final String contextParameterString = ContextUtil
-				.getContextParameterString(contextUtil.getCurrentWorkbenchUserId(), contextUtil.getProjectInContext().getProjectId());
+			.getContextParameterString(this.contextUtil.getCurrentWorkbenchUserId(),
+				this.contextUtil.getProjectInContext().getProjectId());
 
-		final String authenticationTokenString =
-				ContextUtil.addQueryParameter(ContextConstants.PARAM_AUTH_TOKEN, SecurityUtil.getEncodedToken());
-
-		final String addtlParams = contextParameterString + authenticationTokenString;
 		final ExternalResource studyLink;
 		if (tool == null) {
 			studyLink = new ExternalResource(WorkbenchAppPathResolver
-					.getFullWebAddress(DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK + this.studyId,
-							"?restartApplication" + addtlParams));
+				.getFullWebAddress(DefaultGermplasmStudyBrowserPath.STUDY_BROWSER_LINK + this.studyId,
+					"?restartApplication" + contextParameterString));
 		} else {
 			studyLink = new ExternalResource(
-					WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(this.studyId), "?restartApplication" + addtlParams));
+				WorkbenchAppPathResolver.getWorkbenchAppPath(tool, String.valueOf(this.studyId),
+					"?restartApplication" + contextParameterString));
 		}
 		ViewStudyDetailsButtonClickListener.LOG.debug(studyLink.getURL());
 		this.renderStudyDetailsWindow(studyLink, event.getComponent().getWindow());

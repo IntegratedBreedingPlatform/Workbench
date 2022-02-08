@@ -127,7 +127,7 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		for (final LocationViewModel locationViewModel : selectedLocations) {
 			final ProgramFavorite favorite = new ProgramFavorite();
 			favorite.setEntityId(locationViewModel.getLocationId());
-			favorite.setEntityType(FavoriteType.LOCATION.getName());
+			favorite.setEntityType(FavoriteType.LOCATION);
 			favorite.setUniqueID(project.getUniqueID());
 			list.add(favorite);
 		}
@@ -163,19 +163,27 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		viewModel.setLocationName(location.getLname());
 		viewModel.setLocationAbbreviation(location.getLabbr());
 		viewModel.setLtype(location.getLtype());
-		viewModel.setCntryid(location.getCntryid());
-		viewModel.setProvinceId(location.getSnl1id());
+
+		final Location province = location.getProvince();
+		if (province != null) {
+			viewModel.setProvinceId(province.getLocid());
+		}
+
 		viewModel.setLatitude(location.getLatitude());
 		viewModel.setLongitude(location.getLongitude());
 		viewModel.setAltitude(location.getAltitude());
 		viewModel.setlDefault(location.getLdefault());
 
-		final Country country = this.locationDataManager.getCountryById(location.getCntryid());
-		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
+		if (location.getCountry() != null) {
+			viewModel.setCntryid(location.getCountry().getCntryid());
 
-		if (country != null) {
-			viewModel.setCntryFullName(country.getIsofull());
+			final Country country = this.locationDataManager.getCountryById(location.getCountry().getCntryid());
+			if (country != null) {
+				viewModel.setCntryFullName(country.getIsofull());
+			}
 		}
+
+		final UserDefinedField udf = this.locationDataManager.getUserDefinedFieldByID(location.getLtype());
 		if (udf != null) {
 			viewModel.setLtypeStr(udf.getFname());
 			viewModel.setLtype(udf.getLfldno());
@@ -264,10 +272,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		location.setLname(locationViewModel.getLocationName());
 		location.setLabbr(locationViewModel.getLocationAbbreviation());
 		location.setLtype(locationViewModel.getLtype());
-		location.setCntryid(locationViewModel.getCntryid());
 
-		if (location.getCntryid() == null) {
-			location.setCntryid(0);
+		if (locationViewModel.getCntryid() != null) {
+			final Country country = this.locationDataManager.getCountryById(locationViewModel.getCntryid());
+			location.setCountry(country);
 		}
 
 		location.setLatitude(locationViewModel.getLatitude());
@@ -278,10 +286,10 @@ public class ProgramLocationsPresenter implements InitializingBean {
 		location.setNllp(0);
 		location.setSnl3id(0);
 		location.setSnl2id(0);
-		location.setSnl1id(locationViewModel.getProvinceId());
 
-		if (location.getSnl1id() == null) {
-			location.setSnl1id(0);
+		if (locationViewModel.getProvinceId() != null) {
+			final Location province = this.locationDataManager.getLocationByID(locationViewModel.getProvinceId());
+			location.setProvince(province);
 		}
 
 		location.setLdefault(locationViewModel.getlDefault());
