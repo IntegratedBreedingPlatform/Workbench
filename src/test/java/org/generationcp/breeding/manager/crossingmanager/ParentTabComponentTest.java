@@ -1,20 +1,17 @@
 package org.generationcp.breeding.manager.crossingmanager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.generationcp.breeding.manager.action.SaveGermplasmListAction;
+import com.vaadin.data.Item;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
 import org.generationcp.breeding.manager.crossingmanager.settings.ManageCrossingSettingsMain;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.data.initializer.GermplasmListDataTestDataInitializer;
-import org.generationcp.breeding.manager.data.initializer.GermplasmListEntryTestDataInitializer;
-import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -34,10 +31,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Table;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParentTabComponentTest {
@@ -113,16 +109,6 @@ public class ParentTabComponentTest {
 		this.parentTabComponent.setOntologyDataManager(this.ontologyDataManager);
 		this.parentTabComponent.setInventoryDataManager(this.inventoryDataManager);
 		this.parentTabComponent.setParent(this.parent);
-
-		final SaveGermplasmListAction saveGermplasmListAction =
-				new SaveGermplasmListAction(this.parentTabComponent,
-						GermplasmListTestDataInitializer.createGermplasmList(ParentTabComponentTest.GERMPLASM_LIST_ID),
-						GermplasmListEntryTestDataInitializer.getGermplasmListEntries());
-		saveGermplasmListAction.setContextUtil(this.contextUtil);
-		saveGermplasmListAction.setGermplasmListManager(this.germplasmListManager);
-		saveGermplasmListAction.setPedigreeService(this.pedigreeService);
-		saveGermplasmListAction.setInventoryDataManager(this.inventoryDataManager);
-
 	}
 
 	@Test
