@@ -5,7 +5,7 @@ import { Lot } from '../../shared/inventory/model/lot.model';
 import { Transaction } from '../../shared/inventory/model/transaction.model';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
 import { TransactionService } from '../../shared/inventory/service/transaction.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { LotService } from '../../shared/inventory/service/lot.service';
 import { InventoryService } from '../../shared/inventory/service/inventory.service';
 import { Location } from '../../shared/model/location.model';
@@ -17,6 +17,10 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { SearchOrigin, SearchOriginComposite } from '../../shared/model/Search-origin-composite';
+import { LocationService } from '../../shared/location/service/location.service';
+import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
+import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -41,7 +45,6 @@ export class LotCreationDialogComponent implements OnInit {
     favoriteLocations: Promise<Location[]>;
 
     favoriteLocation = false;
-    storageLocationType = [1500];
     initialDepositRequired = false;
     storageLocIdSelected;
     favoriteLocIdSelected;
@@ -60,7 +63,8 @@ export class LotCreationDialogComponent implements OnInit {
                 private paramContext: ParamContext,
                 private germplasmManagerContext: GermplasmManagerContext,
                 private activeModal: NgbActiveModal,
-                private alertService: AlertService
+                private alertService: AlertService,
+                private locationService: LocationService
     ) {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
@@ -80,8 +84,20 @@ export class LotCreationDialogComponent implements OnInit {
 
         this.units = this.inventoryService.queryUnits().toPromise();
 
-        this.storageLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: false }).toPromise();
-        this.favoriteLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: true }).toPromise();
+        // TODO: we need to implement pagination using ng-select2
+        const pagination = {
+            page: 0,
+            size: 10000
+        };
+
+        const seedStorageSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+        seedStorageSearchRequest.locationTypeIds = [LocationTypeEnum.SEED_STORAGE_LOCATION];
+        this.storageLocations = this.locationService.searchLocations(seedStorageSearchRequest, false, pagination)
+            .pipe(map((res: HttpResponse<Location[]>) => res.body))
+            .toPromise();
+        this.favoriteLocations = this.locationService.searchLocations(seedStorageSearchRequest, true, pagination)
+            .pipe(map((res: HttpResponse<Location[]>) => res.body))
+            .toPromise();
 
         this.storageLocations.then((storageLocations) => {
             const defaultLocation = storageLocations.find((location) => location.defaultLocation);
