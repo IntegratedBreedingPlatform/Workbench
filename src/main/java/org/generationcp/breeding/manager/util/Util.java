@@ -21,11 +21,11 @@ public class Util {
 		// do nothing
 	}
 
-	public static boolean isTabExist(TabSheet tabSheet, String tabCaption) {
+	public static boolean isTabExist(final TabSheet tabSheet, final String tabCaption) {
 
-		int countTabSheet = tabSheet.getComponentCount();
+		final int countTabSheet = tabSheet.getComponentCount();
 		for (int i = 0; i < countTabSheet; i++) {
-			Tab tab = tabSheet.getTab(i);
+			final Tab tab = tabSheet.getTab(i);
 			if (tab.getCaption().equals(tabCaption)) {
 				return true;
 			}
@@ -34,11 +34,11 @@ public class Util {
 
 	}
 
-	public static Tab getTabToFocus(TabSheet tabSheet, String tabCaption) {
+	public static Tab getTabToFocus(final TabSheet tabSheet, final String tabCaption) {
 		Tab tabToFocus = tabSheet.getTab(0);
 		boolean rightTab = false;
 		for (int i = 0; i < tabSheet.getComponentCount(); i++) {
-			Tab tab = tabSheet.getTab(i);
+			final Tab tab = tabSheet.getTab(i);
 			if (rightTab) {
 				tabToFocus = tab;
 				return tabToFocus;
@@ -57,7 +57,7 @@ public class Util {
 
 	}
 
-	public static void closeAllTab(TabSheet tabSheet) {
+	public static void closeAllTab(final TabSheet tabSheet) {
 
 		for (int i = tabSheet.getComponentCount() - 1; i >= 0; i--) {
 			tabSheet.removeTab(tabSheet.getTab(i));

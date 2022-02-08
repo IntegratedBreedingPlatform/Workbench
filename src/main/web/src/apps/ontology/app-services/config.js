@@ -9,7 +9,6 @@
 		var cropName = '',
 			programId = '',
 			selectedProjectId = '',
-			authToken = '',
 			loggedInUserId = '';
 
 		return {
@@ -37,14 +36,6 @@
 				return selectedProjectId;
 			},
 
-			setAuthToken: function(token) {
-				authToken = token;
-			},
-
-			getAuthToken: function() {
-				return authToken;
-			},
-
 			setLoggedInUserId: function(userId) {
 				loggedInUserId = userId;
 			},
@@ -62,14 +53,12 @@
 				cropName: '@omCrop',
 				programId: '@omProgramId',
 				selectedProjectId: '@omSelectedProjectId',
-				authToken: '@omAuthToken',
 				loggedInUserId: '@omLoggedInUserId'
 			},
 			link: function(scope, element, attrs) {
 				configService.setCropName(attrs.omCrop);
 				configService.setProgramId(attrs.omProgramId);
 				configService.setSelectedProjectId(attrs.omSelectedProjectId);
-				configService.setAuthToken(attrs.omAuthToken);
 				configService.setLoggedInUserId(attrs.omLoggedInUserId);
 			}
 		};
