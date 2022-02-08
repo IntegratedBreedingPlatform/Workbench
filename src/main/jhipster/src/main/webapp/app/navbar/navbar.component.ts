@@ -111,11 +111,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         const cropName = this.program ? this.program.crop : null;
         const programUUID = this.program ? this.program.uniqueID : null;
         const selectedProjectId = this.program ? this.program.id : null;
-        var authParams = (hasParams ? '&' : '?') + 'cropName=' + cropName
+        let authParams = (hasParams ? '&' : '?') + 'cropName=' + cropName
             + '&programUUID=' + programUUID
             + '&selectedProjectId=' + selectedProjectId
             + '&loggedInUserId=' + this.user.id;
-        if(url.includes('/brapi-sync')) {
+        if (url.includes('/brapi-sync')) {
             authParams += '&destinationToken=' + JSON.parse(localStorage['bms.xAuthToken']).token
                 + '&destination=' + window.location.origin + '/bmsapi/' + cropName + '/brapi/v2'
                 + '&silentRefreshRedirectUri=' + window.location.origin
