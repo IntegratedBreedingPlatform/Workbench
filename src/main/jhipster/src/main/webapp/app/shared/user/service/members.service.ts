@@ -28,7 +28,7 @@ export class MembersService {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members/eligible-users/search';
         return getAllRecords<UserDetail>((page, pageSize) => {
             const params = createRequestOption({ page, size: pageSize });
-            return this.http.post<UserDetail[]>(baseUrl, searchRequest, { params });
+            return this.http.post<UserDetail[]>(baseUrl, searchRequest, { params, observe: 'response'});
         });
     }
 
@@ -42,7 +42,7 @@ export class MembersService {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName + '/programs/' + this.context.programUUID + '/members/search';
         return getAllRecords<ProgramMember>((page, pageSize) => {
             const params = createRequestOption({ page, size: pageSize });
-            return this.http.post<ProgramMember[]>(baseUrl, searchRequest, { params });
+            return this.http.post<ProgramMember[]>(baseUrl, searchRequest, { params, observe: 'response' });
         });
     }
 
