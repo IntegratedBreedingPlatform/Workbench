@@ -113,8 +113,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         const selectedProjectId = this.program ? this.program.id : null;
         var authParams = (hasParams ? '&' : '?') + 'cropName=' + cropName
             + '&programUUID=' + programUUID
-            // Deprecated, not needed
-            // + '&authToken=' + localStorage['authToken']
             + '&selectedProjectId=' + selectedProjectId
             + '&loggedInUserId=' + this.user.id;
         if(url.includes('/brapi-sync')) {

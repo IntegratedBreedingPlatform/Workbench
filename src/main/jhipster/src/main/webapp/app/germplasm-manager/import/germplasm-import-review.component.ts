@@ -468,8 +468,7 @@ export class GermplasmImportReviewComponent implements OnInit {
                 })
             ).toPromise().then(
                 () => {
-                    // TODO IBP-4293
-                    // this.alertService.success('germplasm.import.inventory.success', { param: this.inventoryData.length })
+                    this.alertService.success('germplasm.import.inventory.success', { param: this.inventoryData.length })
                 }
             );
         }

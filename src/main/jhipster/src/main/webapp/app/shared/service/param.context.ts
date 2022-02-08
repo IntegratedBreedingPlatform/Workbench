@@ -5,8 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class ParamContext {
     cropName: string;
     programUUID: string;
-
-    authToken: string;
     selectedProjectId: number;
     loggedInUserId: number;
 
@@ -18,7 +16,6 @@ export class ParamContext {
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.cropName = queryParams.cropName;
         this.programUUID = queryParams.programUUID;
-        this.authToken = queryParams.authToken;
         this.selectedProjectId = queryParams.selectedProjectId;
         this.loggedInUserId = queryParams.loggedInUserId;
     }
@@ -32,7 +29,6 @@ export class ParamContext {
             queryParams: {
                 programUUID: this.programUUID,
                 cropName: this.cropName,
-                authToken: this.authToken,
                 selectedProjectId: this.selectedProjectId,
                 loggedInUserId: this.loggedInUserId
             }

@@ -1,6 +1,5 @@
 package org.generationcp.ibpworkbench.actions;
 
-import com.vaadin.Application;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -111,7 +110,7 @@ public class DeleteProjectActionTest {
 
 		when(germplasmDataManager.getProgramFavorites(ProgramFavorite.FavoriteType.LOCATION, project.getUniqueID()))
 				.thenReturn(favoriteLocations);
-		when(germplasmDataManager.getProgramFavorites(ProgramFavorite.FavoriteType.METHOD, project.getUniqueID()))
+		when(germplasmDataManager.getProgramFavorites(ProgramFavorite.FavoriteType.METHODS, project.getUniqueID()))
 				.thenReturn(favoriteMethods);
 
 		deleteProjectAction.deleteProgram(project);

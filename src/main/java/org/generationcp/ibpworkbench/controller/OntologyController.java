@@ -21,7 +21,6 @@ public class OntologyController {
 		model.addAttribute("currentCrop", this.context.getProjectInContext().getCropType().getCropName());
 		model.addAttribute("currentProgramId", this.context.getProjectInContext().getUniqueID());
 		model.addAttribute("selectedProjectId", this.context.getProjectInContext().getProjectId());
-		model.addAttribute("authToken", this.context.getContextInfoFromSession().getAuthToken());
 		model.addAttribute("loggedInUserId", this.context.getContextInfoFromSession().getLoggedInUserId());
 		return "ontology";
 	}

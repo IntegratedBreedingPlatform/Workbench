@@ -121,7 +121,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 									DeleteProjectAction.this.deleteProgram(currentProject);
 
 									org.generationcp.commons.util.ContextUtil
-										.setContextInfo(DeleteProjectAction.this.request, DeleteProjectAction.this.contextUtil.getCurrentWorkbenchUserId(), null, null);
+										.setContextInfo(DeleteProjectAction.this.request, DeleteProjectAction.this.contextUtil.getCurrentWorkbenchUserId(), null);
 
 								} catch (final MiddlewareQueryException e) {
 									DeleteProjectAction.LOG.error(e.getMessage(), e);
@@ -154,7 +154,7 @@ public class DeleteProjectAction implements ClickListener, ActionListener {
 	protected void deleteAllProgramFavorites(final Project project) {
 		final List<ProgramFavorite> favoriteLocations =
 				germplasmDataManager.getProgramFavorites(FavoriteType.LOCATION, project.getUniqueID());
-		final List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHOD, project.getUniqueID());
+		final List<ProgramFavorite> favoriteMethods = germplasmDataManager.getProgramFavorites(FavoriteType.METHODS, project.getUniqueID());
 		germplasmDataManager.deleteProgramFavorites(favoriteLocations);
 		germplasmDataManager.deleteProgramFavorites(favoriteMethods);
 

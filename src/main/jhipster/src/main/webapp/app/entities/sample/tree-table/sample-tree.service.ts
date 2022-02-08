@@ -88,7 +88,7 @@ export class SampleTreeService implements TreeService {
         return this.expand('');
     }
 
-    persist(folders: string[]) {
+    persist(cropFolders: string[], programFolders: string[]) {
         // TODO
         return Observable.empty();
     }

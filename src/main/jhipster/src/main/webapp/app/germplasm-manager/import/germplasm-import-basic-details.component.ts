@@ -13,14 +13,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmImportInventoryComponent } from './germplasm-import-inventory.component';
 import { GermplasmImportContext } from './germplasm-import.context';
 import { LocationService } from '../../shared/location/service/location.service';
-import { LocationTypeEnum } from '../../shared/location/model/location.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { PedigreeConnectionType } from '../../shared/germplasm/model/germplasm-import-request.model';
 import { isNumeric } from '../../shared/util/is-numeric';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { toUpper } from '../../shared/util/to-upper';
-import { VariableValidationStatusType, VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
-import { DataTypeEnum } from '../../shared/ontology/data-type.enum';
+import { VariableValidationService, VariableValidationStatusType } from '../../shared/ontology/service/variable-validation.service';
+import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
+import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
+import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -113,15 +114,25 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                 delay: 500,
                 transport: function(params, success, failure) {
                     params.data.page = params.data.page || 1;
-                    const locationTypes = this.isBreedingAndCountryLocationsOnly ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
-                    this.locationService.queryLocationsByType(
-                        locationTypes,
+
+                    const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+                    locationSearchRequest.locationTypeIds = (this.isBreedingAndCountryLocationsOnly) ? [LocationTypeEnum.BREEDING_LOCATION, LocationTypeEnum.COUNTRY] : [];
+                    locationSearchRequest.locationNameFilter = {
+                        type: MatchType.STARTSWITH,
+                        value: params.data.term
+                    };
+
+                    const pagination = {
+                        page: (params.data.page - 1),
+                        size: 300
+                    };
+
+                    this.locationService.searchLocations(
+                        locationSearchRequest,
                         this.useFavoriteLocations,
-                        params.data.term,
-                        (params.data.page - 1),
-                        300
+                        pagination
                     ).subscribe((res) => {
-                        this.locationsFilteredItemsCount = res.headers.get('X-Filtered-Count');
+                        this.locationsFilteredItemsCount = res.headers.get('X-Total-Count');
                         success(res.body);
                     }, failure);
                 }.bind(this),
