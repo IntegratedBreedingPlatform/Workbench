@@ -14,11 +14,7 @@
 			<div class="form-group row required">
 				<label for="breedingMethod" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
 				<div class="col-sm-6" *ngIf="!hasAllBreedingMethods() else allGood">
-					<ng-select2 *ngIf="!useFavoriteBreedingMethods" name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected"
-								[data]="breedingMethods | async | BreedingMethodSelect2Data">
-					</ng-select2>
-					<ng-select2 *ngIf="useFavoriteBreedingMethods" name="breedingMethodFavorite" id="breedingMethodFavorite" width="100%" [(ngModel)]="breedingMethodSelected"
-								[data]="favoriteBreedingMethods | async | BreedingMethodSelect2Data">
+					<ng-select2 name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
 					</ng-select2>
 					<!-- TODO Permissions
 					<a style="margin-left: 5px; float: right" jhiTranslate="breeding-method.browser.title"

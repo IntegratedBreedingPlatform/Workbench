@@ -8,6 +8,8 @@ import { BreedingMethod } from '../model/breeding-method';
 import { BreedingMethodType } from '../model/breeding-method-type.model';
 import { BreedingMethodClass } from '../model/breeding-method-class.model';
 import { BreedingMethodGroup } from '../model/breeding-method-group.model';
+import { createRequestOption } from '../..';
+import { BreedingMethodSearchRequest } from '../model/breeding-method-search-request.model';
 
 @Injectable()
 export class BreedingMethodService {
@@ -35,11 +37,15 @@ export class BreedingMethodService {
             { observe: 'response' }).pipe(map((res: HttpResponse<BreedingMethodGroup[]>) => res.body));
     }
 
-    getBreedingMethods(isFavorite?: boolean, methodTypes?: string[]) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods`
-            + '?favoritesOnly=' + Boolean(isFavorite)
-            + '&methodTypes=' + (methodTypes ? methodTypes : '')
-            + '&programUUID=' + this.context.programUUID;
-        return this.http.get<BreedingMethod[]>(url);
+    searchBreedingMethods(request: BreedingMethodSearchRequest, favoriteLocation: boolean, pagination: any): Observable<HttpResponse<BreedingMethod[]>> {
+        if (favoriteLocation) {
+            request.filterFavoriteProgramUUID = true;
+            request.favoriteProgramUUID = this.context.programUUID;
+        }
+
+        const params = createRequestOption(pagination);
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods/search?programUUID=${this.context.programUUID}`;
+        return this.http.post<BreedingMethod[]>(url, request, { params, observe: 'response' });
     }
+
 }
