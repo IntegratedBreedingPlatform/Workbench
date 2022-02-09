@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
+import com.vaadin.ui.Button;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.generationcp.commons.spring.util.ContextUtil;
@@ -12,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-
-import com.vaadin.ui.Button;
 
 import java.io.IOException;
 
@@ -67,7 +66,7 @@ public class UpdateProjectAction implements Button.ClickListener {
 			this.workbenchDataManager.saveOrUpdateProject(project);
 
 			// Rename old workspace directory if found
-			this.installationDirectoryUtil.renameOldWorkspaceDirectory(oldProjectName, project);
+			this.installationDirectoryUtil.renameOldWorkspaceDirectory(oldProjectName, project.getCropType().getCropName(), project.getProjectName());
 
 			MessageNotifier.showMessage(this.projectPanel.getWindow(), "Program update is successful",
 					String.format("%s is updated.", StringUtils.abbreviate(project.getProjectName(), 50)));
