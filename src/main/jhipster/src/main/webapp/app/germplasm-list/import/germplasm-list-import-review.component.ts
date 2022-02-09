@@ -255,21 +255,18 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 if (singleMatch) {
                     germplasmList[HEADERS.ROW_NUMBER] = ++index;
                     germplasmList[HEADERS.GID] = singleMatch[HEADERS.GID_MATCHES][0].gid;
-                    germplasmList[HEADERS.ENTRY_CODE] = row[HEADERS.ENTRY_CODE];
                     newGermplasmList.push(germplasmList);
                 // Manual Match
                 } else if (Object.keys(this.selectManualMatchesResult).length > 0 && this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]]) {
                     if (this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]]) {
                         germplasmList[HEADERS.ROW_NUMBER] = ++index;
                         germplasmList[HEADERS.GID] = this.selectManualMatchesResult[row[HEADERS.ROW_NUMBER]];
-                        germplasmList[HEADERS.ENTRY_CODE] = row[HEADERS.ENTRY_CODE];
                         newGermplasmList.push(germplasmList);
                     }
                 // Multi Match
                 } else if (Object.keys(this.selectMultipleMatchesResult).length > 0 && this.selectMultipleMatchesResult[row[HEADERS.ROW_NUMBER]]) {
                     germplasmList[HEADERS.ROW_NUMBER] = ++index;
                     germplasmList[HEADERS.GID] = this.selectMultipleMatchesResult[row[HEADERS.ROW_NUMBER]];
-                    germplasmList[HEADERS.ENTRY_CODE] = row[HEADERS.ENTRY_CODE];
                     newGermplasmList.push(germplasmList);
                 }
             });
@@ -280,7 +277,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
             germplasmListCreationModalRef.componentInstance.entries = newGermplasmList.map((row) => {
                 const entry = new GermplasmListEntry();
                 entry.gid = row[HEADERS.GID];
-                entry.entryCode = row[HEADERS.ENTRY_CODE];
                 entry.entryNo = Number(row[HEADERS.ROW_NUMBER]);
                 entry.data = Object.keys(this.variableMatchesResult).reduce((map, variableName) => {
                     if (row[variableName]) {
@@ -394,7 +390,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
             data[HEADERS.GID] = row[HEADERS.GID];
             data[HEADERS.GUID] = row[HEADERS.GUID];
             data[HEADERS.DESIGNATION] = row[HEADERS.DESIGNATION];
-            data[HEADERS.ENTRY_CODE] = row[HEADERS.ENTRY_CODE];
             this.context.newVariables.forEach((variable) => {
                 if (row[toUpper(variable.alias)]) {
                     data[variable.alias] = row[toUpper(variable.alias)]

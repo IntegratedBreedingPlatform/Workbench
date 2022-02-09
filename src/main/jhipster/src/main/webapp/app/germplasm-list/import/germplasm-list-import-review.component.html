@@ -38,7 +38,6 @@
 						<th>{{HEADERS.GID}}</th>
 						<th>{{HEADERS.GUID}}</th>
 						<th>{{HEADERS.DESIGNATION}}</th>
-						<th>{{HEADERS.ENTRY_CODE}}</th>
 						<th *ngFor="let variable of context.newVariables">
 							{{variable.alias ? variable.alias : variable.name}}
 						</th>
@@ -65,7 +64,6 @@
 							<td *ngIf="!this.matchesByName[toUpper(row[HEADERS.DESIGNATION])]">
 								<span>{{row[HEADERS.DESIGNATION]}}</span>
 							</td>
-							<td>{{row[HEADERS.ENTRY_CODE]}}</td>
 							<td *ngFor="let variable of context.newVariables">
 								{{row[toUpper(variable.alias)] ? row[toUpper(variable.alias)] : row[toUpper(variable.name)]}}
 							</td>

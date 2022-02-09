@@ -177,15 +177,13 @@ export class GermplasmListImportComponent implements OnInit {
             errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: header }));
         });
         // Gather unknown columns
-        const templateHeader: string[] = [HEADERS.GUID, HEADERS.GID, HEADERS.DESIGNATION, HEADERS.ENTRY_CODE];
+        const templateHeader: string[] = [HEADERS.GUID, HEADERS.GID, HEADERS.DESIGNATION];
         fileHeader.filter((header) => templateHeader.indexOf(header) < 0)
             .forEach((header) => this.unknowColumns[header] = 1);
     }
 
     private validateData(errorMessage: string[]) {
         // row validations
-        let hasEntryCode = false;
-        let hasEntryCodeEmpty = false;
 
         for (const row of this.context.data) {
             if (!(row[HEADERS.GID] || row[HEADERS.GUID] || row[HEADERS.DESIGNATION])) {
@@ -197,21 +195,8 @@ export class GermplasmListImportComponent implements OnInit {
                 errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.gid.format'));
                 break;
             }
-
-            if (!row[HEADERS.ENTRY_CODE]) {
-                hasEntryCodeEmpty = true;
-            } else {
-                hasEntryCode = true;
-                if (row[HEADERS.ENTRY_CODE].length > 47) {
-                    errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.code.max.length'));
-                    break;
-                }
-            }
         }
 
-        if (hasEntryCode && hasEntryCodeEmpty) {
-            errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.code'));
-        }
     }
 
     dismiss() {
@@ -260,7 +245,6 @@ export enum HEADERS {
     'DESIGNATION' = 'DESIGNATION',
     // Used internally - doesn't come in spreadsheet
     'GID_MATCHES' = 'GID MATCHES',
-    'ROW_NUMBER' = 'ROW NUMBER',
-    'ENTRY_CODE' = 'ENTRY_CODE'
+    'ROW_NUMBER' = 'ROW NUMBER'
 
 }
