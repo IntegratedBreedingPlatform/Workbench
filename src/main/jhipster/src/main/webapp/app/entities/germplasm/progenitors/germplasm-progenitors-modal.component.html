@@ -15,12 +15,9 @@
 			<div class="form-group row required">
 				<label for="breedingMethod" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="germplasm-progenitors-modal.breeding.method"></label>
 				<div class="col-sm-8">
-					<select class="form-control" name="breedingMethod" id="breedingMethod" *ngIf="isGenerative" [(ngModel)]="breedingMethodSelected" width="100%" [compareWith]="compareById">
-						<option *ngFor="let breedingMethod of generativeBreedingMethods" [ngValue]="breedingMethod">{{breedingMethod.name}}</option>
-					</select>
-					<select class="form-control" name="breedingMethod" id="breedingMethod" *ngIf="!isGenerative" [(ngModel)]="breedingMethodSelected" width="100%" [compareWith]="compareById">
-						<option *ngFor="let breedingMethod of derivativeBreedingMethods" [ngValue]="breedingMethod">{{breedingMethod.name}}</option>
-					</select>
+					<ng-select2 name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelectedId" [options]="breedingMethodOptions"
+								[value]="breedingMethodSelectedId" [data]="initialData" (valueChanged)="onValueChanged($event)">
+					</ng-select2>
 					<div class="row">
 						<div class="col-xs-12 col-md-12">
 							<div class="form-check form-check-inline">

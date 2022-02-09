@@ -12,6 +12,10 @@ import { ParamContext } from '../../../shared/service/param.context';
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
+import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
+import { HttpResponse } from '@angular/common/http';
+import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
+import { Select2OptionData } from 'ng-select2';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-modal',
@@ -19,21 +23,26 @@ import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/br
 })
 export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
+    static readonly BREEDING_METHODS_PAGE_SIZE = 300;
+
     private readonly UNKNOWN = '0';
 
     gid: number;
     progenitorsDetails: GermplasmProgenitorsDetails;
     isLoading: boolean;
     isGenerative: boolean;
-    generativeBreedingMethods: BreedingMethod[];
-    derivativeBreedingMethods: BreedingMethod[];
+    breedingMethodOptions: any;
+    breedingMethods: BreedingMethod[];
     breedingMethodSelected: BreedingMethod;
-    useFavoriteBreedingMethods = true;
     femaleParent: string;
     maleParent: string;
 
     eventSubscriber: Subscription;
     selectorTarget: string;
+
+    breedingMethodsFilteredItemsCount;
+    initialData: Select2OptionData[];
+    breedingMethodSelectedId: string;
 
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
@@ -45,6 +54,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                 private paramContext: ParamContext,
                 private modalService: NgbModal) {
         this.progenitorsDetails = this.germplasmProgenitorsContext.germplasmProgenitorsDetails;
+        this.breedingMethods = [];
     }
 
     ngOnDestroy(): void {
@@ -147,6 +157,8 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
     breedingMethodOptionChanged() {
         this.breedingMethodSelected = null;
+        this.breedingMethodSelectedId = null;
+        this.breedingMethods = [];
     }
 
     getFemaleParentId(progenitorsDetails: GermplasmProgenitorsDetails) {
@@ -178,19 +190,69 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     loadBreedingMethods() {
-        this.breedingMethodService.getBreedingMethods(false, [BreedingMethodTypeEnum.GENERATIVE]).toPromise().then((result) => {
-            this.generativeBreedingMethods = result;
-            return this.breedingMethodService.getBreedingMethods(false, [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE]).toPromise();
-        }).then((result) => {
-            this.derivativeBreedingMethods = result;
-            this.breedingMethodSelected = (this.isGenerative) ? this.generativeBreedingMethods.find((item) => item.mid === this.progenitorsDetails.breedingMethodId) :
-                this.derivativeBreedingMethods.find((item) => item.mid === this.progenitorsDetails.breedingMethodId);
-        });
-    }
 
-    /* Return true or false if it is the selected */
-    compareById(idFist, idSecond): boolean {
-        return idFist && idSecond && idFist.mid === idSecond.mid;
+        if (this.progenitorsDetails.breedingMethodId) {
+            this.breedingMethodSelectedId = String(this.progenitorsDetails.breedingMethodId);
+
+            this.breedingMethodService.queryBreedingMethod(this.progenitorsDetails.breedingMethodId).toPromise()
+                .then((method: BreedingMethod) => {
+                    this.breedingMethodSelected = method;
+                    this.initialData = [{ id: String(method.mid), text: method.name }];
+                });
+        }
+
+        this.breedingMethodOptions = {
+            ajax: {
+                delay: 500,
+                transport: function(params, success, failure) {
+                    params.data.page = params.data.page || 1;
+
+                    if (params.data.page === 1) {
+                        this.breedingMethods = [];
+                    }
+
+                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
+                    breedingMethodSearchRequest.nameFilter = {
+                        type: MatchType.STARTSWITH,
+                        value: params.data.term
+                    };
+                    breedingMethodSearchRequest.methodTypes = (this.isGenerative) ?
+                        [BreedingMethodTypeEnum.GENERATIVE] : [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
+
+                    const pagination = {
+                        page: (params.data.page - 1),
+                        size: GermplasmProgenitorsModalComponent.BREEDING_METHODS_PAGE_SIZE
+                    };
+
+                    this.breedingMethodService.searchBreedingMethods(
+                        breedingMethodSearchRequest,
+                        false,
+                        pagination
+                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
+                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
+                        success(res.body);
+                    }, failure);
+                }.bind(this),
+                processResults: function(methods, params) {
+                    params.page = params.page || 1;
+
+                    this.breedingMethods = this.breedingMethods.concat(...methods)
+                    console.log(this.breedingMethods.length);
+
+                    return {
+                        results: methods.map((method: BreedingMethod) => {
+                            return {
+                                id: String(method.mid),
+                                text: method.name
+                            };
+                        }),
+                        pagination: {
+                            more: (params.page * GermplasmProgenitorsModalComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
+                        }
+                    };
+                }.bind(this)
+            }
+        };
     }
 
     openGermplasmSelector(selectMultiple: boolean, target: string): void {
@@ -209,6 +271,13 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     isNumberOutOfRange(numbersString: string[]) {
         const maxInteger = 2147483647; // Maxiumum 32 bit integer;
         return numbersString.some((num) => Number.isNaN(Number.parseInt(num, 10)) || Number(num) > maxInteger);
+    }
+
+    onValueChanged(selectedMethodId: string): void {
+        if (selectedMethodId && this.breedingMethods.length > 0) {
+            this.breedingMethodSelectedId = selectedMethodId;
+            this.breedingMethodSelected = this.breedingMethods.find((method: BreedingMethod) => String(method.mid) === this.breedingMethodSelectedId);
+        }
     }
 
 }
