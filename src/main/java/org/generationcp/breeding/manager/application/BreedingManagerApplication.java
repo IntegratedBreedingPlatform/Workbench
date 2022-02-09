@@ -129,7 +129,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 	}
 
 	protected Window getEmptyWindowWithErrorMessage() {
-		final Window emptyGermplasmListDetailsWindow = new Window(this.messageSource.getMessage(Message.LIST_MANAGER_TAB_LABEL));
+		final Window emptyGermplasmListDetailsWindow = new Window(this.messageSource.getMessage(Message.MAIN_WINDOW_CAPTION));
 		emptyGermplasmListDetailsWindow.setDebugId("emptyGermplasmListDetailsWindow");
 		emptyGermplasmListDetailsWindow.setSizeUndefined();
 		emptyGermplasmListDetailsWindow.addComponent(new Label(this.messageSource.getMessage(Message.INVALID_LIST_ID)));
@@ -138,7 +138,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 	}
 
 	private Window instantiateWindow(final String name) {
-		final Window listManagerWindow = new Window(this.messageSource.getMessage(Message.LIST_MANAGER_TAB_LABEL));
+		final Window listManagerWindow = new Window(this.messageSource.getMessage(Message.MAIN_WINDOW_CAPTION));
 		listManagerWindow.setDebugId("breedingManagerWindow");
 		listManagerWindow.setName(name);
 		listManagerWindow.setSizeFull();
