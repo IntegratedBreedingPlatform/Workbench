@@ -5,7 +5,7 @@ import { Lot } from '../../shared/inventory/model/lot.model';
 import { Transaction } from '../../shared/inventory/model/transaction.model';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
 import { TransactionService } from '../../shared/inventory/service/transaction.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { LotService } from '../../shared/inventory/service/lot.service';
 import { InventoryService } from '../../shared/inventory/service/inventory.service';
 import { Location } from '../../shared/model/location.model';
@@ -17,6 +17,10 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { SearchOrigin, SearchOriginComposite } from '../../shared/model/Search-origin-composite';
+import { LocationService } from '../../shared/location/service/location.service';
+import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
+import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -33,15 +37,13 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
-    searchOrigin;
-    studyId;
+    searchOrigin: SearchOrigin;
 
     units: Promise<InventoryUnit[]>;
     storageLocations: Promise<Location[]>;
     favoriteLocations: Promise<Location[]>;
 
     favoriteLocation = false;
-    storageLocationType = [1500];
     initialDepositRequired = false;
     storageLocIdSelected;
     favoriteLocIdSelected;
@@ -60,7 +62,8 @@ export class LotCreationDialogComponent implements OnInit {
                 private paramContext: ParamContext,
                 private germplasmManagerContext: GermplasmManagerContext,
                 private activeModal: NgbActiveModal,
-                private alertService: AlertService
+                private alertService: AlertService,
+                private locationService: LocationService
     ) {
         this.paramContext.readParams();
         const queryParams = this.activatedRoute.snapshot.queryParams;
@@ -68,10 +71,9 @@ export class LotCreationDialogComponent implements OnInit {
         this.searchOrigin = queryParams.searchOrigin;
         this.openedFromWorkbench = (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) ? true : false;
 
-        if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
-            // studyId has value if this Lot Creation page is called from Study Manager.
-            // In this case, deposit is required.
-            this.studyId = queryParams.studyId;
+        if (this.searchOrigin === SearchOrigin.MANAGE_STUDY_SOURCE || this.searchOrigin === SearchOrigin.MANAGE_STUDY_PLOT) {
+            // searchOrigin is MANAGE_STUDY_SOURCE or MANAGE_STUDY_PLOT indicate that Lot Creation page is called
+            // from Study Manager and the deposit is required.
             this.initialDepositRequired = true;
         }
 
@@ -80,8 +82,20 @@ export class LotCreationDialogComponent implements OnInit {
 
         this.units = this.inventoryService.queryUnits().toPromise();
 
-        this.storageLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: false }).toPromise();
-        this.favoriteLocations = this.inventoryService.queryLocation({ locationTypes: this.storageLocationType, favoritesOnly: true }).toPromise();
+        // TODO: we need to implement pagination using ng-select2
+        const pagination = {
+            page: 0,
+            size: 10000
+        };
+
+        const seedStorageSearchRequest: LocationSearchRequest = new LocationSearchRequest();
+        seedStorageSearchRequest.locationTypeIds = [LocationTypeEnum.SEED_STORAGE_LOCATION];
+        this.storageLocations = this.locationService.searchLocations(seedStorageSearchRequest, false, pagination)
+            .pipe(map((res: HttpResponse<Location[]>) => res.body))
+            .toPromise();
+        this.favoriteLocations = this.locationService.searchLocations(seedStorageSearchRequest, true, pagination)
+            .pipe(map((res: HttpResponse<Location[]>) => res.body))
+            .toPromise();
 
         this.storageLocations.then((storageLocations) => {
             const defaultLocation = storageLocations.find((location) => location.defaultLocation);
@@ -121,10 +135,9 @@ export class LotCreationDialogComponent implements OnInit {
     private getSearchComposite(): SearchComposite<any, number> {
         if (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) {
             return this.germplasmManagerContext.searchComposite;
-        } else if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
-            const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, SearchOrigin.MANAGE_STUDY);
+        } else if (this.searchOrigin === SearchOrigin.MANAGE_STUDY_SOURCE || this.searchOrigin === SearchOrigin.MANAGE_STUDY_PLOT) {
+            const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, this.searchOrigin);
             return {
-                itemIds: null,
                 searchRequest: searchTypeComposite
             };
         }
@@ -136,7 +149,7 @@ export class LotCreationDialogComponent implements OnInit {
                 selectedLots: <SearchComposite<any, string>>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
                 depositsPerUnit: {},
-                sourceStudyId: this.studyId
+                searchComposite: this.getSearchComposite()
             };
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
