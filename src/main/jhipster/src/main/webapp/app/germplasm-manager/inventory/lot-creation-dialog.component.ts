@@ -37,8 +37,7 @@ export class LotCreationDialogComponent implements OnInit {
     model = { stockIdPrefix: '' };
     deposit: Transaction;
     searchRequestId;
-    searchOrigin;
-    studyId;
+    searchOrigin: SearchOrigin;
 
     units: Promise<InventoryUnit[]>;
     storageLocations: Promise<Location[]>;
@@ -72,10 +71,9 @@ export class LotCreationDialogComponent implements OnInit {
         this.searchOrigin = queryParams.searchOrigin;
         this.openedFromWorkbench = (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) ? true : false;
 
-        if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
-            // studyId has value if this Lot Creation page is called from Study Manager.
-            // In this case, deposit is required.
-            this.studyId = queryParams.studyId;
+        if (this.searchOrigin === SearchOrigin.MANAGE_STUDY_SOURCE || this.searchOrigin === SearchOrigin.MANAGE_STUDY_PLOT) {
+            // searchOrigin is MANAGE_STUDY_SOURCE or MANAGE_STUDY_PLOT indicate that Lot Creation page is called
+            // from Study Manager and the deposit is required.
             this.initialDepositRequired = true;
         }
 
@@ -137,10 +135,9 @@ export class LotCreationDialogComponent implements OnInit {
     private getSearchComposite(): SearchComposite<any, number> {
         if (this.searchOrigin === SearchOrigin.GERMPLASM_SEARCH) {
             return this.germplasmManagerContext.searchComposite;
-        } else if (this.searchOrigin === SearchOrigin.MANAGE_STUDY) {
-            const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, SearchOrigin.MANAGE_STUDY);
+        } else if (this.searchOrigin === SearchOrigin.MANAGE_STUDY_SOURCE || this.searchOrigin === SearchOrigin.MANAGE_STUDY_PLOT) {
+            const searchTypeComposite = new SearchOriginComposite(this.searchRequestId, this.searchOrigin);
             return {
-                itemIds: null,
                 searchRequest: searchTypeComposite
             };
         }
@@ -152,7 +149,7 @@ export class LotCreationDialogComponent implements OnInit {
                 selectedLots: <SearchComposite<any, string>>({ searchRequest: null, itemIds: lotUUIDs }),
                 notes: this.deposit.notes,
                 depositsPerUnit: {},
-                sourceStudyId: this.studyId
+                searchComposite: this.getSearchComposite()
             };
             this.units.then((units) => {
                 const lotUnit = units.filter((unit) => unit.id === this.lot.unitId.toString());
