@@ -2601,7 +2601,7 @@ braces@~3.0.2:
 
 "brapi-sync@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#IBP-5398-BrapiSyncBMSUIIntegration":
   version "1.1.0"
-  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#9dfe0f2a2bbe5785a8e40959bdd539277b135a97"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#ae17ef86ffa8f9484a981d43ffa02324acdbf4c2"
   dependencies:
     "@angular/animations" "~11.2.4"
     "@angular/common" "~11.2.4"
