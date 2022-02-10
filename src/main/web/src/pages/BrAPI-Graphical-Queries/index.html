@@ -103,7 +103,7 @@
 				<div class="form-group">
 					<label class="control-label col-sm-4">Observation level</label>
 					<div class="col-sm-8" id="observationLevels">
-						<select class="form-control" name="observationLevel" ng-model="nested.selectedObservationModel">
+						<select class="form-control" name="observationLevel" ng-model="nested.selectedObservationModel" data-test="observationLevelSelect">
 							<option ng-repeat="observationLevel in observationLevels" ng-value="{{observationLevel}}">{{observationLevel}}</option>
 						</select>
 					</div>
@@ -162,7 +162,7 @@
 	<div ng-switch="nested.toolId" ng-show="flags.isDataLoaded">
 		<div class="row" ng-switch-when="graphical-filtering">
 			<button ng-if="!gid" id="export"
-					class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession">
+					class="btn btn-primary" ng-click="openExportModal()" ng-show="flags.isDataLoaded" ng-disabled="flags.groupByAccession" data-test="exportDataButton">
 				Export
 			</button>
 			<div class="col-xs-12" style="overflow-x: auto">
