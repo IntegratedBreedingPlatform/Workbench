@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { CropService } from '../../shared/crop/service/crop.service';
 import { JhiLanguageService } from 'ng-jhipster';
 import { ProgramService } from '../../shared/program/service/program.service';
 import { ActivatedRoute } from '@angular/router';
@@ -12,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { DateHelperService } from '../../shared/service/date.helper.service';
+import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-create-program',
@@ -26,13 +26,14 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
     program: Program = new Program();
     startDate: NgbDate;
     isLoading: boolean;
+    user?: any;
 
     constructor(private alertService: AlertService,
                 private activeModal: NgbActiveModal,
-                private cropService: CropService,
                 private programService: ProgramService,
                 public dateHelperService: DateHelperService,
-                private languageService: JhiLanguageService
+                private languageService: JhiLanguageService,
+                private principal: Principal
     ) {
     }
 
@@ -40,7 +41,9 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
     }
 
     async ngOnInit() {
-        this.crops = await this.cropService.getCrops().toPromise();
+        const identity = await this.principal.identity();
+        this.user = identity;
+        this.crops = this.user.crops.map((crop) => crop.cropName);
 
     }
 
