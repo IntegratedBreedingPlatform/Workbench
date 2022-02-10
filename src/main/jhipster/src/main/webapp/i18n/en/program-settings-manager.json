@@ -12,7 +12,7 @@
       "program-name": "Program Name",
       "program-start-date": "Program Start Date",
       "update": {
-        "success": "<strong>Program update is successful</strong> {{programName}} is updated."
+        "success": "Program updated successfully"
       },
       "delete": {
         "title": "Delete Program",

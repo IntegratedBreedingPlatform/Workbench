@@ -77,7 +77,7 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
         this.programService.updateProgram(programBasicDetails, this.program.crop, this.program.uniqueID).subscribe(() => {
                 this.programOrg = Object.assign({}, this.program);
                 window.parent.postMessage(message, '*');
-                this.alertService.success('program-settings-manager.basic-details.update.success', { programName : this.program.name });
+                this.alertService.success('program-settings-manager.basic-details.update.success');
             }, (res: HttpErrorResponse) => {
                 this.onError(res)
             }, () => {
