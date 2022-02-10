@@ -26,6 +26,7 @@
 	<mvc:resources mapping="/pages/jhipster/**" location="/WEB-INF/pages/jhipster/"/>
 	<mvc:resources mapping="/pages/BrAPI-Graphical-Queries/**" location="/WEB-INF/pages/BrAPI-Graphical-Queries/"/>
 	<mvc:resources mapping="/pages/brapi-fieldmap/**" location="/WEB-INF/pages/brapi-fieldmap/"/>
+	<mvc:resources mapping="/pages/brapi-sync/**" location="/WEB-INF/pages/brapi-sync/"/>
 
 	<!-- Linked to base-href of angular app -->
 	<mvc:resources mapping="/app/**" location="/WEB-INF/pages/jhipster/"/>
