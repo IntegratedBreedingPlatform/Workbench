@@ -11,6 +11,7 @@
 	<http pattern="/controller/pages/angular2/lib/**" security="none" />
 	<http pattern="/controller/pages/BrAPI-Graphical-Queries/**" security="none" />
 	<http pattern="/controller/pages/brapi-fieldmap/**" security="none" />
+	<http pattern="/controller/pages/brapi-sync/**" security="none" />
 	<http pattern="/VAADIN/themes/**" security="none" />
 
 	<http auto-config="true" use-expressions="true">
@@ -41,6 +42,8 @@
 
 
 		<!--CROP_MANAGEMENT-->
+		<intercept-url pattern="/controller/brapi-sync/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')"/>
+		<intercept-url pattern="/controller/brapi-sync/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_CROP_MANAGEMENT')"/>
 		<!--IMPORT_GERMPLASM-->
 		<intercept-url pattern="/main/germplasm-import/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_GERMPLASM', 'ROLE_IMPORT_GERMPLASM')"/>
 

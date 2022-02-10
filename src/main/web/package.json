@@ -43,6 +43,7 @@
     "@angular/upgrade": "2.0.2",
     "@solgenomics/brapi-fieldmap": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:1.1.5",
     "@solgenomics/brapi-study-comparison": "git+ssh://git@github.com:IntegratedBreedingPlatform/BrAPI-Study-Comparison.git#semver:1.1.4",
+    "brapi-sync": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#semver:1.2.0",
     "angular2-in-memory-web-api": "0.0.21",
     "babel-polyfill": "^6.26.0",
     "core-js": "^2.5.3",
@@ -71,6 +72,7 @@
     "gulp": "^3.8.10",
     "gulp-autoprefixer": "^1.0.1",
     "gulp-babel": "^6.1.3",
+    "gulp-bom": "^3.0.0",
     "gulp-cached": "^1.0.1",
     "gulp-changed": "^1.0.0",
     "gulp-concat": "^2.4.3",
@@ -108,6 +110,6 @@
     "yargs": "^1.3.2"
   },
   "resolutions": {
-      "graceful-fs": "^4.2.4"
+    "graceful-fs": "^4.2.4"
   }
 }
