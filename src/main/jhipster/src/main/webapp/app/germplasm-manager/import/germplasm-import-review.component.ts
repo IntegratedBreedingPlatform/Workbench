@@ -443,8 +443,14 @@ export class GermplasmImportReviewComponent implements OnInit {
         germplasmListCreationModalRef.componentInstance.entries = this.context.data.map((row) => {
             const entry = new GermplasmListEntry();
             entry.gid = this.getSavedGid(row);
-            entry.entryCode = row[HEADERS.ENTRY_CODE];
             entry.entryNo = Number(row[HEADERS.ENTRY_NO]);
+            // Temporary workaround to allow users to continue defining ENTRY_CODE
+            entry.data = Object.keys(row).reduce((map, variableName) => {
+                if (row[HEADERS.ENTRY_CODE]) {
+                    map[8300] = { value: row[HEADERS.ENTRY_CODE] };
+                }
+                return map;
+            }, {});
             return entry
         });
     }
