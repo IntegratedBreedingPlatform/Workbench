@@ -43,7 +43,7 @@
     "@angular/upgrade": "2.0.2",
     "@solgenomics/brapi-fieldmap": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-fieldmap.git#semver:1.1.5",
     "@solgenomics/brapi-study-comparison": "git+ssh://git@github.com:IntegratedBreedingPlatform/BrAPI-Study-Comparison.git#semver:1.1.4",
-    "brapi-sync": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#IBP-5398-BrapiSyncBMSUIIntegration",
+    "brapi-sync": "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#semver:1.2.0",
     "angular2-in-memory-web-api": "0.0.21",
     "babel-polyfill": "^6.26.0",
     "core-js": "^2.5.3",
