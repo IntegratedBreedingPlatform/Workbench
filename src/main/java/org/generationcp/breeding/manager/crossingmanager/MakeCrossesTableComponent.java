@@ -47,7 +47,7 @@ import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.SaveListAsDialogSource;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
-import org.generationcp.breeding.manager.listimport.listeners.GidLinkClickListener;
+import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
 import org.generationcp.breeding.manager.util.BreedingManagerTransformationUtil;
 import org.generationcp.breeding.manager.util.BreedingManagerUtil;
 import org.generationcp.commons.parsing.pojo.ImportedCross;
