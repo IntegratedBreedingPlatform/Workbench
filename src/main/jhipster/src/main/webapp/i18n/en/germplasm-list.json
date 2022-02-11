@@ -102,13 +102,15 @@
                     "entry.details.no.column": "No suitable column found for entry detail variables. Please check the Entry Details sheet",
                     "entry.no": "The ENTRY_NO column is mandatory",
                     "entry.no.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
-                    "entry.no.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again"
+                    "entry.no.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
+                    "entry.no.incorrect": "ENTRY_NO value for entry #: {{param}} is incorrect. Please correct it and try again",
+                    "entry.no.missing": "Missing ENTRY_NO value for entry #: {{param}}. Please correct it and try again"
                 }
             },
             "multi": {
                 "matches": {
                     "header": "Select match",
-                    "description": "Multiple matches were found for the following <b>ROW #: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
+                    "description": "Multiple matches were found for the following <b>ENTRY #: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
                 }
             },
             "manual": {
