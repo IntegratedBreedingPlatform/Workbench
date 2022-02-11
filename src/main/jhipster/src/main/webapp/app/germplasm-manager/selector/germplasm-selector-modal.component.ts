@@ -50,7 +50,6 @@ export class GermplasmSelectorModalComponent implements OnInit {
     ngOnInit(): void {
         const queryParams = '?cropName=' + this.paramContext.cropName
             + '&programUUID=' + this.paramContext.programUUID
-            + '&authToken=' + this.paramContext.authToken
             + '&selectedProjectId=' + this.paramContext.selectedProjectId
             + '&loggedInUserId=' + this.paramContext.loggedInUserId
             + '&selectMultiple=' + this.selectMultiple; // Tell the page that it is shown as a modal.
