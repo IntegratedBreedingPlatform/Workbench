@@ -9,20 +9,21 @@
  *
  *******************************************************************************/
 
-package org.generationcp.ibpworkbench.study.listeners;
+package org.generationcp.breeding.manager.crossingmanager.listeners;
 
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.breeding.manager.service.GermplasmDetailsUrlService;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
-import org.generationcp.ibpworkbench.study.TableViewerComponent;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.slf4j.Logger;
@@ -31,13 +32,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 @Configurable
-public class GidLinkButtonClickListener implements Button.ClickListener {
+public class GidLinkClickListener implements Button.ClickListener, ItemClickListener {
 
 	private static final long serialVersionUID = -6751894969990825730L;
-	private final static Logger LOG = LoggerFactory.getLogger(GidLinkButtonClickListener.class);
-	private final String[] CHILD_WINDOWS = {
-		TableViewerComponent.TABLE_VIEWER_WINDOW_NAME,
-		ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
+	private final static Logger LOG = LoggerFactory.getLogger(GidLinkClickListener.class);
+	public static final String GERMPLASM_IMPORT_WINDOW_NAME = "germplasm-import";
 
 	@Autowired
 	private GermplasmDataManager germplasmDataManager;
@@ -45,20 +44,49 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 	@Autowired
 	private GermplasmDetailsUrlService germplasmDetailsUrlService;
 
-	private final String gid;
+	private String gid;
+	private final Boolean viaToolURL;
+	private final Window parentWindow;
 
-	public GidLinkButtonClickListener(final String gid) {
+	public GidLinkClickListener() {
+		this.gid = null;
+		this.viaToolURL = false;
+		this.parentWindow = null;
+	}
+
+	public GidLinkClickListener(final String gid, final Boolean viaToolURL) {
 		this.gid = gid;
+		this.viaToolURL = viaToolURL;
+		this.parentWindow = null;
+	}
+
+	public GidLinkClickListener(final String gid, final Window parentWindow) {
+		this.gid = gid;
+		this.viaToolURL = false;
+		this.parentWindow = parentWindow;
 	}
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
+		this.openDetailsWindow(event.getComponent());
+	}
+
+	@Override
+	public void itemClick(final ItemClickEvent event) {
+		this.gid = ((Integer) event.getItemId()).toString();
+		this.openDetailsWindow(event.getComponent());
+
+	}
+
+	private void openDetailsWindow(final Component component) {
 		final Window mainWindow;
-		final Window eventWindow = event.getComponent().getWindow();
-		if (ArrayUtils.contains(this.CHILD_WINDOWS, eventWindow.getName())) {
-			mainWindow = eventWindow.getParent();
+
+		if (this.parentWindow != null) {
+			mainWindow = this.parentWindow;
+		} else if (this.viaToolURL) {
+			mainWindow = component.getWindow();
 		} else {
-			mainWindow = eventWindow;
+			mainWindow = component.getApplication().getWindow(GidLinkClickListener.GERMPLASM_IMPORT_WINDOW_NAME);
 		}
 
 		final ExternalResource germplasmDetailsLink = this.germplasmDetailsUrlService.getExternalResource(Integer.parseInt(this.gid), true);
@@ -67,7 +95,7 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		try {
 			preferredName = this.germplasmDataManager.getPreferredNameValueByGID(Integer.valueOf(this.gid));
 		} catch (final MiddlewareQueryException ex) {
-			GidLinkButtonClickListener.LOG.error("Error with getting preferred name of " + this.gid, ex);
+			GidLinkClickListener.LOG.error("Error with getting preferred name of " + this.gid, ex);
 		}
 
 		String windowTitle = "Germplasm Details: " + "(GID: " + this.gid + ")";
@@ -77,27 +105,27 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 		final Window germplasmWindow = new BaseSubWindow(windowTitle);
 
 		final VerticalLayout layoutForGermplasm = new VerticalLayout();
+		layoutForGermplasm.setDebugId("layoutForGermplasm");
 		layoutForGermplasm.setMargin(false);
-		layoutForGermplasm.setWidth("98%");
-		layoutForGermplasm.setHeight("98%");
+		layoutForGermplasm.setWidth("100%");
+		layoutForGermplasm.setHeight("100%");
+		layoutForGermplasm.addStyleName("no-caption");
 
 		final Embedded germplasmInfo = new Embedded("", germplasmDetailsLink);
+		germplasmInfo.setDebugId("germplasmInfo");
 		germplasmInfo.setType(Embedded.TYPE_BROWSER);
 		germplasmInfo.setSizeFull();
+
 		layoutForGermplasm.addComponent(germplasmInfo);
-
 		germplasmWindow.setContent(layoutForGermplasm);
-
-		// Instead of setting by percentage, compute it
-		germplasmWindow.setWidth(Integer.valueOf((int) Math.round(mainWindow.getWidth() * .90)) + "px");
-		germplasmWindow.setHeight(Integer.valueOf((int) Math.round(mainWindow.getHeight() * .90)) + "px");
-
+		germplasmWindow.setWidth("90%");
+		germplasmWindow.setHeight("90%");
 		germplasmWindow.center();
 		germplasmWindow.setResizable(false);
-		germplasmWindow.addStyleName(Reindeer.WINDOW_LIGHT);
-		germplasmWindow.setModal(true);
 
+		germplasmWindow.setModal(true);
+		germplasmWindow.addStyleName(Reindeer.WINDOW_LIGHT);
+		germplasmWindow.setCloseShortcut(ShortcutAction.KeyCode.ESCAPE);
 		mainWindow.addWindow(germplasmWindow);
 	}
-
 }
