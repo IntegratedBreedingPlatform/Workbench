@@ -94,7 +94,6 @@
                 "validation": {
                     "file.empty": "Wrong name for Observation sheet or the file has no data. Please verify and try again",
                     "extensions": "Only the following file extensions are allowed: {{param}}",
-                    "entr": "At least GID, GUID or DESIGNATION column is required",
                     "header": "At least GID, GUID or DESIGNATION column is required",
                     "gid.format": "Some GID values are not a positive integer. Please correct them and try again",
                     "unknown.column": "Some columns were not recognized in the system or are not relevant to the import list and were thus ignored ({{param}})",
