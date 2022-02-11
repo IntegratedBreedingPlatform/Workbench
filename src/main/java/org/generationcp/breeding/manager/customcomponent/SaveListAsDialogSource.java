@@ -1,17 +1,16 @@
 
 package org.generationcp.breeding.manager.customcomponent;
 
-import org.generationcp.middleware.pojos.GermplasmList;
-
 import com.vaadin.ui.Component;
+import org.generationcp.middleware.pojos.GermplasmList;
 
 public interface SaveListAsDialogSource {
 
-	public void saveList(GermplasmList list);
+	void saveList(GermplasmList list);
 
-	public void setCurrentlySavedGermplasmList(GermplasmList list);
+	void setCurrentlySavedGermplasmList(GermplasmList list);
 
-	public Component getParentComponent();
+	Component getParentComponent();
 	
-	public void updateListUI();
+	void updateListUI();
 }
