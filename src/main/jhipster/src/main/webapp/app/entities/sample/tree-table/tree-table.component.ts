@@ -318,13 +318,6 @@ export class TreeTableComponent implements OnInit {
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
     }
-
-    isParentCropList(node: PrimeNgTreeNode): boolean {
-        if (node.parent) {
-            return this.isParentCropList(node.parent);
-        }
-        return node.data.id === 'CROPLISTS';
-    }
 }
 
 export enum Mode {

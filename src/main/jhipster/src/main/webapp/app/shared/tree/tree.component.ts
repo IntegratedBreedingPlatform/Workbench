@@ -100,9 +100,7 @@ export class TreeComponent implements OnInit {
             }).map((node: PrimeNgTreeNode) => {
                 return <TreeComponentResult>({
                     id: node.data.id,
-                    name: node.data.name,
-                    // FIXME IBP-5413
-                    isParentCropList: this.isParentCropList(node)
+                    name: node.data.name
                 });
             });
             this.activeModal.close(selected);
@@ -376,13 +374,6 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    protected isParentCropList(node: PrimeNgTreeNode): boolean {
-        if (node.parent) {
-            return this.isParentCropList(node.parent);
-        }
-        return node.data.id === 'CROPLISTS';
-    }
-
     protected validateDeleteFolder(folder: PrimeNgTreeNode) {
         if (folder.children && folder.children.length !== 0) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.delete.has.children',
@@ -465,7 +456,5 @@ export enum Mode {
 // TODO reword usages of modal return, making explicit that result is entity agnostic
 export interface TreeComponentResult {
     id: number;
-    name: string;
-    // FIXME IBP-5413
-    isParentCropList: boolean
+    name: string
 }
