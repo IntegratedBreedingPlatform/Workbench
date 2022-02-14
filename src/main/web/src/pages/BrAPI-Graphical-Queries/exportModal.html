@@ -15,7 +15,7 @@
 			<div class="form-group">
 				<label class="control-label col-md-3">Transformation</label>
 				<div class="col-md-7">
-					<select class="form-control" ng-options="item as item.description for item in rCallObjects" ng-model="selectedRCallObject" ng-disabled="groupByAccession"></select>
+					<select class="form-control" ng-options="item as item.description for item in rCallObjects" ng-model="selectedRCallObject" ng-disabled="groupByAccession" data-test="exportTransformationSelect"></select>
 				</div>
 				<div class="col-md-2">
 					<i class="fa fa-question-circle fa-2x" tooltip-placement="bottom" tooltip-class="large" uib-tooltip="Transforms the data to the specified format."></i>
@@ -29,7 +29,7 @@
 		<div class="col-md-4"></div>
 		<div class="col-md-4">
 			<button class="btn btn-default" ng-disabled="isExporting" ng-click="cancel()">Cancel</button>
-			<button class="btn btn-primary" ng-disabled="isExporting" ng-click="proceed()">OK</button>
+			<button class="btn btn-primary" ng-disabled="isExporting" ng-click="proceed()" data-test="confirmExportButton">OK</button>
 			<div loading-status-message><img src="static/images/loading-blue-on-white-lg.gif" alt="loading" height="32" width="32"/></div>
 		</div>
 	</div>

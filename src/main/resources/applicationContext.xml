@@ -346,10 +346,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="breedingManagerService" class="org.generationcp.breeding.manager.service.BreedingManagerServiceImpl" />
-
-	<bean id="breedingManagerWindowGenerator" class="org.generationcp.breeding.manager.application.BreedingManagerWindowGenerator" />
-
 	<!-- Required bean declarations for Germplasm Coding Service -->
 
 	<bean class="org.generationcp.commons.ruleengine.RulesPostProcessor">
@@ -376,8 +372,6 @@
 		</property>
 	</bean>
 
-	<bean id="germplasmListExporter" class="org.generationcp.breeding.manager.listmanager.util.GermplasmListExporter"/>
-	<bean id="fileDownloadUtility" class="org.generationcp.breeding.manager.util.FileDownloaderUtility"/>
 	<bean id="germplasmExportService" class="org.generationcp.commons.service.impl.GermplasmExportServiceImpl" scope="request">
 		<aop:scoped-proxy />
 	</bean>
@@ -499,7 +493,7 @@
 	</bean>
 
 	<bean id="germplasmDetailsUrlService"
-		  class="org.generationcp.breeding.manager.listmanager.GermplasmDetailsUrlService">
+		  class="org.generationcp.breeding.manager.service.GermplasmDetailsUrlService">
     </bean>
 
 	<bean id="releaseNoteService"

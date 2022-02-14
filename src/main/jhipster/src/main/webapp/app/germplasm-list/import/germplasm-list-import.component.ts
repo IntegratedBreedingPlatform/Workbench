@@ -176,8 +176,13 @@ export class GermplasmListImportComponent implements OnInit {
         ).forEach((header) => {
             errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: header }));
         });
+        // Verify ENTRY_NO column is present
+        const entryNoColumnIsPresent = fileHeader.includes(HEADERS.ENTRY_NO);
+        if (!entryNoColumnIsPresent) {
+            errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no'));
+        }
         // Gather unknown columns
-        const templateHeader: string[] = [HEADERS.GUID, HEADERS.GID, HEADERS.DESIGNATION, HEADERS.ENTRY_CODE];
+        const templateHeader: string[] = [HEADERS.ENTRY_NO, HEADERS.GUID, HEADERS.GID, HEADERS.DESIGNATION, HEADERS.ENTRY_CODE];
         fileHeader.filter((header) => templateHeader.indexOf(header) < 0)
             .forEach((header) => this.unknowColumns[header] = 1);
     }
@@ -187,7 +192,22 @@ export class GermplasmListImportComponent implements OnInit {
         let hasEntryCode = false;
         let hasEntryCodeEmpty = false;
 
+        let rowNum = 1;
         for (const row of this.context.data) {
+            if (!row[HEADERS.ENTRY_NO]) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.missing', {param : rowNum}));
+                break;
+            }
+
+            if (row[HEADERS.ENTRY_NO] && (isNaN(row[HEADERS.ENTRY_NO])
+                || !Number.isInteger(Number(row[HEADERS.ENTRY_NO])) || row[HEADERS.ENTRY_NO] < 0)) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.format'));
+                break;
+            } else if (Number.parseInt(row[HEADERS.ENTRY_NO], 10) !== rowNum) {
+                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.incorrect', {param : rowNum}));
+                break;
+            }
+
             if (!(row[HEADERS.GID] || row[HEADERS.GUID] || row[HEADERS.DESIGNATION])) {
                 errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.header'));
                 break;
@@ -207,6 +227,7 @@ export class GermplasmListImportComponent implements OnInit {
                     break;
                 }
             }
+            rowNum++;
         }
 
         if (hasEntryCode && hasEntryCodeEmpty) {
@@ -258,9 +279,9 @@ export enum HEADERS {
     'GID' = 'GID',
     'GUID' = 'GUID',
     'DESIGNATION' = 'DESIGNATION',
+    'ENTRY_CODE' = 'ENTRY_CODE',
+    'ENTRY_NO' = 'ENTRY_NO',
     // Used internally - doesn't come in spreadsheet
     'GID_MATCHES' = 'GID MATCHES',
-    'ROW_NUMBER' = 'ROW NUMBER',
-    'ENTRY_CODE' = 'ENTRY_CODE'
-
+    'ROW_NUMBER' = 'ROW NUMBER'
 }
