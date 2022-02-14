@@ -18,7 +18,7 @@ import org.generationcp.breeding.manager.crossingmanager.util.CrossingManagerUti
 import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
-import org.generationcp.breeding.manager.listimport.listeners.GidLinkClickListener;
+import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;

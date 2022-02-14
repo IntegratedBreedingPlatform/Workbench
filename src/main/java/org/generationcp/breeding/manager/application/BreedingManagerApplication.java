@@ -1,20 +1,17 @@
 
 package org.generationcp.breeding.manager.application;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.vaadin.terminal.Terminal;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Window;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.breeding.manager.crossingmanager.settings.ManageCrossingSettingsMain;
-import org.generationcp.breeding.manager.listmanager.ListManagerMain;
 import org.generationcp.breeding.manager.util.BreedingManagerUtil;
 import org.generationcp.commons.hibernate.util.HttpRequestAwareUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
-import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +20,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import com.vaadin.terminal.Terminal;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Window;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class BreedingManagerApplication extends SpringContextApplication implements ApplicationContextAware {
 
@@ -33,7 +29,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String LIST_MANAGER_WINDOW_NAME = "list-manager";
+	public static final String BREEDING_MANAGER_WINDOW_NAME = "breeding-manager";
 	public static final String NAVIGATION_FROM_STUDY_PREFIX = "createcrosses";
 	public static final String REQ_PARAM_STUDY_ID = "studyid";
 	public static final String REQ_PARAM_LIST_ID = "germplasmlistid";
@@ -46,16 +42,8 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
-	@Autowired
-	private GermplasmListManager germplasmListManager;
-
-	@Autowired
-	private BreedingManagerWindowGenerator breedingManagerWindowGenerator;
-
 	private ApplicationContext applicationContext;
 
-	private ListManagerMain listManagerMain;
-	
 	private ManageCrossingSettingsMain manageCrossingSettingsMain;
 
 	@Override
@@ -70,7 +58,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 	@Override
 	public void initSpringApplication(final ConfigurableWebApplicationContext arg0) {
 
-		this.window = this.instantiateListManagerWindow(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME);
+		this.window = this.instantiateWindow(BreedingManagerApplication.BREEDING_MANAGER_WINDOW_NAME);
 		this.window.setDebugId("window");
 		this.setMainWindow(this.window);
 		this.setTheme("breeding-manager");
@@ -86,15 +74,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 		// these windows are the jumping on points to parts of the application
 		if (super.getWindow(name) == null) {
 
-			if (name.equals(BreedingManagerApplication.LIST_MANAGER_WINDOW_NAME)) {
-
-				final Window listManagerWindow = this.instantiateListManagerWindow(name);
-				listManagerWindow.setDebugId("listManagerWindow");
-				this.addWindow(listManagerWindow);
-
-				return listManagerWindow;
-
-			} else if (name.startsWith(NAVIGATION_FROM_STUDY_PREFIX)) {
+			if (name.startsWith(NAVIGATION_FROM_STUDY_PREFIX)) {
 
 				final Window manageCrossingSettings = new Window(this.messageSource.getMessage(Message.MANAGE_CROSSES));
 				manageCrossingSettings.setDebugId("manageCrossingSettings");
@@ -149,7 +129,7 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 	}
 
 	protected Window getEmptyWindowWithErrorMessage() {
-		final Window emptyGermplasmListDetailsWindow = new Window(this.messageSource.getMessage(Message.LIST_MANAGER_TAB_LABEL));
+		final Window emptyGermplasmListDetailsWindow = new Window(this.messageSource.getMessage(Message.MAIN_WINDOW_CAPTION));
 		emptyGermplasmListDetailsWindow.setDebugId("emptyGermplasmListDetailsWindow");
 		emptyGermplasmListDetailsWindow.setSizeUndefined();
 		emptyGermplasmListDetailsWindow.addComponent(new Label(this.messageSource.getMessage(Message.INVALID_LIST_ID)));
@@ -157,17 +137,12 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 		return emptyGermplasmListDetailsWindow;
 	}
 
-	private Window instantiateListManagerWindow(final String name) {
-		final Window listManagerWindow = new Window(this.messageSource.getMessage(Message.LIST_MANAGER_TAB_LABEL));
-		listManagerWindow.setDebugId("listManagerWindow");
+	private Window instantiateWindow(final String name) {
+		final Window listManagerWindow = new Window(this.messageSource.getMessage(Message.MAIN_WINDOW_CAPTION));
+		listManagerWindow.setDebugId("breedingManagerWindow");
 		listManagerWindow.setName(name);
 		listManagerWindow.setSizeFull();
 		listManagerWindow.setResizable(true);
-
-		this.listManagerMain = new org.generationcp.breeding.manager.listmanager.ListManagerMain();
-		listManagerMain.setDebugId("listManagerMain");
-		listManagerWindow.setContent(this.listManagerMain);
-		listManagerWindow.setDebugId("listManagerWindow");
 
 		return listManagerWindow;
 	}
@@ -218,18 +193,8 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 
 	}
 
-	public ListManagerMain getListManagerMain() {
-		return this.listManagerMain;
-	}
-
 	public ManageCrossingSettingsMain getManageCrossingSettingsMain() {
 		return this.manageCrossingSettingsMain;
-	}
-
-	public void refreshListManagerTree() {
-		if (this.listManagerMain != null) {
-			this.listManagerMain.getListSelectionComponent().getListTreeComponent().refreshComponent();
-		}
 	}
 
 	public void refreshCrossingManagerTree() {
@@ -240,18 +205,10 @@ public class BreedingManagerApplication extends SpringContextApplication impleme
 	}
 
 	public void updateUIForDeletedList(final GermplasmList germplasmList) {
-		if (this.getListManagerMain() != null) {
-			this.getListManagerMain().updateUIForDeletedList(germplasmList);
-		}
-
 		if (this.getManageCrossingSettingsMain() != null) {
 			this.getManageCrossingSettingsMain().getMakeCrossesComponent().getParentsComponent().updateUIForDeletedList(germplasmList);
 			this.getManageCrossingSettingsMain().getMakeCrossesComponent().showNodeOnTree(germplasmList.getId());
 		}
-	}
-
-	public void setGermplasmListManager(final GermplasmListManager germplasmListManager) {
-		this.germplasmListManager = germplasmListManager;
 	}
 
 }

@@ -3,7 +3,7 @@ package org.generationcp.breeding.manager.customcomponent.handler;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.customcomponent.GermplasmListTree;
 import org.generationcp.breeding.manager.customfields.ListSelectorComponent;
-import org.generationcp.breeding.manager.listmanager.util.GermplasmListTreeUtil;
+import org.generationcp.breeding.manager.customfields.util.GermplasmListTreeUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
