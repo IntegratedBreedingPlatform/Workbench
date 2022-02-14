@@ -18,6 +18,7 @@ import { RoleService } from '../../../shared/user/service/role.service';
 import { RoleFilter } from '../../../shared/user/model/role-filter.model';
 import { FilterType } from '../../../shared/column-filter/column-filter.component';
 import { UserSearchRequest } from '../../../shared/user/model/user-search-request.model';
+import { ParamContext } from '../../../shared/service/param.context';
 
 class UserTable {
     page = 1;
@@ -136,7 +137,8 @@ export class MembersPaneComponent {
         private membersService: MembersService,
         private alertService: AlertService,
         private modalService: NgbModal,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private context: ParamContext
     ) {
         this.reset();
     }
@@ -248,7 +250,7 @@ export class MembersPaneComponent {
     }
 
     isRemovable(user: ProgramMember) {
-        return user.role.type === RoleTypeEnum.PROGRAM.name;
+        return user.role.type === RoleTypeEnum.PROGRAM.name && user.userId !== this.context.loggedInUserId;
     }
 
     dropMembers(event: CdkDragDrop<any>) {
