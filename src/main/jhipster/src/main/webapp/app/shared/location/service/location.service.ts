@@ -52,4 +52,9 @@ export class LocationService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/${locationId}?programUUID=` + this.context.programUUID;
         return this.http.delete(url);
     }
+
+    getCountries(): Observable<HttpResponse<Location[]>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/location-country?programUUID=${this.context.programUUID}`;
+        return this.http.get<Location[]>(url, { observe: 'response' });
+    }
 }

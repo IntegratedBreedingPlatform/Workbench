@@ -89,9 +89,7 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        const countriesSearchRequest: LocationSearchRequest = new LocationSearchRequest();
-        countriesSearchRequest.locationTypeIds = [LocationTypeEnum.COUNTRY];
-        this.locationService.searchLocations(countriesSearchRequest, false, this.PAGINATION)
+        this.locationService.getCountries()
             .subscribe(
                 (resp: HttpResponse<Location[]>) => {
                     this.countries = resp.body;
