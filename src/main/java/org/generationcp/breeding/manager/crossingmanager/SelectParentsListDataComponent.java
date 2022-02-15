@@ -337,8 +337,11 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			if (this.studyId != null) {
 				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(studyId);
 				for (final StudyEntryDto entry : studyEntryDtoList) {
+					//TODO: should get entry code from properties?
+					final String entryCode = null;
+
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
-						entry.getEntryCode(), entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
+						entryCode, entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
