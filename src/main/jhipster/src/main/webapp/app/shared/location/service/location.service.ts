@@ -54,7 +54,7 @@ export class LocationService {
     }
 
     getCountries(): Observable<HttpResponse<Location[]>> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/location-country?programUUID=${this.context.programUUID}`;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/location-countries?programUUID=${this.context.programUUID}`;
         return this.http.get<Location[]>(url, { observe: 'response' });
     }
 }
