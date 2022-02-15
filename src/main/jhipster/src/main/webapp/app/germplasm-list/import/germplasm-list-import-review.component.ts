@@ -293,7 +293,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
             germplasmListCreationModalRef.componentInstance.model = model;
             germplasmListCreationModalRef.result.then(() => {
-                    this.eventManager.broadcast({ name: 'listNameFilter', content: model.name });
+                    this.eventManager.broadcast({ name: 'listNameFilter', content: model.listName });
             });
 
         } catch (error) {

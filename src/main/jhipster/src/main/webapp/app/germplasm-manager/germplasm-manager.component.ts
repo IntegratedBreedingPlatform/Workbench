@@ -4,8 +4,6 @@ import { HelpService } from '../shared/service/help.service';
 import { HELP_MANAGE_GERMPLASM } from '../app.constants';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListBuilderService } from '../shared/list-creation/service/list-builder.service';
-import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.service';
-import { TreeService } from '../shared/tree/tree.service';
 import { GermplasmListBuilderService } from '../shared/list-creation/service/germplasm-list-builder.service';
 
 @Component({

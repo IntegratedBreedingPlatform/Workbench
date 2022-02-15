@@ -115,8 +115,7 @@ export class TreeTableComponent implements OnInit {
                 this.draggedNode = null;
                 return;
             }
-            const isParentCropList = this.isParentCropList(node);
-            this.service.move(this.draggedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
+            this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
                     if (!node.children) {
                         node.children = [];
                     }
@@ -301,8 +300,7 @@ export class TreeTableComponent implements OnInit {
 
     submitAddOrRenameFolder() {
         if (this.mode === Mode.Add) {
-            const isParentCropList = this.isParentCropList(this.selectedNode);
-            this.service.create(this.name, this.selectedNode.data.id, isParentCropList).subscribe((res) => {
+            this.service.create(this.name, this.selectedNode.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(this.selectedNode, res.id);
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
@@ -319,13 +317,6 @@ export class TreeTableComponent implements OnInit {
                 (res: HttpErrorResponse) =>
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
-    }
-
-    isParentCropList(node: PrimeNgTreeNode): boolean {
-        if (node.parent) {
-            return this.isParentCropList(node.parent);
-        }
-        return node.data.id === 'CROPLISTS';
     }
 }
 

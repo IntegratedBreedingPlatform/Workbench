@@ -70,8 +70,8 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
     ngOnInit() {
         this.listService.getById(this.germplasmListManagerContext.activeGermplasmListId).subscribe((listModel) => {
             this.model = listModel;
-            this.model.name = null;
-            this.selectedDate =  this.dateHelperService.convertFormattedDateStringToNgbDate(listModel.date, 'yyyy-mm-dd');
+            this.model.listName = null;
+            this.creationDate =  this.dateHelperService.convertFormattedDateStringToNgbDate(listModel.creationDate, 'yyyy-mm-dd');
         });
 
         super.ngOnInit();
@@ -79,10 +79,10 @@ export class GermplasmListCloneComponent extends ListCreationComponent implement
 
     save() {
         const germplasmList = <GermplasmListModel>({
-            listName: this.model.name,
-            creationDate: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
+            listName: this.model.listName,
+            creationDate: `${this.creationDate.year}-${this.creationDate.month}-${this.creationDate.day}`,
             description: this.model.description,
-            listType: this.model.type,
+            listType: this.model.listType,
             notes: this.model.notes,
             parentFolderId: this.selectedNodes[0].data.id
         });
