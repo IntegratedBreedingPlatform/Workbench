@@ -25,10 +25,10 @@ export class SampleListService implements ListService {
 
     save(list: ListModel): Observable<ListModel> {
         const sampleList = {
-            listName: list.name,
+            listName: list.listName,
             description: list.description,
             notes: list.notes,
-            createdDate: list.date,
+            createdDate: list.creationDate,
             parentId: list.parentFolderId,
             entries: list.entries
         };
