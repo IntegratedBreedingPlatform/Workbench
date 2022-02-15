@@ -15,17 +15,17 @@ import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs.SelectGermplasmListComponent;
-import org.generationcp.ibpworkbench.germplasmlist.listeners.GermplasmListItemClickListener;
-import org.generationcp.ibpworkbench.germplasmlist.listeners.GermplasmListTreeExpandListener;
-import org.generationcp.ibpworkbench.germplasmlist.util.GermplasmListTreeUtil;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs.SelectGermplasmListComponent;
+import org.generationcp.ibpworkbench.germplasmlist.listeners.GermplasmListItemClickListener;
+import org.generationcp.ibpworkbench.germplasmlist.listeners.GermplasmListTreeExpandListener;
+import org.generationcp.ibpworkbench.germplasmlist.util.GermplasmListTreeUtil;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
@@ -484,8 +484,8 @@ public class ListManagerTreeComponent extends VerticalLayout implements Internat
 
 		try {
 			germplasmListChildren =
-					this.germplasmListManager.getGermplasmListByParentFolderIdBatched(parentGermplasmListId,
-							this.getCurrentProgramUUID(), ListManagerTreeComponent.BATCH_SIZE);
+					this.germplasmListManager.getGermplasmListByParentFolderId(parentGermplasmListId,
+							this.getCurrentProgramUUID());
 		} catch (MiddlewareQueryException e) {
 			ListManagerTreeComponent.LOG.error("Error in getting germplasm lists by parent id.", e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
@@ -511,8 +511,8 @@ public class ListManagerTreeComponent extends VerticalLayout implements Internat
 
 		try {
 			germplasmListChildren =
-					this.germplasmListManager.getGermplasmListByParentFolderIdBatched(parentGermplasmListId,
-							this.getCurrentProgramUUID(), ListManagerTreeComponent.BATCH_SIZE);
+					this.germplasmListManager.getGermplasmListByParentFolderId(parentGermplasmListId,
+							this.getCurrentProgramUUID());
 		} catch (MiddlewareQueryException e) {
 			ListManagerTreeComponent.LOG.error("Error in getting germplasm lists by parent id.", e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),

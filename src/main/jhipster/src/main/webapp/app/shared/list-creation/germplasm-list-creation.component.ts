@@ -62,9 +62,9 @@ export class GermplasmListCreationComponent extends ListCreationComponent {
 
     save() {
         const listModel = <ListModel>({
-            name: this.model.name,
-            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
-            type: this.model.type,
+            listName: this.model.listName,
+            creationDate: `${this.creationDate.year}-${this.creationDate.month}-${this.creationDate.day}`,
+            listType: this.model.listType,
             description: this.model.description,
             notes: this.model.notes,
             parentFolderId: this.selectedNodes[0].data.id

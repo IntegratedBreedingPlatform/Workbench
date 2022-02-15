@@ -128,8 +128,8 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         }
 
         this.isLoading = true;
-        const listId = Number(this.route.snapshot.queryParamMap.get('listId'));
-        const germplasmListGenerator = { id: listId, entries: [] };
+        const id = Number(this.route.snapshot.queryParamMap.get('listId'));
+        const germplasmListGenerator = { listId: id, entries: [] };
         for (const row of this.context.data) {
             const entry = {
                 entryNo: row[HEADERS.ENTRY_NO],
@@ -149,7 +149,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({ name: listId + ListComponent.GERMPLASM_LIST_CHANGED });
+                this.eventManager.broadcast({ name: id + ListComponent.GERMPLASM_LIST_CHANGED });
             },
             (error) => {
                 this.isLoading = false;

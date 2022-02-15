@@ -2,11 +2,11 @@ import { SearchComposite } from '../../model/search-composite';
 
 export class ListModel {
     constructor(
-        public id?: number,
-        public name?: string,
+        public listId?: number,
+        public listName?: string,
         public description?: string,
-        public type?: string,
-        public date?: any,
+        public listType?: string,
+        public creationDate?: any,
         public notes?: string,
         public parentFolderId?: string,
         public entries?: ListEntry[],

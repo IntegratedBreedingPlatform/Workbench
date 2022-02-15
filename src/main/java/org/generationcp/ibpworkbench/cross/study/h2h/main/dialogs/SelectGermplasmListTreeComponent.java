@@ -16,15 +16,15 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.SelectListButtonClickListener;
-import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.SelectListItemClickListener;
-import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.SelectListTreeExpandListener;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.SelectListButtonClickListener;
+import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.SelectListItemClickListener;
+import org.generationcp.ibpworkbench.cross.study.h2h.main.listeners.SelectListTreeExpandListener;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.GermplasmList;
@@ -185,9 +185,8 @@ public class SelectGermplasmListTreeComponent extends VerticalLayout implements 
 		List<GermplasmList> germplasmListChildren = new ArrayList<GermplasmList>();
 
 		try {
-			germplasmListChildren = this.germplasmListManager.getGermplasmListByParentFolderIdBatched(parentGermplasmListId,
-					this.getCurrentProgramUUID(),
-					SelectGermplasmListTreeComponent.BATCH_SIZE);
+			germplasmListChildren = this.germplasmListManager.getGermplasmListByParentFolderId(parentGermplasmListId,
+					this.getCurrentProgramUUID());
 		} catch (MiddlewareQueryException e) {
 			SelectGermplasmListTreeComponent.LOG.error(e.getMessage(), e);
 			MessageNotifier.showWarning(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
