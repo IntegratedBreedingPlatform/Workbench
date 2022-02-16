@@ -23,9 +23,12 @@ import { UserProfileModule } from './entities/user-profile/user-profile.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
 import { PrototypeModule } from './prototype/prototype.module';
 import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
-import { MetadataManagerModule } from './metadata-manager/metadata-manager.module';
+import { CropSettingsManagerModule } from './crop-settings-manager/crop-settings-manager.module';
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
 import { AboutModule } from './about/about.module';
+import { ProgramSettingsManagerComponent } from './program-settings-manager/program-settings-manager.component';
+import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
+import { CreateProgramModule } from './entities/create-program/create-program.module';
 
 @NgModule({
     imports: [
@@ -44,10 +47,12 @@ import { AboutModule } from './about/about.module';
         UserProfileModule,
         FileManagerModule,
         PrototypeModule,
-        MetadataManagerModule,
+        CropSettingsManagerModule,
         VariableDetailsModule,
         GermplasmListModule,
-        AboutModule
+        ProgramSettingsManagerModule,
+        AboutModule,
+        CreateProgramModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

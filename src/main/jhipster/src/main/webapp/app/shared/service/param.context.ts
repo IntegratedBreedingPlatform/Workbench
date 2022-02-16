@@ -16,8 +16,8 @@ export class ParamContext {
         const queryParams = this.activatedRoute.snapshot.queryParams;
         this.cropName = queryParams.cropName;
         this.programUUID = queryParams.programUUID;
-        this.selectedProjectId = queryParams.selectedProjectId;
-        this.loggedInUserId = queryParams.loggedInUserId;
+        this.selectedProjectId = Number(queryParams.selectedProjectId);
+        this.loggedInUserId = Number(queryParams.loggedInUserId);
     }
 
     /**

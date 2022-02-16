@@ -5,7 +5,7 @@ import { programRoutes } from './program.route';
 import { ProgramComponent } from './program.component';
 import { MyStudiesComponent } from './my-studies.component';
 import { MyListsComponent } from './my-lists.component';
-import { BarChartModule, NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MyStudiesService } from './my-studies.service';
 import { MyListsService } from './my-lists.service';
 import { ProgramContext } from './program.context';

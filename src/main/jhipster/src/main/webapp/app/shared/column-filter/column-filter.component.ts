@@ -5,6 +5,7 @@ import { isNumeric } from '../util/is-numeric';
 import { NgbModal, NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../alert/alert.service';
 import { Select2OptionData } from 'ng-select2/lib/ng-select2.interface';
+import { ColumnFilterTransitionEventModel } from './column-filter-transition-event.model';
 
 @Component({
     selector: 'jhi-column-filter',
@@ -441,7 +442,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     transition() {
-        this.eventManager.broadcast({ name: this.eventName, content: '' });
+        this.eventManager.broadcast(new ColumnFilterTransitionEventModel(this.eventName, '', this.filtersAdded));
     }
 
     private onError(error) {
@@ -449,7 +450,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
     }
 
     updateRadioFilter(filter: any, key: string) {
-        this.request[key] = filter.value;
+        if (filter.transform) {
+            filter.transform(this.request);
+        } else {
+            this.request[key] = filter.value;
+        }
         this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }

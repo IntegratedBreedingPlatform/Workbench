@@ -1,0 +1,85 @@
+{
+  "program-settings-manager": {
+    "title": "Manage Program Settings",
+    "tabs": {
+      "basic-details": "Basic Details",
+      "members": "Members",
+      "locations": "Locations",
+      "breeding-methods": "Breeding Methods"
+    },
+    "basic-details": {
+      "crop": "Crop",
+      "program-name": "Program Name",
+      "program-start-date": "Program Start Date",
+      "update": {
+        "success": "Program updated successfully"
+      },
+      "delete": {
+        "title": "Delete Program",
+        "question": "Are you sure you want to delete the program?",
+        "success": "The program was deleted successfully"
+      }
+    },
+    "members": {
+      "heading": "Program members",
+      "description": "Choose team members for this program by dragging available users into the Program Members list on the right.",
+      "show.available.users": "Show available users",
+      "hide.available.users": "Hide available users",
+      "left": {
+        "heading": "Available Users",
+        "table": {
+          "column.username": "User name",
+          "column.fullname": "Full name",
+          "column.email": "Email"
+        }
+      },
+      "right": {
+        "heading": "Program members",
+        "table": {
+          "column.username": "User name",
+          "column.fullname": "Full name",
+          "column.role": "Role"
+        }
+      },
+      "delete.confirm": "Remove {{param}} member(s) from this program? (Users will no longer have a role associated to access current program)",
+      "delete.success": "Member(s) removed successfully",
+      "add.success": "Member(s) added successfully",
+      "select.role": {
+        "header": "Assign role",
+        "message": "Assigning {{count}} user(s) to the program. Please select a Program role:",
+        "label": "Role"
+      },
+      "remove.link.button": "Remove selected members"
+    },
+    "locations": {
+      "search": {
+        "columns": {
+          "location-name": "NAME",
+          "abbreviation": "ABBR.",
+          "location-id": "LOCATION ID",
+          "country": "COUNTRY",
+          "province": "PROVINCE",
+          "latitude": "LAT",
+          "longitude": "LONG",
+          "altitude": "ALT",
+          "location-type": "TYPE",
+          "program-favorite": "PROGRAM FAVORITE"
+        }
+      }
+    },
+    "breeding-methods": {
+      "search": {
+        "columns": {
+          "method-name": "METHOD NAME",
+          "description": "DESCRIPTION",
+          "group": "GROUP",
+          "code": "CODE",
+          "type": "TYPE",
+          "date": "DATE",
+          "class": "CLASS",
+          "program-favorite": "PROGRAM FAVORITE"
+        }
+      }
+    }
+  }
+}

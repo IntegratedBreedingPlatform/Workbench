@@ -5,10 +5,10 @@ import { ListBuilderContext } from '../shared/list-builder/list-builder.context'
 import { HELP_MANAGE_GERMPLASM } from '../app.constants';
 
 @Component({
-    selector: 'jhi-metadata-manager',
-    templateUrl: './metadata-manager.component.html'
+    selector: 'jhi-crop-settings-manager',
+    templateUrl: './crop-settings-manager.component.html'
 })
-export class MetadataManagerComponent implements OnInit {
+export class CropSettingsManagerComponent implements OnInit {
 
     constructor(private paramContext: ParamContext) {
         this.paramContext.readParams();
