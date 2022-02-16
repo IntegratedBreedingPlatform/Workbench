@@ -100,9 +100,7 @@ export class TreeComponent implements OnInit {
             }).map((node: PrimeNgTreeNode) => {
                 return <TreeComponentResult>({
                     id: node.data.id,
-                    name: node.data.name,
-                    // FIXME IBP-5413
-                    isParentCropList: this.isParentCropList(node)
+                    name: node.data.name
                 });
             });
             this.activeModal.close(selected);
@@ -128,8 +126,7 @@ export class TreeComponent implements OnInit {
                 this.draggedNode = null;
                 return;
             }
-            const isParentCropList = this.isParentCropList(node);
-            this.service.move(this.draggedNode.data.id, node.data.id, isParentCropList).subscribe((res) => {
+            this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
                     if (!node.children) {
                         node.children = [];
                     }
@@ -358,8 +355,7 @@ export class TreeComponent implements OnInit {
 
         const folder: PrimeNgTreeNode = this.selectedNodes[0];
         if (this.mode === Mode.Add) {
-            const isParentCropList = this.isParentCropList(folder);
-            this.service.create(this.name, folder.data.id, isParentCropList).subscribe((res) => {
+            this.service.create(this.name, folder.data.id).subscribe((res) => {
                     this.mode = this.Modes.None;
                     this.expand(folder);
                     this.alertService.success('bmsjHipsterApp.tree-table.messages.folder.create.successfully');
@@ -376,13 +372,6 @@ export class TreeComponent implements OnInit {
                 (res: HttpErrorResponse) =>
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
-    }
-
-    protected isParentCropList(node: PrimeNgTreeNode): boolean {
-        if (node.parent) {
-            return this.isParentCropList(node.parent);
-        }
-        return node.data.id === 'CROPLISTS';
     }
 
     protected validateDeleteFolder(folder: PrimeNgTreeNode) {
@@ -467,7 +456,5 @@ export enum Mode {
 // TODO reword usages of modal return, making explicit that result is entity agnostic
 export interface TreeComponentResult {
     id: number;
-    name: string;
-    // FIXME IBP-5413
-    isParentCropList: boolean
+    name: string
 }

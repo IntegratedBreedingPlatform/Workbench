@@ -191,10 +191,10 @@ export class GermplasmListService implements ListService {
 
     private toListModel(item: GermplasmListModel): ListModel {
         return <ListModel>({
-            name: item.listName,
+            listName: item.listName,
             description: item.description,
-            type: item.listType,
-            date: item.creationDate,
+            listType: item.listType,
+            creationDate: item.creationDate,
             notes: item.notes
         })
     }
@@ -202,10 +202,10 @@ export class GermplasmListService implements ListService {
     private toGermplasmList(germplasmListId: number, item: ListModel): GermplasmListModel {
         return <GermplasmListModel>({
             listId: germplasmListId,
-            listName: item.name,
+            listName: item.listName,
             description: item.description,
-            listType: item.type,
-            creationDate: item.date,
+            listType: item.listType,
+            creationDate: item.creationDate,
             notes: item.notes
         });
     }

@@ -15,6 +15,10 @@ export class DateHelperService {
         return '' + date.year + this.twoDigit(date.month) + this.twoDigit(date.day);
     }
 
+    convertFormattedNgbDateToString(date: NgbDate, format: string) {
+        return '' + date.year + format + this.twoDigit(date.month) + format + this.twoDigit(date.day);
+    }
+
     convertFormattedDateStringToNgbDate(dateString: string, format: string): NgbDate {
         // Convert date strings in the format to yyyy-mm-dd
         if (dateString && format && dateString.length === format.length) {

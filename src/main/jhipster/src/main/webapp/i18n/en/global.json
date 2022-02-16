@@ -89,6 +89,7 @@
         "clear-sort": "Clear sort",
         "selected": "Selected",
         "select.all": "Select all pages",
+        "select.all.items": "Select all",
         "total.entries": "Total entries"
     },
     "entity": {
@@ -105,7 +106,8 @@
             "select" : "Select",
             "import" : "Import",
             "proceed": "Proceed",
-            "update": "Update"
+            "update": "Update",
+            "reset": "Reset"
         },
         "detail": {
             "field": "Field",

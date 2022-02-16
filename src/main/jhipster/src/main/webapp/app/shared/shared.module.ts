@@ -87,6 +87,8 @@ import { GermplasmTreeTableComponent } from './tree/germplasm/germplasm-tree-tab
 import { GermplasmListTreeTableComponent } from './tree/germplasm/germplasm-list-tree-table.component';
 import { StudyTreeComponent } from './tree/study/study-tree.component';
 import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm-list-folder-selector.component';
+import { MembersService } from './user/service/members.service';
+import { RoleService } from './user/service/role.service';
 
 @NgModule({
     imports: [
@@ -159,6 +161,8 @@ import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm
         SecureImagePipe,
         Principal,
         AccountService,
+        MembersService,
+        RoleService,
         InventoryService,
         LotService,
         TransactionService,

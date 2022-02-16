@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 import { NameTypeService } from '../../shared/name-type/service/name-type.service';
 import { AlertService } from '../../shared/alert/alert.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ParamContext } from '../../shared/service/param.context';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { PopupService } from '../../shared/modal/popup.service';
-import { NameTypeContext } from './name-type.context';
 import { NameType } from '../../shared/germplasm/model/name-type.model';
+import { CropSettingsContext } from '../crop-Settings.context';
+import { finalize } from 'rxjs/internal/operators/finalize';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-name-type-edit-dialog',
@@ -27,7 +27,7 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
                 private eventManager: JhiEventManager,
                 private nameTypeService: NameTypeService,
                 private alertService: AlertService,
-                private nameTypeContext: NameTypeContext) {
+                private cropSettingsContext: CropSettingsContext) {
     }
 
     clear() {
@@ -37,24 +37,31 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
     save() {
         if (this.nameTypeId) {
             this.isLoading = true;
-            this.nameTypeService.updateNameType(this.nameType, this.nameTypeId).toPromise().then((result) => {
-                this.alertService.success('metadata-manager.name-type.modal.edit.success');
+            this.nameTypeService.updateNameType(this.nameType, this.nameTypeId).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
+                this.alertService.success('crop-settings-manager.name-type.modal.edit.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
         } else {
             this.isLoading = true;
-            this.nameTypeService.createNameType(this.nameType).toPromise().then((result) => {
-                this.alertService.success('metadata-manager.name-type.modal.create.success');
+            this.nameTypeService.createNameType(this.nameType).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
+                this.alertService.success('crop-settings-manager.name-type.modal.create.success');
                 this.notifyChanges();
                 this.isLoading = false;
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                this.isLoading = false;
-            });
+            }, (error) => this.onError(error));
+        }
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
         }
     }
 
@@ -69,16 +76,16 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (this.nameTypeContext.nameTypeDetails) {
-            this.nameTypeId = this.nameTypeContext.nameTypeDetails.id;
-            this.nameType.code = this.nameTypeContext.nameTypeDetails.code;
-            this.nameType.name = this.nameTypeContext.nameTypeDetails.name;
-            this.nameType.description = this.nameTypeContext.nameTypeDetails.description;
+        if (this.cropSettingsContext.nameTypeDetails) {
+            this.nameTypeId = this.cropSettingsContext.nameTypeDetails.id;
+            this.nameType.code = this.cropSettingsContext.nameTypeDetails.code;
+            this.nameType.name = this.cropSettingsContext.nameTypeDetails.name;
+            this.nameType.description = this.cropSettingsContext.nameTypeDetails.description;
         }
     }
 
     ngOnDestroy(): void {
-        this.nameTypeContext.nameTypeDetails = null;
+        this.cropSettingsContext.nameTypeDetails = null;
     }
 }
 

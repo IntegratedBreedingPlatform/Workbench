@@ -22,7 +22,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
     listTypes: ListType[];
 
     model = new ListModel();
-    selectedDate: NgbDate;
+    creationDate: NgbDate;
 
     public FolderModes = Mode;
 
@@ -47,7 +47,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         if (!this.paramContext.cropName) {
             this.paramContext.readParams();
         }
-        this.selectedDate = calendar.getToday();
+        this.creationDate = calendar.getToday();
     }
 
     abstract save();
@@ -61,8 +61,8 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
         super.ngOnInit();
 
         this.listService.getListTypes().subscribe((listTypes) => this.listTypes = listTypes);
-        if (!this.model.type) {
-            this.listService.getListType().subscribe((listType) => this.model.type = listType);
+        if (!this.model.listType) {
+            this.listService.getListType().subscribe((listType) => this.model.listType = listType);
         }
     }
 
@@ -91,8 +91,7 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
 
         event.accept();
 
-        const isParentCropList = this.isParentCropList(target);
-        this.treeService.move(source.data.id, target.data.id, isParentCropList).subscribe(
+        this.treeService.move(source.data.id, target.data.id).subscribe(
             (res) => {},
             (res: HttpErrorResponse) => {
                 // TODO: FIX ME! Due to primeng7 does not support accepting the event within subscribe, we are handling the re-render of the component by calling the expand method.

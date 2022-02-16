@@ -1,0 +1,25 @@
+<section>
+	<header>
+		<h1 jhiTranslate="crop-settings-manager.title">Manage Crop settings</h1>
+	</header>
+	<nav>
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['locations']" [routerLinkActive]="['active']" queryParamsHandling="merge"
+				   jhiTranslate="crop-settings-manager.tabs.locations"></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['breeding-methods']" [routerLinkActive]="['active']" queryParamsHandling="merge"
+				   jhiTranslate="crop-settings-manager.tabs.breeding-methods"></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['name-types']" [routerLinkActive]="['active']" queryParamsHandling="merge"
+				   jhiTranslate="crop-settings-manager.tabs.name-type"></a>
+			</li>
+		</ul>
+	</nav>
+	<div class="tab-content p-3">
+		<router-outlet></router-outlet>
+		<jhi-alert></jhi-alert>
+	</div>
+</section>

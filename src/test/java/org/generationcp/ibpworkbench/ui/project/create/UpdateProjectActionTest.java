@@ -1,14 +1,15 @@
 
 package org.generationcp.ibpworkbench.ui.project.create;
 
-import java.util.Date;
-
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Window;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,10 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Window;
-
-import org.junit.Assert;
+import java.util.Date;
 
 public class UpdateProjectActionTest {
 
@@ -89,7 +87,7 @@ public class UpdateProjectActionTest {
 		try {
 			this.updateProjectAction.buttonClick(this.clickEvent);
 
-			Mockito.verify(this.installationDirectoryUtil).renameOldWorkspaceDirectory(UpdateProjectActionTest.OLD_PROGRAM_NAME, this.project);
+			Mockito.verify(this.installationDirectoryUtil).renameOldWorkspaceDirectory(UpdateProjectActionTest.OLD_PROGRAM_NAME, project.getCropType().getCropName(), this.project.getProjectName());
 			final ArgumentCaptor<Project> projectCaptor = ArgumentCaptor.forClass(Project.class);
 			Mockito.verify(this.workbenchDataManager).saveOrUpdateProject(projectCaptor.capture());
 			final Project projectUpdated = projectCaptor.getValue();
@@ -108,7 +106,7 @@ public class UpdateProjectActionTest {
 		Mockito.doReturn(false).when(this.projectPanel).validate();
 		this.updateProjectAction.buttonClick(this.clickEvent);
 
-		Mockito.verify(this.installationDirectoryUtil, Mockito.never()).renameOldWorkspaceDirectory(Matchers.anyString(), Matchers.any(Project.class));
+		Mockito.verify(this.installationDirectoryUtil, Mockito.never()).renameOldWorkspaceDirectory(Matchers.anyString(), Matchers.anyString(), Matchers.anyString());
 		Mockito.verify(this.workbenchDataManager, Mockito.never()).saveOrUpdateProject(Matchers.any(Project.class));
 		Mockito.verify(this.contextUtil, Mockito.never()).logProgramActivity(Matchers.anyString(), Matchers.anyString());
 	}

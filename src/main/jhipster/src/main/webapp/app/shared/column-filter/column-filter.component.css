@@ -101,4 +101,5 @@ button.calendar, button.calendar:active {
 
 i.fa.fa-filter {
     font-size: 1.3em;
+    cursor: pointer;
 }

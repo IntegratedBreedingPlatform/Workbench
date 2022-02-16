@@ -11,10 +11,10 @@ import { AlertService } from '../alert/alert.service';
 import { TreeDragDropService } from 'primeng/api';
 import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
 import { Principal } from '..';
-import { ListModel } from '../list-builder/model/list.model';
 import { SampleTreeService } from '../../entities/sample/tree-table';
 import { ListService } from './service/list.service';
 import { SampleListService } from './service/sample-list.service';
+import { ListModel } from '../list-builder/model/list.model';
 
 @Component({
     selector: 'jhi-sample-list-creation',
@@ -62,9 +62,9 @@ export class SampleListCreationComponent extends ListCreationComponent {
 
     save() {
         const listModel = <ListModel>({
-            name: this.model.name,
-            date: `${this.selectedDate.year}-${this.selectedDate.month}-${this.selectedDate.day}`,
-            type: this.model.type,
+            name: this.model.listName,
+            date: `${this.creationDate.year}-${this.creationDate.month}-${this.creationDate.day}`,
+            type: this.model.listType,
             description: this.model.description,
             notes: this.model.notes,
             parentFolderId: this.selectedNodes[0].data.id

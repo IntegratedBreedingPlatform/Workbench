@@ -11,15 +11,15 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { NameTypeContext } from './name-type.context';
 import { Subscription } from 'rxjs';
 import { FilterType } from '../../shared/column-filter/column-filter.component';
+import { CropSettingsContext } from '../crop-Settings.context';
 
 @Component({
     selector: 'jhi-name-type',
-    templateUrl: './name-type.component.html'
+    templateUrl: './name-types-pane.component.html'
 })
-export class NameTypeComponent implements OnInit {
+export class NameTypesPaneComponent implements OnInit {
 
     nameTypes: NameTypeDetails[];
     private routeData: any;
@@ -65,7 +65,7 @@ export class NameTypeComponent implements OnInit {
                 private alertService: AlertService,
                 private router: Router,
                 private modalService: NgbModal,
-                private nameTypeContext: NameTypeContext,
+                private cropSettingsContext: CropSettingsContext,
                 private eventManager: JhiEventManager,
 
     ) {
@@ -152,17 +152,17 @@ export class NameTypeComponent implements OnInit {
     }
 
     editNameType(nameType: any) {
-        this.nameTypeContext.nameTypeDetails = nameType;
+        this.cropSettingsContext.nameTypeDetails = nameType;
         this.router.navigate(['/', { outlets: { popup: 'name-type-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
     deleteNameType(nameType: any) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = this.translateService.instant('metadata-manager.name-type.modal.confirmation.title');
-        confirmModalRef.componentInstance.message = this.translateService.instant('metadata-manager.name-type.modal.delete.warning', { param: nameType.name });
+        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
+        confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', { param: nameType.name });
         confirmModalRef.result.then(() => {
             this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
-                this.alertService.success('metadata-manager.name-type.modal.delete.success');
+                this.alertService.success('crop-settings-manager.name-type.modal.delete.success');
                 this.loadNameType();
             }).catch((response) => {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
