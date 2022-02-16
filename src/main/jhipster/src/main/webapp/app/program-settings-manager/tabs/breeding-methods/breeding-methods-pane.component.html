@@ -19,7 +19,7 @@
     <div class="table-responsive" *ngIf="breedingMethods">
         <table class="table table-striped table-bordered table-curved" *ngIf="breedingMethods.length else nodata">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)" (predicateChange)="onPredicateChanged()">
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
                 <th [jhiSortBy]="ColumnLabels.NAME"><span jhiTranslate="program-settings-manager.breeding-methods.search.columns.method-name"></span> <span class="fa fa-sort" [ngClass]="{'fa-sort-up': defaultSortApplied}"></span></th>
                 <th [jhiSortBy]="ColumnLabels.DESCRIPTION"><span jhiTranslate="program-settings-manager.breeding-methods.search.columns.description"></span> <span class="fa fa-sort"></span></th>
                 <th [jhiSortBy]="ColumnLabels.GROUP"><span jhiTranslate="program-settings-manager.breeding-methods.search.columns.group"></span> <span class="fa fa-sort"></span></th>
