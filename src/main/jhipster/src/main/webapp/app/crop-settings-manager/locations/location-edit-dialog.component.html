@@ -1,0 +1,86 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">
+				<span *ngIf="locationId" jhiTranslate="crop-settings-manager.location.modal.edit.header"></span>
+				<span *ngIf="!locationId" jhiTranslate="crop-settings-manager.location.modal.create.header"></span>
+			</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="clear()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<form name="form" #f="ngForm">
+			<div class="form-group row">
+				<label for="locationName" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.location.location-name">Location Name</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="name" id="code" [(ngModel)]="locationRequest.name" #locationName="ngModel" [maxLength]="60" [required]="true"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="locationAbbr" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.location.location-abbr">Location Abbreviation</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" name="abbreviation" id="name" [(ngModel)]="locationRequest.abbreviation" #locationAbbr="ngModel" [maxLength]="12" [required]="true"/>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="type" class="col-sm-4 control-label font-weight-bold" jhiTranslate="crop-settings-manager.location.location-type">Location Type</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="locationType" [(ngModel)]="locationRequest.type" #type="ngModel" [required]="true">
+						<option *ngFor="let locationType of locationTypes" [value]="locationType.id">
+							<label>{{locationType.name}}</label>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="country" class="col-sm-4 control-label font-weight-bold" jhiTranslate="crop-settings-manager.location.country">Country</label>
+				<div class="col-sm-8">
+
+					<select class="form-control" name="country" [(ngModel)]="locationRequest.countryId" #country="ngModel" (change)="countryChanged()">
+						<option *ngFor="let country of countries" [value]="country.id">
+							<label>{{country.name}}</label>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="province" class="col-sm-4 control-label font-weight-bold" jhiTranslate="crop-settings-manager.location.province">Province</label>
+				<div class="col-sm-8">
+					<select class="form-control" name="province" [(ngModel)]="locationRequest.provinceId" #province="ngModel" (change)="provinceChanged()">
+						<option *ngFor="let province of provinces" [value]="province.id">
+							<label>{{province.name}}</label>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row" style="margin-bottom: 5px;">
+				<label for="abbreviation" class="col-sm-4 control-label font-weight-bold" style="margin-right: 15px;">Geographical Details</label>
+				<input type="number" class="form-control col-sm-2 add_right_margin-10" name="latitude" [(ngModel)]="locationRequest.latitude"/>
+				<input type="number" class="form-control col-sm-2 add_right_margin-10" name="longitude" [(ngModel)]="locationRequest.longitude"/>
+				<input type="number" class="form-control col-sm-2 add_right_margin-10" name="altitude" [(ngModel)]="locationRequest.altitude"/>
+			</div>
+			<div class="row">
+				<div class="col-sm-4" style="margin-right: 15px;"></div>
+				<div class="col-sm-2" style="margin-right: 15px;"><em>Latitude</em></div>
+				<div class="col-sm-2" style="margin-right: 15px;"><em>Longitude</em></div>
+				<div class="col-sm-2"><em>Altitude</em></div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+		</button>
+		<button (click)="save()" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span class="fa fa-save"></span>&nbsp;
+			<span *ngIf="locationId" jhiTranslate="update"></span>
+			<span *ngIf="!locationId" jhiTranslate="create"></span>
+		</button>
+	</div>
+</div>
+

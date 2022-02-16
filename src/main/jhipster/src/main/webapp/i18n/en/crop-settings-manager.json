@@ -1,0 +1,116 @@
+{
+  "crop-settings-manager": {
+    "title": "Manage Crop settings",
+    "tabs": {
+      "locations": "Locations",
+      "breeding-methods": "Breeding Methods",
+      "name-type": "Germplasm Name Types"
+    },
+    "confirmation": {
+      "title": "Confirmation"
+    },
+    "name-type": {
+      "title": "Germplasm Name Types",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "date": "Date",
+      "modal": {
+        "delete": {
+          "success": "Name Type deleted successfully.",
+          "warning": "Are you sure you want to delete the Name Type {{param}}?"
+        },
+        "create": {
+          "header": "Create Name Type",
+          "success": "Name type created successfully"
+        },
+        "edit": {
+          "header": "Edit Name Type",
+          "success": "Name type updated successfully"
+        }
+      },
+      "columns": {
+        "code": "CODE",
+        "name": "NAME",
+        "description": "DESCRIPTION",
+        "code": "CODE",
+        "date": "DATE",
+        "action": "ACTION"
+      }
+    },
+    "breeding-method": {
+      "action": "Action",
+      "modal": {
+        "breeding-method-name": "Breeding Method Name",
+        "code": "Code",
+        "description": "Description",
+        "generation-advancement-type": "Generation Advancement Type",
+        "crop-reproductive-system": "Crop Reproductive System",
+        "class": "Class",
+        "separator": "Separator",
+        "prefix": "Prefix",
+        "count": "Count",
+        "suffix": "Suffix",
+        "delete": {
+          "success": "Breeding Method deleted successfully.",
+          "warning": "Are you sure you want to delete the Breeding Method {{param}}?"
+        },
+        "create": {
+          "header": "Create Breeding Method",
+          "success": "Breeding Method created successfully"
+        },
+        "edit": {
+          "header": "Edit Breeding Method",
+          "success": "Breeding Method updated successfully"
+        }
+      },
+      "columns": {
+        "method-name": "METHOD NAME",
+        "description": "DESCRIPTION",
+        "group": "GROUP",
+        "code": "CODE",
+        "type": "TYPE",
+        "date": "DATE",
+        "class": "CLASS",
+        "action": "ACTION"
+      }
+    },
+    "location": {
+      "location-name": "Location Name",
+      "location-abbr": "Location Abbreviation",
+      "location-type": "Location Type",
+      "country": "Country",
+      "province": "Province",
+      "geographical-details": "Geographical Details",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "altitude": "Altitude",
+      "modal": {
+        "delete": {
+          "success": "Location deleted successfully.",
+          "warning": "Are you sure you want to delete the Location {{param}}?"
+        },
+        "create": {
+          "header": "Create Location",
+          "success": "Location created successfully"
+        },
+        "edit": {
+          "header": "Edit Location",
+          "success": "Location updated successfully"
+        }
+      },
+      "columns": {
+        "location-name": "NAME",
+        "abbreviation": "ABBR.",
+        "location-id": "LOCATION ID",
+        "country": "COUNTRY",
+        "province": "PROVINCE",
+        "latitude": "LATITUDE",
+        "longitude": "LONGITUDE",
+        "altitude": "ALTITUDE",
+        "location-type": "TYPE",
+        "action": "ACTION"
+      }
+    }
+  }
+}
