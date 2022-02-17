@@ -37,6 +37,9 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     rowNumber: number;
 
     isIgnoreMatch: boolean;
+    useSameMatchForAllOcurrences: boolean;
+    selectedGermplasm: GermplasmDto;
+    sameOccurrencesMap: { [key: string]: GermplasmDto } = {}; // Key preferred Name.
 
     constructor(
         private modal: NgbActiveModal
@@ -44,6 +47,7 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.useSameMatchForAllOcurrences = false;
         this.unassignedCount = this.unassignedMatches.length;
         this.processMatch(this.matchNumber);
 
@@ -65,6 +69,12 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         this.page = 0;
         this.isIgnoreMatch = false;
         this.dataRow = this.unassignedMatches[matchNumber - 1];
+        const germplasm = this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]];
+        if (germplasm) {
+            this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = germplasm.gid;
+            this.next();
+        }
+
         this.matches = this.dataRow[HEADERS.GID_MATCHES];
         this.name = this.dataRow[HEADERS.DESIGNATION];
         this.rowNumber = this.dataRow[HEADERS.ROW_NUMBER];
@@ -74,6 +84,11 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         if (this.isFinish()) {
             this.modal.close(this.selectMatchesResult);
             return;
+        }
+        if (this.useSameMatchForAllOcurrences) {
+            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = this.selectedGermplasm;
+            this.useSameMatchForAllOcurrences = false;
+
         }
         this.processMatch(++this.matchNumber);
     }
@@ -87,11 +102,13 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     }
 
     onSelectMatch(germplasm: GermplasmDto) {
+        this.selectedGermplasm = germplasm;
         this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = germplasm.gid;
         this.isIgnoreMatch = false;
     }
 
     ignoreMatch() {
+        this.selectedGermplasm = null;
         this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = null;
         this.next();
     }
