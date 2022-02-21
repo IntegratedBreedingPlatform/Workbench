@@ -126,6 +126,10 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     ignoreMatch() {
         this.selectedGermplasm = null;
         this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = null;
+        if (this.useSameMatchForAllOccurrences) {
+            this.useSameMatchForAllOccurrences = false;
+            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = null;
+        }
         this.next();
     }
 
