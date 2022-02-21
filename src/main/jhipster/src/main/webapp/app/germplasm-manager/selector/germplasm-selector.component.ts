@@ -237,6 +237,14 @@ export class GermplasmSelectorComponent implements OnInit {
                 reset(req) {
                     ColumnFilterComponent.resetNameTypesFilter(this, req);
                 },
+            },
+            {
+                key: 'externalReferenceSource', name: 'External Reference Source', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'externalReferenceId', name: 'External Reference ID', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
             }
         ];
     }
