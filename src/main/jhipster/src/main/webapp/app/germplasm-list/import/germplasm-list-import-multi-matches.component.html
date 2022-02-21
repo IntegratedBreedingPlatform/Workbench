@@ -60,7 +60,7 @@
 					<div class="col">
 						<div class="form-check form-check-inline">
 							<input type="checkbox" class="form-check-input" name="" id="matchAllOccurrences"
-								   [(ngModel)]="useSameMatchForAllOcurrences">
+								   [(ngModel)]="useSameMatchForAllOccurrences" (change)="checkUseSameMatchForAllOcurrences()">
 							<label class="form-check-label" for="matchAllOccurrences" jhiTranslate="germplasm-list.import.review.use.same.match.for.all.ocurrences">
 								match for all occurrences of the name
 							</label>
