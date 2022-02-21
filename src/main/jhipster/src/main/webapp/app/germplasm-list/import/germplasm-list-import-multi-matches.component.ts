@@ -61,16 +61,14 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         if (this.matchNumber === 1) {
             this.modal.dismiss();
         } else {
-            --this.matchNumber;
+            this.matchNumber--;
             this.dataRow = this.unassignedMatches[this.matchNumber - 1];
             this.rowNumber = this.dataRow[HEADERS.ROW_NUMBER];
 
             const sameOccurrence = this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]];
-            this.useSameMatchForAllOccurrences = false;
+            this.useSameMatchForAllOccurrences = sameOccurrence && sameOccurrence.entry === this.rowNumber;
             if (sameOccurrence && sameOccurrence.entry !== this.rowNumber) {
                 return this.back();
-            } else if (sameOccurrence && sameOccurrence.entry === this.rowNumber) {
-                this.useSameMatchForAllOccurrences = true;
             }
 
             this.page = 0;
@@ -85,12 +83,12 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         this.rowNumber = this.dataRow[HEADERS.ROW_NUMBER];
 
         const sameOccurrence = this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]];
+        this.useSameMatchForAllOccurrences = sameOccurrence && sameOccurrence.entry === this.rowNumber;
         if (sameOccurrence && sameOccurrence.entry !== this.rowNumber) {
             this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = sameOccurrence.germplasmId;
             this.next();
-        } else if (sameOccurrence && sameOccurrence.entry === this.rowNumber) {
-            this.useSameMatchForAllOccurrences = true;
         }
+
         this.page = 0;
         this.isIgnoreMatch = false;
         this.matches = this.dataRow[HEADERS.GID_MATCHES];
