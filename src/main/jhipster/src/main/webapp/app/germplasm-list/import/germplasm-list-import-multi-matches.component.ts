@@ -38,7 +38,6 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
 
     isIgnoreMatch: boolean;
     useSameMatchForAllOccurrences: boolean;
-    selectedGermplasm: GermplasmDto;
     sameOccurrencesMap: { [key: string]: { entry: number, germplasmId: number } } = {}; // Key preferred Name.
 
     constructor(
@@ -101,7 +100,11 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
             return;
         }
         if (this.useSameMatchForAllOccurrences) {
-            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = { entry: this.dataRow[HEADERS.ROW_NUMBER], germplasmId: this.selectedGermplasm.gid };
+            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] =
+                {
+                    entry: this.dataRow[HEADERS.ROW_NUMBER],
+                    germplasmId: this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]
+                };
             this.useSameMatchForAllOccurrences = false;
         }
         this.processMatch(++this.matchNumber);
@@ -116,13 +119,11 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     }
 
     onSelectMatch(germplasm: GermplasmDto) {
-        this.selectedGermplasm = germplasm;
         this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = germplasm.gid;
         this.isIgnoreMatch = false;
     }
 
     ignoreMatch() {
-        this.selectedGermplasm = null;
         this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]] = null;
         if (this.useSameMatchForAllOccurrences) {
             this.useSameMatchForAllOccurrences = false;
@@ -134,8 +135,12 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
     checkUseSameMatchForAllOcurrences() {
         if (!this.useSameMatchForAllOccurrences) {
             this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = null;
-        } else if (this.selectedGermplasm) {
-            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = { entry: this.dataRow[HEADERS.ROW_NUMBER], germplasmId: this.selectedGermplasm.gid };
+        } else if (this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]) {
+            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] =
+                {
+                    entry: this.dataRow[HEADERS.ROW_NUMBER],
+                    germplasmId: this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]
+                };
         }
     }
 }
