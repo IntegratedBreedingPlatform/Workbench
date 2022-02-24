@@ -23,6 +23,7 @@ export class CopMatrixComponent {
     response: CopResponse;
     cancelTooltip;
     gids: number[];
+    listId: number;
 
     private timer: Subscription;
 
@@ -34,17 +35,25 @@ export class CopMatrixComponent {
         private translateService: TranslateService
     ) {
         const queryParamMap = this.route.snapshot.queryParamMap;
-        this.gids = queryParamMap.get('gids').split(',').map((g) => Number(g));
+        if (queryParamMap.get('gids')) {
+            this.gids =  queryParamMap.get('gids').split(',').map((g) => Number(g));
+        }
+        this.listId = Number(queryParamMap.get('listId'));
         this.calculate = queryParamMap.get('calculate') === 'true';
 
         this.isLoading = true;
-        const copObservable = this.calculate
-            ? this.copService.calculateCop(this.gids)
-            : this.copService.getCop(this.gids);
+        let copObservable;
+        if (this.listId) {
+            copObservable = this.copService.calculateCopForList(this.listId);
+        } else if (this.calculate) {
+            copObservable = this.copService.calculateCop(this.gids);
+        } else {
+            copObservable = this.copService.getCop(this.gids);
+        }
         copObservable.pipe(
             finalize(() => this.isLoading = false)
         ).subscribe((resp) => {
-            if (this.calculate && !(resp && resp.array)) {
+            if ((this.calculate || this.listId) && !(resp && resp.array)) {
                 this.alertService.success('cop.async.started');
             }
             this.response = resp;
@@ -55,6 +64,11 @@ export class CopMatrixComponent {
     }
 
     private watchProgress() {
+        if (!(this.gids && this.gids.length)) {
+            // TODO watch progress for list calculation
+            this.close();
+            return;
+        }
         // TODO increasing intervals? (5s, 10, 15, 15...)
         this.timer = timer(0, COP_ASYNC_PROGRESS_REFRESH_MILLIS).pipe(
             switchMap(() => this.copService.getCop(this.gids)),
@@ -62,7 +76,7 @@ export class CopMatrixComponent {
                 this.response = resp
             }),
             takeWhile((resp: CopResponse) => !resp.array)
-        ).subscribe(() => void 0, (error) => this.onError(error))
+        ).subscribe(() => void 0, (error) => this.onError(error));
     }
 
     cancelJobs() {

@@ -18,6 +18,15 @@ export class CopService {
         return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID, gids);
     }
 
+    calculateCopForList(listId: number) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.post<CopResponse>(baseUrl + `/cop/calculation/list/${listId}?programUUID=` + this.context.programUUID, null);
+    }
+
+    getCopForList(listId: number) {
+
+    }
+
     cancelJobs(gids: number[]) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const params = {};
@@ -31,5 +40,4 @@ export class CopService {
         params['gids'] = gids;
         return this.http.get<CopResponse>(baseUrl + '/cop?programUUID=' + this.context.programUUID, { params });
     }
-
 }

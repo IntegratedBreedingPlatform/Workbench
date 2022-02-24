@@ -485,14 +485,12 @@ export class ListComponent implements OnInit {
     }
 
     calculateCop() {
-        // TODO select all max 20
-        if (this.entries.length === 0 || (this.size() === 0 || this.size() > 20)) {
-            this.alertService.error('germplasm-list.list-data.cop.no.entries.error', {max: 20});
+        if (this.entries.length === 0 || (this.size() === 0)) {
+            this.alertService.error('germplasm-list.list-data.cop.no.entries.error');
             return false;
         }
 
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
-            queryParamsHandling: 'merge',
             queryParams: {
                 gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
                 calculate: true
@@ -501,17 +499,24 @@ export class ListComponent implements OnInit {
     }
 
     viewCop() {
-        // TODO select all max 20
-        if (this.entries.length === 0 || (this.size() === 0 || this.size() > 20)) {
-            this.alertService.error('germplasm-list.list-data.cop.no.entries.error', {max: 20});
+        if (this.entries.length === 0 || (this.size() === 0)) {
+            this.alertService.error('germplasm-list.list-data.cop.no.entries.error');
             return false;
         }
 
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
-            queryParamsHandling: 'merge',
             queryParams: {
                 gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
                 calculate: false
+            }
+        });
+    }
+
+    calculateCopForList() {
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParams: {
+                listId: this.listId,
+                calculate: true
             }
         });
     }
