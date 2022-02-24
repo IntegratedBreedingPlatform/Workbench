@@ -125,6 +125,7 @@
                 "show.matches": "Show matches",
                 "skip.multi.matches": "Skip data with multiple matches",
                 "skip.data.with.out.matches": "Skip data without matches",
+                "use.same.match.for.all.ocurrences": "Use same match for all remaining occurrences",
                 "summary": {
                     "title": "Confirmation",
                     "message": "<h4>Import List summary:</h4><p>{{param}}</p>",
