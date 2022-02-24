@@ -19,7 +19,7 @@
     <div class="table-responsive" *ngIf="locations">
         <table class="table table-striped table-bordered table-curved" *ngIf="locations.length else nodata">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)" (predicateChange)="onPredicateChanged()">
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
                 <th [jhiSortBy]="ColumnLabels.LOCATION_NAME"><span jhiTranslate="program-settings-manager.locations.search.columns.location-name"></span> <span class="fa fa-sort" [ngClass]="{'fa-sort-up': defaultSortApplied}"></span></th>
                 <th [jhiSortBy]="ColumnLabels.ABBREVIATION"><span jhiTranslate="program-settings-manager.locations.search.columns.abbreviation"></span> <span class="fa fa-sort"></span></th>
                 <th [jhiSortBy]="ColumnLabels.LOCATION_ID"><span jhiTranslate="program-settings-manager.locations.search.columns.location-id"></span> <span class="fa fa-sort"></span></th>

@@ -59,8 +59,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
     page: number;
     previousPage: number;
     predicate: any;
-    reverse: any;
-    defaultSortApplied: boolean;
+    reverse: boolean;
 
     isLoading: boolean;
 
@@ -82,12 +81,13 @@ export class BreedingMethodsPaneComponent implements OnInit {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
-        this.predicate = [ColumnLabels.FAVORITE_PROGRAM_UUID, ColumnLabels.NAME];
-        this.defaultSortApplied = true;
+        this.predicate = ColumnLabels.NAME;
         this.isProgramFavoriteFilterApplied = false;
-        this.reverse = 'asc';
+        this.reverse = true;
         this.resultSearch = new SearchResult('');
         this.searchRequest = new BreedingMethodSearchRequest();
+        this.searchRequest.filterFavoriteProgramUUID = true;
+        this.searchRequest.favoriteProgramUUID = this.context.programUUID;
     }
 
     ngOnInit(): void {
@@ -140,23 +140,16 @@ export class BreedingMethodsPaneComponent implements OnInit {
         this.loadAll(this.request);
     }
 
-    onPredicateChanged() {
-        this.defaultSortApplied = false;
-    }
-
     private getSort() {
         if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
-        }
-        if (this.defaultSortApplied) {
-            return [`${ColumnLabels.FAVORITE_PROGRAM_UUID},desc`, `${ColumnLabels.NAME},asc`];
         }
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
     }
 
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
+        this.reverse = null;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
@@ -246,7 +239,8 @@ export class BreedingMethodsPaneComponent implements OnInit {
                 transform(req) {
                     req[this.key] = this.value;
                     req['favoriteProgramUUID'] = (this.value) ? me.context.programUUID : null;
-                }
+                },
+                default: true
             }
         ];
     }
