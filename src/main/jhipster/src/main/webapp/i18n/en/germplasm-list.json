@@ -32,8 +32,11 @@
             "actions": {
                 "reorder-entries": "Reorder entries",
                 "export-data-and-labels": "Export list data and labels",
-                "calculate-cop": "Calculate Coefficient of parentage (Beta)",
-                "view-cop": "View Coefficient of parentage (Beta)",
+                "cop": {
+                    "menu": "COP",
+                    "calculate-cop": "Calculate Coefficient of parentage (Beta)",
+                    "view-cop": "View Coefficient of parentage (Beta)"
+                },
                 "export-data-and-labels": "Export list data and labels",
                 "add-entries": "Add entries",
                 "add-entries-to-another": "Add entries to another list",

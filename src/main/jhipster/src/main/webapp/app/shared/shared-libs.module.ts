@@ -9,6 +9,7 @@ import { CookieModule } from 'ngx-cookie';
 import { NgSelect2Module } from 'ng-select2';
 import { TreeDragDropService } from 'primeng/api';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
     imports: [
@@ -30,7 +31,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
         NgJhipsterModule,
         InfiniteScrollModule,
         NgSelect2Module,
-        NgSelectModule
+        NgSelectModule,
+        MatMenuModule
     ],
     providers: [
         TreeDragDropService
