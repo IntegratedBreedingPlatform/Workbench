@@ -100,11 +100,10 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
             return;
         }
         if (this.useSameMatchForAllOccurrences) {
-            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] =
-                {
-                    entry: this.dataRow[HEADERS.ROW_NUMBER],
-                    germplasmId: this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]
-                };
+            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = {
+                entry: this.dataRow[HEADERS.ROW_NUMBER],
+                germplasmId: this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]
+            };
             this.useSameMatchForAllOccurrences = false;
         }
         this.processMatch(++this.matchNumber);
@@ -136,11 +135,10 @@ export class GermplasmListImportMultiMatchesComponent implements OnInit {
         if (!this.useSameMatchForAllOccurrences) {
             this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = null;
         } else if (this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]) {
-            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] =
-                {
-                    entry: this.dataRow[HEADERS.ROW_NUMBER],
-                    germplasmId: this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]
-                };
+            this.sameOccurrencesMap[this.dataRow[HEADERS.DESIGNATION]] = {
+                entry: this.dataRow[HEADERS.ROW_NUMBER],
+                germplasmId: this.selectMatchesResult[this.dataRow[HEADERS.ROW_NUMBER]]
+            };
         }
     }
 }
