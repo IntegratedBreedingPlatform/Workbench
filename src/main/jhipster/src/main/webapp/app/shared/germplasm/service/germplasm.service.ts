@@ -23,6 +23,7 @@ import { GermplasmMergeRequest } from '../model/germplasm-merge-request.model';
 import { VariableTypeEnum } from '../../ontology/variable-type.enum';
 import { GermplasmProgeny } from '../model/germplasm-progeny.model';
 import { GermplasmMerged } from '../model/merged-germplasm.model';
+import { GermplasmMatchRequest } from '../../../entities/germplasm/germplasm-match-request.model';
 
 @Injectable()
 export class GermplasmService {
@@ -52,14 +53,12 @@ export class GermplasmService {
             germplasmUpdates, { observe: 'response' });
     }
 
-    getGermplasmMatches(germplasmPUIs: string[], germplasmUUIDs: string[], gids: number[], names: string[]): Observable<GermplasmDto[]> {
+    getGermplasmMatches(req?: GermplasmMatchRequest): Observable<GermplasmDto[]> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/matches` +
             '?programUUID=' + this.context.programUUID;
 
         return getAllRecords<GermplasmDto>((page: number, pageSize: number) => {
-            return this.http.post<GermplasmDto[]>(url, {
-                germplasmPUIs, germplasmUUIDs, names, gids
-            }, {
+            return this.http.post<GermplasmDto[]>(url, req, {
                 params: createRequestOption({ page, size: pageSize }),
                 observe: 'response'
             });
