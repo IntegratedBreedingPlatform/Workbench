@@ -23,6 +23,7 @@ import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-l
 import { ListModel } from '../../shared/list-builder/model/list.model';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 import { exportDataJsonToExcel } from '../../shared/util/file-utils';
+import { GermplasmMatchRequest } from '../../entities/germplasm/germplasm-match-request.model';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -64,6 +65,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
     selectMultipleMatchesResult: any = {};
     variableMatchesResult: any = {};
 
+    request: GermplasmMatchRequest = new GermplasmMatchRequest();
     constructor(
         private translateService: TranslateService,
         private modal: NgbActiveModal,
@@ -81,11 +83,12 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
+        this.processContextInputs();
+        this.loadGermplasmMatchesTable();
 
-        const guids = [];
-        const gids = [];
-        const names = [];
+    }
 
+    private processContextInputs() {
         this.context.newVariables.forEach((variable) => {
             if (variable.alias) {
                 this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
@@ -93,74 +96,83 @@ export class GermplasmListImportReviewComponent implements OnInit {
             this.variableMatchesResult[toUpper(variable.name)] = variable.id;
 
         });
-
+        this.request.gids = [];
+        this.request.germplasmUUIDs = [];
+        this.request.names = [];
         this.context.data.forEach((row) => {
             if (row[HEADERS['GUID']]) {
-                guids.push(row[HEADERS['GUID']]);
+                this.request.germplasmUUIDs.push(row[HEADERS['GUID']]);
             }
             if (row[HEADERS['GID']]) {
-                gids.push(row[HEADERS['GID']]);
+                this.request.gids.push(row[HEADERS['GID']]);
             }
 
             if (row[HEADERS['DESIGNATION']]) {
-                names.push(row[HEADERS['DESIGNATION']]);
+                this.request.names.push(row[HEADERS['DESIGNATION']]);
 
             }
         });
+    }
+
+    private loadGermplasmMatchesTable() {
         this.isLoading = true;
-        this.germplasmService.getGermplasmMatches(undefined, guids, gids, names).pipe(
-            finalize(() => this.isLoading = false)
-        ).subscribe((matches) => {
-            this.matches = matches;
-            this.matchesByGUID = {};
-            this.matchesByGid = {};
-            this.matchesByName = {};
+        this.germplasmService.getGermplasmMatches(this.request)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe((matches) => {
+                this.matches = matches;
+                this.matchesByGUID = {};
+                this.matchesByGid = {};
+                this.matchesByName = {};
 
-            this.matches.forEach((match) => {
-                if (match.germplasmUUID) {
-                    this.matchesByGUID[toUpper(match.germplasmUUID)] = match;
-                }
-                if (match.gid) {
-                    this.matchesByGid[match.gid] = match;
-                }
-                if (match.names) {
-                    match.names.forEach((name) => {
-                        if (!this.matchesByName[toUpper(name.name)]) {
-                            this.matchesByName[toUpper(name.name)] = [];
-                        }
-                        this.matchesByName[toUpper(name.name)].push(match);
-                    });
-                }
-
-            });
-
-            this.context.data.forEach((row, index) => {
-                const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
-                const gidMatch = this.matchesByGid[row[HEADERS.GID]];
-                const nameMatches = this.matchesByName[toUpper(row[HEADERS.DESIGNATION])];
-                row[HEADERS.ROW_NUMBER] = ++index;
-                row[HEADERS.GID_MATCHES] = [];
-                if (guidMatch) {
-                    this.dataSingleMatches.push(row);
-                    row[HEADERS.GID_MATCHES].push(guidMatch);
-                } else if (gidMatch) {
-                    this.dataSingleMatches.push(row);
-                    row[HEADERS.GID_MATCHES].push(gidMatch);
-                } else if (nameMatches) {
-                    if (nameMatches.length > 1) {
-                        this.dataMultipleMatches.push(row);
-                        row[HEADERS.GID_MATCHES] = nameMatches;
-
-                    } else {
-                        this.dataSingleMatches.push(row);
-                        row[HEADERS.GID_MATCHES] = nameMatches;
+                this.matches.forEach((match) => {
+                    if (match.germplasmUUID) {
+                        this.matchesByGUID[toUpper(match.germplasmUUID)] = match;
                     }
-                } else {
-                    this.dataWithOutMatches.push(row);
-                }
+                    if (match.gid) {
+                        this.matchesByGid[match.gid] = match;
+                    }
+                    if (match.names) {
+                        match.names.forEach((name) => {
+                            if (!this.matchesByName[toUpper(name.name)]) {
+                                this.matchesByName[toUpper(name.name)] = [];
+                            }
+                            this.matchesByName[toUpper(name.name)].push(match);
+                        });
+                    }
+
+                });
+
+                this.dataSingleMatches = [];
+                this.dataMultipleMatches = [];
+                this.dataWithOutMatches = [];
+                this.context.data.forEach((row, index) => {
+                    const guidMatch = this.matchesByGUID[toUpper(row[HEADERS.GUID])];
+                    const gidMatch = this.matchesByGid[row[HEADERS.GID]];
+                    const nameMatches = this.matchesByName[toUpper(row[HEADERS.DESIGNATION])];
+                    row[HEADERS.ROW_NUMBER] = ++index;
+                    row[HEADERS.GID_MATCHES] = [];
+                    if (guidMatch) {
+                        this.dataSingleMatches.push(row);
+                        row[HEADERS.GID_MATCHES].push(guidMatch);
+                    } else if (gidMatch) {
+                        this.dataSingleMatches.push(row);
+                        row[HEADERS.GID_MATCHES].push(gidMatch);
+                    } else if (nameMatches) {
+                        if (nameMatches.length > 1) {
+                            this.dataMultipleMatches.push(row);
+                            row[HEADERS.GID_MATCHES] = nameMatches;
+
+                        } else {
+                            this.dataSingleMatches.push(row);
+                            row[HEADERS.GID_MATCHES] = nameMatches;
+                        }
+                    } else {
+                        this.dataWithOutMatches.push(row);
+                    }
+                });
+                this.rows = [...this.dataSingleMatches, ...this.dataMultipleMatches, ...this.dataWithOutMatches];
             });
-            this.rows = [...this.dataSingleMatches, ...this.dataMultipleMatches, ...this.dataWithOutMatches];
-        });
+    }
 
     }
 
