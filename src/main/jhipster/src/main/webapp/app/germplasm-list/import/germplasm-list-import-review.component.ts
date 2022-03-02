@@ -15,7 +15,7 @@ import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manag
 import { Router } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
 import { GermplasmListImportMultiMatchesComponent } from './germplasm-list-import-multi-matches.component';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListImportManualMatchesComponent } from './germplasm-list-import-manual-matches.component';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
@@ -23,13 +23,28 @@ import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-l
 import { ListModel } from '../../shared/list-builder/model/list.model';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 import { exportDataJsonToExcel } from '../../shared/util/file-utils';
+import { ColumnFilterComponent, FilterType } from '../../shared/column-filter/column-filter.component';
+import { Select2OptionData } from 'ng-select2';
+import { NameTypeService } from '../../shared/name-type/service/name-type.service';
+import { NameTypeDetails } from '../../shared/germplasm/model/name-type.model';
+import { ColumnFilterTransitionEventModel } from '../../shared/column-filter/column-filter-transition-event.model';
+import { Subscription } from 'rxjs';
 import { GermplasmMatchRequest } from '../../entities/germplasm/germplasm-match-request.model';
+import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
+import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
+import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
     templateUrl: './germplasm-list-import-review.component.html'
 })
 export class GermplasmListImportReviewComponent implements OnInit {
+
+    static readonly COLUMN_FILTER_EVENT_NAME = 'matchesFiltersChanged';
+
+    COLUMN_FILTER_EVENT_NAME = GermplasmListImportReviewComponent.COLUMN_FILTER_EVENT_NAME;
+
+    eventSubscriber: Subscription;
 
     HEADERS = HEADERS;
     page = 0;
@@ -65,7 +80,9 @@ export class GermplasmListImportReviewComponent implements OnInit {
     selectMultipleMatchesResult: any = {};
     variableMatchesResult: any = {};
 
+    germplasmFilters: any;
     request: GermplasmMatchRequest = new GermplasmMatchRequest();
+
     constructor(
         private translateService: TranslateService,
         private modal: NgbActiveModal,
@@ -74,6 +91,8 @@ export class GermplasmListImportReviewComponent implements OnInit {
         private popupService: PopupService,
         private alertService: AlertService,
         private germplasmService: GermplasmService,
+        private nameTypeService: NameTypeService,
+        private breedingMethodService: BreedingMethodService,
         private germplasmManagerContext: GermplasmManagerContext,
         private router: Router,
         private eventManager: JhiEventManager,
@@ -83,7 +102,10 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
+        this.filters = this.getInitialFilters();
+        this.registerFiltersChanged();
         this.processContextInputs();
+        ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.loadGermplasmMatchesTable();
 
     }
@@ -174,7 +196,21 @@ export class GermplasmListImportReviewComponent implements OnInit {
             });
     }
 
+    get filters() {
+        return this.germplasmFilters;
     }
+
+    set filters(filters) {
+        this.germplasmFilters = filters;
+    }
+
+    private registerFiltersChanged() {
+        this.eventSubscriber = this.eventManager.subscribe(GermplasmListImportReviewComponent.COLUMN_FILTER_EVENT_NAME, (event: ColumnFilterTransitionEventModel) => {
+            this.loadGermplasmMatchesTable();
+        });
+    }
+
+
 
     dismiss() {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { backdrop: 'static' });
@@ -419,6 +455,63 @@ export class GermplasmListImportReviewComponent implements OnInit {
         });
 
         exportDataJsonToExcel('reviewImportGermplasmList.xlsx', 'Observations', dataTable);
+    }
+
+    private getInitialFilters() {
+        return [
+            {
+                key: 'nameTypes', name: 'Name Type', type: FilterType.DROPDOWN, values: this.getNameTypeOptions(), multipleSelect: true,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
+            },
+            {
+                key: 'methods', name: 'Breeding Method', type: FilterType.DROPDOWN, values: this.getBreedingMethodsOptions(), multipleSelect: true,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
+            },
+            {
+                key: 'locationName', name: 'Location Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            },
+            {
+                key: 'locationAbbreviation', name: 'Location Abbreviation', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
+                matchType: MatchType.STARTSWITH
+            }
+        ];
+    }
+
+    private getNameTypeOptions(): Promise<Select2OptionData[]> {
+        return this.nameTypeService.searchNameTypes({}, {
+            page: 0,
+            size: 100
+        }).toPromise().then((res: HttpResponse<NameTypeDetails[]>) => {
+            return res.body.map((type: NameTypeDetails) => {
+                return { id: type.code,
+                    text: type.name + ' (' + type.code + ')'
+                }
+            });
+        });
+    }
+
+    private getBreedingMethodsOptions(): Promise<Select2OptionData[]> {
+        return this.breedingMethodService.searchBreedingMethods({}, false,{
+            page: 0,
+            size: 300
+        }).toPromise().then((res: HttpResponse<BreedingMethod[]>) => {
+            return res.body.map((method: BreedingMethod) => {
+                return { id: method.code,
+                    text: method.name + ' (' + method.code + ')'
+                }
+            });
+        });
     }
 }
 
