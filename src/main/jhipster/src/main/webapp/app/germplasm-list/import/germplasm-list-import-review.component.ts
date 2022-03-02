@@ -210,8 +210,6 @@ export class GermplasmListImportReviewComponent implements OnInit {
         });
     }
 
-
-
     dismiss() {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component, { backdrop: 'static' });
         confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import.cancel.confirm');
@@ -502,7 +500,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
     }
 
     private getBreedingMethodsOptions(): Promise<Select2OptionData[]> {
-        return this.breedingMethodService.searchBreedingMethods({}, false,{
+        return this.breedingMethodService.searchBreedingMethods({}, false, {
             page: 0,
             size: 300
         }).toPromise().then((res: HttpResponse<BreedingMethod[]>) => {
