@@ -84,7 +84,7 @@ export class GermplasmListImportManualMatchesComponent implements OnInit {
 
     registerGermplasmSelectorSelected() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
-            this.germplasmService.getGermplasmMatches(undefined, undefined, [event.content], undefined).pipe(
+            this.germplasmService.getGermplasmMatches({ gids: [event.content]}).pipe(
                 finalize(() => this.isLoading = false)
             ).subscribe((germplasm) => {
                 this.selectedRow['MAPPED GID'] = germplasm[0].gid;

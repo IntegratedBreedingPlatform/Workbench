@@ -37,8 +37,8 @@ export class BreedingMethodService {
             { observe: 'response' }).pipe(map((res: HttpResponse<BreedingMethodGroup[]>) => res.body));
     }
 
-    searchBreedingMethods(request: BreedingMethodSearchRequest, favoriteLocation: boolean, pagination: any): Observable<HttpResponse<BreedingMethod[]>> {
-        if (favoriteLocation) {
+    searchBreedingMethods(request: BreedingMethodSearchRequest, favoriteMethod: boolean, pagination: any): Observable<HttpResponse<BreedingMethod[]>> {
+        if (favoriteMethod) {
             request.filterFavoriteProgramUUID = true;
             request.favoriteProgramUUID = this.context.programUUID;
         }

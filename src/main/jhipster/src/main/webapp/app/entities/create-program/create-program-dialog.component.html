@@ -11,7 +11,7 @@
 			<div class="form-group row required">
 				<label for="crop" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="program.crop">Crop</label>
 				<div class="col-sm-6">
-					<ng-select2 name="cropDropdown" id="cropDropdown" width="100%"
+					<ng-select2 name="cropDropdown" id="cropDropdown" width="100%" data-test="cropDropdown"
 								[data]="crops | CropSelect2Data"
 								[(ngModel)]="cropName"
 								placeholder="Select crop"
@@ -26,13 +26,14 @@
 			<div class="form-group row required">
 				<label for="programName" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="program.program-name">Program Name</label>
 				<div class="col-sm-5">
-					<input type="text" class="form-control" name="name" id="name" [(ngModel)]="program.name" #programName="ngModel" [maxLength]="50" required/>
+					<input type="text" class="form-control" name="name" id="name" data-test="programNameTextbox"
+						   [(ngModel)]="program.name" #programName="ngModel" [maxLength]="50" required/>
 				</div>
 			</div>
 			<div class="form-group row required">
 				<label class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="program.program-start-date">Program Start Date</label>
 				<div class="input-group col-sm-4">
-					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="startDate"
+					<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="startDate" data-test="startDateTextbox"
 						   ngbDatepicker #date="ngbDatepicker" id="date" name="date" required/>
 					<div class="input-group-append">
 						<button class="btn btn-outline-secondary calendar" (click)="date.toggle()" type="button"></button>
@@ -44,7 +45,7 @@
 			<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
 				<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 			</button>
-			<button (click)="create(f)" [disabled]="!isFormValid(f)" class="btn btn-primary">
+			<button (click)="create(f)" [disabled]="!isFormValid(f)" class="btn btn-primary" data-test="saveProgramButton">
 				<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 				<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 			</button>

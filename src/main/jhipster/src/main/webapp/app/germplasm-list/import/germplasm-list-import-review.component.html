@@ -15,10 +15,14 @@
 		</div>
 	<form *ngIf="!isLoading else throbber">
 		<div class="form-group row">
-			<label for="showMatchesDropdown" class="col-sm-auto col-form-label">
-				<span jhiTranslate="germplasm-list.import.review.show.matches"></span>:
-			</label>
+			<div class="col">
+				<jhi-column-filter [request]="request" [filters]="filters" [eventName]="COLUMN_FILTER_EVENT_NAME"
+							   class="flex-sm-grow-1"></jhi-column-filter>
+			</div>
 			<div class="col-sm-auto">
+				<label for="showMatchesDropdown" class="col-sm-auto col-form-label">
+					<span jhiTranslate="germplasm-list.import.review.show.matches"></span>:
+				</label>
 				<select class="form-control" id="showMatchesDropdown" name="showMatchesDropdown"
 						(change)="onShowMatchesOptionChange()"
 						[(ngModel)]="showMatchesOption" #showMatchesDropdown="ngModel">
