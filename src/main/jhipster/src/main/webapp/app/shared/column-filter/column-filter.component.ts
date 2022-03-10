@@ -84,7 +84,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         // Remove all attributes column
         for (const attribute of filter.attributes) {
             const attributeName = attribute.alias ? attribute.alias : attribute.name;
-            request.addedColumnsPropertyIds.pop(attributeName);
+            const attributeIndex = request.addedColumnsPropertyIds.indexOf(attributeName);
+
+            if (attributeIndex  > -1) {
+                request.addedColumnsPropertyIds.splice(attributeIndex, 1);
+            }
         }
 
         filter.attributes = [];
@@ -103,7 +107,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
         // Remove all name types column
         for (const nameType of filter.nameTypes) {
-            request.addedColumnsPropertyIds.pop(nameType.name);
+            const nameTypeIndex = request.addedColumnsPropertyIds.indexOf(nameType.name);
+
+            if (nameTypeIndex  > -1) {
+                request.addedColumnsPropertyIds.splice(nameTypeIndex, 1);
+            }
         }
 
         filter.nameTypes = [];
