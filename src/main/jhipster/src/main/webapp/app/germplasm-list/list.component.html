@@ -16,7 +16,9 @@
 				</jhi-list-columns>
 				<button class="btn btn-info float-right"
 						mat-button id="actionMenu" [matMenuTriggerFor]="mainActions"
-						*ngIf="isActionMenuAvailable()" jhiTranslate="actions" data-test="germplasmListActionButton"></button>
+						*ngIf="isActionMenuAvailable()" data-test="germplasmListActionButton">
+					<span jhiTranslate="actions"></span>&nbsp;<span class="fa fa-caret-down"></span>
+				</button>
 
 				<mat-menu #mainActions="matMenu" aria-labelledby="actionMenu" yPosition="below" xPosition="before" [overlapTrigger]="false">
 					<button mat-menu-item [hidden]="this.germplasmList?.locked" type="submit"
