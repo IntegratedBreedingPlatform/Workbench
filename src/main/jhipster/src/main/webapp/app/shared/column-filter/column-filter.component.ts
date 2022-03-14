@@ -84,7 +84,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         // Remove all attributes column
         for (const attribute of filter.attributes) {
             const attributeName = attribute.alias ? attribute.alias : attribute.name;
-            request.addedColumnsPropertyIds.pop(attributeName);
+            const attributeIndex = request.addedColumnsPropertyIds.indexOf(attributeName);
+
+            if (attributeIndex  > -1) {
+                request.addedColumnsPropertyIds.splice(attributeIndex, 1);
+            }
         }
 
         filter.attributes = [];
@@ -103,7 +107,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
         // Remove all name types column
         for (const nameType of filter.nameTypes) {
-            request.addedColumnsPropertyIds.pop(nameType.name);
+            const nameTypeIndex = request.addedColumnsPropertyIds.indexOf(nameType.name);
+
+            if (nameTypeIndex  > -1) {
+                request.addedColumnsPropertyIds.splice(nameTypeIndex, 1);
+            }
         }
 
         filter.nameTypes = [];
@@ -310,8 +318,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     updateListFilter(filter) {
         this.request[filter.key] = filter.value.split(',');
-        this.resultSearch.searchResultDbId = '';
-        this.apply(filter);
+        this.apply(filter)
     }
 
     updateTextFilter(filter: any, key: string) {
@@ -320,7 +327,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         } else {
             this.request[key] = filter.value;
         }
-        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
@@ -329,13 +335,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             type: filter.matchType,
             value: filter.value
         };
-        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
     updateBooleanFilter(filter: any, key: string) {
         this.request[key] = filter.value;
-        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
@@ -346,7 +350,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             }).map((option) => {
                 return option.id;
             });
-            this.resultSearch.searchResultDbId = '';
             this.apply(filter);
         });
     }
@@ -355,13 +358,11 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         if (filter.transform) {
             filter.transform(this.request);
         }
-        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
     reset(filter) {
         this._reset(filter);
-        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
@@ -409,7 +410,9 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         this.clearFilters();
         this.removeAllAttributesColumn();
         this.removeAllNameTypesColumn();
-        this.resultSearch.searchResultDbId = '';
+        if (this.resultSearch) {
+            this.resultSearch.searchResultDbId = '';
+        }
         this.transition();
     }
 
@@ -420,7 +423,9 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
             this._reset(filter);
             ColumnFilterComponent.updateBadgeLabel(filter);
         }
-        this.resultSearch.searchResultDbId = '';
+        if (this.resultSearch) {
+            this.resultSearch.searchResultDbId = '';
+        }
         this.transition();
     }
 
@@ -430,12 +435,14 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
 
     openModal(filter) {
         filter.open(this.modal, this.request).then(() => {
-            this.resultSearch.searchResultDbId = '';
             this.apply(filter);
         });
     }
 
     apply(filter) {
+        if (this.resultSearch) {
+            this.resultSearch.searchResultDbId = '';
+        }
         ColumnFilterComponent.updateBadgeLabel(filter);
         this.popoverButtons.forEach((button) => button.close());
         this.transition();
@@ -455,7 +462,6 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         } else {
             this.request[key] = filter.value;
         }
-        this.resultSearch.searchResultDbId = '';
         this.apply(filter);
     }
 
