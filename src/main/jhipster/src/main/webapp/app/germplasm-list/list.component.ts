@@ -38,6 +38,7 @@ import { GermplasmListFolderSelectorComponent } from '../shared/tree/germplasm/g
 import { TreeComponentResult } from '../shared/tree';
 import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.service';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
+import { MetadataDetails } from '../shared/ontology/model/metadata-details';
 
 declare var $: any;
 
@@ -217,7 +218,14 @@ export class ListComponent implements OnInit {
 
     private loadEntryDetails() {
         return this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise().then(
-            (res: HttpResponse<VariableDetails[]>) => this.variables = res.body,
+            (res: HttpResponse<VariableDetails[]>) => {
+                res.body.forEach((variable) => {
+                    const metadataDetails = new MetadataDetails();
+                    variable.metadata = metadataDetails;
+                    variable.metadata.deletable = 8230 !== Number(variable.id);
+                })
+                this.variables = res.body;
+            },
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
