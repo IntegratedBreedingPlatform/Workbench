@@ -550,6 +550,12 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			$scope.meltRCallObject.parameters.data = JSON.stringify(data);
 			// melt the data first before transforming
 			rCallService.executeRCallAsJSON($scope.meltRCallObject.endpoint, $scope.meltRCallObject.parameters).then(function (response) {
+				// molten data should have a "variable" field in order to
+				// successfully cast the data.
+				let hasNoVariables = response.data.some(datum => !datum.variable);
+				if (hasNoVariables) {
+					return Promise.reject({data: 'No valid observation variables available in the table.'});
+				}
 				rObject.parameters.data = JSON.stringify(response.data);
 				// transform the molten data through R cast function
 				return rCallService.executeRCallAsCSV(rObject.endpoint, rObject.parameters);
