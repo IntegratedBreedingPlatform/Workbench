@@ -635,7 +635,7 @@ export class ListComponent implements OnInit {
     }
 
     private setDefaultSort() {
-        this.predicate = ColumnAlias.ENTRY_NO;
+        this.predicate = 'VARIABLE_8230'; // Represent ENTRY_NO variable.
         this.reverse = 'asc';
     }
 
@@ -830,7 +830,6 @@ export class ListComponent implements OnInit {
 }
 
 export enum ColumnAlias {
-    'ENTRY_NO' = 'ENTRY_NO',
     'GID' = 'GID',
     'DESIGNATION' = 'DESIGNATION',
     'LOTS' = 'LOTS',
