@@ -116,7 +116,6 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 }
 
 export enum HEADERS {
-    'ENTRY_NO' = 'ENTRY_NO',
     'ID' = 'ID',
     'NAME' = 'NAME',
     'DESCRIPTION' = 'DESCRIPTION'
