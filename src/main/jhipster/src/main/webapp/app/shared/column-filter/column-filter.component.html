@@ -2,12 +2,12 @@
     <label (click)="isCollapsed = !isCollapsed"
            [attr.aria-expanded]="!isCollapsed" aria-controls="collapseSearchFilter">
         <i [ngClass]="isCollapsed?'fa fa-caret-right fa-2':'fa fa-caret-down fa-2'" aria-hidden="true"> </i>
-        <strong class="d-inline-flex p-2">Filter table</strong>
+        <strong class="d-inline-flex p-2">{{sectionLabel}}</strong>
     </label>
     <div id="collapseSearchFilter" [ngbCollapse]="isCollapsed">
         <form class="form-inline mb-2">
             <div class="form-row">
-                <label class="col-auto" for="dropdownFilters" >Search by</label>
+                <label class="col-auto" for="dropdownFilters" >{{filterDropdownLabel}}</label>
                 <div class="col-auto form-group">
                     <div class="input-group">
                         <select class="form-control" id="dropdownFilters" name="dropdownFilters"

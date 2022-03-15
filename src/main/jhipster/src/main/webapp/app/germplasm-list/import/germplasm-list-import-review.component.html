@@ -17,7 +17,8 @@
 		<div class="form-group row">
 			<div class="col">
 				<jhi-column-filter [request]="request" [filters]="filters" [eventName]="COLUMN_FILTER_EVENT_NAME"
-							   class="flex-sm-grow-1"></jhi-column-filter>
+							   [isCollapsed]="true" [sectionLabel]="sectionLabel" [filterDropdownLabel]="filterDropdownLabel"
+								class="flex-sm-grow-1"></jhi-column-filter>
 			</div>
 			<div class="col-sm-auto">
 				<label for="showMatchesDropdown" class="col-sm-auto col-form-label">

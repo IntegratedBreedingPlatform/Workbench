@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { GermplasmListImportComponent, HEADERS } from './germplasm-list-import.component';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,6 +41,8 @@ import { MatchType } from '../../shared/column-filter/column-filter-text-with-ma
 export class GermplasmListImportReviewComponent implements OnInit {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'matchesFiltersChanged';
+    sectionLabel = 'Advanced Match Criteria';
+    filterDropdownLabel = 'Filter criteria';
 
     COLUMN_FILTER_EVENT_NAME = GermplasmListImportReviewComponent.COLUMN_FILTER_EVENT_NAME;
 
