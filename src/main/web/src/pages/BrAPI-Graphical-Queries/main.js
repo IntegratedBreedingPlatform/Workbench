@@ -554,7 +554,7 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 				// successfully cast the data.
 				let hasNoVariables = response.data.some(datum => !datum.variable);
 				if (hasNoVariables) {
-					return Promise.reject({data: 'No valid observation variables available in the table.'});
+					return Promise.reject({data: 'No valid traits available in the table.'});
 				}
 				rObject.parameters.data = JSON.stringify(response.data);
 				// transform the molten data through R cast function
