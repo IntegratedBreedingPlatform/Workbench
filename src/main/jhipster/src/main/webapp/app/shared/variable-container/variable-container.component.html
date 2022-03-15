@@ -23,7 +23,7 @@
 				<tbody>
 				<tr *ngFor="let variable of variables; index as index">
 					<td>
-						<input type="checkbox" [checked]="isSelected(variable)" (click)="toggleSelect(index, variable, true)">
+						<input [hidden]="variable.metadata && !variable.metadata.deletable" type="checkbox" [checked]="isSelected(variable)" (click)="toggleSelect(index, variable, true)">
 					</td>
 					<td style="width: auto; min-width: 150px;">
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
