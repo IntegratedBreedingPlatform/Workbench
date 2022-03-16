@@ -323,7 +323,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
             germplasmListCreationModalRef.componentInstance.entries = newGermplasmList.map((row) => {
                 const entry = new GermplasmListEntry();
                 entry.gid = row[HEADERS.GID];
-                entry.entryNo = Number(row[HEADERS.ROW_NUMBER]);
+                entry.entryNo = Number(row[HEADERS.ENTRY_NO]);
                 entry.data = Object.keys(this.variableMatchesResult).reduce((map, variableName) => {
                     if (row[variableName]) {
                         map[this.variableMatchesResult[variableName]] = { value: row[variableName] };
