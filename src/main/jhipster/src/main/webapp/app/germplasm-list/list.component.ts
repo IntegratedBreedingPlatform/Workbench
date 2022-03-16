@@ -51,6 +51,8 @@ export class ListComponent implements OnInit {
 
     static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
     static readonly GERMPLASM_LIST_CHANGED = 'GermplasmListViewChanged';
+    static readonly SORT_ENTRY_NO_VARIABLE = 'VARIABLE_8230';
+
     readonly TermIdEnum = TermIdEnum;
 
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LIST_UPDATES'];
@@ -515,7 +517,7 @@ export class ListComponent implements OnInit {
         const searchRequest = new GermplasmListDataSearchRequest();
         searchRequest.entryNumbers = [];
         this.getSelectedItemIds().forEach((selectedItemId) => {
-            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data['ENTRY_NO']);
+            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
         });
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
@@ -635,7 +637,7 @@ export class ListComponent implements OnInit {
     }
 
     private setDefaultSort() {
-        this.predicate = 'VARIABLE_8230'; // Represent ENTRY_NO variable.
+        this.predicate = ListComponent.SORT_ENTRY_NO_VARIABLE;
         this.reverse = 'asc';
     }
 
