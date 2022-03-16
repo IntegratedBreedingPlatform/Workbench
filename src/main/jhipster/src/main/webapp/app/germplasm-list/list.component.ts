@@ -224,7 +224,7 @@ export class ListComponent implements OnInit {
                 res.body.forEach((variable) => {
                     const metadataDetails = new MetadataDetails();
                     variable.metadata = metadataDetails;
-                    variable.metadata.deletable = 8230 !== Number(variable.id);
+                    variable.metadata.deletable = TermIdEnum.ENTRY_NO !== Number(variable.id);
                 })
                 this.variables = res.body;
             },
@@ -740,6 +740,9 @@ export class ListComponent implements OnInit {
         }
 
         this.germplasmListService.addVariable(this.listId, variable.id, VariableTypeEnum.ENTRY_DETAILS).subscribe(() => {
+            const metadataDetails = new MetadataDetails();
+            variable.metadata = metadataDetails;
+            variable.metadata.deletable = TermIdEnum.ENTRY_NO !== Number(variable.id);
             this.variables.push(variable);
             this.refreshTable();
         });
