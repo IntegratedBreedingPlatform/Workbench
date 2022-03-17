@@ -553,7 +553,7 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 				// molten data should have a "variable" field in order to
 				// successfully cast the data.
 				let hasNoVariables = response.data.some(datum => !datum.variable);
-				if (hasNoVariables) {
+				if (response.data.length === 0 || hasNoVariables) {
 					return Promise.reject({data: 'No valid traits available in the table.'});
 				}
 				rObject.parameters.data = JSON.stringify(response.data);
