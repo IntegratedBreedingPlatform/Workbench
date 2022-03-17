@@ -15,11 +15,15 @@ import { ColumnFilterTransitionEventModel } from './column-filter-transition-eve
 })
 export class ColumnFilterComponent implements OnInit, OnDestroy {
 
+    static readonly DEFAULT_SECTION_LABEL = 'Filter table';
+    static readonly DEFAULT_FILTER_DROPDOWN_LABEL = 'Search by';
+
     @ViewChildren('popoverButton')
     private popoverButtons: QueryList<NgbPopover>;
 
-    public isCollapsed = false;
-
+    @Input() isCollapsed = false;
+    @Input() sectionLabel = ColumnFilterComponent.DEFAULT_SECTION_LABEL;
+    @Input() filterDropdownLabel = ColumnFilterComponent.DEFAULT_FILTER_DROPDOWN_LABEL;
     @Input() resultSearch: any;
     @Input() request: any;
     @Input() eventName = 'columnFiltersChanged';
