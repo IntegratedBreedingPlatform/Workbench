@@ -208,7 +208,7 @@ public class RunMultiSiteAction implements ClickListener {
 	}
 
 	DataSet getSummaryStatsDataSet(final int studyId) {
-		return this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
+		return this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_STATISTICS.getId());
 	}
 
 	String generateInputFileName(final Project project) {
