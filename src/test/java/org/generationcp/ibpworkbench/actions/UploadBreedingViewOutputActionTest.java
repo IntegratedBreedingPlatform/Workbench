@@ -196,7 +196,7 @@ public class UploadBreedingViewOutputActionTest {
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
 			.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatisticsData(
 			ArgumentMatchers.any(File.class),
 			ArgumentMatchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
@@ -252,7 +252,7 @@ public class UploadBreedingViewOutputActionTest {
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
 			.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatsData(
+		Mockito.verify(this.breedingViewImportService, Mockito.times(1)).importSummaryStatisticsData(
 			ArgumentMatchers.any(File.class),
 			ArgumentMatchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(0))
@@ -279,7 +279,7 @@ public class UploadBreedingViewOutputActionTest {
 
 		Mockito.verify(this.breedingViewImportService, Mockito.times(1))
 			.importMeansData(ArgumentMatchers.any(File.class), ArgumentMatchers.anyInt());
-		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatsData(
+		Mockito.verify(this.breedingViewImportService, Mockito.times(0)).importSummaryStatisticsData(
 			ArgumentMatchers.any(File.class),
 			ArgumentMatchers.anyInt());
 		Mockito.verify(this.breedingViewImportService, Mockito.times(0))
