@@ -24,6 +24,7 @@ import org.generationcp.middleware.domain.dms.StandardVariable;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.domain.ontology.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
@@ -59,7 +60,7 @@ public class RepresentationDataSetQuery implements Query {
 									// by accessing the Study Details page
 									// directly from the URL
 	private int size;
-	
+
 	public static final String IS_ACCEPTED_VALUE_KEY = "isAcceptedValue";
 
 	public static final String MISSING_VALUE = "missing";
@@ -210,7 +211,8 @@ public class RepresentationDataSetQuery implements Query {
 
 	protected boolean isCategoricalAcceptedValue(final String displayValue, final StandardVariable standardVariable) {
 		if (standardVariable.getDataType().getId() == TermId.CATEGORICAL_VARIABLE.getId() && displayValue != null
-				&& !displayValue.isEmpty() && !RepresentationDataSetQuery.MISSING_VALUE.equals(displayValue)) {
+			&& !displayValue.isEmpty() && !RepresentationDataSetQuery.MISSING_VALUE.equals(displayValue)
+			&& standardVariable.getVariableTypes().contains(VariableType.TRAIT)) {
 			if (standardVariable.getEnumerations() == null) {
 				return true;
 			}
