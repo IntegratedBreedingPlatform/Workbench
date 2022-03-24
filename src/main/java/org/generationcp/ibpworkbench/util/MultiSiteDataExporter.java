@@ -217,7 +217,8 @@ public class MultiSiteDataExporter {
 				for (int i = 2; i < header.length; i++) {
 					boolean existsFlag = false;
 					for (final Variable variable : map.values()) {
-						if (variable.getVariableType().getLocalName().equals(trait.getName().replace("_Means", "") + "_" + header[i])) {
+						if (variable.getVariableType().getLocalName()
+							.equalsIgnoreCase(trait.getName().replace("_Means", "") + "_" + header[i])) {
 							row.add(variable.getValue());
 							existsFlag = true;
 							break;
