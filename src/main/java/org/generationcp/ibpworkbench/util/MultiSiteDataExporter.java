@@ -1,6 +1,9 @@
 package org.generationcp.ibpworkbench.util;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.generationcp.commons.breedingview.xml.Trait;
 import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
@@ -11,8 +14,12 @@ import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.WorkbenchContentApp;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
+import org.generationcp.middleware.api.ontology.OntologyVariableService;
+import org.generationcp.middleware.domain.dms.DMSVariableType;
+import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -21,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Configurable
 public class MultiSiteDataExporter {
@@ -42,6 +52,9 @@ public class MultiSiteDataExporter {
 	@Autowired
 	private StudyDataManager studyDataManager;
 
+	@Resource
+	private OntologyVariableService ontologyVariableService;
+
 	public void generateXmlFieldBook(final GxeInput gxeInput) {
 		try {
 			final GxeXMLWriter writer = new GxeXMLWriter(gxeInput);
@@ -53,8 +66,8 @@ public class MultiSiteDataExporter {
 	}
 
 	public String exportMeansDatasetToCsv(final String inputFileName, final MultiSiteParameters multiSiteParameters,
-			final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
-			final List<Trait> selectedTraits, final WorkbenchContentApp workbenchApplication) {
+		final List<Experiment> experiments, final String environmentName, final GxeEnvironment gxeEnv,
+		final List<Trait> selectedTraits, final WorkbenchContentApp workbenchApplication) {
 
 		final Project currentProject = multiSiteParameters.getProject();
 		final String environmentGroup = multiSiteParameters.getSelectedEnvGroupFactorName();
@@ -79,7 +92,7 @@ public class MultiSiteDataExporter {
 		}
 
 		if (!environmentGroup.equalsIgnoreCase(environmentName) && environmentGroup != null && !environmentGroup.isEmpty() && !"None"
-				.equalsIgnoreCase(environmentGroup)) {
+			.equalsIgnoreCase(environmentGroup)) {
 			traitToColNoMap.put(environmentGroup, j);
 			headerRow.add(BreedingViewUtil.sanitizeName(environmentGroup));
 			j++;
@@ -109,6 +122,7 @@ public class MultiSiteDataExporter {
 		final int studyId = multiSiteParameters.getStudy().getId();
 		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
 		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
+
 		boolean hasMissingMean = false;
 		// create table content
 		for (final Experiment experiment : experiments) {
@@ -147,12 +161,13 @@ public class MultiSiteDataExporter {
 					var = experiment.getVariates().findByLocalName(traitMapEntry.getKey());
 				}
 
-				if (var != null && !(var.getVariableType().getLocalName().equalsIgnoreCase(environmentName) && isEnvironmentFactorALocationIdVariable)) {
+				if (var != null && !(var.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
+					&& isEnvironmentFactorALocationIdVariable)) {
 					if (var.getValue() != null && !var.getValue().trim().matches("\\-1(\\.0+)?(E|e)(\\+36)")) {
 						row[traitMapEntry.getValue()] = var.getValue().replace(",", ";");
 					}
 				}
-				if(!hasMissingMean && row[traitMapEntry.getValue()] == null) {
+				if (!hasMissingMean && row[traitMapEntry.getValue()] == null) {
 					hasMissingMean = true;
 				}
 			}
@@ -161,82 +176,101 @@ public class MultiSiteDataExporter {
 
 			i++;
 		}
-		if(hasMissingMean) {
+		if (hasMissingMean) {
 			MessageNotifier
 				.showWarning(workbenchApplication.getMainWindow(), "Warning", "Some traits have missing mean values for some locations.");
 		}
 		return this.writeToCsvFile(inputFileName, currentProject, tableItems, false);
 	}
 
-	public String exportTrialDatasetToSummaryStatsCsv(final int studyId, final String inputFileName, final List<Experiment> experiments,
-			final String environmentName, final List<Trait> selectedTraits, final Project currentProject) {
+	public String exportSummaryStatisticsToCsvFile(final int studyId, final String inputFileName,
+		final String environmentName, final List<Trait> selectedTraits, final Project currentProject) {
 
 		if (currentProject == null) {
 			throw new IllegalArgumentException("current project is null");
 		}
 
-		final List<String[]> tableItems = new ArrayList<String[]>();
+		final List<String[]> tableItems = new ArrayList<>();
+		final DataSet plotDataset =
+			this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.PLOT_DATA.getId());
+		final DataSet summaryStatsDataSet =
+			this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
+		final List<Experiment> experiments = this.studyDataManager.getExperiments(summaryStatsDataSet.getId(), 0, Integer.MAX_VALUE);
 
 		final String[] header =
-				new String[] {environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
-						"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
-						"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
+			new String[] {
+				environmentName, "Trait", "NumValues", "NumMissing", "Mean", "Variance", "SD", "Min", "Max", "Range",
+				"Median", "LowerQuartile", "UpperQuartile", "MeanRep", "MinRep", "MaxRep", "MeanSED", "MinSED", "MaxSED", "MeanLSD",
+				"MinLSD", "MaxLSD", "CV", "Heritability", "WaldStatistic", "WaldDF", "Pvalue"
 
-				};
+			};
 
 		tableItems.add(header);
 
 		final boolean isEnvironmentFactorALocationIdVariable = this.studyDataManager.isLocationIdVariable(studyId, environmentName);
 		final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(studyId);
 
-		for (final Experiment exp : experiments) {
+		if (CollectionUtils.isNotEmpty(experiments)) {
+			final Map<String, Integer> methodsIdsMap = new CaseInsensitiveMap();
+			for (final DMSVariableType variable : experiments.get(0).getVariates().getVariableTypes().getVariableTypes()) {
+				methodsIdsMap.putIfAbsent(variable.getStandardVariable().getMethod().getName(),
+					variable.getStandardVariable().getMethod().getId());
+			}
+			final Map<String, Integer> traitVariableIdsMap =
+				new CaseInsensitiveMap(plotDataset.getVariableTypes().getVariates().getVariableTypes().stream().collect(
+					Collectors.toMap(DMSVariableType::getLocalName, DMSVariableType::getId)));
+			final MultiKeyMap analysisMethodsOfTraits =
+				this.ontologyVariableService.getAnalysisMethodsOfTraits(new ArrayList<>(traitVariableIdsMap.values()),
+					new ArrayList<>(methodsIdsMap.values()));
 
-			final Map<String, Variable> map = exp.getVariatesMap();
+			for (final Experiment experiment : experiments) {
 
-			for (final Trait trait : selectedTraits) {
+				final Map<Integer, Variable> analysisVariableValuesMap = experiment.getVariates().getVariables().stream()
+					.collect(Collectors.toMap(v -> v.getVariableType().getId(), Function.identity()));
 
-				final List<String> row = new ArrayList<String>();
+				for (final Trait trait : selectedTraits) {
 
-				final Variable factorVariable = exp.getFactors().findByLocalName(environmentName);
-				String envValue = factorVariable.getValue();
-				if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
+					final List<String> row = new ArrayList<>();
+
+					final Variable factorVariable = experiment.getFactors().findByLocalName(environmentName);
+					String envValue = factorVariable.getValue();
+					if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
 						&& isEnvironmentFactorALocationIdVariable) {
-					envValue = locationNameMap.get(factorVariable.getValue());
-				}
+						envValue = locationNameMap.get(factorVariable.getValue());
+					}
 
-				String traitValue = BreedingViewUtil.sanitizeName(trait.getName());
-				if (envValue != null) {
-					envValue = envValue.replaceAll(",", ";");
-				}
-				if (traitValue != null) {
-					traitValue = traitValue.replaceAll(",", ";");
-				}
-				row.add(envValue);
-				row.add(traitValue);
+					String traitValue = BreedingViewUtil.sanitizeName(trait.getName());
+					if (envValue != null) {
+						envValue = envValue.replaceAll(",", ";");
+					}
+					if (traitValue != null) {
+						traitValue = traitValue.replaceAll(",", ";");
+					}
+					row.add(envValue);
+					row.add(traitValue);
 
-				for (int i = 2; i < header.length; i++) {
-					boolean existsFlag = false;
-					for (final Variable variable : map.values()) {
-						if (variable.getVariableType().getLocalName()
-							.equalsIgnoreCase(trait.getName().replace("_Means", "") + "_" + header[i])) {
-							row.add(variable.getValue());
-							existsFlag = true;
-							break;
+					for (int i = 2; i < header.length; i++) {
+						final String traitName = trait.getName().replace("_Means", "");
+						final Integer variableId = traitVariableIdsMap.get(traitName);
+						final Integer methodId = methodsIdsMap.get(header[i]);
+						final Integer analsisVariableId = (Integer) analysisMethodsOfTraits.get(variableId, methodId);
+
+						if (analysisVariableValuesMap.containsKey(analsisVariableId)) {
+							row.add(analysisVariableValuesMap.get(analsisVariableId).getValue());
+						} else {
+							row.add("");
 						}
 					}
-					if (!existsFlag) {
-						row.add("");
-					}
+					tableItems.add(row.toArray(new String[0]));
 				}
-				tableItems.add(row.toArray(new String[0]));
-			}
 
+			}
 		}
 		return this.writeToCsvFile(inputFileName, currentProject, tableItems, true);
 	}
 
 	String writeToCsvFile(final String inputFileName, final Project currentProject, final List<String[]> tableItems,
-			final boolean isSummaryStatsFile) {
+		final boolean isSummaryStatsFile) {
 		final File csvFile = this.getCsvFileInWorkbenchDirectory(currentProject, inputFileName, isSummaryStatsFile);
 
 		CSVWriter csvWriter = null;
@@ -274,5 +308,9 @@ public class MultiSiteDataExporter {
 
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
+	}
+
+	protected void setOntologyVariableService(final OntologyVariableService ontologyVariableService) {
+		this.ontologyVariableService = ontologyVariableService;
 	}
 }

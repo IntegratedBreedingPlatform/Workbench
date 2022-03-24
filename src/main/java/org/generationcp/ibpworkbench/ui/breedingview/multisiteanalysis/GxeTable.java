@@ -7,10 +7,13 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.ibpworkbench.util.TableItems;
+import org.generationcp.middleware.api.ontology.OntologyVariableService;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
@@ -42,6 +45,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Configurable
 public class GxeTable extends Table implements InitializingBean {
@@ -56,6 +60,9 @@ public class GxeTable extends Table implements InitializingBean {
 
 	@Autowired
 	private StudyDataManager studyDataManager;
+
+	@Autowired
+	private OntologyVariableService ontologyVariableService;
 
 	private final List<String> columnNames = new ArrayList<>();
 	private final Map<Integer, String> factorLocalNames = new TreeMap<>();
@@ -294,30 +301,53 @@ public class GxeTable extends Table implements InitializingBean {
 
 	protected Map<String, Map<String, String>> getHeribilityValuesFromSummaryStatisticsDataset(final int studyId) {
 		final Map<String, Map<String, String>> heritabilityValuesMap = new HashMap<>();
+
 		try {
-			final List<DataSet> dataSetList =
-				this.studyDataManager.getDataSetsByType(studyId, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
-			if (CollectionUtils.isNotEmpty(dataSetList)) {
-				final DataSet summaryStatsDataset = dataSetList.get(0);
-				this.trialInstanceFactorName =
-					summaryStatsDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_FACTOR.getId()).getLocalName();
-				final List<Experiment> summaryStasticsExperiments =
-					this.studyDataManager.getExperiments(summaryStatsDataset.getId(), 0, Integer.MAX_VALUE);
+
+			final DataSet plotDataset =
+				this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.PLOT_DATA.getId());
+			final DataSet summaryStatisticsDataset =
+				this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
+			this.trialInstanceFactorName =
+				summaryStatisticsDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_FACTOR.getId()).getLocalName();
+			final List<Experiment> summaryStasticsExperiments =
+				this.studyDataManager.getExperiments(summaryStatisticsDataset.getId(), 0, Integer.MAX_VALUE);
+
+			if (CollectionUtils.isNotEmpty(summaryStasticsExperiments)) {
+				final Map<String, Integer> methodsIdsMap = new CaseInsensitiveMap();
+				for (final DMSVariableType variable : summaryStasticsExperiments.get(0).getVariates().getVariableTypes()
+					.getVariableTypes()) {
+					methodsIdsMap.putIfAbsent(variable.getStandardVariable().getMethod().getName(),
+						variable.getStandardVariable().getMethod().getId());
+				}
+				final Map<String, Integer> traitVariableIdsMap =
+					new CaseInsensitiveMap(plotDataset.getVariableTypes().getVariates().getVariableTypes().stream().collect(
+						Collectors.toMap(DMSVariableType::getLocalName, DMSVariableType::getId)));
+				final MultiKeyMap analysisMethodsOfTraits =
+					this.ontologyVariableService.getAnalysisMethodsOfTraits(new ArrayList<>(traitVariableIdsMap.values()),
+						new ArrayList<>(methodsIdsMap.values()));
+
 				for (final Experiment experiment : summaryStasticsExperiments) {
 
 					final String environmentName = experiment.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
 					final Map<String, String> heritabilityValues = new HashMap<>();
 
 					for (final Entry<String, Boolean> entry : this.getVariatesCheckBoxState().entrySet()) {
-						final String name = entry.getKey().replace("_Means", "_Heritability");
-						final Variable variable = experiment.getVariates().findByLocalName(name);
-						if (variable != null) {
-							// heritability value
-							heritabilityValues.put(entry.getKey(), variable.getValue());
+						final String traitName = entry.getKey().replace("_Means", "");
+						final Integer variableId = traitVariableIdsMap.get(traitName);
+						final Integer methodId = methodsIdsMap.get("Heritability");
+						final Integer analsisVariableId = (Integer) analysisMethodsOfTraits.get(variableId, methodId);
+						if (analsisVariableId != null) {
+							final Variable variable = experiment.getVariates().findById(analsisVariableId);
+							if (variable != null) {
+								// heritability value
+								heritabilityValues.put(entry.getKey(), variable.getValue());
+							}
 						}
 					}
 					heritabilityValuesMap.put(environmentName, heritabilityValues);
 				}
+
 			}
 
 		} catch (final MiddlewareException e1) {
@@ -437,5 +467,9 @@ public class GxeTable extends Table implements InitializingBean {
 
 	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
+	}
+
+	protected void setOntologyVariableService(final OntologyVariableService ontologyVariableService) {
+		this.ontologyVariableService = ontologyVariableService;
 	}
 }
