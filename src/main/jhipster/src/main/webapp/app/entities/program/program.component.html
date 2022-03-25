@@ -17,6 +17,7 @@
 									[data]="crops | CropSelect2Data"
 									[(ngModel)]="cropName"
 									placeholder="All"
+									data-test="dashboardCropDropdown"
 									[allowClear]="true"
 									(ngModelChange)="onCropChange()">
 						</ng-select2>
@@ -29,7 +30,7 @@
 					<label class="col-sm-2 col-form-label" for="programDropdown" jhiTranslate="program.program"></label>
 					<div class="col-sm-7">
 						<!-- ngIf -> workaround to fire ajax load -->
-						<ng-select2 name="programDropdown" id="programDropdown" width="100%"
+						<ng-select2 name="programDropdown" id="programDropdown" width="100%" data-test="dashboardProgramDropdown"
 									*ngIf="crops?.length"
 									[(ngModel)]="programModel"
 									[value]="programModel"
@@ -39,7 +40,7 @@
 						</ng-select2>
 					</div>
 					<div class="col-sm-auto">
-						<button class="btn btn-info" jhiTranslate="program.launch"
+						<button class="btn btn-info" jhiTranslate="program.launch" data-test="launchProgramButton"
 								[disabled]="!programModel" (click)="onOpenProgram()"></button>
 					</div>
 				</div>
