@@ -6,13 +6,16 @@ import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.CaseInsensitiveMap;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.gxe.xml.GxeEnvironmentLabel;
 import org.generationcp.commons.sea.xml.Environment;
 import org.generationcp.ibpworkbench.util.TableItems;
+import org.generationcp.middleware.api.ontology.OntologyVariableService;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.DatasetReference;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
@@ -42,6 +45,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Configurable
 public class GxeTable extends Table implements InitializingBean {
@@ -57,12 +61,13 @@ public class GxeTable extends Table implements InitializingBean {
 	@Autowired
 	private StudyDataManager studyDataManager;
 
+	@Autowired
+	private OntologyVariableService ontologyVariableService;
+
 	private final List<String> columnNames = new ArrayList<>();
 	private final Map<Integer, String> factorLocalNames = new TreeMap<>();
 	private final Map<Integer, String> variateLocalNames = new TreeMap<>();
 	private Map<String, Boolean> variatesCheckBoxState = new HashMap<>();
-
-	private Map<String, Map<String, String>> heritabilityValues = new HashMap<>();
 
 	private final Integer studyId;
 
@@ -173,7 +178,7 @@ public class GxeTable extends Table implements InitializingBean {
 
 		container.addContainerProperty(" ", CheckBox.class, null);
 
-		this.setHeritabilityValues(this.getHeribilityValuesFromPlotDataSet(studyId));
+		final Map<String, Map<String, String>> heritabilityValuesMap = this.getHeribilityValuesFromSummaryStatisticsDataset(studyId);
 
 		final Set<String> envNames = new HashSet<>();
 
@@ -271,7 +276,7 @@ public class GxeTable extends Table implements InitializingBean {
 						meansData = this.getMeansData(this.meansDataSetId, trialEnvironments, this.trialInstanceFactorName,
 							trialInstanceFactorValue, varKey);
 
-						final String heritabilityVal = this.getHeritabilityValues().get(trialInstanceFactorValue).get(x.getValue());
+						final String heritabilityVal = heritabilityValuesMap.get(trialInstanceFactorValue).get(x.getValue());
 						if (heritabilityVal != null) {
 							meansData = String.format("%s (%s)", meansData, heritabilityVal);
 						}
@@ -294,65 +299,62 @@ public class GxeTable extends Table implements InitializingBean {
 
 	}
 
-	protected Map<String, Map<String, String>> getHeribilityValuesFromPlotDataSet(final int studyId) {
-		final List<DataSet> plotDatasets = new ArrayList<>();
-		final Map<String, Map<String, String>> heritabilityValues = new HashMap<>();
+	protected Map<String, Map<String, String>> getHeribilityValuesFromSummaryStatisticsDataset(final int studyId) {
+		final Map<String, Map<String, String>> heritabilityValuesMap = new HashMap<>();
 
 		try {
 
-			final List<DatasetReference> datasetRefs = this.studyDataManager.getDatasetReferences(studyId);
-			for (final DatasetReference dsRef : datasetRefs) {
-				final DataSet ds = this.studyDataManager.getDataSet(dsRef.getId());
+			final DataSet plotDataset =
+				this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.PLOT_DATA.getId());
+			final DataSet summaryStatisticsDataset =
+				this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
+			this.trialInstanceFactorName =
+				summaryStatisticsDataset.getVariableTypes().findById(TermId.TRIAL_INSTANCE_FACTOR.getId()).getLocalName();
+			final List<Experiment> summaryStasticsExperiments =
+				this.studyDataManager.getExperiments(summaryStatisticsDataset.getId(), 0, Integer.MAX_VALUE);
 
-				if (ds.getDatasetType().getDatasetTypeId() != DatasetTypeEnum.MEANS_DATA.getId()) {
-
-					final Iterator<DMSVariableType> itrFactor = ds.getVariableTypes().getFactors().getVariableTypes().iterator();
-					while (itrFactor.hasNext()) {
-						final DMSVariableType f = itrFactor.next();
-						if (f.getStandardVariable().getId() == TermId.TRIAL_INSTANCE_FACTOR.getId()) {
-							this.trialInstanceFactorName = f.getLocalName();
-						}
-					}
-
-					final Iterator<DMSVariableType> itrVariates = ds.getVariableTypes().getVariates().getVariableTypes().iterator();
-					while (itrVariates.hasNext()) {
-						if (itrVariates.next().getLocalName().contains("_Heritability")) {
-							plotDatasets.add(ds);
-						}
-					}
-
+			if (CollectionUtils.isNotEmpty(summaryStasticsExperiments)) {
+				final Map<String, Integer> methodsIdsMap = new CaseInsensitiveMap();
+				for (final DMSVariableType variable : summaryStasticsExperiments.get(0).getVariates().getVariableTypes()
+					.getVariableTypes()) {
+					methodsIdsMap.putIfAbsent(variable.getStandardVariable().getMethod().getName(),
+						variable.getStandardVariable().getMethod().getId());
 				}
+				final Map<String, Integer> traitVariableIdsMap =
+					new CaseInsensitiveMap(plotDataset.getVariableTypes().getVariates().getVariableTypes().stream().collect(
+						Collectors.toMap(DMSVariableType::getLocalName, DMSVariableType::getId)));
+				final MultiKeyMap analysisMethodsOfTraits =
+					this.ontologyVariableService.getAnalysisMethodsOfTraits(new ArrayList<>(traitVariableIdsMap.values()),
+						new ArrayList<>(methodsIdsMap.values()));
 
-			}
+				for (final Experiment experiment : summaryStasticsExperiments) {
 
-			if (!plotDatasets.isEmpty()) {
-				this.exps = this.studyDataManager.getExperiments(plotDatasets.get(0).getId(), 0, Integer.MAX_VALUE);
-				for (final Experiment exp : this.exps) {
-
-					final String envName = exp.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
-
-					final Map<String, String> vals = new HashMap<>();
+					final String environmentName = experiment.getFactors().findByLocalName(this.trialInstanceFactorName).getValue();
+					final Map<String, String> heritabilityValues = new HashMap<>();
 
 					for (final Entry<String, Boolean> entry : this.getVariatesCheckBoxState().entrySet()) {
-						final String name = entry.getKey().replace("_Means", "_Heritability");
-						final Variable var = exp.getVariates().findByLocalName(name);
-						if (var != null) {
-							// heritability value
-							vals.put(entry.getKey(), var.getValue());
+						final String traitName = entry.getKey().replace("_Means", "");
+						final Integer variableId = traitVariableIdsMap.get(traitName);
+						final Integer methodId = methodsIdsMap.get("Heritability");
+						final Integer analsisVariableId = (Integer) analysisMethodsOfTraits.get(variableId, methodId);
+						if (analsisVariableId != null) {
+							final Variable variable = experiment.getVariates().findById(analsisVariableId);
+							if (variable != null) {
+								// heritability value
+								heritabilityValues.put(entry.getKey(), variable.getValue());
+							}
 						}
-
 					}
-
-					heritabilityValues.put(envName, vals);
-
+					heritabilityValuesMap.put(environmentName, heritabilityValues);
 				}
+
 			}
 
 		} catch (final MiddlewareException e1) {
 			GxeTable.LOG.error(e1.getMessage(), e1);
 		}
 
-		return heritabilityValues;
+		return heritabilityValuesMap;
 	}
 
 	protected String getMeansData(
@@ -454,14 +456,6 @@ public class GxeTable extends Table implements InitializingBean {
 		return this.variatesCheckBoxState;
 	}
 
-	public Map<String, Map<String, String>> getHeritabilityValues() {
-		return this.heritabilityValues;
-	}
-
-	public void setHeritabilityValues(final Map<String, Map<String, String>> heritabilityValues) {
-		this.heritabilityValues = heritabilityValues;
-	}
-
 	protected Property.ValueChangeListener getGxeCheckBoxColumnListener() {
 		return this.gxeCheckBoxColumnListener;
 	}
@@ -473,5 +467,9 @@ public class GxeTable extends Table implements InitializingBean {
 
 	protected void setStudyDataManager(final StudyDataManager studyDataManager) {
 		this.studyDataManager = studyDataManager;
+	}
+
+	protected void setOntologyVariableService(final OntologyVariableService ontologyVariableService) {
+		this.ontologyVariableService = ontologyVariableService;
 	}
 }

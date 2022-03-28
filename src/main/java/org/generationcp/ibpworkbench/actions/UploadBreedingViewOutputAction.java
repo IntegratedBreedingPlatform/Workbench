@@ -231,7 +231,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 				try {
 					UploadBreedingViewOutputAction.this.breedingViewImportService.importMeansData(
 						UploadBreedingViewOutputAction.this.bmsOutputParser.getMeansFile(), studyId);
-					UploadBreedingViewOutputAction.this.breedingViewImportService.importSummaryStatsData(
+					UploadBreedingViewOutputAction.this.breedingViewImportService.importSummaryStatisticsData(
 						UploadBreedingViewOutputAction.this.bmsOutputParser.getSummaryStatsFile(), studyId);
 
 					if (UploadBreedingViewOutputAction.this.bmsOutputParser.getOutlierFile() != null) {
