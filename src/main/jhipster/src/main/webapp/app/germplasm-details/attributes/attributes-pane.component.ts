@@ -25,6 +25,8 @@ import { Principal } from '../../shared';
 })
 export class AttributesPaneComponent implements OnInit {
 
+    static readonly MAX_ATTRIBUTE_DISPLAY_SIZE = 30;
+
     MODIFY_ATTRIBUTES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_ATTRIBUTES'];
     ATTRIBUTES_ACTIONS_PERMISSIONS = [...this.MODIFY_ATTRIBUTES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
     GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
@@ -70,6 +72,9 @@ export class AttributesPaneComponent implements OnInit {
         const gid = this.germplasmDetailsContext.gid;
         this.passportAttributes = await this.germplasmService.getGermplasmAttributesByGidAndType(gid, VariableTypeEnum.GERMPLASM_PASSPORT).toPromise();
         this.attributes = await this.germplasmService.getGermplasmAttributesByGidAndType(gid, VariableTypeEnum.GERMPLASM_ATTRIBUTE).toPromise();
+        // Truncate long values
+        this.passportAttributes.forEach((item) => item.displayValue = this.getAttributeDisplay(item.value));
+        this.attributes.forEach((item) => item.displayValue = this.getAttributeDisplay(item.value));
 
         // Get extra info not available in the attribute entity (e.g valid values)
         const attributesByVariableId: {[key: number]: GermplasmAttribute} =
@@ -82,6 +87,10 @@ export class AttributesPaneComponent implements OnInit {
                     return prev;
                 }, {});
             });
+    }
+
+    getAttributeDisplay(value: string): string {
+        return value.length <= AttributesPaneComponent.MAX_ATTRIBUTE_DISPLAY_SIZE ? value : value.substring(0, AttributesPaneComponent.MAX_ATTRIBUTE_DISPLAY_SIZE) + '...';
     }
 
     editGermplasmAttribute(attributeType: number, germplasmAttribute: GermplasmAttribute): void {
