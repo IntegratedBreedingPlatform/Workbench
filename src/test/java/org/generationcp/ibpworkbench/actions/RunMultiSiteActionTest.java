@@ -139,14 +139,12 @@ public class RunMultiSiteActionTest {
 		Mockito.when(this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.createProject(PROJECT_NAME), ToolName.BREEDING_VIEW))
 				.thenReturn(BMS_INPUT_FILES_DIR);
 
-		Mockito.when(this.studyDataManager.findOneDataSetByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId())).thenReturn(this.createSummaryDataSet());
-
 		Mockito.when(this.multiSiteDataExporter.exportMeansDatasetToCsv(ArgumentMatchers.anyString(), ArgumentMatchers.any(MultiSiteParameters.class),
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(
 				WorkbenchContentApp.class)))
 				.thenReturn(MEANS_DATA_FILEPATH);
 
-		Mockito.when(this.multiSiteDataExporter.exportTrialDatasetToSummaryStatsCsv(Mockito.anyInt(), Mockito.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+		Mockito.when(this.multiSiteDataExporter.exportSummaryStatisticsToCsvFile(Mockito.anyInt(), Mockito.anyString(),
 				Mockito.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), Mockito.any(Project.class))).thenReturn(SUMMARY_DATA_FILEPATH);
 
 		Mockito.when(this.zipUtil.zipIt(Mockito.anyString(), ArgumentMatchers.<List<String>>any(), ArgumentMatchers.any(Project.class),
@@ -222,7 +220,7 @@ public class RunMultiSiteActionTest {
 				ArgumentMatchers.<List<Experiment>>any(), ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.any(GxeEnvironment.class), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(WorkbenchContentApp.class));
 
 		// Make sure the Summary Data is exported to CSV
-		Mockito.verify(this.multiSiteDataExporter).exportTrialDatasetToSummaryStatsCsv(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(), ArgumentMatchers.<List<Experiment>>any(),
+		Mockito.verify(this.multiSiteDataExporter).exportSummaryStatisticsToCsvFile(ArgumentMatchers.anyInt(), ArgumentMatchers.anyString(),
 				ArgumentMatchers.eq(ENVIRONMENT_NAME), ArgumentMatchers.<List<Trait>>any(), ArgumentMatchers.any(Project.class));
 
 		Assert.assertEquals(MEANS_DATA_FILEPATH, gxeInput.getSourceCSVFilePath());

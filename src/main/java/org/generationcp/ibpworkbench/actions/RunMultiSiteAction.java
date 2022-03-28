@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 import org.unbescape.html.HtmlEscape;
 
 import javax.annotation.Resource;
@@ -168,10 +167,8 @@ public class RunMultiSiteAction implements ClickListener {
 			.exportMeansDatasetToCsv(inputFileName, multiSiteParameters, this.gxeTable.getExperiments(),
 				this.gxeTable.getEnvironmentName(), gxeEnvironment, selectedTraits, this.workbenchApplication);
 
-		final DataSet summaryStatsDataSet = this.getSummaryStatsDataSet(studyId);
-
 		final String summaryStatsDataFilePath = this.multiSiteDataExporter
-			.exportTrialDatasetToSummaryStatsCsv(studyId, inputFileName, this.getSummaryStatsExperiments(summaryStatsDataSet.getId()),
+			.exportSummaryStatisticsToCsvFile(studyId, inputFileName,
 				this.gxeTable.getEnvironmentName(), selectedTraits, multiSiteParameters.getProject());
 
 		gxeInput.setSourceCSVSummaryStatsFilePath(summaryStatsDataFilePath);
@@ -199,16 +196,6 @@ public class RunMultiSiteAction implements ClickListener {
 
 		return gxeInput;
 
-	}
-
-	List<Experiment> getSummaryStatsExperiments(final int dataSetId) {
-
-		return this.studyDataManager.getExperiments(dataSetId, 0, Integer.MAX_VALUE);
-
-	}
-
-	DataSet getSummaryStatsDataSet(final int studyId) {
-		return this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
 	}
 
 	String generateInputFileName(final Project project) {

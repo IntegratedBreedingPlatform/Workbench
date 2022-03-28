@@ -4,9 +4,12 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Label;
+import org.apache.commons.collections.map.LinkedMap;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.commons.gxe.xml.GxeEnvironment;
 import org.generationcp.commons.sea.xml.Environment;
+import org.generationcp.middleware.api.ontology.OntologyVariableService;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.DatasetReference;
@@ -28,11 +31,13 @@ import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +47,8 @@ public class GxeTableTest {
 	private static final int STUDY_ID = 1;
 	private static final int MEANS_DATASET_ID = 2;
 	private static final int STUDY_DATASET_ID = 1;
+	private static final int PLOT_DATASET_ID = 3;
+	private static final int SUMMARY_STATISTICS_DATASET_ID = 4;
 
 	private static final String STUDY_FACTOR = "TRIAL";
 	private static final int STUDY_FACTOR_ID = TermId.TRIAL_INSTANCE_FACTOR.getId();
@@ -86,6 +93,9 @@ public class GxeTableTest {
 	private static final String VARIATE_NAME_2_HERITABILITY_VALUE = "102";
 	private static final String VARIATE_NAME_3_HERITABILITY_VALUE = "103";
 
+	private static final Integer HERITABILITY_METHOD_ID = 1;
+	private static final String HERITABILITY_METHOD_NAME = "Heritability";
+
 	private static final int CATEGORICAL_VARIATE_ENUM_ID = 1;
 	private static final String CATEGORICAL_VARIATE_ENUM_NAME = "5";
 	private static final String CATEGORICAL_VARIATE_ENUM_DESCRIPTION = "Very Severe";
@@ -106,6 +116,9 @@ public class GxeTableTest {
 	@Mock
 	private StudyDataManager studyDataManager;
 
+	@Mock
+	private OntologyVariableService ontologyVariableService;
+
 	private Map<String, Boolean> variatesCheckBoxState;
 
 	@Before
@@ -124,30 +137,78 @@ public class GxeTableTest {
 		final List<Variable> trialFactorVariables = new ArrayList<Variable>();
 		final List<Variable> studyVariateVariables = new ArrayList<Variable>();
 
+		// summary dataset
+		final List<DMSVariableType> summaryStatisticsFactors = new ArrayList<DMSVariableType>();
+		final List<DMSVariableType> summaryStatisticsVariates = new ArrayList<DMSVariableType>();
+		final List<Variable> summaryStatisticsFactorVariables = new ArrayList<Variable>();
+		final List<Variable> summaryStatisticsVariateVariables = new ArrayList<Variable>();
+
+		// plot dataset
+		final List<DMSVariableType> plotFactors = new ArrayList<DMSVariableType>();
+		final List<DMSVariableType> plotVariates = new ArrayList<DMSVariableType>();
+		final List<Variable> plotFactorVariables = new ArrayList<Variable>();
+		final List<Variable> plotVariateVariables = new ArrayList<Variable>();
+
 		final List<DatasetReference> datasetRefs = this.createDataSetRef();
 
 		this.createFactorsAndVariatesTestDataForMeans(factors, factorVariables, variates, variateVariables);
-		this.createFactorsAndVariatesTestDataForStudy(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
-		final DataSet dataSet = this.createDataSet(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
-		final DataSet meansDataSet = this.createMeansDataSet(factors, factorVariables, variates, variateVariables);
-		final List<DataSet> meansDataSets = this.createMeansDataSets(factors, factorVariables, variates, variateVariables);
-		final DataSet summaryDataSet = this.createDataSet(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
+		this.createFactorsAndVariatesTestDataForSummary(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables);
+		this.createFactorsAndVariatesTestDataForSummaryStatistics(summaryStatisticsFactors, summaryStatisticsFactorVariables,
+			summaryStatisticsVariates, summaryStatisticsVariateVariables);
+		this.createFactorsAndVariatesTestDataForPlot(plotFactors, plotFactorVariables,
+			plotVariates, plotVariateVariables);
+
+		final DataSet dataSet =
+			this.createDataSet(GxeTableTest.STUDY_DATASET_ID, DatasetTypeEnum.SUMMARY_DATA, "SUMMARY-DATA", studyFactors,
+				trialFactorVariables, studyVariates, studyVariateVariables);
+		final DataSet plotDataSet =
+			this.createDataSet(GxeTableTest.PLOT_DATASET_ID, DatasetTypeEnum.PLOT_DATA, "PLOT-DATA", plotFactors, plotFactorVariables,
+				plotVariates,
+				plotVariateVariables);
+		final DataSet meansDataSet =
+			this.createDataSet(GxeTableTest.MEANS_DATASET_ID, DatasetTypeEnum.MEANS_DATA, "MEANS-DATA", factors, factorVariables, variates,
+				variateVariables);
+		final DataSet summaryDataSet =
+			this.createDataSet(GxeTableTest.STUDY_DATASET_ID, DatasetTypeEnum.SUMMARY_DATA, "SUMMARY-DATA", studyFactors,
+				trialFactorVariables, studyVariates, studyVariateVariables);
+		final DataSet summaryStatisticsDataSet =
+			this.createDataSet(GxeTableTest.SUMMARY_STATISTICS_DATASET_ID, DatasetTypeEnum.SUMMARY_STATISTICS_DATA,
+				"SUMMARY-STATISTICS-DATA", studyFactors,
+				trialFactorVariables, studyVariates, studyVariateVariables);
 
 		this.variatesCheckBoxState = this.createVariatesCheckBoxState(variates);
 
 		Mockito.doReturn(datasetRefs).when(this.studyDataManager).getDatasetReferences(GxeTableTest.STUDY_ID);
 		Mockito.doReturn(dataSet).when(this.studyDataManager).getDataSet(GxeTableTest.STUDY_DATASET_ID);
 		Mockito.doReturn(meansDataSet).when(this.studyDataManager).getDataSet(GxeTableTest.MEANS_DATASET_ID);
-		Mockito.doReturn(meansDataSets).when(this.studyDataManager).getDataSetsByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.MEANS_DATA.getId());
-		Mockito.doReturn(summaryDataSet).when(this.studyDataManager).findOneDataSetByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId());
+		Mockito.doReturn(Arrays.asList(meansDataSet)).when(this.studyDataManager)
+			.getDataSetsByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.MEANS_DATA.getId());
+		Mockito.doReturn(summaryDataSet).when(this.studyDataManager)
+			.findOneDataSetByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId());
 		Mockito.doReturn(this.createStudyEnvironments(factorVariables, variateVariables)).when(this.studyDataManager)
 			.getTrialEnvironmentsInDataset(GxeTableTest.MEANS_DATASET_ID);
+		Mockito.doReturn(plotDataSet).when(this.studyDataManager)
+			.findOneDataSetByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.PLOT_DATA.getId());
+		Mockito.doReturn(summaryStatisticsDataSet).when(this.studyDataManager)
+			.findOneDataSetByType(GxeTableTest.STUDY_ID, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
+
 		Mockito.doReturn(this.createExperimentsWithStudyEnvironment(factors, factorVariables, variates, variateVariables))
 			.when(this.studyDataManager)
 			.getExperimentsWithTrialEnvironment(GxeTableTest.STUDY_DATASET_ID, GxeTableTest.MEANS_DATASET_ID, 0, Integer.MAX_VALUE);
 		Mockito.doReturn(
-			this.createExperimentsWithStudyEnvironment(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables))
+				this.createExperimentsWithStudyEnvironment(studyFactors, trialFactorVariables, studyVariates, studyVariateVariables))
 			.when(this.studyDataManager).getExperiments(GxeTableTest.STUDY_DATASET_ID, 0, Integer.MAX_VALUE);
+		Mockito.doReturn(
+				this.createExperimentsWithStudyEnvironment(summaryStatisticsFactors, summaryStatisticsFactorVariables,
+					summaryStatisticsVariates, summaryStatisticsVariateVariables))
+			.when(this.studyDataManager).getExperiments(GxeTableTest.SUMMARY_STATISTICS_DATASET_ID, 0, Integer.MAX_VALUE);
+		final MultiKeyMap multiKeyMap = MultiKeyMap.decorate(new LinkedMap());
+
+		multiKeyMap.put(VARIATE_NAME_1_ID, HERITABILITY_METHOD_ID, VARIATE_NAME_1_HERITABILITY_ID);
+		multiKeyMap.put(VARIATE_NAME_2_ID, HERITABILITY_METHOD_ID, VARIATE_NAME_2_HERITABILITY_ID);
+		multiKeyMap.put(VARIATE_NAME_3_ID, HERITABILITY_METHOD_ID, VARIATE_NAME_3_HERITABILITY_ID);
+		Mockito.doReturn(multiKeyMap).when(this.ontologyVariableService)
+			.getAnalysisMethodsOfTraits(ArgumentMatchers.anyList(), ArgumentMatchers.anyList());
 
 	}
 
@@ -167,6 +228,7 @@ public class GxeTableTest {
 
 			"", this.variatesCheckBoxState, this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue(
@@ -207,6 +269,7 @@ public class GxeTableTest {
 		final GxeTable gxeTable =
 			new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, "", this.variatesCheckBoxState, this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue(
@@ -248,11 +311,13 @@ public class GxeTableTest {
 		locationIdToNameMap.put(LOCATION_ID_FACTOR_VALUE, "Some Location");
 
 		Mockito.when(this.studyDataManager.isLocationIdVariable(GxeTableTest.STUDY_ID, LOCATION_ID_FACTOR)).thenReturn(true);
-		Mockito.when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(GxeTableTest.STUDY_ID)).thenReturn(locationIdToNameMap);
+		Mockito.when(this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(GxeTableTest.STUDY_ID))
+			.thenReturn(locationIdToNameMap);
 
 		final GxeTable gxeTable =
 			new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.LOCATION_ID_FACTOR, "", this.variatesCheckBoxState, this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue(
@@ -294,6 +359,7 @@ public class GxeTableTest {
 
 			GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState, this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue(
@@ -335,6 +401,7 @@ public class GxeTableTest {
 			new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState,
 				this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 		final List<Environment> environments = gxeTable.getSelectedEnvironments();
 		Assert.assertNotNull(environments);
@@ -352,6 +419,7 @@ public class GxeTableTest {
 			new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState,
 				this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 		final GxeEnvironment environment = gxeTable.getGxeEnvironment();
 		Assert.assertNotNull(environment);
@@ -366,6 +434,7 @@ public class GxeTableTest {
 			new GxeTable(GxeTableTest.STUDY_ID, GxeTableTest.SITE_FACTOR, GxeTableTest.GROUP_FACTOR, this.variatesCheckBoxState,
 				this.listener);
 		gxeTable.setStudyDataManager(this.studyDataManager);
+		gxeTable.setOntologyVariableService(this.ontologyVariableService);
 		gxeTable.afterPropertiesSet();
 
 		Assert.assertTrue(
@@ -403,52 +472,13 @@ public class GxeTableTest {
 
 	}
 
-	private List<DataSet> createMeansDataSets(
-		final List<DMSVariableType> factors, final List<Variable> factorVariables,
-		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
-
-		final List<DataSet> dataSets = new ArrayList<>();
-		dataSets.add(this.createMeansDataSet(factors, factorVariables, variates, variateVariables));
-
-		return dataSets;
-	}
-
-	private List<DataSet> createTrialDataSets(
-		final List<DMSVariableType> factors, final List<Variable> factorVariables,
-		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
-
-		final List<DataSet> dataSets = new ArrayList<>();
-		dataSets.add(this.createDataSet(factors, factorVariables, variates, variateVariables));
-
-		return dataSets;
-	}
-
-	private DataSet createMeansDataSet(
-		final List<DMSVariableType> factors, final List<Variable> factorVariables,
-		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
-		final DataSet meansDataSet = new DataSet();
-		meansDataSet.setDatasetType(new DatasetType(DatasetTypeEnum.MEANS_DATA.getId()));
-		meansDataSet.setName("MEANS-DATA");
-		meansDataSet.setId(GxeTableTest.MEANS_DATASET_ID);
-
-		final VariableTypeList variableTypeList = new VariableTypeList();
-		for (final DMSVariableType f : factors) {
-			variableTypeList.add(f);
-		}
-		for (final DMSVariableType v : variates) {
-			variableTypeList.add(v);
-		}
-		meansDataSet.setVariableTypes(variableTypeList);
-		return meansDataSet;
-	}
-
-	private DataSet createDataSet(
+	private DataSet createDataSet(final int datasetId, final DatasetTypeEnum datasetType, final String datasetName,
 		final List<DMSVariableType> factors, final List<Variable> factorVariables,
 		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 		final DataSet dataSet = new DataSet();
-		dataSet.setDatasetType(new DatasetType(DatasetTypeEnum.SUMMARY_DATA.getId()));
-		dataSet.setName("SUMMARY-DATA");
-		dataSet.setId(GxeTableTest.STUDY_DATASET_ID);
+		dataSet.setDatasetType(new DatasetType(datasetType.getId()));
+		dataSet.setName(datasetName);
+		dataSet.setId(datasetId);
 
 		final VariableTypeList variableTypeList = new VariableTypeList();
 		for (final DMSVariableType f : factors) {
@@ -510,7 +540,7 @@ public class GxeTableTest {
 
 	}
 
-	private void createFactorsAndVariatesTestDataForStudy(
+	private void createFactorsAndVariatesTestDataForSummary(
 		final List<DMSVariableType> factors, final List<Variable> factorVariables,
 		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
 
@@ -541,17 +571,52 @@ public class GxeTableTest {
 		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_3_ID, GxeTableTest.VARIATE_NAME_3, rank++, "1",
 			PhenotypicType.VARIATE, GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
 
+	}
+
+	private void createFactorsAndVariatesTestDataForPlot(
+		final List<DMSVariableType> factors, final List<Variable> factorVariables,
+		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
+
+		int rank = 1;
+
+		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_1_ID, GxeTableTest.VARIATE_NAME_1, rank++, "1",
+			PhenotypicType.VARIATE, GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
+
+		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_2_ID, GxeTableTest.VARIATE_NAME_2, rank++, "1",
+			PhenotypicType.VARIATE, GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
+
+		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_3_ID, GxeTableTest.VARIATE_NAME_3, rank++, "1",
+			PhenotypicType.VARIATE, GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
+
+	}
+
+	private void createFactorsAndVariatesTestDataForSummaryStatistics(
+		final List<DMSVariableType> factors, final List<Variable> factorVariables,
+		final List<DMSVariableType> variates, final List<Variable> variateVariables) {
+
+		int rank = 1;
+
+		this.addVariableToList(factors, factorVariables, GxeTableTest.STUDY_FACTOR_ID, GxeTableTest.STUDY_FACTOR, rank++,
+			GxeTableTest.STUDY_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
+			GxeTableTest.TRIAL_INSTANCE_ROLE, null, null, null);
+
+		this.addVariableToList(factors, factorVariables, GxeTableTest.LOCATION_ID_FACTOR_ID, GxeTableTest.LOCATION_ID_FACTOR, rank++,
+			GxeTableTest.LOCATION_ID_FACTOR_VALUE, PhenotypicType.TRIAL_ENVIRONMENT, GxeTableTest.NUMERIC_VARIABLE,
+			GxeTableTest.TRIAL_ENVIRONMENT_ROLE, null, null, null);
+
+		final Term heritabilityMethod = new Term(HERITABILITY_METHOD_ID, HERITABILITY_METHOD_NAME, "");
+
 		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_1_HERITABILITY_ID,
 			GxeTableTest.VARIATE_NAME_1_HERITABILITY, rank++, GxeTableTest.VARIATE_NAME_1_HERITABILITY_VALUE, PhenotypicType.VARIATE,
-			GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
+			GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, heritabilityMethod);
 
 		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_2_HERITABILITY_ID,
 			GxeTableTest.VARIATE_NAME_2_HERITABILITY, rank++, GxeTableTest.VARIATE_NAME_2_HERITABILITY_VALUE, PhenotypicType.VARIATE,
-			GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
+			GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, heritabilityMethod);
 
 		this.addVariableToList(variates, variateVariables, GxeTableTest.VARIATE_NAME_3_HERITABILITY_ID,
 			GxeTableTest.VARIATE_NAME_3_HERITABILITY, rank++, GxeTableTest.VARIATE_NAME_3_HERITABILITY_VALUE, PhenotypicType.VARIATE,
-			GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, null);
+			GxeTableTest.NUMERIC_VARIABLE, GxeTableTest.OBSERVATION_VARIATE_ROLE, null, null, heritabilityMethod);
 
 	}
 
