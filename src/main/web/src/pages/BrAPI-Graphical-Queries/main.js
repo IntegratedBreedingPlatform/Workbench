@@ -156,7 +156,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 		groupByAccession: false,
 		isDataLoaded: false,
 		isBreedingLocationSelected: true,
-		useFavoriteLocations: false
+		useFavoriteLocations: true
 	};
 
 	$scope.tools = [
