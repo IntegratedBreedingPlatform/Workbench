@@ -1,14 +1,14 @@
 import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
 
 @Directive({
-    selector: '[scrollable-tooltip]'
+    selector: '[scrollableTooltip]'
 })
 export class ScrollableTooltipDirective {
-    @Input('tooltip') tooltipText: string;
-    @Input() placement: string = 'bottom';
-    @Input() displayTimeout: number = 5000;
-    @Input() showDelay: number = 1500;
-    @Input() hideDelay: number = 1500;
+    @Input() tooltipText: string;
+    @Input() placement = 'bottom';
+    @Input() displayTimeout = 5000;
+    @Input() showDelay = 1500;
+    @Input() hideDelay = 1500;
     tooltip: HTMLElement;
     offset = 0;
 

@@ -12,6 +12,7 @@ import { GermplasmAttributeAudit } from './germplasm-attribute-audit.model';
 import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
+import { ScrollableTooltipDirective } from '../../../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-germplasm-attribute-audit',
