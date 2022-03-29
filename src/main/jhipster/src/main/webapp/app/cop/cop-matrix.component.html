@@ -8,15 +8,15 @@
 	<div>
 		<i class="throbber" *ngIf="isLoading"></i>
 	</div>
-	<div class="table-responsive" *ngIf="response && response.array else asyncInProgress">
+	<div class="table-responsive" *ngIf="response && response?.array else asyncInProgress">
 		<table class="table table-striped table-bordered table-curved">
 			<thead>
 			<tr>
-				<th *ngFor="let gid of response.array[0]">{{gid}}</th>
+				<th *ngFor="let gid of response?.array[0]">{{gid}}</th>
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let row of response.array.slice(1)">
+			<tr *ngFor="let row of response?.array.slice(1)">
 				<td *ngFor="let col of row; index as i" [class.font-weight-bold]="i === 0">
 					{{i === 0 ? col : col | number: '1.0-4'}}
 				</td>
@@ -34,8 +34,8 @@
 			</div>
 			<div class="progress">
 				<div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar"
-					 [attr.aria-valuenow]="response.progress" aria-valuemin="0" aria-valuemax="100"
-					 [style.width.%]="response.progress">{{response.progress | number}} %
+					 [attr.aria-valuenow]="response?.progress" aria-valuemin="0" aria-valuemax="100"
+					 [style.width.%]="response?.progress">{{response?.progress | number}} %
 				</div>
 			</div>
 		</div>

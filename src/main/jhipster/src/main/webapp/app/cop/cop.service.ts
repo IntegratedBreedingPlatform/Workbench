@@ -18,26 +18,40 @@ export class CopService {
         return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID, gids);
     }
 
-    calculateCopForList(listId: number) {
+    calculateCopForList(listId: number): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.post<CopResponse>(baseUrl + `/cop/calculation/list/${listId}?programUUID=` + this.context.programUUID, null);
     }
 
-    getCopForList(listId: number) {
-
-    }
-
-    cancelJobs(gids: number[]) {
+    cancelJobs(gids: number[], listId: number) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const params = {};
-        params['gids'] = gids;
+        if (gids) {
+            params['gids'] = gids;
+        } else if (listId) {
+            params['listId'] = listId;
+        }
         return this.http.delete(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID, { params });
     }
 
-    getCop(gids: number[]): Observable<CopResponse> {
+    getCop(gids: number[], listId: number): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const params = {};
-        params['gids'] = gids;
-        return this.http.get<CopResponse>(baseUrl + '/cop?programUUID=' + this.context.programUUID, { params });
+        if (gids) {
+            params['gids'] = gids;
+        } else if (listId) {
+            params['listId'] = listId;
+        }
+        return this.http.get<CopResponse>(baseUrl + '/cop?programUUID=' + this.context.programUUID, {
+            params
+        });
+    }
+
+    download(listId: number) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        return this.http.get(baseUrl + `/cop/csv/list/${listId}?programUUID=` + this.context.programUUID, {
+            observe: 'response',
+            responseType: 'blob'
+        });
     }
 }

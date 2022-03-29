@@ -490,10 +490,13 @@ export class ListComponent implements OnInit {
             return false;
         }
 
+        // listIdModalParam: different name to avoid clearing up listId component query param
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
             queryParams: {
                 gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
-                calculate: true
+                calculate: true,
+                listIdModalParam: null
             }
         });
     }
@@ -505,18 +508,33 @@ export class ListComponent implements OnInit {
         }
 
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
             queryParams: {
                 gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
-                calculate: false
+                calculate: false,
+                listIdModalParam: null
             }
         });
     }
 
     calculateCopForList() {
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
             queryParams: {
-                listId: this.listId,
+                gids: null,
+                listIdModalParam: this.listId,
                 calculate: true
+            }
+        });
+    }
+
+    viewCopForList() {
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: null,
+                calculate: false,
+                listIdModalParam: this.listId
             }
         });
     }
