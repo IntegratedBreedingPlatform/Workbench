@@ -24,6 +24,8 @@ export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
 
     private readonly itemsPerPage: number = 10;
 
+    MAX_ATTRIBUTE_DISPLAY_SIZE = 30;
+
     gid: number;
     attributeId: number;
     title: string;
@@ -40,7 +42,7 @@ export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
     getEventUser = getEventUser;
 
     constructor(public activeModal: NgbActiveModal,
-                private  germplasmAuditService: GermplasmAuditService,
+                private germplasmAuditService: GermplasmAuditService,
                 private translateService: TranslateService,
                 private germplasmAttributeContext: GermplasmAttributeContext,
                 private jhiAlertService: JhiAlertService,
@@ -88,7 +90,7 @@ export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
 
     private loadAll() {
         this.isLoading = true;
-        this. germplasmAuditService.getAttributeChanges(this.gid, this.attributeId, {
+        this.germplasmAuditService.getAttributeChanges(this.gid, this.attributeId, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {
