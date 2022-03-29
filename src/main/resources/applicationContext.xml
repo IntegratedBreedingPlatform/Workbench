@@ -15,7 +15,7 @@
 	<context:property-placeholder
 		location="classpath:workbench.properties, classpath:database.properties, classpath:crossing.properties" />
 		
-	<util:properties id="databaseProperties" location="classpath:database.properties" />	
+	<util:properties id="databaseProperties" location="classpath:database.properties" />
 	<util:properties id="workbenchProperties" location="classpath:workbench.properties" />
 	<util:properties id="helpProperties" location="classpath:helplinks.properties" />
 
@@ -240,7 +240,7 @@
 		<aop:scoped-proxy />
 	</bean>
 	
-	<bean id="germplasmGroupingService" factory-bean="managerFactory" 
+	<bean id="germplasmGroupingService" factory-bean="managerFactory"
 		factory-method="getGermplasmGroupingService" scope="request">
 		<aop:scoped-proxy />
 	</bean>
@@ -502,6 +502,16 @@
     </bean>
 
 	<bean id="programFavoriteService" factory-bean="managerFactory" factory-method="getProgramFavoriteService"
+		  scope="request">
+		<aop:scoped-proxy/>
+	</bean>
+
+	<bean id="siteAnalysisService" factory-bean="managerFactory" factory-method="getSiteAnalysisService"
+			  scope="request">
+		<aop:scoped-proxy/>
+	</bean>
+
+	<bean id="ontologyVariableService" factory-bean="managerFactory" factory-method="getOntologyVariableService"
 		  scope="request">
 		<aop:scoped-proxy/>
 	</bean>

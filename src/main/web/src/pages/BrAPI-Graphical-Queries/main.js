@@ -94,7 +94,7 @@ function loadTrials() {
 			},
 			transport: function (params, success, failure) {
 				$.ajax(params.url, params)
-					.done(function( data, textStatus, jqXHR ) {
+					.done(function (data, textStatus, jqXHR) {
 						itemCount = jqXHR.getResponseHeader('x-total-count');
 						success({response: data, params: params.data});
 					})
@@ -105,7 +105,7 @@ function loadTrials() {
 			processResults: function (data) {
 				if (data.response) {
 					const results = data.response.map(function (study) {
-						return { id : study.studyId, text : study.name };
+						return {id: study.studyId, text: study.name};
 					});
 
 					return {
@@ -143,6 +143,15 @@ function getExportFileName(fileName, fileType) {
 
 // Angular ****************************
 var mainApp = angular.module('mainApp', ['loadingStatus', 'ui.bootstrap']);
+
+mainApp.constant('rcalls', {
+	NONE: 7,
+	OVERALL_AVERAGE: 8,
+	AVERAGE_BY_INSTANCE: 9,
+	DATA_OVER_INSTANCES_AND_REP: 10,
+	ENTRIES_BY_STUDY_AND_REP: 11,
+	ENTRIES_BY_STUDY_REP_AND_BLOCK: 12
+});
 
 mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observationService', function ($scope, $uibModal, $http, observationService) {
 
@@ -471,8 +480,8 @@ mainApp.controller('SelectGermplasmController', ['$scope', '$q', '$uibModalInsta
 
 	}]);
 
-mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'filteredDataResult', 'nanTraitNames',
-	function ($scope, $q, $uibModalInstance, rCallService, filteredDataResult, nanTraitNames) {
+mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance', 'rCallService', 'filteredDataResult', 'nanTraitNames', 'rcalls',
+	function ($scope, $q, $uibModalInstance, rCallService, filteredDataResult, nanTraitNames, rcalls) {
 
 		$scope.errorMessage = '';
 		$scope.rCallObjects = [];
@@ -482,10 +491,32 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 
 		$scope.proceed = function () {
 			$scope.errorMessage = '';
-			var rObject = angular.copy($scope.selectedRCallObject);
-			var filteredData = clearNanData(rObject.description, filteredDataResult, nanTraitNames);
+			var rCallObject = angular.copy($scope.selectedRCallObject);
 
-			transform(rObject, filteredData);
+			if ($scope.validate(rCallObject, filteredDataResult)) {
+				var filteredData = clearNanData(rCallObject, filteredDataResult, nanTraitNames);
+				transform(rCallObject, filteredData);
+			}
+		};
+
+		$scope.validate = function (rCallObject, data) {
+			if (rCallObject.rCallId === rcalls.ENTRIES_BY_STUDY_AND_REP
+				|| rCallObject.rCallId === rcalls.ENTRIES_BY_STUDY_REP_AND_BLOCK
+				|| rCallObject.rCallId === rcalls.DATA_OVER_INSTANCES_AND_REP) {
+				let replicateNumberIsBlank = data.every(datum => !datum.replicate);
+				if (replicateNumberIsBlank) {
+					$scope.errorMessage = 'Replicate number is not available in the table.';
+					return false;
+				}
+			}
+			if (rCallObject.rCallId === rcalls.ENTRIES_BY_STUDY_REP_AND_BLOCK) {
+				let blockNumberIsBlank = data.every(datum => !datum.blockNumber);
+				if (blockNumberIsBlank) {
+					$scope.errorMessage = 'Block number is not available in the table.';
+					return false;
+				}
+			}
+			return true;
 		};
 
 		$scope.cancel = function () {
@@ -519,6 +550,12 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			$scope.meltRCallObject.parameters.data = JSON.stringify(data);
 			// melt the data first before transforming
 			rCallService.executeRCallAsJSON($scope.meltRCallObject.endpoint, $scope.meltRCallObject.parameters).then(function (response) {
+				// molten data should have a "variable" field in order to
+				// successfully cast the data.
+				let hasNoVariables = response.data.some(datum => !datum.variable);
+				if (response.data.length === 0 || hasNoVariables) {
+					return Promise.reject({data: 'No valid traits available in the table.'});
+				}
 				rObject.parameters.data = JSON.stringify(response.data);
 				// transform the molten data through R cast function
 				return rCallService.executeRCallAsCSV(rObject.endpoint, rObject.parameters);
@@ -532,12 +569,17 @@ mainApp.controller('ExportModalController', ['$scope', '$q', '$uibModalInstance'
 			});
 		}
 
-		function clearNanData (transformType, data, nanTraits) {
+		function clearNanData(rCallObject, data, nanTraits) {
 			var retData = angular.copy(data);
-			if (transformType === "None"){
+
+			// If RCall is an NOT an aggregate function, allow non-numeric
+			// values for traits.
+			if (!rCallObject.aggregate) {
 				return retData;
 			}
 
+			// If RCall is an aggregate function, we should remove all
+			// non-numeric values from the data or else OpenCPU will fail to execute.
 			retData.forEach(function (datum) {
 				nanTraits.forEach(function (trait) {
 					datum[trait] = null;

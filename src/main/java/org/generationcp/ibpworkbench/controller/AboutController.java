@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AboutController {
 	public static final String URL = "/about";
 
-	@Value("${workbench.version}")
+	@Value("${bms.version}")
 	private String workbenchVersion;
 
 	@ModelAttribute("workbenchVersion")
