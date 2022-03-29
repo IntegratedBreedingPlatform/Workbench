@@ -36,8 +36,8 @@
 				</div>
 			</div>
 			<div class="table-responsive flex-grow-1"
-				 id="listBuilderDrop" cdkDropList (cdkDropListDropped)="drop($event)">
-				<table class="table table-striped table-bordered table-curved">
+				 id="listBuilderDrop" cdkDropList (cdkDropListDropped)="drop($event)" data-test="listBuilderDropSection">
+				<table class="table table-striped table-bordered table-curved" >
 					<thead>
 						<tr *ngIf="!data.length">
 							<th></th>
@@ -91,7 +91,7 @@
 			<button type="button" class="btn btn-secondary" (click)="reset()" [disabled]="!data.length">
 				<span jhiTranslate="reset"></span>
 			</button>
-			<button (click)="save()" class="btn btn-primary" [disabled]="!data.length">
+			<button (click)="save()" class="btn btn-primary" [disabled]="!data.length" data-test="listBuilderSaveButton">
 				<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
 			</button>
 		</div>
