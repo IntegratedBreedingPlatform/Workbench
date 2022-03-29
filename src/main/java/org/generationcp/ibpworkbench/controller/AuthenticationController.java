@@ -98,7 +98,7 @@ public class AuthenticationController {
 	@Value("${footer.message}")
 	private String footerMessage;
 
-	@Value("${workbench.version}")
+	@Value("${bms.version}")
 	private String workbenchVersion;
 
 	private List<Role> roles;
