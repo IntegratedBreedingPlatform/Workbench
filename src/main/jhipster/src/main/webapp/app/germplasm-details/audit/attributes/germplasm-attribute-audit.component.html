@@ -29,7 +29,7 @@
 				<tbody>
 				<tr *ngFor="let change of auditChanges">
 					<td [ngClass]="{ 'diff-new': change.attributeTypeChanged }">{{change.attributeType}}</td>
-					<td scrollable-tooltip [tooltipText]="change.value" placement="right" class="word-wrap" [ngClass]="{ 'diff-new': change.valueChanged }">{{change.value | truncateWithEllipsis:MAX_ATTRIBUTE_DISPLAY_SIZE}}</td>
+					<td jhiScrollableTooltip [tooltipText]="change.value" placement="right" class="word-wrap" [ngClass]="{ 'diff-new': change.valueChanged }">{{change.value | truncateWithEllipsis:MAX_ATTRIBUTE_DISPLAY_SIZE}}</td>
 					<td [ngClass]="{ 'diff-new': change.locationChanged }">{{change.locationName}}</td>
 					<td [ngClass]="{ 'diff-new': change.creationDateChanged }">{{change.creationDate}}</td>
 					<td>{{change.revisionType}}</td>

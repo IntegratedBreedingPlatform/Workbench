@@ -23,7 +23,7 @@
 							   [queryParams]="{ variableId: attribute.variableId }">{{attribute.variableName}}</a>
 						</td>
 						<td>{{attribute.variableDescription}}</td>
-						<td scrollable-tooltip [tooltipText]="attribute.value" placement="right" (preShowCallBack)="hideScrollableTooltips()" class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value | truncateWithEllipsis:MAX_ATTRIBUTE_DISPLAY_SIZE}}</td>
+						<td jhiScrollableTooltip [tooltipText]="attribute.value" placement="right" (preShowCallBack)="hideScrollableTooltips()" class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">{{attribute.value | truncateWithEllipsis:MAX_ATTRIBUTE_DISPLAY_SIZE}}</td>
 						<td>{{attribute.date}}</td>
 						<td>{{attribute.locationName}}</td>
 						<td class="fit" *jhiHasAnyAuthority="ATTRIBUTES_ACTIONS_PERMISSIONS">
@@ -85,7 +85,7 @@
 							   [queryParams]="{ variableId: attribute.variableId }">{{attribute.variableName}}</a>
 						</td>
 						<td>{{attribute.variableDescription}}</td>
-						<td scrollable-tooltip [tooltipText]="attribute.value" placement="right" class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">
+						<td jhiScrollableTooltip [tooltipText]="attribute.value" placement="right" class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">
 							{{attribute.value | truncateWithEllipsis:MAX_ATTRIBUTE_DISPLAY_SIZE}}
 						</td>
 						<td>{{attribute.date}}</td>
