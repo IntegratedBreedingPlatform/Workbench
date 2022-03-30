@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
 
 @Directive({
-    selector: '[scrollableTooltip]'
+    selector: '[jhiScrollableTooltip]'
 })
 export class ScrollableTooltipDirective {
     @Input() tooltipText: string;
