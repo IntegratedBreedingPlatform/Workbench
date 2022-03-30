@@ -10,7 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 			<div class="modal-body word-wrap" [innerHTML]="sanitizer.bypassSecurityTrustHtml(message)">
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()" data-test="modalCancelButton">
 					<span class="fa fa-ban"></span>&nbsp;<span>{{cancelLabel}}</span>
 				</button>
 				<button (click)="confirm()" class="btn btn-primary" data-test="modalConfirmButton">
