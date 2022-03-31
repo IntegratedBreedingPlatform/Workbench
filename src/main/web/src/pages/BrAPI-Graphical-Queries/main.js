@@ -154,9 +154,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 	$scope.nested = {};
 	$scope.flags = {
 		groupByAccession: false,
-		isDataLoaded: false,
-		isBreedingLocationSelected: true,
-		useFavoriteLocations: true
+		isDataLoaded: false
 	};
 
 	$scope.tools = [
