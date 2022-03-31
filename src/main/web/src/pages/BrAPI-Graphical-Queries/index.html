@@ -74,18 +74,19 @@
 					<label class="control-label col-sm-4">Locations</label>
 					<div class="col-sm-8">
 						<div class="form-group">
-							<div class="col-sm-12" id="allLocations" ng-show="!flags.isBreedingLocationSelected">
-
-							</div>
-							<div class="col-sm-12" id="breedingLocations" ng-show="flags.isBreedingLocationSelected">
-
+							<div class="col-sm-12" id="locationsSelect">
 							</div>
 							<div class="col-sm-12" id="locations">
 								<label class="radio-inline">
-									<input type="radio" name="locationRadioOptions" ng-model="flags.isBreedingLocationSelected" ng-value="true">Breeding locations
+									<input type="radio" name="locationRadioOptions" ng-value="true" checked>Breeding locations
 								</label>
 								<label class="radio-inline">
-									<input type="radio" name="locationRadioOptions" ng-model="flags.isBreedingLocationSelected" ng-value="false">All location types
+									<input type="radio" name="locationRadioOptions" ng-value="false">All location types
+								</label>
+							</div>
+							<div class="col-sm-12" id="favoriteLocations">
+								<label class="checkbox-inline">
+									<input type="checkbox" id="useFavoriteLocations" checked>Show only favorite locations
 								</label>
 							</div>
 						</div>
