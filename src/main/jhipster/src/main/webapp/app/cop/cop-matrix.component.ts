@@ -112,6 +112,28 @@ export class CopMatrixComponent {
         );
     }
 
+    progressValue() {
+        if (!this.response) {
+            return 0;
+        }
+        if (this.response.hasFile) {
+            return 100;
+        }
+        return this.response.progress;
+    }
+
+    progressLabel() {
+        if (!this.response) {
+            return '';
+        }
+        if (this.response.progress === 100) {
+            return ' - ' + this.translateService.instant('cop.async.saving');
+        }
+        return this.response.hasFile
+            ? (' - ' + this.translateService.instant('cop.async.downloading'))
+            : '';
+    }
+
     close() {
         this.activeModal.close();
         this.timer.unsubscribe();
