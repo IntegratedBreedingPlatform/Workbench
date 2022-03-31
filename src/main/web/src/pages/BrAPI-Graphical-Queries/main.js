@@ -25,7 +25,7 @@ function loadLocations() {
 			type: "POST",
 			dataType: "json",
 			contentType: "application/json;charset=utf-8",
-			url: "/bmsapi/crops/" + getUrlParameter("cropName")	+ "/locations/search?page=0&size=10000&programUUID=" + programUUID,
+			url: "/bmsapi/crops/" + getUrlParameter("cropName") + "/locations/search?page=0&size=10000&programUUID=" + programUUID,
 			beforeSend: beforeSend,
 			error: error,
 			delay: 500,
@@ -33,7 +33,7 @@ function loadLocations() {
 				var query = {
 					filterFavoriteProgramUUID: $('#useFavoriteLocations').prop('checked'),
 					favoriteProgramUUID: programUUID,
-					locationTypeIds: $('input[name="locationRadioOptions"]:checked').val() === 'true'? [410, 411, 412] : null
+					locationTypeIds: $('input[name="locationRadioOptions"]:checked').val() === 'true' ? [410, 411, 412] : null
 				};
 
 				return JSON.stringify(query);
