@@ -60,6 +60,7 @@ export class CopMatrixComponent {
             this.response = resp;
             if (this.isResponseBlob(resp)) {
                 this.download();
+                return;
             }
             this.watchProgress();
         }, (error) => this.onError(error));
