@@ -12,6 +12,7 @@ import { GermplasmAttributeAudit } from './germplasm-attribute-audit.model';
 import { GermplasmAttributeContext } from '../../../entities/germplasm/attribute/germplasm-attribute.context';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
+import { ScrollableTooltipDirective } from '../../../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-germplasm-attribute-audit',
@@ -23,6 +24,8 @@ import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
 
     private readonly itemsPerPage: number = 10;
+
+    MAX_ATTRIBUTE_DISPLAY_SIZE = 30;
 
     gid: number;
     attributeId: number;
@@ -40,7 +43,7 @@ export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
     getEventUser = getEventUser;
 
     constructor(public activeModal: NgbActiveModal,
-                private  germplasmAuditService: GermplasmAuditService,
+                private germplasmAuditService: GermplasmAuditService,
                 private translateService: TranslateService,
                 private germplasmAttributeContext: GermplasmAttributeContext,
                 private jhiAlertService: JhiAlertService,
@@ -88,7 +91,7 @@ export class GermplasmAttributeAuditComponent implements OnInit, OnDestroy {
 
     private loadAll() {
         this.isLoading = true;
-        this. germplasmAuditService.getAttributeChanges(this.gid, this.attributeId, {
+        this.germplasmAuditService.getAttributeChanges(this.gid, this.attributeId, {
             page: this.page - 1,
             size: this.itemsPerPage
         }).pipe(finalize(() => {
