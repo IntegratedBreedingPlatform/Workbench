@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { GermplasmAttribute } from '../../shared/germplasm/model/germplasm.model';
@@ -18,6 +18,7 @@ import { FileService } from '../../shared/file/service/file.service';
 import { FileDeleteOptionsComponent } from '../../shared/file/component/file-delete-options.component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { Principal } from '../../shared';
+import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-attributes-pane',
@@ -28,6 +29,7 @@ export class AttributesPaneComponent implements OnInit {
     MODIFY_ATTRIBUTES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_ATTRIBUTES'];
     ATTRIBUTES_ACTIONS_PERMISSIONS = [...this.MODIFY_ATTRIBUTES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
     GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
+    MAX_ATTRIBUTE_DISPLAY_SIZE = 30;
 
     eventSubscriber: Subscription;
     passportAttributes: GermplasmAttribute[] = [];
@@ -72,7 +74,7 @@ export class AttributesPaneComponent implements OnInit {
         this.attributes = await this.germplasmService.getGermplasmAttributesByGidAndType(gid, VariableTypeEnum.GERMPLASM_ATTRIBUTE).toPromise();
 
         // Get extra info not available in the attribute entity (e.g valid values)
-        const attributesByVariableId: {[key: number]: GermplasmAttribute} =
+        const attributesByVariableId: { [key: number]: GermplasmAttribute } =
             [...this.passportAttributes, ...this.attributes]
                 .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
         this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId) })
@@ -165,7 +167,7 @@ export class AttributesPaneComponent implements OnInit {
     openGermplasmAttributeAuditChanges(attributeType: number, germplasmAttribute: GermplasmAttribute): void {
         this.germplasmAttributesContext.attributeType = attributeType;
         this.germplasmAttributesContext.attribute = germplasmAttribute;
-        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attributes/${germplasmAttribute.id}/audit-dialog`}, }], {
+        this.router.navigate(['/', { outlets: { popup: `germplasm/${this.germplasmDetailsContext.gid}/attributes/${germplasmAttribute.id}/audit-dialog` }, }], {
             queryParamsHandling: 'merge'
         });
     }

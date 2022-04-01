@@ -13,61 +13,57 @@ $(document).ready(function () {
 			}
 		}
 	});
-	loadLocations().then(function (response) {
-		buildLocationsCombo(response);
-	});
+	loadLocations();
 	loadTrials();
 });
 
 function loadLocations() {
+	const programUUID = getUrlParameter("programUUID");
+	$('#locationsSelect').html('<select multiple ></select>');
+	$('#locationsSelect select').select2({
+		ajax: {
+			type: "POST",
+			dataType: "json",
+			contentType: "application/json;charset=utf-8",
+			url: "/bmsapi/crops/" + getUrlParameter("cropName") + "/locations/search?page=0&size=10000&programUUID=" + programUUID,
+			beforeSend: beforeSend,
+			error: error,
+			delay: 500,
+			data: function () {
+				var query = {
+					filterFavoriteProgramUUID: $('#useFavoriteLocations').prop('checked'),
+					favoriteProgramUUID: programUUID,
+					locationTypeIds: $('input[name="locationRadioOptions"]:checked').val() === 'true' ? [410, 411, 412] : null
+				};
 
-	var url = "/bmsapi/crops/" + getUrlParameter("cropName")
-		+ "/locations/search?page=0&size=10000&programUUID=" + getUrlParameter("programUUID");
+				return JSON.stringify(query);
+			},
+			transport: function (params, success, failure) {
+				$.ajax(params.url, params)
+					.done(function (data) {
+						success({response: data, params: params.data});
+					})
+					.fail(function () {
+						failure();
+					});
+			},
+			processResults: function (data) {
+				if (data.response) {
+					const results = data.response.map(function (location) {
+						return {id: location.id, text: location.name + ' - (' + location.abbreviation + ')'};
+					});
 
-	return Promise.all([$.ajax({
-		type: "POST",
-		data: '{}',
-		url: url,
-		beforeSend: beforeSend,
-		error: error,
-		contentType: "application/json; charset=utf-8",
-		dataType: "json"
-	}), $.ajax({
-		type: "POST",
-		data: JSON.stringify({
-			locationTypeIds: [410, 411, 412]
-		}),
-		url: url,
-		beforeSend: beforeSend,
-		error: error,
-		contentType: "application/json; charset=utf-8",
-		dataType: "json"
-	})]);
-}
+					return {
+						results: results
+					};
+				}
 
-function buildLocationsCombo(response) {
-	if (!response || !response.length) {
-		return;
-	}
-
-	let allLocations = response[0];
-	let breedingLocations = response[1];
-
-	$('#allLocations').html('<select multiple ></select>');
-	$('#allLocations select').append(allLocations.map(function (location) {
-		return '<option value="' + location.id + '">'
-			+ location.name + ' - (' + location.abbreviation + ')'
-			+ '</option>';
-	}));
-	$('#allLocations select').select2();
-
-	$('#breedingLocations').html('<select multiple ></select>');
-	$('#breedingLocations select').append(breedingLocations.map(function (location) {
-		return '<option value="' + location.id + '">'
-			+ location.name + ' - (' + location.abbreviation + ')'
-			+ '</option>';
-	}));
-	$('#breedingLocations select').select2();
+				return {
+					results: {}
+				};
+			}
+		}
+	});
 }
 
 function loadTrials() {
@@ -158,8 +154,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 	$scope.nested = {};
 	$scope.flags = {
 		groupByAccession: false,
-		isDataLoaded: false,
-		isBreedingLocationSelected: true
+		isDataLoaded: false
 	};
 
 	$scope.tools = [
@@ -388,7 +383,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 	async function createSearchObject(form) {
 
 		// TODO: Use the new Locations selector (same as the locations-select directive used in Fieldbook)
-		const locationDbIds = $scope.flags.isBreedingLocationSelected ? $('#breedingLocations select').val() : $('#allLocations select').val();
+		const locationDbIds = $('#locationsSelect select').val();
 
 		if ($scope.gid) {
 			const guids = await convertToGUIDs([$scope.gid]);
