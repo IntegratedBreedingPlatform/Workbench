@@ -75,8 +75,8 @@ export class CopMatrixComponent {
         });
     }
 
-    private hasResponse(resp) {
-        return resp && (resp.array || this.isResponseBlob(resp));
+    private hasResponse(resp: CopResponse) {
+        return resp && (resp.upperTriangularMatrix || this.isResponseBlob(resp));
     }
 
     private isResponseBlob(resp: CopResponse) {
