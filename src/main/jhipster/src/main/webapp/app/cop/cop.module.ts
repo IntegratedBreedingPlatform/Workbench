@@ -4,6 +4,7 @@ import { BmsjHipsterSharedModule } from '../shared';
 import { RouterModule } from '@angular/router';
 import { copRoutes } from './cop.route';
 import { CopService } from './cop.service';
+import { BtypeSelectorModalComponent } from './btype-selector-modal.component';
 
 @NgModule({
     imports: [
@@ -12,11 +13,13 @@ import { CopService } from './cop.service';
     ],
     declarations: [
         CopMatrixComponent,
-        CopMatrixPopupComponent
+        CopMatrixPopupComponent,
+        BtypeSelectorModalComponent
     ],
     entryComponents: [
         CopMatrixComponent,
-        CopMatrixPopupComponent
+        CopMatrixPopupComponent,
+        BtypeSelectorModalComponent
     ],
     providers: [
         CopService

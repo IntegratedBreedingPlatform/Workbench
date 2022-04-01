@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SERVER_API_URL } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
-import { CopResponse } from './cop.model';
+import { BTypeEnum, CopResponse } from './cop.model';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
@@ -13,14 +13,16 @@ export class CopService {
     ) {
     }
 
-    calculateCop(gids: number[]): Observable<CopResponse> {
+    calculateCop(gids: number[], btype: BTypeEnum): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID, gids);
+        const btypeParam = '&btype=' + btype;
+        return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID + btypeParam, gids);
     }
 
-    calculateCopForList(listId: number): Observable<CopResponse> {
+    calculateCopForList(listId: number, btype: BTypeEnum): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.post<CopResponse>(baseUrl + `/cop/calculation/list/${listId}?programUUID=` + this.context.programUUID, null);
+        const btypeParam = '&btype=' + btype;
+        return this.http.post<CopResponse>(baseUrl + `/cop/calculation/list/${listId}?programUUID=` + this.context.programUUID + btypeParam, null);
     }
 
     cancelJobs(gids: number[], listId: number) {

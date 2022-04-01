@@ -7,3 +7,9 @@ export class CopResponse {
     ) {
     }
 }
+
+export enum BTypeEnum {
+    CROSS_FERTILIZING,
+    SELF_FERTILIZING,
+    SELF_FERTILIZING_F4
+}

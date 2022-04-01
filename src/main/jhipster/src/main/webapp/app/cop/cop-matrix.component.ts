@@ -7,7 +7,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
-import { CopResponse } from './cop.model';
+import { BTypeEnum, CopResponse } from './cop.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, timer } from 'rxjs';
 import { switchMap, takeWhile, tap } from 'rxjs/operators';
@@ -25,6 +25,7 @@ export class CopMatrixComponent {
     cancelTooltip;
     gids: number[];
     listId: number;
+    btype: BTypeEnum;
 
     private timer: Subscription;
 
@@ -41,13 +42,14 @@ export class CopMatrixComponent {
         }
         this.listId = Number(queryParamMap.get('listIdModalParam'));
         this.calculate = queryParamMap.get('calculate') === 'true';
+        this.btype = BTypeEnum[queryParamMap.get('btype')];
 
         this.isLoading = true;
         let copObservable;
         if (this.listId && this.calculate) {
-            copObservable = this.copService.calculateCopForList(this.listId);
+            copObservable = this.copService.calculateCopForList(this.listId, this.btype);
         } else if (this.calculate) {
-            copObservable = this.copService.calculateCop(this.gids);
+            copObservable = this.copService.calculateCop(this.gids, this.btype);
         } else {
             copObservable = this.copService.getCop(this.gids, this.listId);
         }
