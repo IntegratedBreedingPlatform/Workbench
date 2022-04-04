@@ -89,6 +89,8 @@ import { StudyTreeComponent } from './tree/study/study-tree.component';
 import { GermplasmListFolderSelectorComponent } from './tree/germplasm/germplasm-list-folder-selector.component';
 import { MembersService } from './user/service/members.service';
 import { RoleService } from './user/service/role.service';
+import { ScrollableTooltipDirective } from './tooltip/scrollable-tooltip.directive';
+import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
 
 @NgModule({
     imports: [
@@ -132,6 +134,7 @@ import { RoleService } from './user/service/role.service';
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
+        TruncateWithEllipsisPipe,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         GermplasmTreeTableComponent,
@@ -152,7 +155,8 @@ import { RoleService } from './user/service/role.service';
         VariableSelectComponent,
         VariableSelectModalComponent,
         VariableContainerComponent,
-        FeedbackDialogComponent
+        FeedbackDialogComponent,
+        ScrollableTooltipDirective
     ],
     providers: [
         LoginService,
@@ -224,6 +228,7 @@ import { RoleService } from './user/service/role.service';
         CropSelect2DataPipe,
         NameTypeSelect2Pipe,
         AttributeSelect2DataPipe,
+        TruncateWithEllipsisPipe,
         ModalComponent,
         ModalConfirmComponent,
         FileDeleteOptionsComponent,
@@ -266,7 +271,9 @@ import { RoleService } from './user/service/role.service';
         VariableSelectComponent,
         VariableSelectModalComponent,
         VariableContainerComponent,
-        FeedbackDialogComponent
+        FeedbackDialogComponent,
+        ScrollableTooltipDirective
+
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
