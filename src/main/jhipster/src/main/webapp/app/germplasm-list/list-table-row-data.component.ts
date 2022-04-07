@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { ScrollableTooltipDirective } from '../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -29,6 +30,8 @@ export class ListDataRowComponent implements OnInit {
 
     private readonly LOCATION_ID = 'LOCATION_ID';
     private readonly BREEDING_METHOD_ID = 'BREEDING_METHOD_ID';
+
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     constructor(
         private inlineEditorService: InlineEditorService,

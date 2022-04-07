@@ -170,7 +170,7 @@
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect($event, index, germplasm, true); $event.stopPropagation()"></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]" data-test="germplasmGroupIdLink">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
-				<td [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.names}}</a></td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.names" placement="right" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.names | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{germplasm.unit}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOTS]">
@@ -179,7 +179,7 @@
 				</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.CROSS]">{{germplasm.pedigreeString}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]">{{germplasm.germplasmPreferredId}}</td>
-				<td [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]">{{germplasm.germplasmPreferredName}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.germplasmPreferredName" placement="right" [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]">{{germplasm.germplasmPreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]">{{germplasm.germplasmDate}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'location/' + germplasm.locationId } }]" queryParamsHandling="merge">{{germplasm.locationName}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'breeding-method/' + germplasm.breedingMethodId } }]" queryParamsHandling="merge">{{germplasm.methodName}}</a></td>

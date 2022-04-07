@@ -10,6 +10,7 @@ import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sani
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
 import { JhiEventManager } from 'ng-jhipster';
+import { ScrollableTooltipDirective } from '../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-germplasm-details-modal',
@@ -21,6 +22,8 @@ export class GermplasmDetailsModalComponent implements OnInit {
     germplasm: GermplasmDto;
     safeUrl: SafeResourceUrl;
     gid: number;
+
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     @HostListener('window:message', ['$event'])
     onMessage(event) {

@@ -11,6 +11,7 @@ import { JhiAlertService } from 'ng-jhipster';
 import { GermplasmAuditService } from '../germplasm-audit.service';
 import { GermplasmNameAudit } from './germplasm-name-audit.model';
 import { getEventDate, getEventUser } from '../germplasm-audit-utils';
+import { ScrollableTooltipDirective } from '../../../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-germplasm-name-audit',
@@ -22,6 +23,7 @@ import { getEventDate, getEventUser } from '../germplasm-audit-utils';
 export class GermplasmNameAuditComponent implements OnInit, OnDestroy {
 
     private readonly itemsPerPage: number = 10;
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     gid: number;
     nameId: number;
