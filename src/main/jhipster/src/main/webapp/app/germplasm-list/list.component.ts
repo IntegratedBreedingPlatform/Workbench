@@ -226,9 +226,16 @@ export class ListComponent implements OnInit {
                     variable.metadata = metadataDetails;
                     variable.metadata.deletable = TermIdEnum.ENTRY_NO !== Number(variable.id);
                 })
-                this.variables = res.body;
+                this.variables = this.sortByUndeletable(res.body);
             },
             (res: HttpErrorResponse) => this.onError(res)
+        );
+    }
+
+    sortByUndeletable(variables) {
+        return variables.sort((a, b) => {
+                return Number(a.metadata.deletable) < Number(b.metadata.deletable) ? -1 : 1
+            }
         );
     }
 
@@ -748,6 +755,7 @@ export class ListComponent implements OnInit {
             variable.metadata = metadataDetails;
             variable.metadata.deletable = TermIdEnum.ENTRY_NO !== Number(variable.id);
             this.variables.push(variable);
+            this.variables = this.sortByUndeletable(this.variables);
             this.refreshTable();
         });
     }
@@ -778,6 +786,7 @@ export class ListComponent implements OnInit {
                 delete this.selectedVariables[variable.id];
             });
 
+            this.variables = this.sortByUndeletable(this.variables);
             this.refreshTable();
         });
     }
