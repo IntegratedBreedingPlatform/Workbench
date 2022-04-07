@@ -663,6 +663,10 @@ export class ListComponent implements OnInit {
             && variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_ATTRIBUTE]);
     }
 
+    private isNotEditableColumn(variable: GermplasmListObservationVariable): boolean {
+        return variable && variable.termId === 8230 || !this.isEntryDetailColumn(variable.variableType);
+    }
+
     private mapSelectedColumnsToUpdateViewRequest(selectedColumns: GermplasmListColumnModel[]): GermplasmListDataUpdateViewRequest[] {
         return selectedColumns.map((column: GermplasmListColumnModel) =>
             new GermplasmListDataUpdateViewRequest(column.id, column.category, column.typeId));
