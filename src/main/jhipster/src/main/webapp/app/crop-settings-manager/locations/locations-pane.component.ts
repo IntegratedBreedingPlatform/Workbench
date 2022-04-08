@@ -244,7 +244,7 @@ export class LocationsPaneComponent implements OnInit {
     }
 
     private getLocationTypesOptions(): Promise<Select2OptionData[]> {
-        return this.locationService.getLocationTypes().toPromise().then((locationTypes: LocationType[]) => {
+        return this.locationService.getLocationTypes(false).toPromise().then((locationTypes: LocationType[]) => {
             return locationTypes.map((locationType: LocationType) => {
                 return { id: locationType.id.toString(),
                     text: locationType.name
