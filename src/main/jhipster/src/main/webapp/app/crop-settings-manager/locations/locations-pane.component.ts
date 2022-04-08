@@ -31,7 +31,7 @@ declare var $: any;
 export class LocationsPaneComponent implements OnInit {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
-
+    static readonly RESTRICTED_LOCATION_TYPE = [401, 405, 406];
     COLUMN_FILTER_EVENT_NAME = LocationsPaneComponent.COLUMN_FILTER_EVENT_NAME;
 
     ColumnLabels = ColumnLabels;
@@ -285,6 +285,10 @@ export class LocationsPaneComponent implements OnInit {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
             });
         }, () => confirmModalRef.dismiss());
+    }
+
+    validLocation(type) {
+        return LocationsPaneComponent.RESTRICTED_LOCATION_TYPE.includes(type);
     }
 }
 
