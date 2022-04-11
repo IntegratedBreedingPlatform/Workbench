@@ -43,6 +43,7 @@ export class FileManagerComponent implements OnInit {
 
     observationUnitUUID: string;
     datasetId: number;
+    instanceId: number;
 
     germplasmUUID: string;
 
@@ -80,12 +81,17 @@ export class FileManagerComponent implements OnInit {
 
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
         this.germplasmUUID = queryParamMap.get('germplasmUUID');
+        this.instanceId = queryParamMap.get('instanceId') ? Number(queryParamMap.get('instanceId')): null;
         if (this.observationUnitUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
             this.datasetId = Number(queryParamMap.get('datasetId'));
             this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
-        } else {
+        } else if (this.germplasmUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
+            this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
+        } else if (this.instanceId) {
+            this.datasetId = Number(queryParamMap.get('datasetId'));
+            this.VARIABLE_TYPE_IDS = [VariableTypeEnum.ENVIRONMENT_CONDITION, VariableTypeEnum.ENVIRONMENT_DETAIL];
             this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
         }
 
@@ -97,6 +103,7 @@ export class FileManagerComponent implements OnInit {
         this.fileService.listFileMetadata(
             this.observationUnitUUID,
             this.germplasmUUID,
+            this.instanceId,
             this.filters.variable.value,
             <Pageable>({
                 page: this.page - 1,
@@ -193,7 +200,8 @@ export class FileManagerComponent implements OnInit {
             this.file,
             this.observationUnitUUID,
             this.germplasmUUID,
-            this.variable && this.variable.id || null
+            this.variable && this.variable.id || null,
+            this.instanceId
         ).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(
