@@ -26,6 +26,7 @@ import { NameType } from '../../shared/germplasm/model/name-type.model';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { listPreview } from '../../shared/util/list-preview';
 import { exportDataJsonToExcel } from '../../shared/util/file-utils';
+import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-germplasm-import-review',
@@ -38,6 +39,7 @@ export class GermplasmImportReviewComponent implements OnInit {
     HEADERS = HEADERS;
     page = 0;
     pageSize = 10;
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     isLoading: boolean;
     isSaving: boolean;

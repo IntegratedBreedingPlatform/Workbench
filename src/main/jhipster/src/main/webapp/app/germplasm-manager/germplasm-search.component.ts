@@ -61,6 +61,8 @@ export class GermplasmSearchComponent implements OnInit {
     CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
     CREATE_INVENTORY_LOT_PERMISSIONS = CREATE_INVENTORY_LOT_PERMISSIONS;
 
+	MAX_NAME_DISPLAY_SIZE = 30;
+
     ColumnLabels = ColumnLabels;
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;

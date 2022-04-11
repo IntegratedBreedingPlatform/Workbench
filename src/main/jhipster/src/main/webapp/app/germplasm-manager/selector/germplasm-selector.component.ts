@@ -22,6 +22,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 import { SearchResult } from '../../shared/search-result.model';
+import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
 
 declare var $: any;
 
@@ -57,6 +58,8 @@ export class GermplasmSelectorComponent implements OnInit {
 
     selectedItems: any[] = [];
     isSelectAllPages = false;
+
+	MAX_NAME_DISPLAY_SIZE = 30;
 
     private static getInitialFilters() {
         return [
