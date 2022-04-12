@@ -103,8 +103,8 @@ export class FileManagerComponent implements OnInit {
         this.fileService.listFileMetadata(
             this.observationUnitUUID,
             this.germplasmUUID,
-            this.instanceId,
             this.filters.variable.value,
+            this.instanceId,
             <Pageable>({
                 page: this.page - 1,
                 size: this.pageSize,
