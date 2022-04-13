@@ -35,6 +35,8 @@
                 "cop": {
                     "menu": "Coefficient of parentage (Beta)",
                     "calculate-cop": "Calculate for selected gids",
+                    "calculate-cop.not.reset": "Use existing values",
+                    "calculate-cop.reset": "Re-calculate everything",
                     "view-cop": "View for selected gids",
                     "calculate-for-list": "Calculate for list",
                     "view-cop-for-list": "View for list"

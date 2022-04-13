@@ -28,6 +28,7 @@ export class CopMatrixComponent {
     btype: BTypeEnum;
 
     private timer: Subscription;
+    private reset: boolean;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -43,13 +44,14 @@ export class CopMatrixComponent {
         this.listId = Number(queryParamMap.get('listIdModalParam'));
         this.calculate = queryParamMap.get('calculate') === 'true';
         this.btype = BTypeEnum[queryParamMap.get('btype')];
+        this.reset = queryParamMap.get('reset') === 'true';
 
         this.isLoading = true;
         let copObservable;
         if (this.listId && this.calculate) {
             copObservable = this.copService.calculateCopForList(this.listId, this.btype);
         } else if (this.calculate) {
-            copObservable = this.copService.calculateCop(this.gids, this.btype);
+            copObservable = this.copService.calculateCop(this.gids, this.btype, this.reset);
         } else {
             copObservable = this.copService.getCop(this.gids, this.listId);
         }

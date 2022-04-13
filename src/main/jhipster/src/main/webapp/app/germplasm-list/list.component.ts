@@ -486,7 +486,7 @@ export class ListComponent implements OnInit {
         reOrderEntriesModal.componentInstance.selectedEntries = this.getSelectedItemIds();
     }
 
-    async calculateCop() {
+    async calculateCop(reset = false) {
         if (this.entries.length === 0 || (this.size() === 0)) {
             this.alertService.error('germplasm-list.list-data.cop.no.entries.error');
             return false;
@@ -506,7 +506,8 @@ export class ListComponent implements OnInit {
                 gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
                 calculate: true,
                 listIdModalParam: null,
-                btype
+                btype,
+                reset
             }
         });
     }

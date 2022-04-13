@@ -13,10 +13,10 @@ export class CopService {
     ) {
     }
 
-    calculateCop(gids: number[], btype: BTypeEnum): Observable<CopResponse> {
+    calculateCop(gids: number[], btype: BTypeEnum, reset = false): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const btypeParam = '&btype=' + btype;
-        return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID + btypeParam, gids);
+        const params = '&btype=' + btype + '&reset=' + reset;
+        return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID + params, gids);
     }
 
     calculateCopForList(listId: number, btype: BTypeEnum): Observable<CopResponse> {

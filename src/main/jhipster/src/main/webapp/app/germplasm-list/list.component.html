@@ -68,10 +68,14 @@
 					<button mat-menu-item [matMenuTriggerFor]="cop"><span jhiTranslate="germplasm-list.list-data.actions.cop.menu"></span></button>
 				</mat-menu>
 				<mat-menu #cop="matMenu">
-					<button mat-menu-item type="submit" (click)="calculateCop()"><span jhiTranslate="germplasm-list.list-data.actions.cop.calculate-cop"></span></button>
+					<button mat-menu-item [matMenuTriggerFor]="calculateCopSubMenu"><span jhiTranslate="germplasm-list.list-data.actions.cop.calculate-cop"></span></button>
 					<button mat-menu-item type="submit" (click)="viewCop()"><span jhiTranslate="germplasm-list.list-data.actions.cop.view-cop"></span></button>
 					<button mat-menu-item type="submit" (click)="calculateCopForList()"><span jhiTranslate="germplasm-list.list-data.actions.cop.calculate-for-list"></span></button>
 					<button mat-menu-item type="submit" (click)="viewCopForList()"><span jhiTranslate="germplasm-list.list-data.actions.cop.view-cop-for-list"></span></button>
+				</mat-menu>
+				<mat-menu #calculateCopSubMenu="matMenu">
+					<button mat-menu-item type="submit" (click)="calculateCop()"><span jhiTranslate="germplasm-list.list-data.actions.cop.calculate-cop.not.reset"></span></button>
+					<button mat-menu-item type="submit" (click)="calculateCop(true)"><span jhiTranslate="germplasm-list.list-data.actions.cop.calculate-cop.reset"></span></button>
 				</mat-menu>
 			</div>
 		</div>
