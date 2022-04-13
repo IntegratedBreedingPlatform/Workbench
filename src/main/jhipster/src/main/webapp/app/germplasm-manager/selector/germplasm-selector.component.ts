@@ -59,7 +59,7 @@ export class GermplasmSelectorComponent implements OnInit {
     selectedItems: any[] = [];
     isSelectAllPages = false;
 
-	MAX_NAME_DISPLAY_SIZE = 30;
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     private static getInitialFilters() {
         return [
