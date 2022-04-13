@@ -8,8 +8,9 @@ export class CopResponse {
     }
 }
 
+// values represent enum id
 export enum BTypeEnum {
-    CROSS_FERTILIZING,
-    SELF_FERTILIZING,
-    SELF_FERTILIZING_F4
+    CROSS_FERTILIZING = 0,
+    SELF_FERTILIZING = 1,
+    SELF_FERTILIZING_F4 = 2
 }
