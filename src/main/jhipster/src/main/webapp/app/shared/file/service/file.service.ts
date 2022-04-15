@@ -31,7 +31,7 @@ export class FileService {
         }
 
         if (instanceId) {
-            request['instanceId'] = instanceId;
+            request['instanceIds'] = [instanceId];
         }
         const params: any = createRequestOption(Object.assign({
             programUUID: this.context.programUUID
