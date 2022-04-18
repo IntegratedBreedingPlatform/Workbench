@@ -52,7 +52,7 @@
 						   [class.accepted-value]="isNumericOutOfRange()" />
 				</div>
 				<div class="col-sm-9" *ngSwitchDefault >
-					<input type="text" class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="255"/>
+					<textarea class="form-control" rows="3" name="variablevalue" id="variablevalue" [(ngModel)]="value" #variablevalue="ngModel" maxlength="5000"></textarea>
 				</div>
 			</div>
 			<div class="form-group row required">

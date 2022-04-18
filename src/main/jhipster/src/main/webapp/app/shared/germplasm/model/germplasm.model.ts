@@ -58,6 +58,7 @@ export class GermplasmAttribute {
     constructor(
         public id?: number,
         public value?: string,
+        public displayValue?: string,
         public variableId?: number,
         public variableName?: string,
         public variableDescription?: string,
