@@ -68,7 +68,7 @@
                 "reorder.success": "Successfully reorder of entries."
             },
             "cop": {
-                "no.entries.error": "Please select at least 1"
+                "no.entries.error": "Please select at least 1 entry"
             },
             "delete-list": {
                 "header": "Delete Germplasm List",
