@@ -49,11 +49,22 @@ export class CopService {
         });
     }
 
-    download(listId: number) {
+    downloadForList(listId: number) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.get(baseUrl + `/cop/csv/list/${listId}?programUUID=` + this.context.programUUID, {
             observe: 'response',
             responseType: 'blob'
+        });
+    }
+
+    downloadMatrix(gids: number[]) {
+        const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
+        const params = {};
+        params['gids'] = gids;
+        return this.http.get(baseUrl + `/cop/csv?programUUID=` + this.context.programUUID, {
+            observe: 'response',
+            responseType: 'blob',
+            params
         });
     }
 }

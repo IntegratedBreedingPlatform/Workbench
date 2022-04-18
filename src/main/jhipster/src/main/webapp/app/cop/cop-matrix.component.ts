@@ -62,8 +62,8 @@ export class CopMatrixComponent {
                 this.alertService.success('cop.async.started');
             }
             this.response = resp;
-            if (this.isResponseBlob(resp)) {
-                this.download();
+            if (this.hasResponseFile(resp)) {
+                this.downloadForList();
                 return;
             }
             this.watchProgress();
@@ -72,18 +72,24 @@ export class CopMatrixComponent {
         this.cancelTooltip = this.translateService.instant('cop.async.cancel.tooltip');
     }
 
-    private download() {
-        this.copService.download(this.listId).subscribe((resp) => {
+    private downloadForList() {
+        this.copService.downloadForList(this.listId).subscribe((resp) => {
             saveFile(resp);
             this.close();
         });
     }
 
-    private hasResponse(resp: CopResponse) {
-        return resp && (resp.upperTriangularMatrix || this.isResponseBlob(resp));
+    downloadMatrix() {
+        this.copService.downloadMatrix(this.gids).subscribe((resp) => {
+            saveFile(resp);
+        });
     }
 
-    private isResponseBlob(resp: CopResponse) {
+    private hasResponse(resp: CopResponse) {
+        return resp && (resp.upperTriangularMatrix || this.hasResponseFile(resp));
+    }
+
+    private hasResponseFile(resp: CopResponse) {
         return resp.hasFile;
     }
 
@@ -93,8 +99,8 @@ export class CopMatrixComponent {
             switchMap(() => this.copService.getCop(this.gids, this.listId)),
             tap((resp) => {
                 this.response = resp
-                if (this.isResponseBlob(resp)) {
-                    this.download()
+                if (this.hasResponseFile(resp)) {
+                    this.downloadForList()
                 }
             }),
             takeWhile((resp: any) => !this.hasResponse(resp))
