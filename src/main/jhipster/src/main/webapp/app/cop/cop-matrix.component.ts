@@ -164,6 +164,25 @@ export class CopMatrixComponent {
             this.alertService.error('error.general', null, null);
         }
     }
+
+    getColor(val: string) {
+        const cop = Number(val);
+
+        // #E66465
+        const rgb1 = [230, 100, 101];
+        // #9198e5
+        const rgb0 = [145, 152, 229];
+
+        // based on https://stackoverflow.com/a/24253254/1384743
+        const w = cop * 2 - 1;
+        const w1 = (w + 1) / 2.0;
+        const w2 = 1 - w1;
+        return 'rgb('
+            + (rgb1[0] * w1 + rgb0[0] * w2) + ','
+            + (rgb1[1] * w1 + rgb0[1] * w2) + ','
+            + (rgb1[2] * w1 + rgb0[2] * w2)
+            + ')';
+    }
 }
 
 @Component({

@@ -16,9 +16,9 @@
 			</tr>
 			</thead>
 			<tbody>
-			<tr *ngFor="let row of response?.upperTriangularMatrix.slice(1)">
-				<td *ngFor="let col of row; index as i" [class.font-weight-bold]="i === 0">
-					{{i === 0 ? col : col | number: '1.0-4'}}
+			<tr *ngFor="let row of response?.upperTriangularMatrix.slice(1); index as i">
+				<td *ngFor="let col of row; index as j" [class.font-weight-bold]="j === 0" [style.backgroundColor]="j > 0 && (col || col === '0') ? getColor(col) : ''">
+					{{j === 0 ? col : col | number: '1.0-4'}}
 				</td>
 			</tr>
 			</tbody>
