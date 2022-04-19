@@ -46,11 +46,11 @@
                 <td>{{location.longitude}}</td>
                 <td>{{location.altitude}}</td>
                 <td>{{location.locationTypeName}}</td>
-                <td class="text-center">
-                    <button class="btn btn-info mr-2" (click)="editLocation(location)">
+                <td class="text-center" >
+                    <button class="btn btn-info mr-2" (click)="editLocation(location)" [disabled]=validLocation(location.type)>
                         <i class="fa fa-edit fa-md" aria-hidden="true"></i>
                     </button>
-                    <button class="btn btn-info mr-2" (click)="deleteLocation(location)">
+                    <button class="btn btn-info mr-2" (click)="deleteLocation(location)" [disabled]=validLocation(location.type)>
                         <i class="fa fa-trash fa-md" aria-hidden="true"></i>
                     </button>
                 </td>

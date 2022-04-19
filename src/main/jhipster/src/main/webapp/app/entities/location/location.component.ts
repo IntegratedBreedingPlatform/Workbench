@@ -73,7 +73,7 @@ export class LocationComponent implements OnInit {
                 }
             }
 
-            this.locationService.getLocationTypes().toPromise().then((locationTypes: LocationType[]) => {
+            this.locationService.getLocationTypes(false).toPromise().then((locationTypes: LocationType[]) => {
                 this.locationTypes = locationTypes;
                 this.selectedLocationType = locationTypes.find((e) => e.id === this.breedingLocation.type);
             });
