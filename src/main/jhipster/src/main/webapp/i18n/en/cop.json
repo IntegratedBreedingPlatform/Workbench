@@ -2,7 +2,7 @@
   "cop": {
     "matrix": {
       "header": "Coefficient of parentage",
-      "download": "download"
+      "download": "Download"
     },
     "async.started": "Calculation job started!",
     "async.in.progress": "Calculation in progress",
