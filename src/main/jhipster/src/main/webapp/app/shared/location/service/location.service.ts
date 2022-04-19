@@ -21,9 +21,13 @@ export class LocationService {
             { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
     }
 
-    getLocationTypes(): Observable<LocationType[]> {
+    getLocationTypes(excludeRestrictedTypes): Observable<LocationType[]> {
+        const params = {};
+        if (excludeRestrictedTypes) {
+            params['excludeRestrictedTypes'] = true;
+        }
         return this.http.get<LocationType[]>(SERVER_API_URL + `crops/${this.context.cropName}/location-types`,
-            { observe: 'response' }).pipe(map((res: HttpResponse<LocationType[]>) => res.body));
+            { params, observe: 'response' }).pipe(map((res: HttpResponse<LocationType[]>) => res.body));
     }
 
     searchLocations(request: LocationSearchRequest, favoriteLocation: boolean, pagination: any): Observable<HttpResponse<Location[]>> {

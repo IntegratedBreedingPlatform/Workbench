@@ -11,6 +11,8 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
 import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding-method-group.model';
 import { finalize } from 'rxjs/internal/operators/finalize';
+import { HELP_NAME_RULES_FOR_NEW_GERMPLASM } from '../../app.constants';
+import { HelpService } from '../../shared/service/help.service';
 
 @Component({
     selector: 'jhi-breeding-method-edit-dialog',
@@ -21,6 +23,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     breedingMethodId: number;
 
     isLoading: boolean;
+    helpLink: string;
 
     breedingMethodRequest: any;
 
@@ -37,9 +40,18 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
                 private eventManager: JhiEventManager,
                 private breedingMethodService: BreedingMethodService,
                 private alertService: AlertService,
-                private cropSettingsContext: CropSettingsContext) {
+                private cropSettingsContext: CropSettingsContext,
+                private helpService: HelpService) {
 
         this.breedingMethodRequest = { code: null, name: null, description: null, type: null, methodClass: null, group: null };
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getHelpLink(HELP_NAME_RULES_FOR_NEW_GERMPLASM).toPromise().then((response) => {
+                if (response.body) {
+                    this.helpLink = response.body;
+                }
+            }).catch((error) => {
+            });
+        }
     }
 
     ngOnDestroy(): void {

@@ -32,6 +32,16 @@
             "actions": {
                 "reorder-entries": "Reorder entries",
                 "export-data-and-labels": "Export list data and labels",
+                "cop": {
+                    "menu": "Coefficient of parentage (Beta)",
+                    "calculate-cop": "Calculate for selected gids",
+                    "calculate-cop.not.reset": "Use existing values",
+                    "calculate-cop.reset": "Re-calculate everything",
+                    "view-cop": "View for selected gids",
+                    "calculate-for-list": "Calculate for list",
+                    "view-cop-for-list": "View for list"
+                },
+                "export-data-and-labels": "Export list data and labels",
                 "add-entries": "Add entries",
                 "add-entries-to-another": "Add entries to another list",
                 "add-to-list": "Add to list",
@@ -56,6 +66,9 @@
                 },
                 "reorder-action": "Reorder",
                 "reorder.success": "Successfully reorder of entries."
+            },
+            "cop": {
+                "no.entries.error": "Please select at least 1 entry"
             },
             "delete-list": {
                 "header": "Delete Germplasm List",

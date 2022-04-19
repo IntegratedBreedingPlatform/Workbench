@@ -25,6 +25,7 @@ import { PrototypeModule } from './prototype/prototype.module';
 import { VariableDetailsModule } from './ontology/variable-details/variable-details.module';
 import { CropSettingsManagerModule } from './crop-settings-manager/crop-settings-manager.module';
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
+import { CopModule } from './cop/cop.module';
 import { AboutModule } from './about/about.module';
 import { ProgramSettingsManagerComponent } from './program-settings-manager/program-settings-manager.component';
 import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
@@ -46,6 +47,7 @@ import { CreateProgramModule } from './entities/create-program/create-program.mo
         ReleaseNotesModule,
         UserProfileModule,
         FileManagerModule,
+        CopModule,
         PrototypeModule,
         CropSettingsManagerModule,
         VariableDetailsModule,
