@@ -184,7 +184,8 @@ export class PedigreeGraphComponent implements OnInit {
         const name: string[] = [];
 
         if (germplasmTreeNode.preferredName) {
-            const preferredName = germplasmTreeNode.preferredName.length > this.MAX_NAME_DISPLAY_SIZE ? germplasmTreeNode.preferredName.substring(0, this.MAX_NAME_DISPLAY_SIZE) + '...' : germplasmTreeNode.preferredName;
+            const preferredName = germplasmTreeNode.preferredName.length > this.MAX_NAME_DISPLAY_SIZE
+                ? germplasmTreeNode.preferredName.substring(0, this.MAX_NAME_DISPLAY_SIZE) + '...' : germplasmTreeNode.preferredName;
             name.push(preferredName + '\n');
         }
         if (germplasmTreeNode.gid === 0) {
@@ -196,7 +197,8 @@ export class PedigreeGraphComponent implements OnInit {
                 name.push(`\n\n${germplasmTreeNode.methodCode}: ${germplasmTreeNode.methodName}`);
             }
         }
-        dot.push(germplasmTreeNode.gid + ' [label=\"' + name.join('') + '\", tooltip=\"' + germplasmTreeNode.preferredName + '\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];\n');
+        dot.push(germplasmTreeNode.gid + ' [label=\"' + name.join('') + '\", tooltip=\"' + germplasmTreeNode.preferredName
+            + '\", fontname=\"Helvetica\", fontsize=12.0, ordering=\"in\"];\n');
 
         return germplasmTreeNode.gid;
     }
