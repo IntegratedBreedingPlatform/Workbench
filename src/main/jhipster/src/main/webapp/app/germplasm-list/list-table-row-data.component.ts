@@ -115,6 +115,22 @@ export class ListDataRowComponent implements OnInit {
         return this.column.alias === ColumnAlias.BREEDING_METHOD_PREFERRED_NAME;
     }
 
+    isImmediateSourceNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.IMMEDIATE_SOURCE_NAME;
+    }
+
+    isGroupSourceNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.GROUP_SOURCE_NAME;
+    }
+
+    isFemaleParentNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.FEMALE_PARENT_NAME;
+    }
+
+    isMaleParentNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.MALE_PARENT_NAME;
+    }
+
     shouldHasGidDetailsLink(): boolean {
         return this.isGidColumn() || (this.isGroupIdColumn() && Boolean(this.rowData));
     }

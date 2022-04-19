@@ -5,7 +5,7 @@
 				<div class="col-3">
 					<label class="font-weight-bold" jhiTranslate="basic-details.preferred-name">Preferred Name:</label>
 				</div>
-				<div class="col word-wrap">{{germplasm?.preferredName}}</div>
+				<div jhiScrollableTooltip [tooltipText]="germplasm.preferredName" placement="bottom" class="col word-wrap">{{germplasm?.preferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</div>
 			</div>
 			<div class="row">
 				<div class="col-3">
