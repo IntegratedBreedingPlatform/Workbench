@@ -114,13 +114,13 @@
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD NUMBER']]">{{germplasm.methodNumber}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['METHOD GROUP']]">{{germplasm.methodGroup}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['FGID']]">{{germplasm.femaleParentGID}}</td>
-				<td jhiScrollableTooltip [tooltipText]="germplasm.femaleParentPreferredName" placement="right" [hidden]="hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']]">{{germplasm.femaleParentPreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.femaleParentPreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']]">{{germplasm.femaleParentPreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['MGID']]">{{germplasm.maleParentGID}}</td>
-				<td jhiScrollableTooltip [tooltipText]="germplasm.maleParentPreferredName" placement="right" [hidden]="hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']]">{{germplasm.maleParentPreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.maleParentPreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']]">{{germplasm.maleParentPreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]">{{germplasm.groupSourceGID}}</td>
-				<td jhiScrollableTooltip [tooltipText]="germplasm.groupSourcePreferredName" placement="right" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]">{{germplasm.groupSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.groupSourcePreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]">{{germplasm.groupSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]">{{germplasm.immediateSourceGID}}</td>
-				<td jhiScrollableTooltip [tooltipText]="germplasm.immediateSourcePreferredName" placement="right" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]">{{germplasm.immediateSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.immediateSourcePreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]">{{germplasm.immediateSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td *ngFor="let entry of germplasm.attributeTypesValueMap | keyvalue">{{entry.value}}</td>
 				<td *ngFor="let entry of germplasm.nameTypesValueMap | keyvalue">{{entry.value}}</td>
 			</tr>

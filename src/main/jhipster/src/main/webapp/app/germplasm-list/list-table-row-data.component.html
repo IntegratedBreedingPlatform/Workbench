@@ -38,7 +38,7 @@
 		<span *ngIf="this.isImmediateSourceNameColumn()
 		|| this.isGroupSourceNameColumn()
 		|| this.isFemaleParentNameColumn()
-		|| this.isMaleParentNameColumn()" jhiScrollableTooltip [tooltipText]="this.rowData" placement="right">{{this.rowData | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</span>
+		|| this.isMaleParentNameColumn()" jhiScrollableTooltip [tooltipText]="this.rowData" placement="bottom">{{this.rowData | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</span>
 	</ng-template>
 </div>
 <ng-template #editable>
