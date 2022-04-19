@@ -91,6 +91,10 @@ export class ListDataRowComponent implements OnInit {
             this.isBreedingMethodNameColumn();
     }
 
+    isNamesColumn(): boolean {
+        return this.column.columnCategory === GermplasmListColumnCategory.NAMES;
+    }
+
     isGidColumn(): boolean {
         return this.column.alias === ColumnAlias.GID;
     }

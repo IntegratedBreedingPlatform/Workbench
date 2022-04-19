@@ -31,11 +31,13 @@
 	<ng-template #noLink>
 		<span *ngIf="this.isGroupIdColumn() || this.isLotsColumn()">-</span>
 		<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()
+		&& !this.isNamesColumn()
 		&& !this.isImmediateSourceNameColumn()
 		&& !this.isGroupSourceNameColumn()
 		&& !this.isFemaleParentNameColumn()
 		&& !this.isMaleParentNameColumn()">{{this.rowData}}</span>
-		<span *ngIf="this.isImmediateSourceNameColumn()
+		<span *ngIf="this.isNamesColumn()
+		|| this.isImmediateSourceNameColumn()
 		|| this.isGroupSourceNameColumn()
 		|| this.isFemaleParentNameColumn()
 		|| this.isMaleParentNameColumn()" jhiScrollableTooltip [tooltipText]="this.rowData" placement="bottom">{{this.rowData | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</span>
