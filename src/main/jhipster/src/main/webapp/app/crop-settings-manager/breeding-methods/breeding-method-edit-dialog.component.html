@@ -63,6 +63,13 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<div class="col-sm-7">
+					<h5 class="font-weight-bold">
+						<span jhiTranslate="crop-settings-manager.breeding-method.modal.name-rule" style="margin-right: 5px;"></span>
+					</h5>
+				</div>
+			</div>
+			<div class="form-group row">
 				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.separator">Separator</label>
 				<div class="col-sm-7">
 					<input type="text" class="form-control" name="separator" id="separator" [(ngModel)]="breedingMethodRequest.separator" #separator="ngModel" [maxLength]="255"></input>
