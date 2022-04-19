@@ -1,0 +1,21 @@
+{
+  "cop": {
+    "matrix": {
+      "header": "Coefficient of parentage",
+      "download": "Download"
+    },
+    "async.started": "Calculation job started!",
+    "async.in.progress": "Calculation in progress",
+    "async.cancel.tooltip": "Cancel jobs for the current gid selection",
+    "async.cancel.success": "Job cancelled successfully",
+    "async.saving": "Saving",
+    "async.downloading": "Downloading",
+    "btype": {
+      "select": "Please select the btype param according to your crop",
+      "label": "btype",
+      "cross.fertilizing": "Cross Fertilizing",
+      "self.fertilizing": "Self Fertilizing",
+      "self.fertilizing.f4": "Self Fertilizing with unknown source but known parents"
+    }
+  }
+}
