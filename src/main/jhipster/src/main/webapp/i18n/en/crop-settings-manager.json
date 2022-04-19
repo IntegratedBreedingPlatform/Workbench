@@ -51,6 +51,7 @@
         "prefix": "Prefix",
         "count": "Count",
         "suffix": "Suffix",
+        "name-rule":"Name rules for new germplasm",
         "delete": {
           "success": "Breeding Method deleted successfully.",
           "warning": "Are you sure you want to delete the Breeding Method {{param}}?"
