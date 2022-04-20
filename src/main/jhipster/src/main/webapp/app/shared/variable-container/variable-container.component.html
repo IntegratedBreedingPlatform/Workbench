@@ -12,7 +12,7 @@
 				<thead>
 				<tr>
 					<th style="width: 30px;">
-						<a *ngIf="variables.length > 0">
+						<a *ngIf="existsVariableDeletables()">
 							<input type="checkbox" [checked]="isAllSelected()" (click)="onSelectAll()"/>
 						</a>
 					</th>
@@ -39,7 +39,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div *ngIf="variables.length > 0 && !hideAddAndRemove">
+		<div *ngIf="existsVariableDeletables() && !hideAddAndRemove">
 			<a href style="padding-left: 15px;" (click)="remove($event)">remove</a>
 		</div>
 	</div>
