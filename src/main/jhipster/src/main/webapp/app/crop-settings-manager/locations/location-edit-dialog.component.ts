@@ -115,7 +115,7 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
                     (res: HttpErrorResponse) => this.onError(res)
                 );
         }
-        this.locationService.getLocationTypes().toPromise().then((locationTypes: LocationType[]) => {
+        this.locationService.getLocationTypes(true).toPromise().then((locationTypes: LocationType[]) => {
             this.locationTypes = locationTypes;
             if (this.cropSettingsContext.location) {
                 this.locationRequest.type = this.cropSettingsContext.location.type;

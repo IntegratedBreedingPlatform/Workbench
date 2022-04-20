@@ -38,6 +38,8 @@ import { GermplasmListFolderSelectorComponent } from '../shared/tree/germplasm/g
 import { TreeComponentResult } from '../shared/tree';
 import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.service';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
+import { BTypeEnum } from '../cop/cop.model';
+import { BtypeSelectorModalComponent } from '../cop/btype-selector-modal.component';
 import { MetadataDetails } from '../shared/ontology/model/metadata-details';
 
 declare var $: any;
@@ -442,6 +444,7 @@ export class ListComponent implements OnInit {
         return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
     }
 
+    // TODO parameterize
     size() {
         return Object.keys(this.selectedItems).length;
     }
@@ -498,6 +501,81 @@ export class ListComponent implements OnInit {
         const reOrderEntriesModal = this.modalService.open(GermplasmListReorderEntriesDialogComponent as Component);
         reOrderEntriesModal.componentInstance.listId = this.listId;
         reOrderEntriesModal.componentInstance.selectedEntries = this.getSelectedItemIds();
+    }
+
+    async calculateCop(reset = false) {
+        if (this.entries.length === 0 || (this.size() === 0)) {
+            this.alertService.error('germplasm-list.list-data.cop.no.entries.error');
+            return false;
+        }
+
+        let btype: BTypeEnum;
+        try {
+             btype = await this.selectBtype();
+        } catch (error) {
+            return;
+        }
+
+        // listIdModalParam: different name to avoid clearing up listId component query param
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
+                calculate: true,
+                listIdModalParam: null,
+                btype,
+                reset
+            }
+        });
+    }
+
+    viewCop() {
+        if (this.entries.length === 0 || (this.size() === 0)) {
+            this.alertService.error('germplasm-list.list-data.cop.no.entries.error');
+            return false;
+        }
+
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
+                calculate: false,
+                listIdModalParam: null
+            }
+        });
+    }
+
+    async calculateCopForList() {
+        let btype: BTypeEnum;
+        try {
+            btype = await this.selectBtype();
+        } catch (error) {
+            return;
+        }
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: null,
+                listIdModalParam: this.listId,
+                calculate: true,
+                btype
+            }
+        });
+    }
+
+    viewCopForList() {
+        this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                gids: null,
+                calculate: false,
+                listIdModalParam: this.listId
+            }
+        });
+    }
+
+    private async selectBtype(): Promise<BTypeEnum> {
+        return this.modalService.open(BtypeSelectorModalComponent as Component).result;
     }
 
     openGermplasmSelectorModal() {
@@ -844,7 +922,6 @@ export class ListComponent implements OnInit {
             && !this.germplasmList.locked
             && (this.principal.hasAnyAuthorityDirect(this.DELETE_LIST_PERMISSIONS) || this.user.id === this.germplasmList.ownerId);
     }
-
 }
 
 export enum ColumnAlias {
