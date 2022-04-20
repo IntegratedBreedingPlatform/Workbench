@@ -46,12 +46,11 @@ export class FileManagerComponent implements OnInit {
     instanceId: number;
 
     germplasmUUID: string;
-
     isLoading = false;
     isLoadingImage = false;
     embedded = false;
     acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
-
+    excludedVariableIds = [8170, 8135];
     filters = {
         variable: {
             key: 'variable',

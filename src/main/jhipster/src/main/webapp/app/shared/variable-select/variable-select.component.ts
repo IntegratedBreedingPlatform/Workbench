@@ -30,6 +30,7 @@ export class VariableSelectComponent implements OnInit {
     @Input() variableTypeIds: VariableTypeEnum[];
     @Input() datasetId: number;
     @Input() germplasmUUID: string;
+    @Input() excludedVariableIds: number[];
 
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
 
@@ -99,23 +100,25 @@ export class VariableSelectComponent implements OnInit {
 
     transform(variables: VariableDetails[]): any[] {
         return variables.map((variable) => {
-            this.variableById[variable.id] = variable;
+            if (!this.excludedVariableIds || this.excludedVariableIds.includes(parseInt(variable.id))) {
+                this.variableById[variable.id] = variable;
 
-            const copy: any = Object.assign({}, variable);
-            const displayName = copy.alias
-                ? copy.alias + ' (' + copy.name + ')'
-                : copy.name;
-            const classes = copy.property && copy.property.classes && copy.property.classes.length
-                ? '(' + copy.property.classes.join(', ') + ')'
-                : '';
-            return Object.assign(copy, {
-                id: copy.id,
-                text: copy.alias || copy.name,
-                displayName,
-                propertyName: copy.property ? copy.property.name : '',
-                classes,
-                alias: copy.alias ? copy.alias + '(' + copy.name + ')' : ''
-            });
+                const copy: any = Object.assign({}, variable);
+                const displayName = copy.alias
+                    ? copy.alias + ' (' + copy.name + ')'
+                    : copy.name;
+                const classes = copy.property && copy.property.classes && copy.property.classes.length
+                    ? '(' + copy.property.classes.join(', ') + ')'
+                    : '';
+                return Object.assign(copy, {
+                    id: copy.id,
+                    text: copy.alias || copy.name,
+                    displayName,
+                    propertyName: copy.property ? copy.property.name : '',
+                    classes,
+                    alias: copy.alias ? copy.alias + '(' + copy.name + ')' : ''
+                });
+            }
         });
     }
 
