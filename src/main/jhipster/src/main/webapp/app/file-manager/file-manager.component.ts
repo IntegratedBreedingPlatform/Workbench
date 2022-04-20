@@ -92,7 +92,7 @@ export class FileManagerComponent implements OnInit {
         } else if (this.instanceId) {
             this.datasetId = Number(queryParamMap.get('datasetId'));
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.ENVIRONMENT_CONDITION, VariableTypeEnum.ENVIRONMENT_DETAIL];
-            this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
+            this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
         }
 
         this.load();
