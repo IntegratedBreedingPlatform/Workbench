@@ -660,6 +660,7 @@ Scrollable tooltip
     border-radius: 4px;
     z-index: 100000;
     opacity: 0;
+    word-wrap: break-word;
 }
 .ng-tooltip:after {
     content: "";

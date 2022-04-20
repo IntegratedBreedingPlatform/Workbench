@@ -19,6 +19,8 @@ export class PedigreeTreeComponent implements OnInit {
     isLoading = false;
     isExpandAll = false;
 
+    MAX_NAME_DISPLAY_SIZE = 30;
+
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
                 public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
     }

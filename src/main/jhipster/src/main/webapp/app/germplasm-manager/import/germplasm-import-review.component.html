@@ -51,7 +51,7 @@
 						<tbody>
 						<tr *ngFor="let row of rows | slice: (page-1) * pageSize : page * pageSize">
 							<td *ngFor="let header of keys(HEADERS)">
-								{{row[header]}}
+								<span jhiScrollableTooltip [tooltipText]="row[header]" placement="right" >{{row[header]  | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE }}</span>
 							</td>
 							<td *ngFor="let nameType of context.nametypesCopy | NameColumnPipe">
 								<span>{{row[toUpper(nameType.code)]}}</span>

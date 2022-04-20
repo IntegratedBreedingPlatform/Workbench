@@ -12,7 +12,7 @@
 					<tbody>
 					<tr *ngFor="let germplasmDto of germplasmList">
 						<td><a [href]="this.germplasmDetailsUrlService.getUrl(germplasmDto.gid)" target="_blank">{{germplasmDto.gid}}</a></td>
-						<td>{{germplasmDto.preferredName}}</td>
+						<td jhiScrollableTooltip [tooltipText]="germplasmDto.preferredName" placement="bottom">{{germplasmDto.preferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 					</tr>
 					</tbody>
 				</table>

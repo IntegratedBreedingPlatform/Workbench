@@ -27,6 +27,8 @@ export class PedigreePaneComponent implements OnInit {
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     isIframeLoaded: boolean;
 
+    MAX_NAME_DISPLAY_SIZE = 30;
+
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
