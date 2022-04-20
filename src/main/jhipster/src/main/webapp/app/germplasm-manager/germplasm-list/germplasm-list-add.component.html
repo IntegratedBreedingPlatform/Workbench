@@ -5,7 +5,7 @@
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
 			(click)="closeModal()" [disabled]="isLoading">&times;</button>
 </div>
-<div class="modal-body">
+<div class="modal-body" data-test="addToListModalBody">
 	<div class="row form-group">
 		<div class="col-xs-12 col-md-12">
 			<div class="table-responsive" >
@@ -48,7 +48,7 @@
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()" [disabled]="isLoading">
-		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel"></span>
+		<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="cancel" data-test="addToListCancelButton"></span>
 	</button>
 	<button (click)="validate()" [disabled]="isLoading" class="btn btn-primary">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
