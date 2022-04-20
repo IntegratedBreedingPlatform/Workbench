@@ -11,7 +11,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { finalize, map } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import { FILE_UPLOAD_SUPPORTED_TYPES, TINY_BLANK_IMAGE } from '../app.constants';
+import { EXPT_DESIGN_CVTERM_ID, FILE_UPLOAD_SUPPORTED_TYPES, TINY_BLANK_IMAGE, TRIAL_INSTANCE_CVTERM_ID } from '../app.constants';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
@@ -50,7 +50,7 @@ export class FileManagerComponent implements OnInit {
     isLoadingImage = false;
     embedded = false;
     acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
-    excludedVariableIds = [8170, 8135];
+    excludedVariableIds = [TRIAL_INSTANCE_CVTERM_ID, EXPT_DESIGN_CVTERM_ID];
     filters = {
         variable: {
             key: 'variable',
