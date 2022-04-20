@@ -23,7 +23,7 @@
 					autoLayout="true"
 					styleClass="tree-table">
 				<ng-template pTemplate="default" let-node>
-					<a [href]="this.germplasmDetailsUrlService.getUrl(node.data.id)" target="_blank">{{node.data.name}} ({{node.data.id}})</a>
+					<a [href]="this.germplasmDetailsUrlService.getUrl(node.data.id)" target="_blank" jhiScrollableTooltip [tooltipText]="node.data.name" placement="bottom">{{node.data.name | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}} ({{node.data.id}})</a>
 				</ng-template>
 			</p-tree>
 			<ng-template #loading>

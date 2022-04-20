@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class ListBuilderComponent {
 
+    MAX_NAME_DISPLAY_SIZE = 30;
     HIDDEN_COLUMNS = ['_internal_id', 'entryNo'];
     data: ListEntry[] = [];
     page = 1;

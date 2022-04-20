@@ -38,6 +38,7 @@ import { GermplasmCodingResultDialogComponent } from './coding/germplasm-coding-
 import { GermplasmCodeNameBatchResultModel } from '../shared/germplasm/model/germplasm-code-name-batch-result.model';
 import { SearchOrigin, SearchOriginComposite } from '../shared/model/Search-origin-composite';
 import { MergeGermplasmSelectionComponent } from './merge/merge-germplasm-selection-component';
+import { ScrollableTooltipDirective } from '../shared/tooltip/scrollable-tooltip.directive';
 
 declare var $: any;
 
@@ -59,6 +60,8 @@ export class GermplasmSearchComponent implements OnInit {
     UNGROUP_GERMPLASM_PERMISSIONS = UNGROUP_GERMPLASM_PERMISSIONS;
     CODE_GERMPLASM_PERMISSIONS = CODE_GERMPLASM_PERMISSIONS;
     CREATE_INVENTORY_LOT_PERMISSIONS = CREATE_INVENTORY_LOT_PERMISSIONS;
+
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     ColumnLabels = ColumnLabels;
 

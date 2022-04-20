@@ -33,11 +33,11 @@
 				</td>
 				<td><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
 				<td>{{germplasm.locationName}}</td>
-				<td>{{germplasm.germplasmPreferredName}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.germplasmPreferredName" placement="right">{{germplasm.germplasmPreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td><a *ngIf="germplasm.lotCount" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">{{germplasm.lotCount}}</a>
 					<span *ngIf="germplasm.lotCount === 0">-</span></td>
 				<td><a *ngIf="germplasm.hasProgeny" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-progeny-dialog' } }]" [queryParams]="{gid: germplasm.gid}" queryParamsHandling="merge">YES</a><span *ngIf="!germplasm.hasProgeny">NO</span></td>
-				<td>{{germplasm.pedigreeString}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.pedigreeString" placement="right">{{germplasm.pedigreeString | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
 				<td><span *ngIf="germplasm.usedInLockedList">YES</span><span *ngIf="!germplasm.usedInLockedList">No</span></td>
 				<td><span *ngIf="germplasm.usedInLockedStudy">YES</span><span *ngIf="!germplasm.usedInLockedStudy">No</span></td>

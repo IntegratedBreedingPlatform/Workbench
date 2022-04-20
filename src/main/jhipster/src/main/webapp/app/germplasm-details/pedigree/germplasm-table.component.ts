@@ -9,6 +9,7 @@ import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germp
 export class GermplasmTableComponent {
 
     @Input() germplasmList: GermplasmDto[] = [];
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     constructor(public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
     }

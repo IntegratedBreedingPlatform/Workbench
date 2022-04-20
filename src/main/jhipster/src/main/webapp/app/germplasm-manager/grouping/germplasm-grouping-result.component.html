@@ -24,8 +24,8 @@
 					<td>{{groupResult.founderGid}}</td>
 					<td>{{groupResult.groupId}}</td>
 					<td>{{groupResult.groupMembers.length}}</td>
-					<td class="col word-wrap">
-						{{displayMembers(groupResult.groupMembers)}}
+					<td class="col word-wrap" jhiScrollableTooltip [tooltipText]="displayMembers(groupResult.groupMembers)" placement="right">
+						{{displayMembers(groupResult.groupMembers) | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}
 					</td>
 					<td *ngIf="groupResult.generative">
 						<span jhiTranslate="germplasm-grouping.grouping-result-generative"></span>

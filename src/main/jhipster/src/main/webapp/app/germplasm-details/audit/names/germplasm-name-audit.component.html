@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="modal-header">
 		<div class="col-xs-11 col-md-11">
-			<h4 class="modal-title font-weight-bold">{{title}}</h4>
+			<h4 class="modal-title font-weight-bold">{{title | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</h4>
 		</div>
 		<div class="col-xs-1 col-md-1">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
@@ -30,7 +30,7 @@
 				<tbody>
 				<tr *ngFor="let change of auditChanges">
 					<td [ngClass]="{ 'diff-new': change.nameTypeChanged }">{{change.nameType}}</td>
-					<td class="word-wrap" [ngClass]="{ 'diff-new': change.valueChanged }">{{change.value}}</td>
+					<td jhiScrollableTooltip [tooltipText]="change.value" placement="right" class="word-wrap" [ngClass]="{ 'diff-new': change.valueChanged }">{{change.value  | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 					<td [ngClass]="{ 'diff-new': change.locationChanged }">{{change.locationName}}</td>
 					<td [ngClass]="{ 'diff-new': change.creationDateChanged }">{{change.creationDate}}</td>
 					<td [ngClass]="{ 'diff-new': change.preferredChanged }">{{change.preferred ? 'Yes' : 'No'}}</td>

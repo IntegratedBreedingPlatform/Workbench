@@ -11,6 +11,8 @@ export abstract class GermplasmNeighborhoodTreeComponent implements OnInit {
     numberOfStepsForward = 3;
     isLoading = false;
 
+    MAX_NAME_DISPLAY_SIZE = 30;
+
     constructor() {
     }
 

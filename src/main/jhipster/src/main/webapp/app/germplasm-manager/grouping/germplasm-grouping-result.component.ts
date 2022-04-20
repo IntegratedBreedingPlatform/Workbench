@@ -16,6 +16,8 @@ export class GermplasmGroupingResultComponent implements OnInit {
     isLoading: boolean;
     fixedGids: number[];
 
+    MAX_NAME_DISPLAY_SIZE = 30;
+
     constructor(private alertService: AlertService, private modal: NgbActiveModal) {
     }
 

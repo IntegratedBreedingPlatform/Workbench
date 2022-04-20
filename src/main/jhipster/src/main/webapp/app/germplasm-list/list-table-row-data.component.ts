@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { ScrollableTooltipDirective } from '../shared/tooltip/scrollable-tooltip.directive';
 
 @Component({
     selector: 'jhi-list-data-row',
@@ -29,6 +30,8 @@ export class ListDataRowComponent implements OnInit {
 
     private readonly LOCATION_ID = 'LOCATION_ID';
     private readonly BREEDING_METHOD_ID = 'BREEDING_METHOD_ID';
+
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     constructor(
         private inlineEditorService: InlineEditorService,
@@ -88,6 +91,10 @@ export class ListDataRowComponent implements OnInit {
             this.isBreedingMethodNameColumn();
     }
 
+    isNamesColumn(): boolean {
+        return this.column.columnCategory === GermplasmListColumnCategory.NAMES;
+    }
+
     isGidColumn(): boolean {
         return this.column.alias === ColumnAlias.GID;
     }
@@ -110,6 +117,22 @@ export class ListDataRowComponent implements OnInit {
 
     isBreedingMethodNameColumn(): boolean {
         return this.column.alias === ColumnAlias.BREEDING_METHOD_PREFERRED_NAME;
+    }
+
+    isImmediateSourceNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.IMMEDIATE_SOURCE_NAME;
+    }
+
+    isGroupSourceNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.GROUP_SOURCE_NAME;
+    }
+
+    isFemaleParentNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.FEMALE_PARENT_NAME;
+    }
+
+    isMaleParentNameColumn(): boolean {
+        return this.column.alias === ColumnAlias.MALE_PARENT_NAME;
     }
 
     shouldHasGidDetailsLink(): boolean {
