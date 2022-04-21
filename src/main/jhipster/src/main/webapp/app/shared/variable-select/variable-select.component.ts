@@ -99,7 +99,7 @@ export class VariableSelectComponent implements OnInit {
     }
 
     transform(variables: VariableDetails[]): any[] {
-        const filteredVariables = variables.filter(variable => !this.excludedVariableIds || !this.excludedVariableIds.includes(parseInt(variable.id)));
+        const filteredVariables = variables.filter((variable) => !this.excludedVariableIds || !this.excludedVariableIds.includes(parseInt(variable.id, 10)));
         return filteredVariables.map((variable) => {
             this.variableById[variable.id] = variable;
 

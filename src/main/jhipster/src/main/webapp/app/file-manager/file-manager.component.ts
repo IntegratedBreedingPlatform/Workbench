@@ -11,8 +11,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { finalize, map } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import { EXPT_DESIGN_CVTERM_ID, FILE_UPLOAD_SUPPORTED_TYPES, LOCATION_ID_CVTERM_ID, TINY_BLANK_IMAGE, TRIAL_INSTANCE_CVTERM_ID }
-    from '../app.constants';
+import { EXPT_DESIGN_CVTERM_ID, FILE_UPLOAD_SUPPORTED_TYPES, LOCATION_ID_CVTERM_ID, TINY_BLANK_IMAGE, TRIAL_INSTANCE_CVTERM_ID } from '../app.constants';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
@@ -81,7 +80,7 @@ export class FileManagerComponent implements OnInit {
 
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
         this.germplasmUUID = queryParamMap.get('germplasmUUID');
-        this.instanceId = queryParamMap.get('instanceId') ? Number(queryParamMap.get('instanceId')): null;
+        this.instanceId = queryParamMap.get('instanceId') ? Number(queryParamMap.get('instanceId')) : null;
         if (this.observationUnitUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
             this.datasetId = Number(queryParamMap.get('datasetId'));
@@ -154,7 +153,7 @@ export class FileManagerComponent implements OnInit {
     async delete($event, fileMetadata: FileMetadata) {
         $event.stopPropagation();
         const confirmModal = this.modalService.open(ModalConfirmComponent);
-        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', {fileName: fileMetadata.name});
+        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', { fileName: fileMetadata.name });
         try {
             await confirmModal.result;
         } catch (e) {
