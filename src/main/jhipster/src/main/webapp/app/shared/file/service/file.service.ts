@@ -17,7 +17,7 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationUnitUUID, germplasmUUID, variableName, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
+    listFileMetadata(observationUnitUUID, germplasmUUID, variableName, instanceId, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const request = {}
         if (observationUnitUUID) {
@@ -29,13 +29,17 @@ export class FileService {
         if (variableName) {
             request['variableName'] = variableName;
         }
+
+        if (instanceId) {
+            request['instanceIds'] = [instanceId];
+        }
         const params: any = createRequestOption(Object.assign({
             programUUID: this.context.programUUID
         }, pageable));
         return this.http.post<FileMetadata[]>(baseUrl + '/filemetadata/search', request, { params, observe: 'response' });
     }
 
-    upload(file: File, observationUnitUUID, germplasmUUID, termId = null): Observable<FileMetadata> {
+    upload(file: File, observationUnitUUID, germplasmUUID, termId = null, instanceId): Observable<FileMetadata> {
         const formData: FormData = new FormData();
         formData.append('file', file, file.name);
         const headers = new Headers();
@@ -50,6 +54,9 @@ export class FileService {
         }
         if (termId) {
             params['termId'] = termId;
+        }
+        if (instanceId) {
+            params['instanceId'] = instanceId
         }
         const options = {params};
 
