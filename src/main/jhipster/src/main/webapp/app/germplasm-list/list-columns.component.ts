@@ -36,10 +36,23 @@ export class ListColumnsComponent implements OnInit {
     }
 
     ngOnInit(): void {
+    }
+
+    load() {
+        this.staticColumns = [];
+        this.nameColumns = [];
+        this.passportColumns = [];
+        this.attributesColumns = [];
         this.germplasmListService.getGermplasmListColumns(this.listId).subscribe(
             (res: HttpResponse<GermplasmListColumn[]>) => this.onGetColumnsSuccess(res.body),
             (res: HttpErrorResponse) => this.onError(res)
         );
+    }
+
+    dropdownToggle() {
+        if (this.columnsDropdown._open) {
+            this.load();
+        }
     }
 
     apply() {
