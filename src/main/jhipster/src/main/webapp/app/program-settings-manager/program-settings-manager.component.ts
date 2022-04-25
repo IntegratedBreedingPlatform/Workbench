@@ -3,6 +3,10 @@ import { ParamContext } from '../shared/service/param.context';
 import { JhiLanguageService } from 'ng-jhipster';
 import { HELP_MANAGE_PROGRAM_SETTINGS } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
+import { FeedbackService } from '../shared/feedback/service/feedback.service';
+import { openSurvey } from '../shared/feedback/feedback-helper';
+import { FeedbackFeatureEnum } from '../shared/feedback/feedback-feature.enum';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-program-settings-manager',
@@ -15,7 +19,9 @@ export class ProgramSettingsManagerComponent {
     constructor(
         private jhiLanguageService: JhiLanguageService,
         private helpService: HelpService,
-        private paramContext: ParamContext
+        private paramContext: ParamContext,
+        private modalService: NgbModal,
+        private feedbackService: FeedbackService
     ) {
         this.paramContext.readParams();
         if (!this.helpLink || !this.helpLink.length) {
@@ -26,5 +32,6 @@ export class ProgramSettingsManagerComponent {
             }).catch((error) => {
             });
         }
+        openSurvey(FeedbackFeatureEnum.MANAGE_PROGRAM_SETTINGS, this.feedbackService, this.modalService);
     }
 }
