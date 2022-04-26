@@ -810,7 +810,7 @@ export class ListComponent implements OnInit {
         this.germplasmListService.addVariable(this.listId, variable.id, VariableTypeEnum.ENTRY_DETAILS).subscribe(() => {
             this.variables.push(variable);
             this.refreshTable();
-        });
+        }, (error) => this.onError(error));
     }
 
     async deleteVariables(variableIds: any[]) {
@@ -840,7 +840,7 @@ export class ListComponent implements OnInit {
             });
 
             this.refreshTable();
-        });
+        }, (error) => this.onError(error));
     }
 
     removeEntries() {
@@ -859,7 +859,7 @@ export class ListComponent implements OnInit {
                 this.clearSelectedItems();
                 this.refreshTable();
                 this.alertService.success('germplasm-list.list-data.remove-entries.remove.success');
-            });
+            }, (error) => this.onError(error));
         }, () => confirmModalRef.dismiss());
     }
 
