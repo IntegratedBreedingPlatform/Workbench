@@ -32,11 +32,13 @@
 		<span *ngIf="this.isGroupIdColumn() || this.isLotsColumn()">-</span>
 		<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()
 		&& !this.isNamesColumn()
+		&& !this.isCrossColumn()
 		&& !this.isImmediateSourceNameColumn()
 		&& !this.isGroupSourceNameColumn()
 		&& !this.isFemaleParentNameColumn()
 		&& !this.isMaleParentNameColumn()">{{this.rowData}}</span>
 		<span *ngIf="this.isNamesColumn()
+		|| this.isCrossColumn()
 		|| this.isImmediateSourceNameColumn()
 		|| this.isGroupSourceNameColumn()
 		|| this.isFemaleParentNameColumn()

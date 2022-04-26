@@ -135,6 +135,10 @@ export class ListDataRowComponent implements OnInit {
         return this.column.alias === ColumnAlias.MALE_PARENT_NAME;
     }
 
+    isCrossColumn(): boolean {
+        return this.column.alias === ColumnAlias.CROSS;
+    }
+
     shouldHasGidDetailsLink(): boolean {
         return this.isGidColumn() || (this.isGroupIdColumn() && Boolean(this.rowData));
     }
