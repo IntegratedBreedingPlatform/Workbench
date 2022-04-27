@@ -157,10 +157,13 @@ export class GermplasmListImportReviewComponent implements OnInit {
                     }
                     if (match.names) {
                         match.names.forEach((name) => {
-                            if (!this.matchesByName[toUpper(name.name)]) {
-                                this.matchesByName[toUpper(name.name)] = [];
+                            const nameTypesFilter = this.request.nameTypes;
+                            if (!nameTypesFilter || nameTypesFilter.length === 0 || nameTypesFilter.includes(name.nameTypeCode)) {
+                                if (!this.matchesByName[toUpper(name.name)]) {
+                                    this.matchesByName[toUpper(name.name)] = [];
+                                }
+                                this.matchesByName[toUpper(name.name)].push(match);
                             }
-                            this.matchesByName[toUpper(name.name)].push(match);
                         });
                     }
 
