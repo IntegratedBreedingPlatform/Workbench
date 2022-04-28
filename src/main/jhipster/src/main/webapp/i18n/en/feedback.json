@@ -3,8 +3,7 @@
     "title": "Feedback",
     "dont-show-again-checkbox": "Don't show again",
     "rating-text": {
-      "GERMPLASM_LIST": "How was your experience with the new list manager?",
-      "MANAGE_PROGRAM_SETTINGS": "How was your experience with the new manage program settings?"
+      "GERMPLASM_LIST": "How was your experience with the new list manager?"
     }
   }
 }
