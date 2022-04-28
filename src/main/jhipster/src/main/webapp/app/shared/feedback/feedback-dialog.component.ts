@@ -31,7 +31,7 @@ export class FeedbackDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.feedbackService.getCollectorId(this.feature).subscribe((response) => {
+        this.feedbackService.getFeedBack(this.feature).subscribe((response) => {
             this.collectorId = response.body.collectorId;
             this.ratingText = this.translateService.instant(`feedback.rating-text.${this.feature}`);
 
