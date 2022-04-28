@@ -1,13 +1,10 @@
 package org.generationcp.ibpworkbench.cross.study.traitdonors.main;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.jensjansson.pagedtable.PagedTable;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import junit.framework.Assert;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CategoricalTraitFilter;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CharacterTraitFilter;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.NumericTraitFilter;
@@ -25,20 +22,25 @@ import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.jensjansson.pagedtable.PagedTable;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.Component;
-
-import junit.framework.Assert;
 import org.thymeleaf.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.singletonList;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(value = MockitoJUnitRunner.class)
 public class TraitDisplayResultsTest {
@@ -184,6 +186,8 @@ public class TraitDisplayResultsTest {
 			Assert.fail("System should ignore invalid numeric value");
 		}
 
+		assertThat(this.traitDisplayResults.tableRows.get(0).getNumericTOSMap().get(numericTraitFilter).getWtScore(), is(0.0));
+
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
 		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
 			ArgumentMatchers.<List<Integer>>any());
@@ -198,7 +202,7 @@ public class TraitDisplayResultsTest {
 	}
 
 	@Test
-	public void testPopulateResultsTableNumericalValidTrait() {
+	public void testPopulateResultsTableNumericalValidTrait_ScoreNegative() {
 
 		final Observation observation = new Observation(new ObservationKey(1,1, 1), "6.2");
 		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.<List<Integer>>any()))
@@ -214,21 +218,71 @@ public class TraitDisplayResultsTest {
 		info.setType(TraitType.NUMERIC);
 		info.setName(StringUtils.randomAlphanumeric(3));
 		info.setDescription(StringUtils.randomAlphanumeric(10));
-		final NumericTraitFilter numericTraitFilter = new NumericTraitFilter(info, NumericTraitCriteria.KEEP_ALL, Arrays.asList("20"), TraitWeight.IGNORED);
+		final NumericTraitFilter numericTraitFilter = new NumericTraitFilter(info, NumericTraitCriteria.GREATER_THAN,
+			singletonList("7.0"), TraitWeight.IGNORED);
 
 
-		Mockito.when(this.comboBox.getValue()).thenReturn(EnvironmentWeight.IGNORED);
+		Mockito.when(this.comboBox.getValue()).thenReturn(EnvironmentWeight.IMPORTANT);
 
 		final EnvironmentForComparison environment = new EnvironmentForComparison(1, StringUtils.randomAlphanumeric(10),
 			StringUtils.randomAlphanumeric(10), StringUtils.randomAlphanumeric(10), this.comboBox);
 		try {
 			this.traitDisplayResults.populateResultsTable(Arrays.asList(environment),
-				Arrays.asList(numericTraitFilter), new ArrayList<CharacterTraitFilter>(),
-				new ArrayList<CategoricalTraitFilter>());
+				singletonList(numericTraitFilter), new ArrayList<>(), new ArrayList<>());
 		} catch (final NumberFormatException e) {
 			e.printStackTrace();
 			Assert.fail("System should ignore invalid numeric value");
 		}
+
+		assertThat(this.traitDisplayResults.tableRows.get(0).getNumericTOSMap().get(numericTraitFilter).getWtScore(), is(-1.0));
+
+		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
+		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
+			ArgumentMatchers.<List<Integer>>any());
+
+		final Iterator<Component> componentIterator = this.traitDisplayResults.getResultsTable().getComponentIterator();
+		final List<String> debugIds = new ArrayList<>(
+			Arrays.asList("germplasmColTable", "traitsColTable", "combinedScoreTagColTable"));
+		while (componentIterator.hasNext()) {
+			Assert.assertTrue(debugIds.contains(componentIterator.next().getDebugId()));
+		}
+
+	}
+
+	@Test
+	public void testPopulateResultsTableNumericalValidTrait_ScorePositive() {
+
+		final Observation observation = new Observation(new ObservationKey(1,1, 1), "6.2");
+		Mockito.when(this.crossStudyDataManager.getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(), ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(Arrays.asList(observation));
+
+		final Map<Integer, String> germplasm = new HashMap<>();
+		germplasm.put(1, StringUtils.randomAlphanumeric(10));
+		Mockito.when(this.germplasmDataManager.getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any()))
+			.thenReturn(germplasm);
+
+		final TraitInfo info = new TraitInfo();
+		info.setId(1);
+		info.setType(TraitType.NUMERIC);
+		info.setName(StringUtils.randomAlphanumeric(3));
+		info.setDescription(StringUtils.randomAlphanumeric(10));
+		final NumericTraitFilter numericTraitFilter = new NumericTraitFilter(info, NumericTraitCriteria.GREATER_THAN,
+			singletonList("6.0"), TraitWeight.IGNORED);
+
+
+		Mockito.when(this.comboBox.getValue()).thenReturn(EnvironmentWeight.IMPORTANT);
+
+		final EnvironmentForComparison environment = new EnvironmentForComparison(1, StringUtils.randomAlphanumeric(10),
+			StringUtils.randomAlphanumeric(10), StringUtils.randomAlphanumeric(10), this.comboBox);
+		try {
+			this.traitDisplayResults.populateResultsTable(Arrays.asList(environment),
+				singletonList(numericTraitFilter), new ArrayList<>(), new ArrayList<>());
+		} catch (final NumberFormatException e) {
+			e.printStackTrace();
+			Assert.fail("System should ignore invalid numeric value");
+		}
+
+		assertThat(this.traitDisplayResults.tableRows.get(0).getNumericTOSMap().get(numericTraitFilter).getWtScore(), is(1.0));
 
 		Mockito.verify(this.germplasmDataManager, Mockito.times(1)).getPreferredNamesByGids(ArgumentMatchers.<List<Integer>>any());
 		Mockito.verify(this.crossStudyDataManager, Mockito.times(4)).getObservationsForTraits(ArgumentMatchers.<List<Integer>>any(),
@@ -288,5 +342,24 @@ public class TraitDisplayResultsTest {
 			Assert.assertTrue(debugIds.contains(componentIterator.next().getDebugId()));
 		}
 		Assert.assertEquals(germplasm.size(), this.traitDisplayResults.tableRows.size());
+	}
+
+	@Test
+	public void testTestNumericTraitVal() {
+		final TraitInfo info = new TraitInfo();
+		info.setId(1);
+		info.setType(TraitType.NUMERIC);
+		info.setName(StringUtils.randomAlphanumeric(3));
+		info.setDescription(StringUtils.randomAlphanumeric(10));
+		final NumericTraitFilter filter = new NumericTraitFilter(info, NumericTraitCriteria.GREATER_THAN, singletonList("6.0"),
+			TraitWeight.IGNORED);
+
+		assertThat(this.traitDisplayResults.testNumericTraitVal(filter, new Observation(new ObservationKey(1, 1), "3.5")), is(false));
+		assertThat(this.traitDisplayResults.testNumericTraitVal(filter, new Observation(new ObservationKey(1, 1), "-3.5")), is(false));
+		assertThat(this.traitDisplayResults.testNumericTraitVal(filter, new Observation(new ObservationKey(1, 1), "1")), is(false));
+
+		assertThat(this.traitDisplayResults.testNumericTraitVal(filter, new Observation(new ObservationKey(1, 1), "6.5")), is(true));
+		assertThat(this.traitDisplayResults.testNumericTraitVal(filter, new Observation(new ObservationKey(1, 1), "6*.5")), is(true));
+		assertThat(this.traitDisplayResults.testNumericTraitVal(filter, new Observation(new ObservationKey(1, 1), "NaN")), is(true));
 	}
 }

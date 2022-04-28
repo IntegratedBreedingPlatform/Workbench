@@ -16,7 +16,11 @@ import com.vaadin.ui.Table.HeaderClickEvent;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
+import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.commons.vaadin.theme.Bootstrap;
+import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.SaveToListDialog;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.CategoricalTraitEvaluator;
@@ -31,10 +35,6 @@ import org.generationcp.ibpworkbench.cross.study.adapted.main.pojos.TraitObserva
 import org.generationcp.ibpworkbench.cross.study.constants.EnvironmentWeight;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.EnvironmentForComparison;
 import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
-import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.commons.vaadin.theme.Bootstrap;
-import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.domain.h2h.Observation;
 import org.generationcp.middleware.domain.h2h.ObservationKey;
 import org.generationcp.middleware.domain.h2h.TraitType;
@@ -53,7 +53,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Results are displayed here. Main goal is to award points for traits that fall within a desired, specified range. Points are removed if
@@ -762,7 +761,7 @@ public class TraitDisplayResults extends AbsoluteLayout implements InitializingB
 
 	public boolean testNumericTraitVal(final NumericTraitFilter trait, final Observation observation) {
 		// skip testing traits invalid value
-		if (!StringUtils.isNumeric(observation.getValue())) {
+		if (!NumberUtils.isNumber(observation.getValue())) {
 			return true;
 		} else {
 			final NumericTraitEvaluator eval =
