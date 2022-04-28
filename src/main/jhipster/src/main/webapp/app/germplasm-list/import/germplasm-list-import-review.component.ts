@@ -147,7 +147,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 this.matchesByGUID = {};
                 this.matchesByGid = {};
                 this.matchesByName = {};
-
+                const matchesByNameGIDs = {};
                 this.matches.forEach((match) => {
                     if (match.germplasmUUID) {
                         this.matchesByGUID[toUpper(match.germplasmUUID)] = match;
@@ -159,8 +159,13 @@ export class GermplasmListImportReviewComponent implements OnInit {
                         match.names.forEach((name) => {
                             if (!this.matchesByName[toUpper(name.name)]) {
                                 this.matchesByName[toUpper(name.name)] = [];
+                                matchesByNameGIDs[toUpper(name.name)] = [];
                             }
-                            this.matchesByName[toUpper(name.name)].push(match);
+
+                            if (!matchesByNameGIDs[toUpper(name.name)].includes(match.gid)) {
+                                this.matchesByName[toUpper(name.name)].push(match);
+                                matchesByNameGIDs[toUpper(name.name)].push(match.gid);
+                            }
                         });
                     }
 
