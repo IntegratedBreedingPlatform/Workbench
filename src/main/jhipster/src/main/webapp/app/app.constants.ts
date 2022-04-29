@@ -25,7 +25,6 @@ export const TINY_BLANK_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKA
 export const EMPTY_PAGE_URL = 'about:blank';
 export const COP_ASYNC_PROGRESS_REFRESH_MILLIS = 2000;
 export const FEEDBACK_ENABLED = process.env.FEEDBACK_ENABLED;
-export const FEEDBACK_SURVEY_ID = process.env.FEEDBACK_SURVEY_ID;
 
 // HELP
 export const HELP_BASE_URL = '/ibpworkbench/controller/help/getUrl/';
