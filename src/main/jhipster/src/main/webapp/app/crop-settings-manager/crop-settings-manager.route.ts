@@ -9,6 +9,7 @@ import { NameTypeEditPopupComponent } from './name-types/name-type-edit-dialog.c
 import { LocationEditPopupComponent } from './locations/location-edit-dialog.component';
 import { BreedingMethodsPaneComponent } from './breeding-methods/breeding-methods-pane.component';
 import { BreedingMethodEditPopupComponent } from './breeding-methods/breeding-method-edit-dialog.component';
+import { ParametersPaneComponent } from './parameters/parameters-pane.component';
 
 export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
     {
@@ -39,6 +40,10 @@ export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
                 resolve: {
                     'pagingParams': NameTypesResolvePagingParams
                 }
+            },
+            {
+                path: 'parameters',
+                component: ParametersPaneComponent
             }
         ],
     },

@@ -4,7 +4,8 @@
     "tabs": {
       "locations": "Locations",
       "breeding-methods": "Breeding Methods",
-      "name-type": "Germplasm Name Types"
+      "name-type": "Germplasm Name Types",
+      "parameters": "Parameters"
     },
     "confirmation": {
       "title": "Confirmation"
@@ -112,6 +113,14 @@
         "location-type": "TYPE",
         "action": "ACTION"
       }
+    },
+    "parameters": {
+      "columns": {
+        "key": "Key",
+        "value": "Value",
+        "description": "Description"
+      },
+      "table.tooltip": "click the 'value' column to edit"
     }
   }
 }
