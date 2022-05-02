@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { Config } from '../../shared/config/model/config';
-import { ConfigService } from '../../shared/config/service/config.service';
 import { ObservationVariable } from '../../shared/model/observation-variable.model';
 import { DataTypeIdEnum } from '../../shared/ontology/data-type.enum';
 import { TranslateService } from '@ngx-translate/core';
+import { CropParameter } from '../../shared/crop-parameter/model/crop-parameter';
+import { CropParameterService } from '../../shared/crop-parameter/service/crop-parameter.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-parameters-pane',
@@ -13,7 +15,7 @@ export class ParametersPaneComponent {
 
     tableTooltip;
 
-    config: Config[];
+    cropParameters: CropParameter[];
 
     // Only text edition supported for now
     characterVariable: ObservationVariable = <ObservationVariable>({
@@ -22,7 +24,7 @@ export class ParametersPaneComponent {
     editing = {};
 
     constructor(
-        private configService: ConfigService,
+        private cropParameterService: CropParameterService,
         private translateService: TranslateService
     ) {
         this.load();
@@ -30,18 +32,18 @@ export class ParametersPaneComponent {
     }
 
     load() {
-        this.configService.getConfig().subscribe((config) => this.config = config);
+        this.cropParameterService.getCropParameters().subscribe((cropParameters) => this.cropParameters = cropParameters);
     }
 
-    submit($event, index, c) {
-        this.configService.modifyConfig(c.key, $event).subscribe(() => {
-            c.value = $event;
+    submit($event, index, cropParameter) {
+        this.cropParameterService.modifyCropParameters(cropParameter.key, $event).subscribe(() => {
+            cropParameter.value = $event;
             this.editing[index] = false;
         });
     }
 
-    cancel(index, c) {
-        c.value = String(c.value);
+    cancel(index, cropParameter) {
+        cropParameter.value = String(cropParameter.value);
         this.editing[index] = false;
     }
 

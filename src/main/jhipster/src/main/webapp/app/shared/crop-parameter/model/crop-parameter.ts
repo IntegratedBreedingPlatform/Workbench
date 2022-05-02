@@ -1,4 +1,4 @@
-export class Config {
+export class CropParameter {
     constructor(
         public key: string,
         public value: string,

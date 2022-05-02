@@ -91,7 +91,7 @@ import { MembersService } from './user/service/members.service';
 import { RoleService } from './user/service/role.service';
 import { ScrollableTooltipDirective } from './tooltip/scrollable-tooltip.directive';
 import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
-import { ConfigService } from './config/service/config.service';
+import { CropParameterService } from './crop-parameter/service/crop-parameter.service';
 
 @NgModule({
     imports: [
@@ -181,7 +181,7 @@ import { ConfigService } from './config/service/config.service';
         LocationService,
         ProgramService,
         CropService,
-        ConfigService,
+        CropParameterService,
         PopupService,
         AlertService,
         ToolService,
