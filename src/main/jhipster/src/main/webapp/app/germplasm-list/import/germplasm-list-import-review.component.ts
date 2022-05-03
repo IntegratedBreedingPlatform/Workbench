@@ -83,7 +83,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
     variableMatchesResult: any = {};
 
     germplasmFilters: any;
-    request: GermplasmMatchRequest = new GermplasmMatchRequest();
+    request: GermplasmMatchRequest;
 
     constructor(
         private translateService: TranslateService,
@@ -104,6 +104,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
+        this.request = new GermplasmMatchRequest();
         this.filters = this.getInitialFilters();
         this.registerFiltersChanged();
         this.processContextInputs();
