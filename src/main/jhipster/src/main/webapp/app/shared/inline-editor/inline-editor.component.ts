@@ -14,6 +14,13 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
     @Input() observationVariable: ObservationVariable;
     @Input() value: any;
 
+    /**
+     * controls whether it starts automatically in edition mode or not
+     * editing=false will show the value as text and be clickable
+     */
+    @Input() editing = true;
+    @Output() editingChange = new EventEmitter();
+
     @Output() onApply = new EventEmitter();
     @Output() onCancel = new EventEmitter();
 
@@ -39,7 +46,7 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        if (this.editorInput.nativeElement) {
+        if (this.editorInput && this.editorInput.nativeElement) {
             this.editorInput.nativeElement.focus();
         }
     }
@@ -74,5 +81,14 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
         const termUpper = toUpper(term);
         return toUpper(item.name).includes(termUpper)
             || toUpper(item.description).includes(termUpper);
+    }
+
+    edit() {
+        this.editingChange.emit(true);
+        setTimeout(() => {
+            if (this.editorInput && this.editorInput.nativeElement) {
+                this.editorInput.nativeElement.focus();
+            }
+        })
     }
 }

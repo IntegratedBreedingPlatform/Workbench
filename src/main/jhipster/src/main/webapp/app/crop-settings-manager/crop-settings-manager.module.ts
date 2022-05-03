@@ -12,6 +12,7 @@ import { CropSettingsContext } from './crop-Settings.context';
 import { LocationEditDialogComponent, LocationEditPopupComponent } from './locations/location-edit-dialog.component';
 import { BreedingMethodsPaneComponent } from './breeding-methods/breeding-methods-pane.component';
 import { BreedingMethodEditDialogComponent, BreedingMethodEditPopupComponent } from './breeding-methods/breeding-method-edit-dialog.component';
+import { ParametersPaneComponent } from './parameters/parameters-pane.component';
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import { BreedingMethodEditDialogComponent, BreedingMethodEditPopupComponent } f
         LocationEditDialogComponent,
         LocationEditPopupComponent,
         BreedingMethodEditDialogComponent,
-        BreedingMethodEditPopupComponent
+        BreedingMethodEditPopupComponent,
+        ParametersPaneComponent
     ],
     entryComponents: [
         CropSettingsManagerComponent,
@@ -41,7 +43,8 @@ import { BreedingMethodEditDialogComponent, BreedingMethodEditPopupComponent } f
         LocationEditDialogComponent,
         LocationEditPopupComponent,
         BreedingMethodEditDialogComponent,
-        BreedingMethodEditPopupComponent
+        BreedingMethodEditPopupComponent,
+        ParametersPaneComponent
     ],
     providers: [
         NameTypesResolvePagingParams,

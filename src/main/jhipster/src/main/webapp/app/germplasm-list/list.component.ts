@@ -38,8 +38,6 @@ import { GermplasmListFolderSelectorComponent } from '../shared/tree/germplasm/g
 import { TreeComponentResult } from '../shared/tree';
 import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.service';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
-import { BTypeEnum } from '../cop/cop.model';
-import { BtypeSelectorModalComponent } from '../cop/btype-selector-modal.component';
 
 declare var $: any;
 
@@ -492,13 +490,6 @@ export class ListComponent implements OnInit {
             return false;
         }
 
-        let btype: BTypeEnum;
-        try {
-             btype = await this.selectBtype();
-        } catch (error) {
-            return;
-        }
-
         // listIdModalParam: different name to avoid clearing up listId component query param
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
             queryParamsHandling: 'merge',
@@ -506,7 +497,6 @@ export class ListComponent implements OnInit {
                 gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
                 calculate: true,
                 listIdModalParam: null,
-                btype,
                 reset
             }
         });
@@ -529,19 +519,12 @@ export class ListComponent implements OnInit {
     }
 
     async calculateCopForList() {
-        let btype: BTypeEnum;
-        try {
-            btype = await this.selectBtype();
-        } catch (error) {
-            return;
-        }
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
             queryParamsHandling: 'merge',
             queryParams: {
                 gids: null,
                 listIdModalParam: this.listId,
-                calculate: true,
-                btype
+                calculate: true
             }
         });
     }
@@ -555,10 +538,6 @@ export class ListComponent implements OnInit {
                 listIdModalParam: this.listId
             }
         });
-    }
-
-    private async selectBtype(): Promise<BTypeEnum> {
-        return this.modalService.open(BtypeSelectorModalComponent as Component).result;
     }
 
     openGermplasmSelectorModal() {
