@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GermplasmListImportComponent, HEADERS } from './germplasm-list-import.component';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,7 +38,7 @@ import { MatchType } from '../../shared/column-filter/column-filter-text-with-ma
     selector: 'jhi-germplasm-list-import-review',
     templateUrl: './germplasm-list-import-review.component.html'
 })
-export class GermplasmListImportReviewComponent implements OnInit {
+export class GermplasmListImportReviewComponent implements OnInit, OnDestroy {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'matchesFiltersChanged';
     sectionLabel = 'Advanced Match Criteria';
@@ -111,6 +111,12 @@ export class GermplasmListImportReviewComponent implements OnInit {
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.loadGermplasmMatchesTable();
 
+    }
+
+    ngOnDestroy(): void {
+        if (this.eventSubscriber) {
+            this.eventSubscriber.unsubscribe();
+        }
     }
 
     private processContextInputs() {
