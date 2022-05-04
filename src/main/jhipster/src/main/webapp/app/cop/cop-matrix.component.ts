@@ -23,6 +23,9 @@ export class CopMatrixComponent {
     calculate: boolean;
     response: CopResponse;
     cancelTooltip;
+    GID = 'GID';
+    nameKeySelected = this.GID;
+
     gids: number[];
     listId: number;
 
@@ -38,7 +41,7 @@ export class CopMatrixComponent {
     ) {
         const queryParamMap = this.route.snapshot.queryParamMap;
         if (queryParamMap.get('gids')) {
-            this.gids =  queryParamMap.get('gids').split(',').map((g) => Number(g));
+            this.gids = queryParamMap.get('gids').split(',').map((g) => Number(g));
         }
         this.listId = Number(queryParamMap.get('listIdModalParam'));
         this.calculate = queryParamMap.get('calculate') === 'true';
@@ -74,13 +77,13 @@ export class CopMatrixComponent {
         this.copService.downloadForList(this.listId).subscribe((resp) => {
             saveFile(resp);
             this.close();
-        });
+        }, (error) => this.onError(error));
     }
 
     downloadMatrix() {
-        this.copService.downloadMatrix(this.gids).subscribe((resp) => {
+        this.copService.downloadMatrix(this.gids, this.nameKeySelected).subscribe((resp) => {
             saveFile(resp);
-        });
+        }, (error) => this.onError(error));
     }
 
     private hasResponse(resp: CopResponse) {
@@ -89,6 +92,10 @@ export class CopMatrixComponent {
 
     private hasResponseFile(resp: CopResponse) {
         return resp.hasFile;
+    }
+
+    hasResponseOnlyMatrix() {
+        return this.response && (this.response.upperTriangularMatrix && !this.response.hasFile);
     }
 
     private watchProgress() {
@@ -186,6 +193,10 @@ export class CopMatrixComponent {
             + (rgb1[1] * w1 + rgb0[1] * w2) + ','
             + (rgb1[2] * w1 + rgb0[2] * w2)
             + ')';
+    }
+
+    getName(gid: string) {
+        return this.nameKeySelected === this.GID ? gid : this.response.germplasmCommonNamesMap[this.nameKeySelected][gid];
     }
 }
 

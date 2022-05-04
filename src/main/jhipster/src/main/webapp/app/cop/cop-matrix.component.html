@@ -8,22 +8,44 @@
 	<div>
 		<i class="throbber" *ngIf="isLoading"></i>
 	</div>
-	<div class="table-responsive" *ngIf="response && (response?.upperTriangularMatrix && !response?.hasFile) else asyncInProgress">
-		<button (click)="downloadMatrix()" class="btn btn-info mb-3"><span jhiTranslate="cop.matrix.download"></span></button>
-		<table class="table table-striped table-bordered table-curved">
-			<thead>
-			<tr>
-				<th *ngFor="let gid of response?.upperTriangularMatrix[0]">{{gid}}</th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr *ngFor="let row of response?.upperTriangularMatrix.slice(1); index as i">
-				<td *ngFor="let col of row; index as j" [class.font-weight-bold]="j === 0" [style.backgroundColor]="j > 0 && (col || col === '0') ? getColor(col) : ''">
-					{{j === 0 ? col : col | number: '1.0-4'}}
-				</td>
-			</tr>
-			</tbody>
-		</table>
+	<div class="row" *ngIf="hasResponseOnlyMatrix() else asyncInProgress">
+		<div class="col">
+			<div class="row mb-3">
+				<div class="col">
+					<form>
+						<div class="form-group row">
+							<label class="col-auto col-form-label" for="nameCode" jhiTranslate="cop.matrix.name.dropdown"></label>
+							<div class="col-auto">
+								<select class="form-control" id="nameCode" name="nameCode" [(ngModel)]="nameKeySelected">
+									<option [value]="GID">{{GID}}</option>
+									<option *ngFor="let nameCode of keys(response.germplasmCommonNamesMap)" [value]="nameCode">{{nameCode}}</option>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<tr>
+						<th *ngFor="let gid of response?.upperTriangularMatrix[0]">{{getName(gid)}}</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let row of response?.upperTriangularMatrix.slice(1); index as i">
+						<td *ngFor="let col of row; index as j" [class.font-weight-bold]="j === 0" [style.backgroundColor]="j > 0 && (col || col === '0') ? getColor(col) : ''">
+							{{j === 0 ? getName(col) : col | number: '1.0-4'}}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="row mb-3">
+				<div class="col">
+				</div>
+			</div>
+		</div>
 	</div>
 	<ng-template #asyncInProgress>
 		<div *ngIf="!isLoading && response">
@@ -41,4 +63,7 @@
 			</div>
 		</div>
 	</ng-template>
+</div>
+<div class="modal-footer" *ngIf="hasResponseOnlyMatrix()">
+	<button (click)="downloadMatrix()" class="btn btn-info mb-3"><span jhiTranslate="cop.matrix.download"></span></button>
 </div>

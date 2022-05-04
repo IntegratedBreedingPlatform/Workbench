@@ -56,10 +56,11 @@ export class CopService {
         });
     }
 
-    downloadMatrix(gids: number[]) {
+    downloadMatrix(gids: number[], nameKeySelected: string) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const params = {};
         params['gids'] = gids;
+        params['nameKeySelected'] = nameKeySelected;
         return this.http.get(baseUrl + `/cop/csv?programUUID=` + this.context.programUUID, {
             observe: 'response',
             responseType: 'blob',
