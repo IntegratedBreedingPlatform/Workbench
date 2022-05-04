@@ -93,7 +93,8 @@ export class BasicDetailsPaneComponent implements OnInit {
     deleteGermplasmName(germplasmName: GermplasmName): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         const truncateWithEllipsisPipe = new TruncateWithEllipsisPipe();
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-name-modal.delete.warning', { param: truncateWithEllipsisPipe.transform(germplasmName.name, this.MAX_NAME_DISPLAY_SIZE) });
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-name-modal.delete.warning',
+            {param: truncateWithEllipsisPipe.transform(germplasmName.name, this.MAX_NAME_DISPLAY_SIZE)});
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, germplasmName.id).toPromise().then((result) => {
