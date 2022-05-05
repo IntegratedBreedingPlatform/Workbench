@@ -187,7 +187,7 @@ export class NameTypesPaneComponent implements OnInit {
     }
 
     applyFilters() {
-        this.loadAll();
+        this.resetTable();
     }
 
     resetFilters() {
