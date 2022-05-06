@@ -74,8 +74,8 @@ export class NameTypesPaneComponent implements OnInit {
 
         this.page = 1;
         this.totalItems = 0;
-        this.predicate = [ColumnLabels.CODE];
-        this.reverse = false;
+        this.predicate = ColumnLabels.CODE;
+        this.reverse = true;
     }
 
     ngOnInit(): void {
@@ -124,7 +124,7 @@ export class NameTypesPaneComponent implements OnInit {
     }
 
     getSort() {
-        if (!this.predicate) {
+        if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
         }
         return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
