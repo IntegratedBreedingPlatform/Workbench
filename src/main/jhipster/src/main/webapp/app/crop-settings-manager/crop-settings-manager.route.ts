@@ -4,7 +4,6 @@ import { RouteAccessService } from '../shared';
 import { MANAGE_CROP_SETTINGS_PERMISSIONS } from '../shared/auth/permissions';
 import { LocationsPaneComponent } from './locations/locations-pane.component';
 import { NameTypesPaneComponent } from './name-types/name-types-pane.component';
-import { NameTypesResolvePagingParams } from './name-types/name-types-resolve-paging-params';
 import { NameTypeEditPopupComponent } from './name-types/name-type-edit-dialog.component';
 import { LocationEditPopupComponent } from './locations/location-edit-dialog.component';
 import { BreedingMethodsPaneComponent } from './breeding-methods/breeding-methods-pane.component';
@@ -36,10 +35,7 @@ export const CROP_SETTINGS_MANAGER_ROUTES: Routes = [
             },
             {
                 path: 'name-types',
-                component: NameTypesPaneComponent,
-                resolve: {
-                    'pagingParams': NameTypesResolvePagingParams
-                }
+                component: NameTypesPaneComponent
             },
             {
                 path: 'parameters',
