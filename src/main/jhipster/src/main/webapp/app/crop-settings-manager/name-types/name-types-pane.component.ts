@@ -21,14 +21,16 @@ import { CropSettingsContext } from '../crop-Settings.context';
 })
 export class NameTypesPaneComponent implements OnInit {
 
-    nameTypes: NameTypeDetails[];
-    private routeData: any;
     itemsPerPage: any = 20;
+
+    ColumnLabels = ColumnLabels;
+
+    nameTypes: NameTypeDetails[];
     page: any;
     predicate: any;
     totalItems: number;
     private previousPage: any;
-    reverse: any;
+    reverse: boolean;
     isLoading: boolean;
     eventSubscriber: Subscription;
 
@@ -70,12 +72,10 @@ export class NameTypesPaneComponent implements OnInit {
 
     ) {
 
-        this.routeData = this.activatedRoute.data.subscribe((data) => {
-            this.page = data.pagingParams.page;
-            this.previousPage = data.pagingParams.page;
-            this.reverse = data.pagingParams.ascending;
-            this.predicate = data.pagingParams.predicate;
-        });
+        this.page = 1;
+        this.totalItems = 0;
+        this.predicate = [ColumnLabels.CODE];
+        this.reverse = false;
     }
 
     ngOnInit(): void {
@@ -194,4 +194,11 @@ export class NameTypesPaneComponent implements OnInit {
         this.loadAll();
     }
 
+}
+
+export enum ColumnLabels {
+    'CODE' = 'fcode',
+    'NAME' = 'fname',
+    'DESCRIPTION' = 'fdesc',
+    'DATE' = 'fdate'
 }
