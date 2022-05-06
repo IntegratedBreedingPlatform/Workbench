@@ -49,7 +49,7 @@ export class GermplasmTreeService extends TreeService {
         }).pipe(map((res: any) => res.body.map((item) => this.toTreeNode(item, null))));
     }
 
-    move(source: string, target: string): Observable<HttpResponse<number>> {
+    move(source: string, target: string): Observable<TreeNode> {
         const url = `${this.resourceUrl}/germplasm-list-folders/${source}/move`;
         const params = {
             newParentId: target
@@ -58,7 +58,8 @@ export class GermplasmTreeService extends TreeService {
         if (this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
-        return this.http.put<HttpResponse<number>>(url, { observe: 'response' }, {params});
+        return this.http.put<HttpResponse<TreeNode>>(url, { observe: 'response' }, {params})
+            .pipe(map((res: HttpResponse<TreeNode>) => this.toTreeNode(res, target)));
     }
 
     delete(folderId: string): Observable<HttpResponse<void>> {
