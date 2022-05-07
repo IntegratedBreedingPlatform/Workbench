@@ -11,8 +11,9 @@ import { CopResponse } from './cop.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, timer } from 'rxjs';
 import { switchMap, takeWhile, tap } from 'rxjs/operators';
-import { COP_ASYNC_PROGRESS_REFRESH_MILLIS } from '../app.constants';
+import { COP_ASYNC_PROGRESS_REFRESH_MILLIS, HELP_GERMPLASM_LIST_COP_BETA } from '../app.constants';
 import { saveFile } from '../shared/util/file-utils';
+import { HelpService } from '../shared/service/help.service';
 
 @Component({
     selector: 'jhi-cop-matrix',
@@ -25,6 +26,7 @@ export class CopMatrixComponent {
     cancelTooltip;
     GID = 'GID';
     nameKeySelected = this.GID;
+    helpLink: string;
 
     gids: number[];
     listId: number;
@@ -37,7 +39,8 @@ export class CopMatrixComponent {
         private route: ActivatedRoute,
         private copService: CopService,
         private alertService: AlertService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private helpService: HelpService,
     ) {
         const queryParamMap = this.route.snapshot.queryParamMap;
         if (queryParamMap.get('gids')) {
@@ -71,6 +74,12 @@ export class CopMatrixComponent {
         }, (error) => this.onError(error));
 
         this.cancelTooltip = this.translateService.instant('cop.async.cancel.tooltip');
+
+        this.helpService.getHelpLink(HELP_GERMPLASM_LIST_COP_BETA).subscribe((response) => {
+            if (response.body) {
+                this.helpLink = response.body;
+            }
+        });
     }
 
     private downloadForList() {
