@@ -7,12 +7,13 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
-import { BTypeEnum, CopResponse } from './cop.model';
+import { CopResponse } from './cop.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, timer } from 'rxjs';
 import { switchMap, takeWhile, tap } from 'rxjs/operators';
-import { COP_ASYNC_PROGRESS_REFRESH_MILLIS } from '../app.constants';
+import { COP_ASYNC_PROGRESS_REFRESH_MILLIS, HELP_GERMPLASM_LIST_COP_BETA } from '../app.constants';
 import { saveFile } from '../shared/util/file-utils';
+import { HelpService } from '../shared/service/help.service';
 
 @Component({
     selector: 'jhi-cop-matrix',
@@ -23,9 +24,12 @@ export class CopMatrixComponent {
     calculate: boolean;
     response: CopResponse;
     cancelTooltip;
+    GID = 'GID';
+    nameKeySelected = this.GID;
+    helpLink: string;
+
     gids: number[];
     listId: number;
-    btype: BTypeEnum;
 
     private timer: Subscription;
     private reset: boolean;
@@ -35,23 +39,23 @@ export class CopMatrixComponent {
         private route: ActivatedRoute,
         private copService: CopService,
         private alertService: AlertService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private helpService: HelpService,
     ) {
         const queryParamMap = this.route.snapshot.queryParamMap;
         if (queryParamMap.get('gids')) {
-            this.gids =  queryParamMap.get('gids').split(',').map((g) => Number(g));
+            this.gids = queryParamMap.get('gids').split(',').map((g) => Number(g));
         }
         this.listId = Number(queryParamMap.get('listIdModalParam'));
         this.calculate = queryParamMap.get('calculate') === 'true';
-        this.btype = BTypeEnum[queryParamMap.get('btype')];
         this.reset = queryParamMap.get('reset') === 'true';
 
         this.isLoading = true;
         let copObservable;
         if (this.listId && this.calculate) {
-            copObservable = this.copService.calculateCopForList(this.listId, this.btype);
+            copObservable = this.copService.calculateCopForList(this.listId);
         } else if (this.calculate) {
-            copObservable = this.copService.calculateCop(this.gids, this.btype, this.reset);
+            copObservable = this.copService.calculateCop(this.gids, this.reset);
         } else {
             copObservable = this.copService.getCop(this.gids, this.listId);
         }
@@ -70,19 +74,25 @@ export class CopMatrixComponent {
         }, (error) => this.onError(error));
 
         this.cancelTooltip = this.translateService.instant('cop.async.cancel.tooltip');
+
+        this.helpService.getHelpLink(HELP_GERMPLASM_LIST_COP_BETA).subscribe((response) => {
+            if (response.body) {
+                this.helpLink = response.body;
+            }
+        });
     }
 
     private downloadForList() {
         this.copService.downloadForList(this.listId).subscribe((resp) => {
             saveFile(resp);
             this.close();
-        });
+        }, (error) => this.onError(error));
     }
 
     downloadMatrix() {
-        this.copService.downloadMatrix(this.gids).subscribe((resp) => {
+        this.copService.downloadMatrix(this.gids, this.nameKeySelected).subscribe((resp) => {
             saveFile(resp);
-        });
+        }, (error) => this.onError(error));
     }
 
     private hasResponse(resp: CopResponse) {
@@ -91,6 +101,10 @@ export class CopMatrixComponent {
 
     private hasResponseFile(resp: CopResponse) {
         return resp.hasFile;
+    }
+
+    hasResponseOnlyMatrix() {
+        return this.response && (this.response.upperTriangularMatrix && !this.response.hasFile);
     }
 
     private watchProgress() {
@@ -188,6 +202,10 @@ export class CopMatrixComponent {
             + (rgb1[1] * w1 + rgb0[1] * w2) + ','
             + (rgb1[2] * w1 + rgb0[2] * w2)
             + ')';
+    }
+
+    getName(gid: string) {
+        return this.nameKeySelected === this.GID ? gid : this.response.germplasmCommonNamesMap[this.nameKeySelected][gid];
     }
 }
 

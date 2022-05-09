@@ -31,6 +31,8 @@ export class MergeGermplasmSelectionComponent implements OnInit {
     isTransferNameTypesData: boolean;
     isTransferFiles: boolean;
 
+    MAX_NAME_DISPLAY_SIZE = 30;
+
     constructor(
         private alertService: AlertService,
         private modal: NgbActiveModal,

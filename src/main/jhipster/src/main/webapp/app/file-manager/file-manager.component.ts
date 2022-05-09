@@ -11,7 +11,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { finalize, map } from 'rxjs/operators';
 import { ModalConfirmComponent } from '../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import { FILE_UPLOAD_SUPPORTED_TYPES, TINY_BLANK_IMAGE } from '../app.constants';
+import { EXPT_DESIGN_CVTERM_ID, FILE_UPLOAD_SUPPORTED_TYPES, LOCATION_ID_CVTERM_ID, TINY_BLANK_IMAGE, TRIAL_INSTANCE_CVTERM_ID } from '../app.constants';
 import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
@@ -43,14 +43,14 @@ export class FileManagerComponent implements OnInit {
 
     observationUnitUUID: string;
     datasetId: number;
+    instanceId: number;
 
     germplasmUUID: string;
-
     isLoading = false;
     isLoadingImage = false;
     embedded = false;
     acceptedFileTypes = (FILE_UPLOAD_SUPPORTED_TYPES || '').split(',').map((t) => '.' + t).join(',');
-
+    excludedVariableIds = [TRIAL_INSTANCE_CVTERM_ID, EXPT_DESIGN_CVTERM_ID, LOCATION_ID_CVTERM_ID];
     filters = {
         variable: {
             key: 'variable',
@@ -80,13 +80,18 @@ export class FileManagerComponent implements OnInit {
 
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
         this.germplasmUUID = queryParamMap.get('germplasmUUID');
+        this.instanceId = queryParamMap.get('instanceId') ? Number(queryParamMap.get('instanceId')) : null;
         if (this.observationUnitUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
             this.datasetId = Number(queryParamMap.get('datasetId'));
             this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
-        } else {
+        } else if (this.germplasmUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
             this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
+        } else if (this.instanceId) {
+            this.datasetId = Number(queryParamMap.get('datasetId'));
+            this.VARIABLE_TYPE_IDS = [VariableTypeEnum.ENVIRONMENT_CONDITION, VariableTypeEnum.ENVIRONMENT_DETAIL];
+            this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
         }
 
         this.load();
@@ -98,6 +103,7 @@ export class FileManagerComponent implements OnInit {
             this.observationUnitUUID,
             this.germplasmUUID,
             this.filters.variable.value,
+            this.instanceId,
             <Pageable>({
                 page: this.page - 1,
                 size: this.pageSize,
@@ -147,7 +153,7 @@ export class FileManagerComponent implements OnInit {
     async delete($event, fileMetadata: FileMetadata) {
         $event.stopPropagation();
         const confirmModal = this.modalService.open(ModalConfirmComponent);
-        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', {fileName: fileMetadata.name});
+        confirmModal.componentInstance.message = this.translateService.instant('fileManager.delete.confirm', { fileName: fileMetadata.name });
         try {
             await confirmModal.result;
         } catch (e) {
@@ -193,7 +199,8 @@ export class FileManagerComponent implements OnInit {
             this.file,
             this.observationUnitUUID,
             this.germplasmUUID,
-            this.variable && this.variable.id || null
+            this.variable && this.variable.id || null,
+            this.instanceId
         ).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(

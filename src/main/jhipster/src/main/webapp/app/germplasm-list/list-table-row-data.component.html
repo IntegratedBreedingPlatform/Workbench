@@ -8,7 +8,8 @@
 		<a *ngIf="this.isDesignationColumn()"
 		   (click)="$event.stopPropagation()"
 		   [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.getGidData() } }]"
-		   queryParamsHandling="merge">{{this.rowData}}</a>
+		   jhiScrollableTooltip [tooltipText]="this.rowData" placement="right"
+		   queryParamsHandling="merge">{{this.rowData | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</a>
 
 		<a *ngIf="this.isLotsColumn()"
 		   (click)="$event.stopPropagation()"
@@ -29,7 +30,19 @@
 	</span>
 	<ng-template #noLink>
 		<span *ngIf="this.isGroupIdColumn() || this.isLotsColumn()">-</span>
-		<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()">{{this.rowData}}</span>
+		<span *ngIf="!this.isGroupIdColumn() && !this.isLotsColumn()
+		&& !this.isNamesColumn()
+		&& !this.isCrossColumn()
+		&& !this.isImmediateSourceNameColumn()
+		&& !this.isGroupSourceNameColumn()
+		&& !this.isFemaleParentNameColumn()
+		&& !this.isMaleParentNameColumn()">{{this.rowData}}</span>
+		<span *ngIf="this.isNamesColumn()
+		|| this.isCrossColumn()
+		|| this.isImmediateSourceNameColumn()
+		|| this.isGroupSourceNameColumn()
+		|| this.isFemaleParentNameColumn()
+		|| this.isMaleParentNameColumn()" jhiScrollableTooltip [tooltipText]="this.rowData" placement="bottom">{{this.rowData | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</span>
 	</ng-template>
 </div>
 <ng-template #editable>

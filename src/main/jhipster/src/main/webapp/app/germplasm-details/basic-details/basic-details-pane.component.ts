@@ -14,6 +14,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
 import { UrlService } from '../../shared/service/url.service';
 import { ParamContext } from '../../shared/service/param.context';
+import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
+import { TruncateWithEllipsisPipe } from '../../shared/util/truncate-with-ellipsis.pipe';
 
 @Component({
     selector: 'jhi-basic-details-pane',
@@ -28,6 +30,8 @@ export class BasicDetailsPaneComponent implements OnInit {
 
     MODIFY_NAMES_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_NAMES'];
     NAMES_ACTIONS_PERMISSIONS = [...this.MODIFY_NAMES_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
+
+    MAX_NAME_DISPLAY_SIZE = 30;
 
     eventSubscriber: Subscription;
     germplasm: GermplasmDto;
@@ -88,7 +92,9 @@ export class BasicDetailsPaneComponent implements OnInit {
 
     deleteGermplasmName(germplasmName: GermplasmName): void {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-name-modal.delete.warning', { param: germplasmName.name });
+        const truncateWithEllipsisPipe = new TruncateWithEllipsisPipe();
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-name-modal.delete.warning',
+            {param: truncateWithEllipsisPipe.transform(germplasmName.name, this.MAX_NAME_DISPLAY_SIZE)});
 
         confirmModalRef.result.then(() => {
             this.germplasmService.deleteGermplasmName(this.germplasm.gid, germplasmName.id).toPromise().then((result) => {

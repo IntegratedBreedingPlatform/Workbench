@@ -3,14 +3,11 @@ export class CopResponse {
         public progress: number,
         public matrix?: any,
         public upperTriangularMatrix?: string[][],
-        public hasFile?: boolean
+        public hasFile?: boolean,
+        /**
+         * map of nameCode to map of gid to name
+         */
+        public germplasmCommonNamesMap?: {[key: string]: {[key: number]: string} }
     ) {
     }
-}
-
-// values represent enum id
-export enum BTypeEnum {
-    CROSS_FERTILIZING = 0,
-    SELF_FERTILIZING = 1,
-    SELF_FERTILIZING_F4 = 2
 }

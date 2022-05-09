@@ -1,6 +1,8 @@
 <section>
 	<header>
-		<h1 jhiTranslate="crop-settings-manager.title">Manage Crop settings</h1>
+		<h1><span jhiTranslate="crop-settings-manager.title">Manage Crop settings</span>&nbsp;
+			<a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a>
+		</h1>
 	</header>
 	<nav>
 		<ul class="nav nav-tabs">
@@ -15,6 +17,10 @@
 			<li class="nav-item">
 				<a class="nav-link" [routerLink]="['name-types']" [routerLinkActive]="['active']" queryParamsHandling="merge"
 				   jhiTranslate="crop-settings-manager.tabs.name-type"></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" [routerLink]="['parameters']" [routerLinkActive]="['active']" queryParamsHandling="merge"
+				   jhiTranslate="crop-settings-manager.tabs.parameters"></a>
 			</li>
 		</ul>
 	</nav>

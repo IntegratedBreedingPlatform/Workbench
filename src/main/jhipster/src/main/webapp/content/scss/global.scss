@@ -377,6 +377,7 @@ tr.selected {
     background-color: #bed6b2 !important;
 }
 
+.table td.editable,
 .table td .editable {
    cursor: pointer;
 }
@@ -660,6 +661,7 @@ Scrollable tooltip
     border-radius: 4px;
     z-index: 100000;
     opacity: 0;
+    word-wrap: break-word;
 }
 .ng-tooltip:after {
     content: "";

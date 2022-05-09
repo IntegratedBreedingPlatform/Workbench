@@ -5,6 +5,7 @@ import { GermplasmTreeService } from './germplasm-tree.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../../alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 
 @Component({
     selector: 'jhi-germplasm-tree-table',
@@ -22,4 +23,9 @@ export class GermplasmListTreeTableComponent extends TreeComponent {
                 public modalService: NgbModal) {
         super(false, 'multiple', service, activeModal, alertService, translateService, modalService);
     }
+
+    onMoveSuccess(draggedNode: PrimeNgTreeNode, res: any) {
+        draggedNode.data.isLocked = res.isLocked;
+    }
+
 }

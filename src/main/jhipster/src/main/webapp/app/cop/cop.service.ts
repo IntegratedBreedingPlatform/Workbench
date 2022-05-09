@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SERVER_API_URL } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
-import { BTypeEnum, CopResponse } from './cop.model';
+import { CopResponse } from './cop.model';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
@@ -13,16 +13,15 @@ export class CopService {
     ) {
     }
 
-    calculateCop(gids: number[], btype: BTypeEnum, reset = false): Observable<CopResponse> {
+    calculateCop(gids: number[], reset = false): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params = '&btype=' + btype + '&reset=' + reset;
+        const params = '&reset=' + reset;
         return this.http.post<CopResponse>(baseUrl + '/cop/calculation?programUUID=' + this.context.programUUID + params, gids);
     }
 
-    calculateCopForList(listId: number, btype: BTypeEnum): Observable<CopResponse> {
+    calculateCopForList(listId: number): Observable<CopResponse> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const btypeParam = '&btype=' + btype;
-        return this.http.post<CopResponse>(baseUrl + `/cop/calculation/list/${listId}?programUUID=` + this.context.programUUID + btypeParam, null);
+        return this.http.post<CopResponse>(baseUrl + `/cop/calculation/list/${listId}?programUUID=` + this.context.programUUID, null);
     }
 
     cancelJobs(gids: number[], listId: number) {
@@ -57,10 +56,11 @@ export class CopService {
         });
     }
 
-    downloadMatrix(gids: number[]) {
+    downloadMatrix(gids: number[], nameKeySelected: string) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const params = {};
         params['gids'] = gids;
+        params['nameKeySelected'] = nameKeySelected;
         return this.http.get(baseUrl + `/cop/csv?programUUID=` + this.context.programUUID, {
             observe: 'response',
             responseType: 'blob',

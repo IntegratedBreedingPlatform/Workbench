@@ -21,4 +21,7 @@ export class FeedbackService {
        return this.http.put<void>(this.resourceUrl + `/${feature}/dont-show-again`, {});
     }
 
+    getFeedBack(feature: FeedbackFeatureEnum): Observable<HttpResponse<any>> {
+        return this.http.get<any>(this.resourceUrl + `/${feature}`, { observe: 'response' });
+    }
 }

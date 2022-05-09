@@ -127,6 +127,8 @@ export class TreeComponent implements OnInit {
                 return;
             }
             this.service.move(this.draggedNode.data.id, node.data.id).subscribe((res) => {
+                    this.onMoveSuccess(this.draggedNode, res);
+
                     if (!node.children) {
                         node.children = [];
                     }
@@ -139,6 +141,10 @@ export class TreeComponent implements OnInit {
                 (res: HttpErrorResponse) =>
                     this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
         }
+    }
+
+    onMoveSuccess(draggedNode: PrimeNgTreeNode, res: any) {
+
     }
 
     onDragEnter(event, node: PrimeNgTreeNode) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GermplasmListImportComponent, HEADERS } from './germplasm-list-import.component';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,7 +38,7 @@ import { MatchType } from '../../shared/column-filter/column-filter-text-with-ma
     selector: 'jhi-germplasm-list-import-review',
     templateUrl: './germplasm-list-import-review.component.html'
 })
-export class GermplasmListImportReviewComponent implements OnInit {
+export class GermplasmListImportReviewComponent implements OnInit, OnDestroy {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'matchesFiltersChanged';
     sectionLabel = 'Advanced Match Criteria';
@@ -83,7 +83,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
     variableMatchesResult: any = {};
 
     germplasmFilters: any;
-    request: GermplasmMatchRequest = new GermplasmMatchRequest();
+    request: GermplasmMatchRequest;
 
     constructor(
         private translateService: TranslateService,
@@ -104,12 +104,19 @@ export class GermplasmListImportReviewComponent implements OnInit {
 
     ngOnInit(): void {
         this.isLoading = true;
+        this.request = new GermplasmMatchRequest();
         this.filters = this.getInitialFilters();
         this.registerFiltersChanged();
         this.processContextInputs();
         ColumnFilterComponent.reloadFilters(this.filters, this.request);
         this.loadGermplasmMatchesTable();
 
+    }
+
+    ngOnDestroy(): void {
+        if (this.eventSubscriber) {
+            this.eventSubscriber.unsubscribe();
+        }
     }
 
     private processContextInputs() {
@@ -147,7 +154,7 @@ export class GermplasmListImportReviewComponent implements OnInit {
                 this.matchesByGUID = {};
                 this.matchesByGid = {};
                 this.matchesByName = {};
-
+                const matchesByNameGIDs = {};
                 this.matches.forEach((match) => {
                     if (match.germplasmUUID) {
                         this.matchesByGUID[toUpper(match.germplasmUUID)] = match;
@@ -157,10 +164,19 @@ export class GermplasmListImportReviewComponent implements OnInit {
                     }
                     if (match.names) {
                         match.names.forEach((name) => {
-                            if (!this.matchesByName[toUpper(name.name)]) {
-                                this.matchesByName[toUpper(name.name)] = [];
+                            const nameTypesFilter = this.request.nameTypes;
+                            if (!nameTypesFilter || nameTypesFilter.length === 0 || nameTypesFilter.includes(name.nameTypeCode)) {
+                                if (!this.matchesByName[toUpper(name.name)]) {
+                                    this.matchesByName[toUpper(name.name)] = [];
+                                    matchesByNameGIDs[toUpper(name.name)] = [];
+                                }
+
+                                if (!matchesByNameGIDs[toUpper(name.name)].includes(match.gid)) {
+                                    this.matchesByName[toUpper(name.name)].push(match);
+                                    matchesByNameGIDs[toUpper(name.name)].push(match.gid);
+                                }
                             }
-                            this.matchesByName[toUpper(name.name)].push(match);
+
                         });
                     }
 

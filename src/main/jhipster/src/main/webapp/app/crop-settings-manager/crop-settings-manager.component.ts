@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ParamContext } from '../shared/service/param.context';
 import { HelpService } from '../shared/service/help.service';
-import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
-import { HELP_MANAGE_GERMPLASM } from '../app.constants';
+import { HELP_MANAGE_CROP_SETTINGS } from '../app.constants';
 
 @Component({
     selector: 'jhi-crop-settings-manager',
@@ -10,8 +9,19 @@ import { HELP_MANAGE_GERMPLASM } from '../app.constants';
 })
 export class CropSettingsManagerComponent implements OnInit {
 
-    constructor(private paramContext: ParamContext) {
+    helpLink: string;
+
+    constructor(private paramContext: ParamContext,
+                private helpService: HelpService) {
         this.paramContext.readParams();
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getHelpLink(HELP_MANAGE_CROP_SETTINGS).toPromise().then((response) => {
+                if (response.body) {
+                    this.helpLink = response.body;
+                }
+            }).catch((error) => {
+            });
+        }
     }
 
     ngOnInit() {
