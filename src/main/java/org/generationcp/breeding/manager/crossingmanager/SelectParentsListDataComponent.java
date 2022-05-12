@@ -286,7 +286,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_CODE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GROUP_ID.getName(), String.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.SEED_SOURCE.getName(), String.class, null);
+			listDataTable.addContainerProperty(ColumnLabels.GERMPLASM_SOURCE.getName(), String.class, null);
 
 			listDataTable
 				.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
@@ -296,7 +296,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_CODE.getName(), this.getTermNameFromOntology(ColumnLabels.ENTRY_CODE));
 			listDataTable.setColumnHeader(ColumnLabels.GID.getName(), this.getTermNameFromOntology(ColumnLabels.GID));
 			listDataTable.setColumnHeader(ColumnLabels.GROUP_ID.getName(), this.getTermNameFromOntology(ColumnLabels.GROUP_ID));
-			listDataTable.setColumnHeader(ColumnLabels.SEED_SOURCE.getName(), this.getTermNameFromOntology(ColumnLabels.SEED_SOURCE));
+			listDataTable.setColumnHeader(ColumnLabels.GERMPLASM_SOURCE.getName(), ColumnLabels.GERMPLASM_SOURCE.getName());
 
 			listDataTable.setColumnWidth(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, 25);
 			listDataTable.setColumnWidth(ColumnLabels.ENTRY_ID.getName(), 25);
@@ -305,12 +305,11 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.setColumnWidth(ColumnLabels.ENTRY_CODE.getName(), 110);
 			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 70);
 			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 70);
-			listDataTable.setColumnWidth(ColumnLabels.SEED_SOURCE.getName(), 130);
-
+			listDataTable.setColumnWidth(ColumnLabels.GERMPLASM_SOURCE.getName(), 130);
 			listDataTable.setVisibleColumns(new String[] {
 				SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, ColumnLabels.ENTRY_ID.getName(), ColumnLabels.DESIGNATION.getName(),
 				ColumnLabels.PARENTAGE.getName(), ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.GID.getName(),
-				ColumnLabels.GROUP_ID.getName(), ColumnLabels.SEED_SOURCE.getName()});
+				ColumnLabels.GROUP_ID.getName(),ColumnLabels.GERMPLASM_SOURCE.getName()});
 		}
 	}
 
@@ -341,7 +340,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 					final String entryCode = null;
 
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
-						entryCode, entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
+						entryCode, Optional.empty(), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
@@ -401,7 +400,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName.orElse(""));
 		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode);
 		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
-		newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(seedSource.orElse(""));
+		newItem.getItemProperty(ColumnLabels.GERMPLASM_SOURCE.getName()).setValue(seedSource.orElse(""));
 		final String groupIdDisplayValue = groupId.orElse("-");
 		newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
 

@@ -115,7 +115,7 @@ public class MakeCrossesParentsComponentTest {
 		sourceTable.addContainerProperty(ColumnLabels.ENTRY_CODE.getName(), String.class, null);
 		sourceTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
 		sourceTable.addContainerProperty(ColumnLabels.GROUP_ID.getName(), String.class, null);
-		sourceTable.addContainerProperty(ColumnLabels.SEED_SOURCE.getName(), String.class, null);
+		sourceTable.addContainerProperty(ColumnLabels.GERMPLASM_SOURCE.getName(), String.class, null);
 
 		sourceTable.setColumnHeader(MakeCrossesParentsComponentTest.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
 		sourceTable.setColumnHeader(ColumnLabels.ENTRY_ID.getName(), this.messageSource.getMessage(Message.HASHTAG));
@@ -127,7 +127,7 @@ public class MakeCrossesParentsComponentTest {
 		sourceTable.setColumnHeader(ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.ENTRY_CODE.getName());
 		sourceTable.setColumnHeader(ColumnLabels.GID.getName(), ColumnLabels.GID.getName());
 		sourceTable.setColumnHeader(ColumnLabels.GROUP_ID.getName(), ColumnLabels.GROUP_ID.getName());
-		sourceTable.setColumnHeader(ColumnLabels.SEED_SOURCE.getName(), ColumnLabels.SEED_SOURCE.getName());
+		sourceTable.setColumnHeader(ColumnLabels.GERMPLASM_SOURCE.getName(), ColumnLabels.GERMPLASM_SOURCE.getName());
 
 		// init entries
 		for (int i = 1; i <= MakeCrossesParentsComponentTest.NO_OF_ENTRIES; i++) {
@@ -158,7 +158,7 @@ public class MakeCrossesParentsComponentTest {
 			newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
 			newItem.getItemProperty(ColumnLabels.TOTAL.getName()).setValue(MakeCrossesParentsComponentTest.STRING_DASH);
 			newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue("E000" + i);
-			newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue("TEST-00" + i);
+			newItem.getItemProperty(ColumnLabels.GERMPLASM_SOURCE.getName()).setValue("TEST-00" + i);
 			newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(MakeCrossesParentsComponentTest.STRING_DASH);
 
 		}
