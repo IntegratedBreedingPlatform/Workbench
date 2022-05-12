@@ -124,7 +124,6 @@ public class SelectParentsListDataComponentTest {
 		Assert.assertEquals("ENTRY CODE", table.getColumnHeader(ColumnLabels.ENTRY_CODE.getName()));
 		Assert.assertEquals("DESIGNATION", table.getColumnHeader(ColumnLabels.DESIGNATION.getName()));
 		Assert.assertEquals("PARENTAGE", table.getColumnHeader(ColumnLabels.PARENTAGE.getName()));
-		Assert.assertEquals("SEED SOURCE", table.getColumnHeader(ColumnLabels.SEED_SOURCE.getName()));
 	}
 
 	@Test
@@ -141,7 +140,6 @@ public class SelectParentsListDataComponentTest {
 		Mockito.when(this.ontologyDataManager.getTermById(TermId.ENTRY_CODE.getId())).thenReturn(fromOntology);
 		Mockito.when(this.ontologyDataManager.getTermById(TermId.GID.getId())).thenReturn(fromOntology);
 		Mockito.when(this.ontologyDataManager.getTermById(TermId.GROUP_ID.getId())).thenReturn(fromOntology);
-		Mockito.when(this.ontologyDataManager.getTermById(TermId.SEED_SOURCE.getId())).thenReturn(fromOntology);
 
 		final TableWithSelectAllLayout tableWithSelectAll = new TableWithSelectAllLayout("Tag");
 		tableWithSelectAll.instantiateComponents();
@@ -156,7 +154,6 @@ public class SelectParentsListDataComponentTest {
 		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.ENTRY_CODE.getName()));
 		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.GID.getName()));
 		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.GROUP_ID.getName()));
-		Assert.assertEquals("Ontology Name", table.getColumnHeader(ColumnLabels.SEED_SOURCE.getName()));
 	}
 
 	@Test

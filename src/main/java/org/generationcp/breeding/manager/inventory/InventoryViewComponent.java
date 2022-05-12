@@ -134,13 +134,6 @@ public class InventoryViewComponent extends VerticalLayout implements Initializi
 					ColumnLabels.STOCKID.getTermNameFromOntology(this.ontologyDataManager));
 			table
 					.setColumnHeader(InventoryViewComponent.LOT_ID, ColumnLabels.LOT_ID.getTermNameFromOntology(this.ontologyDataManager));
-
-			if (this.listId != null && this.recordId != null) {
-
-				table.addContainerProperty(InventoryViewComponent.SEED_SOURCE, String.class, null);
-				table.setColumnHeader(InventoryViewComponent.SEED_SOURCE,
-						ColumnLabels.SEED_SOURCE.getTermNameFromOntology(this.ontologyDataManager));
-			}
 		}
 
 	}
