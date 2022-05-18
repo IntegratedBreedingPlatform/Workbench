@@ -17,7 +17,6 @@ import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.ContentWindow;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
@@ -44,14 +43,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.when;
 
@@ -85,9 +80,6 @@ public class OpenSelectDatasetForExportActionTest {
 
 	@Mock
 	private Component component;
-
-	@Mock
-	private ContentWindow window;
 
 	@Mock
 	private VariableTypeList summaryVariables;
@@ -172,7 +164,6 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.doReturn(INPUT_DIRECTORY).when(this.installationDirectoryUtil)
 				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.doReturn(this.component).when(this.clickEvent).getComponent();
-		Mockito.doReturn(this.window).when(this.component).getWindow();
 	}
 
 	@Test
@@ -236,7 +227,6 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.verify(this.studyDataManager).findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 
-		Mockito.verify(this.window).showContent(this.componentCaptor.capture());
 		Assert.assertTrue(this.componentCaptor.getValue() instanceof SingleSiteAnalysisDetailsPanel);
 		final SingleSiteAnalysisDetailsPanel ssaDetailsPanel = (SingleSiteAnalysisDetailsPanel) this.componentCaptor.getValue();
 		Assert.assertEquals(this.bvTool, ssaDetailsPanel.getTool());

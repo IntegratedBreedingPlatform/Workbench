@@ -96,11 +96,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="breedingMethodTracker" class="org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodTracker"
-		  scope="session">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="webClientInfo" class="org.generationcp.ibpworkbench.common.WebClientInfo"
 		  scope="session">
 		<aop:scoped-proxy />
