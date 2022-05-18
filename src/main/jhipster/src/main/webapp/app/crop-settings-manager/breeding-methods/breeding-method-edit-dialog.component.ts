@@ -5,7 +5,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { CropSettingsContext } from '../crop-Settings.context';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { PopupService } from '../../shared/modal/popup.service';
-import { BreedingMethodType } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { BreedingMethodType, BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
@@ -19,6 +19,8 @@ import { HelpService } from '../../shared/service/help.service';
     templateUrl: './breeding-method-edit-dialog.component.html'
 })
 export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
+
+    breedingMethodTypeEnum = BreedingMethodTypeEnum;
 
     breedingMethodId: number;
 
