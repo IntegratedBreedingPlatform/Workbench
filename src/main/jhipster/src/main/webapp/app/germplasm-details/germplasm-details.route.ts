@@ -11,6 +11,7 @@ import { GermplasmDetailsPopupComponent } from './germplasm-details-modal.compon
 import { RouteAccessService } from '../shared';
 import { GermplasmDetailsGraphvizModalPopupComponent } from './germplasm-details-graphviz-modal.component';
 import { FilesPaneComponent } from './files/files-pane.component';
+import { GenotypingPaneComponent } from './genotyping/genotyping-pane.component';
 
 export const germplasmDetailsRoutes: Routes = [
     {
@@ -58,6 +59,10 @@ export const germplasmDetailsRoutes: Routes = [
             {
                 path: 'files',
                 component: FilesPaneComponent
+            },
+            {
+                path: 'genotyping',
+                component: GenotypingPaneComponent
             }
         ]
     },

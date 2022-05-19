@@ -1,7 +1,14 @@
 export class BrapiResponse<T> {
     constructor(
-        public metadata?: Pagination,
+        public metadata?: MetaData,
         public result?: BrapiResult<T>
+    ) {
+    }
+}
+
+export class MetaData {
+    constructor(
+        public pagination?: Pagination
     ) {
     }
 }

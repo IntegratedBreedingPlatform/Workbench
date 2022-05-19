@@ -6,12 +6,13 @@
         "pedigree": "Pedigree",
         "observations": "Observations",
         "inventory": "Inventory",
+        "genotyping": "Genotyping",
         "lists": "Lists",
         "samples": "Samples",
         "actions": "Actions",
         "new": "New",
         "files": {
-           "tab": "Files",
+            "tab": "Files",
             "heading": "Files"
         }
     },
@@ -181,5 +182,11 @@
                 "other-progenitors": "Other Progenitors"
             }
         }
+    },
+    "genotyping": {
+        "no.genotyping.germplasm.found": "No germplasm is found in the configured genoytpe DB for the crop",
+        "no.genotyping.studies.found": "No studies are found in the configured genoytpe DB for the crop",
+        "no.genotyping.variantsets.found": "No variantsets are found in the configured genoytpe DB for the crop",
+        "no.genotyping.callsets.found": "No callsets are found in the configured genoytpe DB for the crop"
     }
 }

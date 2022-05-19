@@ -22,6 +22,7 @@ import { GermplasmDetailsGraphvizModalComponent, GermplasmDetailsGraphvizModalPo
 import { GermplasmDerivativeNeighborhoodTreeComponent } from './pedigree/germplasm-derivative-neighborhood-tree.component';
 import { GermplasmMaintenanceNeighborhoodTreeComponent } from './pedigree/germplasm-maintenance-neighborhood-tree.component';
 import { FilesPaneComponent } from './files/files-pane.component';
+import { GenotypingPaneComponent } from './genotyping/genotyping-pane.component';
 
 @NgModule({
     imports: [
@@ -48,7 +49,8 @@ import { FilesPaneComponent } from './files/files-pane.component';
         ManagementNeighborsComponent,
         GroupRelativesComponent,
         GermplasmDerivativeNeighborhoodTreeComponent,
-        GermplasmMaintenanceNeighborhoodTreeComponent
+        GermplasmMaintenanceNeighborhoodTreeComponent,
+        GenotypingPaneComponent
     ],
     entryComponents: [
         GermplasmDetailsPopupComponent,
@@ -70,7 +72,8 @@ import { FilesPaneComponent } from './files/files-pane.component';
         ManagementNeighborsComponent,
         GroupRelativesComponent,
         GermplasmDerivativeNeighborhoodTreeComponent,
-        GermplasmMaintenanceNeighborhoodTreeComponent
+        GermplasmMaintenanceNeighborhoodTreeComponent,
+        GenotypingPaneComponent
     ],
     providers: [
         GermplasmDetailsContext,
