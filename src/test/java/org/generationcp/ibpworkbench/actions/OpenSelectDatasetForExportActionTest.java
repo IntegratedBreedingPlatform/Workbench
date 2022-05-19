@@ -232,7 +232,7 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.verify(this.studyDataManager).findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 
-		Mockito.verify(this.workbenchContentAppWindow.showContent(this.componentCaptor.capture());
+		Mockito.verify(this.workbenchContentAppWindow).showContent(this.componentCaptor.capture());
 		Assert.assertTrue(this.componentCaptor.getValue() instanceof SingleSiteAnalysisDetailsPanel);
 		final SingleSiteAnalysisDetailsPanel ssaDetailsPanel = (SingleSiteAnalysisDetailsPanel) this.componentCaptor.getValue();
 		Assert.assertEquals(this.bvTool, ssaDetailsPanel.getTool());
