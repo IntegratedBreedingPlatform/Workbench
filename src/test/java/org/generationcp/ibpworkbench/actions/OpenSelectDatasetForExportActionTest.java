@@ -18,6 +18,7 @@ import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.WorkbenchContentAppWindow;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
@@ -105,6 +106,9 @@ public class OpenSelectDatasetForExportActionTest {
 	@Mock
 	private Study study;
 
+	@Mock
+	private WorkbenchContentAppWindow workbenchContentAppWindow;
+
 	@Captor
 	private ArgumentCaptor<Component> componentCaptor;
 	private Project project;
@@ -164,6 +168,7 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.doReturn(INPUT_DIRECTORY).when(this.installationDirectoryUtil)
 				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.doReturn(this.component).when(this.clickEvent).getComponent();
+		Mockito.doReturn(this.workbenchContentAppWindow).when(this.component).getWindow();
 	}
 
 	@Test
@@ -227,6 +232,7 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.verify(this.studyDataManager).findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 
+		Mockito.verify(this.workbenchContentAppWindow.showContent(this.componentCaptor.capture());
 		Assert.assertTrue(this.componentCaptor.getValue() instanceof SingleSiteAnalysisDetailsPanel);
 		final SingleSiteAnalysisDetailsPanel ssaDetailsPanel = (SingleSiteAnalysisDetailsPanel) this.componentCaptor.getValue();
 		Assert.assertEquals(this.bvTool, ssaDetailsPanel.getTool());
@@ -255,7 +261,6 @@ public class OpenSelectDatasetForExportActionTest {
 		Assert.assertTrue(bvInput.getBreedingViewAnalysisName().contains("SSA analysis of " + SANITIZED_DATASET_NAME + "  (run at "));
 		Assert.assertTrue(bvInput.getVariatesSelectionMap().get("Variable1"));
 		Assert.assertTrue(bvInput.getCovariatesSelectionMap().get("Variable2"));
-
 	}
 
 	@Test
