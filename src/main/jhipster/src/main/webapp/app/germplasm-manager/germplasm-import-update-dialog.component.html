@@ -14,7 +14,8 @@
 	</div>
 	<div class="row form-group">
 		<div class="col">
-			<span jhiTranslate="template.download.description"></span>&nbsp;<a href (click)="export($event)" jhiTranslate="template.download.here"></a>.
+			<span jhiTranslate="template.download.description"></span>&nbsp;
+			<a href (click)="export($event)" jhiTranslate="template.download.here" data-test="downloadTemplateLink"></a>.
 			<span jhiTranslate="germplasm.import.description.extra"></span>&nbsp;<a target="_blank" [href]="templateHelpLink" jhiTranslate="template.download.here"></a>.
 		</div>
 	</div>
@@ -30,7 +31,8 @@
 		<button type="button" class="btn btn-secondary" [disabled]="isProcessing ? 'disabled' : null" data-dismiss="modal" (click)="close()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 		</button>
-		<button (click)="import()" class="btn btn-primary" [disabled]="fileName === '' || isProcessing ? 'disabled' : null">
+		<button (click)="import()" class="btn btn-primary" [disabled]="fileName === '' || isProcessing ? 'disabled' : null"
+				data-test="importGermplasmUpdateButton">
 			<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.import">Import</span>
 		</button>
 	</div>
