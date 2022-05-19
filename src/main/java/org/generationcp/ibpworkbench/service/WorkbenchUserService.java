@@ -60,35 +60,6 @@ public class WorkbenchUserService {
 
 	}
 
-	public WorkbenchUser saveNewUserAccount(UserAccountModel userAccount) {
-		Person person = this.createPerson(userAccount);
-
-		WorkbenchUser user = new WorkbenchUser();
-		user.setPerson(person);
-		user.setName(userAccount.getUsername());
-
-		// set default password for the new user which is the same as their Username
-		user.setPassword(passwordEncoder.encode(userAccount.getUsername()));
-		user.setAccess(0);
-		user.setAssignDate(0);
-		user.setCloseDate(0);
-		user.setInstalid(0);
-		user.setStatus(0);
-		user.setType(0);
-		user.setIsNew(true);
-
-		// add user roles to the particular user
-		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		this.userService.addUser(user);
-
-		UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(user.getUserid());
-		userInfo.setLoginCount(0);
-		this.userService.insertOrUpdateUserInfo(userInfo);
-
-		return user;
-	}
-
 	/**
 	 * Updates the password of the user
 	 *
