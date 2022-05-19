@@ -92,6 +92,8 @@ import { RoleService } from './user/service/role.service';
 import { ScrollableTooltipDirective } from './tooltip/scrollable-tooltip.directive';
 import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
 import { CropParameterService } from './crop-parameter/service/crop-parameter.service';
+import { CropGenotypingParameterService } from './crop/service/crop-genotyping-parameter.service';
+import { GenotypingBrapiService } from './brapi/service/genotyping-brapi.service';
 
 @NgModule({
     imports: [
@@ -200,7 +202,9 @@ import { CropParameterService } from './crop-parameter/service/crop-parameter.se
         VariableValidationService,
         GermplasmGroupingService,
         InlineEditorService,
-        FeedbackService
+        FeedbackService,
+        CropGenotypingParameterService,
+        GenotypingBrapiService
     ],
     entryComponents: [
         ModalComponent,
