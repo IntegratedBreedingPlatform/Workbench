@@ -10,7 +10,6 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
@@ -114,8 +113,7 @@ public class WorkbenchUserService {
 		List<WorkbenchUser> userList = this.userService.getUserByName(username, 0, 1, Operation.EQUAL);
 
 		if (!userList.isEmpty()) {
-			WorkbenchUser user = userList.get(0);
-			return user;
+			return userList.get(0);
 		}
 
 		return null;
@@ -128,10 +126,7 @@ public class WorkbenchUserService {
 	 * @return
 	 */
 	public WorkbenchUser getUserByUserid(Integer userId) {
-
-		WorkbenchUser user = this.userService.getUserById(userId);
-		return user;
-
+		return this.userService.getUserById(userId);
 	}
 
 	private Person createPerson(UserAccountModel userAccount) {
