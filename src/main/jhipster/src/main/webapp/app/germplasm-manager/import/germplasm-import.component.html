@@ -10,7 +10,8 @@
 <div class="modal-body">
 	<div class="form-group row">
 		<div class="col">
-			<span jhiTranslate="template.download.description"></span>&nbsp;<a href (click)="export($event)" jhiTranslate="template.download.here"></a>.
+			<span jhiTranslate="template.download.description"></span>&nbsp;
+			<a href (click)="export($event)" jhiTranslate="template.download.here" data-test="downloadTemplateLink"></a>.
 			<span jhiTranslate="germplasm.import.description.extra"></span>&nbsp;<a target="_blank" [href]="templateHelpLink" jhiTranslate="template.download.here"></a>.
 		</div>
 	</div>
