@@ -65,6 +65,8 @@ export class GenotypingPaneComponent implements OnInit {
         })).subscribe((result) => {
             this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.endpoint;
             this.genotypingBrapiService.accessToken = result.access_token;
+        }, (error) => {
+            this.alertService.error('genotyping.connection.error');
         });
     }
 
