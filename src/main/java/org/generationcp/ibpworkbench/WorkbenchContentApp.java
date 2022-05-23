@@ -6,10 +6,6 @@ import org.dellroad.stuff.vaadin.SpringContextApplication;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.MultiSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
-import org.generationcp.ibpworkbench.ui.programadministration.ProgramAdministrationPanel;
-import org.generationcp.ibpworkbench.ui.programlocations.ProgramLocationsView;
-import org.generationcp.ibpworkbench.ui.programmethods.ProgramMethodsView;
-import org.generationcp.ibpworkbench.ui.project.create.AddProgramView;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
@@ -58,34 +54,6 @@ public class WorkbenchContentApp extends SpringContextApplication {
 				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
 				this.addWindow(contentWindow);
 				contentWindow.showContent(gxeAnalysisPanel);
-				return contentWindow;
-			} else if (ToolName.MANAGE_PROGRAMS.getName().equals(name)) {
-				final ProgramAdministrationPanel projectPanel = new ProgramAdministrationPanel();
-				projectPanel.setDebugId("projectPanel");
-				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
-				this.addWindow(contentWindow);
-				contentWindow.showContent(projectPanel);
-				return contentWindow;
-			} else if (ToolName.CREATE_PROGRAMS.getName().equals(name)) {
-				final AddProgramView createProjectPanel = new AddProgramView();
-				createProjectPanel.setDebugId("createProjectPanel");
-				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
-				this.addWindow(contentWindow);
-				contentWindow.showContent(createProjectPanel);
-				return contentWindow;
-			} else if (ToolName.METHOD_MANAGER.getName().equals(name)) {
-				final ProgramMethodsView createProjectPanel = new ProgramMethodsView(this.contextUtil.getProjectInContext());
-				createProjectPanel.setDebugId("methodsView");
-				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
-				this.addWindow(contentWindow);
-				contentWindow.showContent(createProjectPanel);
-				return contentWindow;
-			} else if (ToolName.LOCATION_MANAGER.getName().equals(name)) {
-				final ProgramLocationsView createProjectPanel = new ProgramLocationsView(this.contextUtil.getProjectInContext());
-				createProjectPanel.setDebugId("locationsView");
-				final WorkbenchContentAppWindow contentWindow = new WorkbenchContentAppWindow();
-				this.addWindow(contentWindow);
-				contentWindow.showContent(createProjectPanel);
 				return contentWindow;
 			}
 		}
