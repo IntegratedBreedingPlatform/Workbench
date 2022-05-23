@@ -11,6 +11,7 @@
       "crop": "Crop",
       "program-name": "Program Name",
       "program-start-date": "Program Start Date",
+      "program-default-location": "Program Default Location",
       "update": {
         "success": "Program updated successfully"
       },

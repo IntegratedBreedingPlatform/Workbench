@@ -29,13 +29,6 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
                 public dateHelperService: DateHelperService,
                 private modalService: NgbModal,
                 private translateService: TranslateService) {
-        this.program = {};
-    }
-
-    ngOnDestroy(): void {
-    }
-
-    ngOnInit(): void {
         this.programService.getProgramByProgramUUID(this.context.cropName, this.context.programUUID).subscribe(
             (res) => {
                 this.program = res.body;
@@ -45,6 +38,12 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
                 this.onError(res)
             }
         );
+    }
+
+    ngOnDestroy(): void {
+    }
+
+    ngOnInit() {
     }
 
     delete() {
@@ -70,7 +69,8 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
 
         const programBasicDetails = {
             name: this.program.name,
-            startDate: this.program.startDate
+            startDate: this.program.startDate,
+            defaultLocationId: this.program.defaultLocationId
         };
 
         const message: NavbarMessageEvent = { programUpdated: this.program };
@@ -87,7 +87,7 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.program.name && this.program.crop
+        return f.form.valid && !this.isLoading && this.program.name && this.program.crop && this.program.defaultLocationId
             && this.startDate;
     }
 
