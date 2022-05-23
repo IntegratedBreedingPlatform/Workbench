@@ -75,8 +75,6 @@
 		<property name="password" value="${tomcat.manager.password}" />
 	</bean>
 
-	<bean id="programService" class="org.generationcp.ibpworkbench.service.ProgramService"></bean>
-
 	<bean id="springAppContextProvider" class="org.generationcp.commons.util.SpringAppContextProvider"></bean>
 
 	<bean id="contextUtil" class="org.generationcp.commons.spring.util.ContextUtil"
@@ -90,16 +88,6 @@
 	</bean>
 
 	<bean id="cloner" class="com.rits.cloning.Cloner" />
-
-	<bean id="validatorCounter" class="org.generationcp.ibpworkbench.validator.ValidatorCounter"
-		  scope="session">
-		<aop:scoped-proxy />
-	</bean>
-
-	<bean id="breedingMethodTracker" class="org.generationcp.ibpworkbench.ui.programmethods.BreedingMethodTracker"
-		  scope="session">
-		<aop:scoped-proxy />
-	</bean>
 
 	<bean id="webClientInfo" class="org.generationcp.ibpworkbench.common.WebClientInfo"
 		  scope="session">

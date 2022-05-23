@@ -17,8 +17,8 @@ import org.generationcp.commons.breedingview.xml.ProjectType;
 import org.generationcp.commons.util.FileNameGenerator;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
-import org.generationcp.ibpworkbench.ContentWindow;
 import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.WorkbenchContentAppWindow;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisDetailsPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
@@ -44,14 +44,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.when;
 
@@ -87,9 +83,6 @@ public class OpenSelectDatasetForExportActionTest {
 	private Component component;
 
 	@Mock
-	private ContentWindow window;
-
-	@Mock
 	private VariableTypeList summaryVariables;
 
 	@Mock
@@ -112,6 +105,9 @@ public class OpenSelectDatasetForExportActionTest {
 
 	@Mock
 	private Study study;
+
+	@Mock
+	private WorkbenchContentAppWindow workbenchContentAppWindow;
 
 	@Captor
 	private ArgumentCaptor<Component> componentCaptor;
@@ -162,7 +158,7 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.doReturn(this.factors).when(this.summaryVariables).getFactors();
 		Mockito.doReturn(this.factorVariableTypes).when(this.factors).getVariableTypes();
 		Mockito.doReturn(this.studyDataset).when(this.studyDataManager)
-				.findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
+			.findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 		Mockito.doReturn(this.studyVariables).when(this.studyDataset).getVariableTypes();
 		Mockito.doReturn(this.trialVariableTypes).when(this.studyVariables).getVariableTypes();
 
@@ -170,9 +166,9 @@ public class OpenSelectDatasetForExportActionTest {
 		this.bvTool.setVersion(BV_VERSION);
 		Mockito.doReturn(this.bvTool).when(this.workbenchDataManager).getToolWithName(Matchers.anyString());
 		Mockito.doReturn(INPUT_DIRECTORY).when(this.installationDirectoryUtil)
-				.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
+			.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.doReturn(this.component).when(this.clickEvent).getComponent();
-		Mockito.doReturn(this.window).when(this.component).getWindow();
+		Mockito.doReturn(this.workbenchContentAppWindow).when(this.component).getWindow();
 	}
 
 	@Test
@@ -180,8 +176,9 @@ public class OpenSelectDatasetForExportActionTest {
 		final List<VariableTableItem> variateList = new ArrayList<VariableTableItem>();
 		final Map<String, Boolean> variatesCheckboxState = new HashMap<String, Boolean>();
 		this.createVariateListWithStateTestData(variateList, variatesCheckboxState);
-		Assert.assertTrue("Numerical categorical variates if selected can be included",
-				this.openSelectDatasetForExportAction.checkIfNumericCategoricalVarAreIncluded(variateList, variatesCheckboxState));
+		Assert.assertTrue(
+			"Numerical categorical variates if selected can be included",
+			this.openSelectDatasetForExportAction.checkIfNumericCategoricalVarAreIncluded(variateList, variatesCheckboxState));
 	}
 
 	@Test
@@ -189,8 +186,9 @@ public class OpenSelectDatasetForExportActionTest {
 		final List<VariableTableItem> variateList = new ArrayList<VariableTableItem>();
 		final Map<String, Boolean> variatesCheckboxState = new HashMap<String, Boolean>();
 		this.createVariateListWithStateTestData(variateList, variatesCheckboxState);
-		Assert.assertFalse("Non-numeric variates cannot be included",
-				this.openSelectDatasetForExportAction.checkIfNonNumericVarAreIncluded(variateList, variatesCheckboxState));
+		Assert.assertFalse(
+			"Non-numeric variates cannot be included",
+			this.openSelectDatasetForExportAction.checkIfNonNumericVarAreIncluded(variateList, variatesCheckboxState));
 	}
 
 	@Test
@@ -199,7 +197,7 @@ public class OpenSelectDatasetForExportActionTest {
 		final BreedingViewInput breedingViewInput = new BreedingViewInput();
 		this.openSelectDatasetForExportAction.populateAnalysisName(breedingViewInput, DATASET_NAME);
 		Assert.assertTrue(
-				breedingViewInput.getBreedingViewAnalysisName().contains("SSA analysis of " + SANITIZED_DATASET_NAME + "  (run at "));
+			breedingViewInput.getBreedingViewAnalysisName().contains("SSA analysis of " + SANITIZED_DATASET_NAME + "  (run at "));
 	}
 
 	@Test
@@ -208,10 +206,15 @@ public class OpenSelectDatasetForExportActionTest {
 		final BreedingViewInput breedingViewInput = new BreedingViewInput();
 		this.openSelectDatasetForExportAction.populateProjectNameAndFilePaths(breedingViewInput, this.project, INPUT_DIRECTORY);
 
-		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
-				breedingViewInput.getBreedingViewProjectName());
-		Assert.assertTrue("XML has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
-		Assert.assertTrue("CSV has valid file name format", FileNameGenerator.isValidFileNameFormat(breedingViewInput.getSourceXLSFilePath(), FileNameGenerator.CSV_DATE_TIME_PATTERN));
+		Assert.assertEquals(
+			this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
+			breedingViewInput.getBreedingViewProjectName());
+		Assert.assertTrue(
+			"XML has valid file name format",
+			FileNameGenerator.isValidFileNameFormat(breedingViewInput.getDestXMLFilePath(), FileNameGenerator.XML_DATE_TIME_PATTERN));
+		Assert.assertTrue(
+			"CSV has valid file name format",
+			FileNameGenerator.isValidFileNameFormat(breedingViewInput.getSourceXLSFilePath(), FileNameGenerator.CSV_DATE_TIME_PATTERN));
 	}
 
 	@Test
@@ -220,12 +223,17 @@ public class OpenSelectDatasetForExportActionTest {
 		final BreedingViewInput breedingViewInput = new BreedingViewInput();
 		this.openSelectDatasetForExportAction.populateProjectNameAndFilePaths(breedingViewInput, this.project, INPUT_DIRECTORY);
 
-		Assert.assertEquals(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
-				breedingViewInput.getBreedingViewProjectName());
-		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME ,"xml"),
-				breedingViewInput.getDestXMLFilePath());
-		Assert.assertEquals(FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,"csv"),
-				breedingViewInput.getSourceXLSFilePath());
+		Assert.assertEquals(
+			this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
+			breedingViewInput.getBreedingViewProjectName());
+		Assert.assertEquals(
+			FileNameGenerator
+				.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
+					"xml"),
+			breedingViewInput.getDestXMLFilePath());
+		Assert.assertEquals(
+			FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
+			breedingViewInput.getSourceXLSFilePath());
 	}
 
 	@Test
@@ -236,7 +244,7 @@ public class OpenSelectDatasetForExportActionTest {
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.verify(this.studyDataManager).findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 
-		Mockito.verify(this.window).showContent(this.componentCaptor.capture());
+		Mockito.verify(this.workbenchContentAppWindow).showContent(this.componentCaptor.capture());
 		Assert.assertTrue(this.componentCaptor.getValue() instanceof SingleSiteAnalysisDetailsPanel);
 		final SingleSiteAnalysisDetailsPanel ssaDetailsPanel = (SingleSiteAnalysisDetailsPanel) this.componentCaptor.getValue();
 		Assert.assertEquals(this.bvTool, ssaDetailsPanel.getTool());
@@ -256,23 +264,27 @@ public class OpenSelectDatasetForExportActionTest {
 		Assert.assertEquals(BV_VERSION, bvInput.getVersion());
 		Assert.assertEquals(ProjectType.FIELD_TRIAL.getName(), bvInput.getProjectType());
 		Assert.assertEquals(0, bvInput.getOutputDatasetId().intValue());
-		Assert.assertEquals(FileNameGenerator.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,"xml"),
-				bvInput.getDestXMLFilePath());
-		Assert.assertEquals(FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
-				bvInput.getSourceXLSFilePath());
-		Assert.assertEquals( FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME ,"csv"),
-				bvInput.getSourceXLSFilePath());
+		Assert.assertEquals(
+			FileNameGenerator
+				.generateFileName(INPUT_DIRECTORY + File.separator + this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME,
+					"xml"),
+			bvInput.getDestXMLFilePath());
+		Assert.assertEquals(
+			FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
+			bvInput.getSourceXLSFilePath());
+		Assert.assertEquals(
+			FileNameGenerator.generateFileName(this.project.getProjectName() + "_99_" + SANITIZED_DATASET_NAME, "csv"),
+			bvInput.getSourceXLSFilePath());
 		Assert.assertTrue(bvInput.getBreedingViewAnalysisName().contains("SSA analysis of " + SANITIZED_DATASET_NAME + "  (run at "));
 		Assert.assertTrue(bvInput.getVariatesSelectionMap().get("Variable1"));
 		Assert.assertTrue(bvInput.getCovariatesSelectionMap().get("Variable2"));
-
 	}
 
 	@Test
 	public void testValidateInputNoSelectedStudy() {
 
 		when(this.singleSiteAnalysisPanel.getCurrentStudy()).thenReturn(null);
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID, DATASET_ID, DATASET_NAME));
 	}
 
 	@Test
@@ -298,7 +310,7 @@ public class OpenSelectDatasetForExportActionTest {
 		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
 		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID, DATASET_ID, DATASET_NAME));
 		Mockito.verify(this.messageSource).getMessage(Message.INVALID_INPUT);
 		Mockito.verify(this.messageSource).getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR);
 	}
@@ -321,13 +333,14 @@ public class OpenSelectDatasetForExportActionTest {
 		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(covariatesSelectionMap);
 
-		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertFalse(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID, DATASET_ID, DATASET_NAME));
 		Mockito.verify(this.messageSource).getMessage(Message.INVALID_INPUT);
 		Mockito.verify(this.messageSource).getMessage(Message.SSA_NON_NUMERIC_CATEGORICAL_VAR_ERROR);
 	}
 
-	private void createVariateListWithStateTestData(final List<VariableTableItem> variateList,
-			final Map<String, Boolean> variatesSelectionMap) {
+	private void createVariateListWithStateTestData(
+		final List<VariableTableItem> variateList,
+		final Map<String, Boolean> variatesSelectionMap) {
 
 		final VariableTableItem variableTableItem = new VariableTableItem();
 		variableTableItem.setActive(true);
@@ -357,7 +370,7 @@ public class OpenSelectDatasetForExportActionTest {
 		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
 		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 
-		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID, DATASET_ID, DATASET_NAME));
 		Mockito.verify(this.messageSource).getMessage(Message.WARNING);
 		Mockito.verify(this.messageSource).getMessage(Message.SSA_NUMERIC_CATEGORICAL_VAR_WARNING);
 	}
@@ -381,7 +394,7 @@ public class OpenSelectDatasetForExportActionTest {
 		when(this.singleSiteAnalysisPanel.getVariatesSelectionMap()).thenReturn(variatesSelectionMap);
 		when(this.singleSiteAnalysisPanel.getCovariatesSelectionMap()).thenReturn(new HashMap<String, Boolean>());
 
-		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID,DATASET_ID, DATASET_NAME));
+		Assert.assertTrue(this.openSelectDatasetForExportAction.validateInput(this.clickEvent, STUDY_ID, DATASET_ID, DATASET_NAME));
 		Mockito.verifyZeroInteractions(this.messageSource);
 
 	}

@@ -39,7 +39,7 @@ public class WorkbenchUserServiceTest {
 	public static final String FIRST_NAME = "firstName";
 	public static final String EMAIL = "email@email.com";
 
-	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Mock
 	private UserService workbenchDataManager;
@@ -49,16 +49,16 @@ public class WorkbenchUserServiceTest {
 
 	@Test
 	public void testSaveUserAccount() throws Exception {
-		UserAccountModel userAccount = this.createUserAccount();
-		ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
-		ArgumentCaptor<WorkbenchUser> userCaptor = ArgumentCaptor.forClass(WorkbenchUser.class);
+		final UserAccountModel userAccount = this.createUserAccount();
+		final ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
+		final ArgumentCaptor<WorkbenchUser> userCaptor = ArgumentCaptor.forClass(WorkbenchUser.class);
 
 		this.userService.saveUserAccount(userAccount);
 
 		Mockito.verify(this.workbenchDataManager).addPerson(personCaptor.capture());
 		Mockito.verify(this.workbenchDataManager).addUser(userCaptor.capture());
-		Person capturedPerson = personCaptor.getAllValues().get(0);
-		WorkbenchUser capturedUser = userCaptor.getAllValues().get(0);
+		final Person capturedPerson = personCaptor.getAllValues().get(0);
+		final WorkbenchUser capturedUser = userCaptor.getAllValues().get(0);
 
 		Assert.assertEquals(FIRST_NAME, capturedPerson.getFirstName());
 		Assert.assertEquals(LAST_NAME, capturedPerson.getLastName());
@@ -67,39 +67,13 @@ public class WorkbenchUserServiceTest {
 		Assert.assertEquals(TEST_USERNAME, capturedUser.getName());
 		Assert.assertEquals(60, capturedUser.getPassword().length());
 		// Check that non-encrypted password matches the encrypted one
-		Assert.assertTrue(passwordEncoder.matches(PASSWORD, capturedUser.getPassword()));
+		Assert.assertTrue(this.passwordEncoder.matches(PASSWORD, capturedUser.getPassword()));
 		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getAssignDate());
 		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getCloseDate());
 	}
 
-	@Test
-	public void testSaveNewUserAccount() throws Exception {
-		UserAccountModel userAccount = this.createUserAccount();
-		ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
-		ArgumentCaptor<WorkbenchUser> userCaptor = ArgumentCaptor.forClass(WorkbenchUser.class);
-
-		this.userService.saveNewUserAccount(userAccount);
-
-		Mockito.verify(this.workbenchDataManager).addPerson(personCaptor.capture());
-		Mockito.verify(this.workbenchDataManager).addUser(userCaptor.capture());
-		Person capturedPerson = personCaptor.getAllValues().get(0);
-		WorkbenchUser capturedUser = userCaptor.getAllValues().get(0);
-
-		Assert.assertEquals(FIRST_NAME, capturedPerson.getFirstName());
-		Assert.assertEquals(LAST_NAME, capturedPerson.getLastName());
-		Assert.assertEquals(EMAIL, capturedPerson.getEmail());
-
-		Assert.assertEquals(TEST_USERNAME, capturedUser.getName());
-		Assert.assertEquals(60, capturedUser.getPassword().length());
-		// Check that non-encrypted password matches the encrypted one
-		Assert.assertTrue(passwordEncoder.matches(TEST_USERNAME, capturedUser.getPassword()));
-		Assert.assertEquals(new Integer(0), capturedUser.getAssignDate());
-		Assert.assertEquals(new Integer(0), capturedUser.getCloseDate());
-
-	}
-
 	protected UserAccountModel createUserAccount() {
-		UserAccountModel userAccount = new UserAccountModel();
+		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setFirstName(FIRST_NAME);
 		userAccount.setLastName(LAST_NAME);
 		userAccount.setEmail(EMAIL);
@@ -112,17 +86,17 @@ public class WorkbenchUserServiceTest {
 
 	@Test
 	public void testIsUserActive() throws Exception {
-		UserAccountModel userAccount = this.createUserAccount();
-		WorkbenchUser user = new WorkbenchUser();
+		final UserAccountModel userAccount = this.createUserAccount();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setStatus(0);
-		Person person = new Person();
+		final Person person = new Person();
 		person.setId(TEST_PERSON_ID);
 		user.setPerson(person);
-		List<WorkbenchUser> userList = new ArrayList<>();
+		final List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
-				userList);
+			userList);
 
 		Assert.assertTrue(this.userService.isUserActive(userAccount));
 
@@ -138,59 +112,59 @@ public class WorkbenchUserServiceTest {
 
 	@Test
 	public void testIsValidUserLogin() throws Exception {
-		UserAccountModel userAccount = this.createUserAccount();
-		WorkbenchUser user = new WorkbenchUser();
+		final UserAccountModel userAccount = this.createUserAccount();
+		final WorkbenchUser user = new WorkbenchUser();
 		user.setPassword(HASHED_PASSWORD);
-		Person person = new Person();
+		final Person person = new Person();
 		person.setId(TEST_PERSON_ID);
 		user.setPerson(person);
-		List<WorkbenchUser> userList = new ArrayList<>();
+		final List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
-				userList);
+			userList);
 
 		Assert.assertTrue(this.userService.isValidUserLogin(userAccount));
 	}
 
 	@Test
 	public void testIsValidUserLoginShouldReturnFalseIfInvalid() {
-		UserAccountModel userAccount = this.createUserAccount();
+		final UserAccountModel userAccount = this.createUserAccount();
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
-				Collections.<WorkbenchUser>emptyList());
+			Collections.<WorkbenchUser>emptyList());
 		Assert.assertFalse(this.userService.isValidUserLogin(userAccount));
 	}
 
 	@Test
 	public void testUpdateUserPassword() throws Exception {
-		ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
-		String userName = "testUsername";
-		String password = "testPassword";
+		final ArgumentCaptor<String> passwordCaptor = ArgumentCaptor.forClass(String.class);
+		final String userName = "testUsername";
+		final String password = "testPassword";
 
 		this.userService.updateUserPassword(userName, password);
 
 		Mockito.verify(this.workbenchDataManager).changeUserPassword(eq(userName), not(eq(password)));
 		Mockito.verify(this.workbenchDataManager).changeUserPassword(eq(userName), passwordCaptor.capture());
-		String capturedPassword = passwordCaptor.getAllValues().get(0);
+		final String capturedPassword = passwordCaptor.getAllValues().get(0);
 		Assert.assertEquals(60, capturedPassword.length());
 		// Check that non-encrypted password matches the encrypted one
-		Assert.assertTrue(passwordEncoder.matches(password, capturedPassword));
+		Assert.assertTrue(this.passwordEncoder.matches(password, capturedPassword));
 	}
 
 	@Test
 	public void testGetUserByUserName() throws Exception {
-		WorkbenchUser user = new WorkbenchUser();
-		Person person = new Person();
+		final WorkbenchUser user = new WorkbenchUser();
+		final Person person = new Person();
 		person.setId(TEST_PERSON_ID);
 		user.setPerson(person);
 
-		List<WorkbenchUser> userList = new ArrayList<>();
+		final List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
-				userList);
+			userList);
 
-		WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
+		final WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
 
 		Assert.assertEquals("Should be the same as the setup user", user, resultUser);
 
@@ -198,12 +172,12 @@ public class WorkbenchUserServiceTest {
 
 	@Test
 	public void testGetUserByUserNameWithNoExistingUserAcct() throws Exception {
-		List<WorkbenchUser> userList = new ArrayList<>();
+		final List<WorkbenchUser> userList = new ArrayList<>();
 
 		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
-				userList);
+			userList);
 
-		WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
+		final WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
 
 		Assert.assertNull("Should be null since there is no user with the TEST_USERNAME", resultUser);
 
@@ -211,13 +185,13 @@ public class WorkbenchUserServiceTest {
 
 	@Test
 	public void testGetUserByUserId() throws Exception {
-		WorkbenchUser user = new WorkbenchUser();
-		Person person = new Person();
+		final WorkbenchUser user = new WorkbenchUser();
+		final Person person = new Person();
 		user.setPerson(person);
 		person.setId(TEST_PERSON_ID);
 		Mockito.when(this.workbenchDataManager.getUserById(TEST_USER_ID)).thenReturn(user);
 
-		WorkbenchUser resultUser = this.userService.getUserByUserid(TEST_USER_ID);
+		final WorkbenchUser resultUser = this.userService.getUserByUserid(TEST_USER_ID);
 
 		Assert.assertEquals("Should be the same as the setup user", user, resultUser);
 

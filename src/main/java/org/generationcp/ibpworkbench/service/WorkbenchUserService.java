@@ -10,7 +10,6 @@ import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.workbench.UserInfo;
 import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
@@ -58,35 +57,6 @@ public class WorkbenchUserService {
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
 		this.userService.addUser(user);
 
-	}
-
-	public WorkbenchUser saveNewUserAccount(UserAccountModel userAccount) {
-		Person person = this.createPerson(userAccount);
-
-		WorkbenchUser user = new WorkbenchUser();
-		user.setPerson(person);
-		user.setName(userAccount.getUsername());
-
-		// set default password for the new user which is the same as their Username
-		user.setPassword(passwordEncoder.encode(userAccount.getUsername()));
-		user.setAccess(0);
-		user.setAssignDate(0);
-		user.setCloseDate(0);
-		user.setInstalid(0);
-		user.setStatus(0);
-		user.setType(0);
-		user.setIsNew(true);
-
-		// add user roles to the particular user
-		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		this.userService.addUser(user);
-
-		UserInfo userInfo = new UserInfo();
-		userInfo.setUserId(user.getUserid());
-		userInfo.setLoginCount(0);
-		this.userService.insertOrUpdateUserInfo(userInfo);
-
-		return user;
 	}
 
 	/**
@@ -143,8 +113,7 @@ public class WorkbenchUserService {
 		List<WorkbenchUser> userList = this.userService.getUserByName(username, 0, 1, Operation.EQUAL);
 
 		if (!userList.isEmpty()) {
-			WorkbenchUser user = userList.get(0);
-			return user;
+			return userList.get(0);
 		}
 
 		return null;
@@ -157,10 +126,7 @@ public class WorkbenchUserService {
 	 * @return
 	 */
 	public WorkbenchUser getUserByUserid(Integer userId) {
-
-		WorkbenchUser user = this.userService.getUserById(userId);
-		return user;
-
+		return this.userService.getUserById(userId);
 	}
 
 	private Person createPerson(UserAccountModel userAccount) {
