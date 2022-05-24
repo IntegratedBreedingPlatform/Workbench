@@ -61,10 +61,10 @@ export class GenotypingPaneComponent implements OnInit {
     ngOnInit(): void {
         this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
             this.cropGenotypingParameter = result;
-            return this.cropGenotypingParameterService.getToken(this.cropGenotypingParameter.tokenEndpoint, this.cropGenotypingParameter.userName, this.cropGenotypingParameter.password);
-        })).subscribe((result) => {
+            return this.cropGenotypingParameterService.getToken(this.context.cropName);
+        })).subscribe((accessToken) => {
             this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.endpoint;
-            this.genotypingBrapiService.accessToken = result.access_token;
+            this.genotypingBrapiService.accessToken = accessToken;
         }, (error) => {
             this.alertService.error('genotyping.connection.error');
         });
