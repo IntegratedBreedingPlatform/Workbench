@@ -14,6 +14,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     @Input() showFilterOptions?: boolean;
     @Input() value: number;
     @Input() cropName?: string;
+    @Input() disabled = false;
     @Output() valueChange = new EventEmitter<number>();
 
     // If selectBoxOnly is true, the component will only display the select box with all locations options.
@@ -25,19 +26,18 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     isBreedingAndCountryLocationsOnly;
     locationsFilteredItemsCount;
     initialData: Select2OptionData[];
+    previousCropName: string;
 
     constructor(private locationService: LocationService) {
-        if (this.value) {
-            this.locationSelected = String(this.value);
-        }
-
         // The locations are retrieved only when the dropdown is opened, so we have to manually set the initial selected item on first load.
         // Get the location method and add it to the initial data.
-        if (this.locationSelected) {
+        if (this.value) {
+            this.locationSelected = String(this.value);
             this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
             });
         } else if(!this.cropName) {
+            // Set the selected location to the default location
             this.locationService.getDefaultLocation().toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
                 this.value = location.id;
@@ -52,7 +52,13 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes): void {
-        this.instantiateLocationOptions();
+        if (this.cropName && this.cropName !== this.previousCropName) {
+            this.initialData = [];
+            this.locationSelected = null;
+            this.value = null;
+            this.previousCropName = this.cropName;
+            this.instantiateLocationOptions();
+        }
     }
 
     instantiateLocationOptions(): void {

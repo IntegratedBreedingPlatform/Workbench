@@ -56,7 +56,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
         if (!Object.values(form.controls).filter((control: any) => !control.disabled).length) {
             return false;
         }
-        return f.form.valid && this.cropName;
+        return f.form.valid && this.cropName && this.defaultLocationId;
     }
 
     create(f) {
