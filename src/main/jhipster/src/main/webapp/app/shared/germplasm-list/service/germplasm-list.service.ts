@@ -80,7 +80,7 @@ export class GermplasmListService implements ListService {
     postSearchListData(listId: number, req: any): Observable<string> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/${listId}/search?programUUID=` + this.context.programUUID;
         return this.http.post<String[]>(url, req, { observe: 'response' })
-            .pipe(map((res: any) => res.body.result.searchResultDbId));
+            .pipe(map((res: any) => res.body.searchResultDbId));
     }
 
     getSearchResults(listId: number, req: any): Observable<HttpResponse<GermplasmListDataSearchResponse[]>> {
