@@ -6,6 +6,7 @@
         "program": "Program",
         "program-name": "Program Name",
         "program-start-date": "Program Start Date",
+        "program-default-location": "Program Default Location",
         "launch": "Launch",
         "my.studies": {
             "tab.name": "My Studies",

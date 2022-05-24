@@ -35,14 +35,17 @@ export class LocationService {
             { params, observe: 'response' }).pipe(map((res: HttpResponse<LocationType[]>) => res.body));
     }
 
-    searchLocations(request: LocationSearchRequest, favoriteLocation: boolean, pagination: any): Observable<HttpResponse<Location[]>> {
+    searchLocations(request: LocationSearchRequest, favoriteLocation: boolean, pagination: any, cropName?: string): Observable<HttpResponse<Location[]>> {
         if (favoriteLocation) {
             request.filterFavoriteProgramUUID = true;
             request.favoriteProgramUUID = this.context.programUUID;
         }
 
         const params = createRequestOption(pagination);
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/locations/search?programUUID=${this.context.programUUID}`;
+        const crop = this.context.cropName? this.context.cropName: cropName;
+
+        let url = SERVER_API_URL + `crops/${crop}/locations/search`;
+        url += this.context.programUUID ? `?programUUID=${this.context.programUUID}` : ``;
         return this.http.post<Location[]>(url, request, { params, observe: 'response' });
     }
 
