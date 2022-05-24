@@ -26,11 +26,6 @@ export class LocationsSelectComponent implements OnInit {
     initialData: Select2OptionData[];
 
     constructor(private locationService: LocationService) {
-
-    }
-
-    ngOnInit(): void {
-
         if (this.value) {
             this.locationSelected = String(this.value);
         }
@@ -43,7 +38,16 @@ export class LocationsSelectComponent implements OnInit {
             this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
             });
+        } else {
+            this.locationService.getDefaultLocation().toPromise().then((location) => {
+                this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
+                this.value = location.id;
+                this.locationSelected = String(this.value);
+            });
         }
+    }
+
+    ngOnInit(): void {
 
         this.locationsOptions = {
             ajax: {

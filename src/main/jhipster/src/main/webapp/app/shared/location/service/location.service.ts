@@ -21,6 +21,11 @@ export class LocationService {
             { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
     }
 
+    getDefaultLocation(): Observable<Location> {
+        return this.http.get<Location>(SERVER_API_URL + `crops/${this.context.cropName}/locations/default/${this.context.programUUID}`,
+            { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
+    }
+
     getLocationTypes(excludeRestrictedTypes): Observable<LocationType[]> {
         const params = {};
         if (excludeRestrictedTypes) {
