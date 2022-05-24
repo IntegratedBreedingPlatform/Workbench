@@ -42,7 +42,7 @@ export class LotService {
             url += `?programUUID=` + this.context.programUUID;
         }
         return this.http.post<any>(url, req, { observe: 'response' })
-            .pipe(map((res: any) => res.body.result.searchResultDbId));
+            .pipe(map((res: any) => res.body.searchResultDbId));
     }
 
     getSearchResults(req?: any): Observable<HttpResponse<Lot[]>> {
