@@ -94,7 +94,8 @@
 			(click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreAllRemaining || isIgnoreMatch || selectMatchesResult[dataRow[HEADERS.ENTRY_NO]])">
+	<button (click)="next()" class="btn btn-primary" [disabled]="!(isIgnoreAllRemaining || isIgnoreMatch || selectMatchesResult[dataRow[HEADERS.ENTRY_NO]])"
+			data-test="importGermplasmMatchesButton">
 		<span *ngIf="isFinish(); else nextButton" jhiTranslate="finish"></span>
 		<ng-template #nextButton><span jhiTranslate="next"></span></ng-template>
 	</button>
