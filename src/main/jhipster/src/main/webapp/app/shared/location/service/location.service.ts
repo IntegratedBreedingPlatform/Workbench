@@ -42,7 +42,7 @@ export class LocationService {
         }
 
         const params = createRequestOption(pagination);
-        const crop = this.context.cropName? this.context.cropName: cropName;
+        const crop = this.context.cropName ? this.context.cropName : cropName;
 
         let url = SERVER_API_URL + `crops/${crop}/locations/search`;
         url += this.context.programUUID ? `?programUUID=${this.context.programUUID}` : ``;

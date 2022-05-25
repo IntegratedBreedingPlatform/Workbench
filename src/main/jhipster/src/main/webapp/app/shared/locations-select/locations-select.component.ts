@@ -29,6 +29,10 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     previousCropName: string;
 
     constructor(private locationService: LocationService) {
+    }
+
+    ngOnInit(): void {
+        this.useFavoriteLocations = this.showFilterOptions;
         // The locations are retrieved only when the dropdown is opened, so we have to manually set the initial selected item on first load.
         // Get the location method and add it to the initial data.
         if (this.value) {
@@ -36,7 +40,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
             this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
             });
-        } else if(!this.cropName) {
+        } else if (!this.cropName) {
             // Set the selected location to the default location
             this.locationService.getDefaultLocation().toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
@@ -44,10 +48,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
                 this.locationSelected = String(this.value);
             });
         }
-    }
 
-    ngOnInit(): void {
-        this.useFavoriteLocations = this.showFilterOptions;
         this.instantiateLocationOptions();
     }
 
@@ -80,7 +81,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
                         size: 300
                     };
 
-                    const useFaveLocations = this.cropName? false: this.useFavoriteLocations;
+                    const useFaveLocations = this.cropName ? false : this.useFavoriteLocations;
                     this.locationService.searchLocations(locationSearchRequest, useFaveLocations, pagination, this.cropName).subscribe((res) => {
                         this.locationsFilteredItemsCount = res.headers.get('X-Total-Count');
                         success(res.body);
