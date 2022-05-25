@@ -190,8 +190,6 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 	$scope.observationLevels = [];
 	$scope.nested.selectedObservationModel = 'PLOT';
 
-	$scope.locationId = null;
-
 	$scope.init = function () {
 
 		// Get the gid from the query params if available.
