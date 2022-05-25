@@ -25,6 +25,7 @@ import { MatchType } from '../../shared/column-filter/column-filter-text-with-ma
 import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
 import { HttpResponse } from '@angular/common/http';
 import { Location } from '../../shared/location/model/location';
+import { Select2OptionData } from 'ng-select2';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -54,6 +55,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     locationSelected: string;
     useFavoriteLocations = true;
     isBreedingAndCountryLocationsOnly = false;
+    initialData: Select2OptionData[];
 
     locationsFilteredItemsCount;
     breedingMethodsFilteredItemsCount;
@@ -80,6 +82,14 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         private variableValidationService: VariableValidationService
     ) {
         this.creationDateSelected = calendar.getToday();
+
+        this.locationService.getDefaultLocation().toPromise().then((location) => {
+            this.initialData = [{
+                id: location.abbreviation ? location.abbreviation : location.name,
+                text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name
+            }];
+            this.locationSelected = location.abbreviation ? location.abbreviation : location.name;
+        });
     }
 
     ngOnInit(): void {
