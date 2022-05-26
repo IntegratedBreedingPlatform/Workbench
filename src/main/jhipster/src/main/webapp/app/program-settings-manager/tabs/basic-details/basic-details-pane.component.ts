@@ -10,6 +10,7 @@ import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.compo
 import { TranslateService } from '@ngx-translate/core';
 import { NavbarMessageEvent } from '../../../shared/model/navbar-message.event';
 import { Program } from '../../../shared/program/model/program';
+import { JhiEventManager } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-basic-details-pane',
@@ -28,7 +29,8 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
                 private context: ParamContext,
                 public dateHelperService: DateHelperService,
                 private modalService: NgbModal,
-                private translateService: TranslateService) {
+                private translateService: TranslateService,
+                private eventManager: JhiEventManager) {
         this.programService.getProgramByProgramUUID(this.context.cropName, this.context.programUUID).subscribe(
             (res) => {
                 this.program = res.body;
@@ -87,13 +89,14 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.program.name && this.program.crop && this.program.defaultLocationId
+        return f.form.valid && !this.isLoading && this.program.name && this.program.crop && this.program.defaultLocationId != null
             && this.startDate;
     }
 
     reset() {
         this.program = Object.assign({}, this.programOrg);
         this.startDate = this.dateHelperService.convertFormattedDateStringToNgbDate(this.program.startDate, 'yyyy-mm-dd');
+        this.eventManager.broadcast({ name: 'resetLocationToDefault' });
     }
 
     private onError(response: HttpErrorResponse) {
