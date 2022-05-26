@@ -74,8 +74,8 @@ public class RunSingleSiteAction implements ClickListener {
 	private ContextUtil contextUtil;
 
 	private ZipUtil zipUtil = new ZipUtil();
-	private final DatasetExporter datasetExporter = new DatasetExporter();
-	private final BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
+	private DatasetExporter datasetExporter = new DatasetExporter();
+	private BreedingViewXMLWriter breedingViewXMLWriter = new BreedingViewXMLWriter();
 
 	public RunSingleSiteAction(final SingleSiteAnalysisDetailsPanel selectDetailsForBreedingViewWindow) {
 		this.source = selectDetailsForBreedingViewWindow;
