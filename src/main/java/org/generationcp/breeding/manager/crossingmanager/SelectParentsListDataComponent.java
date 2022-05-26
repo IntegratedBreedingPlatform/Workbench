@@ -5,19 +5,25 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.Action;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
 import liquibase.util.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
+import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
 import org.generationcp.breeding.manager.crossingmanager.util.CrossingManagerUtil;
 import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
-import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -336,18 +342,15 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			if (this.studyId != null) {
 				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(studyId);
 				for (final StudyEntryDto entry : studyEntryDtoList) {
-					//TODO: should get entry code from properties?
-					final String entryCode = null;
-
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
-						entryCode, Optional.empty(), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
+						entry.getStudyEntryPropertyValue(TermId.ENTRY_CODE.getId()), Optional.empty(), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 				for (final GermplasmListData entry : listEntries) {
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(),
-							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), entry.getEntryCode(),
+							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), Optional.of(entry.getEntryCode()),
 							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
 							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}
@@ -361,7 +364,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	}
 
 	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final Optional<String> groupName,
-		final String entryCode, final Optional<String> seedSource, final Optional<String> groupId) {
+		final Optional<String> entryCode, final Optional<String> seedSource, final Optional<String> groupId) {
 
 		final String gidString = String.format("%s", gid);
 		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
@@ -398,7 +401,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
 		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
 		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName.orElse(""));
-		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode);
+		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode.orElse(""));
 		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
 		newItem.getItemProperty(ColumnLabels.GERMPLASM_SOURCE.getName()).setValue(seedSource.orElse(""));
 		final String groupIdDisplayValue = groupId.orElse("-");
