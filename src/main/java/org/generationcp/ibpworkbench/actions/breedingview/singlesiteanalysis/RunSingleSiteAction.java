@@ -46,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +87,19 @@ public class RunSingleSiteAction implements ClickListener {
 		final Window window = event.getComponent().getWindow();
 		final BreedingViewInput breedingViewInput = this.source.getBreedingViewInput();
 
+		final long environmentNameDistinctCount =
+			this.source.getSelectedEnvironments().stream().map(SeaEnvironmentModel::getEnvironmentName).distinct().count();
+		if (environmentNameDistinctCount != this.source.getSelectedEnvironments().size()) {
+			MessageNotifier.showError(this.source.getWindow(), this.messageSource.getMessage(Message.ERROR),
+				this.messageSource.getMessage(Message.SSA_EXPORT_DUPLICATE_ENVIRONMENT_ERROR));
+		} else {
+			this.download(window, breedingViewInput);
+		}
+
+	}
+
+	private void download(final Window window, final BreedingViewInput breedingViewInput) {
+
 		breedingViewInput.setSelectedEnvironments(this.source.getSelectedEnvironments());
 
 		if (this.validateDesignInput(window, breedingViewInput)) {
@@ -102,7 +114,8 @@ public class RunSingleSiteAction implements ClickListener {
 			filenameList.add(breedingViewInput.getDestXMLFilePath());
 			filenameList.add(breedingViewInput.getSourceXLSFilePath());
 
-			final String outputFilename = BreedingViewUtil.sanitizeNameAlphaNumericOnly(FileNameGenerator.generateFileName(breedingViewInput.getDatasetSource()));
+			final String outputFilename =
+				BreedingViewUtil.sanitizeNameAlphaNumericOnly(FileNameGenerator.generateFileName(breedingViewInput.getDatasetSource()));
 			try {
 				final String finalZipfileName =
 					this.zipUtil.zipIt(outputFilename, filenameList, this.contextUtil.getProjectInContext(), ToolName.BV_SSA);
@@ -113,7 +126,6 @@ public class RunSingleSiteAction implements ClickListener {
 			}
 
 		}
-
 	}
 
 	/**
@@ -131,7 +143,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		this.datasetExporter.exportToCSVForBreedingView(breedingViewInput.getSourceXLSFilePath(), this.source.getSelEnvFactorValue(),
-				selectedEnvironments, breedingViewInput);
+			selectedEnvironments, breedingViewInput);
 	}
 
 	/**
@@ -171,7 +183,7 @@ public class RunSingleSiteAction implements ClickListener {
 		final String rowValue = this.source.getSelRowFactorValue();
 		// Do not generate RowPos and ColPos tags for Row-Col Design type
 		if (!StringUtils.isNullOrEmpty(rowValue) && !StringUtils.isNullOrEmpty(columnValue)
-				&& !ExperimentDesignType.ROW_COL.equals(designType)) {
+			&& !ExperimentDesignType.ROW_COL.equals(designType)) {
 			breedingViewInput.setColPos(this.createColPos(columnValue));
 			breedingViewInput.setRowPos(this.createRowPos(rowValue));
 		} else {
@@ -361,13 +373,13 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName())
-				&& this.source.replicateFactorEnabled()) {
+			&& this.source.replicateFactorEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
 
 		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName())
-				|| designType.equals(ExperimentDesignType.P_REP.getBvName()))) {
+			|| designType.equals(ExperimentDesignType.P_REP.getBvName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
@@ -383,7 +395,7 @@ public class RunSingleSiteAction implements ClickListener {
 		}
 
 		if (!StringUtils.isNullOrEmpty(rowFactor) && StringUtils.isNullOrEmpty(columnFactor)
-				|| StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor)) {
+			|| StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor)) {
 			this.showErrorMessage(window, "Row and Column factors must be specified together.", "");
 			return false;
 		}
@@ -416,7 +428,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	private void downloadInputFile(final File file, final String filename) {
 		final VaadinFileDownloadResource fileDownloadResource =
-				new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
+			new VaadinFileDownloadResource(file, filename + ZipUtil.ZIP_EXTENSION, this.source.getApplication());
 		this.source.getWindow().open(fileDownloadResource);
 	}
 
