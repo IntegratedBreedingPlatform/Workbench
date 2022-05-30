@@ -36,7 +36,7 @@
 			<div class="form-group row required">
 				<label for="breedingAndCountryLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.locations"></label>
 				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
-					<ng-select2 name="locations" id="locations" width="100%" [(ngModel)]="locationSelected" [options]="locationsOptions">
+					<ng-select2 name="locations" id="locations" width="100%" [(ngModel)]="locationSelected" [value]="locationSelected" [data]="initialData" [options]="locationsOptions">
 					</ng-select2>
 					<div class="row">
 						<div class="col-xs-12 col-md-12">

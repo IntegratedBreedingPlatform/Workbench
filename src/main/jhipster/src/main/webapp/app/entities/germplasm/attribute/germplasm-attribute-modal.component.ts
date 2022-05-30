@@ -108,7 +108,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
 
     isFormValid(f) {
         return f.form.valid && !this.isLoading && this.variable
-            && this.value && this.locationId && this.date;
+            && this.value && this.locationId != null && this.date;
     }
 
     isNumericOutOfRange() {

@@ -99,7 +99,7 @@ export class GermplasmNameModalComponent implements OnInit, OnDestroy {
 
     isFormValid(f) {
         return f.form.valid && !this.isLoading && this.name
-            && this.nameTypeCode && this.locationId && this.date;
+            && this.nameTypeCode && this.locationId != null && this.date;
     }
 
     ngOnDestroy(): void {

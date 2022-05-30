@@ -55,7 +55,7 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
     }
 
     isFormValid(f) {
-        return f.form.valid && this.germplasmDetailsContext && this.germplasmDate && !this.isLoading && this.germplasm.breedingLocationId;
+        return f.form.valid && this.germplasmDetailsContext && this.germplasmDate && !this.isLoading && this.germplasm.breedingLocationId != null;
     }
 
 }
