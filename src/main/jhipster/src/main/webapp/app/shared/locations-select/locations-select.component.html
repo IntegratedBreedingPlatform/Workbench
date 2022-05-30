@@ -1,4 +1,4 @@
-<ng-select2 width="100%" [(ngModel)]="locationSelected" [value]="locationSelected" [data]="initialData" [options]="locationsOptions" (valueChanged)="onValueChanged($event)">
+<ng-select2 width="100%" [(ngModel)]="locationSelected" [value]="locationSelected" [data]="initialData" [options]="locationsOptions" [disabled]="disabled" (valueChanged)="onValueChanged($event)">
 </ng-select2>
 <div class="row" *ngIf="showFilterOptions">
 	<div class="col-xs-12 col-md-12">
