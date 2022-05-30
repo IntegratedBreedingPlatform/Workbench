@@ -1,14 +1,15 @@
 package org.generationcp.breeding.manager.crossingmanager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
-import org.generationcp.breeding.manager.listeners.InventoryLinkButtonClickListener;
-import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -24,13 +25,9 @@ import org.mockito.Mockito;
 import org.mockito.exceptions.verification.TooLittleActualInvocations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.vaadin.data.Item;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.themes.BaseTheme;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MakeCrossesParentsComponentTest {
@@ -43,7 +40,6 @@ public class MakeCrossesParentsComponentTest {
 	private static final String TAG_COLUMN_ID = "Tag";
 	private static final String STRING_DASH = "-";
 	private static final String CHECKBOX_COLUMN_ID = "Checkbox Column ID";
-	private static final String CLICK_TO_VIEW_INVENTORY_DETAILS = "Click to view Inventory Details";
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -137,16 +133,6 @@ public class MakeCrossesParentsComponentTest {
 			final Button desigButton = new Button();
 			desigButton.setCaption("Designation");
 			newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
-
-			final String availInv = String.valueOf(i);
-			final InventoryLinkButtonClickListener inventoryLinkButtonClickListener =
-				new InventoryLinkButtonClickListener(this.makeCrossesParentsComponent, this.germplasmList.getId(), i, i);
-			final Button inventoryButton = new Button(availInv, inventoryLinkButtonClickListener);
-			inventoryButton.setData(inventoryLinkButtonClickListener);
-			inventoryButton.setStyleName(BaseTheme.BUTTON_LINK);
-			inventoryButton.setDescription(MakeCrossesParentsComponentTest.CLICK_TO_VIEW_INVENTORY_DETAILS);
-
-			newItem.getItemProperty(ColumnLabels.AVAILABLE_INVENTORY.getName()).setValue(inventoryButton);
 
 			final Button gidButton = new Button();
 			gidButton.setCaption(String.valueOf(i));
