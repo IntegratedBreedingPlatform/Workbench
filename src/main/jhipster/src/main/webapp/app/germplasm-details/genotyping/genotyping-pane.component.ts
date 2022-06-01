@@ -19,6 +19,7 @@ import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/searc
 @Component({
     selector: 'jhi-genotyping-pane',
     templateUrl: './genotyping-pane.component.html',
+    styleUrls: ['./genotyping-pane.component.css'],
     providers: [{ provide: 'test', useValue: '' }]
 })
 export class GenotypingPaneComponent implements OnInit {
