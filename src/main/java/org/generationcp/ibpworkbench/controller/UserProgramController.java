@@ -2,7 +2,7 @@ package org.generationcp.ibpworkbench.controller;
 
 import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.commons.spring.util.ContextUtil;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.api.program.ProgramService;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,13 @@ public class UserProgramController {
 	private ContextUtil contextUtil;
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Resource
 	private AuthorizationService authorizationService;
 
 	@Resource
 	private HttpServletRequest request;
+
+	@Resource
+	private ProgramService programService;
 
 	/* This controller was implemented in IBP-4421 fixing an authentication issue.
 	   As a part of the IBP-4397 was implemented the APIs to return the last project user selected and save the project selected by the user.
@@ -43,7 +43,7 @@ public class UserProgramController {
 	   */
 	@RequestMapping(value = "/context/program", method = RequestMethod.POST)
 	public ResponseEntity<String> setContextProgram(@RequestBody final String programUUID) {
-		final Project project = this.workbenchDataManager.getProjectByUuid(programUUID);
+		final Project project = this.programService.getProjectByUuid(programUUID);
 		if (project != null) {
 			org.generationcp.commons.util.ContextUtil.setContextInfo(this.request,
 				this.contextUtil.getCurrentWorkbenchUserId(), project.getProjectId());
