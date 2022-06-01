@@ -11,7 +11,8 @@ export class SearchGermplasmRequest {
         public progenyDbIds?: Array<string>,
         public studyDbIds?: Array<string>,
         public synonyms?: Array<string>,
-        public xrefs?: Array<string>,
+        public programDbIds?: Array<string>,
+        public externalReferenceIds?: Array<string>,
         public page?: number,
         public pageSize?: number
     ) {

@@ -185,9 +185,9 @@
     },
     "genotyping": {
         "connection.error": "The system failed to connect to the genotyping database. Contact your system administrator.",
-        "no.genotyping.germplasm.found": "No germplasm is found in the configured genoytpe DB for the crop",
-        "no.genotyping.studies.found": "No studies are found in the configured genoytpe DB for the crop",
-        "no.genotyping.variantsets.found": "No variantsets are found in the configured genoytpe DB for the crop",
-        "no.genotyping.callsets.found": "No callsets are found in the configured genoytpe DB for the crop"
+        "no.genotyping.germplasm.found": "No germplasm found with {{germplasmSearchValue}} ({{linkType}}) reference in the configured genotype DB for the crop. Please try other Link By options.",
+        "no.genotyping.studies.found": "No studies are found in the configured genotype DB for the crop",
+        "no.genotyping.variantsets.found": "No variantsets are found in the configured genotype DB for the crop",
+        "no.genotyping.callsets.found": "No callsets are found in the configured genoytype DB for the crop"
     }
 }

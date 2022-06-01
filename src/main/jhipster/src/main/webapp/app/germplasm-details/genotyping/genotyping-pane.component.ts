@@ -28,14 +28,14 @@ export class GenotypingPaneComponent implements OnInit {
     pageSize: number = 10;
     isLoading = false;
 
-    public readonly LINK_BY_GID = 'GID';
-    public readonly LINK_BY_SAMPLE_ID = 'SAMPLE_ID';
+    public readonly LINK_BY_GUID = 'GUID';
+    public readonly LINK_BY_SAMPLE_UID = 'SAMPLE_UID';
     public readonly LINK_BY_NAME = 'NAME';
 
-    linkByOptions: string[] = [this.LINK_BY_GID, this.LINK_BY_SAMPLE_ID, this.LINK_BY_NAME];
+    linkByOptions: string[] = [this.LINK_BY_GUID, this.LINK_BY_SAMPLE_UID, this.LINK_BY_NAME];
 
 
-    selectedLinkBy: string;
+    selectedLinkBy: string = this.LINK_BY_GUID;
     germplasmSearchValue;
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
@@ -61,10 +61,11 @@ export class GenotypingPaneComponent implements OnInit {
     ngOnInit(): void {
         this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
             this.cropGenotypingParameter = result;
+            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.endpoint;
             return this.cropGenotypingParameterService.getToken(this.context.cropName);
         })).subscribe((accessToken) => {
-            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.endpoint;
             this.genotypingBrapiService.accessToken = accessToken;
+            this.linkBySelectOnChange();
         }, (error) => {
             this.alertService.error('genotyping.connection.error');
         });
@@ -77,11 +78,12 @@ export class GenotypingPaneComponent implements OnInit {
 
     linkBySelectOnChange() {
         this.resetForm();
-        if (this.selectedLinkBy === this.LINK_BY_SAMPLE_ID) {
+        if (this.selectedLinkBy === this.LINK_BY_SAMPLE_UID) {
             this.germplasmService.getGermplasmSamplesByGid(this.germplasmDetailsContext.gid).toPromise().then((samples) => {
                 this.germplasmSamples = samples;
             });
-        } else if (this.selectedLinkBy === this.LINK_BY_GID) {
+        } else if (this.selectedLinkBy === this.LINK_BY_GUID) {
+            this.germplasmSearchValue = this.germplasmDetailsContext.germplasm.germplasmUUID;
             this.linkByChanged();
         }
     }
@@ -90,11 +92,9 @@ export class GenotypingPaneComponent implements OnInit {
         this.resetForm();
         let searchGermplasmRequest: SearchGermplasmRequest;
         if (this.selectedLinkBy === this.LINK_BY_NAME) {
-            // FIXME: Gigwa server doesn't allow to search germplasm by germplasmNames and programDbIds.
-            searchGermplasmRequest = { germplasmNames: [this.germplasmSearchValue] };
-        } else if (this.selectedLinkBy === this.LINK_BY_GID || this.selectedLinkBy === this.LINK_BY_SAMPLE_ID) {
-            // FIXME: Gigwa server doesn't allow to search germplasm by xrefs and programDbIds.
-            searchGermplasmRequest = { xrefs: [this.germplasmSearchValue] };
+            searchGermplasmRequest = { germplasmNames: [this.germplasmSearchValue], programDbIds: [this.cropGenotypingParameter.programId] };
+        } else if (this.selectedLinkBy === this.LINK_BY_GUID || this.selectedLinkBy === this.LINK_BY_SAMPLE_UID) {
+            searchGermplasmRequest = { externalReferenceIds: [this.germplasmSearchValue], programDbIds: [this.cropGenotypingParameter.programId] };
         }
 
         this.genotypingBrapiService.searchGermplasm(searchGermplasmRequest).pipe(flatMap((response) => {
@@ -105,7 +105,7 @@ export class GenotypingPaneComponent implements OnInit {
                     programDbIds: [this.cropGenotypingParameter.programId]
                 });
             } else {
-                this.alertService.error('genotyping.no.genotyping.germplasm.found');
+                this.alertService.error('genotyping.no.genotyping.germplasm.found', { linkType: this.selectedLinkBy, germplasmSearchValue: this.germplasmSearchValue });
             }
             return Observable.empty();
         })).subscribe((brapiResponse) => {
@@ -170,7 +170,6 @@ export class GenotypingPaneComponent implements OnInit {
         this.selectedVariantSet = null;
         this.genotypingCallSet = null;
         this.genotypingCalls = null;
-        this.germplasmSamples = [];
     }
 
     getCallsetAndVariantCountText() {
