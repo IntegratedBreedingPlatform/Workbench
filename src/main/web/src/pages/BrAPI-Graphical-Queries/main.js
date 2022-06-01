@@ -64,6 +64,24 @@ function loadLocations() {
 			}
 		}
 	});
+	this.getDefaultLocation().done(function (location) {
+		const defaultLocationOption = new Option(location.name + ' - (' + location.abbreviation + ')', location.id, true, true);
+		// Append it to the select
+		$('#locationsSelect select').append(defaultLocationOption).trigger('change');
+		$('#locationsSelect select').val(location.id).trigger('change');
+	});
+}
+
+function getDefaultLocation() {
+	return $.ajax({
+		type: 'GET',
+		url: '/bmsapi/crops/' + getUrlParameter('cropName') + '/programs/' + getUrlParameter('programUUID') + '/locations/default',
+		dataType: "json",
+		contentType: "application/json;charset=utf-8",
+		beforeSend: beforeSend,
+		success: function (data) {
+		}
+	});
 }
 
 function loadTrials() {

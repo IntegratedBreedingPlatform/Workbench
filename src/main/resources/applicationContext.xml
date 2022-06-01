@@ -114,6 +114,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="locationService" factory-bean="managerFactory"
+		  factory-method="getLocationService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="userProgramStateManager" factory-bean="managerFactory"
 		factory-method="getUserProgramStateDataManager" scope="request">
 		<aop:scoped-proxy />

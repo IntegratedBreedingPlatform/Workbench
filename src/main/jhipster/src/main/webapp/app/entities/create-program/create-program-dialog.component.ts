@@ -26,6 +26,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
     program: Program = new Program();
     startDate: NgbDate;
     isLoading: boolean;
+    defaultLocationId: number;
     user?: any;
 
     constructor(private alertService: AlertService,
@@ -55,7 +56,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
         if (!Object.values(form.controls).filter((control: any) => !control.disabled).length) {
             return false;
         }
-        return f.form.valid && this.cropName;
+        return f.form.valid && this.cropName && this.defaultLocationId != null;
     }
 
     create(f) {
@@ -65,6 +66,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
             programBasicDetails['name'] = this.program.name;
             this.program.startDate = this.dateHelperService.convertFormattedNgbDateToString(this.startDate, '-');
             programBasicDetails['startDate'] = this.program.startDate;
+            programBasicDetails['defaultLocationId'] = this.defaultLocationId;
             this.programService.addProgram(programBasicDetails, this.cropName).subscribe((program) => {
                     const message: NavbarMessageEvent = { programSelected: program, toolSelected: '/ibpworkbench/controller/jhipster#program-settings-manager' };
                     window.parent.postMessage(message, '*');
