@@ -7,7 +7,8 @@ export class Program {
         public members?: string[],
         public crop?: string,
         public startDate?: string,
-        public defaultLocationId?: number
+        public breedingLocationDefaultId?: number,
+        public storageLocationDefaultId?: number
     ) {
     }
 }

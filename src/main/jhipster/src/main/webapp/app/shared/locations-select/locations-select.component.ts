@@ -67,7 +67,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
 
     setLocationToDefault(): void {
         // Set the selected location to the default location
-        this.locationService.getDefaultLocation().toPromise().then((location) => {
+        this.locationService.getBreedingLocationDefault().toPromise().then((location) => {
             this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
             this.value = location.id;
             this.locationSelected = String(this.value);
