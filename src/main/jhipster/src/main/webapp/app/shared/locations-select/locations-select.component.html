@@ -1,6 +1,6 @@
 <ng-select2 width="100%" [(ngModel)]="locationSelected" [value]="locationSelected" [data]="initialData" [options]="locationsOptions" [disabled]="disabled" (valueChanged)="onValueChanged($event)">
 </ng-select2>
-<div class="row" *ngIf="showFilterOptions">
+<div class="row" *ngIf="showFilterOptions && !storageLocationsOnly">
 	<div class="col-xs-12 col-md-12">
 		<div class="form-check form-check-inline">
 			<input class="form-check-input" type="radio" name="option-group" id="allLocations" [value]="false" [(ngModel)]="isBreedingAndCountryLocationsOnly">
@@ -12,7 +12,7 @@
 		</div>
 	</div>
 </div>
-<div class="row" *ngIf="showFilterOptions">
+<div class="row" *ngIf="showFavoritesCheckbox && showFilterOptions">
 	<div class="col-xs-12 col-md-12">
 		<div class="form-check form-check-inline">
 			<input type="checkbox" class="form-check-input" name="useFavoriteBreedingLocations" id="useFavoriteBreedingLocations"

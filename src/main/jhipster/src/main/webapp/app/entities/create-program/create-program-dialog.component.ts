@@ -27,6 +27,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
     startDate: NgbDate;
     isLoading: boolean;
     breedingLocationDefaultId: number;
+    storageLocationDefaultId: number;
     user?: any;
 
     constructor(private alertService: AlertService,
@@ -56,7 +57,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
         if (!Object.values(form.controls).filter((control: any) => !control.disabled).length) {
             return false;
         }
-        return f.form.valid && this.cropName && this.breedingLocationDefaultId != null;
+        return f.form.valid && this.cropName && this.breedingLocationDefaultId != null && this.storageLocationDefaultId != null;
     }
 
     create(f) {
@@ -67,7 +68,7 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
             this.program.startDate = this.dateHelperService.convertFormattedNgbDateToString(this.startDate, '-');
             programBasicDetails['startDate'] = this.program.startDate;
             programBasicDetails['breedingLocationDefaultId'] = this.breedingLocationDefaultId;
-            programBasicDetails['storageLocationDefaultId'] = 6000;
+            programBasicDetails['storageLocationDefaultId'] = this.storageLocationDefaultId;
             this.programService.addProgram(programBasicDetails, this.cropName).subscribe((program) => {
                     const message: NavbarMessageEvent = { programSelected: program, toolSelected: '/ibpworkbench/controller/jhipster#program-settings-manager' };
                     window.parent.postMessage(message, '*');

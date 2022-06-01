@@ -72,7 +72,8 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
         const programBasicDetails = {
             name: this.program.name,
             startDate: this.program.startDate,
-            breedingLocationDefaultId: this.program.breedingLocationDefaultId
+            breedingLocationDefaultId: this.program.breedingLocationDefaultId,
+            storageLocationDefaultId: this.program.storageLocationDefaultId
         };
 
         const message: NavbarMessageEvent = { programUpdated: this.program };
