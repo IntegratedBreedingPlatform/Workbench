@@ -3,21 +3,21 @@
 <div class="row" *ngIf="showFilterOptions && !storageLocationsOnly">
 	<div class="col-xs-12 col-md-12">
 		<div class="form-check form-check-inline">
-			<input class="form-check-input" type="radio" name="option-group" id="allLocations" [value]="false" [(ngModel)]="isBreedingAndCountryLocationsOnly">
-			<label class="form-check-label" for="allFavoriteLocations" jhiTranslate="germplasm.import.basicDetails.all.locations"></label>
+			<input class="form-check-input" type="radio" name="option-group" id='allLocations + {{storageLocationsOnly}}'  [value]="false" [(ngModel)]="isBreedingAndCountryLocationsOnly">
+			<label class="form-check-label" for='allLocations + {{storageLocationsOnly}}' jhiTranslate="germplasm.import.basicDetails.all.locations"></label>
 		</div>
 		<div class="form-check form-check-inline">
-			<input class="form-check-input" type="radio" name="option-group" id="breedingAndCountryLocations" [value]="true" [(ngModel)]="isBreedingAndCountryLocationsOnly">
-			<label class="form-check-label" for="breedingAndCountryFavoriteLocations" jhiTranslate="germplasm.import.basicDetails.breeding.and.country.locations"></label>
+			<input class="form-check-input" type="radio" name="option-group" id='breedingAndCountryLocations + {{storageLocationsOnly}}' [value]="true" [(ngModel)]="isBreedingAndCountryLocationsOnly">
+			<label class="form-check-label" for='breedingAndCountryLocations + {{storageLocationsOnly}}' jhiTranslate="germplasm.import.basicDetails.breeding.and.country.locations"></label>
 		</div>
 	</div>
 </div>
 <div class="row" *ngIf="showFavoritesCheckbox && showFilterOptions">
 	<div class="col-xs-12 col-md-12">
 		<div class="form-check form-check-inline">
-			<input type="checkbox" class="form-check-input" name="useFavoriteBreedingLocations" id="useFavoriteBreedingLocations"
+			<input type="checkbox" class="form-check-input" id='useFavoriteBreedingLocations + {{storageLocationsOnly}}'
 				   [(ngModel)]="useFavoriteLocations">
-			<label class="form-check-label" for="useFavoriteBreedingLocations" jhiTranslate="germplasm.import.basicDetails.locations.use.favorite">
+			<label class="form-check-label" for='useFavoriteBreedingLocations + {{storageLocationsOnly}}' jhiTranslate="germplasm.import.basicDetails.locations.use.favorite">
 			</label>
 		</div>
 	</div>
