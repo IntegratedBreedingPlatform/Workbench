@@ -349,7 +349,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 				for (final GermplasmListData entry : listEntries) {
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(),
-							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), Optional.of(entry.getEntryCode()),
+							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), Optional.empty(), // TODO: FIX, get the ENTRY CODE from the entry details if it's exists.
 							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
 							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}

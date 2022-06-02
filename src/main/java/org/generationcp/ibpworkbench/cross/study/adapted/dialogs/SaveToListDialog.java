@@ -374,10 +374,9 @@ public class SaveToListDialog extends BaseSubWindow
 					String designation = entry.getValue() == null ? "-" : entry.getValue();
 					String groupName = crossExpansions.get(gid) == null ? "-" : crossExpansions.get(gid);
 
-					final String entryCode = String.valueOf(entryid);
 					final String seedSource = "Browse for " + designation;
 
-					final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode, seedSource,
+					final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, seedSource,
 							designation, groupName, status, localRecordId);
 
 					this.germplasmListManager.addGermplasmListData(germplasmListData);
@@ -415,8 +414,8 @@ public class SaveToListDialog extends BaseSubWindow
 
 						// save germplasm's preferred name as designation
 
-                        final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode,
-								seedSource, entryCode, groupName, status, localRecordId);
+                        final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid,
+								seedSource, entryCode ,groupName, status, localRecordId);// TODO way the entryCode is saved as Designation.
 
 						this.germplasmListManager.addGermplasmListData(germplasmListData);
 
