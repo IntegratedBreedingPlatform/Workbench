@@ -15,6 +15,7 @@ import org.generationcp.ibpworkbench.GermplasmStudyBrowserLayout;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.containers.StudyDataContainerBuilder;
 import org.generationcp.ibpworkbench.study.listeners.StudyItemClickListener;
+import org.generationcp.middleware.api.program.ProgramService;
 import org.generationcp.middleware.domain.dms.Reference;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.StudySearchMatchingOption;
@@ -22,7 +23,6 @@ import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Season;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class StudySearchResultComponent extends VerticalLayout
 	private StudyDataManager studyDataManager;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ProgramService programService;
 
 	public StudySearchResultComponent(final StudySearchMainComponent parentComponent) {
 		this.parentComponent = parentComponent;
@@ -191,7 +191,7 @@ public class StudySearchResultComponent extends VerticalLayout
 	}
 
 	private Project getCurrentProject() throws MiddlewareQueryException {
-		return ContextUtil.getProjectInContext(this.workbenchDataManager, ContextApplication.currentRequest());
+		return ContextUtil.getProjectInContext(this.programService, ContextApplication.currentRequest());
 	}
 
 	private boolean hasChildStudy(final int studyId) {
