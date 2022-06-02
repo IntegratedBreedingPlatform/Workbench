@@ -279,7 +279,7 @@
 	<!-- Manager Factory Provider -->
 	<bean id="managerFactoryProvider"
 		class="org.generationcp.commons.hibernate.DynamicManagerFactoryProviderConcurrency">
-		<constructor-arg ref="workbenchDataManager" />
+		<constructor-arg ref="programServiceMw" />
 	</bean>
 
 	<bean id="managerFactory" name="managerFactory" factory-bean="managerFactoryProvider"
