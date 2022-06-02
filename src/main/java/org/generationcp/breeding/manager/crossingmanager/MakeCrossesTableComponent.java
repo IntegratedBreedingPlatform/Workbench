@@ -475,7 +475,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		this.tableCrossesMade.setVisibleColumns(new Object[] {
 			TAG_COLUMN_ID, ColumnLabels.ENTRY_ID.getName(), ColumnLabels.FEMALE_PARENT.getName(),
 			ColumnLabels.MALE_PARENT.getName(), FEMALE_CROSS,
-			MALE_CROSS, ColumnLabels.GERMPLASM_SOURCE.getName()
+			MALE_CROSS, ColumnLabels.GERMPLASM_ORIGIN.getName()
 		});
 	}
 
@@ -619,7 +619,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 				BreedingManagerUtil.getIDForUserDefinedFieldCrossingName(this.germplasmListManager, this.getWindow(), this.messageSource);
 
 		for (final Object itemId : this.tableCrossesMade.getItemIds()) {
-			final Property crossSourceProp = this.tableCrossesMade.getItem(itemId).getItemProperty(ColumnLabels.GERMPLASM_SOURCE.getName());
+			final Property crossSourceProp = this.tableCrossesMade.getItem(itemId).getItemProperty(ColumnLabels.GERMPLASM_ORIGIN.getName());
 			final String crossSource = String.valueOf(crossSourceProp.toString());
 
 
@@ -708,18 +708,18 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		this.tableCrossesMade.addContainerProperty(ColumnLabels.MALE_PARENT.getName(), HorizontalLayout.class, null);
 		this.tableCrossesMade.addContainerProperty(FEMALE_CROSS, String.class, null);
 		this.tableCrossesMade.addContainerProperty(MALE_CROSS, String.class, null);
-		this.tableCrossesMade.addContainerProperty(ColumnLabels.GERMPLASM_SOURCE.getName(), String.class, null);
+		this.tableCrossesMade.addContainerProperty(ColumnLabels.GERMPLASM_ORIGIN.getName(), String.class, null);
 
 		this.tableCrossesMade.setColumnHeader(TAG_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
 		this.tableCrossesMade.setColumnHeader(ColumnLabels.ENTRY_ID.getName(), this.messageSource.getMessage(Message.HASHTAG));
 
 		this.tableCrossesMade.setColumnHeader(ColumnLabels.FEMALE_PARENT.getName(), this.getTermNameFromOntology(ColumnLabels.FEMALE_PARENT));
 		this.tableCrossesMade.setColumnHeader(ColumnLabels.MALE_PARENT.getName(), this.getTermNameFromOntology(ColumnLabels.MALE_PARENT));
-		this.tableCrossesMade.setColumnHeader(ColumnLabels.GERMPLASM_SOURCE.getName(), ColumnLabels.GERMPLASM_SOURCE.getName());
-		this.tableCrossesMade.setColumnWidth(ColumnLabels.GERMPLASM_SOURCE.getName(), 200);
+		this.tableCrossesMade.setColumnHeader(ColumnLabels.GERMPLASM_ORIGIN.getName(), ColumnLabels.GERMPLASM_ORIGIN.getName());
+		this.tableCrossesMade.setColumnWidth(ColumnLabels.GERMPLASM_ORIGIN.getName(), 200);
 
 		this.tableCrossesMade.setColumnCollapsingAllowed(true);
-		this.tableCrossesMade.setColumnCollapsed(ColumnLabels.GERMPLASM_SOURCE.getName(), true);
+		this.tableCrossesMade.setColumnCollapsed(ColumnLabels.GERMPLASM_ORIGIN.getName(), true);
 
 		this.tableCrossesMade.setColumnHeader(FEMALE_CROSS,FEMALE_CROSS);
 		this.tableCrossesMade.setColumnHeader(MALE_CROSS, MALE_CROSS);
