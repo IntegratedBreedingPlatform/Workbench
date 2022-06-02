@@ -363,7 +363,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	}
 
 	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final Optional<String> groupName,
-		final Optional<String> entryCode, final Optional<String> seedSource, final Optional<String> groupId) {
+		final Optional<String> entryCode, final Optional<String> germplasmOrigin, final Optional<String> groupId) {
 
 		final String gidString = String.format("%s", gid);
 		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
