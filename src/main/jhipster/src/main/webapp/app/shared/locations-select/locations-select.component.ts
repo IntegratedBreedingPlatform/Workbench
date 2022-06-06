@@ -71,14 +71,14 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     setLocationToDefault(): void {
         if (this.storageLocationsOnly) {
             // Set the selected location to the default location
-            this.locationService.getStorageLocationDefault().toPromise().then((location) => {
+            this.locationService.getDefaultStorageLocation().toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
                 this.value = location.id;
                 this.locationSelected = String(this.value);
             });
         } else {
             // Set the selected location to the default location
-            this.locationService.getBreedingLocationDefault().toPromise().then((location) => {
+            this.locationService.getDefaultBreedingLocation().toPromise().then((location) => {
                 this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
                 this.value = location.id;
                 this.locationSelected = String(this.value);

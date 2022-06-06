@@ -83,7 +83,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     ) {
         this.creationDateSelected = calendar.getToday();
 
-        this.locationService.getBreedingLocationDefault().toPromise().then((location) => {
+        this.locationService.getDefaultBreedingLocation().toPromise().then((location) => {
             this.initialData = [{
                 id: location.abbreviation ? location.abbreviation : location.name,
                 text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name

@@ -64,7 +64,7 @@ function loadLocations() {
 			}
 		}
 	});
-	this.getBreedingLocationDefault().done(function (location) {
+	this.getDefaultBreedingLocation().done(function (location) {
 		const defaultLocationOption = new Option(location.name + ' - (' + location.abbreviation + ')', location.id, true, true);
 		// Append it to the select
 		$('#locationsSelect select').append(defaultLocationOption).trigger('change');
@@ -72,10 +72,10 @@ function loadLocations() {
 	});
 }
 
-function getBreedingLocationDefault() {
+function getDefaultBreedingLocation() {
 	return $.ajax({
 		type: 'GET',
-		url: '/bmsapi/crops/' + getUrlParameter('cropName') + '/programs/' + getUrlParameter('programUUID') + '/locations/breeding-location-default',
+		url: '/bmsapi/crops/' + getUrlParameter('cropName') + '/programs/' + getUrlParameter('programUUID') + '/locations/default/BREEDING_LOCATION',
 		dataType: "json",
 		contentType: "application/json;charset=utf-8",
 		beforeSend: beforeSend,

@@ -21,13 +21,15 @@ export class LocationService {
             { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
     }
 
-    getStorageLocationDefault(): Observable<Location> {
-        return this.http.get<Location>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/locations/storage-location-default`,
+    getDefaultStorageLocation(): Observable<Location> {
+        const storageLocation = "STORAGE_LOCATION";
+        return this.http.get<Location>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/locations/default/${storageLocation}`,
             { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
     }
 
-    getBreedingLocationDefault(): Observable<Location> {
-        return this.http.get<Location>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/locations/breeding-location-default`,
+    getDefaultBreedingLocation(): Observable<Location> {
+        const breedingLocation = "BREEDING_LOCATION";
+        return this.http.get<Location>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/locations/default/${breedingLocation}`,
             { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
     }
 
