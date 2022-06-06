@@ -415,7 +415,7 @@ public class SaveToListDialog extends BaseSubWindow
 						// save germplasm's preferred name as designation
 
                         final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid,
-								seedSource, entryCode ,groupName, status, localRecordId);// TODO way the entryCode is saved as Designation.
+								seedSource, entryCode ,groupName, status, localRecordId);// TODO why the entryCode is saved as Designation.
 
 						this.germplasmListManager.addGermplasmListData(germplasmListData);
 
