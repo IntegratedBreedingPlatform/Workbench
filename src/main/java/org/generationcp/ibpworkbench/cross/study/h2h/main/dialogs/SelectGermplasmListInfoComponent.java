@@ -197,8 +197,6 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.GID, ColumnLabels.GID.getTermNameFromOntology(this.ontologyDataManager));
 		listEntryValues.setColumnHeader(SelectGermplasmListInfoComponent.DESIGNATION,
 				ColumnLabels.DESIGNATION.getTermNameFromOntology(this.ontologyDataManager));
-		listEntryValues.setColumnHeader(ColumnLabels.GERMPLASM_ORIGIN.getName(),
-			ColumnLabels.GERMPLASM_ORIGIN.getName());
 		this.messageSource.setColumnHeader(listEntryValues, SelectGermplasmListInfoComponent.GROUP_NAME, Message.LISTDATA_GROUPNAME_HEADER);
 
 		return listEntryValues;
