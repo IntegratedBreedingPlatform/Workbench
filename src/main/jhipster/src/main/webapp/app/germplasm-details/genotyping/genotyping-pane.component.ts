@@ -25,8 +25,8 @@ import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/searc
 export class GenotypingPaneComponent implements OnInit {
 
     totalCount = 10;
-    page: number = 1;
-    pageSize: number = 10;
+    page = 1;
+    pageSize = 10;
     isLoading = false;
 
     public readonly LINK_BY_GUID = 'GUID';
@@ -34,7 +34,6 @@ export class GenotypingPaneComponent implements OnInit {
     public readonly LINK_BY_NAME = 'NAME';
 
     linkByOptions: string[] = [this.LINK_BY_GUID, this.LINK_BY_SAMPLE_UID, this.LINK_BY_NAME];
-
 
     selectedLinkBy: string = this.LINK_BY_GUID;
     germplasmSearchValue;
@@ -47,6 +46,8 @@ export class GenotypingPaneComponent implements OnInit {
     genotypingCalls: Call[];
     germplasmSamples: Sample[];
 
+    cropGenotypingParameter: CropGenotypingParameter;
+
     constructor(
         private context: ParamContext,
         private cropGenotypingParameterService: CropGenotypingParameterService,
@@ -55,9 +56,6 @@ export class GenotypingPaneComponent implements OnInit {
         public germplasmService: GermplasmService,
         public alertService: AlertService) {
     }
-
-    cropGenotypingParameter: CropGenotypingParameter;
-
 
     ngOnInit(): void {
         this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
@@ -155,7 +153,7 @@ export class GenotypingPaneComponent implements OnInit {
                 callSetDbIds: [this.genotypingCallSet.callSetDbId],
                 pageSize: this.pageSize,
                 pageToken: (this.page - 1).toString()
-            }).subscribe((brapiResponse => {
+            }).subscribe(((brapiResponse) => {
                 this.genotypingCalls = brapiResponse.result.data;
                 this.totalCount = brapiResponse.metadata.pagination.totalCount;
                 this.isLoading = false;

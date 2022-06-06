@@ -110,4 +110,3 @@ export class ObservationLevel {
         public levelOrder: number) {
     }
 }
-

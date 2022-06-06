@@ -12,7 +12,6 @@ export class VariantSet {
     }
 }
 
-
 export class Analysis {
     constructor(
         public analysisDbId: string,
@@ -33,4 +32,3 @@ export class AvailableFormat {
     }
 
 }
-
