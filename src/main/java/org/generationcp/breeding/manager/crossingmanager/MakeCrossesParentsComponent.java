@@ -464,7 +464,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 	protected void updateMaleParentList(final GermplasmList listFromTree) {
 		// whenever we add a list to male parent tab, only the first list added will be marked as the working list
-		if (this.maleParentTab.getGermplasmList() == null) {
+		if (this.maleParentTab.getGermplasmList() == null && listFromTree != null) {
 			this.maleParentTab.setGermplasmList(listFromTree);
 			this.maleParentTab.setListNameForCrosses(listFromTree.getName());
 		}
@@ -474,7 +474,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 	protected void updateFemaleParentList(final GermplasmList listFromTree) {
 		// whenever we add a list to female parent tab, only the first list added will be marked as the working list
-		if (this.femaleParentTab.getGermplasmList() == null) {
+		if (this.femaleParentTab.getGermplasmList() == null && listFromTree != null) {
 			this.femaleParentTab.setGermplasmList(listFromTree);
 			this.femaleParentTab.setListNameForCrosses(listFromTree.getName());
 		}
