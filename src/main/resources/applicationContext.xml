@@ -266,7 +266,7 @@
     </bean>
 
 	<bean id="germplasmNameService" factory-bean="managerFactory"
-		  factory-method="germplasmNameService" scope="request">
+		  factory-method="getGermplasmNameService" scope="request">
 		<aop:scoped-proxy />
 	</bean>
 
