@@ -417,9 +417,8 @@ public class SaveToListDialog extends BaseSubWindow
 				for (final Map.Entry<Integer, String> entry : germplasmsMap.entrySet()) {
 					final Integer gid = entry.getKey();
 
-					final String entryCode = entry.getValue() == null ? "-" : entry.getValue();
-
-					final String seedSource = "Browse for " + entryCode;
+					final String designation = entry.getValue() == null ? "-" : entry.getValue();
+					final String seedSource = "Browse for " + designation;
 
 					// check if there is existing gid in the list
 					final List<GermplasmListData> existingList =
@@ -428,10 +427,8 @@ public class SaveToListDialog extends BaseSubWindow
 					if (existingList.isEmpty()) {
 						++entryid;
 
-						// save germplasm's preferred name as designation
-
                         final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid,
-								seedSource, entryCode ,groupName, status, localRecordId);// TODO why the entryCode is saved as Designation.
+								seedSource, designation ,groupName, status, localRecordId);
 
 						this.germplasmListManager.addGermplasmListData(germplasmListData);
 
