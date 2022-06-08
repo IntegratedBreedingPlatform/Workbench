@@ -378,7 +378,7 @@ public class SaveToListDialog extends BaseSubWindow
 					final String seedSource = "Browse for " + designation;
 
 					final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode, seedSource,
-							designation, groupName, status, localRecordId);
+							groupName, status, localRecordId);
 
 					this.germplasmListManager.addGermplasmListData(germplasmListData);
 
@@ -416,7 +416,7 @@ public class SaveToListDialog extends BaseSubWindow
 						// save germplasm's preferred name as designation
 
                         final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, entryCode,
-								seedSource, entryCode, groupName, status, localRecordId);
+								seedSource, groupName, status, localRecordId);
 
 						this.germplasmListManager.addGermplasmListData(germplasmListData);
 

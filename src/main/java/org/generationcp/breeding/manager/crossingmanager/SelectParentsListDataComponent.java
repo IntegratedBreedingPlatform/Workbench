@@ -22,6 +22,7 @@ import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -47,7 +48,9 @@ import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Configurable
 public class SelectParentsListDataComponent extends VerticalLayout
@@ -59,6 +62,8 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	@Autowired
 	private StudyEntryService studyEntryService;
 
+	@Autowired
+	private GermplasmNameService germplasmNameService;
 
 	private final class ListDataTableActionHandler implements Action.Handler {
 
@@ -343,8 +348,10 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			} else {
 				final List<GermplasmListData> listEntries =
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
+				final List<Integer> gids = listEntries.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+				final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
 				for (final GermplasmListData entry : listEntries) {
-					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getId(),
+					this.addGermplasmItem(entry.getGid(), preferredNamesMap.get(entry.getGid()), entry.getId(),
 							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), entry.getEntryCode(),
 							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
 							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));

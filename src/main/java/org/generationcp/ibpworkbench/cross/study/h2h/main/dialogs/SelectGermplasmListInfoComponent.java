@@ -12,7 +12,10 @@
 package org.generationcp.ibpworkbench.cross.study.h2h.main.dialogs;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -55,6 +58,9 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 	
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
+
+	@Autowired
+	private GermplasmNameService germplasmNameService;
 	
 	private Label selectedListLabel;
 	private Label selectedListValue;
@@ -207,10 +213,12 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 	private void populateEntryTable(GermplasmList germplasmList) throws MiddlewareQueryException {
 		if (this.listEntryValues.removeAllItems() && germplasmList != null) {
 			int germplasmListId = germplasmList.getId();
-			List<GermplasmListData> listDatas =
+			List<GermplasmListData> listData =
 					this.germplasmListManager.getGermplasmListDataByListId(germplasmListId);
-			for (GermplasmListData data : listDatas) {
-				this.listEntryValues.addItem(new Object[] {data.getEntryId(), data.getGid(), data.getDesignation(), data.getSeedSource(),
+			final List<Integer> gids = listData.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+			final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
+			for (GermplasmListData data : listData) {
+				this.listEntryValues.addItem(new Object[] {data.getEntryId(), data.getGid(), preferredNamesMap.get(data.getGid()), data.getSeedSource(),
 						data.getGroupName()}, data.getId());
 			}
 			this.listEntryValues.sort(new Object[] {SelectGermplasmListInfoComponent.ENTRY_ID}, new boolean[] {true});

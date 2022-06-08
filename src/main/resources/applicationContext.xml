@@ -265,6 +265,11 @@
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 
+	<bean id="germplasmNameService" factory-bean="managerFactory"
+		  factory-method="germplasmNameService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="programServiceMw"
 		  class="org.generationcp.middleware.api.program.ProgramServiceImpl">
         <constructor-arg ref="workbenchHibernateSessionProvider"/>
