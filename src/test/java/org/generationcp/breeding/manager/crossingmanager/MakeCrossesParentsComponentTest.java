@@ -9,6 +9,7 @@ import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer;
@@ -59,6 +60,8 @@ public class MakeCrossesParentsComponentTest {
 	private SelectParentsListDataComponent selectedTab;
 	@Mock
 	private MakeCrossesTableComponent crossesTable;
+	@Mock
+	private GermplasmNameService germplasmNameService;
 
 	@InjectMocks
 	private final MakeCrossesParentsComponent makeCrossesParentsComponent = new MakeCrossesParentsComponent(this.makeCrossesMain);
