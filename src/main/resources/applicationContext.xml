@@ -104,6 +104,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="germplasmListDataService" factory-bean="managerFactory"
+		  factory-method="getGermplasmListDataService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<bean id="germplasmDataManager" factory-bean="managerFactory"
 		factory-method="getGermplasmDataManager" scope="request">
 		<aop:scoped-proxy />

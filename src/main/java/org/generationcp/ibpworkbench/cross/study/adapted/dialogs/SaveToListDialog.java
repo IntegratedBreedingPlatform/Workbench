@@ -18,13 +18,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.ibpworkbench.Message;
-import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
-import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
-import org.generationcp.ibpworkbench.germplasmlist.dialogs.SelectLocationFolderDialog;
-import org.generationcp.ibpworkbench.germplasmlist.dialogs.SelectLocationFolderDialogSource;
-import org.generationcp.ibpworkbench.germplasmlist.util.GermplasmListTreeUtil;
-import org.generationcp.ibpworkbench.util.CloseWindowAction;
 import org.generationcp.commons.exceptions.InternationalizableException;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.DateUtil;
@@ -34,6 +27,17 @@ import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.commons.vaadin.ui.VaadinComponentsUtil;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
+import org.generationcp.ibpworkbench.Message;
+import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
+import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
+import org.generationcp.ibpworkbench.germplasmlist.dialogs.SelectLocationFolderDialog;
+import org.generationcp.ibpworkbench.germplasmlist.dialogs.SelectLocationFolderDialogSource;
+import org.generationcp.ibpworkbench.germplasmlist.util.GermplasmListTreeUtil;
+import org.generationcp.ibpworkbench.util.CloseWindowAction;
+import org.generationcp.middleware.api.germplasmlist.GermplasmListService;
+import org.generationcp.middleware.api.germplasmlist.GermplasmListVariableRequestDto;
+import org.generationcp.middleware.domain.oms.TermId;
+import org.generationcp.middleware.domain.ontology.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -49,7 +53,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Configurable
 public class SaveToListDialog extends BaseSubWindow
@@ -75,6 +85,9 @@ public class SaveToListDialog extends BaseSubWindow
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
+
+	@Autowired
+	private GermplasmListService germplasmListService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -359,7 +372,13 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final int listid = this.germplasmListManager.addGermplasmList(listNameData);
 
-				final GermplasmList germList = this.germplasmListManager.getGermplasmListById(listid);
+				final GermplasmList germplasmList = this.germplasmListManager.getGermplasmListById(listid);
+
+				//TODO: The ENTRY_NO variable is required when a germplasm List is generated. IBP-5395
+				final GermplasmListVariableRequestDto germplasmListVariableRequestDto = new GermplasmListVariableRequestDto();
+				germplasmListVariableRequestDto.setVariableId(TermId.ENTRY_NO.getId());
+				germplasmListVariableRequestDto.setVariableTypeId(VariableType.ENTRY_DETAIL.getId());
+				this.germplasmListService.addVariableToList(listid, germplasmListVariableRequestDto);
 
 				final int status = 0;
 				final int localRecordId = 0;
@@ -376,17 +395,14 @@ public class SaveToListDialog extends BaseSubWindow
 
 					final String seedSource = "Browse for " + designation;
 
-					final GermplasmListData germplasmListData = new GermplasmListData(null, germList, gid, entryid, seedSource,
+					final GermplasmListData germplasmListData = new GermplasmListData(null, germplasmList, gid, entryid, seedSource,
 							designation, groupName, status, localRecordId);
 
 					this.germplasmListManager.addGermplasmListData(germplasmListData);
 
-
 					entryid++;
 
                     gidListString.append(", ").append(gid);
-
-
 
 				}
 
