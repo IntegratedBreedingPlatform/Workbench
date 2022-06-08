@@ -220,14 +220,14 @@ public class MakeCrossesParentsComponentTest {
 	@Test
 	public void testDropToFemaleOrMaleTable_AddingPartialEntriesOfSourceTableToFemaleTable() {
 		this.testDropToFemaleOrMaleTable_AddingPartialEntriesOfSourceTable(this.femaleParent, "Female");
-		Item targetLastItem = this.femaleParent.getItem(this.femaleParent.lastItemId());
+		final Item targetLastItem = this.femaleParent.getItem(this.femaleParent.lastItemId());
 
 		Assert.assertEquals(7, this.femaleParent.size());
 
-		Button designation = (Button) targetLastItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue();
+		final Button designation = (Button) targetLastItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue();
 		Assert.assertEquals("Designation", designation.getCaption());
 
-		String parentage = (String) targetLastItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
+		final String parentage = (String) targetLastItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
 		Assert.assertEquals("-", parentage.toString());
 	}
 

@@ -70,7 +70,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		private static final long serialVersionUID = -2173636726748988046L;
 
 		@Override
-		public void handleAction(Action action, Object sender, Object target) {
+		public void handleAction(final Action action, final Object sender, final Object target) {
 			if (action.equals(SelectParentsListDataComponent.ACTION_ADD_TO_FEMALE_LIST)) {
 				SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
 					SelectParentsListDataComponent.this.listDataTable,
@@ -89,7 +89,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		}
 
 		@Override
-		public Action[] getActions(Object target, Object sender) {
+		public Action[] getActions(final Object target, final Object sender) {
 			return SelectParentsListDataComponent.LIST_DATA_TABLE_ACTIONS;
 		}
 	}
@@ -105,15 +105,15 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
 				@Override
-				protected void doInTransactionWithoutResult(TransactionStatus status) {
+				protected void doInTransactionWithoutResult(final TransactionStatus status) {
 					// Get reference to clicked item
-					ContextMenuItem clickedItem = event.getClickedItem();
+					final ContextMenuItem clickedItem = event.getClickedItem();
 					if (clickedItem.getName().equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.SELECT_ALL))) {
 						SelectParentsListDataComponent.this.listDataTable
 							.setValue(SelectParentsListDataComponent.this.listDataTable.getItemIds());
 					} else if (clickedItem.getName()
 						.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.ADD_TO_FEMALE_LIST))) {
-						Collection<?> selectedIdsToAdd = (Collection<?>) SelectParentsListDataComponent.this.listDataTable.getValue();
+						final Collection<?> selectedIdsToAdd = (Collection<?>) SelectParentsListDataComponent.this.listDataTable.getValue();
 						if (!selectedIdsToAdd.isEmpty()) {
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
 								SelectParentsListDataComponent.this.listDataTable,
@@ -129,7 +129,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 						}
 					} else if (clickedItem.getName()
 						.equals(SelectParentsListDataComponent.this.messageSource.getMessage(Message.ADD_TO_MALE_LIST))) {
-						Collection<?> selectedIdsToAdd = (Collection<?>) SelectParentsListDataComponent.this.listDataTable.getValue();
+						final Collection<?> selectedIdsToAdd = (Collection<?>) SelectParentsListDataComponent.this.listDataTable.getValue();
 						if (!selectedIdsToAdd.isEmpty()) {
 							SelectParentsListDataComponent.this.makeCrossesParentsComponent.dropToFemaleOrMaleTable(
 								SelectParentsListDataComponent.this.listDataTable,
@@ -169,7 +169,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private static final Action[] LIST_DATA_TABLE_ACTIONS =
 		new Action[] {SelectParentsListDataComponent.ACTION_ADD_TO_FEMALE_LIST, SelectParentsListDataComponent.ACTION_ADD_TO_MALE_LIST};
 
-	private Integer studyId;
+	private final Integer studyId;
 	private final Integer germplasmListId;
 	private GermplasmList germplasmList;
 	private Long count;
@@ -191,7 +191,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private HorizontalLayout headerLayout;
 	private HorizontalLayout subHeaderLayout;
 
-	private MakeCrossesParentsComponent makeCrossesParentsComponent;
+	private final MakeCrossesParentsComponent makeCrossesParentsComponent;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -205,8 +205,9 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
 
-	public SelectParentsListDataComponent(Integer studyId, Integer germplasmListId, String listName,
-		MakeCrossesParentsComponent makeCrossesParentsComponent) {
+	public SelectParentsListDataComponent(
+		final Integer studyId, final Integer germplasmListId, final String listName,
+		final MakeCrossesParentsComponent makeCrossesParentsComponent) {
 		super();
 		this.studyId = studyId;
 		this.germplasmListId = germplasmListId;
@@ -273,7 +274,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.initializeListDataTable(this.listDataTable);
 	}
 
-	void initializeListDataTable(Table listDataTable) {
+	void initializeListDataTable(final Table listDataTable) {
 		if (listDataTable != null) {
 			listDataTable.setWidth("100%");
 			listDataTable.setData(SelectParentsListDataComponent.LIST_DATA_TABLE_ID);
@@ -329,7 +330,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 				this.count = this.germplasmListManager.countGermplasmListDataByListId(this.germplasmListId);
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			SelectParentsListDataComponent.LOG.error("Error getting list details" + e.getMessage(), e);
 		}
 	}
@@ -340,7 +341,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			// If Study is not empty, that means the germplasm list must be retrieved from Stock table.
 			if (this.studyId != null) {
-				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(studyId);
+				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(this.studyId);
 				for (final StudyEntryDto entry : studyEntryDtoList) {
 					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
 						entry.getEntryCode(), entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
@@ -358,7 +359,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 				}
 			}
 
-		} catch (MiddlewareQueryException ex) {
+		} catch (final MiddlewareQueryException ex) {
 			SelectParentsListDataComponent.LOG.error("Error with getting list entries for list: " + this.germplasmListId, ex);
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 				"Error in getting list entries.");
@@ -398,7 +399,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			}
 		});
 
-		Item newItem = this.getListDataTable().getContainerDataSource().addItem(entryNumber);
+		final Item newItem = this.getListDataTable().getContainerDataSource().addItem(entryNumber);
 		newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
 		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
 		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
@@ -419,7 +420,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+			public void buttonClick(final com.vaadin.ui.Button.ClickEvent event) {
 				SelectParentsListDataComponent.this.actionMenu.show(event.getClientX(), event.getClientY());
 			}
 		});
@@ -433,7 +434,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void valueChange(ValueChangeEvent event) {
+			public void valueChange(final ValueChangeEvent event) {
 				SelectParentsListDataComponent.this.updateNoOfSelectedEntries();
 			}
 		});
@@ -450,12 +451,12 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.headerLayout = new HorizontalLayout();
 		this.headerLayout.setDebugId("headerLayout");
 		this.headerLayout.setWidth("100%");
-		HeaderLabelLayout headingLayout = new HeaderLabelLayout(AppConstants.Icons.ICON_LIST_TYPES, this.listEntriesLabel);
+		final HeaderLabelLayout headingLayout = new HeaderLabelLayout(AppConstants.Icons.ICON_LIST_TYPES, this.listEntriesLabel);
 		headingLayout.setDebugId("headingLayout");
 		this.headerLayout.addComponent(headingLayout);
 		this.headerLayout.setComponentAlignment(headingLayout, Alignment.MIDDLE_LEFT);
 
-		HorizontalLayout leftSubHeaderLayout = new HorizontalLayout();
+		final HorizontalLayout leftSubHeaderLayout = new HorizontalLayout();
 		leftSubHeaderLayout.setDebugId("leftSubHeaderLayout");
 		leftSubHeaderLayout.setSpacing(true);
 		leftSubHeaderLayout.addComponent(this.totalListEntriesLabel);
@@ -477,7 +478,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	}
 
-	void updateNoOfEntries(long count) {
+	void updateNoOfEntries(final long count) {
 		if (count == 0) {
 			this.totalListEntriesLabel.setValue(this.messageSource.getMessage(Message.NO_LISTDATA_RETRIEVED_LABEL));
 		} else {
@@ -490,14 +491,14 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		this.updateNoOfEntries(this.getListDataTable().getItemIds().size());
 	}
 
-	private void updateNoOfSelectedEntries(int count) {
+	private void updateNoOfSelectedEntries(final int count) {
 		this.totalSelectedListEntriesLabel
 			.setValue("<i>" + this.messageSource.getMessage(Message.SELECTED) + ": " + "  <b>" + count + "</b></i>");
 	}
 
 	void updateNoOfSelectedEntries() {
 		int entryCount = 0;
-		Collection<?> selectedItems = (Collection<?>) this.getListDataTable().getValue();
+		final Collection<?> selectedItems = (Collection<?>) this.getListDataTable().getValue();
 		entryCount = selectedItems.size();
 
 		this.updateNoOfSelectedEntries(entryCount);
@@ -534,15 +535,15 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		return this.germplasmListId;
 	}
 
-	protected String getTermNameFromOntology(ColumnLabels columnLabels) {
+	protected String getTermNameFromOntology(final ColumnLabels columnLabels) {
 		return columnLabels.getTermNameFromOntology(this.ontologyDataManager);
 	}
 
-	protected void setListDataTableWithSelectAll(TableWithSelectAllLayout tableWithSelectAllLayout) {
+	protected void setListDataTableWithSelectAll(final TableWithSelectAllLayout tableWithSelectAllLayout) {
 		this.tableWithSelectAllLayout = tableWithSelectAllLayout;
 	}
 
-	public void setCount(Long count) {
+	public void setCount(final Long count) {
 		this.count = count;
 	}
 

@@ -317,7 +317,7 @@ public class SaveToListDialog extends BaseSubWindow
 		//Identifies w/c mainscreen will be selected
 		if(this.mainScreen!=null){
 			this.mainScreen.selectWelcomeTab();
-		}else if(mainScreen2!=null) {
+		}else if(this.mainScreen2 !=null) {
 			this.mainScreen2.selectWelcomeTab();
 		}
 
@@ -350,7 +350,7 @@ public class SaveToListDialog extends BaseSubWindow
 			final Integer userId = this.contextUtil.getCurrentWorkbenchUserId();
 			final GermplasmList parent = (GermplasmList) this.folderToSaveListTo.getData();
 			final int statusListName = 1;
-			StringBuilder gidListString = new StringBuilder();
+			final StringBuilder gidListString = new StringBuilder();
 
 			if ("null".equals(listId)) {
 				final GermplasmList listNameData = new GermplasmList(null, listName, DateUtil.getCurrentDateAsLongValue(), type, userId,
@@ -371,8 +371,8 @@ public class SaveToListDialog extends BaseSubWindow
 				for (final Map.Entry<Integer, String> entry : germplasmsMap.entrySet()) {
 
 					final Integer gid = entry.getKey();
-					String designation = entry.getValue() == null ? "-" : entry.getValue();
-					String groupName = crossExpansions.get(gid) == null ? "-" : crossExpansions.get(gid);
+					final String designation = entry.getValue() == null ? "-" : entry.getValue();
+					final String groupName = crossExpansions.get(gid) == null ? "-" : crossExpansions.get(gid);
 
 					final String entryCode = String.valueOf(entryid);
 					final String seedSource = "Browse for " + designation;
@@ -473,14 +473,14 @@ public class SaveToListDialog extends BaseSubWindow
 			this.folderToSaveListTo.setData(folder);
 			this.lastSelectedFolder = folder;
 		} catch (final MiddlewareQueryException ex) {
-		    int id = folder!=null ? folder.getId() : 0;
+		    final int id = folder!=null ? folder.getId() : 0;
             SaveToListDialog.LOG.error("Error with traversing parents of list: " + id, ex);
 		}
 	}
 
 	private void displaySelectFolderDialog() {
 		final GermplasmList selectedFolder = (GermplasmList) this.folderToSaveListTo.getData();
-		SelectLocationFolderDialog selectFolderDialog;
+		final SelectLocationFolderDialog selectFolderDialog;
 		if (selectedFolder != null) {
 			selectFolderDialog = new SelectLocationFolderDialog(this, selectedFolder.getId());
 		} else {
@@ -497,7 +497,7 @@ public class SaveToListDialog extends BaseSubWindow
 		this.comboBoxListName = combobox;
 	}
 
-	protected Map<Integer, String> bulkGeneratePedigreeString(Set<Integer> gids) {
+	protected Map<Integer, String> bulkGeneratePedigreeString(final Set<Integer> gids) {
 		final Iterable<List<Integer>> partition = Iterables.partition(gids, 5000);
 
 		final Map<Integer, String> crossExpansions = new HashMap<>();
@@ -510,29 +510,29 @@ public class SaveToListDialog extends BaseSubWindow
 		return crossExpansions;
 	}
 
-	protected void setPedigreeService(PedigreeService pedigreeService){
+	protected void setPedigreeService(final PedigreeService pedigreeService){
 		this.pedigreeService = pedigreeService;
 	}
 
-	protected void setCrossExpansionProperties(CrossExpansionProperties crossExpansionProperties){
+	protected void setCrossExpansionProperties(final CrossExpansionProperties crossExpansionProperties){
 		this.crossExpansionProperties = crossExpansionProperties;
 	}
 
-	protected void setComboBoxListNameValue(String value){
+	protected void setComboBoxListNameValue(final String value){
 		if(!this.comboBoxListName.containsId(value)) {
 			this.comboBoxListName.addItem(value);
 		}
 		this.comboBoxListName.setValue(value);
 	}
 
-	protected void setSelectTypeValue(String value){
+	protected void setSelectTypeValue(final String value){
 		this.selectType.setValue(value);
 	}
 
-	protected void setMessageSource(SimpleResourceBundleMessageSource messageSource) {
+	protected void setMessageSource(final SimpleResourceBundleMessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-	protected  void setContextUtil(ContextUtil contextUtil) {
+	protected  void setContextUtil(final ContextUtil contextUtil) {
 		this.contextUtil = contextUtil;
 	}
 

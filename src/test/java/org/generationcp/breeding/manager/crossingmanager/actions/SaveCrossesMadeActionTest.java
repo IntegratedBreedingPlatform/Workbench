@@ -63,9 +63,9 @@ public class SaveCrossesMadeActionTest {
 	}
 
 	private CrossSetting getCrossingSetting() {
-		CrossSetting toreturn = new CrossSetting();
+		final CrossSetting toreturn = new CrossSetting();
 
-		CrossNameSetting crossNameSettingPojo = new CrossNameSetting();
+		final CrossNameSetting crossNameSettingPojo = new CrossNameSetting();
 		crossNameSettingPojo.setAddSpaceBetweenPrefixAndCode(true);
 		crossNameSettingPojo.setAddSpaceBetweenSuffixAndCode(true);
 		crossNameSettingPojo.setNumOfDigits(3);
@@ -76,10 +76,10 @@ public class SaveCrossesMadeActionTest {
 		crossNameSettingPojo.setSuffix("END");
 		toreturn.setCrossNameSetting(crossNameSettingPojo);
 
-		AdditionalDetailsSetting additionalDetails = new AdditionalDetailsSetting(1, Util.getCurrentDateAsStringValue());
+		final AdditionalDetailsSetting additionalDetails = new AdditionalDetailsSetting(1, Util.getCurrentDateAsStringValue());
 		toreturn.setAdditionalDetailsSetting(additionalDetails);
 
-		BreedingMethodSetting breedingMethodSetting = new BreedingMethodSetting(1, true, false);
+		final BreedingMethodSetting breedingMethodSetting = new BreedingMethodSetting(1, true, false);
 		toreturn.setBreedingMethodSetting(breedingMethodSetting);
 
 		toreturn.setName("BMS Template Name");

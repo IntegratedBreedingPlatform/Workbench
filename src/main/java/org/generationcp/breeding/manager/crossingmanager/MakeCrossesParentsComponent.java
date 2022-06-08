@@ -145,12 +145,12 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 		this.maleParentTabSheet.setWidth("420px");
 		this.maleParentTabSheet.setHeight("365px");
 
-		HorizontalLayout parentListHLayout = new HorizontalLayout();
+		final HorizontalLayout parentListHLayout = new HorizontalLayout();
 		parentListHLayout.setWidth("100%");
 		parentListHLayout.setDebugId("parentListHLayout");
-		parentListHLayout.addComponent(femaleParentTabSheet);
+		parentListHLayout.addComponent(this.femaleParentTabSheet);
 		parentListHLayout.setSpacing(true);
-		parentListHLayout.addComponent(maleParentTabSheet);
+		parentListHLayout.addComponent(this.maleParentTabSheet);
 
 		final HeaderLabelLayout parentLabelLayout = new HeaderLabelLayout(AppConstants.Icons.ICON_LIST_TYPES, this.parentListsLabel);
 		parentLabelLayout.setDebugId("parentLabelLayout");
@@ -224,8 +224,8 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 					item.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(parentage);
 
-					Collection<GermplasmListEntry> selectedEntries = (Collection<GermplasmListEntry>) targetTable.getValue();
-					Set<GermplasmListEntry> entriesToSelect = new HashSet<>();
+					final Collection<GermplasmListEntry> selectedEntries = (Collection<GermplasmListEntry>) targetTable.getValue();
+					final Set<GermplasmListEntry> entriesToSelect = new HashSet<>();
 
 					if (selectedEntries != null) {
 						entriesToSelect.addAll(selectedEntries);
@@ -558,11 +558,11 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 	}
 
 	public TabSheet getFemaleParentTabSheet() {
-		return femaleParentTabSheet;
+		return this.femaleParentTabSheet;
 	}
 
 	public TabSheet getMaleParentTabSheet() {
-		return maleParentTabSheet;
+		return this.maleParentTabSheet;
 	}
 
 }

@@ -74,7 +74,7 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 	private Integer germplasmListId;
 	private final Component source;
 
-	public SelectGermplasmListInfoComponent(Integer lastOpenedListId, Component source) {
+	public SelectGermplasmListInfoComponent(final Integer lastOpenedListId, final Component source) {
 		this.lastOpenedListId = lastOpenedListId;
 		this.source = source;
 	}
@@ -88,7 +88,7 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 		return this.germplasmListId;
 	}
 
-	public void setGermplasmListId(Integer germplasmListId) {
+	public void setGermplasmListId(final Integer germplasmListId) {
 		this.germplasmListId = germplasmListId;
 	}
 
@@ -116,10 +116,10 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 	protected void initializeValues() {
 		if (this.lastOpenedListId != null) {
 			try {
-				GermplasmList lastOpenedList = this.germplasmListManager.getGermplasmListById(this.lastOpenedListId);
+				final GermplasmList lastOpenedList = this.germplasmListManager.getGermplasmListById(this.lastOpenedListId);
 				this.displayListInfo(lastOpenedList);
 				this.populateEntryTable(lastOpenedList);
-			} catch (MiddlewareQueryException e) {
+			} catch (final MiddlewareQueryException e) {
 				SelectGermplasmListInfoComponent.LOG.error(e.toString() + "\n" + e.getStackTrace());
 				e.printStackTrace();
 			}
@@ -166,7 +166,7 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 
 	}
 
-	public void displayListInfo(GermplasmList germplasmList) throws MiddlewareQueryException {
+	public void displayListInfo(final GermplasmList germplasmList) throws MiddlewareQueryException {
 		String listDesc = "";
 		if (germplasmList != null) {
 			this.listName = germplasmList.getName();
@@ -186,7 +186,7 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 	}
 
 	private Table createEntryTable() {
-		Table listEntryValues = new Table("");
+		final Table listEntryValues = new Table("");
 		listEntryValues.setDebugId("listEntryValues");
 
 		listEntryValues.setPageLength(15); // number of rows to display in the Table
@@ -210,14 +210,14 @@ public class SelectGermplasmListInfoComponent extends GridLayout implements Init
 		return listEntryValues;
 	}
 
-	private void populateEntryTable(GermplasmList germplasmList) throws MiddlewareQueryException {
+	private void populateEntryTable(final GermplasmList germplasmList) throws MiddlewareQueryException {
 		if (this.listEntryValues.removeAllItems() && germplasmList != null) {
-			int germplasmListId = germplasmList.getId();
-			List<GermplasmListData> listData =
+			final int germplasmListId = germplasmList.getId();
+			final List<GermplasmListData> listData =
 					this.germplasmListManager.getGermplasmListDataByListId(germplasmListId);
 			final List<Integer> gids = listData.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
 			final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
-			for (GermplasmListData data : listData) {
+			for (final GermplasmListData data : listData) {
 				this.listEntryValues.addItem(new Object[] {data.getEntryId(), data.getGid(), preferredNamesMap.get(data.getGid()), data.getSeedSource(),
 						data.getGroupName()}, data.getId());
 			}
