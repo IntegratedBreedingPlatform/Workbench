@@ -9,6 +9,7 @@ import com.vaadin.ui.Table;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
 import org.generationcp.middleware.data.initializer.ListInventoryDataInitializer;
@@ -59,6 +60,8 @@ public class MakeCrossesParentsComponentTest {
 	private SelectParentsListDataComponent selectedTab;
 	@Mock
 	private MakeCrossesTableComponent crossesTable;
+	@Mock
+	private GermplasmNameService germplasmNameService;
 
 	@InjectMocks
 	private final MakeCrossesParentsComponent makeCrossesParentsComponent = new MakeCrossesParentsComponent(this.makeCrossesMain);
@@ -214,14 +217,14 @@ public class MakeCrossesParentsComponentTest {
 	@Test
 	public void testDropToFemaleOrMaleTable_AddingPartialEntriesOfSourceTableToFemaleTable() {
 		this.testDropToFemaleOrMaleTable_AddingPartialEntriesOfSourceTable(this.femaleParent, "Female");
-		Item targetLastItem = this.femaleParent.getItem(this.femaleParent.lastItemId());
+		final Item targetLastItem = this.femaleParent.getItem(this.femaleParent.lastItemId());
 
 		Assert.assertEquals(7, this.femaleParent.size());
 
-		Button designation = (Button) targetLastItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue();
+		final Button designation = (Button) targetLastItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue();
 		Assert.assertEquals("Designation", designation.getCaption());
 
-		String parentage = (String) targetLastItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
+		final String parentage = (String) targetLastItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
 		Assert.assertEquals("-", parentage.toString());
 	}
 

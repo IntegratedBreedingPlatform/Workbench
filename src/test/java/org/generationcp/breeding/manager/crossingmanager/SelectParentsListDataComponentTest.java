@@ -5,6 +5,7 @@ import java.util.List;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.customcomponent.ControllableRefreshTable;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
@@ -59,6 +60,8 @@ public class SelectParentsListDataComponentTest {
 
 	@Mock
 	private UserService userService;
+	@Mock
+	private GermplasmNameService germplasmNameService;
 	
 	@Mock
 	private Component component;

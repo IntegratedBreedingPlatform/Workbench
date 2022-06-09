@@ -209,7 +209,7 @@ public class SaveCrossesMadeAction implements Serializable {
 				final String seedsource = this.getFemaleMaleCrossName(crossesMade, designation, ctr);
 
 				final GermplasmListData germplasmListData =
-						this.buildGermplasmListData(list, gid, entryId, designation, seedsource, pedigreeMap);
+						this.buildGermplasmListData(list, gid, entryId, seedsource, pedigreeMap);
 
 				listToSave.add(germplasmListData);
 				entryId++;
@@ -237,7 +237,7 @@ public class SaveCrossesMadeAction implements Serializable {
 	}
 
 	GermplasmListData buildGermplasmListData(final GermplasmList list, final Integer gid, final int entryId,
-			final String designation, String seedSource, final Map<Integer, String> pedigreeMap) {
+		String seedSource, final Map<Integer, String> pedigreeMap) {
 		final GermplasmListData germplasmListData = new GermplasmListData();
 		germplasmListData.setList(list);
 		germplasmListData.setGid(gid);
@@ -246,7 +246,6 @@ public class SaveCrossesMadeAction implements Serializable {
 			seedSource = seedSource.substring(0, SEEDSOURCE_CHARACTER_LIMIT);
 		}
 		germplasmListData.setSeedSource(seedSource);
-		germplasmListData.setDesignation(designation);
 		germplasmListData.setStatus(SaveCrossesMadeAction.LIST_DATA_STATUS);
 		germplasmListData.setGroupName(pedigreeMap.get(gid));
 		germplasmListData.setLocalRecordId(SaveCrossesMadeAction.LIST_DATA_LRECID);

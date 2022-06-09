@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
@@ -13,6 +15,7 @@ import org.generationcp.breeding.manager.crossingmanager.listeners.ParentsTableC
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -58,6 +61,9 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 	@Autowired
 	private InventoryDataManager inventoryDataManager;
+
+	@Autowired
+	private GermplasmNameService germplasmNameService;
 
 	private TabSheet femaleParentTabSheet;
 	private TabSheet maleParentTabSheet;
@@ -139,12 +145,12 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 		this.maleParentTabSheet.setWidth("420px");
 		this.maleParentTabSheet.setHeight("365px");
 
-		HorizontalLayout parentListHLayout = new HorizontalLayout();
+		final HorizontalLayout parentListHLayout = new HorizontalLayout();
 		parentListHLayout.setWidth("100%");
 		parentListHLayout.setDebugId("parentListHLayout");
-		parentListHLayout.addComponent(femaleParentTabSheet);
+		parentListHLayout.addComponent(this.femaleParentTabSheet);
 		parentListHLayout.setSpacing(true);
-		parentListHLayout.addComponent(maleParentTabSheet);
+		parentListHLayout.addComponent(this.maleParentTabSheet);
 
 		final HeaderLabelLayout parentLabelLayout = new HeaderLabelLayout(AppConstants.Icons.ICON_LIST_TYPES, this.parentListsLabel);
 		parentLabelLayout.setDebugId("parentLabelLayout");
@@ -218,8 +224,8 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 					item.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(parentage);
 
-					Collection<GermplasmListEntry> selectedEntries = (Collection<GermplasmListEntry>) targetTable.getValue();
-					Set<GermplasmListEntry> entriesToSelect = new HashSet<>();
+					final Collection<GermplasmListEntry> selectedEntries = (Collection<GermplasmListEntry>) targetTable.getValue();
+					final Set<GermplasmListEntry> entriesToSelect = new HashSet<>();
 
 					if (selectedEntries != null) {
 						entriesToSelect.addAll(selectedEntries);
@@ -339,9 +345,12 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 				Integer addedCount = 0;
 
+				final List<Integer> gids = germplasmListDataFromListFromTree.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+				final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
+
 				for (final GermplasmListData listData : germplasmListDataFromListFromTree) {
 					if (listData.getStatus() != 9) {
-						final String maleParentValue = listData.getDesignation();
+						final String maleParentValue = preferredNamesMap.get(listData.getGid());
 
 						final Button gidButton = new Button(maleParentValue, new GidLinkClickListener(listData.getGid().toString(), true));
 						gidButton.setDebugId("gidButton");
@@ -353,7 +362,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 						final GermplasmListEntry entryObject =
 							new GermplasmListEntry(listData.getId(), listData.getGid(), listData.getEntryId(),
-								listData.getDesignation(), listFromTree.getName() + ":" + listData.getEntryId());
+								maleParentValue, listFromTree.getName() + ":" + listData.getEntryId());
 
 						tag.addListener(new ParentsTableCheckboxListener(this.maleParentTab.getListDataTable(), entryObject,
 							this.maleParentTab.getSelectAllCheckBox()));
@@ -407,11 +416,14 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 				Integer addedCount = 0;
 
+				final List<Integer> gids = germplasmListDataFromListFromTree.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+				final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
+
 				for (final GermplasmListData listData : germplasmListDataFromListFromTree) {
 					if (listData.getStatus() != 9) {
-						final String maleParentValue = listData.getDesignation();
+						final String femaleParentValue = preferredNamesMap.get(listData.getGid());
 
-						final Button gidButton = new Button(maleParentValue, new GidLinkClickListener(listData.getGid().toString(), true));
+						final Button gidButton = new Button(femaleParentValue, new GidLinkClickListener(listData.getGid().toString(), true));
 						gidButton.setDebugId("gidButton");
 						gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 						gidButton.setDescription(MakeCrossesParentsComponent.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
@@ -421,7 +433,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 						final GermplasmListEntry entryObject =
 							new GermplasmListEntry(listData.getId(), listData.getGid(), listData.getEntryId(),
-								listData.getDesignation(), listFromTree.getName() + ":" + listData.getEntryId());
+								femaleParentValue, listFromTree.getName() + ":" + listData.getEntryId());
 
 						tag.addListener(new ParentsTableCheckboxListener(this.femaleParentTab.getListDataTable(), entryObject,
 							this.femaleParentTab.getSelectAllCheckBox()));
@@ -546,11 +558,11 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 	}
 
 	public TabSheet getFemaleParentTabSheet() {
-		return femaleParentTabSheet;
+		return this.femaleParentTabSheet;
 	}
 
 	public TabSheet getMaleParentTabSheet() {
-		return maleParentTabSheet;
+		return this.maleParentTabSheet;
 	}
 
 }

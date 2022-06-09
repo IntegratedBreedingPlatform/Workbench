@@ -11,6 +11,7 @@ import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayou
 import org.generationcp.breeding.manager.data.initializer.GermplasmListDataTestDataInitializer;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
@@ -70,6 +71,9 @@ public class ParentTabComponentTest {
 	@Mock
 	private FieldbookService fieldbookMiddlewareService;
 
+	@Mock
+	private GermplasmNameService germplasmNameService;
+
 	private ParentTabComponent parentTabComponent;
 	private CrossingManagerMakeCrossesComponent makeCrossesMain;
 
@@ -108,6 +112,9 @@ public class ParentTabComponentTest {
 		this.parentTabComponent.setMessageSource(this.messageSource);
 		this.parentTabComponent.setOntologyDataManager(this.ontologyDataManager);
 		this.parentTabComponent.setInventoryDataManager(this.inventoryDataManager);
+		this.parentTabComponent.setGermplasmNameService(this.germplasmNameService);
+
+		
 		this.parentTabComponent.setParent(this.parent);
 	}
 
@@ -255,7 +262,7 @@ public class ParentTabComponentTest {
 		for (final GermplasmListData germplasmListData : savedListEntries) {
 			final GermplasmListEntry entry =
 					new GermplasmListEntry(listDataId++, germplasmListData.getGid(), germplasmListData.getEntryId(),
-							germplasmListData.getDesignation(), germplasmListData.getSeedSource());
+							"desig " + germplasmListData.getGid(), germplasmListData.getSeedSource());
 			listEntries.add(entry);
 		}
 		return listEntries;
