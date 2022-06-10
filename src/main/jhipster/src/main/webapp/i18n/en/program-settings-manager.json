@@ -11,7 +11,8 @@
       "crop": "Crop",
       "program-name": "Program Name",
       "program-start-date": "Program Start Date",
-      "program-default-location": "Program Default Location",
+      "program-breeding-default-location": "Program Default Breeding Location",
+      "program-storage-default-location": "Program Default Storage Location",
       "update": {
         "success": "Program updated successfully"
       },

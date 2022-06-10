@@ -72,7 +72,8 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
         const programBasicDetails = {
             name: this.program.name,
             startDate: this.program.startDate,
-            defaultLocationId: this.program.defaultLocationId
+            breedingLocationDefaultId: this.program.breedingLocationDefaultId,
+            storageLocationDefaultId: this.program.storageLocationDefaultId
         };
 
         const message: NavbarMessageEvent = { programUpdated: this.program };
@@ -89,7 +90,7 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     }
 
     isFormValid(f) {
-        return f.form.valid && !this.isLoading && this.program.name && this.program.crop && this.program.defaultLocationId != null
+        return f.form.valid && !this.isLoading && this.program.name && this.program.crop && this.program.breedingLocationDefaultId != null
             && this.startDate;
     }
 

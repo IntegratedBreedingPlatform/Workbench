@@ -49,22 +49,7 @@
 			<div class="form-group row" [class.required]="createInventoryLots">
 				<label for="seedStorageLocation" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.inventory.seed.storage.location"></label>
 				<div class="col-sm-6" *ngIf="!hasAllLocations() else allGood">
-					<ng-select2 *ngIf="!useFavoriteLocations" name="seedStorageLocation" id="seedStorageLocation" width="100%" [(ngModel)]="locationSelected"
-								[data]="seedStorageLocations | LocationSelect2Data" [disabled]="!createInventoryLots">
-					</ng-select2>
-					<ng-select2 *ngIf="useFavoriteLocations" name="seedStorageLocationFavorite" id="seedStorageLocationFavorite" width="100%" [(ngModel)]="locationSelected"
-								[data]="favoriteSeedStorageLocations | LocationSelect2Data" [disabled]="!createInventoryLots">
-					</ng-select2>
-					<div class="row">
-						<div class="col-xs-12 col-md-12">
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" name="useFavoriteSeeStorageLocations" id="useFavoriteSeeStorageLocations"
-									   [(ngModel)]="useFavoriteLocations" [disabled]="!createInventoryLots">
-								<label class="form-check-label" for="useFavoriteSeeStorageLocations" jhiTranslate="germplasm.import.inventory.locations.use.favorite">
-								</label>
-							</div>
-						</div>
-					</div>
+					<jhi-locations-select [(value)]="locationSelected" [showFilterOptions]="true" [storageLocationsOnly]="true" [disabled]="!createInventoryLots"></jhi-locations-select>
 				</div>
 			</div>
 			<div class="form-group row" [class.required]="createInventoryLots">
