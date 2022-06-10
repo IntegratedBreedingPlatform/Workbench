@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.generationcp.ibpworkbench.cross.study.h2h.main.pojos.TablesEntries;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.data.initializer.GermplasmListDataTestDataInitializer;
 import org.generationcp.middleware.domain.h2h.GermplasmPair;
 import org.generationcp.middleware.pojos.GermplasmList;
@@ -16,6 +17,7 @@ import org.generationcp.middleware.pojos.GermplasmListData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -32,12 +34,17 @@ public class SpecifyGermplasmsComponentTest {
 	private static final String GERMPLASM2_GID = "2";
 	private static final String GERMPLASM2_NAME = "Germplasm 2";
 	private static final String GERMPLASM2_GROUPID = "2";
+	private static final Integer GID = 1;
+	private static final String PREFERRED_NAME = "Preferred Name";
 
 	@Mock
 	private HeadToHeadCrossStudyMain mainScreen;
 
 	@Mock
 	private TraitsAvailableComponent traitsComponent;
+
+	@Mock
+	private GermplasmNameService germplasmNameService;
 
 	@InjectMocks
 	private SpecifyGermplasmsComponent specifyGermplasmsComponent;
@@ -49,9 +56,14 @@ public class SpecifyGermplasmsComponentTest {
 		this.germplasmIdMGIDMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID, SpecifyGermplasmsComponentTest.GERMPLASM2_GID);
 		this.specifyGermplasmsComponent = new SpecifyGermplasmsComponent(this.mainScreen, this.traitsComponent);
 		this.specifyGermplasmsComponent.setGermplasmIdMGIDMap(this.germplasmIdMGIDMap);
-		this.specifyGermplasmsComponent.setSingleEntriesSet(new HashSet<String>());
-		this.specifyGermplasmsComponent.setGermplasmIdNameMap(new HashMap<String, String>());
+		this.specifyGermplasmsComponent.setSingleEntriesSet(new HashSet<>());
+		this.specifyGermplasmsComponent.setGermplasmIdNameMap(new HashMap<>());
 		this.specifyGermplasmsComponent.setEntriesTable(new Table());
+		this.specifyGermplasmsComponent.setGermplasmNameService(this.germplasmNameService);
+
+		final Map<Integer, String> preferredNamesMap = new HashMap<>();
+		preferredNamesMap.put(GID, PREFERRED_NAME);
+		Mockito.when(this.germplasmNameService.getPreferredNamesByGIDs(ArgumentMatchers.anyList())).thenReturn(preferredNamesMap);
 	}
 
 	@Test
@@ -59,13 +71,13 @@ public class SpecifyGermplasmsComponentTest {
 		final Map<String, String> testMap = new HashMap<String, String>();
 		final Map<String, String> standardMap = new HashMap<String, String>();
 		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
-		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), GID, 1, 1);
 		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
 		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(true, testMap, standardMap, tableEntriesList,
 				germplasmListData);
 		final TablesEntries tablesEntries = tableEntriesList.get(0);
 		Assert.assertEquals("The table's size should be 1", 1, tableEntriesList.size());
-		Assert.assertEquals("The test entry name should be " + germplasmData.getDesignation(), germplasmData.getDesignation(),
+		Assert.assertEquals("The test entry name should be " + PREFERRED_NAME, PREFERRED_NAME,
 				tablesEntries.getTestEntryName());
 		Assert.assertEquals("The test entry gid should be " + germplasmData.getGid(), germplasmData.getGid().toString(),
 				tablesEntries.getTestEntryGID());
@@ -81,7 +93,7 @@ public class SpecifyGermplasmsComponentTest {
 		final Map<String, String> testMap = new HashMap<String, String>();
 		final Map<String, String> standardMap = new HashMap<String, String>();
 		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
-		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), GID, 1, 1);
 		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
 		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(false, testMap, standardMap, tableEntriesList,
 				germplasmListData);
@@ -90,7 +102,7 @@ public class SpecifyGermplasmsComponentTest {
 		Assert.assertTrue("The test entry name should be empty", tablesEntries.getTestEntryName().isEmpty());
 		Assert.assertNull("The test entry gid should be null", tablesEntries.getTestEntryGID());
 		Assert.assertNull("The test entry group id should be null", tablesEntries.getTestEntryGroupID());
-		Assert.assertEquals("The standard entry name should be " + germplasmData.getDesignation(), germplasmData.getDesignation(),
+		Assert.assertEquals("The standard entry name should be " + PREFERRED_NAME, PREFERRED_NAME,
 				tablesEntries.getStandardEntryName());
 		Assert.assertEquals("The standard entry gid should be " + germplasmData.getGid(), germplasmData.getGid().toString(),
 				tablesEntries.getStandardEntryGID());
@@ -105,14 +117,14 @@ public class SpecifyGermplasmsComponentTest {
 		standardMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID, SpecifyGermplasmsComponentTest.GERMPLASM2_NAME);
 
 		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
-		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), GID, 1, 1);
 		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
 		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(true, testMap, standardMap, tableEntriesList,
 				germplasmListData);
 		final TablesEntries tablesEntries = tableEntriesList.get(0);
 		Assert.assertEquals("The table's size should be 1", 1, tableEntriesList.size());
-		Assert.assertEquals("The test entry name should be " + germplasmData.getDesignation(), germplasmData.getDesignation(),
-				tablesEntries.getTestEntryName());
+		Assert.assertEquals("The test entry name should be " + PREFERRED_NAME, PREFERRED_NAME,
+			tablesEntries.getTestEntryName());
 		Assert.assertEquals("The test entry gid should be " + germplasmData.getGid(), germplasmData.getGid().toString(),
 				tablesEntries.getTestEntryGID());
 		Assert.assertEquals("The test entry group id should be " + germplasmData.getGroupId(), germplasmData.getGroupId().toString(),
@@ -132,7 +144,7 @@ public class SpecifyGermplasmsComponentTest {
 		testMap.put(SpecifyGermplasmsComponentTest.GERMPLASM2_GID, SpecifyGermplasmsComponentTest.GERMPLASM2_NAME);
 
 		final List<TablesEntries> tableEntriesList = new ArrayList<TablesEntries>();
-		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), 1, 1, 1);
+		final GermplasmListData germplasmData = GermplasmListDataTestDataInitializer.createGermplasmListData(new GermplasmList(), GID, 1, 1);
 		final List<GermplasmListData> germplasmListData = Arrays.asList(germplasmData);
 		this.specifyGermplasmsComponent.permutateGermplasmListToPartnerEntries(false, testMap, standardMap, tableEntriesList,
 				germplasmListData);
@@ -144,7 +156,7 @@ public class SpecifyGermplasmsComponentTest {
 				SpecifyGermplasmsComponentTest.GERMPLASM2_GID, tablesEntries.getTestEntryGID());
 		Assert.assertEquals("The test entry group id should be " + SpecifyGermplasmsComponentTest.GERMPLASM2_GROUPID,
 				SpecifyGermplasmsComponentTest.GERMPLASM2_GROUPID, tablesEntries.getTestEntryGroupID());
-		Assert.assertEquals("The standard entry name should be " + germplasmData.getDesignation(), germplasmData.getDesignation(),
+		Assert.assertEquals("The standard entry name should be " + PREFERRED_NAME, PREFERRED_NAME,
 				tablesEntries.getStandardEntryName());
 		Assert.assertEquals("The standard entry gid should be " + germplasmData.getGid(), germplasmData.getGid().toString(),
 				tablesEntries.getStandardEntryGID());

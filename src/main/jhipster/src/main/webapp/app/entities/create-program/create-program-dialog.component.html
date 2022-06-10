@@ -41,11 +41,31 @@
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="dropdownLocations" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="program.program-default-location">Location</label>
+				<label for="dropdownLocations" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="program.program-breeding-default-location">Location</label>
 				<div class="col-sm-7">
-					<jhi-locations-select [(value)]="defaultLocationId" [cropName]="cropName" [showFilterOptions]="true" [disabled]="!cropName"></jhi-locations-select>
+					<jhi-locations-select
+						[(value)]="breedingLocationDefaultId"
+						[cropName]="cropName"
+						[showFilterOptions]="true"
+						[disabled]="!cropName"
+						[showFavoritesCheckbox]="false">
+					</jhi-locations-select>
 				</div>
 			</div>
+			<div class="form-group row required">
+				<label for="dropdownLocations" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="program.program-storage-default-location">Location</label>
+				<div class="col-sm-7">
+					<jhi-locations-select
+						[(value)]="storageLocationDefaultId"
+						[cropName]="cropName"
+						[showFilterOptions]="false"
+						[disabled]="!cropName"
+						[showFavoritesCheckbox]="false"
+						[storageLocationsOnly]="true">
+					</jhi-locations-select>
+				</div>
+			</div>
+
 		</form>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

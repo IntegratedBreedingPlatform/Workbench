@@ -4,6 +4,8 @@ package org.generationcp.breeding.manager.crossingmanager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -19,6 +21,7 @@ import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -77,6 +80,9 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+
+	@Autowired
+	private GermplasmNameService germplasmNameService;
 
 
 	private final class ListDataTableDropHandler implements DropHandler {
@@ -137,9 +143,12 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 						Integer addedCount = 0;
 
+						final List<Integer> gids = germplasmListDataFromListFromTree.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+						final Map<Integer, String> preferredNamesMap = ParentTabComponent.this.germplasmNameService.getPreferredNamesByGIDs(gids);
+
 						for (final GermplasmListData listData : germplasmListDataFromListFromTree) {
 							if (listData.getStatus() != 9) {
-								final String parentValue = listData.getDesignation();
+								final String parentValue = preferredNamesMap.get(listData.getGid());
 
 								final Button gidButton =
 									new Button(parentValue, new GidLinkClickListener(listData.getGid().toString(), true));
@@ -151,7 +160,7 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 								final GermplasmListEntry entryObject =
 									new GermplasmListEntry(listData.getId(), listData.getGid(), listData.getEntryId(),
-										listData.getDesignation(), draggedListFromTree.getName() + ":" + listData.getEntryId());
+										parentValue, draggedListFromTree.getName() + ":" + listData.getEntryId());
 
 								if (targetTable.equals(ParentTabComponent.this.listDataTable)) {
 									tag.addListener(new ParentsTableCheckboxListener(targetTable, entryObject,
@@ -563,10 +572,13 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 	public void updateListDataTable(final Integer germplasmListId, final List<GermplasmListData> savedListEntries) {
 		final List<Integer> selectedEntryIds = this.getSelectedEntryIds((Collection<GermplasmListEntry>) this.listDataTable.getValue());
 		this.listDataTable.removeAllItems();
-
+		final List<Integer> gids = savedListEntries.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+		final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
 		for (final GermplasmListData entry : savedListEntries) {
+			final String designationName = preferredNamesMap.get(entry.getGid());
+
 			final GermplasmListEntry itemId =
-				new GermplasmListEntry(entry.getId(), entry.getGid(), entry.getEntryId(), entry.getDesignation(), entry.getSeedSource());
+				new GermplasmListEntry(entry.getId(), entry.getGid(), entry.getEntryId(), designationName, entry.getSeedSource());
 
 			final Item newItem = this.listDataTable.getContainerDataSource().addItem(itemId);
 
@@ -577,9 +589,6 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 			tag.addListener(new ParentsTableCheckboxListener(this.listDataTable, itemId, this.tableWithSelectAllLayout.getCheckBox()));
 			tag.setImmediate(true);
-
-			// #3
-			final String designationName = entry.getDesignation();
 
 			final Button designationButton = new Button(designationName, new GidLinkClickListener(entry.getGid().toString(), true));
 			designationButton.setDebugId("designationButton");
@@ -686,5 +695,9 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 	public void setInventoryDataManager(final InventoryDataManager inventoryDataManager) {
 		this.inventoryDataManager = inventoryDataManager;
+	}
+
+	public void setGermplasmNameService(final GermplasmNameService germplasmNameService) {
+		this.germplasmNameService = germplasmNameService;
 	}
 }

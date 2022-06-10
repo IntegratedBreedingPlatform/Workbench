@@ -17,6 +17,8 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     @Input() value: number;
     @Input() cropName?: string;
     @Input() disabled = false;
+    @Input() showFavoritesCheckbox = true;
+    @Input() storageLocationsOnly = false;
     @Output() valueChange = new EventEmitter<number>();
 
     // If selectBoxOnly is true, the component will only display the select box with all locations options.
@@ -31,6 +33,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     locationsFilteredItemsCount;
     initialData: Select2OptionData[];
     previousCropName: string;
+    storageLocationType = [1500];
 
     constructor(private locationService: LocationService,
                 private eventManager: JhiEventManager) {
@@ -66,12 +69,21 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     }
 
     setLocationToDefault(): void {
-        // Set the selected location to the default location
-        this.locationService.getDefaultLocation().toPromise().then((location) => {
-            this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
-            this.value = location.id;
-            this.locationSelected = String(this.value);
-        });
+        if (this.storageLocationsOnly) {
+            // Set the selected location to the default location
+            this.locationService.getDefaultStorageLocation().toPromise().then((location) => {
+                this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
+                this.value = location.id;
+                this.locationSelected = String(this.value);
+            });
+        } else {
+            // Set the selected location to the default location
+            this.locationService.getDefaultBreedingLocation().toPromise().then((location) => {
+                this.initialData = [{ id: String(location.id), text: location.abbreviation ? location.name + ' - (' + location.abbreviation + ')' : location.name }];
+                this.value = location.id;
+                this.locationSelected = String(this.value);
+            });
+        }
     }
 
     instantiateLocationOptions(): void {
@@ -92,6 +104,10 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
                         page: (params.data.page - 1),
                         size: 300
                     };
+
+                    if (this.storageLocationsOnly) {
+                        locationSearchRequest.locationTypeIds = this.storageLocationType;
+                    }
 
                     const useFaveLocations = this.cropName ? false : this.useFavoriteLocations;
                     this.locationService.searchLocations(locationSearchRequest, useFaveLocations, pagination, this.cropName).subscribe((res) => {
