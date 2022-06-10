@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
+import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -108,6 +110,9 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 
 	@Autowired
 	private OntologyDataManager ontologyDataManager;
+
+	@Autowired
+	private GermplasmNameService germplasmNameService;
 
 	public SpecifyGermplasmsComponent(final HeadToHeadCrossStudyMain mainScreen, final TraitsAvailableComponent nextScreen) {
 		this.mainScreen = mainScreen;
@@ -433,9 +438,8 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			germplasmListDataList = new ArrayList<>();
 
 			final GermplasmListData germplasmData = new GermplasmListData();
-			// GID and Designation are fields that will be checked/used
+			// GID field will be checked/used
 			germplasmData.setGid(germplasm.getGid());
-			germplasmData.setDesignation(germplasm.getPreferredName().getNval());
 			// Group ID will be displayed in the table
 			germplasmData.setGroupId(germplasm.getMgid());
 			germplasmListDataList.add(germplasmData);
@@ -471,11 +475,13 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 		}
 
 		if (partnerMap.keySet().isEmpty()) {
+			final List<Integer> gids = germplasmListData.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+			final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
 			// just add on one side
 			for (final GermplasmListData listData : germplasmListData) {
 
 				final String gid = listData.getGid().toString();
-				final String germplasmName = listData.getDesignation() != null ? listData.getDesignation() : gid;
+				final String germplasmName = preferredNamesMap.get(listData.getGid());
 
 				String testEntryName = germplasmName;
 				String standardEntryName = "";
@@ -503,11 +509,13 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 			}
 
 		} else {
+			final List<Integer> gids = germplasmListData.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
+			final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
 			// we iterate
 			for (final GermplasmListData listData : germplasmListData) {
 				final Iterator<String> partnerIterator = partnerMap.keySet().iterator();
 				final String gid = listData.getGid().toString();
-				final String germplasmName = listData.getDesignation() != null ? listData.getDesignation() : gid;
+				final String germplasmName = preferredNamesMap.get(listData.getGid());
 
 				while (partnerIterator.hasNext()) {
 					final String partnerId = partnerIterator.next();
@@ -640,5 +648,9 @@ public class SpecifyGermplasmsComponent extends AbsoluteLayout implements Initia
 
 	void setEntriesTable(final Table entriesTable) {
 		this.entriesTable = entriesTable;
+	}
+
+	void setGermplasmNameService(final GermplasmNameService germplasmNameService) {
+		this.germplasmNameService = germplasmNameService;
 	}
 }

@@ -28,7 +28,6 @@ public class GermplasmListDataTestDataInitializer {
 		listData.setGid(gid);
 		listData.setEntryId(entryId);
 		listData.setEntryCode(Integer.toString(entryId));
-		listData.setDesignation("LISTDATA-" + gid);
 		listData.setGroupName("GRP-" + id);
 		listData.setStatus(1);
 		listData.setLocalRecordId(list.getId());
