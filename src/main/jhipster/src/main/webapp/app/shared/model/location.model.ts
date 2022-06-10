@@ -6,8 +6,7 @@ export class Location {
         public abbreviation?: string,
         public latitude?: number,
         public longitude?: number,
-        public altitude?: number,
-        public defaultLocation?: boolean
+        public altitude?: number
     ) {
     }
 }

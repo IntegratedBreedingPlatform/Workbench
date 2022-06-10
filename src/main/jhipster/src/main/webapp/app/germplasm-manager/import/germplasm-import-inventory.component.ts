@@ -9,13 +9,8 @@ import { GermplasmImportReviewComponent } from './germplasm-import-review.compon
 import { GermplasmImportContext } from './germplasm-import.context';
 import { LocationService } from '../../shared/location/service/location.service';
 import { InventoryService } from '../../shared/inventory/service/inventory.service';
-import { Location } from '../../shared/location/model/location';
 import { InventoryUnit } from '../../shared/inventory/model/inventory-unit.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
-import { MAX_PAGE_SIZE } from '../../app.constants';
-import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
-import { HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'jhi-germplasm-import-inventory',
@@ -30,10 +25,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
     createInventoryLots = true;
     stockIdPrefix: string;
 
-    seedStorageLocations: Location[];
-    favoriteSeedStorageLocations: Location[];
-    locationSelected: string;
-    useFavoriteLocations = true;
+    locationSelected: number;
 
     units: Promise<InventoryUnit[]>;
     unitSelected: string;
@@ -56,7 +48,6 @@ export class GermplasmImportInventoryComponent implements OnInit {
 
     ngOnInit(): void {
         this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
-        this.loadLocations();
         this.loadUnits();
         this.deposit = { amount: null };
         this.createInventoryLots = this.hasSomeInventoryDetails();
@@ -71,7 +62,7 @@ export class GermplasmImportInventoryComponent implements OnInit {
             { windowClass: 'modal-autofit', backdrop: 'static' });
     }
 
-    fillData() {
+    async fillData() {
         // clean up in case someone accidentally add column in spreadsheet
         this.context.data.forEach((row) => row[HEADERS['STOCK ID PREFIX']] = '');
 
@@ -90,8 +81,10 @@ export class GermplasmImportInventoryComponent implements OnInit {
                 .forEach((row) => row[HEADERS['STOCK ID PREFIX']] = this.stockIdPrefix);
             this.context.stockIdPrefix = this.stockIdPrefix;
 
-            rows.filter((row) => !row[HEADERS['STORAGE LOCATION ABBR']])
-                .forEach((row) => row[HEADERS['STORAGE LOCATION ABBR']] = this.locationSelected);
+            await this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
+                rows.filter((row) => !row[HEADERS['STORAGE LOCATION ABBR']])
+                    .forEach((row) => row[HEADERS['STORAGE LOCATION ABBR']] = location.abbreviation);
+            });
 
             rows.filter((row) => !row[HEADERS.UNITS])
                 .forEach((row) => row[HEADERS.UNITS] = this.unitSelected);
@@ -147,22 +140,6 @@ export class GermplasmImportInventoryComponent implements OnInit {
                 || row[HEADERS['STORAGE LOCATION ABBR']]
                 || row[HEADERS['UNITS']]
                 || row[HEADERS['AMOUNT']];
-        });
-    }
-
-    loadLocations() {
-        const pagination = {
-            page: 0,
-            size: MAX_PAGE_SIZE
-        };
-
-        const seedStorageLocationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
-        seedStorageLocationSearchRequest.locationTypeIds = [LocationTypeEnum.SEED_STORAGE_LOCATION];
-        this.locationService.searchLocations(seedStorageLocationSearchRequest, false, pagination).subscribe((resp: HttpResponse<Location[]>) => {
-            this.seedStorageLocations = resp.body;
-        });
-        this.locationService.searchLocations(seedStorageLocationSearchRequest, true, pagination).subscribe((resp: HttpResponse<Location[]>) => {
-            this.favoriteSeedStorageLocations = resp.body;
         });
     }
 
