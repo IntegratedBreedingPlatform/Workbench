@@ -18,9 +18,6 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmManagerContext } from '../germplasm-manager.context';
 import { SearchOrigin, SearchOriginComposite } from '../../shared/model/Search-origin-composite';
 import { LocationService } from '../../shared/location/service/location.service';
-import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
-import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
-import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-lot-creation-dialog',
@@ -43,10 +40,8 @@ export class LotCreationDialogComponent implements OnInit {
     storageLocations: Promise<Location[]>;
     favoriteLocations: Promise<Location[]>;
 
-    favoriteLocation = false;
     initialDepositRequired = false;
     storageLocIdSelected;
-    favoriteLocIdSelected;
 
     isConfirmDeposit = false;
     isLoading = false;
@@ -81,31 +76,6 @@ export class LotCreationDialogComponent implements OnInit {
         this.deposit = new Transaction();
 
         this.units = this.inventoryService.queryUnits().toPromise();
-
-        // TODO: we need to implement pagination using ng-select2
-        const pagination = {
-            page: 0,
-            size: 10000
-        };
-
-        const seedStorageSearchRequest: LocationSearchRequest = new LocationSearchRequest();
-        seedStorageSearchRequest.locationTypeIds = [LocationTypeEnum.SEED_STORAGE_LOCATION];
-        this.storageLocations = this.locationService.searchLocations(seedStorageSearchRequest, false, pagination)
-            .pipe(map((res: HttpResponse<Location[]>) => res.body))
-            .toPromise();
-        this.favoriteLocations = this.locationService.searchLocations(seedStorageSearchRequest, true, pagination)
-            .pipe(map((res: HttpResponse<Location[]>) => res.body))
-            .toPromise();
-
-        this.storageLocations.then((storageLocations) => {
-            const defaultLocation = storageLocations.find((location) => location.defaultLocation);
-            this.storageLocIdSelected = defaultLocation ? defaultLocation.id : storageLocations[0] && storageLocations[0].id;
-        });
-
-        this.favoriteLocations.then((favoriteLocations) => {
-            const defaultFavoriteLocation = favoriteLocations.find((location) => location.defaultLocation);
-            this.favoriteLocIdSelected = defaultFavoriteLocation ? defaultFavoriteLocation.id : favoriteLocations[0] && favoriteLocations[0].id;
-        });
     }
 
     ngOnInit() {
@@ -117,7 +87,7 @@ export class LotCreationDialogComponent implements OnInit {
 
     save() {
         this.isLoading = true;
-        this.lot.locationId = this.favoriteLocation ? this.favoriteLocIdSelected : this.storageLocIdSelected;
+        this.lot.locationId = this.storageLocIdSelected;
 
         const lotGeneratorBatchRequest = {
             searchComposite: this.getSearchComposite(),
