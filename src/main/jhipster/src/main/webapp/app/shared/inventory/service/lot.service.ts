@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { ParamContext } from '../../service/param.context';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SERVER_API_URL } from '../../../app.constants';
-import { Lot } from '../model/lot.model';
+import { Lot, LotAttributeRequestModel } from '../model/lot.model';
 import { createRequestOption } from '../..';
 import { LotImportRequest } from '../model/lot-import-request';
 import { map } from 'rxjs/operators';
@@ -53,4 +53,17 @@ export class LotService {
         }
         return this.http.get<Lot[]>(url, { params: options, observe: 'response' });
     }
+
+    createLotAttribute(lotId: number, lotAttributeRequestModel: LotAttributeRequestModel): Observable<number> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/lot/${lotId}/attributes` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.post<number>(url, lotAttributeRequestModel);
+    }
+
+    updateLotAttribute(gid: number, attributeId: number, lotAttributeRequestModel: LotAttributeRequestModel): Observable<any> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/lot/${gid}/attributes/${attributeId}` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.patch<any>(url, lotAttributeRequestModel);
+    }
+
 }

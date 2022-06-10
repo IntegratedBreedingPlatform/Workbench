@@ -30,6 +30,7 @@ import { AboutModule } from './about/about.module';
 import { ProgramSettingsManagerComponent } from './program-settings-manager/program-settings-manager.component';
 import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
 import { CreateProgramModule } from './entities/create-program/create-program.module';
+import { LotAttributeModule } from './entities/lot/attribute/lot-attribute.module';
 
 @NgModule({
     imports: [
@@ -54,7 +55,8 @@ import { CreateProgramModule } from './entities/create-program/create-program.mo
         GermplasmListModule,
         ProgramSettingsManagerModule,
         AboutModule,
-        CreateProgramModule
+        CreateProgramModule,
+        LotAttributeModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

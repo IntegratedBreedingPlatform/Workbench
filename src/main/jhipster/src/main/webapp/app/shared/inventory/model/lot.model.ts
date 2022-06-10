@@ -27,3 +27,29 @@ export class Lot implements BaseEntity {
     ) {
     }
 }
+
+export class LotAttribute {
+    constructor(
+        public id?: number,
+        public value?: string,
+        public displayValue?: string,
+        public variableId?: number,
+        public variableName?: string,
+        public variableDescription?: string,
+        public date?: string,
+        public locationId?: string,
+        public locationName?: string,
+        public hasFiles?: boolean
+    ) {
+    }
+}
+
+export class LotAttributeRequestModel {
+    constructor(
+        public variableId?: number,
+        public value?: string,
+        public date?: string,
+        public locationId?: number,
+    ) {
+    }
+}

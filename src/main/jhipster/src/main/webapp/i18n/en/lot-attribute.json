@@ -1,0 +1,16 @@
+{
+    "lot-attribute-modal": {
+        "edit.header": "Edit Attribute",
+        "create.header": "Create Attribute",
+        "variable": "Variable:",
+        "value": "Value:",
+        "date": "Date:",
+        "location": "Location:",
+        "edit.success": "Lot Attribute updated successfully.",
+        "add.success": "Lot Attribute added successfully.",
+        "delete.success": "Lot Attribute deleted successfully.",
+        "delete.warning": "Are you sure you want to delete the attribute {{param}}?",
+        "delete.blocked.files": "The variable has files and you don't have permissions to change them, please contact your administrator.",
+        "outOfRange": "The value will be flagged as it is outside of the numeric expected range for this variable. Expected range is {{min}} to {{max}}"
+    }
+}
