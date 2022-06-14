@@ -16,7 +16,6 @@ import { VariableService } from '../../shared/ontology/service/variable.service'
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 
-
 @Component({
     selector: 'jhi-lot-attributes-pane',
     templateUrl: './lot-attributes-pane.component.html'
