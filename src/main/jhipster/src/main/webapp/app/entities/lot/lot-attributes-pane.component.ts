@@ -44,14 +44,12 @@ export class LotAttributesPaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log("lot attributes pane wb");
         this.route.queryParamMap.subscribe( (params) => {
             this.lotDetailContext.lotId = Number(params.get('lotId'));
         }) ;
 
         this.loadAttributes();
         this.registerLotAttributeChanged();
-        console.log(this.lotDetailContext);
     }
 
     registerLotAttributeChanged() {
