@@ -50,14 +50,8 @@ export class LotAttributeModalComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         (<any>window).onCloseModal = this.dismiss;
-        if(!this.lotId && this.route) {
-            this.route.queryParamMap.subscribe( (params) => {
-                this.lotId = Number(params.get('lotId'));
-                this.lotAttributeContext.attributeType = VariableTypeEnum.INVENTORY_ATTRIBUTE;
-            }) ;
-            console.log("here");
-            console.log(this.lotId);
-        }
+
+        this.lotAttributeContext.attributeType = VariableTypeEnum.INVENTORY_ATTRIBUTE;
         this.date = this.calendar.getToday();
         if (this.lotAttributeContext.attribute) {
             this.attributeId = this.lotAttributeContext.attribute.id;
@@ -76,7 +70,6 @@ export class LotAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     save() {
-
         if (this.attributeId) {
             // if attribute id is available, we have to update the attribute
             this.isLoading = true;
@@ -102,8 +95,6 @@ export class LotAttributeModalComponent implements OnInit, OnDestroy {
                 locationId: this.locationId,
                 date: this.dateHelperService.convertNgbDateToString(this.date)
             }).toPromise().then((result) => {
-                console.log("success createLotAttribute");
-                console.log(result);
                 this.alertService.success('lot-attribute-modal.add.success');
                 this.notifyChanges();
                 this.isLoading = false;
@@ -117,7 +108,6 @@ export class LotAttributeModalComponent implements OnInit, OnDestroy {
 
     notifyChanges(): void {
         this.eventManager.broadcast({ name: 'attributeChanged' });
-        console.log("broadcasted, to clear")
         this.clear();
     }
 

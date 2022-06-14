@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { ParamContext } from '../../service/param.context';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { SERVER_API_URL } from '../../../app.constants';
-import { Lot, LotAttributeRequestModel } from '../model/lot.model';
+import { Lot, LotAttribute, LotAttributeRequestModel } from '../model/lot.model';
 import { createRequestOption } from '../..';
 import { LotImportRequest } from '../model/lot-import-request';
 import { map } from 'rxjs/operators';
@@ -54,9 +54,20 @@ export class LotService {
         return this.http.get<Lot[]>(url, { params: options, observe: 'response' });
     }
 
+    getLotAttributes(lotId: string): Observable<LotAttribute[]> {
+        let url = SERVER_API_URL + `crops/${this.context.cropName}/lot/${lotId}/attributes`;
+        if (this.context.programUUID) {
+            url += `?programUUID=` + this.context.programUUID;
+        }
+
+        return this.http.get<LotAttribute[]>(url);
+    }
+
     createLotAttribute(lotId: number, lotAttributeRequestModel: LotAttributeRequestModel): Observable<number> {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/lot/${lotId}/attributes` +
-            '?programUUID=' + this.context.programUUID;
+        let url = SERVER_API_URL + `crops/${this.context.cropName}/lot/${lotId}/attributes`;
+        if (this.context.programUUID) {
+            url += `?programUUID=` + this.context.programUUID;
+        }
         return this.http.post<number>(url, lotAttributeRequestModel);
     }
 
@@ -66,4 +77,9 @@ export class LotService {
         return this.http.patch<any>(url, lotAttributeRequestModel);
     }
 
+    deleteLotAttribute(lotId: number, attributeId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/lot/${lotId}/attributes/${attributeId}` +
+            '?programUUID=' + this.context.programUUID;
+        return this.http.delete<any>(url);
+    }
 }
