@@ -98,7 +98,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 		<span jhiTranslate="back"></span>
 	</button>
-	<button (click)="next()" [disabled]="!canProceed(inventoryDetailsForm)" class="btn btn-primary">
+	<button (click)="next()" [disabled]="!canProceed(inventoryDetailsForm)" class="btn btn-primary" data-test="importGermplasmInventoryButton">
 		<span jhiTranslate="next"></span>
 	</button>
 </div>

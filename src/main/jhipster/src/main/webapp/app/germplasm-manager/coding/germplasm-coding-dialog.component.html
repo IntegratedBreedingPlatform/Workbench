@@ -134,7 +134,8 @@
 		<button type="button" class="btn btn-secondary" [disabled]="isProcessing ? 'disabled' : null" data-dismiss="modal" (click)="close()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 		</button>
-		<button (click)="applyCodes()" class="btn btn-primary" [disabled]="(isProcessing || !validate()) ? 'disabled' : null">
+		<button (click)="applyCodes()" class="btn btn-primary" [disabled]="(isProcessing || !validate()) ? 'disabled' : null"
+			data-test="applyCodesButton">
 			<span *ngIf="isProcessing" class="throbber throbber-btn"></span>
 			<span class="fa fa-save"></span>&nbsp;<span jhitranslate="germplasm-coding.apply-codes">Apply Codes</span>
 		</button>
