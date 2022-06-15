@@ -28,6 +28,7 @@ import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.api.germplasm.GermplasmNameService;
+import org.generationcp.middleware.api.germplasmlist.GermplasmListService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -52,9 +53,11 @@ import org.vaadin.peter.contextmenu.ContextMenu.ClickEvent;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Configurable
@@ -69,6 +72,9 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	@Autowired
 	private GermplasmNameService germplasmNameService;
+
+	@Autowired
+	private GermplasmListService germplasmListService;
 
 	private final class ListDataTableActionHandler implements Action.Handler {
 
@@ -351,9 +357,16 @@ public class SelectParentsListDataComponent extends VerticalLayout
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 				final List<Integer> gids = listEntries.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
 				final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
+
+				final Set<Integer> variablesIds = new HashSet<>();
+				variablesIds.add(TermId.ENTRY_CODE.getId());
+				final Map<Integer, Map<Integer, String>> observationValuesByListAndVariableIds =
+					this.germplasmListService.getObservationValuesByListAndVariableIds(this.germplasmListId, variablesIds);
+
 				for (final GermplasmListData entry : listEntries) {
+					final Optional<String> entryCode = this.getEntryCodeValue(observationValuesByListAndVariableIds.get(entry.getListDataId()));
 					this.addGermplasmItem(entry.getGid(), preferredNamesMap.get(entry.getGid()), entry.getId(),
-							entry.getGroupName(),  Optional.empty(),
+							entry.getGroupName(),  entryCode,
 						entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}
 			}
@@ -363,6 +376,13 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			MessageNotifier.showError(this.getWindow(), this.messageSource.getMessage(Message.ERROR_DATABASE),
 				"Error in getting list entries.");
 		}
+	}
+
+	private Optional<String> getEntryCodeValue(final Map<Integer, String> observationValuesByVariableIds) {
+		if (observationValuesByVariableIds == null) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(observationValuesByVariableIds.get(TermId.ENTRY_CODE.getId()));
 	}
 
 	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
