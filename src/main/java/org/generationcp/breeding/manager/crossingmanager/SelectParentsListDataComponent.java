@@ -15,7 +15,6 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
-import liquibase.util.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
@@ -344,8 +343,8 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			if (this.studyId != null) {
 				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(this.studyId);
 				for (final StudyEntryDto entry : studyEntryDtoList) {
-					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
-						entry.getStudyEntryPropertyValue(TermId.ENTRY_CODE.getId()), Optional.empty(), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
+					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getCross(),
+						entry.getStudyEntryPropertyValue(TermId.ENTRY_CODE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
@@ -354,9 +353,8 @@ public class SelectParentsListDataComponent extends VerticalLayout
 				final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
 				for (final GermplasmListData entry : listEntries) {
 					this.addGermplasmItem(entry.getGid(), preferredNamesMap.get(entry.getGid()), entry.getId(),
-							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()),  Optional.empty(),
-							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
-							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
+							entry.getGroupName(),  Optional.empty(),
+						entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}
 			}
 
@@ -367,8 +365,8 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		}
 	}
 
-	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final Optional<String> groupName,
-		final Optional<String> entryCode, final Optional<String> germplasmOrigin, final Optional<String> groupId) {
+	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
+		final Optional<String> entryCode, final Optional<String> groupId) {
 
 		final String gidString = String.format("%s", gid);
 		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
@@ -404,7 +402,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
 		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
 		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
-		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName.orElse(""));
+		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName == null ? "" : groupName);
 		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode.orElse(""));
 		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
 		final String groupIdDisplayValue = groupId.orElse("-");
