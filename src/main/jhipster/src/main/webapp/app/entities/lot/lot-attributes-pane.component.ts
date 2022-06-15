@@ -15,6 +15,7 @@ import { GermplasmAttribute } from '../../shared/germplasm/model/germplasm.model
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
+import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
 
 @Component({
     selector: 'jhi-lot-attributes-pane',
@@ -34,6 +35,7 @@ export class LotAttributesPaneComponent implements OnInit {
                 private lotDetailContext: LotDetailContext,
                 private lotService: LotService,
                 private variableService: VariableService,
+                private variableValidationService: VariableValidationService,
                 private alertService: JhiAlertService,
                 private modalService: NgbModal,
                 private router: Router,
@@ -88,6 +90,12 @@ export class LotAttributesPaneComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'lot-attribute-dialog/' + this.lotDetailContext.lotId }, }], {
             queryParamsHandling: 'merge'
         });
+    }
+
+    isValidValue(attribute: LotAttribute) {
+        const variable = this.variableByAttributeId[attribute.id];
+        const validationStatus = this.variableValidationService.isValidValue(attribute.value, variable);
+        return validationStatus.isValid && validationStatus.isInRange;
     }
 
     async deleteLotAttribute(lotAttribute: LotAttribute) {

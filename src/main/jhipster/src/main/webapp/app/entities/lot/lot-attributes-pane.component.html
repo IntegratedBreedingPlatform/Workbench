@@ -23,7 +23,7 @@
                        [queryParams]="{ variableId: attribute.variableId }" queryParamsHandling="merge">{{attribute.variableName}}</a>
                 </td>
                 <td>{{attribute.variableDescription}}</td>
-                <td jhiScrollableTooltip [tooltipText]="attribute.value" placement="right" class="word-wrap" >
+                <td jhiScrollableTooltip [tooltipText]="attribute.value" placement="right" class="word-wrap" [class.accepted-value]="!isValidValue(attribute)">
                     {{attribute.value | truncateWithEllipsis:MAX_ATTRIBUTE_DISPLAY_SIZE}}
                 </td>
                 <td>{{attribute.date}}</td>
