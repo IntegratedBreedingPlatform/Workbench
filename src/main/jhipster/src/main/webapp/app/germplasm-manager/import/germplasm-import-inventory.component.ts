@@ -98,9 +98,6 @@ export class GermplasmImportInventoryComponent implements OnInit {
                     }
                 });
             });
-
-
-
         } else {
             this.context.data.forEach((row) => {
                 row[HEADERS['STOCK ID']] = '';
