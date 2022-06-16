@@ -1,17 +1,15 @@
-import { Component, HostListener, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
 import { LotAttribute } from '../../shared/inventory/model/lot.model';
 import { LotService } from '../../shared/inventory/service/lot.service';
 import { LotDetailContext } from './lot-detail.context';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { LotAttributeContext } from './attribute/lot-attribute.context';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
-import { GermplasmAttribute } from '../../shared/germplasm/model/germplasm.model';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
@@ -45,9 +43,9 @@ export class LotAttributesPaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.route.queryParamMap.subscribe( (params) => {
+        this.route.queryParamMap.subscribe((params) => {
             this.lotDetailContext.lotId = Number(params.get('lotId'));
-        }) ;
+        });
 
         this.loadAttributes();
         this.registerLotAttributeChanged();
@@ -65,8 +63,8 @@ export class LotAttributesPaneComponent implements OnInit {
         this.attributes = await this.lotService.getLotAttributes(lotId + '').toPromise();
 
         // Get extra info not available in the attribute entity (e.g valid values)
-        const attributesByVariableId: { [key: number]: GermplasmAttribute } =
-            [ ...this.attributes]
+        const attributesByVariableId: { [key: number]: LotAttribute } =
+            [...this.attributes]
                 .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
         this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId) })
             .toPromise().then((variables) => {
@@ -118,7 +116,6 @@ export class LotAttributesPaneComponent implements OnInit {
         } catch (response) {
             if (!response.error) {
                 this.alertService.error('error.general.client');
-                console.error(response);
                 return;
             }
             const msg = formatErrorList(response.error.errors);
