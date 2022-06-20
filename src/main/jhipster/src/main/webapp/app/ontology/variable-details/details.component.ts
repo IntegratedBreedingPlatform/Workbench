@@ -30,7 +30,7 @@ export class DetailsComponent implements OnInit {
 
     formatCropOntologyURL(): string {
         if (this.variableDetails && this.variableDetails.property) {
-            return `http://www.cropontology.org/terms/${this.variableDetails.property.cropOntologyId}/`;
+            return `http://www.cropontology.org/term/${this.variableDetails.property.cropOntologyId}/`;
         }
         return '';
     }
