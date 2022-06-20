@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableDetailsContext } from './variable-details.context';
