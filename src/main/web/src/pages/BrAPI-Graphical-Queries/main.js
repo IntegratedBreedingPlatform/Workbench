@@ -448,7 +448,7 @@ mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observati
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
 					data: {
-						searchRequestId: resp.result.searchResultDbId,
+						searchRequestId: resp.searchResultDbId,
 						page: 0,
 						size: 5000
 					},

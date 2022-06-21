@@ -12,6 +12,7 @@ import { GermplasmNameAuditModule } from '../germplasm-details/audit/names/germp
 import { GermplasmAttributeAuditModule } from '../germplasm-details/audit/attributes/germplasm-attribute-audit.module';
 import { GermplasmBasicDetailsAuditModule } from '../germplasm-details/audit/basic-details/germplasm-basic-details-audit.module';
 import { GermplasmProgenitorsAuditModule } from '../germplasm-details/audit/progenitors/germplasm-progenitors-audit.module';
+import { LotAttributeModule } from './lot/lot-attribute.module';
 
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
@@ -28,7 +29,8 @@ import { GermplasmProgenitorsAuditModule } from '../germplasm-details/audit/prog
         GermplasmNameAuditModule,
         GermplasmAttributeAuditModule,
         GermplasmBasicDetailsAuditModule,
-        GermplasmProgenitorsAuditModule
+        GermplasmProgenitorsAuditModule,
+        LotAttributeModule
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
