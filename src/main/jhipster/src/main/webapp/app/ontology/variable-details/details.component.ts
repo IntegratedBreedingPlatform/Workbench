@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { VariableDetailsContext } from './variable-details.context';
@@ -30,7 +30,7 @@ export class DetailsComponent implements OnInit {
 
     formatCropOntologyURL(): string {
         if (this.variableDetails && this.variableDetails.property) {
-            return `http://www.cropontology.org/terms/${this.variableDetails.property.cropOntologyId}/`;
+            return `http://www.cropontology.org/term/${this.variableDetails.property.cropOntologyId}`;
         }
         return '';
     }
