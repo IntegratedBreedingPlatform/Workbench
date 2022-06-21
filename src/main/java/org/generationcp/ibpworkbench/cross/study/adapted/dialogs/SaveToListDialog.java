@@ -35,9 +35,7 @@ import org.generationcp.ibpworkbench.germplasmlist.dialogs.SelectLocationFolderD
 import org.generationcp.ibpworkbench.germplasmlist.util.GermplasmListTreeUtil;
 import org.generationcp.ibpworkbench.util.CloseWindowAction;
 import org.generationcp.middleware.api.germplasmlist.GermplasmListService;
-import org.generationcp.middleware.api.germplasmlist.GermplasmListVariableRequestDto;
-import org.generationcp.middleware.domain.oms.TermId;
-import org.generationcp.middleware.domain.ontology.VariableType;
+import org.generationcp.middleware.api.germplasmlist.data.GermplasmListDataService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
@@ -88,6 +86,9 @@ public class SaveToListDialog extends BaseSubWindow
 
 	@Autowired
 	private GermplasmListService germplasmListService;
+
+	@Autowired
+	private GermplasmListDataService germplasmListDataService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -374,11 +375,8 @@ public class SaveToListDialog extends BaseSubWindow
 
 				final GermplasmList germplasmList = this.germplasmListManager.getGermplasmListById(listid);
 
-				//TODO: The ENTRY_NO variable is required when a germplasm List is generated. IBP-5395
-				final GermplasmListVariableRequestDto germplasmListVariableRequestDto = new GermplasmListVariableRequestDto();
-				germplasmListVariableRequestDto.setVariableId(TermId.ENTRY_NO.getId());
-				germplasmListVariableRequestDto.setVariableTypeId(VariableType.ENTRY_DETAIL.getId());
-				this.germplasmListService.addVariableToList(listid, germplasmListVariableRequestDto);
+				// Add default columns
+				this.germplasmListDataService.saveDefaultView(germplasmList);
 
 				final int status = 0;
 				final int localRecordId = 0;
