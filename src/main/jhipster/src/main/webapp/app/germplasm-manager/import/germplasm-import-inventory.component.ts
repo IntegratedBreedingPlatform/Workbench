@@ -53,8 +53,8 @@ export class GermplasmImportInventoryComponent implements OnInit {
         this.createInventoryLots = this.hasSomeInventoryDetails();
     }
 
-    next() {
-        this.fillData();
+    async next() {
+        await this.fillData();
 
         this.modal.close();
         this.context.dataBackup.push(this.dataBackupPrev);
@@ -77,21 +77,25 @@ export class GermplasmImportInventoryComponent implements OnInit {
                     || row[HEADERS['AMOUNT']];
             });
 
+            this.context.stockIdPrefix = this.stockIdPrefix;
+
             rows.filter((row) => !row[HEADERS['STOCK ID']])
                 .forEach((row) => row[HEADERS['STOCK ID PREFIX']] = this.stockIdPrefix);
             this.context.stockIdPrefix = this.stockIdPrefix;
 
-            await this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
-                rows.filter((row) => !row[HEADERS['STORAGE LOCATION ABBR']])
-                    .forEach((row) => row[HEADERS['STORAGE LOCATION ABBR']] = location.abbreviation);
-            });
+            // locationSelected = null means that all rows have STORAGE LOCATION ABBR value already
+            if (this.locationSelected != null) {
+                await this.locationService.getLocationById(this.locationSelected).toPromise().then((location) => {
+                    rows.filter((row) => !row[HEADERS['STORAGE LOCATION ABBR']])
+                        .forEach((row) => row[HEADERS['STORAGE LOCATION ABBR']] = location.abbreviation);
+                });
+            }
 
             rows.filter((row) => !row[HEADERS.UNITS])
                 .forEach((row) => row[HEADERS.UNITS] = this.unitSelected);
 
             rows.filter((row) => !row[HEADERS.AMOUNT])
                 .forEach((row) => row[HEADERS.AMOUNT] = this.deposit.amount);
-
         } else {
             this.context.data.forEach((row) => {
                 row[HEADERS['STOCK ID']] = '';
