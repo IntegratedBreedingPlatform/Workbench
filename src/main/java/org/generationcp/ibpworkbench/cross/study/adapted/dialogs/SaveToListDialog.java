@@ -546,6 +546,7 @@ public class SaveToListDialog extends BaseSubWindow
 		this.contextUtil = contextUtil;
 	}
 
-
-
+	public void setGermplasmListDataService(final GermplasmListDataService germplasmListDataService) {
+		this.germplasmListDataService = germplasmListDataService;
+	}
 }

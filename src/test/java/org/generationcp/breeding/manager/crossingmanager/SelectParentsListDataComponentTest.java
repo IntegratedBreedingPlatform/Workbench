@@ -6,6 +6,7 @@ import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.customcomponent.ControllableRefreshTable;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.middleware.api.germplasm.GermplasmNameService;
+import org.generationcp.middleware.api.germplasmlist.GermplasmListService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.middleware.data.initializer.GermplasmListTestDataInitializer;
@@ -30,6 +31,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SelectParentsListDataComponentTest {
@@ -65,6 +67,9 @@ public class SelectParentsListDataComponentTest {
 	
 	@Mock
 	private Component component;
+
+	@Mock
+	private GermplasmListService germplasmListService;
 
 	@InjectMocks
 	private final SelectParentsListDataComponent selectParents =

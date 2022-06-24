@@ -577,4 +577,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		return this.listEntriesLabel;
 	}
 
+	public void setGermplasmListService(final GermplasmListService germplasmListService) {
+		this.germplasmListService = germplasmListService;
+	}
 }
