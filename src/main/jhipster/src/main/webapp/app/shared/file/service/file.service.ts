@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { FileMetadata } from '../model/file-metadata';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
-import { saveFile } from '../../util/file-utils';
 import { Pageable } from '../../model/pageable';
 import { createRequestOption } from '../..';
 
@@ -83,36 +82,38 @@ export class FileService {
 
     getFileCount(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.head(baseUrl + '/filemetadata', {
-            params: {
-                variableIds,
-                germplasmUUID,
-                lotId
-            },
-            observe: 'response'
-        });
+        const params = {};
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
+        return this.http.head(baseUrl + '/filemetadata', { params, observe: 'response'});
     }
 
     detachFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.delete(baseUrl + '/filemetadata/variables', {
-            params: {
-                variableIds,
-                germplasmUUID,
-                lotId
-            }
-        });
+        const params = {};
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
+        return this.http.delete(baseUrl + '/filemetadata/variables', {params});
     }
 
     removeFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.delete(baseUrl + '/filemetadata', {
-            params: {
-                variableIds,
-                germplasmUUID,
-                lotId
-            }
-        });
+        const params = {};
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
+        return this.http.delete(baseUrl + '/filemetadata', {params});
     }
 
    isFileStorageConfigured(): Promise<boolean> {
