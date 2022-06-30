@@ -81,33 +81,36 @@ export class FileService {
         return this.http.delete(baseUrl + '/files/' + fileUUID + '?programUUID=' + this.context.programUUID);
     }
 
-    getFileCount(variableIds, germplasmUUID) {
+    getFileCount(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.head(baseUrl + '/filemetadata', {
             params: {
                 variableIds,
-                germplasmUUID
+                germplasmUUID,
+                lotId
             },
             observe: 'response'
         });
     }
 
-    detachFiles(variableIds, germplasmUUID) {
+    detachFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.delete(baseUrl + '/filemetadata/variables', {
             params: {
                 variableIds,
-                germplasmUUID
+                germplasmUUID,
+                lotId
             }
         });
     }
 
-    removeFiles(variableIds, germplasmUUID) {
+    removeFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         return this.http.delete(baseUrl + '/filemetadata', {
             params: {
                 variableIds,
-                germplasmUUID
+                germplasmUUID,
+                lotId
             }
         });
     }

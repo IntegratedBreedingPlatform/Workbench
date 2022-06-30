@@ -14,6 +14,10 @@ import { VariableService } from '../../shared/ontology/service/variable.service'
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
+import { FileService } from '../../shared/file/service/file.service';
+import { MG_MANAGE_FILES_PERMISSION } from '../../shared/auth/permissions';
+import { Principal } from '../../shared';
+import { FileDeleteOptionsComponent } from '../../shared/file/component/file-delete-options.component';
 
 @Component({
     selector: 'jhi-lot-attributes-pane',
@@ -24,8 +28,10 @@ export class LotAttributesPaneComponent implements OnInit {
     eventSubscriber: Subscription;
     attributes: LotAttribute[] = [];
     MAX_ATTRIBUTE_DISPLAY_SIZE = 30;
+    isFileStorageConfigured: boolean;
 
     variableByAttributeId: { [key: number]: VariableDetails } = {};
+
 
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
@@ -38,7 +44,9 @@ export class LotAttributesPaneComponent implements OnInit {
                 private modalService: NgbModal,
                 private router: Router,
                 private route: ActivatedRoute,
-                private lotAttributeContext: LotAttributeContext
+                private lotAttributeContext: LotAttributeContext,
+                private fileService: FileService,
+                private principal: Principal
     ) {
     }
 
@@ -49,6 +57,7 @@ export class LotAttributesPaneComponent implements OnInit {
 
         this.loadAttributes();
         this.registerLotAttributeChanged();
+        this.fileService.isFileStorageConfigured().then((isFileStorageConfigured) => this.isFileStorageConfigured = isFileStorageConfigured);
     }
 
     registerLotAttributeChanged() {
@@ -96,8 +105,24 @@ export class LotAttributesPaneComponent implements OnInit {
         return validationStatus.isValid && validationStatus.isInRange;
     }
 
+    gotoFiles(attribute: LotAttribute) {
+        this.router.navigate(['../files'], {
+            relativeTo: this.route,
+            queryParamsHandling: 'merge',
+            queryParams: {
+                variableName: attribute.variableName
+            }
+        });
+    }
+
     async deleteLotAttribute(lotAttribute: LotAttribute) {
         const variableIds = [lotAttribute.variableId];
+        const fileCountResp = await this.fileService.getFileCount(variableIds, null, this.lotDetailContext.lotId).toPromise();
+        const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
+        if (fileCount > 0 && !await this.principal.hasAnyAuthority(MG_MANAGE_FILES_PERMISSION)) {
+            this.alertService.error('germplasm-attribute-modal.delete.blocked.files')
+            return;
+        }
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.message = this.translateService.instant('lot-attribute-modal.delete.warning', { param: lotAttribute.variableName });
@@ -109,6 +134,22 @@ export class LotAttributesPaneComponent implements OnInit {
         }
 
         try {
+            if (fileCount > 0) {
+                const fileOptionsModal = this.modalService.open(FileDeleteOptionsComponent as Component);
+                fileOptionsModal.componentInstance.fileCount = fileCount;
+                let doRemoveFiles;
+                try {
+                    doRemoveFiles = await fileOptionsModal.result;
+                } catch (e) {
+                    return;
+                }
+                if (doRemoveFiles) {
+                    await this.fileService.removeFiles(variableIds, null, this.lotDetailContext.lotId).toPromise();
+                } else {
+                    await this.fileService.detachFiles(variableIds, null, this.lotDetailContext.lotId).toPromise();
+                }
+            }
+
             const result = await this.lotService.deleteLotAttribute(this.lotDetailContext.lotId, lotAttribute.id).toPromise()
             this.alertService.success('lot-attribute-modal.delete.success');
             this.loadAttributes();
