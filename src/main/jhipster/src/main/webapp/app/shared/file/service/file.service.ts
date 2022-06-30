@@ -82,7 +82,7 @@ export class FileService {
 
     getFileCount(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params = {};
+        const params = {variableIds};
         if (germplasmUUID) {
             params['germplasmUUID'] = germplasmUUID;
         }
@@ -94,7 +94,7 @@ export class FileService {
 
     detachFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params = {};
+        const params = {variableIds};
         if (germplasmUUID) {
             params['germplasmUUID'] = germplasmUUID;
         }
@@ -106,7 +106,7 @@ export class FileService {
 
     removeFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        const params = {};
+        const params = {variableIds};
         if (germplasmUUID) {
             params['germplasmUUID'] = germplasmUUID;
         }
