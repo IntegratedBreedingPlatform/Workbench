@@ -106,7 +106,7 @@ export class LotAttributesPaneComponent implements OnInit {
     }
 
     gotoFiles(attribute: LotAttribute) {
-        this.router.navigate(['../files'], {
+        this.router.navigate(['../../files'], {
             relativeTo: this.route,
             queryParamsHandling: 'merge',
             queryParams: {
@@ -120,7 +120,7 @@ export class LotAttributesPaneComponent implements OnInit {
         const fileCountResp = await this.fileService.getFileCount(variableIds, null, this.lotDetailContext.lotId).toPromise();
         const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
         if (fileCount > 0 && !await this.principal.hasAnyAuthority(MI_MANAGE_FILES_PERMISSION)) {
-            this.alertService.error('germplasm-attribute-modal.delete.blocked.files')
+            this.alertService.error('lot-attribute-modal.delete.blocked.files')
             return;
         }
 
