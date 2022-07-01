@@ -15,7 +15,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { VariableValidationService } from '../../shared/ontology/service/variable-validation.service';
 import { FileService } from '../../shared/file/service/file.service';
-import { MG_MANAGE_FILES_PERMISSION } from '../../shared/auth/permissions';
+import { MI_MANAGE_FILES_PERMISSION } from '../../shared/auth/permissions';
 import { Principal } from '../../shared';
 import { FileDeleteOptionsComponent } from '../../shared/file/component/file-delete-options.component';
 
@@ -119,7 +119,7 @@ export class LotAttributesPaneComponent implements OnInit {
         const variableIds = [lotAttribute.variableId];
         const fileCountResp = await this.fileService.getFileCount(variableIds, null, this.lotDetailContext.lotId).toPromise();
         const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
-        if (fileCount > 0 && !await this.principal.hasAnyAuthority(MG_MANAGE_FILES_PERMISSION)) {
+        if (fileCount > 0 && !await this.principal.hasAnyAuthority(MI_MANAGE_FILES_PERMISSION)) {
             this.alertService.error('germplasm-attribute-modal.delete.blocked.files')
             return;
         }

@@ -16,7 +16,7 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
-import { MG_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_PERMISSION } from '../shared/auth/permissions';
+import { MG_MANAGE_FILES_PERMISSION, MI_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_PERMISSION } from '../shared/auth/permissions';
 import { Principal } from '../shared';
 
 @Component({
@@ -96,7 +96,7 @@ export class FileManagerComponent implements OnInit {
             this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
         } else if (this.lotId) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.INVENTORY_ATTRIBUTE];
-            this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
+            this.manageFilesPermissions = MI_MANAGE_FILES_PERMISSION;
         }
 
         this.load();
