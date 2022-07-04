@@ -106,13 +106,9 @@ export class LotAttributesPaneComponent implements OnInit {
     }
 
     gotoFiles(attribute: LotAttribute) {
-        this.router.navigate(['../../files'], {
-            relativeTo: this.route,
-            queryParamsHandling: 'merge',
-            queryParams: {
-                variableName: attribute.variableName
-            }
-        });
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'navigate-to-files', 'value': attribute.variableName }, '*');
+        }
     }
 
     async deleteLotAttribute(lotAttribute: LotAttribute) {
