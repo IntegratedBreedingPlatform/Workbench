@@ -32,7 +32,6 @@ export class LotAttributesPaneComponent implements OnInit {
 
     variableByAttributeId: { [key: number]: VariableDetails } = {};
 
-
     constructor(public languageservice: JhiLanguageService,
                 public translateService: TranslateService,
                 private eventManager: JhiEventManager,
