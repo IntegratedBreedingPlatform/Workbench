@@ -20,13 +20,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.multisiteanalysis.GxeTable;
 import org.generationcp.ibpworkbench.util.GxeInput;
 import org.generationcp.ibpworkbench.util.MultiSiteDataExporter;
 import org.generationcp.ibpworkbench.util.bean.MultiSiteParameters;
-import org.generationcp.middleware.domain.dms.DataSet;
-import org.generationcp.middleware.domain.dms.Experiment;
-import org.generationcp.middleware.enumeration.DatasetTypeEnum;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.unbescape.html.HtmlEscape;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,14 +40,6 @@ public class RunMultiSiteAction implements ClickListener {
 	private static final long serialVersionUID = -7090745965019240566L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(RunMultiSiteAction.class);
-
-	private Tool breedingViewTool;
-
-	@Resource
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Resource
-	private StudyDataManager studyDataManager;
 
 	@Autowired
 	private ContextUtil contextUtil;
@@ -87,8 +72,6 @@ public class RunMultiSiteAction implements ClickListener {
 	@Override
 	public void buttonClick(final ClickEvent event) {
 		final ClickEvent buttonClickEvent = event;
-
-		this.breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.BREEDING_VIEW.getName());
 
 		final GxeInput gxeInput;
 		gxeInput = this.generateInputFiles();
@@ -235,10 +218,6 @@ public class RunMultiSiteAction implements ClickListener {
 
 	protected void setSelectTraitsTable(final Table selectTraitsTable) {
 		this.selectTraitsTable = selectTraitsTable;
-	}
-
-	protected void setBreedingViewTool(final Tool breedingViewTool) {
-		this.breedingViewTool = breedingViewTool;
 	}
 
 	protected void setMultiSiteParameters(final MultiSiteParameters multiSiteParameters) {

@@ -7,14 +7,12 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Reindeer;
-import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.api.tool.ToolService;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Resource;
-import java.util.Set;
 
 @Configurable
 public class BreedingManagerWindowGenerator {
@@ -32,10 +30,7 @@ public class BreedingManagerWindowGenerator {
 	public static final int BROWSER_WINDOW_HEIGHT_THRESHOLD = 800;
 
 	@Resource
-	private WorkbenchDataManager workbenchDataManager;
-
-	@Resource
-	private SimpleResourceBundleMessageSource messageSource;
+	private ToolService toolService;
 
 	/**
 	 * Opens and attaches a modal popup containing the location manager to a parent window
@@ -46,7 +41,7 @@ public class BreedingManagerWindowGenerator {
 	 */
 	public Window openLocationManagerPopupWindow(final Long programId, final Window parentWindow, final String caption) {
 
-		final Tool tool = this.workbenchDataManager.getToolWithName(BreedingManagerWindowGenerator.LOCATION_MANAGER_TOOL_NAME);
+		final Tool tool = this.toolService.getToolWithName(BreedingManagerWindowGenerator.LOCATION_MANAGER_TOOL_NAME);
 
 		ExternalResource listBrowserLink = null;
 		if (tool == null) {
@@ -72,7 +67,7 @@ public class BreedingManagerWindowGenerator {
 	 */
 	public Window openMethodManagerPopupWindow(final Long programId, final Window parentWindow, final String caption) {
 
-		final Tool tool = workbenchDataManager.getToolWithName(BreedingManagerWindowGenerator.METHOD_MANAGER_TOOL_NAME);
+		final Tool tool = toolService.getToolWithName(BreedingManagerWindowGenerator.METHOD_MANAGER_TOOL_NAME);
 
 		ExternalResource listBrowserLink = null;
 		if (tool == null) {

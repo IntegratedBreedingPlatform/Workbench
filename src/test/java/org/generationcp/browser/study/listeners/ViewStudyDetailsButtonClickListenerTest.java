@@ -7,8 +7,8 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Window;
 import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.spring.util.ContextUtil;
+import org.generationcp.middleware.api.tool.ToolService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,10 +35,9 @@ public class ViewStudyDetailsButtonClickListenerTest {
 	private static final int STUDY_ID = 1;
 	public static final int USER_ID = 12;
 	public static final long PROJECT_ID = 123l;
-	public static final String USERNAME = "username";
 
 	@Mock
-	private WorkbenchDataManager workbenchManager;
+	private ToolService toolService;
 
 	@Mock
 	private ContextUtil contextUtil;
@@ -73,7 +72,7 @@ public class ViewStudyDetailsButtonClickListenerTest {
 	@Test
 	public void testLaunchStudyDetailsWindow() throws MiddlewareQueryException {
 
-		Mockito.doReturn(null).when(this.workbenchManager).getToolWithName(Matchers.anyString());
+		Mockito.doReturn(null).when(this.toolService).getToolWithName(Matchers.anyString());
 
 		final ClickEvent event = Mockito.mock(ClickEvent.class);
 		final Button mockButton = Mockito.mock(Button.class);
