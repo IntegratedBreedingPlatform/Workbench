@@ -29,9 +29,9 @@ import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
+import org.generationcp.middleware.api.tool.ToolService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class GermplasmListComponent extends VerticalLayout implements Initializi
 	private SimpleResourceBundleMessageSource messageSource;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ToolService toolService;
 
 	@Autowired
 	private GermplasmListManager germplasmListManager;
@@ -77,7 +77,7 @@ public class GermplasmListComponent extends VerticalLayout implements Initializi
 
 		Tool tool = null;
 		try {
-			tool = this.workbenchDataManager.getToolWithName(ToolName.GERMPLASM_LIST_BROWSER.toString());
+			tool = this.toolService.getToolWithName(ToolName.GERMPLASM_LIST_BROWSER.toString());
 		} catch (final MiddlewareQueryException qe) {
 			GermplasmListComponent.LOG.error("QueryException", qe);
 		}
