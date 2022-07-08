@@ -26,6 +26,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
 import org.generationcp.ibpworkbench.ui.window.IContentWindow;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.middleware.api.tool.ToolService;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Study;
@@ -40,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 import org.unbescape.html.HtmlEscape;
 
 import java.io.File;
@@ -60,7 +60,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 	private final SingleSiteAnalysisPanel selectDatasetForBreedingViewPanel;
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ToolService toolService;
 
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
@@ -98,7 +98,7 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 
 		try {
 
-			final Tool breedingViewTool = this.workbenchDataManager.getToolWithName(ToolName.BREEDING_VIEW.getName());
+			final Tool breedingViewTool = this.toolService.getToolWithName(ToolName.BREEDING_VIEW.getName());
 			final String inputDir = this.installationDirectoryUtil.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 
 			// List of factors from the new schema
@@ -244,8 +244,8 @@ public class OpenSelectDatasetForExportAction implements ClickListener {
 		this.project = project;
 	}
 
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
+	public void setToolService(final ToolService toolService) {
+		this.toolService = toolService;
 	}
 
 	public void setStudyDataManager(final StudyDataManager studyDataManager) {

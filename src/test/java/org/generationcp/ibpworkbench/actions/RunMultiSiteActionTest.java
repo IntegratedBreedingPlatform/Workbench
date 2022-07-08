@@ -26,11 +26,8 @@ import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.enumeration.DatasetTypeEnum;
-import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.dms.DatasetType;
 import org.generationcp.middleware.pojos.workbench.Project;
-import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +43,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +57,6 @@ public class RunMultiSiteActionTest {
 	private static final String GENOTYPE_NAME = "GID";
 	private static final String PROJECT_NAME = "TEST MAIZE PROGRAM";
 	private static final String MEANS_DATASET_NAME = "TEST STUDY-MEANS";
-	private static final String SUMMARY_DATASET_NAME = "TEST STUDY-SUMMARY";
 	private static final String TEST_SPECIAL_CHARACTERS = "\\ &amp;/:*?'\"<>|[]{},.?~`!@#$%^&()-=_+111";
 	private static final int STUDY_ID = 98;
 	private static final int MEANS_DATASET_ID = 99;
@@ -71,22 +66,11 @@ public class RunMultiSiteActionTest {
 	private static final String STUDY_NAME = "TEST STUDY";
 	private static final String ZIP_FILE_PATH = "/someDirectory/output/" + STUDY_NAME + ".zip";
 
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
-
-	@Mock
-	private StudyDataManager studyDataManager;
-
-	@Mock
-	private WorkbenchDataManager workbenchDataManager;
-
 	@Mock
 	private GxeTable gxeTable;
 
 	@Mock
 	private MultiSiteDataExporter multiSiteDataExporter;
-
-	@Mock
-	private Tool breedingViewTool;
 
 	@Mock
 	private ZipUtil zipUtil;
@@ -95,7 +79,7 @@ public class RunMultiSiteActionTest {
 	private WorkbenchContentApp workbenchApplication;
 
 	@Mock
-	Window window;
+	private Window window;
 
 	@Mock
 	private InstallationDirectoryUtil installationDirectoryUtil;
@@ -118,7 +102,6 @@ public class RunMultiSiteActionTest {
 
 		final Table selectTraitsTable = this.createTestSelectedTraitsTable();
 		this.runMultiSiteAction.setSelectTraitsTable(selectTraitsTable);
-		this.runMultiSiteAction.setBreedingViewTool(this.breedingViewTool);
 
 		this.selectedTraits = this.runMultiSiteAction.getSelectedTraits();
 		this.gxeEnvironment = this.createGxeEnvironment();
@@ -376,12 +359,4 @@ public class RunMultiSiteActionTest {
 
 	}
 
-	private DataSet createSummaryDataSet() {
-		final DataSet ds = new DataSet();
-		ds.setDatasetType(new DatasetType(DatasetTypeEnum.SUMMARY_DATA.getId()));
-		ds.setName(SUMMARY_DATASET_NAME);
-
-		return ds;
-
-	}
 }

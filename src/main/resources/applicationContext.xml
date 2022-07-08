@@ -465,11 +465,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="inventoryService" factory-bean="managerFactory" factory-method="getInventoryService"
-		  scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="searchRequestService" factory-bean="managerFactory" factory-method="getSearchRequestService"
 		  scope="request">
 		<aop:scoped-proxy />
@@ -513,6 +508,10 @@
 		  scope="request">
 		<aop:scoped-proxy/>
 	</bean>
+
+	<bean id="toolService" class="org.generationcp.middleware.api.tool.ToolServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
 
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>

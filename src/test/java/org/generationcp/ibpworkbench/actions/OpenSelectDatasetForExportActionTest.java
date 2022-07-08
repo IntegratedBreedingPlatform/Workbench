@@ -23,13 +23,13 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSi
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.SingleSiteAnalysisPanel;
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.VariableTableItem;
 import org.generationcp.ibpworkbench.util.BreedingViewInput;
+import org.generationcp.middleware.api.tool.ToolService;
 import org.generationcp.middleware.data.initializer.ProjectTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Study;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
@@ -65,7 +65,7 @@ public class OpenSelectDatasetForExportActionTest {
 	private SingleSiteAnalysisPanel singleSiteAnalysisPanel;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private ToolService toolService;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;
@@ -127,7 +127,7 @@ public class OpenSelectDatasetForExportActionTest {
 		this.project = ProjectTestDataInitializer.createProject();
 
 		this.openSelectDatasetForExportAction = new OpenSelectDatasetForExportAction(this.singleSiteAnalysisPanel);
-		this.openSelectDatasetForExportAction.setWorkbenchDataManager(this.workbenchDataManager);
+		this.openSelectDatasetForExportAction.setToolService(this.toolService);
 		this.openSelectDatasetForExportAction.setInstallationDirectoryUtil(this.installationDirectoryUtil);
 		this.openSelectDatasetForExportAction.setStudyDataManager(this.studyDataManager);
 		this.openSelectDatasetForExportAction.setMessageSource(this.messageSource);
@@ -164,7 +164,7 @@ public class OpenSelectDatasetForExportActionTest {
 
 		this.bvTool = new Tool();
 		this.bvTool.setVersion(BV_VERSION);
-		Mockito.doReturn(this.bvTool).when(this.workbenchDataManager).getToolWithName(Matchers.anyString());
+		Mockito.doReturn(this.bvTool).when(this.toolService).getToolWithName(Matchers.anyString());
 		Mockito.doReturn(INPUT_DIRECTORY).when(this.installationDirectoryUtil)
 			.getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.doReturn(this.component).when(this.clickEvent).getComponent();
@@ -240,7 +240,7 @@ public class OpenSelectDatasetForExportActionTest {
 	public void testButtonClick() {
 		this.openSelectDatasetForExportAction.buttonClick(this.clickEvent);
 
-		Mockito.verify(this.workbenchDataManager).getToolWithName(ToolName.BREEDING_VIEW.getName());
+		Mockito.verify(this.toolService).getToolWithName(ToolName.BREEDING_VIEW.getName());
 		Mockito.verify(this.installationDirectoryUtil).getInputDirectoryForProjectAndTool(this.project, ToolName.BREEDING_VIEW);
 		Mockito.verify(this.studyDataManager).findOneDataSetByType(Matchers.eq(STUDY_ID), Matchers.anyInt());
 

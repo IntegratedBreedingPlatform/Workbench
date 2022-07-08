@@ -11,7 +11,7 @@ import org.generationcp.commons.constant.DefaultGermplasmStudyBrowserPath;
 import org.generationcp.commons.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.api.tool.ToolService;
 import org.generationcp.middleware.pojos.workbench.Tool;
 import org.generationcp.middleware.pojos.workbench.ToolName;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 	private static final Logger LOG = LoggerFactory.getLogger(ViewStudyDetailsButtonClickListener.class);
 
 	@Autowired
-	private WorkbenchDataManager workbenchDataManager;
+	private ToolService toolService;
 
 	@Resource
 	private org.generationcp.commons.spring.util.ContextUtil contextUtil;
@@ -44,7 +44,7 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 
 	@Override
 	public void buttonClick(final ClickEvent event) {
-		final Tool tool = this.workbenchDataManager.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.getName());
+		final Tool tool = this.toolService.getToolWithName(ToolName.STUDY_BROWSER_WITH_ID.getName());
 
 		final String contextParameterString = ContextUtil
 			.getContextParameterString(this.contextUtil.getCurrentWorkbenchUserId(),
@@ -94,7 +94,4 @@ public class ViewStudyDetailsButtonClickListener implements ClickListener {
 		window.addWindow(studyWindow);
 	}
 
-	public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-		this.workbenchDataManager = workbenchDataManager;
-	}
 }
