@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { FileMetadata } from '../model/file-metadata';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
-import { saveFile } from '../../util/file-utils';
 import { Pageable } from '../../model/pageable';
 import { createRequestOption } from '../..';
 
@@ -17,7 +16,7 @@ export class FileService {
     ) {
     }
 
-    listFileMetadata(observationUnitUUID, germplasmUUID, variableName, instanceId, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
+    listFileMetadata(observationUnitUUID, germplasmUUID, variableName, instanceId, lotId, pageable: Pageable): Observable<HttpResponse<FileMetadata[]>> {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
         const request = {}
         if (observationUnitUUID) {
@@ -33,13 +32,17 @@ export class FileService {
         if (instanceId) {
             request['instanceIds'] = [instanceId];
         }
+
+        if (lotId) {
+            request['lotId'] = lotId;
+        }
         const params: any = createRequestOption(Object.assign({
             programUUID: this.context.programUUID
         }, pageable));
         return this.http.post<FileMetadata[]>(baseUrl + '/filemetadata/search', request, { params, observe: 'response' });
     }
 
-    upload(file: File, observationUnitUUID, germplasmUUID, termId = null, instanceId): Observable<FileMetadata> {
+    upload(file: File, observationUnitUUID, germplasmUUID, termId = null, instanceId, lotId): Observable<FileMetadata> {
         const formData: FormData = new FormData();
         formData.append('file', file, file.name);
         const headers = new Headers();
@@ -58,6 +61,9 @@ export class FileService {
         if (instanceId) {
             params['instanceId'] = instanceId
         }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
         const options = {params};
 
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
@@ -74,35 +80,40 @@ export class FileService {
         return this.http.delete(baseUrl + '/files/' + fileUUID + '?programUUID=' + this.context.programUUID);
     }
 
-    getFileCount(variableIds, germplasmUUID) {
+    getFileCount(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.head(baseUrl + '/filemetadata', {
-            params: {
-                variableIds,
-                germplasmUUID
-            },
-            observe: 'response'
-        });
+        const params = {variableIds};
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
+        return this.http.head(baseUrl + '/filemetadata', { params, observe: 'response'});
     }
 
-    detachFiles(variableIds, germplasmUUID) {
+    detachFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.delete(baseUrl + '/filemetadata/variables', {
-            params: {
-                variableIds,
-                germplasmUUID
-            }
-        });
+        const params = {variableIds};
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
+        return this.http.delete(baseUrl + '/filemetadata/variables', {params});
     }
 
-    removeFiles(variableIds, germplasmUUID) {
+    removeFiles(variableIds, germplasmUUID, lotId) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.delete(baseUrl + '/filemetadata', {
-            params: {
-                variableIds,
-                germplasmUUID
-            }
-        });
+        const params = {variableIds};
+        if (germplasmUUID) {
+            params['germplasmUUID'] = germplasmUUID;
+        }
+        if (lotId) {
+            params['lotId'] = lotId
+        }
+        return this.http.delete(baseUrl + '/filemetadata', {params});
     }
 
    isFileStorageConfigured(): Promise<boolean> {

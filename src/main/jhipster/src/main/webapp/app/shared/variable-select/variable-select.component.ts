@@ -31,6 +31,7 @@ export class VariableSelectComponent implements OnInit {
     @Input() datasetId: number;
     @Input() germplasmUUID: string;
     @Input() excludedVariableIds: number[];
+    @Input() lotId: number;
 
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
 
@@ -84,6 +85,9 @@ export class VariableSelectComponent implements OnInit {
         }
         if (this.variableTypeIds && this.variableTypeIds.length) {
             filterRequest.variableTypeIds = this.variableTypeIds.map((enumType) => enumType.toString());
+        }
+        if (this.lotId) {
+            filterRequest.lotIds = [this.lotId];
         }
         this.variableService.filterVariables(filterRequest).pipe(
             finalize(() => this.isLoading = false)

@@ -16,7 +16,7 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
-import { MG_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_PERMISSION } from '../shared/auth/permissions';
+import { MG_MANAGE_FILES_PERMISSION, MI_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_PERMISSION } from '../shared/auth/permissions';
 import { Principal } from '../shared';
 
 @Component({
@@ -44,6 +44,7 @@ export class FileManagerComponent implements OnInit {
     observationUnitUUID: string;
     datasetId: number;
     instanceId: number;
+    lotId: number;
 
     germplasmUUID: string;
     isLoading = false;
@@ -81,6 +82,7 @@ export class FileManagerComponent implements OnInit {
         this.observationUnitUUID = queryParamMap.get('observationUnitUUID');
         this.germplasmUUID = queryParamMap.get('germplasmUUID');
         this.instanceId = queryParamMap.get('instanceId') ? Number(queryParamMap.get('instanceId')) : null;
+        this.lotId = queryParamMap.get('lotId') ? Number(queryParamMap.get('lotId')) : null;
         if (this.observationUnitUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
             this.datasetId = Number(queryParamMap.get('datasetId'));
@@ -92,6 +94,9 @@ export class FileManagerComponent implements OnInit {
             this.datasetId = Number(queryParamMap.get('datasetId'));
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.ENVIRONMENT_CONDITION, VariableTypeEnum.ENVIRONMENT_DETAIL];
             this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
+        } else if (this.lotId) {
+            this.VARIABLE_TYPE_IDS = [VariableTypeEnum.INVENTORY_ATTRIBUTE];
+            this.manageFilesPermissions = MI_MANAGE_FILES_PERMISSION;
         }
 
         this.load();
@@ -104,6 +109,7 @@ export class FileManagerComponent implements OnInit {
             this.germplasmUUID,
             this.filters.variable.value,
             this.instanceId,
+            this.lotId,
             <Pageable>({
                 page: this.page - 1,
                 size: this.pageSize,
@@ -200,7 +206,8 @@ export class FileManagerComponent implements OnInit {
             this.observationUnitUUID,
             this.germplasmUUID,
             this.variable && this.variable.id || null,
-            this.instanceId
+            this.instanceId,
+            this.lotId
         ).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe(
