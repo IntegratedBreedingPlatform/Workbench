@@ -116,9 +116,6 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
 }
 
 export enum HEADERS {
-    'ENTRY_NO' = 'ENTRY_NO',
-    // Temporary workaround to allow users to edit ENTRY_CODE
-    'ENTRY_CODE' = 'ENTRY_CODE',
     'ID' = 'ID',
     'NAME' = 'NAME',
     'DESCRIPTION' = 'DESCRIPTION'

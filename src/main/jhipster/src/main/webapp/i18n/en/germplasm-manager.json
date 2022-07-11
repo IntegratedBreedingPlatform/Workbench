@@ -49,7 +49,7 @@
             "groupSourceGID": "GROUP SOURCE GID",
             "groupSourcePreferredName": "GROUP SOURCE PREFERRED NAME",
             "immediateSourceGID": "IMMEDIATE SOURCE GID",
-            "immediateSourcePreferredName": "IMMEDIATE SOURCE PREFERRED NAME",
+            "immediateSourceName": "IMMEDIATE SOURCE NAME",
             "femaleParentGID": "FEMALE PARENT GID",
             "femaleParentPreferredName": "FEMALE PARENT PREFERRED NAME",
             "maleParentGID": "MALE PARENT GID",

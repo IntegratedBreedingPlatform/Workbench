@@ -242,7 +242,6 @@ public class SaveCrossesMadeAction implements Serializable {
 		germplasmListData.setList(list);
 		germplasmListData.setGid(gid);
 		germplasmListData.setEntryId(entryId);
-		germplasmListData.setEntryCode(String.valueOf(entryId));
 		if(seedSource.length() > SEEDSOURCE_CHARACTER_LIMIT) {
 			seedSource = seedSource.substring(0, SEEDSOURCE_CHARACTER_LIMIT);
 		}

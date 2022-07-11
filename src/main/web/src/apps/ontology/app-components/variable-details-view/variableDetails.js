@@ -138,7 +138,8 @@
 							$scope.serverErrors.someListsNotLoaded = [LISTS_NOT_LOADED_TRANSLATION];
 						});
 
-						variableTypesService.getTypes().then(function(types) {
+						var excludeRestrictedTypes = true;
+						variableTypesService.getTypes(excludeRestrictedTypes).then(function(types) {
 							$scope.data.types = types;
 						}, function(response) {
 							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);

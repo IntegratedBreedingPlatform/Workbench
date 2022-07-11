@@ -13,7 +13,6 @@ export class GermplasmList extends ListModel {
 export class GermplasmListEntry extends ListEntry {
     constructor(
         public gid?: number,
-        public entryCode?: string,
         public seedSource?: string,
         public groupName?: string,
         /**

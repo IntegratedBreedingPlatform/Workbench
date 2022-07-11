@@ -5,24 +5,30 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.event.Action;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.TableDragMode;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.BaseTheme;
-import liquibase.util.StringUtils;
 import org.generationcp.breeding.manager.application.BreedingManagerLayout;
 import org.generationcp.breeding.manager.application.Message;
 import org.generationcp.breeding.manager.constants.AppConstants;
+import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
 import org.generationcp.breeding.manager.crossingmanager.util.CrossingManagerUtil;
 import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
-import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.middleware.api.germplasm.GermplasmNameService;
+import org.generationcp.middleware.api.germplasmlist.GermplasmListService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -47,9 +53,11 @@ import org.vaadin.peter.contextmenu.ContextMenu.ClickEvent;
 import org.vaadin.peter.contextmenu.ContextMenu.ContextMenuItem;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Configurable
@@ -64,6 +72,9 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	@Autowired
 	private GermplasmNameService germplasmNameService;
+
+	@Autowired
+	private GermplasmListService germplasmListService;
 
 	private final class ListDataTableActionHandler implements Action.Handler {
 
@@ -292,31 +303,26 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_CODE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.GROUP_ID.getName(), String.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.SEED_SOURCE.getName(), String.class, null);
 
-			listDataTable
-				.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
+			listDataTable.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_ID.getName(), this.messageSource.getMessage(Message.HASHTAG));
 			listDataTable.setColumnHeader(ColumnLabels.DESIGNATION.getName(), this.getTermNameFromOntology(ColumnLabels.DESIGNATION));
 			listDataTable.setColumnHeader(ColumnLabels.PARENTAGE.getName(), this.getTermNameFromOntology(ColumnLabels.PARENTAGE));
 			listDataTable.setColumnHeader(ColumnLabels.ENTRY_CODE.getName(), this.getTermNameFromOntology(ColumnLabels.ENTRY_CODE));
 			listDataTable.setColumnHeader(ColumnLabels.GID.getName(), this.getTermNameFromOntology(ColumnLabels.GID));
 			listDataTable.setColumnHeader(ColumnLabels.GROUP_ID.getName(), this.getTermNameFromOntology(ColumnLabels.GROUP_ID));
-			listDataTable.setColumnHeader(ColumnLabels.SEED_SOURCE.getName(), this.getTermNameFromOntology(ColumnLabels.SEED_SOURCE));
 
 			listDataTable.setColumnWidth(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, 25);
-			listDataTable.setColumnWidth(ColumnLabels.ENTRY_ID.getName(), 25);
-			listDataTable.setColumnWidth(ColumnLabels.DESIGNATION.getName(), 150);
-			listDataTable.setColumnWidth(ColumnLabels.PARENTAGE.getName(), 150);
+			listDataTable.setColumnWidth(ColumnLabels.ENTRY_ID.getName(), 60);
+			listDataTable.setColumnWidth(ColumnLabels.DESIGNATION.getName(), 190);
+			listDataTable.setColumnWidth(ColumnLabels.PARENTAGE.getName(), 190);
 			listDataTable.setColumnWidth(ColumnLabels.ENTRY_CODE.getName(), 110);
-			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 70);
-			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 70);
-			listDataTable.setColumnWidth(ColumnLabels.SEED_SOURCE.getName(), 130);
-
+			listDataTable.setColumnWidth(ColumnLabels.GID.getName(), 90);
+			listDataTable.setColumnWidth(ColumnLabels.GROUP_ID.getName(), 90);
 			listDataTable.setVisibleColumns(new String[] {
 				SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, ColumnLabels.ENTRY_ID.getName(), ColumnLabels.DESIGNATION.getName(),
 				ColumnLabels.PARENTAGE.getName(), ColumnLabels.ENTRY_CODE.getName(), ColumnLabels.GID.getName(),
-				ColumnLabels.GROUP_ID.getName(), ColumnLabels.SEED_SOURCE.getName()});
+				ColumnLabels.GROUP_ID.getName()});
 		}
 	}
 
@@ -343,19 +349,25 @@ public class SelectParentsListDataComponent extends VerticalLayout
 			if (this.studyId != null) {
 				final List<StudyEntryDto> studyEntryDtoList = this.studyEntryService.getStudyEntries(this.studyId);
 				for (final StudyEntryDto entry : studyEntryDtoList) {
-					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getStudyEntryPropertyValue(TermId.CROSS.getId()),
-						entry.getEntryCode(), entry.getStudyEntryPropertyValue(TermId.SEED_SOURCE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
+					this.addGermplasmItem(entry.getGid(), entry.getDesignation(), entry.getEntryNumber(), entry.getCross(),
+						entry.getStudyEntryPropertyValue(TermId.ENTRY_CODE.getId()), entry.getStudyEntryPropertyValue(TermId.GROUPGID.getId()));
 				}
 			} else {
 				final List<GermplasmListData> listEntries =
 					this.inventoryDataManager.getLotCountsForList(this.germplasmListId, 0, Integer.MAX_VALUE);
 				final List<Integer> gids = listEntries.stream().map(GermplasmListData::getGid).collect(Collectors.toList());
 				final Map<Integer, String> preferredNamesMap = this.germplasmNameService.getPreferredNamesByGIDs(gids);
+
+				final Set<Integer> variablesIds = new HashSet<>();
+				variablesIds.add(TermId.ENTRY_CODE.getId());
+				final Map<Integer, Map<Integer, String>> observationValuesByListAndVariableIds =
+					this.germplasmListService.getObservationValuesByListAndVariableIds(this.germplasmListId, variablesIds);
+
 				for (final GermplasmListData entry : listEntries) {
+					final Optional<String> entryCode = this.getEntryCodeValue(observationValuesByListAndVariableIds.get(entry.getListDataId()));
 					this.addGermplasmItem(entry.getGid(), preferredNamesMap.get(entry.getGid()), entry.getId(),
-							StringUtils.isEmpty(entry.getGroupName())? Optional.empty() : Optional.of(entry.getGroupName()), entry.getEntryCode(),
-							StringUtils.isEmpty(entry.getSeedSource())? Optional.empty() : Optional.of(entry.getSeedSource()),
-							entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
+							entry.getGroupName(),  entryCode,
+						entry.getGroupId() == null || entry.getGroupId() == 0 ? Optional.empty() : Optional.of(entry.getGroupId().toString()));
 				}
 			}
 
@@ -366,8 +378,15 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		}
 	}
 
-	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final Optional<String> groupName,
-		final String entryCode, final Optional<String> seedSource, final Optional<String> groupId) {
+	private Optional<String> getEntryCodeValue(final Map<Integer, String> observationValuesByVariableIds) {
+		if (observationValuesByVariableIds == null) {
+			return Optional.empty();
+		}
+		return Optional.ofNullable(observationValuesByVariableIds.get(TermId.ENTRY_CODE.getId()));
+	}
+
+	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
+		final Optional<String> entryCode, final Optional<String> groupId) {
 
 		final String gidString = String.format("%s", gid);
 		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
@@ -403,10 +422,9 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
 		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
 		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
-		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName.orElse(""));
-		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode);
+		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName == null ? "" : groupName);
+		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode.orElse(""));
 		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
-		newItem.getItemProperty(ColumnLabels.SEED_SOURCE.getName()).setValue(seedSource.orElse(""));
 		final String groupIdDisplayValue = groupId.orElse("-");
 		newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
 
@@ -559,4 +577,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		return this.listEntriesLabel;
 	}
 
+	public void setGermplasmListService(final GermplasmListService germplasmListService) {
+		this.germplasmListService = germplasmListService;
+	}
 }

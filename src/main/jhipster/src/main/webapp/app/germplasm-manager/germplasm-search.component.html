@@ -94,7 +94,7 @@
 					<jhi-col-vis-button [colName]="ColumnLabels['GROUP SOURCE GID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['GROUP SOURCE GID']], ColumnLabels['GROUP SOURCE GID'])"><span jhiTranslate="search-germplasm.column.groupSourceGID"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['GROUP SOURCE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['GROUP SOURCE']], ColumnLabels['GROUP SOURCE'])"><span jhiTranslate="search-germplasm.column.groupSourcePreferredName"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['IMMEDIATE SOURCE GID']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']], ColumnLabels['IMMEDIATE SOURCE GID'])"><span jhiTranslate="search-germplasm.column.immediateSourceGID"></span></jhi-col-vis-button>
-					<jhi-col-vis-button [colName]="ColumnLabels['IMMEDIATE SOURCE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']], ColumnLabels['IMMEDIATE SOURCE'])"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['IMMEDIATE SOURCE']" [hiddenColumns]="hiddenColumns" (onToggle)="toggleAdditionalColumn(!hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']], ColumnLabels['IMMEDIATE SOURCE'])"><span jhiTranslate="search-germplasm.column.immediateSourceName"></span></jhi-col-vis-button>
 				</div>
 			</ng-template>
 			<div class="form-group form-inline">
@@ -151,7 +151,7 @@
 				<th [jhiSortBy]="ColumnLabels['GROUP SOURCE GID']" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]"><span jhiTranslate="search-germplasm.column.groupSourceGID"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GROUP SOURCE']" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]"><span jhiTranslate="search-germplasm.column.groupSourcePreferredName"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['IMMEDIATE SOURCE GID']" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]"><span jhiTranslate="search-germplasm.column.immediateSourceGID"></span> <span class="fa fa-sort"></span></th>
-				<th [jhiSortBy]="ColumnLabels['IMMEDIATE SOURCE']" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]"><span jhiTranslate="search-germplasm.column.immediateSourcePreferredName"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['IMMEDIATE SOURCE']" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]"><span jhiTranslate="search-germplasm.column.immediateSourceName"></span> <span class="fa fa-sort"></span></th>
 				<ng-container *ngIf="germplasmList[0]">
 					<th *ngFor="let entry of germplasmList[0].attributeTypesValueMap | keyvalue" jhiSortBy="{{entry.key}}"><span>{{entry.key}}</span><span class="fa fa-sort"></span></th>
 				</ng-container>
@@ -193,7 +193,7 @@
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]">{{germplasm.groupSourceGID}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]" jhiScrollableTooltip [tooltipText]="germplasm.groupSourcePreferredName" placement="bottom">{{germplasm.groupSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]">{{germplasm.immediateSourceGID}}</td>
-				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]" jhiScrollableTooltip [tooltipText]="germplasm.immediateSourcePreferredName" placement="bottom">{{germplasm.immediateSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]" jhiScrollableTooltip [tooltipText]="germplasm.immediateSourceName" placement="bottom">{{germplasm.immediateSourceName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td *ngFor="let entry of germplasm.attributeTypesValueMap | keyvalue">{{entry.value}}</td>
 				<td *ngFor="let entry of germplasm.nameTypesValueMap | keyvalue">{{entry.value}}</td>
 			</tr>

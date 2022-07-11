@@ -13,7 +13,6 @@ import { LocationTypeEnum } from '../../shared/location/model/location-type.enum
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { LocationsPaneComponent } from './locations-pane.component';
 
 @Component({
     selector: 'jhi-location-edit-dialog',

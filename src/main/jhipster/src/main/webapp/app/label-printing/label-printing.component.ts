@@ -551,6 +551,8 @@ export class LabelPrintingComponent implements OnInit {
                 return 'GERMPLASM_LABEL_PRINTING_PRESET';
             case LabelPrintingType.GERMPLASM_LIST:
                 return 'GERMPLASM_LIST_LABEL_PRINTING_PRESET';
+            case LabelPrintingType.STUDY_ENTRIES:
+                return 'STUDY_ENTRIES_LABEL_PRINTING_PRESET';
             default:
                 return;
         }
@@ -620,7 +622,9 @@ export enum LabelPrintingType {
     SUBOBSERVATION_DATASET = 'SubObservationDataset',
     LOT = 'Lot',
     GERMPLASM = 'Germplasm',
-    GERMPLASM_LIST = 'Germplasm List'
+    GERMPLASM_LIST = 'Germplasm List',
+    STUDY_ENTRIES = 'Study Entries'
+
 }
 
 const typesWithHeaderDetails: LabelPrintingType[] = [

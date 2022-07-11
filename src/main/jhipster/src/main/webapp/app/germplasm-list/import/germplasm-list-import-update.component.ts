@@ -133,8 +133,6 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         for (const row of this.context.data) {
             const entry = {
                 entryNo: row[HEADERS.ENTRY_NO],
-                // Temporary workaround to allow users to edit ENTRY_CODE
-                entryCode: row[HEADERS.ENTRY_CODE],
                 data: Object.keys(variableMatchesResult).reduce((map, variableName) => {
                     if (row[variableName]) {
                         map[variableMatchesResult[variableName]] = { value: row[variableName] };
@@ -198,7 +196,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
         await this.processEntryDetailVariables();
 
-        if (!this.hasEntryCode() && !this.hasVariables()) {
+        if (!this.hasVariables()) {
             this.alertService.error('germplasm-list.import.file.validation.entry.details.no.column');
             return false;
         }
@@ -290,10 +288,6 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         }
     }
 
-    private hasEntryCode() {
-        return this.context.data.some((row) => row[HEADERS.ENTRY_CODE]);
-    }
-
     private hasVariables() {
         return [
             ...this.context.newVariables,
@@ -329,6 +323,5 @@ export class GermplasmListImportUpdatePopupComponent implements OnInit, OnDestro
 }
 
 export enum HEADERS {
-    'ENTRY_NO' = 'ENTRY_NO',
-    'ENTRY_CODE' = 'ENTRY_CODE'
+    'ENTRY_NO' = 'ENTRY_NO'
 }
