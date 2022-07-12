@@ -17,6 +17,9 @@ import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/p
 import { ProgramUsageService } from '../shared/service/program-usage.service';
 import { Router } from '@angular/router';
 import { NavbarMessageEvent } from '../shared/model/navbar-message.event';
+import { CropParameterService } from '../shared/crop-parameter/service/crop-parameter.service';
+import { CropParameterTypeEnum } from '../shared/crop-parameter/model/crop-parameter-type-enum';
+import { CropParameter } from '../shared/crop-parameter/model/crop-parameter';
 
 declare const showReleaseNotes: string;
 
@@ -60,6 +63,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private loginService: LoginService,
         private helpService: HelpService,
         private programUsageService: ProgramUsageService,
+        private cropParameterService: CropParameterService,
         private router: Router
     ) {
         this.version = '';
@@ -105,7 +109,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.navService.sideNav = this.sideNav;
     }
 
-    openTool(url) {
+    async openTool(url) {
         let authParams = '';
         const cropName = this.program ? this.program.crop : null;
         this.toolLinkSelected = url;
@@ -114,14 +118,23 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 + '&destination=' + window.location.origin + '/bmsapi/' + cropName + '/brapi/v2'
                 + '&silentRefreshRedirectUri=' + window.location.origin
                 + '/ibpworkbench/controller/pages/brapi-sync/static/silent-refresh.html'
+
+            const programUUID = this.program ? this.program.uniqueID : null;
+            await this.cropParameterService.getCropParameter(cropName, programUUID, CropParameterTypeEnum.DEFAULT_BRAPI_SYNC_SOURCE)
+                .toPromise()
+                .then((cropParameter: CropParameter) => {
+                    if (cropParameter.value) {
+                        authParams += '&source=' + cropParameter.value;
+                    }
+                });
         } else {
             const hasParams = url.includes('?');
             const programUUID = this.program ? this.program.uniqueID : null;
             const selectedProjectId = this.program ? this.program.id : null;
             authParams += (hasParams ? '&' : '?') + 'cropName=' + cropName
-            + '&programUUID=' + programUUID
-            + '&selectedProjectId=' + selectedProjectId
-            + '&loggedInUserId=' + this.user.id;
+                + '&programUUID=' + programUUID
+                + '&selectedProjectId=' + selectedProjectId
+                + '&loggedInUserId=' + this.user.id;
         }
         authParams += '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
