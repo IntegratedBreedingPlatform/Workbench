@@ -118,7 +118,7 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="this.transition.bind(this)">
 				<th *ngIf="!isSelectAll" class="non-editable"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" data-test="selectCurrentPageCheckbox"></th>
-				<th *ngFor="let column of header" [ngClass]="{'non-editable': !isEntryDetailColumn(column.variableType)}">
+				<th *ngFor="let column of header" [ngClass]="{'non-editable': isNotEditableColumn(column)}">
 					<span *ngIf="isColumnSortable(column)" jhiSortBy="{{this.getColumnSortName(column)}}">
 						<span>{{this.getHeaderDisplayName(column)}}</span>
 						<span class="fa fa-sort"></span>

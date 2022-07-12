@@ -25,7 +25,8 @@
 					};
 					$scope.todaysDate = new Date();
 
-					variableTypesService.getTypes().then(function(types) {
+					var excludeRestrictedTypes = false;
+					variableTypesService.getTypes(excludeRestrictedTypes).then(function(types) {
 						$scope.data.types = types;
 					}, function(response) {
 						$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);

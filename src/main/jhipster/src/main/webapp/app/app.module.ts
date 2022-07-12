@@ -27,7 +27,6 @@ import { CropSettingsManagerModule } from './crop-settings-manager/crop-settings
 import { GermplasmListModule } from './germplasm-list/germplasm-list.module';
 import { CopModule } from './cop/cop.module';
 import { AboutModule } from './about/about.module';
-import { ProgramSettingsManagerComponent } from './program-settings-manager/program-settings-manager.component';
 import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
 import { CreateProgramModule } from './entities/create-program/create-program.module';
 import { LotAttributeModule } from './entities/lot/lot-attribute.module';

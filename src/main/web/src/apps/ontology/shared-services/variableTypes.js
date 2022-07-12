@@ -19,8 +19,13 @@
 				'description': 'Variable to be used only in analysis (for example derived variables).'
 			}]
 			*/
-			getTypes: function() {
-				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/variable-types?programUUID=' + configService.getProgramId(), {timeout: 60000});
+			getTypes: function(excludeRestrictedTypes) {
+				var request = $http.get('/bmsapi/crops/' + configService.getCropName() + '/variable-types?programUUID=' + configService.getProgramId(), {
+						params: {excludeRestrictedTypes: excludeRestrictedTypes}
+					},
+					{
+						timeout: 60000
+					});
 				return request.then(successHandler, failureHandler);
 			}
 		};

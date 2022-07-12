@@ -100,7 +100,6 @@ public class SaveCrossesMadeActionTest {
 		Assert.assertEquals(list, data.getList());
 		Assert.assertEquals(gid, data.getGid());
 		Assert.assertEquals(entryId, data.getEntryId());
-		Assert.assertEquals(entryId.toString(), data.getEntryCode());
 		Assert.assertEquals(seedSource, data.getSeedSource());
 		Assert.assertEquals(pedigree, data.getGroupName());
 		Assert.assertEquals(SaveCrossesMadeAction.LIST_DATA_STATUS, data.getStatus());

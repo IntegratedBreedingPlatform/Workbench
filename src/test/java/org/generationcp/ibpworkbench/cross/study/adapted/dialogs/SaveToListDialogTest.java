@@ -12,6 +12,7 @@ import org.generationcp.commons.util.DateUtil;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
+import org.generationcp.middleware.api.germplasmlist.data.GermplasmListDataService;
 import org.generationcp.middleware.data.initializer.UserDefinedFieldTestDataInitializer;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
@@ -46,6 +47,9 @@ public class SaveToListDialogTest {
 	@Mock
 	private TraitDonorsQueryMain multiTraitQueryMainScreen;
 
+	@Mock
+	private GermplasmListDataService germplasmListDataService;
+
 	private SaveToListDialog saveToListDialog;
 	private ComboBox combobox;
 	private TextField txtDescription;
@@ -79,7 +83,7 @@ public class SaveToListDialogTest {
 		Mockito.when(this.contextUtil.getCurrentWorkbenchUserId()).thenReturn(SaveToListDialogTest.WORKBENCHUSER);
 		Mockito.when(this.contextUtil.getCurrentProgramUUID()).thenReturn(SaveToListDialogTest.PROGRAM_UUID);
 		this.saveToListDialog.setGermplasmListManager(this.germplasmListManager);
-
+		this.saveToListDialog.setGermplasmListDataService(this.germplasmListDataService);
 
 		this.combobox = new ComboBox();
 		this.txtDescription = new TextField();
@@ -190,6 +194,7 @@ public class SaveToListDialogTest {
 		this.saveToListDialog.setPedigreeService(this.pedigreeService);
 		this.saveToListDialog.setCrossExpansionProperties(this.crossExpansionProperties);
 		this.saveToListDialog.setGermplasmListManager(this.germplasmListManager);
+		this.saveToListDialog.setGermplasmListDataService(this.germplasmListDataService);
 		this.saveToListDialog.setMessageSource(this.messageSource);
 		try {
 			this.saveToListDialog.afterPropertiesSet();
@@ -242,6 +247,7 @@ public class SaveToListDialogTest {
 		this.saveToListDialog.setPedigreeService(this.pedigreeService);
 		this.saveToListDialog.setCrossExpansionProperties(this.crossExpansionProperties);
 		this.saveToListDialog.setGermplasmListManager(this.germplasmListManager);
+		this.saveToListDialog.setGermplasmListDataService(this.germplasmListDataService);
 		this.saveToListDialog.setMessageSource(this.messageSource);
 		try {
 			this.saveToListDialog.afterPropertiesSet();
