@@ -58,6 +58,10 @@ export class VariableContainerComponent implements OnInit {
         });
     }
 
+    existsVariableDeletables() {
+        return this.variables.length > 0 && this.variables.find((variable) => variable.metadata.deletable === true);
+    }
+
     isSelected(variable: VariableDetails) {
         return this.selectedVariables[variable.id];
     }
@@ -80,7 +84,7 @@ export class VariableContainerComponent implements OnInit {
     }
 
     isAllSelected() {
-        return this.size(this.selectedVariables) && this.variables.every((v) => Boolean(this.selectedVariables[v.id]));
+        return this.size(this.selectedVariables) && this.variables.filter((item) => item.metadata.deletable).every((v) => Boolean(this.selectedVariables[v.id]));
     }
 
     onSelectAll() {
@@ -89,7 +93,12 @@ export class VariableContainerComponent implements OnInit {
             this.variables.forEach((v) => delete this.selectedVariables[v.id]);
         } else {
             // check remaining items
-            this.variables.forEach((v) => this.selectedVariables[v.id] = v);
+            this.variables.forEach((v) => {
+                if (v.metadata.deletable) {
+                    this.selectedVariables[v.id] = v
+                }
+            });
+
         }
     }
 

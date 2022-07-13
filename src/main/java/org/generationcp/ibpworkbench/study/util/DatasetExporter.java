@@ -1,11 +1,6 @@
 
 package org.generationcp.ibpworkbench.study.util;
 
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -42,6 +37,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.CollectionUtils;
+
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 @Configurable
 public class DatasetExporter {
@@ -420,7 +421,7 @@ public class DatasetExporter {
 
 				// for PLOT, ENTRY and TRIAL to set as label value
 				final PhenotypicType phenotypicType = standardVariable.getPhenotypicType();
-				if (phenotypicType != null) {
+				if (phenotypicType != null && !CollectionUtils.isEmpty(phenotypicType.getLabelList())) {
 					factorRow.createCell(7).setCellValue(phenotypicType.getLabelList().get(0));
 				}
 

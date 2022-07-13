@@ -182,7 +182,7 @@ export class GermplasmListImportComponent implements OnInit {
             errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no'));
         }
         // Gather unknown columns
-        const templateHeader: string[] = [HEADERS.ENTRY_NO, HEADERS.GUID, HEADERS.GID, HEADERS.DESIGNATION, HEADERS.ENTRY_CODE];
+        const templateHeader: string[] = [HEADERS.GUID, HEADERS.GID, HEADERS.DESIGNATION];
         fileHeader.filter((header) => templateHeader.indexOf(header) < 0)
             .forEach((header) => this.unknowColumns[header] = 1);
     }
@@ -279,9 +279,9 @@ export enum HEADERS {
     'GID' = 'GID',
     'GUID' = 'GUID',
     'DESIGNATION' = 'DESIGNATION',
-    'ENTRY_CODE' = 'ENTRY_CODE',
     'ENTRY_NO' = 'ENTRY_NO',
     // Used internally - doesn't come in spreadsheet
     'GID_MATCHES' = 'GID MATCHES',
-    'ROW_NUMBER' = 'ROW NUMBER'
+    'ROW_NUMBER' = 'ROW NUMBER',
+    'ENTRY_CODE' = 'ENTRY_CODE'
 }

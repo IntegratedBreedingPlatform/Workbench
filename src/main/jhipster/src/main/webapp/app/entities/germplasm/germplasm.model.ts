@@ -19,7 +19,7 @@ export class Germplasm {
         public groupSourceGID?: string,
         public groupSourcePreferredName?: string,
         public immediateSourceGID?: string,
-        public immediateSourcePreferredName?: string,
+        public immediateSourceName?: string,
         public femaleParentGID?: string,
         public femaleParentPreferredName?: string,
         public maleParentGID?: string,

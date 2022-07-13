@@ -38,6 +38,7 @@ import { GermplasmListFolderSelectorComponent } from '../shared/tree/germplasm/g
 import { TreeComponentResult } from '../shared/tree';
 import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.service';
 import { TermIdEnum } from '../shared/ontology/model/termid.enum';
+import { MetadataDetails } from '../shared/ontology/model/metadata-details';
 
 declare var $: any;
 
@@ -50,6 +51,8 @@ export class ListComponent implements OnInit {
 
     static readonly GERMPLASMLIST_REORDER_EVENT_SUFFIX = 'GermplasmListReordered';
     static readonly GERMPLASM_LIST_CHANGED = 'GermplasmListViewChanged';
+    static readonly SORT_ENTRY_NO_VARIABLE = 'VARIABLE_8230';
+
     readonly TermIdEnum = TermIdEnum;
 
     IMPORT_GERMPLASM_LIST_UPDATES_PERMISSION = [...MANAGE_GERMPLASM_LIST_PERMISSION, 'IMPORT_GERMPLASM_LIST_UPDATES'];
@@ -217,8 +220,22 @@ export class ListComponent implements OnInit {
 
     private loadEntryDetails() {
         return this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS).toPromise().then(
-            (res: HttpResponse<VariableDetails[]>) => this.variables = res.body,
+            (res: HttpResponse<VariableDetails[]>) => {
+                res.body.forEach((variable) => {
+                    const metadataDetails = new MetadataDetails();
+                    variable.metadata = metadataDetails;
+                    variable.metadata.deletable = TermIdEnum.ENTRY_NO !== Number(variable.id);
+                })
+                this.variables = this.sortByUndeletable(res.body);
+            },
             (res: HttpErrorResponse) => this.onError(res)
+        );
+    }
+
+    sortByUndeletable(variables) {
+        return variables.sort((a, b) => {
+                return Number(a.metadata.deletable) < Number(b.metadata.deletable) ? -1 : 1
+            }
         );
     }
 
@@ -564,7 +581,7 @@ export class ListComponent implements OnInit {
         const searchRequest = new GermplasmListDataSearchRequest();
         searchRequest.entryNumbers = [];
         this.getSelectedItemIds().forEach((selectedItemId) => {
-            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data['ENTRY_NO']);
+            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
         });
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
@@ -684,7 +701,7 @@ export class ListComponent implements OnInit {
     }
 
     private setDefaultSort() {
-        this.predicate = ColumnAlias.ENTRY_NO;
+        this.predicate = ListComponent.SORT_ENTRY_NO_VARIABLE;
         this.reverse = 'asc';
     }
 
@@ -708,6 +725,10 @@ export class ListComponent implements OnInit {
     private isEntryDetailColumn(variableType: VariableTypeEnum): boolean {
         return variableType && (variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_PASSPORT]
             && variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_ATTRIBUTE]);
+    }
+
+    private isNotEditableColumn(variable: GermplasmListObservationVariable): boolean {
+        return variable && variable.termId === 8230 || !this.isEntryDetailColumn(variable.variableType);
     }
 
     private mapSelectedColumnsToUpdateViewRequest(selectedColumns: GermplasmListColumnModel[]): GermplasmListDataUpdateViewRequest[] {
@@ -787,7 +808,11 @@ export class ListComponent implements OnInit {
         }
 
         this.germplasmListService.addVariable(this.listId, variable.id, VariableTypeEnum.ENTRY_DETAILS).subscribe(() => {
+            const metadataDetails = new MetadataDetails();
+            variable.metadata = metadataDetails;
+            variable.metadata.deletable = TermIdEnum.ENTRY_NO !== Number(variable.id);
             this.variables.push(variable);
+            this.variables = this.sortByUndeletable(this.variables);
             this.refreshTable();
         }, (error) => this.onError(error));
     }
@@ -818,6 +843,7 @@ export class ListComponent implements OnInit {
                 delete this.selectedVariables[variable.id];
             });
 
+            this.variables = this.sortByUndeletable(this.variables);
             this.refreshTable();
         }, (error) => this.onError(error));
     }
@@ -878,7 +904,6 @@ export class ListComponent implements OnInit {
 }
 
 export enum ColumnAlias {
-    'ENTRY_NO' = 'ENTRY_NO',
     'GID' = 'GID',
     'DESIGNATION' = 'DESIGNATION',
     'LOTS' = 'LOTS',

@@ -149,6 +149,7 @@ export class ListDataRowComponent implements OnInit {
 
     isEditable() {
         return this.column.columnCategory === GermplasmListColumnCategory.VARIABLE &&
+            this.column.name !== 'ENTRY_NO' &&
             this.column.variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_PASSPORT] &&
                 this.column.variableType.toString() !== VariableTypeEnum[VariableTypeEnum.GERMPLASM_ATTRIBUTE];
     }

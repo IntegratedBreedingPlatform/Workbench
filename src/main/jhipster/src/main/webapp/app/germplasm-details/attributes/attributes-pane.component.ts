@@ -106,7 +106,7 @@ export class AttributesPaneComponent implements OnInit {
         const germplasmResp = await this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise();
         const germplasmUUID = germplasmResp.body.germplasmUUID;
         const variableIds = [germplasmAttribute.variableId];
-        const fileCountResp = await this.fileService.getFileCount(variableIds, germplasmUUID).toPromise();
+        const fileCountResp = await this.fileService.getFileCount(variableIds, germplasmUUID, null).toPromise();
         const fileCount = Number(fileCountResp.headers.get('X-Total-Count'));
         if (fileCount > 0 && !await this.principal.hasAnyAuthority(MG_MANAGE_FILES_PERMISSION)) {
             this.alertService.error('germplasm-attribute-modal.delete.blocked.files')
@@ -133,9 +133,9 @@ export class AttributesPaneComponent implements OnInit {
                     return;
                 }
                 if (doRemoveFiles) {
-                    await this.fileService.removeFiles(variableIds, germplasmUUID).toPromise();
+                    await this.fileService.removeFiles(variableIds, germplasmUUID, null).toPromise();
                 } else {
-                    await this.fileService.detachFiles(variableIds, germplasmUUID).toPromise();
+                    await this.fileService.detachFiles(variableIds, germplasmUUID, null).toPromise();
                 }
             }
 
