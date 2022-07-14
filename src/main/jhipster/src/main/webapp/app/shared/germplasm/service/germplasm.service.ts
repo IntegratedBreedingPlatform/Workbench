@@ -187,7 +187,8 @@ export class GermplasmService {
 
     // FIXME backend returns share/ontology/model/variable
     searchAttributes(query): Observable<HttpResponse<Attribute[]>> {
-        return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes/search?query=` + query
+        return this.http.get<Attribute[]>(SERVER_API_URL + `crops/${this.context.cropName}/variables/attributes/search?query=` + query
+            + '&variableTypeIds=' + VariableTypeEnum.GERMPLASM_ATTRIBUTE + ',' + VariableTypeEnum.GERMPLASM_PASSPORT
             + '&programUUID=' + this.context.programUUID, { observe: 'response' });
     }
 
