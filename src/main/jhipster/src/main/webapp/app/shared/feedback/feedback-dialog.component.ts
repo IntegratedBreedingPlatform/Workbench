@@ -33,9 +33,7 @@ export class FeedbackDialogComponent implements OnInit {
                 private route: ActivatedRoute,
                 @Inject(DOCUMENT) private _document) {
         if (!this.feature) {
-            this.route.queryParams.subscribe((value) => {
-                this.feature = value.feature;
-            });
+            this.feature = this.route.snapshot.queryParams.feature;
         }
     }
 
