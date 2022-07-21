@@ -92,6 +92,7 @@ import { RoleService } from './user/service/role.service';
 import { ScrollableTooltipDirective } from './tooltip/scrollable-tooltip.directive';
 import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
 import { CropParameterService } from './crop-parameter/service/crop-parameter.service';
+import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
 
 @NgModule({
     imports: [
@@ -104,7 +105,8 @@ import { CropParameterService } from './crop-parameter/service/crop-parameter.se
         DragDropModule,
         CdkDragDropModule,
         LeafletModule,
-        RouterModule
+        RouterModule,
+        RouterModule.forChild([...feedbackDialogRoutes]),
     ],
     declarations: [
         ModalComponent,
