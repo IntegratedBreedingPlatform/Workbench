@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ParamContext } from '../../service/param.context';
 import { VariableDetails } from '../model/variable-details';
 import { SERVER_API_URL } from '../../../app.constants';
@@ -32,4 +32,9 @@ export class VariableService {
         return this.http.get<VariableDetails>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables/${variableId}`, { params });
     }
 
+    getStudyEntryVariables(studyId: number, variableTypeId: number): Observable<HttpResponse<VariableDetails[]>> {
+        const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/studies/${studyId}/entries/variables?variableTypeId=${variableTypeId}&programUUID=`
+            + this.paramContext.programUUID;
+        return this.http.get<VariableDetails[]>(url, { observe: 'response' });
+    }
 }
