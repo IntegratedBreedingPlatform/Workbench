@@ -19,6 +19,8 @@ import { HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../../app.constants';
 import { HelpService } from '../../../shared/service/help.service';
 import { EntryDetailsImportContext } from './entry-details-import.context';
 import { StudyEntryVariableMatchesComponent } from './study-entry-variable-matches.component';
+import { StudyService } from '../../../shared/study/study.service';
+import { DatasetVariable } from '../../../shared/study/dataset-variable';
 
 @Component({
     selector: 'jhi-import-entry-details',
@@ -52,6 +54,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
         private variableService: VariableService,
+        private studyService: StudyService,
         private context: EntryDetailsImportContext,
         private eventManager: JhiEventManager,
         private germplasmListService: GermplasmListService,
@@ -133,26 +136,36 @@ export class ImportEntryDetailsComponent implements OnInit {
 
         this.isLoading = true;
         const id = Number(this.route.snapshot.queryParamMap.get('studyId'));
-        console.log("study id = " + id);
-        const studyEntriesGenerator = { studyId: id, entries: [] };
-        for (const row of this.context.data) {
-            const entry = {
-                entryNo: row[HEADERS.ENTRY_NO],
-                data: Object.keys(variableMatchesResult).reduce((map, variableName) => {
-                    if (row[variableName]) {
-                        map[variableMatchesResult[variableName]] = { value: row[variableName] };
-                    }
-                    return map;
-                }, {})
-            };
-            studyEntriesGenerator.entries.push(entry);
+        console.log("context on save");
+        console.log(this.context);
+        const studyEntries = [];
+        const newVariables = [];
+
+        for (const newVar of this.context.newVariables) {
+            newVariables.push(new DatasetVariable(VariableTypeEnum.ENTRY_DETAILS,
+                newVar.id, newVar.alias));
         }
 
-        this.germplasmListService.germplasmListUpdates(studyEntriesGenerator).subscribe(
+        for (const row of this.context.data) {
+            let entryNo = row[HEADERS.ENTRY_NO];
+            const variables = [];
+
+            Object.keys(variableMatchesResult).forEach(variableName => {
+                variables.push({
+                    variableId: variableMatchesResult[variableName],
+                        value: row[variableName]
+                    });
+            });
+
+            studyEntries.push({entryNumber: entryNo, data: variables});
+        }
+
+        console.log(studyEntries);
+        this.studyService.importStudyEntries(id, studyEntries, newVariables).subscribe(
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({ name: id + ListComponent.GERMPLASM_LIST_CHANGED });
+                this.eventManager.broadcast({ name: id + "StudyEntryDetailsChanged" });
             },
             (error) => {
                 this.isLoading = false;
