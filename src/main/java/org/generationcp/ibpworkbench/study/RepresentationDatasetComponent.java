@@ -304,6 +304,10 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		for (final String columnId : columnIds) {
 			if (columnId.contains(String.valueOf(TermId.GID.getId())) && !fromUrl) {
 				datasetContainer.addContainerProperty(columnId, Link.class, null);
+			} else if (columnId.contains(String.valueOf(TermId.FEMALE_PARENT_GID.getId())) && !fromUrl) {
+				datasetContainer.addContainerProperty(columnId, Link.class, null);
+			} else if (columnId.contains(String.valueOf(TermId.MALE_PARENT_GID.getId())) && !fromUrl) {
+				datasetContainer.addContainerProperty(columnId, Link.class, null);
 			} else {
 				datasetContainer.addContainerProperty(columnId, String.class, null);
 			}
