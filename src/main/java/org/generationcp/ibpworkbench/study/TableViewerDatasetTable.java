@@ -103,10 +103,7 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 					// define column as Button for GID, else define as String
 				} else if (columnId.contains("GID")) {
 					this.addContainerProperty(columnId, Button.class, null);
-				} else if (columnId.contains("FEMALE_PARENT_GID")) {
-					this.addContainerProperty(columnId, Button.class, null);
-				} else if (columnId.contains("MALE_PARENT_GID")) {
-					this.addContainerProperty(columnId, Button.class, null);
+
 				} else {
 					this.addContainerProperty(columnId, String.class, null);
 				}
@@ -171,9 +168,7 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 					if (stringValue != null) {
 						stringValue = stringValue.trim();
 						// display value as Link if GID, else display as string
-						if (TermId.GID.getId() == variable.getVariableType().getId() ||
-							TermId.FEMALE_PARENT_GID.getId() == variable.getVariableType().getId() ||
-							TermId.MALE_PARENT_GID.getId() == variable.getVariableType().getId()) { //
+						if (TermId.GID.getId() == variable.getVariableType().getId()) {
 							Button gidButton = new Button(stringValue, new GidLinkButtonClickListener(stringValue));
 							gidButton.setStyleName(BaseTheme.BUTTON_LINK);
 							gidButton.setDescription("Click to view Germplasm information");
