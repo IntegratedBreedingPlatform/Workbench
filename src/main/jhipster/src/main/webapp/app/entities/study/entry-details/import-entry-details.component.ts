@@ -8,7 +8,6 @@ import { VariableService } from '../../../shared/ontology/service/variable.servi
 import { parseFile, saveFile } from '../../../shared/util/file-utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { GermplasmListService } from '../../../shared/germplasm-list/service/germplasm-list.service';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
 import { ListComponent } from '../../../germplasm-list/list.component';
@@ -56,7 +55,6 @@ export class ImportEntryDetailsComponent implements OnInit {
         private studyService: StudyService,
         private context: EntryDetailsImportContext,
         private eventManager: JhiEventManager,
-        private germplasmListService: GermplasmListService,
         private helpService: HelpService,
     ) {
         this.helpService.getHelpLink(HELP_GERMPLASM_LIST_IMPORT_UPDATE).subscribe((response) => {
@@ -94,7 +92,7 @@ export class ImportEntryDetailsComponent implements OnInit {
     export($event) {
         $event.preventDefault();
         const isGermplasmListUpdateFormat = true;
-        this.germplasmListService.downloadGermplasmTemplate(isGermplasmListUpdateFormat).subscribe((response) => {
+        this.studyService.downloadImportTemplate('EntryDetails').subscribe((response) => {
             saveFile(response);
         });
     }
