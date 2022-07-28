@@ -3,17 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../../../shared/service/param.context';
 import { AlertService } from '../../../shared/alert/alert.service';
-import { ActivatedRoute } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
-import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
-import { GermplasmListImportUpdateComponent } from '../../../germplasm-list/import/germplasm-list-import-update.component';
 import { toUpper } from '../../../shared/util/to-upper';
 import { GermplasmListService } from '../../../shared/germplasm-list/service/germplasm-list.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { ListComponent } from '../../../germplasm-list/list.component';
-import { GermplasmListImportComponent } from '../../../germplasm-list/import/germplasm-list-import.component';
-import { GermplasmListImportReviewComponent } from '../../../germplasm-list/import/germplasm-list-import-review.component';
 import { EntryDetailsImportContext } from './entry-details-import.context';
 
 @Component({
@@ -33,7 +27,6 @@ export class StudyEntryVariableMatchesComponent implements OnInit {
     variableMatchesResult: any = {};
 
     constructor(
-        private route: ActivatedRoute,
         private translateService: TranslateService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
@@ -47,7 +40,6 @@ export class StudyEntryVariableMatchesComponent implements OnInit {
 
     ngOnInit() {
         this.rows = [];
-        console.log(this.context);
         this.context.newVariables.forEach((variable) => {
             const variableName = variable.alias ? variable.alias : variable.name;
             const row = {

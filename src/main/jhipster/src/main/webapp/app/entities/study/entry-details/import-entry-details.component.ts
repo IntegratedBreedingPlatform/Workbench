@@ -3,18 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
 import { VariableService } from '../../../shared/ontology/service/variable.service';
 import { parseFile, saveFile } from '../../../shared/util/file-utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
-import { ListComponent } from '../../../germplasm-list/list.component';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../../app.constants';
-import { HelpService } from '../../../shared/service/help.service';
 import { EntryDetailsImportContext } from './entry-details-import.context';
 import { StudyEntryVariableMatchesComponent } from './study-entry-variable-matches.component';
 import { StudyService } from '../../../shared/study/study.service';
@@ -25,7 +22,6 @@ import { DatasetVariable } from '../../../shared/study/dataset-variable';
     templateUrl: 'import-entry-details.component.html'
 })
 export class ImportEntryDetailsComponent implements OnInit {
-    helpLink: string;
 
     @ViewChild('fileUpload')
     fileUpload: ElementRef;
@@ -40,7 +36,6 @@ export class ImportEntryDetailsComponent implements OnInit {
     selectedFileType = this.extensions[0];
 
     isLoading: boolean;
-    fileUploadMode: boolean = true;
     unknowColumns = {};
 
     constructor(
@@ -50,18 +45,11 @@ export class ImportEntryDetailsComponent implements OnInit {
         private alertService: JhiAlertService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
-        private germplasmService: GermplasmService,
         private variableService: VariableService,
         private studyService: StudyService,
         private context: EntryDetailsImportContext,
         private eventManager: JhiEventManager,
-        private helpService: HelpService,
     ) {
-        this.helpService.getHelpLink(HELP_GERMPLASM_LIST_IMPORT_UPDATE).subscribe((response) => {
-            if (response.body) {
-                this.helpLink = response.body;
-            }
-        });
     }
 
     ngOnInit(): void {
@@ -103,11 +91,8 @@ export class ImportEntryDetailsComponent implements OnInit {
             this.isLoading = false;
             if (valid) {
                 if (this.hasVariables()) {
-                    this.fileUploadMode = false;
                     const modalRef = this.modalService.open(StudyEntryVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
                     modalRef.result.then((variableMatchesResult) => {
-                        console.log("result");
-                        console.log(variableMatchesResult);
                         if (variableMatchesResult) {
                             this.save(variableMatchesResult);
                         } else {
@@ -133,8 +118,6 @@ export class ImportEntryDetailsComponent implements OnInit {
 
         this.isLoading = true;
         const id = Number(this.route.snapshot.queryParamMap.get('studyId'));
-        console.log("context on save");
-        console.log(this.context);
         const studyEntries = [];
         const newVariables = [];
 
@@ -157,7 +140,6 @@ export class ImportEntryDetailsComponent implements OnInit {
             studyEntries.push({entryNumber: entryNo, data: variables});
         }
 
-        console.log(studyEntries);
         this.studyService.importStudyEntries(id, studyEntries, newVariables).subscribe(
             () => {
                 this.isLoading = false;
@@ -356,11 +338,4 @@ export class ImportEntryDetailsPopupComponent implements OnInit, OnDestroy {
 
 export enum HEADERS {
     'ENTRY_NO' = 'ENTRY_NO'
-}
-
-export enum VARIABLE_HEADERS {
-    'ID' = 'ID',
-    'NAME' = 'NAME',
-    'DESCRIPTION' = 'DESCRIPTION'
-
 }
