@@ -127,11 +127,11 @@ export class ImportEntryDetailsComponent implements OnInit {
         }
 
         for (const row of this.context.data) {
-            let entryNo = row[HEADERS.ENTRY_NO];
+            const entryNo = row[HEADERS.ENTRY_NO];
             const variables = [];
 
-            Object.keys(variableMatchesResult).forEach(variableName => {
-                variables.push({
+            Object.keys(variableMatchesResult).forEach((variableName) => {
+                variables.push ({
                     variableId: variableMatchesResult[variableName],
                         value: row[variableName]
                     });
@@ -144,7 +144,7 @@ export class ImportEntryDetailsComponent implements OnInit {
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({ name: id + "StudyEntryDetailsChanged" });
+                this.eventManager.broadcast({ name: id + 'StudyEntryDetailsChanged' });
                 this.handleImportSuccess();
             },
             (error) => {

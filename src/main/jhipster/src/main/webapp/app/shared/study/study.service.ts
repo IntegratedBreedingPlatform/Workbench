@@ -14,10 +14,10 @@ export class StudyService {
     ) {
     }
 
-    downloadImportTemplate(fileNamePrefix: string, isUpdateFormat: boolean = true) {
+    downloadImportTemplate(fileNamePrefix: string, isUpdateFormat= true) {
         let url = SERVER_API_URL + `crops/${this.paramContext.cropName}/germplasm-lists/templates/xls/${isUpdateFormat}?programUUID=${this.paramContext.programUUID}`;
         if (fileNamePrefix) {
-            url +=`&fileNamePrefix=${fileNamePrefix}`;
+            url += `&fileNamePrefix=${fileNamePrefix}`;
         }
 
         return this.http.get(url, { observe: 'response', responseType: 'blob' });
@@ -26,8 +26,8 @@ export class StudyService {
     importStudyEntries(studyId: number, data: any[], newVariables: any[]): Observable<any> {
         const params = Object.assign({
             programUUID: this.paramContext.programUUID,
-            data: data,
-            newVariables: newVariables
+            data,
+            newVariables
         });
         const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/studies/${studyId}/entries/import?programUUID=`
             + this.paramContext.programUUID;
