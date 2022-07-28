@@ -7,6 +7,8 @@ import { FeedbackService } from './service/feedback.service';
 import { finalize } from 'rxjs/operators';
 import { AlertService } from '../alert/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { JhiLanguageService } from 'ng-jhipster';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'jhi-feedback-dialog-component',
@@ -26,8 +28,13 @@ export class FeedbackDialogComponent implements OnInit {
                 private feedbackService: FeedbackService,
                 private alertService: AlertService,
                 private translateService: TranslateService,
+                private languageService: JhiLanguageService,
                 private renderer2: Renderer2,
+                private route: ActivatedRoute,
                 @Inject(DOCUMENT) private _document) {
+        if (!this.feature) {
+            this.feature = this.route.snapshot.queryParams.feature;
+        }
     }
 
     ngOnInit(): void {
@@ -46,6 +53,9 @@ export class FeedbackDialogComponent implements OnInit {
 
     closeModal() {
         this.activeModal.dismiss();
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
     }
 
     dismiss() {
