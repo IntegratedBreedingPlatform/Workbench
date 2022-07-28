@@ -2,7 +2,6 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from '../../../shared/alert/alert.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
 import { VariableService } from '../../../shared/ontology/service/variable.service';
@@ -13,7 +12,7 @@ import { GermplasmListService } from '../../../shared/germplasm-list/service/ger
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
 import { ListComponent } from '../../../germplasm-list/list.component';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../../app.constants';
 import { HelpService } from '../../../shared/service/help.service';
@@ -49,7 +48,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         private route: ActivatedRoute,
         private jhiLanguageService: JhiLanguageService,
         private translateService: TranslateService,
-        private alertService: AlertService,
+        private alertService: JhiAlertService,
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
@@ -143,7 +142,7 @@ export class ImportEntryDetailsComponent implements OnInit {
 
         for (const newVar of this.context.newVariables) {
             newVariables.push(new DatasetVariable(VariableTypeEnum.ENTRY_DETAILS,
-                newVar.id, newVar.alias));
+                newVar.id, !newVar.alias  ? newVar.name : newVar.alias));
         }
 
         for (const row of this.context.data) {
@@ -166,6 +165,7 @@ export class ImportEntryDetailsComponent implements OnInit {
                 this.isLoading = false;
                 this.modal.close();
                 this.eventManager.broadcast({ name: id + "StudyEntryDetailsChanged" });
+                this.handleImportSuccess();
             },
             (error) => {
                 this.isLoading = false;
@@ -273,8 +273,24 @@ export class ImportEntryDetailsComponent implements OnInit {
             .forEach((header) => this.unknowColumns[header] = 1);
     }
 
+    handleImportSuccess() {
+        // Handle selection when this page is loaded outside Angular.
+        if ((<any>window.parent).handleImportSuccess) {
+            (<any>window.parent).handleImportSuccess();
+        }
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'import-success', 'value': ''}, '*');
+        }
+    }
+
     dismiss() {
-        this.modal.dismiss();
+        // Handle closing of modal when this page is loaded outside of Angular.
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
+        }
     }
 
     private validateData(errorMessage: string[]) {
