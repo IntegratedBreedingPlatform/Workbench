@@ -4,11 +4,10 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../../../shared/service/param.context';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { JhiEventManager } from 'ng-jhipster';
-import { toUpper } from '../../../shared/util/to-upper';
-import { GermplasmListService } from '../../../shared/germplasm-list/service/germplasm-list.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { EntryDetailsImportContext } from './entry-details-import.context';
+import { EntryDetailsImportContext } from '../../../shared/ontology/entry-details-import.context';
+import { EntryDetailsImportService } from '../../../shared/ontology/service/entry-details-import.service';
 
 @Component({
     selector: 'jhi-study-entry-variable-matches.component',
@@ -21,10 +20,8 @@ export class StudyEntryVariableMatchesComponent implements OnInit {
     pageSize = 10;
 
     isLoading: boolean;
-    isSaving: boolean;
 
     rows = [];
-    variableMatchesResult: any = {};
 
     constructor(
         private translateService: TranslateService,
@@ -32,53 +29,16 @@ export class StudyEntryVariableMatchesComponent implements OnInit {
         private modalService: NgbModal,
         private paramContext: ParamContext,
         private alertService: AlertService,
-        private germplasmListService: GermplasmListService,
         private eventManager: JhiEventManager,
-        private context: EntryDetailsImportContext
+        private context: EntryDetailsImportContext,
+        private importEntryDetailsService: EntryDetailsImportService
     ) {
     }
 
     ngOnInit() {
         this.rows = [];
-        this.context.newVariables.forEach((variable) => {
-            const variableName = variable.alias ? variable.alias : variable.name;
-            const row = {
-                id: variable.id, name: variableName,
-                description: variable.description,
-                existsInStudy: false
-            };
-
-            if (variable.alias) {
-                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
-            }
-            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
-            this.rows.push(row);
-        });
-
-        this.context.variablesOfTheStudy.forEach((variable) => {
-            const variableName = variable.alias ? variable.alias : variable.name;
-            const row = {
-                id: variable.id,
-                name: variableName, description: variable.description,
-                existsInStudy: true
-            };
-
-            if (variable.alias) {
-                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
-            }
-            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
-            this.rows.push(row);
-        });
-
-        this.context.unknownVariableNames.forEach((variableName) => {
-            const row = {
-                id: null,
-                name: variableName,
-                description: '',
-                existsInStudy: false
-            };
-            this.rows.push(row);
-        });
+        this.rows = this.importEntryDetailsService
+            .initializeVariableMatches();
     }
 
     back() {
@@ -90,11 +50,11 @@ export class StudyEntryVariableMatchesComponent implements OnInit {
     }
 
     next() {
-        this.modal.close(this.variableMatchesResult);
+        this.modal.close(this.context.variableMatchesResult);
     }
 
     save() {
-        this.modal.close(this.variableMatchesResult);
+        this.modal.close(this.context.variableMatchesResult);
     }
 
     private onError(response: HttpErrorResponse) {

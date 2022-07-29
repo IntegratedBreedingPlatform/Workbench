@@ -11,11 +11,11 @@ import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
-import { HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../../app.constants';
-import { EntryDetailsImportContext } from './entry-details-import.context';
+import { EntryDetailsImportContext } from '../../../shared/ontology/entry-details-import.context';
 import { StudyEntryVariableMatchesComponent } from './study-entry-variable-matches.component';
 import { StudyService } from '../../../shared/study/study.service';
 import { DatasetVariable } from '../../../shared/study/dataset-variable';
+import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
 
 @Component({
     selector: 'jhi-import-entry-details',
@@ -30,13 +30,12 @@ export class ImportEntryDetailsComponent implements OnInit {
     fileName = '';
 
     rawData = new Array<any>();
-    unknownColumn = {};
 
     extensions = ['.xls', '.xlsx'];
     selectedFileType = this.extensions[0];
 
     isLoading: boolean;
-    unknowColumns = {};
+    unknownColumns = {};
 
     constructor(
         private route: ActivatedRoute,
@@ -49,6 +48,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         private studyService: StudyService,
         private context: EntryDetailsImportContext,
         private eventManager: JhiEventManager,
+        private entryDetailsImportService: EntryDetailsImportService,
     ) {
     }
 
@@ -79,7 +79,6 @@ export class ImportEntryDetailsComponent implements OnInit {
 
     export($event) {
         $event.preventDefault();
-        const isGermplasmListUpdateFormat = true;
         this.studyService.downloadImportTemplate('EntryDetails').subscribe((response) => {
             saveFile(response);
         });
@@ -123,7 +122,7 @@ export class ImportEntryDetailsComponent implements OnInit {
 
         for (const newVar of this.context.newVariables) {
             newVariables.push(new DatasetVariable(VariableTypeEnum.ENTRY_DETAILS,
-                newVar.id, !newVar.alias  ? newVar.name : newVar.alias));
+                newVar.id, !newVar.alias ? newVar.name : newVar.alias));
         }
 
         for (const row of this.context.data) {
@@ -131,13 +130,13 @@ export class ImportEntryDetailsComponent implements OnInit {
             const variables = [];
 
             Object.keys(variableMatchesResult).forEach((variableName) => {
-                variables.push ({
+                variables.push({
                     variableId: variableMatchesResult[variableName],
-                        value: row[variableName]
-                    });
+                    value: row[variableName]
+                });
             });
 
-            studyEntries.push({entryNumber: entryNo, data: variables});
+            studyEntries.push({ entryNumber: entryNo, data: variables });
         }
 
         this.studyService.importStudyEntries(id, studyEntries, newVariables).subscribe(
@@ -158,7 +157,7 @@ export class ImportEntryDetailsComponent implements OnInit {
     private async showSummaryConfirmation() {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import-updates.confirmation', {param: this.context.data.length});
+        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import-updates.confirmation', { param: this.context.data.length });
         try {
             await confirmModalRef.result;
         } catch (rejected) {
@@ -168,29 +167,21 @@ export class ImportEntryDetailsComponent implements OnInit {
     }
 
     private async validateFile() {
-        if (!this.rawData || this.rawData.filter((row) => row.some((column) => Boolean(column.trim()))).length <= 1) {
-            this.alertService.error('germplasm-list.import.file.validation.file.empty');
+        if (!this.entryDetailsImportService.normalizeHeaders(this.rawData)) {
             return false;
         }
 
-        // normalize headers
-        this.rawData[0] = this.rawData[0].map((header) => header.toUpperCase());
         const headers = this.rawData[0];
-        this.context.data = this.rawData.slice(1).map((fileRow, rowIndex) => {
-            return fileRow.reduce((map, col, colIndex) => {
-                map[headers[colIndex]] = col;
-                return map;
-            }, {});
-        });
+        // Ignore empty column headers
+        const fileHeaders = headers.filter((header) => !!header);
 
-        const errorMessage: string[] = [];
-        this.validateHeader(headers, errorMessage);
-        this.validateData(errorMessage);
-
-        if (errorMessage.length) {
-            this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
+        if (!this.entryDetailsImportService.validateFile(fileHeaders, this.context.data)) {
             return false;
         }
+
+        // Gather unknown columns
+        fileHeaders.filter((header) => Object.values(HEADERS).indexOf(header) < 0)
+            .forEach((header) => this.unknownColumns[header] = 1);
 
         await this.processEntryDetailVariables();
 
@@ -203,7 +194,7 @@ export class ImportEntryDetailsComponent implements OnInit {
     }
 
     private async processEntryDetailVariables() {
-        const unknownColumnNames = Object.keys(this.unknowColumns);
+        const unknownColumnNames = Object.keys(this.unknownColumns);
         let variablesOfTheList = [],
             variablesFiltered = [];
 
@@ -217,7 +208,7 @@ export class ImportEntryDetailsComponent implements OnInit {
                 .map((resp) => resp.body)
                 .toPromise();
 
-            this.context.variablesOfTheStudy = variablesFiltered.filter((variable) =>
+            this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
                 variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
             );
 
@@ -226,31 +217,10 @@ export class ImportEntryDetailsComponent implements OnInit {
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
-                this.context.variablesOfTheStudy.every((v) => Number(v.id) !== Number(variable.id))
+                this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
             );
         }
 
-    }
-
-    private validateHeader(fileHeader: string[], errorMessage: string[]) {
-        // Ignore empty column headers
-        fileHeader = fileHeader.filter((header) => !!header);
-        this.unknowColumns = {};
-        Object.keys(fileHeader
-            // get duplicates
-            .filter((header, i, self) => self.indexOf(header) !== i)
-            // Show duplicates only once
-            .reduce((dupesMap, header) => {
-                dupesMap[header] = true;
-                return dupesMap;
-            }, {})
-        ).forEach((header) => {
-            errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: header }));
-        });
-
-        // Gather unknown columns
-        fileHeader.filter((header) => Object.values(HEADERS).indexOf(header) < 0)
-            .forEach((header) => this.unknowColumns[header] = 1);
     }
 
     handleImportSuccess() {
@@ -259,7 +229,7 @@ export class ImportEntryDetailsComponent implements OnInit {
             (<any>window.parent).handleImportSuccess();
         }
         if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: 'import-success', 'value': ''}, '*');
+            (<any>window.parent).postMessage({ name: 'import-success', 'value': '' }, '*');
         }
     }
 
@@ -270,26 +240,6 @@ export class ImportEntryDetailsComponent implements OnInit {
         }
         if ((<any>window.parent)) {
             (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
-        }
-    }
-
-    private validateData(errorMessage: string[]) {
-        // row validations
-        for (const row of this.context.data) {
-            if (!row[HEADERS.ENTRY_NO]) {
-                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no'));
-                break;
-            }
-
-            if (row[HEADERS.ENTRY_NO] && (isNaN(row[HEADERS.ENTRY_NO])
-                || !Number.isInteger(Number(row[HEADERS.ENTRY_NO])) || row[HEADERS.ENTRY_NO] < 0)) {
-                errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.format'));
-                break;
-            }
-        }
-
-        if (!errorMessage.length && this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => cell.length && col.indexOf(cell) !== i)) {
-            errorMessage.push(this.translateService.instant('germplasm-list.import.file.validation.entry.no.duplicates'));
         }
     }
 
@@ -306,7 +256,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         return [
             ...this.context.newVariables,
             ...this.context.unknownVariableNames,
-            ...this.context.variablesOfTheStudy
+            ...this.context.variablesOfTheList
         ].length;
     }
 }
@@ -334,8 +284,4 @@ export class ImportEntryDetailsPopupComponent implements OnInit, OnDestroy {
             this.popupService.open(ImportEntryDetailsComponent as Component);
         });
     }
-}
-
-export enum HEADERS {
-    'ENTRY_NO' = 'ENTRY_NO'
 }

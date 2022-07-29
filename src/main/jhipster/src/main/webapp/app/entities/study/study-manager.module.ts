@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ImportEntryDetailsComponent, ImportEntryDetailsPopupComponent } from './entry-details/import-entry-details.component';
 import { STUDY_MANAGER_ROUTES } from './study-manager.route';
 import { StudyEntryVariableMatchesComponent } from './entry-details/study-entry-variable-matches.component';
-import { EntryDetailsImportContext } from './entry-details/entry-details-import.context';
+import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
 
 @NgModule({
     imports: [

@@ -3,7 +3,6 @@ import { GermplasmListImportComponent, HEADERS } from './germplasm-list-import.c
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmListImportContext } from './germplasm-list-import.context';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../../shared/germplasm/model/germplasm.model';
@@ -33,6 +32,7 @@ import { GermplasmMatchRequest } from '../../entities/germplasm/germplasm-match-
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
 import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
+import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
 
 @Component({
     selector: 'jhi-germplasm-list-import-review',
@@ -98,7 +98,7 @@ export class GermplasmListImportReviewComponent implements OnInit, OnDestroy {
         private germplasmManagerContext: GermplasmManagerContext,
         private router: Router,
         private eventManager: JhiEventManager,
-        private context: GermplasmListImportContext
+        private context: EntryDetailsImportContext
     ) {
     }
 

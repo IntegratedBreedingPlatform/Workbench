@@ -94,6 +94,8 @@ import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
 import { CropParameterService } from './crop-parameter/service/crop-parameter.service';
 import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
 import { StudyService } from './study/study.service';
+import { EntryDetailsImportContext } from './ontology/entry-details-import.context';
+import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 
 @NgModule({
     imports: [
@@ -200,11 +202,13 @@ import { StudyService } from './study/study.service';
         UrlService,
         GermplasmPedigreeService,
         VariableService,
+        EntryDetailsImportService,
         VariableValidationService,
         StudyService,
         GermplasmGroupingService,
         InlineEditorService,
-        FeedbackService
+        FeedbackService,
+        EntryDetailsImportContext
     ],
     entryComponents: [
         ModalComponent,
