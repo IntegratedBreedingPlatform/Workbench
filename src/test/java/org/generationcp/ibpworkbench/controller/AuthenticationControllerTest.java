@@ -7,7 +7,7 @@ import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.api.role.RoleService;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
@@ -78,7 +78,7 @@ public class AuthenticationControllerTest {
 	private AuthenticationController controller;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private RoleService roleService;
 
 	private List<Role> roles;
 	private Role selectedRole;
@@ -87,13 +87,13 @@ public class AuthenticationControllerTest {
 	public void setup() {
 		this.createTestRoles();
 		Mockito.doReturn(this.selectedRole.getId()).when(this.userAccountModel).getRoleId();
-		Mockito.doReturn(this.roles).when(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
+		Mockito.doReturn(this.roles).when(this.roleService).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 	}
 
 	@Test
 	public void testIntialize() {
 		this.controller.initialize();
-		Mockito.verify(this.workbenchDataManager).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
+		Mockito.verify(this.roleService).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		Assert.assertEquals(this.roles, this.controller.getRoles());
 	}
 
