@@ -179,7 +179,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         // Ignore empty column headers
         const fileHeaders = headers.filter((header) => !!header);
 
-        if (!this.entryDetailsImportService.validateFile(fileHeaders, this.context.data)){
+        if (!this.entryDetailsImportService.validateFile(fileHeaders, this.context.data)) {
             return false;
         }
 

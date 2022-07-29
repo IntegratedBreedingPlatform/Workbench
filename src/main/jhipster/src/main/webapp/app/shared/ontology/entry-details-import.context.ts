@@ -23,4 +23,3 @@ export class EntryDetailsImportContext {
         this.unknownVariableNames = [];
     }
 }
-
