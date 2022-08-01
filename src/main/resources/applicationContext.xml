@@ -114,11 +114,6 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="locationDataManager" factory-bean="managerFactory"
-		factory-method="getLocationDataManager" scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
 	<bean id="locationService" factory-bean="managerFactory"
 		  factory-method="getLocationService" scope="request">
 		<aop:scoped-proxy />
