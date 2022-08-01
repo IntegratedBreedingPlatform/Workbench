@@ -18,7 +18,7 @@ import org.generationcp.middleware.domain.dms.ValueReference;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.api.role.RoleService;
 import org.generationcp.middleware.service.api.OntologyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class DatasetExporter {
     private static final Logger LOG = LoggerFactory.getLogger(DatasetExporter.class);
 
     @Autowired
-    private WorkbenchDataManager workbenchDataManager;
+    private RoleService roleService;
 
     @Autowired
     private StudyDataManager studyDataManager;
@@ -443,12 +443,12 @@ public class DatasetExporter {
         return this.rowsToWrite;
     }
 
-    public WorkbenchDataManager getWorkbenchDataManager() {
-        return this.workbenchDataManager;
+    public RoleService getRoleService() {
+        return this.roleService;
     }
 
-    public void setWorkbenchDataManager(final WorkbenchDataManager workbenchDataManager) {
-        this.workbenchDataManager = workbenchDataManager;
+    public void setRoleService(final RoleService roleService) {
+        this.roleService = roleService;
     }
 
 
