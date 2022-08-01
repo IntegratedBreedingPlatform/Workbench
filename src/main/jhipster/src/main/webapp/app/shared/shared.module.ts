@@ -94,6 +94,7 @@ import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
 import { CropParameterService } from './crop-parameter/service/crop-parameter.service';
 import { CropGenotypingParameterService } from './crop/service/crop-genotyping-parameter.service';
 import { GenotypingBrapiService } from './brapi/service/genotyping-brapi.service';
+import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
 
 @NgModule({
     imports: [
@@ -106,7 +107,8 @@ import { GenotypingBrapiService } from './brapi/service/genotyping-brapi.service
         DragDropModule,
         CdkDragDropModule,
         LeafletModule,
-        RouterModule
+        RouterModule,
+        RouterModule.forChild([...feedbackDialogRoutes]),
     ],
     declarations: [
         ModalComponent,
