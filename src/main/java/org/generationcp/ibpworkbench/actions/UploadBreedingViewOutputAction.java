@@ -15,13 +15,13 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutpu
 import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutputParser.ZipFileInvalidContentException;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
+import org.generationcp.middleware.api.location.LocationService;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.TrialEnvironment;
 import org.generationcp.middleware.domain.dms.TrialEnvironments;
 import org.generationcp.middleware.domain.dms.Variable;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.enumeration.DatasetTypeEnum;
-import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.Location;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -59,7 +59,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 	private PlatformTransactionManager transactionManager;
 
 	@Autowired
-	private LocationDataManager locationDataManager;
+	private LocationService locationService;
 
 	private BMSOutputParser bmsOutputParser;
 
@@ -199,7 +199,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 		if (environmentFactorVariable != null) {
 			//Check if the selected environment factor is the LOCATION_ID and retrieve the Location using the LOCATION_ID value
 			if (environmentFactorVariable.getVariableType().getStandardVariable().getId() == TermId.LOCATION_ID.getId()) {
-				final Location location = this.locationDataManager.getLocationByID(Integer.valueOf(environmentFactorVariable.getIdValue()));
+				final Location location = this.locationService.getLocationByID(Integer.valueOf(environmentFactorVariable.getIdValue()));
 				return environmentName.equals(location.getLname());
 			}
 

@@ -42,7 +42,7 @@ public class WorkbenchUserServiceTest {
 	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Mock
-	private UserService workbenchDataManager;
+	private UserService middlewareUserService;
 
 	@InjectMocks
 	private WorkbenchUserService userService;
@@ -55,8 +55,8 @@ public class WorkbenchUserServiceTest {
 
 		this.userService.saveUserAccount(userAccount);
 
-		Mockito.verify(this.workbenchDataManager).addPerson(personCaptor.capture());
-		Mockito.verify(this.workbenchDataManager).addUser(userCaptor.capture());
+		Mockito.verify(this.middlewareUserService).addPerson(personCaptor.capture());
+		Mockito.verify(this.middlewareUserService).addUser(userCaptor.capture());
 		final Person capturedPerson = personCaptor.getAllValues().get(0);
 		final WorkbenchUser capturedUser = userCaptor.getAllValues().get(0);
 
@@ -95,7 +95,7 @@ public class WorkbenchUserServiceTest {
 		final List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
-		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+		Mockito.when(this.middlewareUserService.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 			userList);
 
 		Assert.assertTrue(this.userService.isUserActive(userAccount));
@@ -121,7 +121,7 @@ public class WorkbenchUserServiceTest {
 		final List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
-		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+		Mockito.when(this.middlewareUserService.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 			userList);
 
 		Assert.assertTrue(this.userService.isValidUserLogin(userAccount));
@@ -130,7 +130,7 @@ public class WorkbenchUserServiceTest {
 	@Test
 	public void testIsValidUserLoginShouldReturnFalseIfInvalid() {
 		final UserAccountModel userAccount = this.createUserAccount();
-		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+		Mockito.when(this.middlewareUserService.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 			Collections.<WorkbenchUser>emptyList());
 		Assert.assertFalse(this.userService.isValidUserLogin(userAccount));
 	}
@@ -143,8 +143,8 @@ public class WorkbenchUserServiceTest {
 
 		this.userService.updateUserPassword(userName, password);
 
-		Mockito.verify(this.workbenchDataManager).changeUserPassword(eq(userName), not(eq(password)));
-		Mockito.verify(this.workbenchDataManager).changeUserPassword(eq(userName), passwordCaptor.capture());
+		Mockito.verify(this.middlewareUserService).changeUserPassword(eq(userName), not(eq(password)));
+		Mockito.verify(this.middlewareUserService).changeUserPassword(eq(userName), passwordCaptor.capture());
 		final String capturedPassword = passwordCaptor.getAllValues().get(0);
 		Assert.assertEquals(60, capturedPassword.length());
 		// Check that non-encrypted password matches the encrypted one
@@ -161,7 +161,7 @@ public class WorkbenchUserServiceTest {
 		final List<WorkbenchUser> userList = new ArrayList<>();
 		userList.add(user);
 
-		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+		Mockito.when(this.middlewareUserService.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 			userList);
 
 		final WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
@@ -174,7 +174,7 @@ public class WorkbenchUserServiceTest {
 	public void testGetUserByUserNameWithNoExistingUserAcct() throws Exception {
 		final List<WorkbenchUser> userList = new ArrayList<>();
 
-		Mockito.when(this.workbenchDataManager.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
+		Mockito.when(this.middlewareUserService.getUserByName(TEST_USERNAME, 0, 1, Operation.EQUAL)).thenReturn(
 			userList);
 
 		final WorkbenchUser resultUser = this.userService.getUserByUserName(TEST_USERNAME);
@@ -189,7 +189,7 @@ public class WorkbenchUserServiceTest {
 		final Person person = new Person();
 		user.setPerson(person);
 		person.setId(TEST_PERSON_ID);
-		Mockito.when(this.workbenchDataManager.getUserById(TEST_USER_ID)).thenReturn(user);
+		Mockito.when(this.middlewareUserService.getUserById(TEST_USER_ID)).thenReturn(user);
 
 		final WorkbenchUser resultUser = this.userService.getUserByUserid(TEST_USER_ID);
 
