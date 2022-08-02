@@ -12,6 +12,8 @@ import { Study } from '../model/study/study';
 import { VariantSet } from '../model/variantsets/variantset';
 import { CallSet } from '../model/callsets/callset';
 import { Call } from '../model/calls/call';
+import { SearchSamplesRequest } from '../model/samples/search-samples-request';
+import { Sample } from '../model/samples/sample';
 
 @Injectable()
 export class GenotypingBrapiService {
@@ -40,6 +42,10 @@ export class GenotypingBrapiService {
 
     searchCalls(searchCallsRequest: SearchCallsRequest): Observable<BrapiResponse<Call>> {
         return this.http.post<BrapiResponse<Call>>(`${this.baseUrl}/search/calls`, searchCallsRequest, { headers: this.createHeader() });
+    }
+
+    searchSamples(searchSamplesRequest: SearchSamplesRequest): Observable<BrapiResponse<Sample>> {
+        return this.http.post<BrapiResponse<Germplasm>>(`${this.baseUrl}/search/samples`, searchSamplesRequest, { headers: this.createHeader() });
     }
 
     // FIXME: Find a way to have a separate instance of HttpClient with its own HttpInterceptor

@@ -16,6 +16,7 @@ import { GermplasmService } from '../../shared/germplasm/service/germplasm.servi
 import { Sample } from '../../entities/sample';
 import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/search-germplasm-request';
 import { JhiAlertService } from 'ng-jhipster';
+import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
 
 @Component({
     selector: 'jhi-genotyping-pane',
@@ -98,14 +99,35 @@ export class GenotypingPaneComponent implements OnInit {
 
     linkByChanged() {
         this.resetForm();
+        this.isStudyLoading = true;
         let searchGermplasmRequest: SearchGermplasmRequest;
         if (this.selectedLinkBy === this.LINK_BY_NAME) {
             searchGermplasmRequest = { germplasmNames: [this.germplasmSearchValue], programDbIds: [this.cropGenotypingParameter.programId] };
-        } else if (this.selectedLinkBy === this.LINK_BY_GUID || this.selectedLinkBy === this.LINK_BY_SAMPLE_UID) {
+            this.loadGenotypingStudy(searchGermplasmRequest);
+        } else if (this.selectedLinkBy === this.LINK_BY_GUID) {
             searchGermplasmRequest = { externalReferenceIds: [this.germplasmSearchValue], programDbIds: [this.cropGenotypingParameter.programId] };
+            this.loadGenotypingStudy(searchGermplasmRequest);
+        } else if (this.selectedLinkBy === this.LINK_BY_SAMPLE_UID) {
+            const searchSamplesRequest: SearchSamplesRequest = { externalReferenceIds: [this.germplasmSearchValue], programDbIds: [this.cropGenotypingParameter.programId] };
+            this.searchSamples(searchSamplesRequest)
         }
+    }
 
-        this.isStudyLoading = true;
+    searchSamples(searchSamplesRequest: SearchSamplesRequest) {
+        // Search the Sample first by externalReferenceID,
+        // If sample is available, we should get the germplasm associated to it, and use the germplasmDbId to
+        // load the Gigwa study and calls.
+        this.genotypingBrapiService.searchSamples(searchSamplesRequest).toPromise().then((response) => {
+            if (response && response.result.data.length) {
+                this.loadGenotypingStudy({ germplasmDbIds: [response.result.data[0].germplasmDbId], programDbIds: [this.cropGenotypingParameter.programId] });
+            } else {
+                this.isStudyLoading = false;
+                this.alertService.error('genotyping.no.genotyping.germplasm.found', { linkType: this.selectedLinkBy, germplasmSearchValue: this.germplasmSearchValue });
+            }
+        });
+    }
+
+    loadGenotypingStudy(searchGermplasmRequest: SearchGermplasmRequest) {
         this.genotypingBrapiService.searchGermplasm(searchGermplasmRequest).pipe(flatMap((response) => {
             if (response && response.result.data.length) {
                 this.genotypingGermplasm = response.result.data[0];
@@ -130,7 +152,6 @@ export class GenotypingPaneComponent implements OnInit {
             this.alertService.error('genotyping.no.genotyping.germplasm.found');
             this.isStudyLoading = false;
         });
-
     }
 
     selectStudyOnChange() {
