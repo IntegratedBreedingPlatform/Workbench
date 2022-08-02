@@ -16,6 +16,7 @@ import org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis.BMSOutpu
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomFileFactory;
 import org.generationcp.ibpworkbench.ui.window.FileUploadBreedingViewOutputWindow.CustomUploadField;
+import org.generationcp.middleware.api.location.LocationService;
 import org.generationcp.middleware.data.initializer.DMSVariableTestDataInitializer;
 import org.generationcp.middleware.data.initializer.LocationTestDataInitializer;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
@@ -28,7 +29,6 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.dms.VariableTypeList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.enumeration.DatasetTypeEnum;
-import org.generationcp.middleware.manager.api.LocationDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -111,7 +111,7 @@ public class UploadBreedingViewOutputActionTest {
 	private PlatformTransactionManager transactionManager;
 
 	@Mock
-	private LocationDataManager locationDataManager;
+	private LocationService locationService;
 
 	@InjectMocks
 	private final UploadBreedingViewOutputAction uploadBreedingViewOutputAction = new UploadBreedingViewOutputAction();
@@ -309,7 +309,7 @@ public class UploadBreedingViewOutputActionTest {
 		final VariableList variableList = Mockito.mock(VariableList.class);
 		Mockito.when(environment.getVariables()).thenReturn(variableList);
 		Mockito.when(variableList.findByLocalName("LOCATION_NAME")).thenReturn(variable);
-		Mockito.when(this.locationDataManager.getLocationByID(1)).thenReturn(LocationTestDataInitializer.createLocation(1, "WARDA"));
+		Mockito.when(this.locationService.getLocationByID(1)).thenReturn(LocationTestDataInitializer.createLocation(1, "WARDA"));
 
 		boolean containsValue = this.uploadBreedingViewOutputAction.containsValueByLocalName("LOCATION_NAME", "WARDA", environment);
 		Assert.assertTrue(containsValue);
