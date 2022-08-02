@@ -41,10 +41,6 @@ export class StudyEntryVariableMatchesComponent implements OnInit {
             .initializeVariableMatches();
     }
 
-    back() {
-        this.modal.close();
-    }
-
     dismiss() {
         this.modal.dismiss();
     }
