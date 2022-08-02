@@ -25,12 +25,11 @@ export class StudyService {
 
     importStudyEntries(studyId: number, data: any[], newVariables: any[]): Observable<any> {
         const params = Object.assign({
-            programUUID: this.paramContext.programUUID,
             data,
             newVariables
         });
-        const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/studies/${studyId}/entries/import?programUUID=`
-            + this.paramContext.programUUID;
+        const url = SERVER_API_URL
+            + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/${studyId}/entries/import`;
         return this.http.post<StudyEntryDetailsImportRequest>(url, params);
     }
 }

@@ -33,8 +33,8 @@ export class VariableService {
     }
 
     getStudyEntryVariables(studyId: number, variableTypeId: number): Observable<HttpResponse<VariableDetails[]>> {
-        const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/studies/${studyId}/entries/variables?variableTypeId=${variableTypeId}&programUUID=`
-            + this.paramContext.programUUID;
+        const url = SERVER_API_URL
+            + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/${studyId}/entries/variables?variableTypeId=${variableTypeId}`;
         return this.http.get<VariableDetails[]>(url, { observe: 'response' });
     }
 }
