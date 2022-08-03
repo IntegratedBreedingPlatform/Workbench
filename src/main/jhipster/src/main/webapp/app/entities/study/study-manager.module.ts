@@ -3,7 +3,6 @@ import { BmsjHipsterSharedModule } from '../../shared';
 import { RouterModule } from '@angular/router';
 import { ImportEntryDetailsComponent, ImportEntryDetailsPopupComponent } from './entry-details/import-entry-details.component';
 import { STUDY_MANAGER_ROUTES } from './study-manager.route';
-import { StudyEntryVariableMatchesComponent } from './entry-details/study-entry-variable-matches.component';
 import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
 
 @NgModule({
@@ -13,13 +12,11 @@ import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-i
     ],
     declarations: [
         ImportEntryDetailsComponent,
-        ImportEntryDetailsPopupComponent,
-        StudyEntryVariableMatchesComponent
+        ImportEntryDetailsPopupComponent
     ],
     entryComponents: [
         ImportEntryDetailsComponent,
-        ImportEntryDetailsPopupComponent,
-        StudyEntryVariableMatchesComponent
+        ImportEntryDetailsPopupComponent
     ],
     providers: [
         EntryDetailsImportContext

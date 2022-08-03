@@ -30,38 +30,17 @@
                     "entry.no.missing": "Missing ENTRY_NO value for entry #: {{param}}. Please correct it and try again"
                 }
             },
-            "multi": {
-                "matches": {
-                    "header": "Select match",
-                    "description": "Multiple matches were found for the following <b>ENTRY #: {{row}}</b> using <b>NAME: {{name}}</b> ({{matchNumber}} of {{unassignedCount}}). Please provide a mapping. Unmapped records will be omitted."
-                }
-            },
-            "manual": {
-                "matches": {
-                    "header": "Manual match",
-                    "description": "No matches were found for the following records. Please provide a mapping. Unmapped records will be omitted."
-                }
-            },
-            "review": {
-                "header": "Review import list",
-                "description": "The system has matched using the following priority: GUID if available, then GID if available and lastly DESIGNATION",
-                "show.matches": "Show matches",
-                "skip.multi.matches": "Skip data with multiple matches",
-                "skip.data.with.out.matches": "Skip data without matches",
-                "use.same.match.for.all.ocurrences": "Use same match for all remaining occurrences",
-                "summary": {
-                    "title": "Confirmation",
-                    "message": "<h4>Import List summary:</h4><p>{{param}}</p>",
-                    "ignored": "{{param}} entries with matches were ignored <strong>(new records will be created)</strong>",
-                    "multiples.matches": "{{param}} entries selected with multiples matches",
-                    "single.matches": "{{param}} entries selected with single matches",
-                    "manual.matches": "{{param}} entries selected manually",
-                    "omitted.matches": "{{param}} entries omitted"
-                },
-                "export.table": "Download this table"
-            },
             "cancel.confirm": "Are you sure you want to quit the import process?",
-            "success": "Entry details imported successfully!"
+            "success": "Entry details imported successfully!",
+            "confirmation": "You are going to import {{param}} entry updates. Proceed?",
+            "variable.matches": {
+                "header": "Variables",
+                "columns": {
+                    "name": "VARIABLE NAME",
+                    "description": "DESCRIPTION",
+                    "status": "STATUS"
+                }
+            }
         }
     }
 }

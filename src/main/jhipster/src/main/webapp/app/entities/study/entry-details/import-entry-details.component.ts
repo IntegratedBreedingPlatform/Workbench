@@ -12,7 +12,6 @@ import { toUpper } from '../../../shared/util/to-upper';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { EntryDetailsImportContext } from '../../../shared/ontology/entry-details-import.context';
-import { StudyEntryVariableMatchesComponent } from './study-entry-variable-matches.component';
 import { StudyService } from '../../../shared/study/study.service';
 import { DatasetVariable } from '../../../shared/study/dataset-variable';
 import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
@@ -36,6 +35,12 @@ export class ImportEntryDetailsComponent implements OnInit {
 
     isLoading: boolean;
     unknownColumns = {};
+
+    isFileUploadMode = true;
+
+    rows = [];
+    page = 0;
+    pageSize = 10;
 
     constructor(
         private route: ActivatedRoute,
@@ -65,7 +70,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         if (this.extensions.indexOf(extension.toLowerCase()) === -1) {
             this.fileName = '';
             target.value = '';
-            this.alertService.error('germplasm-list.import.file.validation.extensions', { param: this.extensions.join(', ') });
+            this.alertService.error('study.import-entry-details.file.validation.extensions', { param: this.extensions.join(', ') });
             return;
         }
 
@@ -90,14 +95,7 @@ export class ImportEntryDetailsComponent implements OnInit {
             this.isLoading = false;
             if (valid) {
                 if (this.hasVariables()) {
-                    const modalRef = this.modalService.open(StudyEntryVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
-                    modalRef.result.then((variableMatchesResult) => {
-                        if (variableMatchesResult) {
-                            this.save(variableMatchesResult);
-                        } else {
-                            this.modalService.open(ImportEntryDetailsComponent as Component, { size: 'lg', backdrop: 'static' });
-                        }
-                    });
+                    this.showVariableMatches();
                 } else {
                     this.save({});
                 }
@@ -106,6 +104,24 @@ export class ImportEntryDetailsComponent implements OnInit {
             this.isLoading = false;
             this.onError(res);
         });
+    }
+
+    back() {
+        this.isFileUploadMode = true;
+    }
+
+    approveVariableMatches() {
+        if (this.context.variableMatchesResult) {
+            this.save(this.context.variableMatchesResult);
+        } else {
+            this.isFileUploadMode = true;
+        }
+    }
+
+    showVariableMatches() {
+        this.rows = [];
+        this.rows = this.entryDetailsImportService.initializeVariableMatches();
+        this.isFileUploadMode = false;
     }
 
     async save(variableMatchesResult) {
@@ -148,6 +164,7 @@ export class ImportEntryDetailsComponent implements OnInit {
             },
             (error) => {
                 this.isLoading = false;
+                this.isFileUploadMode = true;
                 this.onError(error);
             }
         );
@@ -157,7 +174,8 @@ export class ImportEntryDetailsComponent implements OnInit {
     private async showSummaryConfirmation() {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
-        confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import-updates.confirmation', { param: this.context.data.length });
+        confirmModalRef.componentInstance.message = this.translateService.instant('study.import-entry-details.confirmation',
+            { param: this.context.data.length });
         try {
             await confirmModalRef.result;
         } catch (rejected) {
@@ -186,7 +204,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         await this.processEntryDetailVariables();
 
         if (!this.hasVariables()) {
-            this.alertService.error('germplasm-list.import.file.validation.entry.details.no.column');
+            this.alertService.error('study.import-entry-details.file.validation.entry.details.no.column');
             return false;
         }
 
