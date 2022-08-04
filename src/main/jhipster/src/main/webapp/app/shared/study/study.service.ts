@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { ParamContext } from '../service/param.context';
 import { SERVER_API_URL } from '../../app.constants';
 import { Observable } from 'rxjs';
-import { StudyEntryDetailsImportRequest } from './study-entry-details-import-request';
 
 @Injectable()
 export class StudyService {
@@ -24,12 +23,9 @@ export class StudyService {
     }
 
     importStudyEntries(studyId: number, data: any[], newVariables: any[]): Observable<any> {
-        const params = Object.assign({
-            data,
-            newVariables
-        });
+        const params: any = {data, newVariables};
         const url = SERVER_API_URL
             + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/${studyId}/entries/import`;
-        return this.http.post<StudyEntryDetailsImportRequest>(url, params);
+        return this.http.post(url, params);
     }
 }
