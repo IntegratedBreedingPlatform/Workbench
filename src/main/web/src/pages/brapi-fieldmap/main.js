@@ -15,9 +15,11 @@ TODO Move to jhipster folder
 		});
 	}]);
 
-	fieldMapApp.controller('MainController', ['$scope', 'ngToast', '$uibModal', '$http', '$timeout' ,function ($scope, ngToast, $uibModal, $http, $timeout) {
+	fieldMapApp.controller('MainController', ['$scope', 'ngToast', '$uibModal', '$http', '$timeout', function ($scope, ngToast, $uibModal, $http, $timeout) {
 
-		const instanceId = getUrlParameter('instanceId'),
+		const programUUID = getUrlParameter('programUUID'),
+			studyId = getUrlParameter('studyId'),
+			instanceId = getUrlParameter('instanceId'),
 			cropName = getUrlParameter('cropName'),
 			hasLayout = getUrlParameter('hasLayout') === "true",
 			brapi_endpoint = '/bmsapi/' + cropName + '/brapi/v2';
@@ -41,6 +43,29 @@ TODO Move to jhipster folder
 			}
 		};
 
+		$scope.delete = function () {
+			var modalInstance = $scope.openConfirmModal('Are you sure you want to delete this georeference?');
+			modalInstance.result.then((isOK) => {
+				if (isOK) {
+					$scope.deleteGeoreference();
+				}
+			});
+		}
+
+		$scope.deleteGeoreference = function () {
+			var req = {
+				method: 'DELETE',
+				url: '/bmsapi/crops/' + cropName + '/programs/' + programUUID + '/studies/' + studyId + '/instances/' + instanceId + '/georeferences',
+				headers: {
+					'x-auth-token': JSON.parse(localStorage['bms.xAuthToken']).token
+				}
+			};
+			$http(req).then(() => {
+				// Once georeference is deleted, we need to reload the page to reinitialize Fieldmap.
+				// Since Georeference is already deleted we have to remove hasLayout query string if it exists.
+				window.location.href = window.location.href.replace('&hasLayout=true', '');
+			});
+		}
 
 		$scope.load = function () {
 			fieldMap.opts.plotLength = $scope.length;
@@ -65,7 +90,7 @@ TODO Move to jhipster folder
 			$scope.flags.isUpdating = true;
 			fieldMap.update().then(
 				(resp) => {
-					$timeout(function (){
+					$timeout(function () {
 						ngToast.success({
 							content: resp
 						});
@@ -75,7 +100,7 @@ TODO Move to jhipster folder
 					});
 				},
 				(resp) => {
-					$timeout(function (){
+					$timeout(function () {
 						ngToast.danger({
 							content: resp
 						});
