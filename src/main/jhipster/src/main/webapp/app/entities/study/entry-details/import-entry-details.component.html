@@ -56,7 +56,7 @@
 							<tbody *ngIf="rows && rows.length else nodata">
 							<tr *ngFor="let variable of rows | slice: (page-1) * pageSize : page * pageSize">
 								<td *ngIf="variable.id">
-									<a [routerLink]="['.', { outlets: { popup: 'variable-details-popup' }}]"
+									<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
 									   [queryParams]="{ variableId: variable.id }"
 									   queryParamsHandling="merge">
 										{{variable.alias || variable.name}}
