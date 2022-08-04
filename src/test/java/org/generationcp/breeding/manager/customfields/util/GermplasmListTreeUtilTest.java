@@ -15,7 +15,7 @@ import org.generationcp.commons.workbook.generator.RowColumnType;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
-import org.generationcp.middleware.manager.api.WorkbenchDataManager;
+import org.generationcp.middleware.api.role.RoleService;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.UserDefinedField;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -70,7 +70,7 @@ public class GermplasmListTreeUtilTest {
 	private GermplasmDataManager germplasmDataManager;
 
 	@Mock
-	private WorkbenchDataManager workbenchDataManager;
+	private RoleService roleService;
 
 	@Mock
 	private SimpleResourceBundleMessageSource messageSource;

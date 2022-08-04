@@ -57,8 +57,8 @@
 		</property>
 	</bean>
 
-	<bean id="workbenchDataManager"
-		class="org.generationcp.middleware.manager.WorkbenchDataManagerImpl"
+	<bean id="roleService"
+		class="org.generationcp.middleware.api.role.RoleServiceImpl"
 		destroy-method="close">
 		<constructor-arg ref="workbenchHibernateSessionProvider" />
 	</bean>
@@ -111,11 +111,6 @@
 
 	<bean id="germplasmDataManager" factory-bean="managerFactory"
 		factory-method="getGermplasmDataManager" scope="request">
-		<aop:scoped-proxy />
-	</bean>
-
-	<bean id="locationDataManager" factory-bean="managerFactory"
-		factory-method="getLocationDataManager" scope="request">
 		<aop:scoped-proxy />
 	</bean>
 
