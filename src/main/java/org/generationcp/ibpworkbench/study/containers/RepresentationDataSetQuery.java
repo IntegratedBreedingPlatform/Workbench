@@ -160,9 +160,10 @@ public class RepresentationDataSetQuery implements Query {
 				// make GID as link only if the page wasn't directly accessed
 				// from the URL
 				if (!this.fromUrl &&
-					(TermId.GID.getId() == variable.getVariableType().getId() ||
+					( (TermId.GID.getId() == variable.getVariableType().getId() ||
 					 TermId.FEMALE_PARENT_GID.getId() == variable.getVariableType().getId() ||
-					 TermId.MALE_PARENT_GID.getId() == variable.getVariableType().getId())) {
+					 TermId.MALE_PARENT_GID.getId() == variable.getVariableType().getId()) ) &&
+					variable.getValue() != "UNKNOWN") {
 
 					final String value = variable.getValue();
 					final Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
