@@ -1,13 +1,13 @@
 <div class="container-fluid pt-3">
 <span *ngIf="!isGenotypingParameterConfigured()">
-	Genotyping database is not configured for this BMS instance. Contact your system administrator.
+	<span jhiTranslate="genotyping.database.not.configured"></span>
 </span>
 	<div *ngIf="isGenotypingParameterConfigured()">
 		<div class="container-fluid">
 			<form name="form" #f="ngForm">
 				<div class="form-group row">
 					<label class="col-3 col-form-label">
-						<label class="col-form-label">Link By:</label>
+						<label class="col-form-label" jhiTranslate="genotyping.link.by.label">Link By:</label>
 					</label>
 					<div class="col-5">
 						<div class="form-group row">
@@ -24,9 +24,9 @@
 							<table style="max-height: 200px" class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmDetailsContext.germplasm.names && germplasmDetailsContext.germplasm.names.length else nodata">
 								<thead>
 								<tr>
-									<th scope="col">Select</th>
-									<th scope="col">Name Type</th>
-									<th scope="col">Name</th>
+									<th scope="col" jhiTranslate="genotyping.select">Select</th>
+									<th scope="col" jhiTranslate="genotyping.name.table.name.type.column">Name Type</th>
+									<th scope="col" jhiTranslate="genotyping.name.table.name.column">Name</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -43,13 +43,13 @@
 							<table style="max-height: 200px" class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmSamples && germplasmSamples.length else nodata">
 								<thead>
 								<tr>
-									<th scope="col">Select</th>
-									<th scope="col">Sample_UID</th>
-									<th scope="col">Study Name</th>
-									<th scope="col">Taken By</th>
-									<th scope="col">Sampling Date</th>
-									<th scope="col">Dataset Type</th>
-									<th scope="col">Obs Unit ID</th>
+									<th scope="col" jhiTranslate="genotyping.select">Select</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.sample.uid.column">Sample_UID</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.study.name.column">Study Name</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.taken.by.column">Taken By</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.sampling.date.column">Sampling Date</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.dataset.type.column">Dataset Type</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.obs.unit.id.column">Obs Unit ID</th>
 								</tr>
 								</thead>
 								<tbody>
@@ -69,7 +69,7 @@
 				</div>
 				<div class="form-group row">
 					<label class="col-3 col-form-label">
-						<label class="col-form-label">Genotyping Study:</label>
+						<label class="col-form-label" jhiTranslate="genotyping.study.label">Genotyping Study:</label>
 					</label>
 					<div class="col-5">
 						<div class="form-group row">
@@ -83,7 +83,7 @@
 				</div>
 				<div class="form-group row">
 					<label class="col-3 col-form-label">
-						<label class="col-form-label">Run:</label>
+						<label class="col-form-label" jhiTranslate="genotyping.run.label">Run:</label>
 					</label>
 					<div class="col-5">
 						<div class="form-group row">
@@ -104,8 +104,8 @@
 						<table class="table table-striped table-bordered table-curved" *ngIf="genotypingCalls && genotypingCalls.length else nodata">
 							<thead>
 							<tr>
-								<th>Marker</th>
-								<th>Genotype Call</th>
+								<th jhiTranslate="genotyping.calls.table.marker.column">Marker</th>
+								<th jhiTranslate="genotyping.table.genotype.call.column">Genotype Call</th>
 							</tr>
 							</thead>
 							<tbody>
