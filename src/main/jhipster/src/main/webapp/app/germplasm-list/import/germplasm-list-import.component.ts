@@ -10,13 +10,13 @@ import { parseFile, saveFile } from '../../shared/util/file-utils';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
-import { GermplasmListImportContext } from './germplasm-list-import.context';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../shared/util/to-upper';
 import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
 import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
 import { HELP_GERMPLASM_LIST_IMPORT } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
+import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
 
 @Component({
     selector: 'jhi-germplasm-list-import',
@@ -45,7 +45,7 @@ export class GermplasmListImportComponent implements OnInit {
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
         private variableService: VariableService,
-        private context: GermplasmListImportContext,
+        private context: EntryDetailsImportContext,
         private germplasmListService: GermplasmListService,
         private helpService: HelpService,
     ) {

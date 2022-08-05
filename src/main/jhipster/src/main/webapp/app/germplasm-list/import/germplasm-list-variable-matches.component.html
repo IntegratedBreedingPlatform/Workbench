@@ -34,10 +34,10 @@
 							<td>
 								{{variable.description}}
 							</td>
-							<td *ngIf="variable.id && variable.existsInlist">
+							<td *ngIf="variable.id && variable.isAlreadyExisting">
 								<span class="fa fa-lg fa-check-circle text-success"></span>
 							</td>
-							<td *ngIf="variable.id && !variable.existsInlist">
+							<td *ngIf="variable.id && !variable.isAlreadyExisting">
 								<span class="fa fa-lg fa-plus-circle text-info"></span>
 							</td>
 							<td *ngIf="!variable.id">

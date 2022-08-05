@@ -1,0 +1,46 @@
+{
+    "study": {
+        "import-entry-details": {
+            "title": "Import Entry Details",
+            "columns": {
+                "list-name": "LIST NAME",
+                "parent-folder": "PARENT FOLDER",
+                "description": "DESCRIPTION",
+                "list-owner": "LIST OWNER",
+                "list-type": "LIST TYPE",
+                "number-of-entries": "# OF ENTRIES",
+                "locked": "LOCKED",
+                "notes": "NOTES",
+                "list-date": "LIST DATE"
+            },
+            "template.download.instruction": "Provide a file with either the GID, the GUID or the DESIGNATION of the germplasm to include in the list. If you provide multiple values for a record the system will use the following order: GUID, GID, DESIGNATION for retrieval.",
+            "file": {
+                "input.description": "Choose the file you would like to import in format: Excel",
+                "validation": {
+                    "file.empty": "Wrong name for Observation sheet or the file has no data. Please verify and try again",
+                    "extensions": "Only the following file extensions are allowed: {{param}}",
+                    "header": "At least GID, GUID or DESIGNATION column is required",
+                    "gid.format": "Some GID values are not a positive integer. Please correct them and try again",
+                    "unknown.column": "Some columns were not recognized in the system or are not relevant to the import list and were thus ignored ({{param}})",
+                    "entry.details.no.column": "No suitable column found for entry detail variables. Please check the Entry Details sheet",
+                    "entry.no": "The ENTRY_NO column is mandatory",
+                    "entry.no.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
+                    "entry.no.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
+                    "entry.no.incorrect": "ENTRY_NO value for entry #: {{param}} is incorrect. Please correct it and try again",
+                    "entry.no.missing": "Missing ENTRY_NO value for entry #: {{param}}. Please correct it and try again"
+                }
+            },
+            "cancel.confirm": "Are you sure you want to quit the import process?",
+            "success": "Entry details imported successfully!",
+            "confirmation": "You are going to import {{param}} entry updates. Proceed?",
+            "variable.matches": {
+                "header": "Variables",
+                "columns": {
+                    "name": "VARIABLE NAME",
+                    "description": "DESCRIPTION",
+                    "status": "STATUS"
+                }
+            }
+        }
+    }
+}
