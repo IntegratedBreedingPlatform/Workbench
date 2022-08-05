@@ -5,16 +5,12 @@ import { ParamContext } from '../../shared/service/param.context';
 import { AlertService } from '../../shared/alert/alert.service';
 import { ActivatedRoute } from '@angular/router';
 import { JhiEventManager } from 'ng-jhipster';
-import { GermplasmListImportContext } from './germplasm-list-import.context';
-import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { GermplasmListImportUpdateComponent } from './germplasm-list-import-update.component';
 import { toUpper } from '../../shared/util/to-upper';
 import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
-import { ListComponent } from '../list.component';
-import { GermplasmListImportComponent } from './germplasm-list-import.component';
-import { GermplasmListImportReviewComponent } from './germplasm-list-import-review.component';
+import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
+import { EntryDetailsImportService } from '../../shared/ontology/service/entry-details-import.service';
 
 @Component({
     selector: 'jhi-germplasm-list-variable-matches.component',
@@ -27,10 +23,8 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
     pageSize = 10;
 
     isLoading: boolean;
-    isSaving: boolean;
 
     rows = [];
-    variableMatchesResult: any = {};
 
     constructor(
         private route: ActivatedRoute,
@@ -41,51 +35,15 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
         private alertService: AlertService,
         private germplasmListService: GermplasmListService,
         private eventManager: JhiEventManager,
-        private context: GermplasmListImportContext
+        private context: EntryDetailsImportContext,
+        private entryDetailsImportService: EntryDetailsImportService
     ) {
     }
 
     ngOnInit() {
         this.rows = [];
-        this.context.newVariables.forEach((variable) => {
-            const variableName = variable.alias ? variable.alias : variable.name;
-            const row = {
-                id: variable.id, name: variableName,
-                description: variable.description,
-                existsInlist: false
-            };
-
-            if (variable.alias) {
-                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
-            }
-            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
-            this.rows.push(row);
-        });
-
-        this.context.variablesOfTheList.forEach((variable) => {
-            const variableName = variable.alias ? variable.alias : variable.name;
-            const row = {
-                id: variable.id,
-                name: variableName, description: variable.description,
-                existsInlist: true
-            };
-
-            if (variable.alias) {
-                this.variableMatchesResult[toUpper(variable.alias)] = variable.id;
-            }
-            this.variableMatchesResult[toUpper(variable.name)] = variable.id;
-            this.rows.push(row);
-        });
-
-        this.context.unknownVariableNames.forEach((variableName) => {
-            const row = {
-                id: null,
-                name: variableName,
-                description: '',
-                existsInlist: false
-            };
-            this.rows.push(row);
-        });
+        this.rows = this.entryDetailsImportService
+            .initializeVariableMatches();
     }
 
     back() {
@@ -97,11 +55,11 @@ export class GermplasmListVariableMatchesComponent implements OnInit {
     }
 
     next() {
-        this.modal.close(this.variableMatchesResult);
+        this.modal.close(this.context.variableMatchesResult);
     }
 
     save() {
-        this.modal.close(this.variableMatchesResult);
+        this.modal.close(this.context.variableMatchesResult);
     }
 
     private onError(response: HttpErrorResponse) {

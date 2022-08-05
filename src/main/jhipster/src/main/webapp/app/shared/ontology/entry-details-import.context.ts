@@ -1,10 +1,8 @@
-import { NameType } from '../../shared/germplasm/model/name-type.model';
-import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class GermplasmListImportContext {
-    // germplasm List data
+export class EntryDetailsImportContext {
+    // current entries data
     data = [];
 
     // new variable imported
@@ -15,6 +13,8 @@ export class GermplasmListImportContext {
 
     // discarded variables
     unknownVariableNames: any[];
+
+    variableMatchesResult: any = {};
 
     resetContext() {
         this.data = [];

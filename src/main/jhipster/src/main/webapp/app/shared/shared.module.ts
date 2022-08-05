@@ -95,6 +95,9 @@ import { CropParameterService } from './crop-parameter/service/crop-parameter.se
 import { CropGenotypingParameterService } from './crop/service/crop-genotyping-parameter.service';
 import { GenotypingBrapiService } from './brapi/service/genotyping-brapi.service';
 import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
+import { StudyService } from './study/study.service';
+import { EntryDetailsImportContext } from './ontology/entry-details-import.context';
+import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 
 @NgModule({
     imports: [
@@ -201,9 +204,13 @@ import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
         UrlService,
         GermplasmPedigreeService,
         VariableService,
+        EntryDetailsImportService,
         VariableValidationService,
+        StudyService,
         GermplasmGroupingService,
         InlineEditorService,
+        FeedbackService,
+        EntryDetailsImportContext
         FeedbackService,
         CropGenotypingParameterService,
         GenotypingBrapiService
