@@ -1,0 +1,151 @@
+<div class="container-fluid pt-3">
+<span *ngIf="!isGenotypingParameterConfigured()">
+	<span jhiTranslate="genotyping.database.not.configured"></span>
+</span>
+	<div *ngIf="isGenotypingParameterConfigured()">
+		<div class="container-fluid">
+			<form name="form" #f="ngForm">
+				<div class="form-group row">
+					<label class="col-3 col-form-label">
+						<label class="col-form-label" jhiTranslate="genotyping.link.by.label">Link By:</label>
+					</label>
+					<div class="col-5">
+						<div class="form-group row">
+							<select class="form-control" name="dropdownLinkBy" id="dropdownLinkBy" [(ngModel)]="selectedLinkBy" (ngModelChange)="linkBySelectOnChange()" #dropdownLinkBy="ngModel" [disabled]="isStudyLoading || isSamplesLoading">
+								<option value="">Please Choose</option>
+								<option *ngFor="let item of linkByOptions" [value]="item">{{item}}</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive" *ngIf="selectedLinkBy === LINK_BY_NAME">
+							<table style="max-height: 200px" class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmDetailsContext.germplasm.names && germplasmDetailsContext.germplasm.names.length else nodata">
+								<thead>
+								<tr>
+									<th scope="col" jhiTranslate="genotyping.select">Select</th>
+									<th scope="col" jhiTranslate="genotyping.name.table.name.type.column">Name Type</th>
+									<th scope="col" jhiTranslate="genotyping.name.table.name.column">Name</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr *ngFor="let item of germplasmDetailsContext.germplasm.names">
+									<td><input type="radio" name="germplasmSearchValueRadio" [value]="item.name" [(ngModel)]="germplasmSearchValue" (ngModelChange)="linkByChanged()"></td>
+									<td>{{item?.nameTypeCode}}</td>
+									<td>{{item?.name}}</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="table-responsive" *ngIf="selectedLinkBy === LINK_BY_SAMPLE_UID">
+							<span *ngIf="isSamplesLoading" class="throbber"></span>
+							<table style="max-height: 200px" class="table table-striped table-bordered table-curved table-fixed" *ngIf="germplasmSamples && germplasmSamples.length else nodata">
+								<thead>
+								<tr>
+									<th scope="col" jhiTranslate="genotyping.select">Select</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.sample.uid.column">Sample_UID</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.study.name.column">Study Name</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.taken.by.column">Taken By</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.sampling.date.column">Sampling Date</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.dataset.type.column">Dataset Type</th>
+									<th scope="col" jhiTranslate="genotyping.sample.table.obs.unit.id.column">Obs Unit ID</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr *ngFor="let item of germplasmSamples">
+									<td><input type="radio" name="germplasmSearchValueRadio" [value]="item.sampleBusinessKey" [(ngModel)]="germplasmSearchValue" (ngModelChange)="linkByChanged()"></td>
+									<td>{{item?.sampleBusinessKey}}</td>
+									<td>{{item?.studyName}}</td>
+									<td>{{item?.takenBy}}</td>
+									<td>{{item?.samplingDate}}</td>
+									<td>{{item?.datasetType}}</td>
+									<td>{{item?.observationUnitId}}</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-3 col-form-label">
+						<label class="col-form-label" jhiTranslate="genotyping.study.label">Genotyping Study:</label>
+					</label>
+					<div class="col-5">
+						<div class="form-group row">
+							<select style="width: 85%" [disabled]="!genotypingStudies || genotypingStudies?.length === 0" class="form-control" name="genotypingStudy" id="genotypingStudy" [(ngModel)]="selectedGenotypingStudy" (ngModelChange)="selectStudyOnChange()" #genotypingStudy="ngModel">
+								<option value="">Please Choose</option>
+								<option *ngFor="let item of genotypingStudies" [ngValue]="item">{{item.studyName}}</option>
+							</select>&nbsp;&nbsp;<i *ngIf="selectedGenotypingStudy" jhiScrollableTooltip [tooltipText]="selectedGenotypingStudy.studyDescription ? selectedGenotypingStudy.studyDescription : 'No description'" placement="right" class="fa fa-info-circle bms-helpicon"></i>
+							&nbsp;&nbsp;<span *ngIf="isStudyLoading" class="throbber"></span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-3 col-form-label">
+						<label class="col-form-label" jhiTranslate="genotyping.run.label">Run:</label>
+					</label>
+					<div class="col-5">
+						<div class="form-group row">
+							<select style="width: 85%" [disabled]="!genotypingVariantsets || genotypingVariantsets?.length === 0" class="form-control" name="variantSetSelect" id="variantSetSelect" [(ngModel)]="selectedVariantSet" (ngModelChange)="selectVariantsetOnChange()" #variantSetSelect="ngModel">
+								<option value="">Please Choose</option>
+								<option *ngFor="let item of genotypingVariantsets" [ngValue]="item">{{item.variantSetName}}</option>
+							</select>&nbsp;&nbsp;<i *ngIf="selectedVariantSet" jhiScrollableTooltip [tooltipText]="getCallsetAndVariantCountText()" placement="right" class="fa fa-info-circle bms-helpicon"></i>
+							&nbsp;&nbsp;<span *ngIf="isVariantSetLoading" class="throbber"></span>
+						</div>
+					</div>
+				</div>
+			</form>
+			<hr>
+			<div class="row">
+				<div class="col-md-8">
+					<span *ngIf="isGenotypingCallsLoading" class="throbber"></span>
+					<div class="table-responsive">
+						<table class="table table-striped table-bordered table-curved" *ngIf="genotypingCalls && genotypingCalls.length else nodata">
+							<thead>
+							<tr>
+								<th jhiTranslate="genotyping.calls.table.marker.column">Marker</th>
+								<th jhiTranslate="genotyping.calls.table.genotype.call.column">Genotype Call</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr *ngFor="let item of genotypingCalls">
+								<td>{{item?.variantName}}</td>
+								<td>{{item?.genotype?.values[0]}}</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div *ngIf="genotypingCalls && genotypingCalls.length">
+						<div class="row">
+							<div class="col">
+								<div class="pagination-container">
+									<div class="pagination-box pagination-box-left"></div>
+									<div class="pagination-box">
+										<ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" [disabled]="isGenotypingCallsLoading"
+														[maxSize]="5" [rotate]="true" (pageChange)="loadGenotypingCalls()"></ngb-pagination>
+									</div>
+									<div class="pagination-box pagination-box-right"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<ng-template #nodata>
+	<table class="table table-striped table-bordered table-curved">
+		<thead>
+		<tr>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td jhiTranslate="no.data"></td>
+		</tr>
+		</tbody>
+	</table>
+</ng-template>

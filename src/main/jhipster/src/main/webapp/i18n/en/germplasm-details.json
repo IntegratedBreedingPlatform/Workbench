@@ -6,12 +6,13 @@
         "pedigree": "Pedigree",
         "observations": "Observations",
         "inventory": "Inventory",
+        "genotyping": "Genotyping",
         "lists": "Lists",
         "samples": "Samples",
         "actions": "Actions",
         "new": "New",
         "files": {
-           "tab": "Files",
+            "tab": "Files",
             "heading": "Files"
         }
     },
@@ -181,5 +182,27 @@
                 "other-progenitors": "Other Progenitors"
             }
         }
+    },
+    "genotyping": {
+        "connection.error": "The system failed to connect to the genotyping database. Contact your system administrator.",
+        "database.not.configured": "Genotyping database is not configured for this BMS instance. Contact your system administrator.",
+        "no.genotyping.germplasm.found": "No germplasm found with {{germplasmSearchValue}} ({{linkType}}) reference in the configured genotype DB for the crop. Please try other Link By options.",
+        "no.genotyping.studies.found": "No studies are found in the configured genotype DB for the crop",
+        "no.genotyping.variantsets.found": "No variantsets are found in the configured genotype DB for the crop",
+        "no.genotyping.callsets.found": "No callsets are found in the configured genoytype DB for the crop",
+        "link.by.label": "Link By:",
+        "study.label": "Genotyping Study:",
+        "run.label": "Run:",
+        "select": "Select",
+        "name.table.name.type.column": "Name Type",
+        "name.table.name.column": "Name",
+        "sample.table.sample.uid.column": "Sample_UID",
+        "sample.table.study.name.column": "Study Name",
+        "sample.table.taken.by.column": "Taken By",
+        "sample.table.sampling.date.column": "Sampling Date",
+        "sample.table.dataset.type.column": "Dataset Type",
+        "sample.table.obs.unit.id.column": "Obs Unit ID",
+        "calls.table.marker.column": "Marker",
+        "calls.table.genotype.call.column": "Genotype Call"
     }
 }
