@@ -67,6 +67,7 @@ export class BasicDetailsPaneComponent implements OnInit {
     loadGermplasm(): void {
         this.germplasmService.getGermplasmById(this.germplasmDetailsContext.gid).toPromise().then((value) => {
             this.germplasm = value.body;
+            this.germplasmDetailsContext.germplasm = this.germplasm;
         })
     }
 

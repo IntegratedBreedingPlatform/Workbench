@@ -26,6 +26,12 @@ export class TreeComponent implements OnInit {
     // primeng sets either one or the depending on the mode
     _selectedNodes: PrimeNgTreeNode[] | PrimeNgTreeNode;
 
+    disabledAddActionMessage: string;
+    disabledRenameActionMessage: string;
+    disabledDeleteActionMessage: string;
+
+    private draggedNode: PrimeNgTreeNode;
+
     get selectedNodes(): PrimeNgTreeNode[] {
         if (!this._selectedNodes) {
             return [];
@@ -35,12 +41,6 @@ export class TreeComponent implements OnInit {
         }
         return [this._selectedNodes as PrimeNgTreeNode];
     }
-
-    disabledAddActionMessage: string;
-    disabledRenameActionMessage: string;
-    disabledDeleteActionMessage: string;
-
-    private draggedNode: PrimeNgTreeNode;
 
     constructor(public isReadOnly: boolean,
                 public selectionMode: SelectionMode,
