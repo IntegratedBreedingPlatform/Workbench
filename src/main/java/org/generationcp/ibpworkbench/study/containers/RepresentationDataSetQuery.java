@@ -11,11 +11,11 @@
 
 package org.generationcp.ibpworkbench.study.containers;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.themes.BaseTheme;
 import org.apache.commons.lang.math.NumberUtils;
 import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
 import org.generationcp.middleware.domain.dms.Enumeration;
@@ -26,17 +26,15 @@ import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.domain.ontology.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
-import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.Query;
 
-import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
-import com.vaadin.data.util.PropertysetItem;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.themes.BaseTheme;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An implementation of Query which is needed for using the LazyQueryContainer.
@@ -161,7 +159,12 @@ public class RepresentationDataSetQuery implements Query {
 				// link. else, show it as a value only
 				// make GID as link only if the page wasn't directly accessed
 				// from the URL
-				if (TermId.GID.getId() == variable.getVariableType().getId() && !this.fromUrl) {
+				if (!this.fromUrl &&
+					( (TermId.GID.getId() == variable.getVariableType().getId() ||
+					 TermId.FEMALE_PARENT_GID.getId() == variable.getVariableType().getId() ||
+					 TermId.MALE_PARENT_GID.getId() == variable.getVariableType().getId()) ) &&
+					variable.getValue() != "UNKNOWN") {
+
 					final String value = variable.getValue();
 					final Button gidButton = new Button(value.trim(), new GidLinkButtonClickListener(value.trim()));
 					gidButton.setStyleName(BaseTheme.BUTTON_LINK);

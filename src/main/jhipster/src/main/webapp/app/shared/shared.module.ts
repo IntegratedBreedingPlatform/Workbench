@@ -210,7 +210,7 @@ import { EntryDetailsImportService } from './ontology/service/entry-details-impo
         GermplasmGroupingService,
         InlineEditorService,
         FeedbackService,
-        EntryDetailsImportContext
+        EntryDetailsImportContext,
         FeedbackService,
         CropGenotypingParameterService,
         GenotypingBrapiService
