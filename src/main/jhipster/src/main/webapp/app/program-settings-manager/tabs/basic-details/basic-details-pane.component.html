@@ -4,7 +4,7 @@
 			<div class="form-group row required">
 				<label for="crop" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.basic-details.crop">Crop</label>
 				<div class="col-sm-3">
-					<input type="text" class="form-control" name="crop" id="crop" [(ngModel)]="program.crop" #crop="ngModel" [disabled]="true"/>
+					<input type="text" class="form-control" name="crop" id="crop" [(ngModel)]="program.crop" #cropName="ngModel" [disabled]="true"/>
 				</div>
 			</div>
 			<div class="form-group row required">
@@ -26,7 +26,7 @@
 			<div class="form-group row required">
 				<label for="dropdownLocations" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="program-settings-manager.basic-details.program-breeding-default-location">Program Default Breeding Location</label>
 				<div class="col-sm-5">
-					<jhi-locations-select [(value)]="program.breedingLocationDefaultId" [showFilterOptions]="true"></jhi-locations-select>
+					<jhi-locations-select [(value)]="program.breedingLocationDefaultId" [showFilterOptions]="true" [isBreedingAndCountryLocationsOnly]="true"></jhi-locations-select>
 				</div>
 			</div>
 			<div class="form-group row required">
