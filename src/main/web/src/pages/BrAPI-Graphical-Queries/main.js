@@ -639,7 +639,7 @@ mainApp.factory('observationService', ['$http', function ($http) {
 	observationService.getObservationLevels = function () {
 		return $http({
 			method: 'GET',
-			url: '/bmsapi/' + getUrlParameter('cropName') + '/brapi/v1/observationLevels',
+			url: '/bmsapi/' + getUrlParameter('cropName') + '/brapi/v1/observationlevels',
 			headers: {'Authorization': 'Bearer ' + JSON.parse(localStorage["bms.xAuthToken"]).token}
 		});
 	};
