@@ -46,43 +46,43 @@
 				<div ng-if="clientErrors.failedToDelete" class="alert alert-danger" role="alert">
 					{{'warnings.deleteUnsuccessful' | translate}}
 				</div>
+				<div ng-if="!isSystemMethod">
+					<div ng-hide="editing || confirmationNecessary">
+						<button class="btn btn-primary" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
 
-				<div ng-hide="editing || confirmationNecessary">
-					<button class="btn btn-primary" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
-
-					<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteMethod($event, methodId)">
-						<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-					</button>
-				</div>
-				<div ng-show="editing && !confirmationNecessary">
-					<div ng-hide="confirmationNecessary">
-						<button class="btn btn-primary" type="submit">
-							{{'button.save' | translate}}
-							<span ng-show="showThrobber" class="throbber-btn-wrapper">
+						<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteMethod($event, methodId)">
+							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+						</button>
+					</div>
+					<div ng-show="editing && !confirmationNecessary">
+						<div ng-hide="confirmationNecessary">
+							<button class="btn btn-primary" type="submit">
+								{{'button.save' | translate}}
+								<span ng-show="showThrobber" class="throbber-btn-wrapper">
 								<span class="throbber throbber-btn throbber-white"></span>
 							</span>
-						</button>
-						<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
+							</button>
+							<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
+						</div>
 					</div>
-				</div>
 
-				<div ng-show="confirmationNecessary">
-					<div class="alert alert-danger">
-						<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
-						<span ng-show="confirmDelete">{{'warnings.methods.deleteConfirmation' | translate}}</span>
+					<div ng-show="confirmationNecessary">
+						<div class="alert alert-danger">
+							<span ng-show="confirmCancel">{{'warnings.discardConfirmation' | translate}}</span>
+							<span ng-show="confirmDelete">{{'warnings.methods.deleteConfirmation' | translate}}</span>
+						</div>
+						<button class="btn btn-danger" ng-click="confirm($event)">
+							<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
+							<span ng-show="confirmDelete">{{'button.delete' | translate}}</span>
+						</button>
+						<a href="#" ng-click="deny($event)">
+							<span ng-show="confirmCancel">{{'button.continueEditing' | translate}}</span>
+							<span ng-show="confirmDelete">{{'button.cancel' | translate}}</span>
+						</a>
 					</div>
-					<button class="btn btn-danger" ng-click="confirm($event)">
-						<span ng-show="confirmCancel">{{'button.discard' | translate}}</span>
-						<span ng-show="confirmDelete">{{'button.delete' | translate}}</span>
-					</button>
-					<a href="#" ng-click="deny($event)">
-						<span ng-show="confirmCancel">{{'button.continueEditing' | translate}}</span>
-						<span ng-show="confirmDelete">{{'button.cancel' | translate}}</span>
-					</a>
 				</div>
 			</div>
 		</div>
-
 		<div class="om-details-subheader">
 			<om-expand-collapse-heading om-text="{{'formField.metadata' | translate}}" om-is-open="showMetadata"></om-expand-collapse-heading>
 		</div>
@@ -91,6 +91,12 @@
 				<label for="omInUse" class="col-sm-3 control-label">{{'formField.inUseInVariables' | translate}}</label>
 				<div class="col-sm-9">
 					<div class="form-control-static">{{formatListForDisplay(model.metadata.usage.variables)}}</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="omLists" class="col-sm-3 control-label">{{'formField.system.method' | translate}}</label>
+				<div class="col-sm-9">
+					<div class="form-control-static">{{model.metadata.usage.systemMethod ? 'formField.yes.text' : 'formField.no.text' | translate}}</div>
 				</div>
 			</div>
 			<div class="form-group">
