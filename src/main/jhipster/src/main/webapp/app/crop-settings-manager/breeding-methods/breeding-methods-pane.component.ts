@@ -25,6 +25,8 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropSettingsContext } from '../crop-Settings.context';
 import { TranslateService } from '@ngx-translate/core';
+import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
 
 declare var $: any;
 
@@ -60,13 +62,14 @@ export class BreedingMethodsPaneComponent implements OnInit {
     searchRequest: BreedingMethodSearchRequest;
 
     totalItems: number;
-    locationFilters: any;
+    breedingMethodFilters: any;
 
     constructor(public translateService: TranslateService,
                 private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private breedingMethodService: BreedingMethodService,
+                private germplasmService: GermplasmService,
                 private router: Router,
                 private alertService: AlertService,
                 private modalService: NgbModal,
@@ -98,11 +101,11 @@ export class BreedingMethodsPaneComponent implements OnInit {
     }
 
     get filters() {
-        return this.locationFilters;
+        return this.breedingMethodFilters;
     }
 
     set filters(filters) {
-        this.locationFilters = filters;
+        this.breedingMethodFilters = filters;
     }
 
     loadAll(request: BreedingMethodSearchRequest) {
@@ -234,6 +237,24 @@ export class BreedingMethodsPaneComponent implements OnInit {
                 reset(req) {
                     ColumnFilterComponent.resetDropdownFilter(this, req);
                 },
+            },
+            {
+                key: 'methodClassIds', name: 'Class', type: FilterType.DROPDOWN, values: this.getBreedingMethodClassOptions(), multipleSelect: true,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
+            },
+            {
+                key: 'snameTypeCodes', name: 'Source Name Types', type: FilterType.DROPDOWN, values: this.getNameTypeOptions(), multipleSelect: true,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
             }
         ];
     }
@@ -263,6 +284,16 @@ export class BreedingMethodsPaneComponent implements OnInit {
             return classes.map((clazz: BreedingMethodClass) => {
                 return { id: clazz.id.toString(),
                     text: clazz.name
+                }
+            });
+        });
+    }
+
+    private getNameTypeOptions(): Promise<Select2OptionData[]> {
+        return this.germplasmService.getGermplasmNameTypes([]).toPromise().then((nameTypes: NameType[]) => {
+            return nameTypes.map((nameType: NameType) => {
+                return { id: nameType.code,
+                    text: nameType.code
                 }
             });
         });

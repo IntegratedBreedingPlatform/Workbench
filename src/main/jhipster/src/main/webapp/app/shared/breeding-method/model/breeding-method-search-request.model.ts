@@ -12,7 +12,8 @@ export class BreedingMethodSearchRequest {
         public groups?: string[],
         public methodDateFrom?: string,
         public methodDateTo?: string,
-        public methodClassIds?: number[]
+        public methodClassIds?: number[],
+        public snameTypeCodes?: string[]
     ) {
     }
 }
