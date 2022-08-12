@@ -2,7 +2,9 @@
 	<br/>
 	<br/>
 	<div class="pull-right pb-3">
-		<button class="btn btn-outline-info" [routerLink]="['/', { outlets: { popup: 'name-type-edit-dialog' } }]" queryParamsHandling="merge"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
+		<button class="btn btn-outline-info" [routerLink]="['/', { outlets: { popup: 'name-type-edit-dialog' } }]" queryParamsHandling="merge"
+			data-test="newNameTypeButton">
+			<i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
 	</div>
 	<div class="table-responsive" *ngIf="nameTypes">
 		<table class="table table-striped table-bordered table-curved">
