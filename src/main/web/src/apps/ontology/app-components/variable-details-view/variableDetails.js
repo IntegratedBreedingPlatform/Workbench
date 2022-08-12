@@ -48,7 +48,7 @@
 						$scope.model = angular.copy(variable);
 						$scope.variableName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = Boolean(variable && variable.metadata && variable.metadata.deletable);
-						$scope.isSystemVariable = Boolean(variable && variable.metadata && variable.metadata.usage && variable.metadata.usage.system);
+						$scope.isSystemVariable = Boolean(variable && variable.metadata && variable.metadata.usage && variable.metadata.usage.systemTerm);
 						$scope.formulaInUsed = Boolean(!$scope.deletable && $scope.model && $scope.model.formula && $scope.model.formula.formulaId);
 						$scope.showAlias = $scope.model && $scope.model.variableTypes && $scope.model.variableTypes.filter(isVariableTypeAllowed).length > 0;
 

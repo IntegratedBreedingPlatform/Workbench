@@ -33,7 +33,7 @@
 						$scope.model = angular.copy(method);
 						$scope.methodName = $scope.model ? $scope.model.name : '';
 						$scope.deletable = method && method.metadata && method.metadata.deletable || false;
-						$scope.isSystemMethod = Boolean(method && method.metadata && method.metadata.usage && method.metadata.usage.system);
+						$scope.isSystemMethod = Boolean(method && method.metadata && method.metadata.usage && method.metadata.usage.systemTerm);
 					});
 
 					$scope.$watch('editing', function() {
