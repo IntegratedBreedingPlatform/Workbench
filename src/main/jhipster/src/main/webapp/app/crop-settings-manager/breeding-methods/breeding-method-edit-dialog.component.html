@@ -71,6 +71,14 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.snametype">Source name type</label>
+				<div class="col-sm-7">
+					<ng-select2 name="dropdownTypes" id="dropdownTypes" width="100%" [(ngModel)]="breedingMethodRequest.snameTypeCode"
+								[data]="nameTypes | async | NameTypeSelect2Data">
+					</ng-select2>
+				</div>
+			</div>
+			<div class="form-group row">
 				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.separator">Separator</label>
 				<div class="col-sm-7">
 					<input type="text" class="form-control" name="separator" id="separator" [(ngModel)]="breedingMethodRequest.separator" #separator="ngModel" [maxLength]="255"></input>

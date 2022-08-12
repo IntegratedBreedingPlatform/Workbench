@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster/src/language';
 import { JhiEventManager } from 'ng-jhipster';
 import { AlertService } from '../../shared/alert/alert.service';
-import { ProgramService } from '../../shared/program/service/program.service';
 import { Subscription } from 'rxjs';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { ColumnFilterComponent, FilterType } from '../../shared/column-filter/column-filter.component';
@@ -312,5 +311,6 @@ export enum ColumnLabels {
     'CODE' = 'CODE',
     'TYPE' = 'TYPE',
     'DATE' = 'DATE',
-    'CLASS_NAME' = 'CLASS_NAME'
+    'CLASS_NAME' = 'CLASS_NAME',
+    'SNAME_TYPE_CODE' = 'SNAME_TYPE_CODE'
 }

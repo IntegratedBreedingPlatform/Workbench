@@ -13,6 +13,8 @@ import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HELP_NAME_RULES_FOR_NEW_GERMPLASM } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
+import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 
 @Component({
     selector: 'jhi-breeding-method-edit-dialog',
@@ -21,6 +23,7 @@ import { HelpService } from '../../shared/service/help.service';
 export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
 
     breedingMethodTypeEnum = BreedingMethodTypeEnum;
+    nameTypes: Promise<NameType[]>;
 
     breedingMethodId: number;
 
@@ -41,6 +44,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
                 private breedingMethodService: BreedingMethodService,
+                private germplasmService: GermplasmService,
                 private alertService: AlertService,
                 private cropSettingsContext: CropSettingsContext,
                 private helpService: HelpService) {
@@ -61,6 +65,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.nameTypes = this.germplasmService.getGermplasmNameTypes([]).toPromise();
         this.breedingMethodService.queryBreedingMethodTypes().subscribe(
             (resp: BreedingMethodType[]) => {
                 this.breedingMethodTypes = resp;
@@ -104,6 +109,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
             this.breedingMethodRequest.prefix = this.cropSettingsContext.breedingMethod.prefix;
             this.breedingMethodRequest.count = this.cropSettingsContext.breedingMethod.count;
             this.breedingMethodRequest.suffix = this.cropSettingsContext.breedingMethod.suffix;
+            this.breedingMethodRequest.snameTypeCode = this.cropSettingsContext.breedingMethod.snameTypeCode;
 
         }
     }
