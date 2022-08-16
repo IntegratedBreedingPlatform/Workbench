@@ -56,7 +56,7 @@
 				<label for="type" class="col-sm-5 control-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.class">Class</label>
 				<div class="col-sm-7">
 					<select class="form-control" name="methodClass" [(ngModel)]="breedingMethodRequest.methodClass" #methodClass="ngModel" [required]="true">
-						<option *ngFor="let breedingMethodClass of breedingMethodClassesFileted" [value]="breedingMethodClass.id">
+						<option *ngFor="let breedingMethodClass of breedingMethodClassesFiltered" [value]="breedingMethodClass.id">
 							<label>{{breedingMethodClass.name}}</label>
 						</option>
 					</select>
@@ -73,9 +73,11 @@
 			<div class="form-group row">
 				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.snametype">Source name type</label>
 				<div class="col-sm-7">
-					<ng-select2 name="dropdownTypes" id="dropdownTypes" width="100%" [(ngModel)]="breedingMethodRequest.snameTypeCode"
-								[data]="nameTypes | async | NameTypeSelect2Data">
-					</ng-select2>
+					<select class="form-control" name="snameTypeCode" [(ngModel)]="breedingMethodRequest.snameTypeCode" #snameTypeCode="ngModel" [required]="false">
+						<option *ngFor="let snameType of snameTypes" [value]="snameType.code">
+							<label>{{snameType.code}}</label>
+						</option>
+					</select>
 				</div>
 			</div>
 			<div class="form-group row">
