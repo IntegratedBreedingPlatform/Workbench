@@ -19,6 +19,7 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     @Input() disabled = false;
     @Input() showFavoritesCheckbox = true;
     @Input() storageLocationsOnly = false;
+    @Input() isBreedingAndCountryLocationsOnly = false;
     @Output() valueChange = new EventEmitter<number>();
 
     // If selectBoxOnly is true, the component will only display the select box with all locations options.
@@ -29,7 +30,6 @@ export class LocationsSelectComponent implements OnInit, OnChanges {
     locationsOptions: any;
     locationSelected: string;
     useFavoriteLocations = true;
-    isBreedingAndCountryLocationsOnly;
     locationsFilteredItemsCount;
     initialData: Select2OptionData[];
     previousCropName: string;

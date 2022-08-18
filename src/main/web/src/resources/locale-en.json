@@ -90,7 +90,8 @@
 		"yes.text": "Yes",
 		"no.text": "No",
 		"inUseInVariables": "Used in Variables",
-		"calculation": "Calculation"
+		"calculation": "Calculation",
+		"system.method":"System Method"
 	},
 
 	"list": {
