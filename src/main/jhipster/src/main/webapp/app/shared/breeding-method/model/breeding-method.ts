@@ -17,7 +17,7 @@ export class BreedingMethod {
         public count?: string,
         public suffix?: string,
         public programFavorites?: ProgramFavorite[],
-        public snameTypeCode?: string
+        public snameTypeId?: number
     ) {
     }
 }

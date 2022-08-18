@@ -73,8 +73,8 @@
 			<div class="form-group row">
 				<label for="description" class="col-sm-5 col-form-label font-weight-bold" jhiTranslate="crop-settings-manager.breeding-method.modal.snametype">Source name type</label>
 				<div class="col-sm-7">
-					<select class="form-control" name="snameTypeCode" [(ngModel)]="breedingMethodRequest.snameTypeCode" #snameTypeCode="ngModel" [required]="false">
-						<option *ngFor="let snameType of snameTypes" [value]="snameType.code">
+					<select class="form-control" name="snameTypeId" [(ngModel)]="breedingMethodRequest.snameTypeId" #snameTypeId="ngModel" [required]="false">
+						<option *ngFor="let snameType of snameTypes" [value]="snameType.id">
 							<label>{{snameType.code}}</label>
 						</option>
 					</select>

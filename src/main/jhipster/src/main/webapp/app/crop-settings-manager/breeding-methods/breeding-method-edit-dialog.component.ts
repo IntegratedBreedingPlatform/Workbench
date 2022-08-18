@@ -112,7 +112,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
             this.breedingMethodRequest.prefix = this.cropSettingsContext.breedingMethod.prefix;
             this.breedingMethodRequest.count = this.cropSettingsContext.breedingMethod.count;
             this.breedingMethodRequest.suffix = this.cropSettingsContext.breedingMethod.suffix;
-            this.breedingMethodRequest.snameTypeCode = this.cropSettingsContext.breedingMethod.snameTypeCode;
+            this.breedingMethodRequest.snameTypeId = this.cropSettingsContext.breedingMethod.snameTypeId;
 
         }
     }

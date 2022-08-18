@@ -248,7 +248,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
                 },
             },
             {
-                key: 'snameTypeCodes', name: 'Source Name Types', type: FilterType.DROPDOWN, values: this.getNameTypeOptions(), multipleSelect: true,
+                key: 'snameTypeIds', name: 'Source Name Types', type: FilterType.DROPDOWN, values: this.getNameTypeOptions(), multipleSelect: true,
                 transform(req) {
                     ColumnFilterComponent.transformDropdownFilter(this, req);
                 },
@@ -292,7 +292,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
     private getNameTypeOptions(): Promise<Select2OptionData[]> {
         return this.germplasmService.getGermplasmNameTypes([]).toPromise().then((nameTypes: NameType[]) => {
             return nameTypes.map((nameType: NameType) => {
-                return { id: nameType.code,
+                return { id: nameType.id.toString(),
                     text: nameType.code
                 }
             });
