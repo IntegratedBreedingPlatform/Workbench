@@ -30,6 +30,7 @@
                 <th [jhiSortBy]="ColumnLabels.TYPE"><span jhiTranslate="crop-settings-manager.breeding-method.columns.type"></span> <span class="fa fa-sort"></span></th>
                 <th [jhiSortBy]="ColumnLabels.DATE"><span jhiTranslate="crop-settings-manager.breeding-method.columns.date"></span> <span class="fa fa-sort"></span></th>
                 <th [jhiSortBy]="ColumnLabels.CLASS_NAME"><span jhiTranslate="crop-settings-manager.breeding-method.columns.class"></span> <span class="fa fa-sort"></span></th>
+                <th [jhiSortBy]="ColumnLabels.SNAME_TYPE_CODE"><span jhiTranslate="crop-settings-manager.breeding-method.columns.snameTypeCode"></span> <span class="fa fa-sort"></span></th>
                 <th style="width: 95px;"><span jhiTranslate="crop-settings-manager.breeding-method.columns.action">Action</span></th>
             </tr>
             </thead>
@@ -42,6 +43,7 @@
                 <td>{{breedingMethod.type}}</td>
                 <td>{{breedingMethod.creationDate}}</td>
                 <td>{{breedingMethod.methodClassName}}</td>
+                <td>{{breedingMethod.snameTypeCode}}</td>
                 <td class="text-center">
                     <button class="btn btn-info mr-2" (click)="editBreedingMethod(breedingMethod)">
                         <i class="fa fa-edit fa-md" aria-hidden="true"></i>
