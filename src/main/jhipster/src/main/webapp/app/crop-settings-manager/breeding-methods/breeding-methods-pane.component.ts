@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster/src/language';
 import { JhiEventManager } from 'ng-jhipster';
 import { AlertService } from '../../shared/alert/alert.service';
-import { ProgramService } from '../../shared/program/service/program.service';
 import { Subscription } from 'rxjs';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { ColumnFilterComponent, FilterType } from '../../shared/column-filter/column-filter.component';
@@ -26,6 +25,8 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropSettingsContext } from '../crop-Settings.context';
 import { TranslateService } from '@ngx-translate/core';
+import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
 
 declare var $: any;
 
@@ -61,13 +62,14 @@ export class BreedingMethodsPaneComponent implements OnInit {
     searchRequest: BreedingMethodSearchRequest;
 
     totalItems: number;
-    locationFilters: any;
+    breedingMethodFilters: any;
 
     constructor(public translateService: TranslateService,
                 private activatedRoute: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private eventManager: JhiEventManager,
                 private breedingMethodService: BreedingMethodService,
+                private germplasmService: GermplasmService,
                 private router: Router,
                 private alertService: AlertService,
                 private modalService: NgbModal,
@@ -99,11 +101,11 @@ export class BreedingMethodsPaneComponent implements OnInit {
     }
 
     get filters() {
-        return this.locationFilters;
+        return this.breedingMethodFilters;
     }
 
     set filters(filters) {
-        this.locationFilters = filters;
+        this.breedingMethodFilters = filters;
     }
 
     loadAll(request: BreedingMethodSearchRequest) {
@@ -235,6 +237,24 @@ export class BreedingMethodsPaneComponent implements OnInit {
                 reset(req) {
                     ColumnFilterComponent.resetDropdownFilter(this, req);
                 },
+            },
+            {
+                key: 'methodClassIds', name: 'Class', type: FilterType.DROPDOWN, values: this.getBreedingMethodClassOptions(), multipleSelect: true,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
+            },
+            {
+                key: 'snameTypeIds', name: 'Source Name Types', type: FilterType.DROPDOWN, values: this.getNameTypeOptions(), multipleSelect: true,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
             }
         ];
     }
@@ -264,6 +284,16 @@ export class BreedingMethodsPaneComponent implements OnInit {
             return classes.map((clazz: BreedingMethodClass) => {
                 return { id: clazz.id.toString(),
                     text: clazz.name
+                }
+            });
+        });
+    }
+
+    private getNameTypeOptions(): Promise<Select2OptionData[]> {
+        return this.germplasmService.getGermplasmNameTypes([]).toPromise().then((nameTypes: NameType[]) => {
+            return nameTypes.map((nameType: NameType) => {
+                return { id: nameType.id.toString(),
+                    text: nameType.code
                 }
             });
         });
@@ -312,5 +342,6 @@ export enum ColumnLabels {
     'CODE' = 'CODE',
     'TYPE' = 'TYPE',
     'DATE' = 'DATE',
-    'CLASS_NAME' = 'CLASS_NAME'
+    'CLASS_NAME' = 'CLASS_NAME',
+    'SNAME_TYPE_CODE' = 'SNAME_TYPE_CODE'
 }

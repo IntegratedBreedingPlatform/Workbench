@@ -48,6 +48,7 @@
         "generation-advancement-type": "Generation Advancement Type",
         "crop-reproductive-system": "Crop Reproductive System",
         "class": "Class",
+        "snametype": "Source name type",
         "separator": "Separator",
         "prefix": "Prefix",
         "count": "Count",
@@ -74,6 +75,7 @@
         "type": "TYPE",
         "date": "DATE",
         "class": "CLASS",
+        "snameTypeCode": "SOURCE NAME TYPE",
         "action": "ACTION"
       }
     },

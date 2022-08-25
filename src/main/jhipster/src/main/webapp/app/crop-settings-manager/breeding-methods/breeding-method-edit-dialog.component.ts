@@ -13,6 +13,8 @@ import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HELP_NAME_RULES_FOR_NEW_GERMPLASM } from '../../app.constants';
 import { HelpService } from '../../shared/service/help.service';
+import { NameType } from '../../shared/germplasm/model/name-type.model';
+import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 
 @Component({
     selector: 'jhi-breeding-method-edit-dialog',
@@ -21,7 +23,6 @@ import { HelpService } from '../../shared/service/help.service';
 export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
 
     breedingMethodTypeEnum = BreedingMethodTypeEnum;
-
     breedingMethodId: number;
 
     isLoading: boolean;
@@ -31,16 +32,19 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
 
     breedingMethodTypes: BreedingMethodType[] = [];
     breedingMethodClasses: BreedingMethodClass[] = [];
-    breedingMethodClassesFileted: BreedingMethodClass[] = [];
+    breedingMethodClassesFiltered: BreedingMethodClass[] = [];
+    snameTypes: NameType[];
 
     breedingMethodGroups: BreedingMethodGroup[] = [];
 
     nonSpecifyBreedingMethodType: BreedingMethodType = new BreedingMethodType('');
     nonSpecifyBreedingMethodGroups: BreedingMethodGroup = new BreedingMethodGroup('');
+    nonSpecifyNameType: NameType = new NameType(null, '');
 
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
                 private breedingMethodService: BreedingMethodService,
+                private germplasmService: GermplasmService,
                 private alertService: AlertService,
                 private cropSettingsContext: CropSettingsContext,
                 private helpService: HelpService) {
@@ -61,6 +65,10 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.germplasmService.getGermplasmNameTypes([]).toPromise().then((nameTypeValues) => {
+            this.snameTypes = nameTypeValues;
+            this.snameTypes.unshift(this.nonSpecifyNameType);
+        });
         this.breedingMethodService.queryBreedingMethodTypes().subscribe(
             (resp: BreedingMethodType[]) => {
                 this.breedingMethodTypes = resp;
@@ -86,7 +94,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
         this.breedingMethodService.queryBreedingMethodClasses().subscribe(
             (resp: BreedingMethodClass[]) => {
                 this.breedingMethodClasses = resp;
-                this.breedingMethodClassesFileted = resp.filter((breedingMethodClass) => breedingMethodClass.methodTypeCode === this.breedingMethodRequest.type);
+                this.breedingMethodClassesFiltered = resp.filter((breedingMethodClass) => breedingMethodClass.methodTypeCode === this.breedingMethodRequest.type);
                 if (this.cropSettingsContext.breedingMethod) {
                     this.breedingMethodRequest.methodClass = this.cropSettingsContext.breedingMethod.methodClass;
                 }
@@ -104,6 +112,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
             this.breedingMethodRequest.prefix = this.cropSettingsContext.breedingMethod.prefix;
             this.breedingMethodRequest.count = this.cropSettingsContext.breedingMethod.count;
             this.breedingMethodRequest.suffix = this.cropSettingsContext.breedingMethod.suffix;
+            this.breedingMethodRequest.snameTypeId = this.cropSettingsContext.breedingMethod.snameTypeId;
 
         }
     }
@@ -153,10 +162,10 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
 
     generationAdvancementTypeChanged() {
         if (this.breedingMethodRequest.type !== this.nonSpecifyBreedingMethodType.code) {
-            this.breedingMethodClassesFileted = this.breedingMethodClasses.filter((breedingMethodClass) => breedingMethodClass.methodTypeCode === this.breedingMethodRequest.type);
+            this.breedingMethodClassesFiltered = this.breedingMethodClasses.filter((breedingMethodClass) => breedingMethodClass.methodTypeCode === this.breedingMethodRequest.type);
         } else {
             this.breedingMethodRequest.type = null;
-            this.breedingMethodClassesFileted = [];
+            this.breedingMethodClassesFiltered = [];
         }
         this.breedingMethodRequest.methodClass = null;
     }
