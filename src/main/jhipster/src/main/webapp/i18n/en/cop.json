@@ -5,10 +5,10 @@
       "download": "Download",
       "name.dropdown": "Name"
     },
-    "async.started": "Calculation job started!",
+    "async.started": "Calculation job in progress",
     "async.in.progress": "Calculation in progress",
     "async.cancel.tooltip": "Cancel jobs for the current gid selection",
-    "async.cancel.success": "Job cancelled successfully",
+    "async.cancel.success": "Job interruption requested",
     "async.saving": "Saving",
     "async.downloading": "Downloading",
     "btype": {
