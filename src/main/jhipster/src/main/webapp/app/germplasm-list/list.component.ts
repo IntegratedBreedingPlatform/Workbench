@@ -477,7 +477,7 @@ export class ListComponent implements OnInit {
             items = [entry];
             this.lastClickIndex = index;
         }
-        const isClickedItemSelected = this.selectedItems[entry.listDataId];
+        const isClickedItemSelected = this.selectedItems.get(entry.listDataId);
         for (const item of items) {
             if (isClickedItemSelected) {
                 this.selectedItems.delete(item.listDataId);
@@ -581,7 +581,7 @@ export class ListComponent implements OnInit {
         const searchRequest = new GermplasmListDataSearchRequest();
         searchRequest.entryNumbers = [];
         this.getSelectedItemIds().forEach((selectedItemId) => {
-            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
+            searchRequest.entryNumbers.push(this.selectedItems.get(selectedItemId).data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
         });
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
