@@ -466,7 +466,7 @@ export class ListComponent implements OnInit {
             return;
         }
         if (!$event.ctrlKey && !checkbox) {
-            this.selectedItems = new Map<number, GermplasmListDataSearchResponse>();
+            this.selectedItems.clear();
         }
         let items;
         if ($event.shiftKey) {
@@ -488,7 +488,7 @@ export class ListComponent implements OnInit {
     }
 
     clearSelectedItems() {
-        this.selectedItems = new Map<number, GermplasmListDataSearchResponse>();
+        this.selectedItems.clear();
     }
 
     openReorderEntries() {
