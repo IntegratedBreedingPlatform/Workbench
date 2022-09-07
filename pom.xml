@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>21.4.1</version>
+        <version>21.4.2</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
