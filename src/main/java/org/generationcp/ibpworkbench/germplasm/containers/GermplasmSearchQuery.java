@@ -145,7 +145,7 @@ public class GermplasmSearchQuery implements Query {
 		gResult.setNames(this.getGermplasmNames(gData.getGid()));
 
 		try {
-			Method method = this.germplasmDataManager.getMethodByID(gData.getMethodId());
+			Method method = this.germplasmDataManager.getMethodByID(gData.getMethod().getMid());
 			if (method != null) {
 				gResult.setMethod(method.getMname());
 			} else {

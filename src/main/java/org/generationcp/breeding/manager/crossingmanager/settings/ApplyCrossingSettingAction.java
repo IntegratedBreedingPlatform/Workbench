@@ -16,6 +16,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.Progenitor;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class ApplyCrossingSettingAction implements CrossesMadeContainerUpdateLis
 			// Use same breeding method for all crosses
 			for (final Triple<Germplasm, Name, List<Progenitor>> triple: this.container.getCrossesMade().getCrossesList()) {
 				//Set the method id to Single Cross(101) for now, it will be overwritten in the nursery side
-				triple.getLeft().setMethodId(101);
+				triple.getLeft().setMethod(new Method(101));
 			}
 
 			Integer crossingNameTypeId = null;
