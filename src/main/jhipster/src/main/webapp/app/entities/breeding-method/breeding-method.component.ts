@@ -7,6 +7,7 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
 import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding-method-group.model';
 import { BreedingMethodType } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-breeding-method',
@@ -24,11 +25,18 @@ export class BreedingMethodComponent implements OnInit {
     selectedBreedingMethodGroup: BreedingMethodGroup;
     editable = false;
 
-    constructor(public activeModal: NgbActiveModal,
-                public breedingMethodService: BreedingMethodService) {
+    constructor(private route: ActivatedRoute,
+                public activeModal: NgbActiveModal,
+                public breedingMethodService: BreedingMethodService,
+                private jhiLanguageService: JhiLanguageService) {
     }
 
     ngOnInit(): void {
+        (<any>window).onCloseModal = this.clear;
+        const id = parseInt(this.route.snapshot.paramMap.get('breedingMethodId'));
+        if (id) {
+            this.breedingMethodId = id;
+        }
         this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise().then((breedingMethod) => {
             this.breedingMethod = breedingMethod;
         }).then(() => {
@@ -50,6 +58,9 @@ export class BreedingMethodComponent implements OnInit {
 
     clear() {
         this.activeModal.dismiss('cancel');
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
     }
 }
 
