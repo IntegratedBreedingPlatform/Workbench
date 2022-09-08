@@ -42,6 +42,8 @@ export class ImportEntryDetailsComponent implements OnInit {
     page = 0;
     pageSize = 10;
 
+    hasGeneratedDesign: boolean;
+
     constructor(
         private route: ActivatedRoute,
         private jhiLanguageService: JhiLanguageService,
@@ -60,6 +62,7 @@ export class ImportEntryDetailsComponent implements OnInit {
     ngOnInit(): void {
         this.context.resetContext();
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
+        this.hasGeneratedDesign = this.route.snapshot.queryParamMap.get('hasGeneratedDesign') === 'true';
     }
 
     onFileChange(evt: any) {
@@ -277,6 +280,11 @@ export class ImportEntryDetailsComponent implements OnInit {
             ...this.context.variablesOfTheList
         ].length;
     }
+
+    notImportSystemVariable(isSystem: boolean): boolean {
+        return isSystem && this.hasGeneratedDesign;
+    }
+
 }
 
 @Component({

@@ -25,7 +25,8 @@ export class EntryDetailsImportService {
             const row = {
                 id: variable.id, name: variableName,
                 description: variable.description,
-                isAlreadyExisting: false
+                isAlreadyExisting: false,
+                isSystem: variable.metadata.usage.systemTerm
             };
 
             if (variable.alias) {
@@ -40,7 +41,8 @@ export class EntryDetailsImportService {
             const row = {
                 id: variable.id,
                 name: variableName, description: variable.description,
-                isAlreadyExisting: true
+                isAlreadyExisting: true,
+                isSystem: variable.metadata.usage.systemTerm
             };
 
             if (variable.alias) {
