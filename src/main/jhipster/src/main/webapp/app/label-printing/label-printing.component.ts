@@ -14,6 +14,7 @@ import { ParamContext } from '../shared/service/param.context';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER, HELP_LABEL_PRINTING_GERMPLASM_MANAGER,
     HELP_LABEL_PRINTING_INVENTORY_MANAGER, HELP_LABEL_PRINTING_STUDY_MANAGER } from '../app.constants';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 
 declare const $: any;
 
@@ -37,6 +38,7 @@ export class LabelPrintingComponent implements OnInit {
     presetSettingId: number;
     loadSavedSettings = false;
     fieldsSelected: LabelType[];
+    leftSideFields: LabelType;
     presetSettings: PresetSetting[];
     modalTitle: string;
     modalMessage: string;
@@ -96,6 +98,8 @@ export class LabelPrintingComponent implements OnInit {
             this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
 
+        this.leftSideFields = new LabelType();
+        this.leftSideFields.fields = new Array();
         const presetPromise = this.loadPresets();
 
         const sorteableFieldsPromise = this.service.getSortableFields().toPromise();
@@ -120,7 +124,6 @@ export class LabelPrintingComponent implements OnInit {
             sorteableFieldsPromise,
             defaultSelectionPromise
         ]).then(() => {
-            this.initDragAndDrop();
             this.initComplete = true;
             if (this.defaultPresetSetting) {
                 this.loadPresetSetting(this.defaultPresetSetting);
@@ -197,27 +200,6 @@ export class LabelPrintingComponent implements OnInit {
         this.fieldsSelected = labelFieldsSelected;
         this.sortBySelected = (presetSetting.sortBy) ? presetSetting.sortBy : '';
 
-        setTimeout(() => {
-            $('#leftSelectedFields').empty();
-            $('#rightSelectedFields').empty();
-
-            let listElem = '#leftSelectedFields';
-            labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
-                fieldsList.forEach((labelsType: LabelType) => {
-                    const key = labelsType.key;
-                    labelsType.fields.forEach((field) => {
-                        $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
-                            .attr('id', field.id).attr('data-label-type-key', key) //
-                            .text(field.name).appendTo(listElem);
-                    });
-                });
-                if (labelFieldsSelected.length > 1) {
-                    listElem = '#rightSelectedFields';
-                }
-            });
-        });
-
-        this.initDragAndDrop();
         if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
             this.labelPrintingData.numberOfRowsPerPage = presetSetting.fileConfiguration.numberOfRowsPerPage;
             this.labelPrintingData.sizeOfLabelSheet = presetSetting.fileConfiguration.sizeOfLabelSheet;
@@ -287,7 +269,6 @@ export class LabelPrintingComponent implements OnInit {
             this.sortBySelected = '';
             $('#leftSelectedFields').empty();
             $('#rightSelectedFields').empty();
-            this.initDragAndDrop();
         }
         this.selectedfileType =  this.fileType;
     }
@@ -329,15 +310,12 @@ export class LabelPrintingComponent implements OnInit {
                 }
             });
         });
-
-        this.initDragAndDrop();
-
     }
 
-    resetSelectFields($event, selectedFields: string) {
+    resetSelectFields($event) {
         $event.preventDefault();
         const fieldsSelected: number[][] = [];
-        $(selectedFields).empty();
+/*        $(selectedFields).empty();
 
         if (selectedFields === '#leftSelectedFields' && this.fileType === FileType.PDF) {
             if ($('#rightSelectedFields').sortable('toArray').length > 0) {
@@ -347,33 +325,9 @@ export class LabelPrintingComponent implements OnInit {
             if ($('#leftSelectedFields').sortable('toArray').length > 0) {
                 fieldsSelected.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
             }
-        }
+        }*/
         this.reloadFields(fieldsSelected);
 
-    }
-
-    initDragAndDrop() {
-        // TODO implement in angular
-        setTimeout(() => {
-            $('ul.droppable').sortable({
-                connectWith: 'ul',
-                receive: (event, ui) => {
-                    // event.currentTarget was not working
-                    const receiver = $(event.target),
-                        sender = $(ui.sender),
-                        item = $(ui.item);
-
-                    if (!receiver.hasClass('print-fields')
-                        && item.attr('data-label-type-key') !== receiver.attr('data-label-type-key')) {
-
-                        $(ui.sender).sortable('cancel');
-                    }
-                    if (receiver.hasClass('print-fields') && this.fileType === FileType.PDF && receiver.children().length > 5) {
-                        $(ui.sender).sortable('cancel');
-                    }
-                }
-            });
-        });
     }
 
     export() {
@@ -595,6 +549,27 @@ export class LabelPrintingComponent implements OnInit {
     back() {
         window.history.back();
     }
+
+    drop(event: CdkDragDrop<{ id: number, name: string }[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else if (event.container.id !== 'leftSideFields') {
+            const title = event.container.id;
+            const labelTypeOrg = this.labelTypesOrig.find((ltype) => ltype.title === title);
+            const field = Object.assign({}, event.item.data)
+            if (labelTypeOrg.fields.indexOf(field) === -1) {
+                return;
+            }
+        } else {
+            transferArrayItem(
+                event.previousContainer.data,
+                event.container.data,
+                event.previousIndex,
+                event.currentIndex,
+            );
+        }
+    }
+
 }
 
 @Pipe({ name: 'allLabels' })
