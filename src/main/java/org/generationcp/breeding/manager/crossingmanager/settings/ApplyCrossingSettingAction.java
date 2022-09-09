@@ -118,8 +118,8 @@ public class ApplyCrossingSettingAction implements CrossesMadeContainerUpdateLis
 	private boolean applyAdditionalDetailsSetting() {
 		if (this.container != null && this.container.getCrossesMade() != null && this.container.getCrossesMade().getCrossesList() != null) {
 			//the date and harvest location will be overwritten in the nursery side.
-			Integer dateIntValue = 0;
-			Integer harvestLocationId = 0;
+			final Integer dateIntValue = 0;
+			final Integer harvestLocationId = 0;
 			final List<Triple<Germplasm, Name, List<Progenitor>>> crossesList = this.container.getCrossesMade().getCrossesList();
 			for (final Triple<Germplasm, Name, List<Progenitor>> triple: crossesList) {
 				final Germplasm germplasm = triple.getLeft();

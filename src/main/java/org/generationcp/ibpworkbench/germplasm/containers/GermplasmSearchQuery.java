@@ -57,7 +57,7 @@ public class GermplasmSearchQuery implements Query {
 	 * These parameters are passed by the QueryFactory which instantiates objects of this class.
 	 * 
 	 */
-	public GermplasmSearchQuery(GermplasmDataManager germplasmDataManager, String searchChoice, String searchValue) {
+	public GermplasmSearchQuery(final GermplasmDataManager germplasmDataManager, final String searchChoice, final String searchValue) {
 		super();
 		this.germplasmDataManager = germplasmDataManager;
 		this.searchChoice = searchChoice;
@@ -70,7 +70,7 @@ public class GermplasmSearchQuery implements Query {
 	 */
 	@Override
 	public Item constructItem() {
-		PropertysetItem item = new PropertysetItem();
+		final PropertysetItem item = new PropertysetItem();
 		item.addItemProperty(GermplasmSearchQuery.GID, new ObjectProperty<String>(""));
 		item.addItemProperty(GermplasmSearchQuery.NAMES, new ObjectProperty<String>(""));
 		item.addItemProperty(GermplasmSearchQuery.METHOD, new ObjectProperty<String>(""));
@@ -87,13 +87,13 @@ public class GermplasmSearchQuery implements Query {
 	 * Retrieves the dataset by batches of rows. Used for lazy loading the dataset.
 	 */
 	@Override
-	public List<Item> loadItems(int start, int numOfRows) {
-		List<Item> items = new ArrayList<>();
+	public List<Item> loadItems(final int start, final int numOfRows) {
+		final List<Item> items = new ArrayList<>();
 
-		List<GermplasmSearchResultModel> germplasms = new ArrayList<>();
+		final List<GermplasmSearchResultModel> germplasms = new ArrayList<>();
 
 		try {
-			List<Germplasm> germplasmList;
+			final List<Germplasm> germplasmList;
 
 			if (this.searchChoice.equals(SEARCH_OPTION_NAME)) {
 				if (this.searchValue.contains("%")) {
@@ -101,14 +101,14 @@ public class GermplasmSearchQuery implements Query {
 				} else {
 					germplasmList = this.germplasmDataManager.getGermplasmByName(this.searchValue, start, numOfRows, Operation.EQUAL);
 				}
-				for (Germplasm g : germplasmList) {
-					Germplasm gData = g;
-					GermplasmSearchResultModel gResult = new GermplasmSearchResultModel();
+				for (final Germplasm g : germplasmList) {
+					final Germplasm gData = g;
+					final GermplasmSearchResultModel gResult = new GermplasmSearchResultModel();
 					germplasms.add(this.setGermplasmSearchResult(gResult, gData));
 
 				}
 			} else {
-				Germplasm gData = this.germplasmDataManager.getGermplasmByGID(Integer.parseInt(this.searchValue));
+				final Germplasm gData = this.germplasmDataManager.getGermplasmByGID(Integer.parseInt(this.searchValue));
 				GermplasmSearchResultModel gResult = new GermplasmSearchResultModel();
 
 				if (gData != null) {
@@ -118,13 +118,13 @@ public class GermplasmSearchQuery implements Query {
 
 			}
 
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_DATABASE,
 					Message.ERROR_IN_GETTING_GERMPLASM_LIST_RESULT_BY_PREFERRED_NAME);
 		}
 
-		for (GermplasmSearchResultModel germplasm : germplasms) {
-			PropertysetItem item = new PropertysetItem();
+		for (final GermplasmSearchResultModel germplasm : germplasms) {
+			final PropertysetItem item = new PropertysetItem();
 			item.addItemProperty(GermplasmSearchQuery.GID, new ObjectProperty<String>(germplasm.getGid().toString()));
 			if (germplasm.getNames() != null) {
 				item.addItemProperty(GermplasmSearchQuery.NAMES, new ObjectProperty<String>(germplasm.getNames()));
@@ -140,19 +140,19 @@ public class GermplasmSearchQuery implements Query {
 	}
 
 	@SuppressWarnings("deprecation")
-	private GermplasmSearchResultModel setGermplasmSearchResult(GermplasmSearchResultModel gResult, Germplasm gData) {
+	private GermplasmSearchResultModel setGermplasmSearchResult(final GermplasmSearchResultModel gResult, final Germplasm gData) {
 		gResult.setGid(gData.getGid());
 		gResult.setNames(this.getGermplasmNames(gData.getGid()));
 
 		try {
-			Method method = this.germplasmDataManager.getMethodByID(gData.getMethod().getMid());
+			final Method method = this.germplasmDataManager.getMethodByID(gData.getMethod().getMid());
 			if (method != null) {
 				gResult.setMethod(method.getMname());
 			} else {
 				gResult.setMethod("");
 			}
 
-			Location loc = this.germplasmDataManager.getLocationByID(gData.getLocationId());
+			final Location loc = this.germplasmDataManager.getLocationByID(gData.getLocationId());
 			if (loc != null) {
 				gResult.setLocation(loc.getLname());
 			} else {
@@ -160,19 +160,19 @@ public class GermplasmSearchQuery implements Query {
 			}
 
 			return gResult;
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_IN_SEARCH);
 		}
 
 	}
 
-	private String getGermplasmNames(int gid) {
+	private String getGermplasmNames(final int gid) {
 
 		try {
-			List<Name> names = this.germplasmDataManager.getNamesByGID(gid, null, null);
-			StringBuilder germplasmNames = new StringBuilder("");
+			final List<Name> names = this.germplasmDataManager.getNamesByGID(gid, null, null);
+			final StringBuilder germplasmNames = new StringBuilder("");
 			int i = 0;
-			for (Name n : names) {
+			for (final Name n : names) {
 				if (i < names.size() - 1) {
 					germplasmNames.append(n.getNval() + ",");
 				} else {
@@ -182,13 +182,13 @@ public class GermplasmSearchQuery implements Query {
 			}
 
 			return germplasmNames.toString();
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_DATABASE, Message.ERROR_IN_GETTING_NAMES_BY_GERMPLASM_ID);
 		}
 	}
 
 	@Override
-	public void saveItems(List<Item> arg0, List<Item> arg1, List<Item> arg2) {
+	public void saveItems(final List<Item> arg0, final List<Item> arg1, final List<Item> arg2) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -209,7 +209,7 @@ public class GermplasmSearchQuery implements Query {
 					this.size = this.germplasmDataManager.getGermplasmByGID(Integer.parseInt(this.searchValue)) != null ? 1 : 0;
 				}
 			}
-		} catch (MiddlewareQueryException e) {
+		} catch (final MiddlewareQueryException e) {
 			throw new InternationalizableException(e, Message.ERROR_DATABASE,
 					Message.ERROR_IN_GETTING_GERMPLASM_LIST_RESULT_BY_PREFERRED_NAME);
 		}
