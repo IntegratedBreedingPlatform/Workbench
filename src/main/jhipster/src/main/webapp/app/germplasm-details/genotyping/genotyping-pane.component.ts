@@ -172,7 +172,7 @@ export class GenotypingPaneComponent implements OnInit {
     selectVariantsetOnChange() {
         const renderer = flapjack.default();
         renderer.renderGenotypesBrapi({
-            domParent: "#flapjack-div",  // Container to inject the canvas into
+            domParent: '#flapjack-div',  // Container to inject the canvas into
             width: 750,  // Genotype view width
             height: 300,   // Genotype view height
             baseURL: this.cropGenotypingParameter.endpoint,    // BrAPI base URL
