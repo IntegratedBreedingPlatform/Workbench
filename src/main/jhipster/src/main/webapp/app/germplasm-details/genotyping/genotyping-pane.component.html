@@ -99,53 +99,10 @@
 			<hr>
 			<div class="row">
 				<div class="col-md-8">
-					<span *ngIf="isGenotypingCallsLoading" class="throbber"></span>
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered table-curved" *ngIf="genotypingCalls && genotypingCalls.length else nodata">
-							<thead>
-							<tr>
-								<th jhiTranslate="genotyping.calls.table.marker.column">Marker</th>
-								<th jhiTranslate="genotyping.calls.table.genotype.call.column">Genotype Call</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr *ngFor="let item of genotypingCalls">
-								<td>{{item?.variantName}}</td>
-								<td>{{item?.genotype?.values[0]}}</td>
-							</tr>
-							</tbody>
-						</table>
-					</div>
-					<div *ngIf="genotypingCalls && genotypingCalls.length">
-						<div class="row">
-							<div class="col">
-								<div class="pagination-container">
-									<div class="pagination-box pagination-box-left"></div>
-									<div class="pagination-box">
-										<ngb-pagination [collectionSize]="totalCount" [(page)]="page" [pageSize]="pageSize" [disabled]="isGenotypingCallsLoading"
-														[maxSize]="5" [rotate]="true" (pageChange)="loadGenotypingCalls()"></ngb-pagination>
-									</div>
-									<div class="pagination-box pagination-box-right"></div>
-								</div>
-							</div>
-						</div>
-					</div>
+					<div id="flapjack-div" ref="bytes"></div>
+					<br/>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<ng-template #nodata>
-	<table class="table table-striped table-bordered table-curved">
-		<thead>
-		<tr>
-			<th></th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr>
-			<td jhiTranslate="no.data"></td>
-		</tr>
-		</tbody>
-	</table>
-</ng-template>

@@ -17,6 +17,7 @@ import { Sample } from '../../entities/sample';
 import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/search-germplasm-request';
 import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
+const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
 @Component({
     selector: 'jhi-genotyping-pane',
@@ -169,16 +170,18 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
-        this.genotypingBrapiService.searchCallsets({
-            variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
-            germplasmDbIds: [this.genotypingGermplasm.germplasmDbId]
-        }).subscribe((brapiResponse) => {
-            if (brapiResponse && brapiResponse.result.data.length) {
-                this.genotypingCallSet = brapiResponse.result.data[0];
-                this.loadGenotypingCalls();
-            } else {
-                this.alertService.error('genotyping.no.genotyping.callsets.found');
-            }
+        const renderer = flapjack.default();
+        renderer.renderGenotypesBrapi({
+            domParent: "#flapjack-div",  // Container to inject the canvas into
+            width: 750,  // Genotype view width
+            height: 300,   // Genotype view height
+            baseURL: this.cropGenotypingParameter.endpoint,    // BrAPI base URL
+            matrixId: this.selectedVariantSet.variantSetDbId,
+            mapId: null,
+            authToken: this.genotypingBrapiService.accessToken,
+            overviewWidth: 750,  // Overview width
+            overviewHeight: 50,   // Overview height
+            saveSettings: false
         });
     }
 
