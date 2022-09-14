@@ -33,7 +33,7 @@ export class BreedingMethodComponent implements OnInit {
 
     ngOnInit(): void {
         (<any>window).onCloseModal = this.clear;
-        const id = parseInt(this.route.snapshot.paramMap.get('breedingMethodId'));
+        const id = parseInt(this.route.snapshot.paramMap.get('breedingMethodId'), 10);
         if (id) {
             this.breedingMethodId = id;
         }
