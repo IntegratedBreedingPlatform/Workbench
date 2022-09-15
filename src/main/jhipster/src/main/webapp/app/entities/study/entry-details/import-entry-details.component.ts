@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,6 +15,7 @@ import { EntryDetailsImportContext } from '../../../shared/ontology/entry-detail
 import { StudyService } from '../../../shared/study/study.service';
 import { DatasetVariable } from '../../../shared/study/dataset-variable';
 import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'jhi-import-entry-details',
@@ -127,9 +128,27 @@ export class ImportEntryDetailsComponent implements OnInit {
         this.isFileUploadMode = false;
     }
 
+    getAffectedEntriesNumber(): number {
+        return this.context.data.filter((data) => {
+            let count = 0;
+            for (const property in data) {
+                if (property !== HEADERS.ENTRY_NO && data[property]) {
+                    count++;
+                }
+            }
+            return count > 0;
+        }).length;
+    }
+
     async save(variableMatchesResult) {
 
-        const doContinue = await this.showSummaryConfirmation();
+        const affectedEntriesNumber: number = this.getAffectedEntriesNumber();
+        if (affectedEntriesNumber === 0) {
+            this.showNoValuesWarning();
+            return;
+        }
+
+        const doContinue = await this.showSummaryConfirmation(affectedEntriesNumber);
         if (!doContinue) {
             return;
         }
@@ -174,17 +193,23 @@ export class ImportEntryDetailsComponent implements OnInit {
 
     }
 
-    private async showSummaryConfirmation() {
+    private async showSummaryConfirmation(affectedEntries: number) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
         confirmModalRef.componentInstance.message = this.translateService.instant('study.import-entry-details.confirmation',
-            { param: this.context.data.length });
+            { param: affectedEntries });
         try {
             await confirmModalRef.result;
         } catch (rejected) {
             return false;
         }
         return true;
+    }
+
+    private async showNoValuesWarning() {
+        const modal = this.modalService.open(ModalNoEntryValuesComponent as Component,
+            { windowClass: 'modal-medium', backdrop: 'static' });
+        modal.componentInstance.message = this.translateService.instant('study.import-entry-details.no-entries-values');
     }
 
     private async validateFile() {
@@ -195,8 +220,9 @@ export class ImportEntryDetailsComponent implements OnInit {
         const headers = this.rawData[0];
         // Ignore empty column headers
         const fileHeaders = headers.filter((header) => !!header);
+        const data = this.getData(false);
 
-        if (!this.entryDetailsImportService.validateFile(fileHeaders, this.context.data)) {
+        if (!this.entryDetailsImportService.validateFile(fileHeaders, data)) {
             return false;
         }
 
@@ -210,6 +236,8 @@ export class ImportEntryDetailsComponent implements OnInit {
             this.alertService.error('study.import-entry-details.file.validation.entry.details.no.column');
             return false;
         }
+
+        this.context.data = this.getData(true);
 
         return true;
     }
@@ -230,16 +258,22 @@ export class ImportEntryDetailsComponent implements OnInit {
                 .toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
-                variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
+                (!this.hasGeneratedDesign || this.hasGeneratedDesign && !variable.metadata.usage.systemTerm) &&
+                    variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
             );
 
             this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
-                variablesFiltered.every((v) => toUpper(v.name) !== variableName && toUpper(v.alias) !== variableName)
+                variablesFiltered.every((v) => toUpper(v.name) !== toUpper(variableName) && toUpper(v.alias) !== toUpper(variableName))
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
-                this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
+                (!this.hasGeneratedDesign || this.hasGeneratedDesign && !variable.metadata.usage.systemTerm) &&
+                    this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
             );
+
+            if (this.hasGeneratedDesign) {
+                this.context.skipVariables = variablesFiltered.filter((variable) => variable.metadata.usage.systemTerm);
+            }
         }
 
     }
@@ -277,12 +311,24 @@ export class ImportEntryDetailsComponent implements OnInit {
         return [
             ...this.context.newVariables,
             ...this.context.unknownVariableNames,
-            ...this.context.variablesOfTheList
+            ...this.context.variablesOfTheList,
+            ...this.context.skipVariables
         ].length;
     }
 
-    notImportSystemVariable(isSystem: boolean): boolean {
-        return isSystem && this.hasGeneratedDesign;
+    private getData(cleanData: boolean) {
+       const headers = this.rawData[0];
+        return this.rawData.slice(1).map((fileRow, rowIndex) => {
+            return fileRow.reduce((map, col, colIndex) => {
+                const columnName = headers[colIndex];
+                const shouldAddData = !(this.context.skipVariables.filter((variable) => variable.name === columnName).length > 0 ||
+                    this.context.unknownVariableNames.includes(columnName));
+                if (!cleanData || shouldAddData) {
+                    map[columnName] = col;
+                }
+                return map;
+            }, {});
+        });
     }
 
 }
@@ -310,4 +356,34 @@ export class ImportEntryDetailsPopupComponent implements OnInit, OnDestroy {
             this.popupService.open(ImportEntryDetailsComponent as Component);
         });
     }
+}
+
+@Component({
+    selector: 'jhi-modal-no-entry-values',
+    template: `
+		<jhi-modal [title]="title">
+			<div class="modal-body word-wrap" [innerHTML]="sanitizer.bypassSecurityTrustHtml(message)">
+			</div>
+			<div class="modal-footer">
+				<button (click)="confirm()" class="btn btn-primary" data-test="modalConfirmButton">
+					<span>{{confirmLabel}}</span>
+				</button>
+			</div>
+		</jhi-modal>
+    `
+})
+export class ModalNoEntryValuesComponent {
+    @Input() message: string;
+    @Input() title: string;
+    @Input() confirmLabel = this.translateService.instant('ok');
+
+    constructor(private modal: NgbActiveModal,
+                private translateService: TranslateService,
+                public sanitizer: DomSanitizer) {
+    }
+
+    confirm() {
+        this.modal.close();
+    }
+
 }
