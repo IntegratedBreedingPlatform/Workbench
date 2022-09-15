@@ -33,11 +33,8 @@ export class BreedingMethodComponent implements OnInit {
 
     ngOnInit(): void {
         (<any>window).onCloseModal = this.clear;
-        const id = parseInt(this.route.snapshot.paramMap.get('breedingMethodId'), 10);
-        if (id) {
-            this.breedingMethodId = id;
-        }
-        this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise().then((breedingMethod) => {
+
+        this.getBreedingMethodPromiseByIdOrAbbr().then((breedingMethod) => {
             this.breedingMethod = breedingMethod;
         }).then(() => {
             this.breedingMethodService.queryBreedingMethodClasses().toPromise().then((breedingMethodClasses) => {
@@ -54,6 +51,15 @@ export class BreedingMethodComponent implements OnInit {
             });
         });
 
+    }
+
+    getBreedingMethodPromiseByIdOrAbbr() : Promise<BreedingMethod> {
+        if (this.breedingMethodId) {
+            return this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise();
+        } else {
+            const abbr = this.route.snapshot.paramMap.get('breedingMethodCode');
+            return this.breedingMethodService.getBreedingMethodByAbbreviation(abbr);
+        }
     }
 
     clear() {

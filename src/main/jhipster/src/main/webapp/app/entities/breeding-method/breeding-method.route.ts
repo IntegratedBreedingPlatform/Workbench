@@ -5,7 +5,7 @@ import { RouteAccessService } from '../../shared';
 
 export const breedingMethodRoutes: Routes = [
     {
-        path: 'breeding-method-page/:breedingMethodId',
+        path: 'breeding-method-page/:breedingMethodCode',
         component: BreedingMethodComponent,
         canActivate: [RouteAccessService]
     },
