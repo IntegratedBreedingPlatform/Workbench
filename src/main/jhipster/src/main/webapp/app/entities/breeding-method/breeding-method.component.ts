@@ -53,7 +53,7 @@ export class BreedingMethodComponent implements OnInit {
 
     }
 
-    getBreedingMethodPromiseByIdOrAbbr() : Promise<BreedingMethod> {
+    getBreedingMethodPromiseByIdOrAbbr(): Promise<BreedingMethod> {
         if (this.breedingMethodId) {
             return this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise();
         } else {
