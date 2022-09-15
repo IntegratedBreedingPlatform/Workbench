@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { EntryDetailsImportContext } from '../../../shared/ontology/entry-detail
 import { StudyService } from '../../../shared/study/study.service';
 import { DatasetVariable } from '../../../shared/study/dataset-variable';
 import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { ModalAlertComponent } from '../../../shared/modal/modal-alert.component';
 
 @Component({
     selector: 'jhi-import-entry-details',
@@ -207,9 +207,10 @@ export class ImportEntryDetailsComponent implements OnInit {
     }
 
     private async showNoValuesWarning() {
-        const modal = this.modalService.open(ModalNoEntryValuesComponent as Component,
+        const modal = this.modalService.open(ModalAlertComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
         modal.componentInstance.message = this.translateService.instant('study.import-entry-details.no-entries-values');
+        modal.componentInstance.showCancelButton = false;
     }
 
     private async validateFile() {
@@ -356,34 +357,4 @@ export class ImportEntryDetailsPopupComponent implements OnInit, OnDestroy {
             this.popupService.open(ImportEntryDetailsComponent as Component);
         });
     }
-}
-
-@Component({
-    selector: 'jhi-modal-no-entry-values',
-    template: `
-		<jhi-modal [title]="title">
-			<div class="modal-body word-wrap" [innerHTML]="sanitizer.bypassSecurityTrustHtml(message)">
-			</div>
-			<div class="modal-footer">
-				<button (click)="confirm()" class="btn btn-primary" data-test="modalConfirmButton">
-					<span>{{confirmLabel}}</span>
-				</button>
-			</div>
-		</jhi-modal>
-    `
-})
-export class ModalNoEntryValuesComponent {
-    @Input() message: string;
-    @Input() title: string;
-    @Input() confirmLabel = this.translateService.instant('ok');
-
-    constructor(private modal: NgbActiveModal,
-                private translateService: TranslateService,
-                public sanitizer: DomSanitizer) {
-    }
-
-    confirm() {
-        this.modal.close();
-    }
-
 }

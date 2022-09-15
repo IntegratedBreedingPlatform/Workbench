@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BmsjHipsterSharedModule } from '../../shared';
 import { RouterModule } from '@angular/router';
-import { ImportEntryDetailsComponent, ImportEntryDetailsPopupComponent, ModalNoEntryValuesComponent } from './entry-details/import-entry-details.component';
+import { ImportEntryDetailsComponent, ImportEntryDetailsPopupComponent } from './entry-details/import-entry-details.component';
 import { STUDY_MANAGER_ROUTES } from './study-manager.route';
 import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
 
@@ -12,13 +12,11 @@ import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-i
     ],
     declarations: [
         ImportEntryDetailsComponent,
-        ImportEntryDetailsPopupComponent,
-        ModalNoEntryValuesComponent
+        ImportEntryDetailsPopupComponent
     ],
     entryComponents: [
         ImportEntryDetailsComponent,
-        ImportEntryDetailsPopupComponent,
-        ModalNoEntryValuesComponent
+        ImportEntryDetailsPopupComponent
     ],
     providers: [
         EntryDetailsImportContext
