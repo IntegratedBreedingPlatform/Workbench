@@ -180,7 +180,7 @@ export class GenotypingPaneComponent implements OnInit {
 
             const renderer = flapjack.default();
             renderer.renderGenotypesUrl({
-                domParent: "#flapjack-div",
+                domParent: '#flapjack-div',
                 width: 750,
                 height: 300,
                 mapFileURL: file + '.map',
