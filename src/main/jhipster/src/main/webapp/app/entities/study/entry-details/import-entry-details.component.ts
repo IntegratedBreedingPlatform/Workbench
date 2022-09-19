@@ -318,7 +318,7 @@ export class ImportEntryDetailsComponent implements OnInit {
     }
 
     private getData(cleanData: boolean) {
-       const headers = this.rawData[0];
+        const headers = this.rawData[0].map((header) => toUpper(header));
         return this.rawData.slice(1).map((fileRow, rowIndex) => {
             return fileRow.reduce((map, col, colIndex) => {
                 const columnName = headers[colIndex];
