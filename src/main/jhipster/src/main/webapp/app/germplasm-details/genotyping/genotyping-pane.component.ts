@@ -17,6 +17,7 @@ import { Sample } from '../../entities/sample';
 import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/search-germplasm-request';
 import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
+import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
 const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
 @Component({
@@ -67,7 +68,8 @@ export class GenotypingPaneComponent implements OnInit {
     ngOnInit(): void {
         this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
             this.cropGenotypingParameter = result;
-            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.endpoint;
+            this.genotypingBrapiService.brapiEndpoint = this.cropGenotypingParameter.endpoint;
+            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.baseUrl;
             return this.cropGenotypingParameterService.getToken(this.context.cropName);
         })).subscribe((accessToken) => {
             this.genotypingBrapiService.accessToken = accessToken;
@@ -170,18 +172,24 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
-        const renderer = flapjack.default();
-        renderer.renderGenotypesBrapi({
-            domParent: '#flapjack-div',  // Container to inject the canvas into
-            width: 750,  // Genotype view width
-            height: 300,   // Genotype view height
-            baseURL: this.cropGenotypingParameter.endpoint,    // BrAPI base URL
-            matrixId: this.selectedVariantSet.variantSetDbId,
-            mapId: null,
-            authToken: this.genotypingBrapiService.accessToken,
-            overviewWidth: 750,  // Overview width
-            overviewHeight: 50,   // Overview height
-            saveSettings: false
+        const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.germplasmSearchValue], true,
+            100, this.selectedVariantSet.referenceSetDbId);
+        this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe((response) => {
+            let file = response.replace('.fjzip', '').replace('/gigwaV2', '');
+            file = this.cropGenotypingParameter.baseUrl + file;
+
+            const renderer = flapjack.default();
+            renderer.renderGenotypesUrl({
+                domParent: "#flapjack-div",
+                width: 750,
+                height: 300,
+                mapFileURL: file + '.map',
+                genotypeFileURL: file + '.genotype',
+                phenotypeFileURL: file + '.phenotype',
+                overviewWidth: 750,
+                overviewHeight: 50,
+                dataSetId: this.cropGenotypingParameter.programId,
+            });
         });
     }
 
