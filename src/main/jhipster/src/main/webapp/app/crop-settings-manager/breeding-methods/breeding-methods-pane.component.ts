@@ -54,7 +54,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
     page: number;
     previousPage: number;
     predicate: any;
-    reverse: any;
+    reverse: boolean;
     resultSearch: SearchResult;
 
     isLoading: boolean;
@@ -79,7 +79,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
         this.totalItems = 0;
         this.currentSearch = '';
         this.predicate = [ColumnLabels.NAME];
-        this.reverse = 'asc';
+        this.reverse = false;
         this.resultSearch = new SearchResult('');
         this.searchRequest = new BreedingMethodSearchRequest();
     }
@@ -146,7 +146,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
 
     private clearSort() {
         this.predicate = [ColumnLabels.NAME];
-        this.reverse = 'asc'
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
