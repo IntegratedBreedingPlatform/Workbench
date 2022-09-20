@@ -225,43 +225,25 @@
 									</div>
 									<div class="col-md-6">
 										<div class="row">
-											<div class="col-md-6">
+											<div *ngFor="let labelType of fieldsSelected">
 												<div class="example-container">
 													<div class="field-group">
-														<label class="list-group-item col-form-label font-weight-bold" *ngIf="fileType === FILE_TYPES.PDF"
-															   jhiTranslate="label-printing.left.selected.fields">
-														</label>
-														<label class="list-group-item col-form-label font-weight-bold" *ngIf="fileType !== FILE_TYPES.PDF"
-															   jhiTranslate="label-printing.main.selected.fields">
+														<label class="list-group-item col-form-label font-weight-bold">
+															{{labelType.title}}
+															<a class="float-right" href (click)="resetSelectFields($event,labelType)" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
 														</label>
 													</div>
-													<div id="leftSideFields"
+													<div id="{{labelType.title}}"
 														 cdkDropList
-														 [cdkDropListData]="leftSideFields.fields"
+														 [cdkDropListData]="labelType.fields"
 														 class="example-list"
-														 (cdkDropListDropped)="drop($event)">
-														<div class="example-box" cdkDrag [cdkDragData]="item"
-															 *ngFor="let item of leftSideFields.fields">
+														 (cdkDropListDropped)="drop($event)"
+														 style="height:400px; overflow-y:scroll">
+														<div class="example-box" cdkDrag [cdkDragData]="item" *ngFor="let item of labelType.fields">
 															<div class="example-custom-placeholder" *cdkDragPlaceholder></div>
 															{{item.name}}
 														</div>
 													</div>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div *ngIf="fileType === FILE_TYPES.PDF">
-													<ul class="list-group field-group">
-														<li class="list-group-item">
-															<label class="col-form-label font-weight-bold"
-																		   jhiTranslate="label-printing.right.selected.fields">
-															</label>
-															<label class="col-form-label float-right">
-																<a href (click)="resetSelectFields($event,'#rightSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
-															</label>
-														</li>
-													</ul>
-													<ul id="rightSelectedFields" class="list-group droppable print-fields list-group-content">
-													</ul>
 												</div>
 											</div>
 										</div>
