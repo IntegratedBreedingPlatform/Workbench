@@ -172,6 +172,8 @@ export class LabelPrintingComponent implements OnInit {
         const presetId = Number(this.presetSettingId);
         if (presetId !== 0) {
             this.loadPresetSetting(this.presetSettings.filter((preset) => preset.id === presetId)[0]);
+        } else {
+            this.labelPrintingData.settingsName = '';
         }
     }
 
