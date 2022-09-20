@@ -98,7 +98,8 @@
 			</form>
 			<hr>
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-12">
+					<span *ngIf="isExportingFlapjack" class="throbber"></span>
 					<div id="flapjack-div" ref="bytes"></div>
 					<br/>
 				</div>

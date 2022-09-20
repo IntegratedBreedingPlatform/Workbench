@@ -31,7 +31,7 @@ export class GenotypingPaneComponent implements OnInit {
     totalCount = 10;
     page = 1;
     pageSize = 10;
-    isGenotypingCallsLoading = false;
+    isExportingFlapjack = false;
     isStudyLoading = false;
     isVariantSetLoading = false;
     isSamplesLoading = false;
@@ -83,7 +83,7 @@ export class GenotypingPaneComponent implements OnInit {
 
     isGenotypingParameterConfigured() {
         return this.cropGenotypingParameter && this.cropGenotypingParameter.cropName && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint
-            && this.cropGenotypingParameter.userName && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId;
+            && this.cropGenotypingParameter.userName && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
     }
 
     linkBySelectOnChange() {
@@ -172,40 +172,33 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
-        const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.germplasmSearchValue], true,
+        this.isExportingFlapjack = true;
+        const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
             100, this.selectedVariantSet.referenceSetDbId);
         this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe((response) => {
-            let file = response.replace('.fjzip', '').replace('/gigwaV2', '');
-            file = this.cropGenotypingParameter.baseUrl + file;
+            this.isExportingFlapjack = false;
+            let file = response.replace('.fjzip', '');
+            file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
 
+            const flapjackDiv = '#flapjack-div';
             const renderer = flapjack.default();
             renderer.renderGenotypesUrl({
-                domParent: '#flapjack-div',
-                width: 750,
-                height: 300,
+                domParent: flapjackDiv,
+                width: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                height: 250,
                 mapFileURL: file + '.map',
                 genotypeFileURL: file + '.genotype',
                 phenotypeFileURL: file + '.phenotype',
-                overviewWidth: 750,
-                overviewHeight: 50,
+                overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                overviewHeight: 25,
                 dataSetId: this.cropGenotypingParameter.programId,
             });
         });
     }
 
-    loadGenotypingCalls() {
-        if (this.genotypingCallSet) {
-            this.isGenotypingCallsLoading = true;
-            this.genotypingBrapiService.searchCalls({
-                callSetDbIds: [this.genotypingCallSet.callSetDbId],
-                pageSize: this.pageSize,
-                pageToken: (this.page - 1).toString()
-            }).subscribe(((brapiResponse) => {
-                this.genotypingCalls = brapiResponse.result.data;
-                this.totalCount = brapiResponse.metadata.pagination.totalCount;
-                this.isGenotypingCallsLoading = false;
-            }));
-        }
+    extractHostName(baseUrl) {
+        const { hostname, protocol } = new URL(baseUrl);
+        return protocol + hostname;
     }
 
     resetForm() {
