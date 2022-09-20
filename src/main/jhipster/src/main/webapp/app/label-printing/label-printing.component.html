@@ -122,10 +122,10 @@
 										<select class="form-control" [(ngModel)]="sortBySelected">
 											<option value="">Please Choose</option>
 											<ng-container *ngFor="let sortableField of sortableFields">
-											<option [value]="sortableField.sortBy">
-												<label>{{sortableField.fieldName}}</label>
-											</option>
-										</ng-container>
+												<option [value]="sortableField.sortBy">
+													<label>{{sortableField.fieldName}}</label>
+												</option>
+											</ng-container>
 										</select>
 									</div>
 								</div>
@@ -144,7 +144,7 @@
 								</div>
 								<div class="row">
 									<div class="col-md-7">
-											<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.size.of.label.sheet"></label>:
+										<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.size.of.label.sheet"></label>:
 									</div>
 									<div class="col-md-5">
 										<select [(ngModel)]="labelPrintingData.sizeOfLabelSheet" class="form-control">
@@ -155,7 +155,7 @@
 								</div>
 								<div class="row">
 									<div class="col-md-7">
-											<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.number.of.rows.per.page"></label>:
+										<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.number.of.rows.per.page"></label>:
 									</div>
 									<div class="col-md-5">
 										<select [(ngModel)]="labelPrintingData.numberOfRowsPerPage" class="form-control">
