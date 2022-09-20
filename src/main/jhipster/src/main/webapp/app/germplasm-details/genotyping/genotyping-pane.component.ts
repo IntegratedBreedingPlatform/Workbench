@@ -172,28 +172,30 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
-        this.isExportingFlapjack = true;
-        const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
-            100, this.selectedVariantSet.referenceSetDbId);
-        this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe((response) => {
-            this.isExportingFlapjack = false;
-            let file = response.replace('.fjzip', '');
-            file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
+        if (this.selectedVariantSet) {
+            this.isExportingFlapjack = true;
+            const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
+                100, this.selectedVariantSet.referenceSetDbId);
+            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe((response) => {
+                this.isExportingFlapjack = false;
+                let file = response.replace('.fjzip', '');
+                file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
 
-            const flapjackDiv = '#flapjack-div';
-            const renderer = flapjack.default();
-            renderer.renderGenotypesUrl({
-                domParent: flapjackDiv,
-                width: document.querySelector(flapjackDiv).getBoundingClientRect().width,
-                height: 250,
-                mapFileURL: file + '.map',
-                genotypeFileURL: file + '.genotype',
-                phenotypeFileURL: file + '.phenotype',
-                overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
-                overviewHeight: 25,
-                dataSetId: this.cropGenotypingParameter.programId,
+                const flapjackDiv = '#flapjack-div';
+                const renderer = flapjack.default();
+                renderer.renderGenotypesUrl({
+                    domParent: flapjackDiv,
+                    width: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                    height: 250,
+                    mapFileURL: file + '.map',
+                    genotypeFileURL: file + '.genotype',
+                    phenotypeFileURL: file + '.phenotype',
+                    overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                    overviewHeight: 25,
+                    dataSetId: this.cropGenotypingParameter.programId,
+                });
             });
-        });
+        }
     }
 
     extractHostName(baseUrl) {
