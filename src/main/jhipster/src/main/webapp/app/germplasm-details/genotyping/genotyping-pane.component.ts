@@ -198,6 +198,7 @@ export class GenotypingPaneComponent implements OnInit {
 
     extractHostName(baseUrl) {
         const { hostname, protocol } = new URL(baseUrl);
+        console.log(protocol + hostname);
         return protocol + hostname;
     }
 
