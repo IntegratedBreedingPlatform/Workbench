@@ -179,7 +179,7 @@ export class GenotypingPaneComponent implements OnInit {
             this.isExportingFlapjack = false;
             let file = response.replace('.fjzip', '');
             file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
-
+            console.log(file);
             const flapjackDiv = '#flapjack-div';
             const renderer = flapjack.default();
             renderer.renderGenotypesUrl({
@@ -198,8 +198,7 @@ export class GenotypingPaneComponent implements OnInit {
 
     extractHostName(baseUrl) {
         const { hostname, protocol } = new URL(baseUrl);
-        console.log(protocol + hostname);
-        return protocol + hostname;
+        return protocol + '//' + hostname;
     }
 
     resetForm() {
