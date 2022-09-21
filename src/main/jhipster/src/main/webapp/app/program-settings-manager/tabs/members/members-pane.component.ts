@@ -30,7 +30,7 @@ class UserTable {
     users: (UserDetail | ProgramMember)[];
     totalCount: any;
     predicate: any;
-    reverse: any;
+    reverse: boolean;
 
     toggleSelect($event, index, user: UserDetail | ProgramMember, checkbox = false) {
         /*
