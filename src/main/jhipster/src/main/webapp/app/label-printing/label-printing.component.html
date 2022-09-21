@@ -204,11 +204,12 @@
 											<div *ngFor="let labelType of labelTypes">
 												<div class="label-printing-container">
 													<div class="field-group">
-														<label class="list-group-item col-form-label font-weight-bold">
+														<label class="list-group-item col-form-label font-weight-bold" (click)="collapsedMap[labelType.title] = !collapsedMap[labelType.title]">
+															<i [ngClass]="collapsedMap[labelType.title]?'fa fa-caret-right fa-lg':'fa fa-caret-down fa-lg'" aria-hidden="true"> </i>
 															{{labelType.title}}
 														</label>
 													</div>
-													<div id="{{labelType.title}}"
+													<div *ngIf="!collapsedMap[labelType.title]" id="{{labelType.title}}"
 														 cdkDropList
 														 [cdkDropListData]="labelType.fields"
 														 class="label-printing-list"

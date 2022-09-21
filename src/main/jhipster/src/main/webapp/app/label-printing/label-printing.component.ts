@@ -47,6 +47,7 @@ export class LabelPrintingComponent implements OnInit {
     sortBySelected: any = '';
     isLoading: boolean;
     defaultPresetSetting: PresetSetting;
+    collapsedMap: { [key: string]: boolean; } = {};
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -94,6 +95,10 @@ export class LabelPrintingComponent implements OnInit {
         const fieldsPromise = this.service.getAvailableLabelFields().toPromise();
         fieldsPromise.then((labelTypes) => {
             this.labelTypes = labelTypes;
+            this.labelTypes.forEach((labelType) => {
+                this.collapsedMap[labelType.title] = false;
+            });
+
             this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
 
