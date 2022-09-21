@@ -45,7 +45,7 @@ export class LocationsPaneComponent implements OnInit {
     page: number;
     predicate: any;
     previousPage: number;
-    reverse: any;
+    reverse: boolean;
     resultSearch: SearchResult;
 
     isLoading: boolean;
@@ -69,7 +69,7 @@ export class LocationsPaneComponent implements OnInit {
         this.totalItems = 0;
         this.currentSearch = '';
         this.predicate = [ColumnLabels.LOCATION_NAME];
-        this.reverse = 'asc';
+        this.reverse = false;
         this.resultSearch = new SearchResult('');
         this.locationSearchRequest = new LocationSearchRequest();
     }
@@ -131,7 +131,7 @@ export class LocationsPaneComponent implements OnInit {
 
     private clearSort() {
         this.predicate = [ColumnLabels.LOCATION_NAME];
-        this.reverse = 'asc';
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 

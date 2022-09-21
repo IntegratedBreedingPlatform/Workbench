@@ -16,6 +16,7 @@ import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.generationcp.middleware.manager.api.GermplasmListManager;
 import org.generationcp.middleware.pojos.Germplasm;
+import org.generationcp.middleware.pojos.Method;
 import org.generationcp.middleware.pojos.Name;
 import org.generationcp.middleware.pojos.Progenitor;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class ApplyCrossingSettingAction implements CrossesMadeContainerUpdateLis
 			// Use same breeding method for all crosses
 			for (final Triple<Germplasm, Name, List<Progenitor>> triple: this.container.getCrossesMade().getCrossesList()) {
 				//Set the method id to Single Cross(101) for now, it will be overwritten in the nursery side
-				triple.getLeft().setMethodId(101);
+				triple.getLeft().setMethod(new Method(101));
 			}
 
 			Integer crossingNameTypeId = null;
@@ -117,8 +118,8 @@ public class ApplyCrossingSettingAction implements CrossesMadeContainerUpdateLis
 	private boolean applyAdditionalDetailsSetting() {
 		if (this.container != null && this.container.getCrossesMade() != null && this.container.getCrossesMade().getCrossesList() != null) {
 			//the date and harvest location will be overwritten in the nursery side.
-			Integer dateIntValue = 0;
-			Integer harvestLocationId = 0;
+			final Integer dateIntValue = 0;
+			final Integer harvestLocationId = 0;
 			final List<Triple<Germplasm, Name, List<Progenitor>>> crossesList = this.container.getCrossesMade().getCrossesList();
 			for (final Triple<Germplasm, Name, List<Progenitor>> triple: crossesList) {
 				final Germplasm germplasm = triple.getLeft();
