@@ -59,6 +59,17 @@ export class EntryDetailsImportService {
             };
             rows.push(row);
         });
+
+        this.context.skipVariables.forEach((variable) => {
+            const variableName = variable.alias ? variable.alias : variable.name;
+            const row = {
+                id: variable.id,
+                name: variableName,
+                description: '',
+                skip: true
+            };
+            rows.push(row);
+        });
         return rows;
     }
 
@@ -67,17 +78,6 @@ export class EntryDetailsImportService {
             this.alertService.error('germplasm-list.import.file.validation.file.empty');
             return false;
         }
-
-        // normalize headers
-        rawData[0] = rawData[0].map((header) => header.toUpperCase());
-        const headers = rawData[0];
-        this.context.data = rawData.slice(1).map((fileRow, rowIndex) => {
-            return fileRow.reduce((map, col, colIndex) => {
-                map[headers[colIndex]] = col;
-                return map;
-            }, {});
-        });
-
         return true;
     }
 

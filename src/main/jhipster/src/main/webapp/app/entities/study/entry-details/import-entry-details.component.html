@@ -68,13 +68,16 @@
 								<td>
 									{{variable.description}}
 								</td>
-								<td *ngIf="variable.id && variable.isAlreadyExisting">
+								<td *ngIf="variable.skip">
+									<span class="fa fa-lg fa-exclamation-circle text-danger"></span>
+								</td>
+								<td *ngIf="!variable.skip && variable.id && variable.isAlreadyExisting">
 									<span class="fa fa-lg fa-check-circle text-success"></span>
 								</td>
-								<td *ngIf="variable.id && !variable.isAlreadyExisting">
+								<td *ngIf="!variable.skip && variable.id && !variable.isAlreadyExisting">
 									<span class="fa fa-lg fa-plus-circle text-info"></span>
 								</td>
-								<td *ngIf="!variable.id">
+								<td *ngIf="!variable.skip && !variable.id">
 									<span class="fa fa-lg fa-times-circle text-danger"></span>
 								</td>
 							</tr>
@@ -89,7 +92,10 @@
 						</ng-template>
 					</div>
 					<div>
-						<span class="fa fa-check-circle text-success"></span> exist in study <span class="fa fa-plus-circle text-info"></span> new to study <span class="fa fa-times-circle text-danger"></span> not found in the ontology
+						<p class="mb-1"><span class="fa fa-check-circle text-success"></span> exist in study</p>
+						<p class="mb-1"><span class="fa fa-plus-circle text-info"></span> new to study</p>
+						<p class="mb-1"><span class="fa fa-times-circle text-danger"></span> not found in the ontology</p>
+						<p class="mb-1"><span class="fa fa-exclamation-circle text-danger"></span> skip import of system variable once experiment was already generated</p>
 					</div>
 					<div class="row">
 						<div class="col">
