@@ -48,6 +48,13 @@ export class BreedingMethodService {
         return this.http.post<BreedingMethod[]>(url, request, { params, observe: 'response' });
     }
 
+    getBreedingMethodByAbbreviation(breedingMethodAbbr: string): Promise<BreedingMethod> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods/search?programUUID=${this.context.programUUID}`;
+
+        return this.http.post<any>(url, { methodAbbreviations: [breedingMethodAbbr] }, { observe: 'response' })
+            .toPromise().then((res) => res.body && res.body[0]);
+    }
+
     createBreedingMethod(breedingMethodRequest: any) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/breedingmethods?programUUID=` + this.context.programUUID;
         return this.http.post(url, breedingMethodRequest);
