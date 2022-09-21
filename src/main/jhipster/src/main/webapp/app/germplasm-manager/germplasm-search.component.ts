@@ -79,7 +79,7 @@ export class GermplasmSearchComponent implements OnInit {
     page: any;
     predicate: any;
     previousPage: any;
-    reverse: any;
+    reverse: boolean;
     resultSearch: SearchResult;
 
     isLoading: boolean;
@@ -442,7 +442,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 

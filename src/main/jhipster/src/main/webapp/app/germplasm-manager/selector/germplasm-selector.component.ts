@@ -22,7 +22,6 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 import { SearchResult } from '../../shared/search-result.model';
-import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
 
 declare var $: any;
 
@@ -46,7 +45,7 @@ export class GermplasmSelectorComponent implements OnInit {
     page: any = 1;
     predicate: any;
     previousPage: any;
-    reverse: any;
+    reverse: boolean;
     resultSearch: SearchResult;
 
     isLoading: boolean;
@@ -406,7 +405,7 @@ export class GermplasmSelectorComponent implements OnInit {
 
     clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
