@@ -160,7 +160,7 @@ export class ListComponent implements OnInit {
     page: number;
     previousPage: number;
     predicate: any;
-    reverse: any;
+    reverse: boolean;
     resultSearch: SearchResult;
     isLoading: boolean;
 
@@ -696,13 +696,13 @@ export class ListComponent implements OnInit {
 
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
     private setDefaultSort() {
         this.predicate = ListComponent.SORT_ENTRY_NO_VARIABLE;
-        this.reverse = 'asc';
+        this.reverse = false;
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {

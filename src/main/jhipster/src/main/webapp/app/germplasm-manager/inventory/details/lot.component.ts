@@ -23,7 +23,7 @@ export class LotComponent implements OnInit {
     private totalItems: number;
     private queryCount: number;
     private predicate: string;
-    private reverse: string;
+    private reverse: boolean;
 
     private isLoading: boolean;
 
@@ -37,7 +37,7 @@ export class LotComponent implements OnInit {
         this.gid = queryParams.gid;
         this.page = 1;
         this.predicate = 'lotId';
-        this.reverse = 'asc';
+        this.reverse = false;
     }
 
     ngOnInit(): void {

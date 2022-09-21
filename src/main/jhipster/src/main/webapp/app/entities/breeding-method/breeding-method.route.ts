@@ -1,8 +1,14 @@
 import { Routes } from '@angular/router';
-import { BreedingMethodPopupComponent } from './breeding-method.component';
+import { BreedingMethodComponent, BreedingMethodPopupComponent } from './breeding-method.component';
 import { BreedingMethodManagerPopupComponent } from './breeding-method-manager.component';
+import { RouteAccessService } from '../../shared';
 
 export const breedingMethodRoutes: Routes = [
+    {
+        path: 'breeding-method-page/:breedingMethodCode',
+        component: BreedingMethodComponent,
+        canActivate: [RouteAccessService]
+    },
     {
         path: 'breeding-method/:breedingMethodId',
         component: BreedingMethodPopupComponent,

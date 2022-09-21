@@ -23,7 +23,7 @@ export class SampleSearchListComponent {
     selectedListId = 0;
     displayHelpPopup = false;
     predicate = 'id';
-    reverse = 'asc';
+    reverse: boolean;
 
     private paramSubscription: Subscription;
 
