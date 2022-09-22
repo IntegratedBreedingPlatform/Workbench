@@ -16,10 +16,13 @@ export class EntryDetailsImportContext {
 
     variableMatchesResult: any = {};
 
+    skipVariables: any[] = [];
+
     resetContext() {
         this.data = [];
         this.newVariables = [];
         this.variablesOfTheList = [];
         this.unknownVariableNames = [];
+        this.skipVariables = [];
     }
 }

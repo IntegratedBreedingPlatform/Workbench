@@ -33,6 +33,7 @@
             "cancel.confirm": "Are you sure you want to quit the import process?",
             "success": "Entry details imported successfully!",
             "confirmation": "You are going to import {{param}} entry updates. Proceed?",
+            "no-entries-values": "There are no entry values available to import.",
             "variable.matches": {
                 "header": "Variables",
                 "columns": {
