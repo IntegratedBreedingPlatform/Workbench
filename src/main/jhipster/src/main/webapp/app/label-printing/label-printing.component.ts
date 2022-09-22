@@ -31,7 +31,6 @@ export class LabelPrintingComponent implements OnInit {
     metadata: Map<string, string>;
     metadataKeys: string[];
     labelTypes: LabelType[];
-    labelTypesOrig: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
     selectedfileType: FileType = FileType.NONE;
@@ -48,6 +47,7 @@ export class LabelPrintingComponent implements OnInit {
     isLoading: boolean;
     defaultPresetSetting: PresetSetting;
     collapsedMap: { [key: string]: boolean; } = {};
+    labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -97,9 +97,8 @@ export class LabelPrintingComponent implements OnInit {
             this.labelTypes = labelTypes;
             this.labelTypes.forEach((labelType) => {
                 this.collapsedMap[labelType.title] = false;
+                this.labelTypesOrigMap[labelType.title] = labelType.fields.map((x) => Object.assign({}, x));
             });
-
-            this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
         });
 
         this.fieldsSelected = [];
@@ -186,15 +185,14 @@ export class LabelPrintingComponent implements OnInit {
     loadPresetSetting(presetSetting: PresetSetting) {
         this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
         this.selectedfileType = this.fileType;
-
-        const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
         const labelFieldsSelected = new Array();
 
         presetSetting.selectedFields.forEach((idsSelected) => {
             const title = presetSetting.fileConfiguration.outputType === FileType.PDF.toString() ? //
                 labelFieldsSelected.length === 0 ? 'Left Side Fields' : 'Right Side Fields' : 'Selected Fields';
             const labelType = new LabelType(title, title, []);
-            labelTypeList.forEach((label: LabelType) => {
+            this.labelTypes.forEach((label: LabelType) => {
+                label.fields = this.labelTypesOrigMap[labelType.title].map((x) => Object.assign({}, x));
                 label.fields.forEach((field) => {
                     if (idsSelected.indexOf(field.id) > -1) {
                         labelType.fields.push(field);
@@ -206,7 +204,6 @@ export class LabelPrintingComponent implements OnInit {
             labelFieldsSelected.push(labelType);
         });
 
-        this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
         this.fieldsSelected = labelFieldsSelected;
         this.sortBySelected = (presetSetting.sortBy) ? presetSetting.sortBy : '';
 
@@ -273,7 +270,10 @@ export class LabelPrintingComponent implements OnInit {
                 (this.selectedfileType === FileType.PDF || this.selectedfileType === FileType.NONE) && //
                 (this.fileType === FileType.EXCEL || this.fileType === FileType.CSV))
             || this.fileType === FileType.NONE || this.fileType === FileType.PDF) {
-            this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+            this.labelTypes.forEach((label: LabelType) => {
+                label.fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+            });
+
             this.labelPrintingData.barcodeNeeded = false;
             this.labelPrintingData.includeHeadings = true;
             this.sortBySelected = '';
@@ -289,36 +289,27 @@ export class LabelPrintingComponent implements OnInit {
         this.selectedfileType = this.fileType;
     }
 
-    reloadFields(selected) {
-        const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
-        const labelFieldsSelected = new Array();
-        selected.forEach((idsSelected) => {
-            const fieldsSelected: LabelType[] = new Array();
-            labelTypeList.forEach((label: LabelType) => {
-                const title = this.fileType === FileType.PDF.toString() ? //
-                    labelTypeList.length === 0 ? 'Left Side Fields' : 'Right Side Fields' : 'Selected Fields';
-                const labelType = new LabelType(label.title, label.key, []);
-                labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
-                fieldsSelected.push(labelType);
-                const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
-                label.fields = filteredList;
-            });
-            labelFieldsSelected.push(fieldsSelected);
-        });
-
-        this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
-        this.fieldsSelected = labelFieldsSelected;
-
-    }
-
     resetSelectFields($event, list?: LabelType) {
         $event.preventDefault();
         const fieldsSelected: number[][] = [];
         if (list.fields.length > 0) {
-            fieldsSelected.push(list.fields.map((field) => field.id));
+            if (this.fileType !== FileType.PDF.toString()) {
+                this.labelTypes.forEach((label: LabelType) => {
+                    label.fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+                });
+            } else {
+                list.fields.forEach((selectedField) => {
+                    this.labelTypes.forEach((label: LabelType) => {
+                        const fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+                        const index = fields.findIndex((field) => field.id === selectedField.id);
+                        if (index > -1) {
+                            label.fields.splice(index, 0, selectedField);
+                        }
+                    });
+                });
+            }
+            list.fields = [];
         }
-        this.reloadFields(fieldsSelected);
-
     }
 
     export() {
@@ -547,10 +538,11 @@ export class LabelPrintingComponent implements OnInit {
         } else if (event.container.id !== 'Selected Fields' && //
             event.container.id !== 'Left Side Fields' && //
             event.container.id !== 'Right Side Fields') {
-            const title = event.container.id;
-            const labelTypeOrg = this.labelTypesOrig.find((ltype) => ltype.title === title);
-            const field = Object.assign({}, event.item.data)
-            if (labelTypeOrg.fields.indexOf(field) === -1) {
+
+            // Restriction to avoid moving the element to a list that does not belong.
+            const fields =  this.labelTypesOrigMap[event.container.id]
+            const field = Object.assign({}, event.item.data);
+            if (fields.indexOf(field) === -1) {
                 return;
             }
         } else {
