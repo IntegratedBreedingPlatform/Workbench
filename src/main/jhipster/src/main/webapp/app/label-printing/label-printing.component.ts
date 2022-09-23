@@ -48,6 +48,7 @@ export class LabelPrintingComponent implements OnInit {
     defaultPresetSetting: PresetSetting;
     collapsedMap: { [key: string]: boolean; } = {};
     labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
+    nameSelectedFieldsContainers: string[] = ['Selected Fields', 'Left Side Fields', 'Right Side Fields'];
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -535,17 +536,16 @@ export class LabelPrintingComponent implements OnInit {
     drop(event: CdkDragDrop<{ id: number, name: string }[]>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-        } else if (event.container.id !== 'Selected Fields' && //
-            event.container.id !== 'Left Side Fields' && //
-            event.container.id !== 'Right Side Fields') {
-
-            // Restriction to avoid moving the element to a list that does not belong.
-            const fields =  this.labelTypesOrigMap[event.container.id]
-            const field = Object.assign({}, event.item.data);
-            if (fields.indexOf(field) === -1) {
-                return;
-            }
         } else {
+            if (this.nameSelectedFieldsContainers.indexOf(event.container.id) === -1) {
+                const fields = this.labelTypesOrigMap[event.container.id]
+                const fieldMoved = Object.assign({}, event.item.data);
+                const index = fields.findIndex((field) => field.id === fieldMoved.id);
+                // Restriction to avoid moving the element to a list that does not belong.
+                if (index === -1) {
+                    return;
+                }
+            }
             transferArrayItem(
                 event.previousContainer.data,
                 event.container.data,
