@@ -702,7 +702,7 @@ export class ListComponent implements OnInit {
 
     private setDefaultSort() {
         this.predicate = ListComponent.SORT_ENTRY_NO_VARIABLE;
-        this.reverse = false;
+        this.reverse = true;
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {
