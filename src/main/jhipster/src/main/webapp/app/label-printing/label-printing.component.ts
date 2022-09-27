@@ -524,7 +524,7 @@ export class LabelPrintingComponent implements OnInit {
         let description = `Drag fields from the ${from} into the ${to} to add them to your export file.`;
 
         if (this.fileType === FileType.PDF) {
-            description += ' For PDF you can only add '+ MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT + ' fields per side';
+            description += ' For PDF you can only add ' + MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT + ' fields per side';
         }
 
         return description;
@@ -532,6 +532,19 @@ export class LabelPrintingComponent implements OnInit {
 
     back() {
         window.history.back();
+    }
+
+    removeItem(listSelected: any, removedField: any) {
+        this.labelTypes.forEach((label: LabelType) => {
+            const fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+            const idx = fields.findIndex((field) => field.id === removedField.id);
+            if (idx > -1) {
+                label.fields.splice(idx, 0, removedField);
+            }
+        });
+        const index = listSelected.findIndex((field) => field.id === removedField.id);
+        listSelected.splice(index, 1);
+
     }
 
     drop(event: CdkDragDrop<{ id: number, name: string }[]>) {
