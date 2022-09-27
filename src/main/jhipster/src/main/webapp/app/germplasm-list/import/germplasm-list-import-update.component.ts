@@ -217,7 +217,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             );
 
             this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
-                variablesFiltered.every((v) => toUpper(v.name) !== variableName && toUpper(v.alias) !== variableName)
+                variablesFiltered.every((v) => toUpper(v.name) !== toUpper(variableName) && toUpper(v.alias) !== toUpper(variableName))
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
