@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CropGenotypingParameterService } from '../../shared/crop/service/crop-genotyping-parameter.service';
 import { ParamContext } from '../../shared/service/param.context';
-import { flatMap } from 'rxjs/operators';
+import { catchError, flatMap, map } from 'rxjs/operators';
 import { CropGenotypingParameter } from '../../shared/crop/model/crop-genotyping-parameter';
 import { GenotypingBrapiService } from '../../shared/brapi/service/genotyping-brapi.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
@@ -18,6 +18,7 @@ import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/searc
 import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
 import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
+import { HttpClient } from '@angular/common/http';
 const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
 @Component({
@@ -62,7 +63,8 @@ export class GenotypingPaneComponent implements OnInit {
         public germplasmDetailsContext: GermplasmDetailsContext,
         public germplasmService: GermplasmService,
         public alertService: AlertService,
-        public jhiAlertService: JhiAlertService) {
+        public jhiAlertService: JhiAlertService,
+        public http: HttpClient) {
     }
 
     ngOnInit(): void {
@@ -189,7 +191,7 @@ export class GenotypingPaneComponent implements OnInit {
                     height: 250,
                     mapFileURL: file + '.map',
                     genotypeFileURL: file + '.genotype',
-                    phenotypeFileURL: this.getPhenotypeUrl(file + '.phenotype'),
+                    phenotypeFileURL: this.getFileUrl(file + '.phenotype'),
                     overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
                     overviewHeight: 25,
                     dataSetId: this.cropGenotypingParameter.programId,
@@ -198,15 +200,20 @@ export class GenotypingPaneComponent implements OnInit {
         }
     }
 
-    getPhenotypeUrl(url) {
-        var http = new XMLHttpRequest();
-        http.open('HEAD', url, false);
-        http.send();
-        if (http.status === 200) {
-            return url;
-        } else {
-            return undefined;
-        }
+    getFileUrl(url) {
+        this.http.head(url, { observe: 'response' }).subscribe(
+            (response) => {
+                // If file doesn’t exist on the server, return undefined.
+                if (response.status === 200) {
+                    return url;
+                } else {
+                    return undefined;
+                }
+            },
+            () => {
+                return undefined;
+            }
+        );
     }
 
     extractHostName(baseUrl) {
