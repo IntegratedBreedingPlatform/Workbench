@@ -189,12 +189,23 @@ export class GenotypingPaneComponent implements OnInit {
                     height: 250,
                     mapFileURL: file + '.map',
                     genotypeFileURL: file + '.genotype',
-                    phenotypeFileURL: file + '.phenotype',
+                    phenotypeFileURL: this.getPhenotypeUrl(file + '.phenotype'),
                     overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
                     overviewHeight: 25,
                     dataSetId: this.cropGenotypingParameter.programId,
                 });
             });
+        }
+    }
+
+    getPhenotypeUrl(url) {
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.send();
+        if (http.status === 200) {
+            return url;
+        } else {
+            return undefined;
         }
     }
 
