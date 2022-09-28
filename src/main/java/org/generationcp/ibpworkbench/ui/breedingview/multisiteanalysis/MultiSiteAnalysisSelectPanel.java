@@ -715,8 +715,9 @@ public class MultiSiteAnalysisSelectPanel extends VerticalLayout
 			fm.setTraitid(factor.getStandardVariable().getProperty().getId());
 			fm.setDataType(factor.getStandardVariable().getDataType().getName());
 
-			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
-					&& !SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
+			if ((PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType()) ||
+				 factor.getStandardVariable().getId() == TermId.ENTRY_NO.getId()) &&
+				!SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
 				factorList.add(fm);
 				this.getSelectSpecifyGenotypes().addItem(fm.getName());
 			}
