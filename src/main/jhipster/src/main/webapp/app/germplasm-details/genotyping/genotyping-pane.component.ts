@@ -178,7 +178,7 @@ export class GenotypingPaneComponent implements OnInit {
             this.isExportingFlapjack = true;
             const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
                 100, this.selectedVariantSet.referenceSetDbId);
-            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe(async (response) => {
+            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe(async(response) => {
                 this.isExportingFlapjack = false;
                 let file = response.replace('.fjzip', '');
                 file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
