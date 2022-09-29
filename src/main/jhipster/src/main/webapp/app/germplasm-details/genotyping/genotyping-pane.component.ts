@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CropGenotypingParameterService } from '../../shared/crop/service/crop-genotyping-parameter.service';
 import { ParamContext } from '../../shared/service/param.context';
-import { catchError, flatMap, map } from 'rxjs/operators';
+import { flatMap } from 'rxjs/operators';
 import { CropGenotypingParameter } from '../../shared/crop/model/crop-genotyping-parameter';
 import { GenotypingBrapiService } from '../../shared/brapi/service/genotyping-brapi.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
