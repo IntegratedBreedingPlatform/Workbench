@@ -18,6 +18,7 @@ import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/searc
 import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
 import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
+import { HttpClient } from '@angular/common/http';
 const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
 @Component({
@@ -62,7 +63,8 @@ export class GenotypingPaneComponent implements OnInit {
         public germplasmDetailsContext: GermplasmDetailsContext,
         public germplasmService: GermplasmService,
         public alertService: AlertService,
-        public jhiAlertService: JhiAlertService) {
+        public jhiAlertService: JhiAlertService,
+        public http: HttpClient) {
     }
 
     ngOnInit(): void {
@@ -176,7 +178,7 @@ export class GenotypingPaneComponent implements OnInit {
             this.isExportingFlapjack = true;
             const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
                 100, this.selectedVariantSet.referenceSetDbId);
-            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe((response) => {
+            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe(async(response) => {
                 this.isExportingFlapjack = false;
                 let file = response.replace('.fjzip', '');
                 file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
@@ -189,13 +191,31 @@ export class GenotypingPaneComponent implements OnInit {
                     height: 250,
                     mapFileURL: file + '.map',
                     genotypeFileURL: file + '.genotype',
-                    phenotypeFileURL: file + '.phenotype',
+                    phenotypeFileURL: await this.getFileUrl(file + '.phenotype'),
                     overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
                     overviewHeight: 25,
                     dataSetId: this.cropGenotypingParameter.programId,
                 });
             });
         }
+    }
+
+    getFileUrl(url): Promise<string> {
+        return new Promise<string>((resolve) => {
+            this.http.head(url, { observe: 'response' }).subscribe(
+                (response) => {
+                    // If file doesn’t exist on the server, return undefined.
+                    if (response.status === 200) {
+                        resolve(url);
+                    } else {
+                        resolve();
+                    }
+                },
+                () => {
+                    resolve();
+                }
+            );
+        });
     }
 
     extractHostName(baseUrl) {
