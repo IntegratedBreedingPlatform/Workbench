@@ -252,6 +252,20 @@
 						}
 					};
 
+					$scope.toggleObsolete = function(id, model) {
+						model.obsolete = !model.obsolete;
+						$scope.selectedVariable.obsolete = !$scope.selectedVariable.obsolete;
+						$scope.updateSelectedVariable($scope.selectedVariable);
+						variablesService.updateVariable(id, $scope.selectedVariable).then(function () {
+						}, function (response) {
+							model.obsolete = !model.obsolete;
+							$scope.selectedVariable.obsolete = !$scope.selectedVariable.obsolete;
+							$scope.updateSelectedVariable($scope.selectedVariable);
+							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
+							resetSubmissionState();
+						});
+					};
+
 					// Exposed for testing
 					$scope.toggleFavourites = function(id, model) {
 						model.favourite = !model.favourite;

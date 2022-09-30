@@ -17,7 +17,8 @@
 						types: [],
 						scaleDataTypes: [],
 						fromCalendarOpened: false,
-						toCalendarOpened: false
+						toCalendarOpened: false,
+						obsolete: false
 					};
 					$scope.dateOptions = {
 						formatYear: 'yy',
@@ -49,7 +50,8 @@
 							variableTypes: [],
 							scaleDataType: null,
 							dateCreatedFrom: null,
-							dateCreatedTo: null
+							dateCreatedTo: null,
+							obsolete: false
 						};
 					};
 
@@ -59,6 +61,7 @@
 							scaleDataTypesActive,
 							dateCreatedFromActive,
 							dateCreatedToActive;
+							obsoleteFilterActive;
 
 						if (!filterOptionsValued) {
 							return false;
@@ -74,7 +77,9 @@
 						dateCreatedToActive = $scope.filterOptions.dateCreatedTo &&
 							$scope.filterOptions.dateCreatedTo.getTime !== undefined;
 
-						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive;
+						obsoleteFilterActive = !!$scope.filterOptions.obsolete;
+
+						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive || obsoleteFilterActive;
 					};
 
 					$scope.openFromCalendar = function($event) {
