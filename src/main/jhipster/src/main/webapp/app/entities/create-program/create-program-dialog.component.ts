@@ -12,6 +12,8 @@ import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
 import { DateHelperService } from '../../shared/service/date.helper.service';
 import { Principal } from '../../shared';
+import { ADD_NEW_PROGRAM } from '../../app.constants';
+import { HelpService } from '../../shared/service/help.service';
 
 @Component({
     selector: 'jhi-create-program',
@@ -20,6 +22,7 @@ import { Principal } from '../../shared';
 })
 export class CreateProgramDialogComponent implements OnInit, OnDestroy {
 
+    helpLink: string;
     crops: string[];
     cropName: string;
     cropChanged = new Subject<string>();
@@ -35,8 +38,17 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
                 private programService: ProgramService,
                 public dateHelperService: DateHelperService,
                 private languageService: JhiLanguageService,
+                private helpService: HelpService,
                 private principal: Principal
     ) {
+        if (!this.helpLink || !this.helpLink.length) {
+            this.helpService.getHelpLink(ADD_NEW_PROGRAM).toPromise().then((response) => {
+                if (response.body) {
+                    this.helpLink = response.body;
+                }
+            }).catch((error) => {
+            });
+        }
     }
 
     ngOnDestroy(): void {

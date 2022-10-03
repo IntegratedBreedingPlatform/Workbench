@@ -149,7 +149,7 @@ export class BreedingMethodsPaneComponent implements OnInit {
 
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = null;
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 

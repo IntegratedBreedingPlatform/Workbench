@@ -160,13 +160,13 @@ export class ListComponent implements OnInit {
     page: number;
     previousPage: number;
     predicate: any;
-    reverse: any;
+    reverse: boolean;
     resultSearch: SearchResult;
     isLoading: boolean;
 
     germplasmListFilters: any;
 
-    selectedItems: { [key: number]: GermplasmListDataSearchResponse } = {};
+    selectedItems: Map<number, GermplasmListDataSearchResponse> = new Map<number, GermplasmListDataSearchResponse>();
     isSelectAll: boolean;
     lastClickIndex: any;
 
@@ -439,26 +439,26 @@ export class ListComponent implements OnInit {
     }
 
     isPageSelected() {
-        return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems[entry.listDataId]));
+        return this.size() && this.entries.every((entry: GermplasmListDataSearchResponse) => Boolean(this.selectedItems.get(entry.listDataId)));
     }
 
     // TODO parameterize
     size() {
-        return Object.keys(this.selectedItems).length;
+        return this.selectedItems.size;
     }
 
     onSelectPage() {
         if (this.isPageSelected()) {
             // remove all items
-            this.entries.forEach((entry: GermplasmListDataSearchResponse) => delete this.selectedItems[entry.listDataId]);
+            this.entries.forEach((entry: GermplasmListDataSearchResponse) => this.selectedItems.delete(entry.listDataId));
         } else {
             // check remaining items
-            this.entries.forEach((entry: GermplasmListDataSearchResponse) => this.selectedItems[entry.listDataId] = entry);
+            this.entries.forEach((entry: GermplasmListDataSearchResponse) => this.selectedItems.set(entry.listDataId, entry));
         }
     }
 
     isSelected(entry: GermplasmListDataSearchResponse) {
-        return this.selectedItems[entry.listDataId];
+        return this.selectedItems.get(entry.listDataId);
     }
 
     toggleSelect($event, index, entry: GermplasmListDataSearchResponse, checkbox = false) {
@@ -466,7 +466,7 @@ export class ListComponent implements OnInit {
             return;
         }
         if (!$event.ctrlKey && !checkbox) {
-            this.selectedItems = {};
+            this.selectedItems.clear();
         }
         let items;
         if ($event.shiftKey) {
@@ -477,18 +477,18 @@ export class ListComponent implements OnInit {
             items = [entry];
             this.lastClickIndex = index;
         }
-        const isClickedItemSelected = this.selectedItems[entry.listDataId];
+        const isClickedItemSelected = this.selectedItems.get(entry.listDataId);
         for (const item of items) {
             if (isClickedItemSelected) {
-                delete this.selectedItems[item.listDataId];
+                this.selectedItems.delete(item.listDataId);
             } else {
-                this.selectedItems[item.listDataId] = item;
+                this.selectedItems.set(item.listDataId, item);
             }
         }
     }
 
     clearSelectedItems() {
-        this.selectedItems = {};
+        this.selectedItems.clear();
     }
 
     openReorderEntries() {
@@ -511,7 +511,7 @@ export class ListComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'cop-matrix' } }], {
             queryParamsHandling: 'merge',
             queryParams: {
-                gids: Object.values(this.selectedItems).map((l) => l.data[ColumnAlias.GID]).join(','),
+                gids: Array.from(this.selectedItems.values()).map((l) => l.data[ColumnAlias.GID]).join(','),
                 calculate: true,
                 listIdModalParam: null,
                 reset
@@ -581,7 +581,7 @@ export class ListComponent implements OnInit {
         const searchRequest = new GermplasmListDataSearchRequest();
         searchRequest.entryNumbers = [];
         this.getSelectedItemIds().forEach((selectedItemId) => {
-            searchRequest.entryNumbers.push(this.selectedItems[selectedItemId].data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
+            searchRequest.entryNumbers.push(this.selectedItems.get(selectedItemId).data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
         });
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
@@ -696,13 +696,13 @@ export class ListComponent implements OnInit {
 
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = '';
+        this.reverse = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
     private setDefaultSort() {
         this.predicate = ListComponent.SORT_ENTRY_NO_VARIABLE;
-        this.reverse = 'asc';
+        this.reverse = false;
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {
@@ -877,7 +877,7 @@ export class ListComponent implements OnInit {
     }
 
     private getSelectedItemIds() {
-        return Object.keys(this.selectedItems).map((listDataId: string) => Number(listDataId));
+        return Array.from(this.selectedItems.keys()).map((listDataId: any) => Number(listDataId));
     }
 
     fillWithCrossExpansion() {

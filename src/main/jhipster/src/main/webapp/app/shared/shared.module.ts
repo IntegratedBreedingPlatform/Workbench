@@ -98,6 +98,7 @@ import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
 import { StudyService } from './study/study.service';
 import { EntryDetailsImportContext } from './ontology/entry-details-import.context';
 import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
+import { ModalAlertComponent } from './modal/modal-alert.component';
 
 @NgModule({
     imports: [
@@ -116,6 +117,7 @@ import { EntryDetailsImportService } from './ontology/service/entry-details-impo
     declarations: [
         ModalComponent,
         ModalConfirmComponent,
+        ModalAlertComponent,
         FileDeleteOptionsComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,
@@ -218,6 +220,7 @@ import { EntryDetailsImportService } from './ontology/service/entry-details-impo
     entryComponents: [
         ModalComponent,
         ModalConfirmComponent,
+        ModalAlertComponent,
         FileDeleteOptionsComponent,
         GermplasmTreeTableComponent,
         GermplasmListTreeTableComponent,
@@ -246,6 +249,7 @@ import { EntryDetailsImportService } from './ontology/service/entry-details-impo
         TruncateWithEllipsisPipe,
         ModalComponent,
         ModalConfirmComponent,
+        ModalAlertComponent,
         FileDeleteOptionsComponent,
         HasAnyAuthorityDirective,
         HasNotAnyAuthorityDirective,

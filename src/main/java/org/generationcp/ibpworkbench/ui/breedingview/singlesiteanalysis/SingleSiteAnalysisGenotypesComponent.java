@@ -9,6 +9,7 @@ import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis.GenotypeFactorValueChangeListener;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
+import org.generationcp.middleware.domain.oms.TermId;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -112,8 +113,9 @@ public class SingleSiteAnalysisGenotypesComponent extends VerticalLayout
 
 	protected void populateChoicesForGenotypes() {
 		for (final DMSVariableType factor : this.ssaDetailsPanel.getFactorsInDataset()) {
-			if (PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType())
-					&& !SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
+			if ((PhenotypicType.GERMPLASM.equals(factor.getStandardVariable().getPhenotypicType()) ||
+				 factor.getStandardVariable().getId() == TermId.ENTRY_NO.getId()) &&
+				!SingleSiteAnalysisDetailsPanel.GENOTYPES_TO_HIDE.contains(factor.getId())) {
 				this.selGenotypes.addItem(factor.getLocalName());
 				this.selGenotypes.setValue(factor.getLocalName());
 			}

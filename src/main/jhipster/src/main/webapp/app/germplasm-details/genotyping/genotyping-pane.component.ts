@@ -17,6 +17,9 @@ import { Sample } from '../../entities/sample';
 import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/search-germplasm-request';
 import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
+import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
+import { HttpClient } from '@angular/common/http';
+const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
 @Component({
     selector: 'jhi-genotyping-pane',
@@ -29,7 +32,7 @@ export class GenotypingPaneComponent implements OnInit {
     totalCount = 10;
     page = 1;
     pageSize = 10;
-    isGenotypingCallsLoading = false;
+    isExportingFlapjack = false;
     isStudyLoading = false;
     isVariantSetLoading = false;
     isSamplesLoading = false;
@@ -60,13 +63,15 @@ export class GenotypingPaneComponent implements OnInit {
         public germplasmDetailsContext: GermplasmDetailsContext,
         public germplasmService: GermplasmService,
         public alertService: AlertService,
-        public jhiAlertService: JhiAlertService) {
+        public jhiAlertService: JhiAlertService,
+        public http: HttpClient) {
     }
 
     ngOnInit(): void {
         this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
             this.cropGenotypingParameter = result;
-            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.endpoint;
+            this.genotypingBrapiService.brapiEndpoint = this.cropGenotypingParameter.endpoint;
+            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.baseUrl;
             return this.cropGenotypingParameterService.getToken(this.context.cropName);
         })).subscribe((accessToken) => {
             this.genotypingBrapiService.accessToken = accessToken;
@@ -80,7 +85,7 @@ export class GenotypingPaneComponent implements OnInit {
 
     isGenotypingParameterConfigured() {
         return this.cropGenotypingParameter && this.cropGenotypingParameter.cropName && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint
-            && this.cropGenotypingParameter.userName && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId;
+            && this.cropGenotypingParameter.userName && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
     }
 
     linkBySelectOnChange() {
@@ -169,32 +174,53 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
-        this.genotypingBrapiService.searchCallsets({
-            variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
-            germplasmDbIds: [this.genotypingGermplasm.germplasmDbId]
-        }).subscribe((brapiResponse) => {
-            if (brapiResponse && brapiResponse.result.data.length) {
-                this.genotypingCallSet = brapiResponse.result.data[0];
-                this.loadGenotypingCalls();
-            } else {
-                this.alertService.error('genotyping.no.genotyping.callsets.found');
-            }
+        if (this.selectedVariantSet) {
+            this.isExportingFlapjack = true;
+            const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
+                100, this.selectedVariantSet.referenceSetDbId);
+            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe(async(response) => {
+                this.isExportingFlapjack = false;
+                let file = response.replace('.fjzip', '');
+                file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
+
+                const flapjackDiv = '#flapjack-div';
+                const renderer = flapjack.default();
+                renderer.renderGenotypesUrl({
+                    domParent: flapjackDiv,
+                    width: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                    height: 250,
+                    mapFileURL: file + '.map',
+                    genotypeFileURL: file + '.genotype',
+                    phenotypeFileURL: await this.getFileUrl(file + '.phenotype'),
+                    overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                    overviewHeight: 25,
+                    dataSetId: this.cropGenotypingParameter.programId,
+                });
+            });
+        }
+    }
+
+    getFileUrl(url): Promise<string> {
+        return new Promise<string>((resolve) => {
+            this.http.head(url, { observe: 'response' }).subscribe(
+                (response) => {
+                    // If file doesn’t exist on the server, return undefined.
+                    if (response.status === 200) {
+                        resolve(url);
+                    } else {
+                        resolve();
+                    }
+                },
+                () => {
+                    resolve();
+                }
+            );
         });
     }
 
-    loadGenotypingCalls() {
-        if (this.genotypingCallSet) {
-            this.isGenotypingCallsLoading = true;
-            this.genotypingBrapiService.searchCalls({
-                callSetDbIds: [this.genotypingCallSet.callSetDbId],
-                pageSize: this.pageSize,
-                pageToken: (this.page - 1).toString()
-            }).subscribe(((brapiResponse) => {
-                this.genotypingCalls = brapiResponse.result.data;
-                this.totalCount = brapiResponse.metadata.pagination.totalCount;
-                this.isGenotypingCallsLoading = false;
-            }));
-        }
+    extractHostName(baseUrl) {
+        const { hostname, protocol } = new URL(baseUrl);
+        return protocol + '//' + hostname;
     }
 
     resetForm() {

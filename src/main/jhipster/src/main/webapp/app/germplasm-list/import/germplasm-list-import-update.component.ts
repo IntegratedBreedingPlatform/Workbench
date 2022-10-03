@@ -178,7 +178,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         const headers = this.rawData[0];
         // Ignore empty column headers
         const fileHeaders = headers.filter((header) => !!header);
-
+        this.context.data = this.getData();
         if (!this.entryDetailsImportService.validateFile(fileHeaders, this.context.data)) {
             return false;
         }
@@ -217,7 +217,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             );
 
             this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
-                variablesFiltered.every((v) => toUpper(v.name) !== variableName && toUpper(v.alias) !== variableName)
+                variablesFiltered.every((v) => toUpper(v.name) !== toUpper(variableName) && toUpper(v.alias) !== toUpper(variableName))
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
@@ -225,6 +225,17 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             );
         }
 
+    }
+
+    private getData() {
+        const headers = this.rawData[0].map((header) => toUpper(header));
+        return this.rawData.slice(1).map((fileRow, rowIndex) => {
+            return fileRow.reduce((map, col, colIndex) => {
+                const columnName = headers[colIndex];
+                map[columnName] = col;
+                return map;
+            }, {});
+        });
     }
 
     dismiss() {
