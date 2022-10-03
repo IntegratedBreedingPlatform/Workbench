@@ -559,6 +559,12 @@ export class LabelPrintingComponent implements OnInit {
                 if (index === -1) {
                     return;
                 }
+            } else {
+                // Restritcion to limit the max number of labels per side for PDF output format.
+                if (this.fileType === FileType.PDF && event.container.data.length === MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT) {
+                    this.alertService.warning('label-printing.max.labels.allowed.to.pdf.format', { param: MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT });
+                    return;
+                }
             }
 
             // Restritcion to limit the max number of labels per side for PDF output format.
