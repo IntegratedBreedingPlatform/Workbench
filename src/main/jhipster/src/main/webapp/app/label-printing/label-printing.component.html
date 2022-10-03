@@ -243,7 +243,7 @@
 														<div class="label-box" cdkDrag [cdkDragData]="item" *ngFor="let item of labelType.fields">
 															<div class="label-printing-custom-placeholder" *cdkDragPlaceholder></div>
 															<div>
-																<button (click)="removeItem(labelType.fields,item)" type="button" class="btn btn-secondary">
+																<button (click)="removeItem(labelType.fields,item)" type="button" class="btn label-printing-remove-item">
 																	<span class="fa fa-times-circle"></span>
 																</button>
 																<label class="form-label" style="margin-left: 5px;">{{item.name}}</label>
