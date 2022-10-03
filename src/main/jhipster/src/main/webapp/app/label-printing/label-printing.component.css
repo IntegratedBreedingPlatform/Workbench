@@ -15,14 +15,6 @@
     background-color: #c8c6c6;
 }
 
-/* Fix the overlapping with the labels when the scroll is activated */
-.fix-list-group {
-    padding: 20px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .label-printing-container {
     width: 400px;
     max-width: 100%;

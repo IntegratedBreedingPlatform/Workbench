@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { AllLabelsPipe, LabelPrintingComponent } from './label-printing.component';
+import { AllLabelsPipe, FieldListFilterPipe, LabelPrintingComponent } from './label-printing.component';
 import { RouterModule } from '@angular/router';
 import { BmsjHipsterSharedModule } from '../shared';
 import { LABEL_PRINTING_ROUTES } from './label-printing.route';
@@ -10,7 +10,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 @NgModule({
     declarations: [
         LabelPrintingComponent,
-        AllLabelsPipe
+        AllLabelsPipe,
+        FieldListFilterPipe
     ],
     providers: [
         LabelPrintingService,

@@ -50,6 +50,7 @@ export class LabelPrintingComponent implements OnInit {
     collapsedMap: { [key: string]: boolean; } = {};
     labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
     nameSelectedFieldsContainers: string[] = ['Selected Fields', 'Left Side Fields', 'Right Side Fields'];
+    selectedFilterTextMap: { [key: string]: string; } = {};
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -189,19 +190,19 @@ export class LabelPrintingComponent implements OnInit {
         this.selectedfileType = this.fileType;
         const labelFieldsSelected = new Array();
 
+        this.reloadLabelTypeFields();
         presetSetting.selectedFields.forEach((idsSelected) => {
             const title = presetSetting.fileConfiguration.outputType === FileType.PDF.toString() ? //
                 labelFieldsSelected.length === 0 ? 'Left Side Fields' : 'Right Side Fields' : 'Selected Fields';
             const labelType = new LabelType(title, title, []);
             this.labelTypes.forEach((label: LabelType) => {
-                label.fields = this.labelTypesOrigMap[labelType.title].map((x) => Object.assign({}, x));
                 label.fields.forEach((field) => {
                     if (idsSelected.indexOf(field.id) > -1) {
                         labelType.fields.push(field);
                     }
                 });
                 const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
-                label.fields = filteredList;
+                label.fields = filteredList.map((x) => Object.assign({}, x));
             });
             labelFieldsSelected.push(labelType);
         });
@@ -272,9 +273,7 @@ export class LabelPrintingComponent implements OnInit {
                 (this.selectedfileType === FileType.PDF || this.selectedfileType === FileType.NONE) && //
                 (this.fileType === FileType.EXCEL || this.fileType === FileType.CSV))
             || this.fileType === FileType.NONE || this.fileType === FileType.PDF) {
-            this.labelTypes.forEach((label: LabelType) => {
-                label.fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
-            });
+            this.reloadLabelTypeFields();
 
             this.labelPrintingData.barcodeNeeded = false;
             this.labelPrintingData.includeHeadings = true;
@@ -289,29 +288,6 @@ export class LabelPrintingComponent implements OnInit {
             }
         }
         this.selectedfileType = this.fileType;
-    }
-
-    resetSelectFields($event, list?: LabelType) {
-        $event.preventDefault();
-        const fieldsSelected: number[][] = [];
-        if (list.fields.length > 0) {
-            if (this.fileType !== FileType.PDF.toString()) {
-                this.labelTypes.forEach((label: LabelType) => {
-                    label.fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
-                });
-            } else {
-                list.fields.forEach((selectedField) => {
-                    this.labelTypes.forEach((label: LabelType) => {
-                        const fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
-                        const index = fields.findIndex((field) => field.id === selectedField.id);
-                        if (index > -1) {
-                            label.fields.splice(index, 0, selectedField);
-                        }
-                    });
-                });
-            }
-            list.fields = [];
-        }
     }
 
     export() {
@@ -534,12 +510,41 @@ export class LabelPrintingComponent implements OnInit {
         window.history.back();
     }
 
+    resetSelectedFieldsTable($event, list?: LabelType) {
+        $event.preventDefault();
+        const fieldsSelected: number[][] = [];
+        if (list.fields.length > 0) {
+            if (this.fileType !== FileType.PDF.toString()) {
+                this.reloadLabelTypeFields();
+            } else {
+                list.fields.forEach((selectedField) => {
+                    this.labelTypes.forEach((label: LabelType) => {
+                        const fields = this.labelTypesOrigMap[label.title];
+                        const index = fields.findIndex((field) => field.id === selectedField.id);
+                        if (index > -1) {
+                            label.fields.splice(index, 0, selectedField);
+                            label.fields = label.fields.map((x) => Object.assign({}, x));
+                        }
+                    });
+                });
+            }
+            list.fields = [];
+        }
+    }
+
+    reloadLabelTypeFields() {
+        this.labelTypes.forEach((label: LabelType) => {
+            label.fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+        });
+    }
+
     removeItem(listSelected: any, removedField: any) {
         this.labelTypes.forEach((label: LabelType) => {
-            const fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+            const fields = this.labelTypesOrigMap[label.title];
             const idx = fields.findIndex((field) => field.id === removedField.id);
             if (idx > -1) {
                 label.fields.splice(idx, 0, removedField);
+                label.fields = label.fields.map((x) => Object.assign({}, x));
             }
         });
         const index = listSelected.findIndex((field) => field.id === removedField.id);
@@ -553,8 +558,7 @@ export class LabelPrintingComponent implements OnInit {
         } else {
             if (this.nameSelectedFieldsContainers.indexOf(event.container.id) === -1) {
                 const fields = this.labelTypesOrigMap[event.container.id]
-                const fieldMoved = Object.assign({}, event.item.data);
-                const index = fields.findIndex((field) => field.id === fieldMoved.id);
+                const index = fields.findIndex((field) => field.id === event.item.data.id);
                 // Restriction to avoid moving the element to a list that does not belong.
                 if (index === -1) {
                     return;
@@ -567,18 +571,18 @@ export class LabelPrintingComponent implements OnInit {
                 }
             }
 
-            // Restritcion to limit the max number of labels per side for PDF output format.
-            if (this.fileType === FileType.PDF && event.container.data.length === MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT) {
-                this.alertService.warning('label-printing.max.labels.allowed.to.pdf.format', { param: MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT });
-                return;
-            }
-
+            const previousIndex = event.previousContainer.data.findIndex((x) => x.id === event.item.data.id);
             transferArrayItem(
                 event.previousContainer.data,
                 event.container.data,
-                event.previousIndex,
+                previousIndex,
                 event.currentIndex,
             );
+
+            // Workaround to reload the list of fieldListFilter when the filterText does not change.
+            this.labelTypes.forEach((label: LabelType) => {
+                label.fields = label.fields.map((x) => Object.assign({}, x));
+            });
         }
     }
 
@@ -593,6 +597,20 @@ export class AllLabelsPipe implements PipeTransform {
         return labelTypes
             .map((type) => type.fields)
             .reduce((allFields, fields) => allFields.concat(fields));
+    }
+}
+
+@Pipe({
+    name: 'fieldListFilter'
+})
+export class FieldListFilterPipe implements PipeTransform {
+    transform(fields: any[], filterText: string): any {
+        return !filterText
+            ? fields
+            : fields.filter(
+                (item) =>
+                    item.name.toLowerCase().includes(filterText.toLowerCase())
+            );
     }
 }
 

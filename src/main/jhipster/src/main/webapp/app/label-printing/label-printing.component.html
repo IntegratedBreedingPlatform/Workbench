@@ -204,10 +204,19 @@
 											<div *ngFor="let labelType of labelTypes">
 												<div class="label-printing-container">
 													<div class="field-group">
-														<label class="list-group-item col-form-label font-weight-bold" (click)="collapsedMap[labelType.title] = !collapsedMap[labelType.title]">
-															<i [ngClass]="collapsedMap[labelType.title]?'fa fa-caret-right fa-lg':'fa fa-caret-down fa-lg'" aria-hidden="true"> </i>
-															{{labelType.title}}
-														</label>
+														<div class="list-group-item col-form-label font-weight-bold">
+															<label  (click)="collapsedMap[labelType.title] = !collapsedMap[labelType.title]">
+																<i [ngClass]="collapsedMap[labelType.title]?'fa fa-caret-right fa-lg':'fa fa-caret-down fa-lg'" aria-hidden="true"> </i>
+																{{labelType.title}}
+															</label>
+															<div *ngIf="!collapsedMap[labelType.title]">
+																<div class="input-group mb-3">
+																	<input #search type="text" class="form-control" placeholder="Search list" aria-label="Search list" aria-describedby="clearSearch"
+																		   [(ngModel)]="selectedFilterTextMap[labelType.title]">
+																	<button class="btn btn-secondary" type="button" id="clearSearch" (click)="selectedFilterTextMap[labelType.title] = ''">Clear</button>
+																</div>
+															</div>
+														</div>
 													</div>
 													<div *ngIf="!collapsedMap[labelType.title]" id="{{labelType.title}}"
 														 cdkDropList
@@ -215,7 +224,9 @@
 														 class="label-printing-list"
 														 (cdkDropListDropped)="drop($event)"
 														 style="max-height: 400px; overflow-y:scroll">
-														<div class="label-box" cdkDrag [cdkDragData]="item" *ngFor="let item of labelType.fields">
+														<div class="label-box"
+															 cdkDrag [cdkDragData]="item"
+															 *ngFor="let item of labelType.fields | fieldListFilter: selectedFilterTextMap[labelType.title]">
 															<div class="label-printing-custom-placeholder" *cdkDragPlaceholder></div>
 															{{item.name}}
 														</div>
@@ -231,7 +242,13 @@
 													<div class="field-group">
 														<label class="list-group-item col-form-label font-weight-bold">
 															{{labelType.title}}
-															<a class="float-right" href (click)="resetSelectFields($event,labelType)" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+															<a class="float-right" href (click)="resetSelectedFieldsTable($event,labelType)"
+															   jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+															<div class="input-group mb-3" style="padding-top: 5px;">
+																<input #search type="text" class="form-control" placeholder="Search list" aria-label="Search list" aria-describedby="clearSearch"
+																	   [(ngModel)]="selectedFilterTextMap[labelType.title]">
+																<button class="btn btn-secondary" type="button" id="clearSearch" (click)="selectedFilterTextMap[labelType.title] = ''">Clear</button>
+															</div>
 														</label>
 													</div>
 													<div id="{{labelType.title}}"
@@ -239,8 +256,10 @@
 														 [cdkDropListData]="labelType.fields"
 														 class="label-printing-list"
 														 (cdkDropListDropped)="drop($event)"
-														 style="height:400px; overflow-y:scroll">
-														<div class="label-box" cdkDrag [cdkDragData]="item" *ngFor="let item of labelType.fields">
+														 style="max-height: 400px; overflow-y:scroll">
+														<div class="label-box"
+															 cdkDrag [cdkDragData]="item"
+															 *ngFor="let item of labelType.fields | fieldListFilter: selectedFilterTextMap[labelType.title]">
 															<div class="label-printing-custom-placeholder" *cdkDragPlaceholder></div>
 															<div>
 																<button (click)="removeItem(labelType.fields,item)" type="button" class="btn label-printing-remove-item">
