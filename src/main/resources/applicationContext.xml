@@ -346,22 +346,22 @@
 
 	<!-- Required bean declarations for Germplasm Coding Service -->
 
-	<bean class="org.generationcp.commons.ruleengine.RulesPostProcessor">
+	<bean class="org.generationcp.middleware.ruleengine.RulesPostProcessor">
 		<property name="ruleFactory" ref="ruleFactory" />
 	</bean>
 
-	<bean id="ruleFactory" class="org.generationcp.commons.ruleengine.RuleFactory"
+	<bean id="ruleFactory" class="org.generationcp.middleware.ruleengine.RuleFactory"
 		  init-method="init" />
 
-	<bean class="org.generationcp.commons.ruleengine.RulesPostProcessor">
+	<bean class="org.generationcp.middleware.ruleengine.RulesPostProcessor">
 		<property name="ruleFactory" ref="processCodeRuleFactory" />
 	</bean>
 
-	<bean id="processCodeRuleFactory" class="org.generationcp.commons.ruleengine.ProcessCodeRuleFactory"
+	<bean id="processCodeRuleFactory" class="org.generationcp.middleware.ruleengine.ProcessCodeRuleFactory"
 		  init-method="init" />
 
 	<bean id="ruleConfigProvider"
-		  class="org.generationcp.commons.ruleengine.provider.PropertyFileRuleConfigurationProvider">
+		  class="org.generationcp.middleware.ruleengine.provider.PropertyFileRuleConfigurationProvider">
 		<property name="ruleSequenceConfiguration">
 			<map>
 				<entry key="stockid" value="${stockid.rules}" />
@@ -375,13 +375,13 @@
 	</bean>
 
 	<!-- Singleton bean as there is nothing request specific in here. -->
-	<bean id="germplasmNamingProperties" class="org.generationcp.commons.service.GermplasmNamingProperties">
+	<bean id="germplasmNamingProperties" class="org.generationcp.middleware.ruleengine.service.GermplasmNamingProperties">
 		<property name="germplasmOriginStudiesDefault" value="${germplasm.origin.studies.default}"/>
 		<property name="germplasmOriginStudiesWheat" value="${germplasm.origin.studies.wheat}"/>
 		<property name="germplasmOriginStudiesMaize" value="${germplasm.origin.studies.maize}"/>
 	</bean>
 
-	<bean id="seedSourceGenerator" class="org.generationcp.commons.ruleengine.generator.SeedSourceGenerator">
+	<bean id="seedSourceGenerator" class="org.generationcp.middleware.ruleengine.generator.SeedSourceGenerator">
 	</bean>
 
 
@@ -390,7 +390,7 @@
 	<!-- Including all beans used for generating Code Sheet when exporting Germplasm List excel file -->
 	<context:component-scan base-package="org.generationcp.commons.workbook.generator" />
 
-	<bean id="germplasmNamingService" class="org.generationcp.commons.service.impl.GermplasmNamingServiceImpl" />
+	<bean id="germplasmNamingService" class="org.generationcp.middleware.ruleengine.naming.impl.GermplasmNamingServiceImpl" />
 
 	<bean id="germplasmListService" factory-bean="managerFactory"
 		  factory-method="getGermplasmListService" scope="request">
@@ -418,23 +418,23 @@
 	</bean>
 
 	<bean id="ruleService"
-		  class="org.generationcp.commons.ruleengine.impl.RulesServiceImpl" />
+		  class="org.generationcp.middleware.ruleengine.impl.RulesServiceImpl" />
 
 	<!-- This component scan automatically registers all implementations of
 		the Rule interface into the Spring context. In conjunction with the RulesPostProcessor
 		above, this automatically populates the map in the RuleFactory -->
-	<context:component-scan base-package="org.generationcp.commons.ruleengine.stockid" />
-	<context:component-scan base-package="org.generationcp.commons.ruleengine.cross" />
-	<context:component-scan base-package="org.generationcp.commons.ruleengine.coding" />
-	<context:component-scan base-package="org.generationcp.commons.ruleengine.coding.expression" />
+	<context:component-scan base-package="org.generationcp.middleware.ruleengine.stockid" />
+	<context:component-scan base-package="org.generationcp.middleware.ruleengine.cross" />
+	<context:component-scan base-package="org.generationcp.middleware.ruleengine.coding" />
+	<context:component-scan base-package="org.generationcp.middleware.ruleengine.coding.expression" />
 
-	<bean id="codingExpressionResolver" class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionResolver" />
+	<bean id="codingExpressionResolver" class="org.generationcp.middleware.ruleengine.coding.expression.CodingExpressionResolver" />
 
 	<bean id="codingExpressionFactory"
-		  class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionFactory"
+		  class="org.generationcp.middleware.ruleengine.coding.expression.CodingExpressionFactory"
 		  init-method="init" />
 
-	<bean class="org.generationcp.commons.ruleengine.coding.expression.CodingExpressionPostProcessor">
+	<bean class="org.generationcp.middleware.ruleengine.coding.expression.CodingExpressionPostProcessor">
 		<property name="codingExpressionFactory" ref="codingExpressionFactory" />
 	</bean>
 
