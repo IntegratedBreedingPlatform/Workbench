@@ -317,7 +317,7 @@
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.firstBarcodeField" class="form-control">
 														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
+														<option *ngFor="let field of allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -330,7 +330,7 @@
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.secondBarcodeField" class="form-control">
 														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
+														<option *ngFor="let field of allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -343,7 +343,7 @@
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.thirdBarcodeField" class="form-control">
 														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
+														<option *ngFor="let field of allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>

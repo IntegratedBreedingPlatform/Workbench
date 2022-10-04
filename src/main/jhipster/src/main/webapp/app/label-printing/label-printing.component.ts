@@ -52,6 +52,7 @@ export class LabelPrintingComponent implements OnInit {
     collapsedMap: { [key: string]: boolean; } = {};
     labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
     selectedFilterTextMap: { [key: string]: string; } = {};
+    allLabels: any[];
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -103,6 +104,8 @@ export class LabelPrintingComponent implements OnInit {
                 this.collapsedMap[labelType.title] = false;
                 this.labelTypesOrigMap[labelType.title] = labelType.fields.map((x) => Object.assign({}, x));
             });
+            this.allLabels = Object.values(this.labelTypesOrigMap)
+                .reduce((allFields, fields) => allFields.concat(fields));
         });
 
         this.fieldsSelected = [];
