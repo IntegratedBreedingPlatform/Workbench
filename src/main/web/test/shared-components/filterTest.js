@@ -166,7 +166,8 @@ describe('Filter Module', function() {
 						systemDataType: false
 					},
 					dateCreatedFrom: new Date(),
-					dateCreatedTo: new Date()
+					dateCreatedTo: new Date(),
+					obsolete: true
 				};
 
 				isolateScope.clearFilters();
@@ -175,7 +176,8 @@ describe('Filter Module', function() {
 					variableTypes: [],
 					scaleDataType: null,
 					dateCreatedFrom: null,
-					dateCreatedTo: null
+					dateCreatedTo: null,
+					obsolete: false
 				});
 			});
 		});
@@ -213,6 +215,11 @@ describe('Filter Module', function() {
 
 			it('should return true if date created to filter option is set', function() {
 				isolateScope.filterOptions.dateCreatedTo = new Date();
+				expect(isolateScope.isFilterActive()).toBe(true);
+			});
+
+			it('should return true if show obsoletes filter option is ticked', function() {
+				isolateScope.filterOptions.obsolete = true;
 				expect(isolateScope.isFilterActive()).toBe(true);
 			});
 		});
