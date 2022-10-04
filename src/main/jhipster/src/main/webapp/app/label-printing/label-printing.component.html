@@ -222,8 +222,7 @@
 														 cdkDropList
 														 [cdkDropListData]="labelType.fields"
 														 class="label-printing-list"
-														 (cdkDropListDropped)="drop($event)"
-														 style="max-height: 400px; overflow-y:scroll">
+														 (cdkDropListDropped)="drop($event)">
 														<div class="label-box"
 															 cdkDrag [cdkDragData]="item"
 															 *ngFor="let item of labelType.fields | fieldListFilter: selectedFilterTextMap[labelType.title]">
@@ -255,8 +254,7 @@
 														 cdkDropList
 														 [cdkDropListData]="labelType.fields"
 														 class="label-printing-list"
-														 (cdkDropListDropped)="drop($event)"
-														 style="max-height: 400px; overflow-y:scroll">
+														 (cdkDropListDropped)="drop($event)">
 														<div class="label-box"
 															 cdkDrag [cdkDragData]="item"
 															 *ngFor="let item of labelType.fields | fieldListFilter: selectedFilterTextMap[labelType.title]">

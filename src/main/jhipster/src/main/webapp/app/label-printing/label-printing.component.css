@@ -33,6 +33,8 @@
     border-radius: 4px;
     overflow: hidden;
     border-bottom-width: 3px;
+    max-height: 210px;
+    overflow-y:scroll;
 }
 
 .label-box {
