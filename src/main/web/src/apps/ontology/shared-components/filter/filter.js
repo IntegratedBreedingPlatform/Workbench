@@ -60,7 +60,7 @@
 							variableTypesActive,
 							scaleDataTypesActive,
 							dateCreatedFromActive,
-							dateCreatedToActive;
+							dateCreatedToActive,
 							obsoleteFilterActive;
 
 						if (!filterOptionsValued) {
