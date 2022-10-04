@@ -506,5 +506,10 @@
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 
+	<bean id="advanceService" factory-bean="managerFactory"
+			  factory-method="getAdvanceService" scope="request">
+		<aop:scoped-proxy />
+	</bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>
