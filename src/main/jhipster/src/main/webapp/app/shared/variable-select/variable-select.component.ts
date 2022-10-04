@@ -89,8 +89,9 @@ export class VariableSelectComponent implements OnInit {
         if (this.lotId) {
             filterRequest.lotIds = [this.lotId];
         }
-        if (this.value) {
-            filterRequest.showObsoletes = true;
+        if (!this.value) {
+            // hide obsoletes when adding variables
+            filterRequest.showObsoletes = false;
         }
         this.variableService.filterVariables(filterRequest).pipe(
             finalize(() => this.isLoading = false)
