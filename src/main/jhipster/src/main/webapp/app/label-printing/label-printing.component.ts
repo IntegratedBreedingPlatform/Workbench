@@ -18,7 +18,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 
 declare const $: any;
 const MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT = 5;
-
+const SELECTED_FIELDS = 'Selected Fields';
+const LEFT_SIDE_FIELDS = 'Left Side Fields';
+const RIGHT_SIDE_FIELDS = 'Right Side Fields';
 @Component({
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
@@ -49,7 +51,6 @@ export class LabelPrintingComponent implements OnInit {
     defaultPresetSetting: PresetSetting;
     collapsedMap: { [key: string]: boolean; } = {};
     labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
-    nameSelectedFieldsContainers: string[] = ['Selected Fields', 'Left Side Fields', 'Right Side Fields'];
     selectedFilterTextMap: { [key: string]: string; } = {};
 
     constructor(private route: ActivatedRoute,
@@ -193,7 +194,7 @@ export class LabelPrintingComponent implements OnInit {
         this.reloadLabelTypeFields();
         presetSetting.selectedFields.forEach((idsSelected) => {
             const title = presetSetting.fileConfiguration.outputType === FileType.PDF.toString() ? //
-                labelFieldsSelected.length === 0 ? 'Left Side Fields' : 'Right Side Fields' : 'Selected Fields';
+                labelFieldsSelected.length === 0 ? LEFT_SIDE_FIELDS : RIGHT_SIDE_FIELDS : SELECTED_FIELDS;
             const labelType = new LabelType(title, title, []);
             this.labelTypes.forEach((label: LabelType) => {
                 label.fields.forEach((field) => {
@@ -281,9 +282,9 @@ export class LabelPrintingComponent implements OnInit {
             this.fieldsSelected = new Array();
 
             if (this.fileType === FileType.PDF) {
-                this.fieldsSelected.push(new LabelType('Left Side Fields', null, []), new LabelType('Right Side Fields', null, []));
+                this.fieldsSelected.push(new LabelType(LEFT_SIDE_FIELDS, null, []), new LabelType(RIGHT_SIDE_FIELDS, null, []));
             } else {
-                this.fieldsSelected.push(new LabelType('Selected Fields', null, []));
+                this.fieldsSelected.push(new LabelType(SELECTED_FIELDS, null, []));
 
             }
         }
@@ -556,7 +557,9 @@ export class LabelPrintingComponent implements OnInit {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
-            if (this.nameSelectedFieldsContainers.indexOf(event.container.id) === -1) {
+            if (SELECTED_FIELDS !== event.container.id && //
+                LEFT_SIDE_FIELDS !== event.container.id && //
+                RIGHT_SIDE_FIELDS !== event.container.id) {
                 const fields = this.labelTypesOrigMap[event.container.id]
                 const index = fields.findIndex((field) => field.id === event.item.data.id);
                 // Restriction to avoid moving the element to a list that does not belong.
