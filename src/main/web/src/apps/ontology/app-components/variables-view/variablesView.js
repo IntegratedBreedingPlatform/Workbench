@@ -73,7 +73,7 @@
 			$scope.isFilterActive = function() {
 				var variableTypesFilterActive = $scope.filterOptions.variableTypes.length > 0,
 					scaleDataTypeFilterActive = !!$scope.filterOptions.scaleDataType,
-					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo
+					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo,
 					obsoleteFilterActive = !!$scope.filterOptions.obsolete;
 
 				return variableTypesFilterActive || scaleDataTypeFilterActive || dateCreatedFilterActive || obsoleteFilterActive;
