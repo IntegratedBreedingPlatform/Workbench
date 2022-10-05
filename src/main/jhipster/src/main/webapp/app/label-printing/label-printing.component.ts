@@ -542,7 +542,7 @@ export class LabelPrintingComponent implements OnInit {
         });
     }
 
-    removeItem(listSelected: any, removedField: any) {
+    removeItem(listSelected: LabelType, removedField: any) {
         this.labelTypes.forEach((label: LabelType) => {
             const fields = this.labelTypesOrigMap[label.title];
             const idx = fields.findIndex((field) => field.id === removedField.id);
@@ -551,9 +551,9 @@ export class LabelPrintingComponent implements OnInit {
                 label.fields = label.fields.map((x) => Object.assign({}, x));
             }
         });
-        const index = listSelected.findIndex((field) => field.id === removedField.id);
-        listSelected.splice(index, 1);
-
+        const index = listSelected.fields.findIndex((field) => field.id === removedField.id);
+        listSelected.fields.splice(index, 1);
+        listSelected.fields = listSelected.fields.map((x) => Object.assign({}, x));
     }
 
     drop(event: CdkDragDrop<{ id: number, name: string }[]>) {
