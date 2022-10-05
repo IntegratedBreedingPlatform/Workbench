@@ -594,18 +594,6 @@ export class LabelPrintingComponent implements OnInit {
 
 }
 
-@Pipe({ name: 'allLabels' })
-export class AllLabelsPipe implements PipeTransform {
-    transform(labelTypes: { fields: { id: number, name: string }[] }[]): any {
-        if (!labelTypes) {
-            return [];
-        }
-        return labelTypes
-            .map((type) => type.fields)
-            .reduce((allFields, fields) => allFields.concat(fields));
-    }
-}
-
 @Pipe({
     name: 'fieldListFilter'
 })
