@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.generationcp.breeding.manager.crossingmanager.pojos.CrossesMade;
-import org.generationcp.commons.settings.AdditionalDetailsSetting;
-import org.generationcp.commons.settings.BreedingMethodSetting;
-import org.generationcp.commons.settings.CrossNameSetting;
-import org.generationcp.commons.settings.CrossSetting;
+import org.generationcp.middleware.ruleengine.settings.AdditionalDetailsSetting;
+import org.generationcp.middleware.ruleengine.settings.BreedingMethodSetting;
+import org.generationcp.middleware.ruleengine.settings.CrossNameSetting;
+import org.generationcp.middleware.ruleengine.settings.CrossSetting;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
