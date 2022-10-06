@@ -101,6 +101,7 @@
         "confirmation.overwrite.preset": "{0} already exists, do you wish to overwrite the preset?",
         "confirmation.export.without.save.preset": "Proceed export label without saving label printing setting?",
         "preset.name.is.empty": "Preset name field is empty, please enter the name of the preset if you would like to save these settings.",
+        "max.labels.allowed.to.pdf.format": "Max number of labels allowed to PDF format is {{param}} per Side.",
         "confirmation.delete.program.setting.title": "Delete Label Printing Setting?",
         "confirmation.delete.program.setting.text": "Are you sure you want to delete {0}?",
         "cannot.save.standard.preset": "You cannot override an existing standard preset. Please change to a new preset name.",

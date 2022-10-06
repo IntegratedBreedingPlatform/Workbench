@@ -122,10 +122,10 @@
 										<select class="form-control" [(ngModel)]="sortBySelected">
 											<option value="">Please Choose</option>
 											<ng-container *ngFor="let sortableField of sortableFields">
-											<option [value]="sortableField.sortBy">
-												<label>{{sortableField.fieldName}}</label>
-											</option>
-										</ng-container>
+												<option [value]="sortableField.sortBy">
+													<label>{{sortableField.fieldName}}</label>
+												</option>
+											</ng-container>
 										</select>
 									</div>
 								</div>
@@ -144,7 +144,7 @@
 								</div>
 								<div class="row">
 									<div class="col-md-7">
-											<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.size.of.label.sheet"></label>:
+										<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.size.of.label.sheet"></label>:
 									</div>
 									<div class="col-md-5">
 										<select [(ngModel)]="labelPrintingData.sizeOfLabelSheet" class="form-control">
@@ -155,7 +155,7 @@
 								</div>
 								<div class="row">
 									<div class="col-md-7">
-											<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.number.of.rows.per.page"></label>:
+										<label class="col-form-label font-weight-bold" jhiTranslate="label-printing.number.of.rows.per.page"></label>:
 									</div>
 									<div class="col-md-5">
 										<select [(ngModel)]="labelPrintingData.numberOfRowsPerPage" class="form-control">
@@ -198,68 +198,79 @@
 								<h2 class="row sub-content-heading">
 									&nbsp;
 								</h2>
-								<div class="row">
+								<div class="row" cdkDropListGroup>
 									<div class="col-md-6">
 										<div class="row">
-											<!-- Usually there are two columns
-												 To simplify we split it in two and if there are more (rare)
-												 the following ones will just accommodate -->
-											<div ngClass="col-md-6" *ngFor="let labelType of labelTypes" style="margin-bottom: 15px;">
-												<div class="label-type-list">
-													<ul class="list-group field-group">
-														<li class="list-group-item">
-															<label class="col-form-label text-truncate font-weight-bold">
-																{{labelType.title}}</label>
-														</li>
-													</ul>
-													<ul id="label-type-fields" class="list-group droppable availableFields list-group-content"
-														[attr.data-label-type-key]="labelType.key">
-														<li class="fix-list-group list-group-item text-truncate" *ngFor="let item of labelType.fields"
-															[attr.id]="item.id"
-															[attr.data-label-type-key]="labelType.key">{{item.name}}</li>
-													</ul>
+											<div *ngFor="let labelType of labelTypes">
+												<div class="label-printing-container">
+													<div class="field-group">
+														<div class="list-group-item col-form-label font-weight-bold">
+															<label  (click)="collapsedMap[labelType.title] = !collapsedMap[labelType.title]">
+																<i [ngClass]="collapsedMap[labelType.title]?'fa fa-caret-right fa-lg':'fa fa-caret-down fa-lg'" aria-hidden="true"> </i>
+																{{labelType.title}}
+															</label>
+															<div *ngIf="!collapsedMap[labelType.title]">
+																<div class="input-group mb-3">
+																	<input #search type="text" class="form-control" placeholder="Search list" aria-label="Search list" aria-describedby="clearSearch"
+																		   [(ngModel)]="selectedFilterTextMap[labelType.title]">
+																	<button class="btn btn-secondary" type="button" id="clearSearch" (click)="selectedFilterTextMap[labelType.title] = ''">Clear</button>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div *ngIf="!collapsedMap[labelType.title]" id="{{labelType.title}}"
+														 cdkDropList
+														 [cdkDropListData]="labelType.fields"
+														 class="label-printing-list"
+														 (cdkDropListDropped)="drop($event)">
+														<div class="label-box"
+															 cdkDrag [cdkDragData]="item"
+															 *ngFor="let item of labelType.fields | fieldListFilter: selectedFilterTextMap[labelType.title]">
+															<div class="label-printing-custom-placeholder" *cdkDragPlaceholder></div>
+															{{item.name}}
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="row">
-											<div class="col-md-6">
-												<ul class="list-group field-group">
-													<li class="list-group-item">
-														<label class="col-form-label font-weight-bold" *ngIf="fileType === FILE_TYPES.PDF"
-															   jhiTranslate="label-printing.left.selected.fields">
+											<div *ngFor="let labelType of fieldsSelected">
+												<div class="label-printing-container">
+													<div class="field-group">
+														<label class="list-group-item col-form-label font-weight-bold">
+															{{labelType.title}}
+															<a class="float-right" href (click)="resetSelectedFieldsTable($event,labelType)"
+															   jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
+															<div class="input-group mb-3" style="padding-top: 5px;">
+																<input #search type="text" class="form-control" placeholder="Search list" aria-label="Search list" aria-describedby="clearSearch"
+																	   [(ngModel)]="selectedFilterTextMap[labelType.title]">
+																<button class="btn btn-secondary" type="button" id="clearSearch" (click)="selectedFilterTextMap[labelType.title] = ''">Clear</button>
+															</div>
 														</label>
-														<label class="col-form-label font-weight-bold" *ngIf="fileType !== FILE_TYPES.PDF"
-															   jhiTranslate="label-printing.main.selected.fields">
-														</label>
-														<label class="col-form-label float-right">
-															<a href (click)="resetSelectFields($event,'#leftSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
-														</label>
-													</li>
-												</ul>
-												<ul id="leftSelectedFields" class="list-group-flush droppable print-fields list-group-content">
-												</ul>
-											</div>
-											<div class="col-md-6">
-												<div *ngIf="fileType === FILE_TYPES.PDF">
-													<ul class="list-group field-group">
-														<li class="list-group-item">
-															<label class="col-form-label font-weight-bold"
-																		   jhiTranslate="label-printing.right.selected.fields">
-															</label>
-															<label class="col-form-label float-right">
-																<a href (click)="resetSelectFields($event,'#rightSelectedFields')" jhiTranslate="label-printing.remove.selected.fields"> Remove all</a>
-															</label>
-														</li>
-													</ul>
-													<ul id="rightSelectedFields" class="list-group droppable print-fields list-group-content">
-													</ul>
+													</div>
+													<div id="{{labelType.title}}"
+														 cdkDropList
+														 [cdkDropListData]="labelType.fields"
+														 class="label-printing-list"
+														 (cdkDropListDropped)="drop($event)">
+														<div class="label-box"
+															 cdkDrag [cdkDragData]="item"
+															 *ngFor="let item of labelType.fields | fieldListFilter: selectedFilterTextMap[labelType.title]">
+															<div class="label-printing-custom-placeholder" *cdkDragPlaceholder></div>
+															<div>
+																<button (click)="removeItem(labelType,item)" type="button" class="btn label-printing-remove-item">
+																	<span class="fa fa-times-circle"></span>
+																</button>
+																<label class="form-label" style="margin-left: 5px;">{{item.name}}</label>
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-
 								</div>
 							</div>
 
@@ -306,7 +317,7 @@
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.firstBarcodeField" class="form-control">
 														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
+														<option *ngFor="let field of allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -319,7 +330,7 @@
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.secondBarcodeField" class="form-control">
 														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
+														<option *ngFor="let field of allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
@@ -332,7 +343,7 @@
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.thirdBarcodeField" class="form-control">
 														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of labelTypesOrig | allLabels" [value]="field.id">
+														<option *ngFor="let field of allLabels" [value]="field.id">
 															{{field.name}}
 														</option>
 													</select>
