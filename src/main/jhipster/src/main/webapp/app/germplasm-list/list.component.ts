@@ -160,7 +160,7 @@ export class ListComponent implements OnInit {
     page: number;
     previousPage: number;
     predicate: any;
-    reverse: boolean;
+    isAscending: boolean;
     resultSearch: SearchResult;
     isLoading: boolean;
 
@@ -691,18 +691,18 @@ export class ListComponent implements OnInit {
         if (this.predicate === SORT_PREDICATE_NONE) {
             return '';
         }
-        return [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
+        return [this.predicate + ',' + (this.isAscending ? 'asc' : 'desc')];
     }
 
     private clearSort() {
         this.predicate = SORT_PREDICATE_NONE;
-        this.reverse = false;
+        this.isAscending = false;
         $('.fa-sort').removeClass('fa-sort-up fa-sort-down');
     }
 
     private setDefaultSort() {
         this.predicate = ListComponent.SORT_ENTRY_NO_VARIABLE;
-        this.reverse = false;
+        this.isAscending = true;
     }
 
     private isStaticColumn(category: GermplasmListColumnCategory): boolean {
