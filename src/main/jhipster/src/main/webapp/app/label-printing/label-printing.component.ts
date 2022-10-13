@@ -14,9 +14,13 @@ import { ParamContext } from '../shared/service/param.context';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER, HELP_LABEL_PRINTING_GERMPLASM_MANAGER,
     HELP_LABEL_PRINTING_INVENTORY_MANAGER, HELP_LABEL_PRINTING_STUDY_MANAGER } from '../app.constants';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 declare const $: any;
-
+const MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT = 5;
+const SELECTED_FIELDS = 'Selected Fields';
+const LEFT_SIDE_FIELDS = 'Left Side Fields';
+const RIGHT_SIDE_FIELDS = 'Right Side Fields';
 @Component({
     selector: 'jhi-label-printing',
     templateUrl: './label-printing.component.html',
@@ -30,7 +34,6 @@ export class LabelPrintingComponent implements OnInit {
     metadata: Map<string, string>;
     metadataKeys: string[];
     labelTypes: LabelType[];
-    labelTypesOrig: LabelType[];
     FILE_TYPES = FileType;
     fileType: FileType = FileType.NONE;
     selectedfileType: FileType = FileType.NONE;
@@ -46,6 +49,10 @@ export class LabelPrintingComponent implements OnInit {
     sortBySelected: any = '';
     isLoading: boolean;
     defaultPresetSetting: PresetSetting;
+    collapsedMap: { [key: string]: boolean; } = {};
+    labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
+    selectedFilterTextMap: { [key: string]: string; } = {};
+    allLabels: any[];
 
     constructor(private route: ActivatedRoute,
                 private context: LabelPrintingContext,
@@ -93,9 +100,16 @@ export class LabelPrintingComponent implements OnInit {
         const fieldsPromise = this.service.getAvailableLabelFields().toPromise();
         fieldsPromise.then((labelTypes) => {
             this.labelTypes = labelTypes;
-            this.labelTypesOrig = labelTypes.map((x) => Object.assign({}, x));
+            this.labelTypes.forEach((labelType) => {
+                this.collapsedMap[labelType.title] = false;
+                this.labelTypesOrigMap[labelType.title] = labelType.fields.map((x) => Object.assign({}, x));
+            });
+            this.allLabels = Object.values(this.labelTypesOrigMap)
+                .reduce((allFields, fields) => allFields.concat(fields));
         });
 
+        this.fieldsSelected = [];
+        this.fieldsSelected.push(new LabelType('Selected Fields', null, []));
         const presetPromise = this.loadPresets();
 
         const sorteableFieldsPromise = this.service.getSortableFields().toPromise();
@@ -120,7 +134,6 @@ export class LabelPrintingComponent implements OnInit {
             sorteableFieldsPromise,
             defaultSelectionPromise
         ]).then(() => {
-            this.initDragAndDrop();
             this.initComplete = true;
             if (this.defaultPresetSetting) {
                 this.loadPresetSetting(this.defaultPresetSetting);
@@ -145,7 +158,7 @@ export class LabelPrintingComponent implements OnInit {
         } else if (this.context.printingLabelType === LabelPrintingType.GERMPLASM_LIST) {
             return HELP_LABEL_PRINTING_GERMPLASM_LIST_MANAGER;
         } else if (this.context.printingLabelType === LabelPrintingType.SUBOBSERVATION_DATASET
-            || this.context.printingLabelType === LabelPrintingType.OBSERVATION_DATASET ) {
+            || this.context.printingLabelType === LabelPrintingType.OBSERVATION_DATASET) {
             return HELP_LABEL_PRINTING_STUDY_MANAGER;
         } else if (this.context.printingLabelType === LabelPrintingType.LOT) {
             return HELP_LABEL_PRINTING_INVENTORY_MANAGER;
@@ -171,53 +184,36 @@ export class LabelPrintingComponent implements OnInit {
         const presetId = Number(this.presetSettingId);
         if (presetId !== 0) {
             this.loadPresetSetting(this.presetSettings.filter((preset) => preset.id === presetId)[0]);
+        } else {
+            this.labelPrintingData.settingsName = '';
         }
     }
 
     loadPresetSetting(presetSetting: PresetSetting) {
         this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
         this.selectedfileType = this.fileType;
-
-        const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
         const labelFieldsSelected = new Array();
 
+        this.reloadLabelTypeFields();
         presetSetting.selectedFields.forEach((idsSelected) => {
-            const fieldsSelected: LabelType[] = new Array();
-            labelTypeList.forEach((label: LabelType) => {
-                const labelType = new LabelType(label.title, label.key, []);
-                labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
-                fieldsSelected.push(labelType);
+            const title = presetSetting.fileConfiguration.outputType === FileType.PDF.toString() ? //
+                labelFieldsSelected.length === 0 ? LEFT_SIDE_FIELDS : RIGHT_SIDE_FIELDS : SELECTED_FIELDS;
+            const labelType = new LabelType(title, title, []);
+            this.labelTypes.forEach((label: LabelType) => {
+                label.fields.forEach((field) => {
+                    if (idsSelected.indexOf(field.id) > -1) {
+                        labelType.fields.push(field);
+                    }
+                });
                 const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
-                label.fields = filteredList;
+                label.fields = filteredList.map((x) => Object.assign({}, x));
             });
-            labelFieldsSelected.push(fieldsSelected);
+            labelFieldsSelected.push(labelType);
         });
 
-        this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
         this.fieldsSelected = labelFieldsSelected;
         this.sortBySelected = (presetSetting.sortBy) ? presetSetting.sortBy : '';
 
-        setTimeout(() => {
-            $('#leftSelectedFields').empty();
-            $('#rightSelectedFields').empty();
-
-            let listElem = '#leftSelectedFields';
-            labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
-                fieldsList.forEach((labelsType: LabelType) => {
-                    const key = labelsType.key;
-                    labelsType.fields.forEach((field) => {
-                        $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
-                            .attr('id', field.id).attr('data-label-type-key', key) //
-                            .text(field.name).appendTo(listElem);
-                    });
-                });
-                if (labelFieldsSelected.length > 1) {
-                    listElem = '#rightSelectedFields';
-                }
-            });
-        });
-
-        this.initDragAndDrop();
         if (presetSetting.fileConfiguration.outputType === FileType.PDF.toString()) {
             this.labelPrintingData.numberOfRowsPerPage = presetSetting.fileConfiguration.numberOfRowsPerPage;
             this.labelPrintingData.sizeOfLabelSheet = presetSetting.fileConfiguration.sizeOfLabelSheet;
@@ -281,108 +277,30 @@ export class LabelPrintingComponent implements OnInit {
                 (this.selectedfileType === FileType.PDF || this.selectedfileType === FileType.NONE) && //
                 (this.fileType === FileType.EXCEL || this.fileType === FileType.CSV))
             || this.fileType === FileType.NONE || this.fileType === FileType.PDF) {
-            this.labelTypes = this.labelTypesOrig.map((x) => Object.assign({}, x));
+            this.reloadLabelTypeFields();
+
             this.labelPrintingData.barcodeNeeded = false;
             this.labelPrintingData.includeHeadings = true;
             this.sortBySelected = '';
-            $('#leftSelectedFields').empty();
-            $('#rightSelectedFields').empty();
-            this.initDragAndDrop();
-        }
-        this.selectedfileType =  this.fileType;
-    }
+            this.fieldsSelected = new Array();
 
-    reloadFields(selected) {
-        const labelTypeList = this.labelTypesOrig.map((x) => Object.assign({}, x));
-        const labelFieldsSelected = new Array();
-        selected.forEach((idsSelected) => {
-            const fieldsSelected: LabelType[] = new Array();
-            labelTypeList.forEach((label: LabelType) => {
-                const labelType = new LabelType(label.title, label.key, []);
-                labelType.fields = label.fields.filter((field) => idsSelected.indexOf(field.id) > -1);
-                fieldsSelected.push(labelType);
-                const filteredList = label.fields.filter((field) => labelType.fields.indexOf(field) <= -1);
-                label.fields = filteredList;
-            });
-            labelFieldsSelected.push(fieldsSelected);
-        });
+            if (this.fileType === FileType.PDF) {
+                this.fieldsSelected.push(new LabelType(LEFT_SIDE_FIELDS, null, []), new LabelType(RIGHT_SIDE_FIELDS, null, []));
+            } else {
+                this.fieldsSelected.push(new LabelType(SELECTED_FIELDS, null, []));
 
-        this.labelTypes = labelTypeList.map((x) => Object.assign({}, x));
-        this.fieldsSelected = labelFieldsSelected;
-
-        setTimeout(() => {
-            $('#leftSelectedFields').empty();
-            $('#rightSelectedFields').empty();
-
-            let listElem = '#leftSelectedFields';
-            labelFieldsSelected.forEach((fieldsList: LabelType[]) => {
-                fieldsList.forEach((labelsType: LabelType) => {
-                    const key = labelsType.key;
-                    labelsType.fields.forEach((field) => {
-                        $('<li/>').addClass('list-group-item text-truncate ui-sortable-handle') //
-                            .attr('id', field.id).attr('data-label-type-key', key) //
-                            .text(field.name).appendTo(listElem);
-                    });
-                });
-                if (labelFieldsSelected.length > 1) {
-                    listElem = '#rightSelectedFields';
-                }
-            });
-        });
-
-        this.initDragAndDrop();
-
-    }
-
-    resetSelectFields($event, selectedFields: string) {
-        $event.preventDefault();
-        const fieldsSelected: number[][] = [];
-        $(selectedFields).empty();
-
-        if (selectedFields === '#leftSelectedFields' && this.fileType === FileType.PDF) {
-            if ($('#rightSelectedFields').sortable('toArray').length > 0) {
-                fieldsSelected.push([], $('#rightSelectedFields').sortable('toArray').map((i) => Number(i)));
-            }
-        } else {
-            if ($('#leftSelectedFields').sortable('toArray').length > 0) {
-                fieldsSelected.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
             }
         }
-        this.reloadFields(fieldsSelected);
-
-    }
-
-    initDragAndDrop() {
-        // TODO implement in angular
-        setTimeout(() => {
-            $('ul.droppable').sortable({
-                connectWith: 'ul',
-                receive: (event, ui) => {
-                    // event.currentTarget was not working
-                    const receiver = $(event.target),
-                        sender = $(ui.sender),
-                        item = $(ui.item);
-
-                    if (!receiver.hasClass('print-fields')
-                        && item.attr('data-label-type-key') !== receiver.attr('data-label-type-key')) {
-
-                        $(ui.sender).sortable('cancel');
-                    }
-                    if (receiver.hasClass('print-fields') && this.fileType === FileType.PDF && receiver.children().length > 5) {
-                        $(ui.sender).sortable('cancel');
-                    }
-                }
-            });
-        });
+        this.selectedfileType = this.fileType;
     }
 
     export() {
         const fieldsSelected = [];
         const barcodeFieldsSelected = [];
 
-        fieldsSelected.push($('#leftSelectedFields').sortable('toArray'));
+        fieldsSelected.push(this.fieldsSelected[0].fields.map((field) => field.id));
         if (this.fileType === FileType.PDF) {
-            fieldsSelected.push($('#rightSelectedFields').sortable('toArray'));
+            fieldsSelected.push(this.fieldsSelected[1].fields.map((field) => field.id));
         }
 
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
@@ -461,9 +379,9 @@ export class LabelPrintingComponent implements OnInit {
 
         fileConfiguration.outputType = this.fileType.toString();
 
-        selectedFields.push($('#leftSelectedFields').sortable('toArray').map((i) => Number(i)));
+        selectedFields.push(this.fieldsSelected[0].fields.map((field) => field.id));
         if (this.fileType === FileType.PDF) {
-            selectedFields.push($('#rightSelectedFields').sortable('toArray').map((i) => Number(i)));
+            selectedFields.push(this.fieldsSelected[1].fields.map((field) => field.id));
             fileConfiguration.sizeOfLabelSheet = this.labelPrintingData.sizeOfLabelSheet;
             fileConfiguration.numberOfRowsPerPage = this.labelPrintingData.numberOfRowsPerPage;
         }
@@ -586,7 +504,7 @@ export class LabelPrintingComponent implements OnInit {
         let description = `Drag fields from the ${from} into the ${to} to add them to your export file.`;
 
         if (this.fileType === FileType.PDF) {
-            description += ' For PDF you can only add 5 fields per side';
+            description += ' For PDF you can only add ' + MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT + ' fields per side';
         }
 
         return description;
@@ -595,17 +513,98 @@ export class LabelPrintingComponent implements OnInit {
     back() {
         window.history.back();
     }
+
+    resetSelectedFieldsTable($event, list?: LabelType) {
+        $event.preventDefault();
+        const fieldsSelected: number[][] = [];
+        if (list.fields.length > 0) {
+            if (this.fileType !== FileType.PDF.toString()) {
+                this.reloadLabelTypeFields();
+            } else {
+                list.fields.forEach((selectedField) => {
+                    this.labelTypes.forEach((label: LabelType) => {
+                        const fields = this.labelTypesOrigMap[label.title];
+                        const index = fields.findIndex((field) => field.id === selectedField.id);
+                        if (index > -1) {
+                            label.fields.splice(index, 0, selectedField);
+                            label.fields = label.fields.map((x) => Object.assign({}, x));
+                        }
+                    });
+                });
+            }
+            list.fields = [];
+        }
+    }
+
+    reloadLabelTypeFields() {
+        this.labelTypes.forEach((label: LabelType) => {
+            label.fields = this.labelTypesOrigMap[label.title].map((x) => Object.assign({}, x));
+        });
+    }
+
+    removeItem(listSelected: LabelType, removedField: any) {
+        this.labelTypes.forEach((label: LabelType) => {
+            const fields = this.labelTypesOrigMap[label.title];
+            const idx = fields.findIndex((field) => field.id === removedField.id);
+            if (idx > -1) {
+                label.fields.splice(idx, 0, removedField);
+                label.fields = label.fields.map((x) => Object.assign({}, x));
+            }
+        });
+        const index = listSelected.fields.findIndex((field) => field.id === removedField.id);
+        listSelected.fields.splice(index, 1);
+        listSelected.fields = listSelected.fields.map((x) => Object.assign({}, x));
+    }
+
+    drop(event: CdkDragDrop<{ id: number, name: string }[]>) {
+        if (event.previousContainer === event.container) {
+            moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+        } else {
+            if (SELECTED_FIELDS !== event.container.id && //
+                LEFT_SIDE_FIELDS !== event.container.id && //
+                RIGHT_SIDE_FIELDS !== event.container.id) {
+                const fields = this.labelTypesOrigMap[event.container.id]
+                const index = fields.findIndex((field) => field.id === event.item.data.id);
+                // Restriction to avoid moving the element to a list that does not belong.
+                if (index === -1) {
+                    return;
+                }
+            } else {
+                // Restritcion to limit the max number of labels per side for PDF output format.
+                if (this.fileType === FileType.PDF && event.container.data.length === MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT) {
+                    this.alertService.warning('label-printing.max.labels.allowed.to.pdf.format', { param: MAX_LABELS_PER_SIDE_FOR_PDF_FORMAT });
+                    return;
+                }
+            }
+
+            const previousIndex = event.previousContainer.data.findIndex((x) => x.id === event.item.data.id);
+            transferArrayItem(
+                event.previousContainer.data,
+                event.container.data,
+                previousIndex,
+                event.currentIndex,
+            );
+
+            // Workaround to reload the list of fieldListFilter when the filterText does not change.
+            this.labelTypes.forEach((label: LabelType) => {
+                label.fields = label.fields.map((x) => Object.assign({}, x));
+            });
+        }
+    }
+
 }
 
-@Pipe({ name: 'allLabels' })
-export class AllLabelsPipe implements PipeTransform {
-    transform(labelTypes: { fields: { id: number, name: string }[] }[]): any {
-        if (!labelTypes) {
-            return [];
-        }
-        return labelTypes
-            .map((type) => type.fields)
-            .reduce((allFields, fields) => allFields.concat(fields));
+@Pipe({
+    name: 'fieldListFilter'
+})
+export class FieldListFilterPipe implements PipeTransform {
+    transform(fields: any[], filterText: string): any {
+        return !filterText
+            ? fields
+            : fields.filter(
+                (item) =>
+                    item.name.toLowerCase().includes(filterText.toLowerCase())
+            );
     }
 }
 
