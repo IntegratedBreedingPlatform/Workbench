@@ -29,7 +29,6 @@ export class SampleManagerComponent implements OnInit, OnDestroy {
     private paramSubscription: Subscription;
     helpLink: string;
     predicate: any;
-    reverse: any;
 
     lists: SampleList[] = [];
 

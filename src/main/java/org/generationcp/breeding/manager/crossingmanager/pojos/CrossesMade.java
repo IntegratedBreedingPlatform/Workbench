@@ -14,10 +14,9 @@ package org.generationcp.breeding.manager.crossingmanager.pojos;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Triple;
-import org.generationcp.commons.settings.CrossSetting;
+import org.generationcp.middleware.ruleengine.settings.CrossSetting;
 import org.generationcp.middleware.pojos.Germplasm;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.Name;

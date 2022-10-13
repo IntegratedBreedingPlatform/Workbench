@@ -7,6 +7,7 @@ import { PopupService } from '../../shared/modal/popup.service';
 import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
 import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding-method-group.model';
 import { BreedingMethodType } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { JhiLanguageService } from 'ng-jhipster';
 
 @Component({
     selector: 'jhi-breeding-method',
@@ -24,12 +25,16 @@ export class BreedingMethodComponent implements OnInit {
     selectedBreedingMethodGroup: BreedingMethodGroup;
     editable = false;
 
-    constructor(public activeModal: NgbActiveModal,
-                public breedingMethodService: BreedingMethodService) {
+    constructor(private route: ActivatedRoute,
+                public activeModal: NgbActiveModal,
+                public breedingMethodService: BreedingMethodService,
+                private jhiLanguageService: JhiLanguageService) {
     }
 
     ngOnInit(): void {
-        this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise().then((breedingMethod) => {
+        (<any>window).onCloseModal = this.clear;
+
+        this.getBreedingMethodPromiseByIdOrAbbr().then((breedingMethod) => {
             this.breedingMethod = breedingMethod;
         }).then(() => {
             this.breedingMethodService.queryBreedingMethodClasses().toPromise().then((breedingMethodClasses) => {
@@ -48,8 +53,20 @@ export class BreedingMethodComponent implements OnInit {
 
     }
 
+    getBreedingMethodPromiseByIdOrAbbr(): Promise<BreedingMethod> {
+        if (this.breedingMethodId) {
+            return this.breedingMethodService.queryBreedingMethod(this.breedingMethodId).toPromise();
+        } else {
+            const abbr = this.route.snapshot.paramMap.get('breedingMethodCode');
+            return this.breedingMethodService.getBreedingMethodByAbbreviation(abbr);
+        }
+    }
+
     clear() {
         this.activeModal.dismiss('cancel');
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
     }
 }
 

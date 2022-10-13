@@ -15,6 +15,7 @@ import { EntryDetailsImportContext } from '../../../shared/ontology/entry-detail
 import { StudyService } from '../../../shared/study/study.service';
 import { DatasetVariable } from '../../../shared/study/dataset-variable';
 import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
+import { ModalAlertComponent } from '../../../shared/modal/modal-alert.component';
 
 @Component({
     selector: 'jhi-import-entry-details',
@@ -42,6 +43,8 @@ export class ImportEntryDetailsComponent implements OnInit {
     page = 0;
     pageSize = 10;
 
+    hasGeneratedDesign: boolean;
+
     constructor(
         private route: ActivatedRoute,
         private jhiLanguageService: JhiLanguageService,
@@ -60,6 +63,7 @@ export class ImportEntryDetailsComponent implements OnInit {
     ngOnInit(): void {
         this.context.resetContext();
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
+        this.hasGeneratedDesign = this.route.snapshot.queryParamMap.get('hasGeneratedDesign') === 'true';
     }
 
     onFileChange(evt: any) {
@@ -124,9 +128,27 @@ export class ImportEntryDetailsComponent implements OnInit {
         this.isFileUploadMode = false;
     }
 
+    getAffectedEntriesNumber(): number {
+        return this.context.data.filter((data) => {
+            let count = 0;
+            for (const property in data) {
+                if (property !== HEADERS.ENTRY_NO && data[property]) {
+                    count++;
+                }
+            }
+            return count > 0;
+        }).length;
+    }
+
     async save(variableMatchesResult) {
 
-        const doContinue = await this.showSummaryConfirmation();
+        const affectedEntriesNumber: number = this.getAffectedEntriesNumber();
+        if (affectedEntriesNumber === 0) {
+            this.showNoValuesWarning();
+            return;
+        }
+
+        const doContinue = await this.showSummaryConfirmation(affectedEntriesNumber);
         if (!doContinue) {
             return;
         }
@@ -171,17 +193,24 @@ export class ImportEntryDetailsComponent implements OnInit {
 
     }
 
-    private async showSummaryConfirmation() {
+    private async showSummaryConfirmation(affectedEntries: number) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
             { windowClass: 'modal-medium', backdrop: 'static' });
         confirmModalRef.componentInstance.message = this.translateService.instant('study.import-entry-details.confirmation',
-            { param: this.context.data.length });
+            { param: affectedEntries });
         try {
             await confirmModalRef.result;
         } catch (rejected) {
             return false;
         }
         return true;
+    }
+
+    private async showNoValuesWarning() {
+        const modal = this.modalService.open(ModalAlertComponent as Component,
+            { windowClass: 'modal-medium', backdrop: 'static' });
+        modal.componentInstance.message = this.translateService.instant('study.import-entry-details.no-entries-values');
+        modal.componentInstance.showCancelButton = false;
     }
 
     private async validateFile() {
@@ -192,8 +221,9 @@ export class ImportEntryDetailsComponent implements OnInit {
         const headers = this.rawData[0];
         // Ignore empty column headers
         const fileHeaders = headers.filter((header) => !!header);
+        const data = this.getData(false);
 
-        if (!this.entryDetailsImportService.validateFile(fileHeaders, this.context.data)) {
+        if (!this.entryDetailsImportService.validateFile(fileHeaders, data)) {
             return false;
         }
 
@@ -207,6 +237,8 @@ export class ImportEntryDetailsComponent implements OnInit {
             this.alertService.error('study.import-entry-details.file.validation.entry.details.no.column');
             return false;
         }
+
+        this.context.data = this.getData(true);
 
         return true;
     }
@@ -227,16 +259,22 @@ export class ImportEntryDetailsComponent implements OnInit {
                 .toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
-                variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
+                (!this.hasGeneratedDesign || this.hasGeneratedDesign && !variable.metadata.usage.systemTerm) &&
+                    variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
             );
 
             this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
-                variablesFiltered.every((v) => toUpper(v.name) !== variableName && toUpper(v.alias) !== variableName)
+                variablesFiltered.every((v) => toUpper(v.name) !== toUpper(variableName) && toUpper(v.alias) !== toUpper(variableName))
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
-                this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
+                (!this.hasGeneratedDesign || this.hasGeneratedDesign && !variable.metadata.usage.systemTerm) &&
+                    this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
             );
+
+            if (this.hasGeneratedDesign) {
+                this.context.skipVariables = variablesFiltered.filter((variable) => variable.metadata.usage.systemTerm);
+            }
         }
 
     }
@@ -274,9 +312,26 @@ export class ImportEntryDetailsComponent implements OnInit {
         return [
             ...this.context.newVariables,
             ...this.context.unknownVariableNames,
-            ...this.context.variablesOfTheList
+            ...this.context.variablesOfTheList,
+            ...this.context.skipVariables
         ].length;
     }
+
+    private getData(cleanData: boolean) {
+        const headers = this.rawData[0].map((header) => toUpper(header));
+        return this.rawData.slice(1).map((fileRow, rowIndex) => {
+            return fileRow.reduce((map, col, colIndex) => {
+                const columnName = headers[colIndex];
+                const shouldAddData = !(this.context.skipVariables.filter((variable) => variable.name === columnName).length > 0 ||
+                    this.context.unknownVariableNames.includes(columnName));
+                if (!cleanData || shouldAddData) {
+                    map[columnName] = col;
+                }
+                return map;
+            }, {});
+        });
+    }
+
 }
 
 @Component({

@@ -40,7 +40,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     page: any;
     predicate: any;
     previousPage: any;
-    reverse: any;
+    reverse: boolean;
 
     // { <data-index>: sample }
     selectedItems: {[key: number]: Sample} = {};

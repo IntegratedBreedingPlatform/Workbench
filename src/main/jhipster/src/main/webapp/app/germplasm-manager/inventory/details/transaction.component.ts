@@ -27,7 +27,7 @@ export class TransactionComponent implements OnInit {
     private totalItems: number;
     private queryCount: number;
     private predicate: string;
-    private reverse: string;
+    private reverse: boolean;
 
     private isLoading: boolean;
 
@@ -42,7 +42,7 @@ export class TransactionComponent implements OnInit {
         this.lotId = queryParams.lotId;
         this.page = 1;
         this.predicate = 'transactionId';
-        this.reverse = 'asc';
+        this.reverse = false;
     }
 
     ngOnInit(): void {
