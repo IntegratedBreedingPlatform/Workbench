@@ -155,6 +155,14 @@
 								<span class="throbber throbber-btn throbber-white"></span>
 							</span>
 							</button>
+
+							<button class="btn btn-default btn-sm" ng-show="!model.obsolete" ng-click="toggleObsolete(variableId, model)">
+								{{'variablesList.details.markObsolete' | translate}}
+							</button>
+
+							<button class="btn btn-default btn-sm" ng-show="model.obsolete" ng-click="toggleObsolete(variableId, model)">
+								{{'variablesList.details.restoreVariable' | translate}}  </button>
+
 							<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>
 						</div>
 					</div>

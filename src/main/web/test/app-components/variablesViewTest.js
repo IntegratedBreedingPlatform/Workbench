@@ -627,7 +627,7 @@ describe('Variables Controller', function() {
 			scope.filterOptions = { variableTypes: undefined };
 			expect(scope.optionsFilter()).toBe(true);
 
-			scope.filterOptions = { variableTypes: [] };
+			scope.filterOptions = { variableTypes: [], obsolete: true };
 			expect(scope.optionsFilter()).toBe(true);
 		});
 

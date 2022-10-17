@@ -19,6 +19,7 @@ export class VariableDetails extends TermSummary {
         public variableTypes?: VariableType[],
         public expectedRange?: ExpectedRange,
         public formula?: Formula,
+        public obsolete?: boolean,
         public metadata?: MetadataDetails
     ) {
         super();
