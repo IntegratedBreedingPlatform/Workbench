@@ -19,6 +19,7 @@
 					'method',
 					'scale',
 					'favourite',
+					'obsolete',
 					'expectedRange',
 					'variableTypes'
 				];
