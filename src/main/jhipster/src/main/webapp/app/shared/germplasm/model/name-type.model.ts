@@ -19,3 +19,12 @@ export class NameTypeDetails {
     ) {
     }
 }
+
+export class NameTypeMetaData {
+    constructor(
+        public studies?: number,
+        public germplasm?: number,
+        public germplasmList?: number
+    ) {
+    }
+}
