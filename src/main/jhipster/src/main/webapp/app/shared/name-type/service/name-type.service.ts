@@ -39,4 +39,14 @@ export class NameTypeService {
         return this.http.get(url);
     }
 
+    deleteNameTypeFromStudy(nameTypeId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/studies/name-types/${nameTypeId}?programUUID=` + this.context.programUUID;
+        return this.http.delete(url);
+    }
+
+    deleteNameTypeFromGermplasmList(nameTypeId: number) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm-lists/name-types/${nameTypeId}?programUUID=` + this.context.programUUID;
+        return this.http.delete(url);
+    }
+
 }
