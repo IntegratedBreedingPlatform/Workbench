@@ -157,17 +157,60 @@ export class NameTypesPaneComponent implements OnInit {
     }
 
     deleteNameType(nameType: any) {
-        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
-        confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', { param: nameType.name });
-        confirmModalRef.result.then(() => {
-            this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
-                this.alertService.success('crop-settings-manager.name-type.modal.delete.success');
-                this.loadNameType();
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-            });
-        }, () => confirmModalRef.dismiss());
+        this.nameTypeService.getMetadata(nameType.id).toPromise().then((metadata) => {
+            let deleteNameTypeFormStudyPromise = Promise.resolve({});
+            let deleteNameTypeFormGermplasmListPromise = Promise.resolve({});
+
+            if (metadata.germplasm > 0) {
+                this.alertService.error('crop-settings-manager.name-type.validation.delete.error.used.in.germplasm');
+
+            } else {
+                const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+                const messages = [];
+
+                if (metadata.studies > 0) {
+                    messages.push(this.translateService.instant('crop-settings-manager.name-type.modal.delete.summary.study'));
+                }
+                if (metadata.germplasmList > 0) {
+                    messages.push(this.translateService.instant('crop-settings-manager.name-type.modal.delete.summary.germplasm.list'));
+                }
+
+                confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
+                confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', {
+                    param1: nameType.name, param2: messages.map((item) => '<li>' + item + '</li>').join('')
+                });
+
+                confirmModalRef.result.then(() => {
+                    if (metadata.studies > 0) {
+                        deleteNameTypeFormStudyPromise = this.nameTypeService.deleteNameTypeFromStudy(nameType.id).toPromise();
+
+                    }
+                    if (metadata.germplasmList > 0) {
+                        deleteNameTypeFormGermplasmListPromise = this.nameTypeService.deleteNameTypeFromGermplasmList(nameType.id).toPromise();
+
+                    }
+                    Promise.all([
+                        deleteNameTypeFormStudyPromise,
+                        deleteNameTypeFormGermplasmListPromise
+                    ]).then(() => {
+                            this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
+                                this.alertService.success('crop-settings-manager.name-type.modal.delete.success');
+                                this.loadNameType();
+                            }).catch((response) => {
+                                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                            });
+                            confirmModalRef.dismiss();
+                        },
+                        (error) => {
+                            confirmModalRef.dismiss();
+                            this.onError(error);
+                        });
+                });
+            }
+        }).catch((error) => {
+            this.onError(error);
+        });
+
     }
 
     async loadNameType() {
