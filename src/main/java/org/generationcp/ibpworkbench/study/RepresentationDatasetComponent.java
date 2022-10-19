@@ -349,4 +349,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.datasetExporter = datasetExporter;
 	}
 
+	public DatasetService getDatasetService() {
+		return this.datasetService;
+	}
+
+	public void setDatasetService(final DatasetService datasetService) {
+		this.datasetService = datasetService;
+	}
 }
