@@ -71,6 +71,7 @@
 										(onDrop)="onDrop($event, rowNode.node)"
 										(onDragEnter)="onDragEnter($event, rowNode.node)"
 										(onDragLeave)="onDragLeave($event, rowNode.node)"
+										data-test="sampleListName"
 										type="text">
 											{{rowData.name}}
 									</span>
@@ -90,6 +91,7 @@
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">
 			<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 		</button>
-		<button type="button" class="btn btn-primary" aria-hidden="true" jhiTranslate="common.form.ok.text" [disabled]="mode != Modes.None || !selectedNode || selectedNode && !selectedNode.leaf" (click)="selectList()">Ok</button>
+		<button type="button" class="btn btn-primary" aria-hidden="true" jhiTranslate="common.form.ok.text" [disabled]="mode != Modes.None || !selectedNode || selectedNode && !selectedNode.leaf"
+				(click)="selectList()" data-test="openSampleListOkButton">Ok</button>
 	</div>
 </div>

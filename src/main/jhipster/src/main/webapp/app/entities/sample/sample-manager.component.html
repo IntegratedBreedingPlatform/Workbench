@@ -3,7 +3,7 @@
 		<h1>Manage Samples <a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle bms-helpicon" aria-hidden="true"></i></a></h1>
 	</header>
 	<h2><img class="image-padding image-padding-with-text" src="/Fieldbook/static/img/review-list-details.png">List Details</h2>
-	<div class="form-control-label"><a href (click)="browseList($event)">Browse</a> or <a href (click)="openSearch($event)">search</a> for a list of samples to work with.</div>
+	<div class="form-control-label"><a href (click)="browseList($event)" data-test="browseSampleListButton">Browse</a> or <a href (click)="openSearch($event)">search</a> for a list of samples to work with.</div>
 	<div class="row">
         <section [ngClass]="listBuilderContext.visible ? 'col-7' : 'col'">
             <div *ngIf="lists && lists.length" style="padding-top: 10px;">
@@ -11,7 +11,8 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" *ngFor="let list of lists" role="presentation">
-                            <a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab">
+                            <a class="nav-link" [class.active]="list.active" href="#list-{{list.id}}" aria-controls="home" (click)="setActive(list.id)" role="tab" data-toggle="tab"
+                               data-test="sampleListTab">
                                 {{list.listName}}
                                 <i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
                             </a>
