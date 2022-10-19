@@ -12,6 +12,7 @@
 package org.generationcp.ibpworkbench.study.containers;
 
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.vaadin.addons.lazyquerycontainer.Query;
 import org.vaadin.addons.lazyquerycontainer.QueryDefinition;
 import org.vaadin.addons.lazyquerycontainer.QueryFactory;
@@ -37,22 +38,25 @@ public class RepresentationDatasetQueryFactory implements QueryFactory {
 	private QueryDefinition definition;
 	private final boolean fromUrl; // this is true if this component is created by accessing the Study Details page directly from the URL
 
+	DatasetService datasetService;
 	/**
 	 * The constructor should be given the parameters which are then passed to RepresentationDataSetQuery which uses them to retrieve the
 	 * datasets by using the Middleware.
-	 * 
+	 *
+	 * @param datasetService
 	 * @param dataManager
 	 * @param datasetId - id of the selected Representation of a Study
 	 * @param columnIds - List of column ids used for the Vaadin Table displaying the dataset
 	 * @param studyId 
 	 */
-	public RepresentationDatasetQueryFactory(StudyDataManager studyDataManager, Integer datasetId, List<String> columnIds, boolean fromUrl, Integer studyId) {
+	public RepresentationDatasetQueryFactory(DatasetService datasetService, StudyDataManager studyDataManager, Integer datasetId, List<String> columnIds, boolean fromUrl, Integer studyId) {
 		super();
 		this.studyDataManager = studyDataManager;
 		this.datasetId = datasetId;
 		this.studyId = studyId;
 		this.columnIds = columnIds;
 		this.fromUrl = fromUrl;
+		this.datasetService = datasetService;
 	}
 
 	/**
@@ -61,7 +65,7 @@ public class RepresentationDatasetQueryFactory implements QueryFactory {
 	 */
 	@Override
 	public Query constructQuery(Object[] sortPropertyIds, boolean[] sortStates) {
-		return new RepresentationDataSetQuery(this.studyDataManager, this.datasetId, this.columnIds, this.fromUrl, this.studyId);
+		return new RepresentationDataSetQuery(this.datasetService, this.studyDataManager, this.datasetId, this.columnIds, this.fromUrl, this.studyId);
 	}
 
 	@Override
