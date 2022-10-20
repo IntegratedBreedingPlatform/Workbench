@@ -18,6 +18,7 @@ import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.InstallationDirectoryUtil;
 import org.generationcp.ibpworkbench.study.constants.StudyTemplateConstants;
 import org.generationcp.ibpworkbench.util.Util;
+import org.generationcp.middleware.api.nametype.GermplasmNameTypeDTO;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
@@ -32,6 +33,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.ToolName;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.generationcp.middleware.util.PoiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,6 +59,7 @@ public class DatasetExporter {
 	private final Integer datasetId;
 	private final List<String> factors = new ArrayList<>();
 	private final List<String> variates = new ArrayList<>();
+	private final List<String> names = new ArrayList<>();
 	private HSSFCellStyle labelStyle;
 	private HSSFCellStyle headingStyle;
 	private HSSFCellStyle variateHeadingStyle;
@@ -63,6 +67,9 @@ public class DatasetExporter {
 
 	@Autowired
 	private ContextUtil contextUtil;
+
+	@Autowired
+	private DatasetService datasetService;
 
 	private final InstallationDirectoryUtil installationDirectoryUtil = new InstallationDirectoryUtil();
 
@@ -100,14 +107,17 @@ public class DatasetExporter {
 			throw new DatasetExporterException("Error with getting Study with id: " + this.studyId, ex);
 		}
 
+		final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs = this.datasetService.getDatasetNameTypes(this.datasetId);
+		germplasmNameTypeDTOs.sort(Comparator.comparing(GermplasmNameTypeDTO::getCode));
+
 		if (study != null) {
 			// get the needed study details
 			final String name = study.getName();
 
-			this.createDescriptionSheet(descriptionSheet, study, name);
+			this.createDescriptionSheet(descriptionSheet, study, name, germplasmNameTypeDTOs);
 
 			// populate the measurements sheet
-			this.createObservationSheet(cellStyleForObservationSheet, observationSheet, name);
+			this.createObservationSheet(cellStyleForObservationSheet, observationSheet, name, germplasmNameTypeDTOs);
 
 			this.adjustColumnWidths(descriptionSheet, observationSheet);
 
@@ -121,9 +131,9 @@ public class DatasetExporter {
 	 * Generation the Observation sheet in the file. It contains the factors and variates and their values across the experiments
 	 */
 	private void createObservationSheet(final HSSFCellStyle cellStyleForObservationSheet, final HSSFSheet observationSheet,
-			final String name) throws DatasetExporterException {
+			final String name, final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs) throws DatasetExporterException {
 		// establish the columns of the dataset first
-		this.createObservationSheetHeaderRow(observationSheet);
+		this.createObservationSheetHeaderRow(observationSheet, germplasmNameTypeDTOs);
 
 		// then work with the data - do it by 1500 rows at a time
 		// changed from 50 to 1500 (17-JUL-2015 BMS-805) to reduce unnecessary trips to the DB
@@ -148,14 +158,14 @@ public class DatasetExporter {
 			}
 
 			// map each experiment into a row in the observation sheet
-			sheetRowIndex = this.writeExperiments(cellStyleForObservationSheet, observationSheet, sheetRowIndex, experiments);
+			sheetRowIndex = this.writeExperiments(cellStyleForObservationSheet, observationSheet, sheetRowIndex, experiments, germplasmNameTypeDTOs);
 		}
 	}
 
 	/*
 	 * Create the header row in Observation sheet containing factors and variates names
 	 */
-	private void createObservationSheetHeaderRow(final HSSFSheet observationSheet) {
+	private void createObservationSheetHeaderRow(final HSSFSheet observationSheet, final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs) {
 		final HSSFRow datasetHeaderRow = observationSheet.createRow(0);
 		for (int i = 0; i < this.factors.size(); i++) {
 			final String columnName = this.factors.get(i);
@@ -169,6 +179,14 @@ public class DatasetExporter {
 			final HSSFCell cell = datasetHeaderRow.createCell(i + startColumn);
 			cell.setCellValue(columnName);
 			cell.setCellStyle(this.variateHeadingStyle);
+		}
+
+		final int nameTypeColumn = this.factors.size() + this.variates.size();
+		for (int i = 0; i < this.names.size(); i++) {
+			final String columnName = this.names.get(i);
+			final HSSFCell cell = datasetHeaderRow.createCell(i + startColumn);
+			cell.setCellValue(columnName);
+			cell.setCellStyle(this.headingStyle);
 		}
 	}
 
@@ -206,7 +224,7 @@ public class DatasetExporter {
 	 */
 	@SuppressWarnings("deprecation")
 	private int writeExperiments(final HSSFCellStyle cellStyleForObservationSheet, final HSSFSheet observationSheet,
-			final int sheetRowIndex, final List<Experiment> experiments) {
+			final int sheetRowIndex, final List<Experiment> experiments, final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs) {
 		int newSheetRowIndex = sheetRowIndex;
 		for (final Experiment experiment : experiments) {
 			final HSSFRow row = observationSheet.createRow(newSheetRowIndex);
@@ -295,6 +313,16 @@ public class DatasetExporter {
 					}
 				}
 			}
+
+			germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+				final String value = experiment.getNameValueMap().get(germplasmNameTypeDTO.getId());
+				Integer columnIndexInteger = germplasmNameTypeDTOs.indexOf(germplasmNameTypeDTO);
+				columnIndexInteger += this.factors.size() + this.variates.size();
+				final short columnIndex = columnIndexInteger.shortValue();
+				final Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER,
+					CellStyle.ALIGN_CENTER);
+				cell.setCellValue(value);
+			});
 		}
 		return newSheetRowIndex;
 	}
@@ -302,7 +330,7 @@ public class DatasetExporter {
 	/*
 	 * Create description sheet containing the Study Details, Conditions, Factors, Constants and Variates sections
 	 */
-	private void createDescriptionSheet(final HSSFSheet descriptionSheet, final Study study, final String name)
+	private void createDescriptionSheet(final HSSFSheet descriptionSheet, final Study study, final String name, final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs)
 			throws DatasetExporterException {
 		this.createStudyDetailsSection(this.labelStyle, descriptionSheet, study, name);
 
@@ -328,6 +356,28 @@ public class DatasetExporter {
 
 		final int variateHeaderRowIndex = constantRowIndex + 1;
 		this.createVariatesSection(descriptionSheet, datasetVariableTypes, variateHeaderRowIndex);
+		final int variateRowIndex = variateHeaderRowIndex + 1;
+		descriptionSheet.createRow(variateRowIndex);
+
+		final int nameTypeHeaderRowIndex = variateRowIndex + 1;
+		this.createNameTypeSection(descriptionSheet, germplasmNameTypeDTOs, nameTypeHeaderRowIndex);
+	}
+
+	private void createNameTypeSection(final HSSFSheet descriptionSheet, final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs, final int nameTypeHeaderRowIndex) {
+		this.createSectionHeaderRow(this.headingStyle, descriptionSheet, StudyTemplateConstants.getNameHeaders(),
+			nameTypeHeaderRowIndex);
+		int nameTypeRowIndex = nameTypeHeaderRowIndex + 1;
+		for (final GermplasmNameTypeDTO name : germplasmNameTypeDTOs) {
+			final HSSFRow nameTypeRow = descriptionSheet.createRow(nameTypeRowIndex);
+			nameTypeRow.createCell(0).setCellValue(name.getCode());
+			nameTypeRow.createCell(1).setCellValue(name.getName());
+			nameTypeRow.createCell(2).setCellValue(name.getDescription());
+
+			this.names.add(name.getCode());
+			this.observationSheetColumnIndex++;
+
+			nameTypeRowIndex++;
+		}
 	}
 
 	private void createVariatesSection(final HSSFSheet descriptionSheet, final VariableTypeList datasetVariableTypes,
