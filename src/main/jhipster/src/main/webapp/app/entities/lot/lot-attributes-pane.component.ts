@@ -74,7 +74,8 @@ export class LotAttributesPaneComponent implements OnInit {
         const attributesByVariableId: { [key: number]: LotAttribute } =
             [...this.attributes]
                 .reduce((prev: any, attribute) => (prev[attribute.variableId] = attribute, prev), {});
-        this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId) })
+        this.variableByAttributeId = await this.variableService.filterVariables({ variableIds: Object.keys(attributesByVariableId),
+                showObsoletes: true})
             .toPromise().then((variables) => {
                 return variables.reduce((prev: any, variable) => {
                     prev[attributesByVariableId[Number(variable.id)].id] = variable;

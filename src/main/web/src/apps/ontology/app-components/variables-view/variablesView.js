@@ -66,20 +66,23 @@
 			$scope.panelName = 'variables';
 			$scope.filterOptions = {
 				variableTypes: [],
-				scaleDataType: null
+				scaleDataType: null,
+				obsolete: false
 			};
 
 			$scope.isFilterActive = function() {
 				var variableTypesFilterActive = $scope.filterOptions.variableTypes.length > 0,
 					scaleDataTypeFilterActive = !!$scope.filterOptions.scaleDataType,
-					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo;
+					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo,
+					obsoleteFilterActive = !!$scope.filterOptions.obsolete;
 
-				return variableTypesFilterActive || scaleDataTypeFilterActive || dateCreatedFilterActive;
+				return variableTypesFilterActive || scaleDataTypeFilterActive || dateCreatedFilterActive || obsoleteFilterActive;
 			};
 
 			$scope.optionsFilter = function(variable) {
 				var variableTypeMatch = true,
 					scaleDataTypeMatch = true,
+					obsoleteFilterMatch = true,
 					dateCreatedMatch = true,
 					variableDateCreatedTime;
 
@@ -97,6 +100,8 @@
 						});
 					});
 				}
+
+				obsoleteFilterMatch =  $scope.filterOptions.obsolete || angular.equals(variable.obsolete, $scope.filterOptions.obsolete);
 
 				if ($scope.filterOptions.scaleDataType) {
 					scaleDataTypeMatch =  angular.equals(variable.scaleDataType, $scope.filterOptions.scaleDataType);
@@ -129,7 +134,7 @@
 					}
 				}
 
-				return variableTypeMatch && scaleDataTypeMatch && dateCreatedMatch;
+				return variableTypeMatch && scaleDataTypeMatch && dateCreatedMatch && obsoleteFilterMatch;
 			};
 
 			$timeout(function() {
@@ -196,6 +201,7 @@
 					method: variable.method && variable.method.name || '',
 					scale: variable.scale && variable.scale.name || '',
 					variableTypes: variable.variableTypes, // used for filtering
+					obsolete: variable.obsolete, // used for filtering
 					scaleDataType: variable.scale && variable.scale.dataType,
 					metadata: {
 						dateCreated: tempDateCreated

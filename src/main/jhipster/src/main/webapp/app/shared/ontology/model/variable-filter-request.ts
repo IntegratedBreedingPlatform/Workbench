@@ -11,7 +11,8 @@ export class VariableFilterRequest {
         public propertyClasses?: string[],
         public datasetIds?: number[],
         public germplasmUUIDs?: string[],
-        public lotIds?: number[]
+        public lotIds?: number[],
+        public showObsoletes?: boolean
     ) {
     }
 }

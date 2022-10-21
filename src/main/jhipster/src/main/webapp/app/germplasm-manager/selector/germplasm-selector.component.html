@@ -120,7 +120,7 @@
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]">{{germplasm.groupSourceGID}}</td>
 				<td jhiScrollableTooltip [tooltipText]="germplasm.groupSourcePreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]">{{germplasm.groupSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]">{{germplasm.immediateSourceGID}}</td>
-				<td jhiScrollableTooltip [tooltipText]="germplasm.immediateSourcePreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]">{{germplasm.immediateSourcePreferredName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+				<td jhiScrollableTooltip [tooltipText]="germplasm.immediateSourcePreferredName" placement="bottom" [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]">{{germplasm.immediateSourceName | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
 				<td *ngFor="let entry of germplasm.attributeTypesValueMap | keyvalue">{{entry.value}}</td>
 				<td *ngFor="let entry of germplasm.nameTypesValueMap | keyvalue">{{entry.value}}</td>
 			</tr>

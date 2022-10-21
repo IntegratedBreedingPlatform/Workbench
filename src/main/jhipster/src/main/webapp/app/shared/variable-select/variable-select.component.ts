@@ -89,6 +89,10 @@ export class VariableSelectComponent implements OnInit {
         if (this.lotId) {
             filterRequest.lotIds = [this.lotId];
         }
+        if (this.disabled) {
+            // show obsoletes when not editing
+            filterRequest.showObsoletes = true;
+        }
         this.variableService.filterVariables(filterRequest).pipe(
             finalize(() => this.isLoading = false)
         ).subscribe((variables) => {
