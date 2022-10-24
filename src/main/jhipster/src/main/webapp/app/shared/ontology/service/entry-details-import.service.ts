@@ -19,6 +19,7 @@ export class EntryDetailsImportService {
 
     initializeVariableMatches() {
         const rows = [];
+        this.context.variableMatchesResult = [];
 
         this.context.newVariables.forEach((variable) => {
             const variableName = variable.alias ? variable.alias : variable.name;

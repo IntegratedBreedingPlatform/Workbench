@@ -127,7 +127,6 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         if (!doContinue) {
             return;
         }
-
         this.isLoading = true;
         const id = Number(this.route.snapshot.queryParamMap.get('listId'));
         const germplasmListGenerator = { listId: id, entries: [] };
@@ -205,7 +204,8 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         if (unknownColumnNames.length) {
             variablesFiltered = await this.variableService.filterVariables({
                 variableNames: unknownColumnNames,
-                variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()]
+                variableTypeIds: [VariableTypeEnum.ENTRY_DETAILS.toString()],
+                showObsoletes: true
             }).toPromise();
 
             variablesOfTheList = await this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS)
@@ -216,13 +216,16 @@ export class GermplasmListImportUpdateComponent implements OnInit {
                 variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
             );
 
+            const varIdsInList = new Set();
+            this.context.variablesOfTheList.forEach((v) => varIdsInList.add(v.id));
+
             this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
-                variablesFiltered.every((v) => toUpper(v.name) !== toUpper(variableName) && toUpper(v.alias) !== toUpper(variableName))
+                variablesFiltered.every((v) => (toUpper(v.name) !== toUpper(variableName) && toUpper(v.alias) !== toUpper(variableName))
+                    || (v.obsolete == true && !varIdsInList.has(v.id)))
             );
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
-                this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
-            );
+                variable.obsolete == false && !varIdsInList.has(variable.id));
         }
 
     }
