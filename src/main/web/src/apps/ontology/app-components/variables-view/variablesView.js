@@ -255,7 +255,8 @@
 					variables.some(function(variable) {
 						if (variable.alias) {
 							// Add alias after name
-							ctrl.colHeaders.splice(2, 0, ALIAS);
+							const nameIndex = ctrl.colHeaders.indexOf('name');
+							ctrl.colHeaders.splice(nameIndex + 1, 0, ALIAS);
 							return true;
 						}
 					});
