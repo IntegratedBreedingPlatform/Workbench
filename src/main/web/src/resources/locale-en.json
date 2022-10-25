@@ -81,7 +81,7 @@
 		"scale": "Scale",
 		"variableType": "Variable Type",
 		"metadata": "Metadata",
-		"obsolete": "Show obsolete variables",
+		"obsolete": "Obsolete",
 		"date": {
 			"dateCreated": "Date Created",
 			"dateLastModified": "Date Last Modified",
