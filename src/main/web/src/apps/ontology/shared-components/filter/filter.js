@@ -79,7 +79,7 @@
 						dateCreatedToActive = $scope.filterOptions.dateCreatedTo &&
 							$scope.filterOptions.dateCreatedTo.getTime !== undefined;
 
-						obsoleteFilterActive = ($scope.filterOptions.obsolete || $scope.filterOptions.nonObsolete);
+						obsoleteFilterActive = (!!$scope.filterOptions.obsolete || !!$scope.filterOptions.nonObsolete);
 
 						return variableTypesActive || scaleDataTypesActive || dateCreatedFromActive || dateCreatedToActive || obsoleteFilterActive;
 					};

@@ -75,7 +75,7 @@
 				var variableTypesFilterActive = $scope.filterOptions.variableTypes.length > 0,
 					scaleDataTypeFilterActive = !!$scope.filterOptions.scaleDataType,
 					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo,
-					obsoleteFilterActive = $scope.filterOptions.obsolete || $scope.filterOptions.nonObsolete;
+					obsoleteFilterActive = !!$scope.filterOptions.obsolete || !!$scope.filterOptions.nonObsolete;
 
 				return variableTypesFilterActive || scaleDataTypeFilterActive || dateCreatedFilterActive || obsoleteFilterActive;
 			};
