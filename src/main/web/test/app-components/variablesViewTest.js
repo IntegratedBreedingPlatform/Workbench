@@ -42,6 +42,7 @@ describe('Variables Controller', function() {
 				description: ''
 			}],
 			favourite: true,
+			obsolete: false,
 			metadata: {
 				dateCreated: new Date()
 			}
