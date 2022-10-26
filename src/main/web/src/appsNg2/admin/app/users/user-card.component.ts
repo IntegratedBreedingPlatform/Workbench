@@ -60,7 +60,7 @@ export class UserCard implements OnInit {
     constructor(private cropService: CropService, private userService: UserService, private roleService: RoleService, private mailService: MailService, private router: Router, private activatedRoute: ActivatedRoute) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
-        this.model = new User('0', '', '', '', [], [], '', 'true');
+        this.model = new User('0', '', '', '', [], [], '', 'true', false);
         this.errorUserMessage = '';
     }
 

@@ -51,7 +51,7 @@ export class UsersDatagrid implements OnInit {
     }
 
     showNewUserForm() {
-        this.userService.user = new User('0', '', '', '', [], [], '', 'true');
+        this.userService.user = new User('0', '', '', '', [], [], '', 'true', false);
         this.router.navigate(['user-card', { isEditing: false }], { relativeTo: this.activatedRoute });
         scrollTop();
     }
@@ -59,7 +59,7 @@ export class UsersDatagrid implements OnInit {
     showEditUserForm(user: User) {
         this.originalUser = user;
         this.userService.user = new User(user.id, user.firstName, user.lastName,
-            user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status);
+            user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status, user.multiFactorAuthenticationEnabled);
         this.router.navigate(['user-card', { isEditing: true }], { relativeTo: this.activatedRoute });
         scrollTop();
     }
@@ -213,7 +213,7 @@ export class UsersDatagrid implements OnInit {
 }
 
 // TODO upgrade angular, use ngIf-as
-@Pipe({name: 'dedupRoleNames'})
+@Pipe({ name: 'dedupRoleNames' })
 export class DedupRoleNamesPipe implements PipeTransform {
     transform(userRoles: UserRole[]): string[] {
         if (!userRoles || !userRoles.length) {
