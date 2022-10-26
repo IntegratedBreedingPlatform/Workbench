@@ -214,8 +214,8 @@
 						tooltip: variable.obsolete ? 'This variable is obsolete' : ''
 					},
 					'action-favourite': {
-						iconValue: variable.favourite ? 'star' : 'star-empty',
-						iconFunction: $scope.toggleFavourite
+						iconValue: variable.obsolete ? '' : (variable.favourite ? 'star' : 'star-empty'),
+						iconFunction: variable.obsolete ? '' : $scope.toggleFavourite
 					}
 				};
 

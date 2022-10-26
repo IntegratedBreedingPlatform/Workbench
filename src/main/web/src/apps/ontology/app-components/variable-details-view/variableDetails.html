@@ -49,11 +49,11 @@
         <div ng-class="formGroupClass('omIsFavourite', 'isFavourite')" ng-if="editing">
             <label class="col-sm-3 control-label"></label>
             <div class="col-sm-9">
-                <button class="btn btn-default btn-sm" ng-show="editing && !model.favourite" ng-click="debouncedToggleFavourites(variableId, model)">
+                <button type="button" class="btn btn-default btn-sm" ng-show="editing && !model.favourite && !model.obsolete" ng-click="debouncedToggleFavourites(variableId, model)">
                     <span class="glyphicon glyphicon-star"></span> {{'button.addToFavourite' | translate}}
                 </button>
 
-                <button class="btn btn-default btn-sm" ng-show="editing && model.favourite" ng-click="debouncedToggleFavourites(variableId, model)">
+                <button type="button" class="btn btn-default btn-sm" ng-show="editing && model.favourite" ng-click="debouncedToggleFavourites(variableId, model)">
                     {{'button.removeFromFavourite' | translate}}  </button>
             </div>
         </div>
@@ -156,11 +156,11 @@
 							</span>
 							</button>
 
-							<button class="btn btn-default btn-sm" ng-show="!model.obsolete" ng-click="toggleObsolete(variableId, model)">
+							<button  type="button" class="btn btn-default btn-sm" ng-show="!model.obsolete" ng-click="toggleObsolete(variableId, model)">
 								{{'variablesList.details.markObsolete' | translate}}
 							</button>
 
-							<button class="btn btn-default btn-sm" ng-show="model.obsolete" ng-click="toggleObsolete(variableId, model)">
+							<button  type="button" class="btn btn-default btn-sm" ng-show="model.obsolete" ng-click="toggleObsolete(variableId, model)">
 								{{'variablesList.details.restoreVariable' | translate}}  </button>
 
 							<a href="#" ng-click="cancel($event)">{{'button.cancel' | translate}}</a>

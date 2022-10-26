@@ -255,6 +255,12 @@
 					$scope.toggleObsolete = function(id, model) {
 						model.obsolete = !model.obsolete;
 						$scope.selectedVariable.obsolete = !$scope.selectedVariable.obsolete;
+
+						if(model.obsolete && model.favourite) {
+							model.favourite = false;
+							$scope.selectedVariable.favourite = false;
+						}
+
 						$scope.updateSelectedVariable($scope.selectedVariable);
 						variablesService.updateVariable(id, $scope.selectedVariable).then(function () {
 						}, function (response) {
