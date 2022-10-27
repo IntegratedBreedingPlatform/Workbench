@@ -225,9 +225,7 @@
 			"germplasm": "Germplasm",
             "breedingMethods": "BreedingMethods",
             "lists": "Lists",
-			"system.variable":"System Variable",
-			"markObsolete": "Mark variable obsolete",
-			"restoreVariable": "Restore variable"
+			"system.variable":"System Variable"
 		}
 	},
 

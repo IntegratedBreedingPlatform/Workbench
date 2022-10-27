@@ -228,6 +228,10 @@
 								model.favourite = true;
 							}
 
+							if (model.favourite && model.obsolete) {
+								model.favourite = false;
+							}
+
 							variablesService.updateVariable(id, model).then(function () {
 								return variablesService.getVariable(id);
 							}).then(function(model) {
@@ -250,26 +254,6 @@
 								resetSubmissionState();
 							});
 						}
-					};
-
-					$scope.toggleObsolete = function(id, model) {
-						model.obsolete = !model.obsolete;
-						$scope.selectedVariable.obsolete = !$scope.selectedVariable.obsolete;
-
-						if(model.obsolete && model.favourite) {
-							model.favourite = false;
-							$scope.selectedVariable.favourite = false;
-						}
-
-						$scope.updateSelectedVariable($scope.selectedVariable);
-						variablesService.updateVariable(id, $scope.selectedVariable).then(function () {
-						}, function (response) {
-							model.obsolete = !model.obsolete;
-							$scope.selectedVariable.obsolete = !$scope.selectedVariable.obsolete;
-							$scope.updateSelectedVariable($scope.selectedVariable);
-							$scope.serverErrors = serviceUtilities.serverErrorHandler($scope.serverErrors, response);
-							resetSubmissionState();
-						});
 					};
 
 					// Exposed for testing
