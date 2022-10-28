@@ -381,6 +381,16 @@ select {
 		}
 	}
 
+	.login-otp-input {
+		text-align: center;
+        font-size: larger;
+		font-weight: bold;
+	}
+
+}
+
+#one-time-password-form {
+	display: none;
 }
 
 #authorize-form {

@@ -76,6 +76,44 @@ public class WorkbenchEmailSenderService {
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
+	public void doSendOneTimePasswordRequest(final WorkbenchUser user, final Integer otpCode)
+		throws MessagingException {
+
+		// Prepare message using a Spring helper
+		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+		// true = multipart
+		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
+
+		try {
+
+			final String recipientName = user.getPerson().getDisplayName();
+			final String recipientEmail = user.getPerson().getEmail();
+
+			// prepare the evaluation context
+			final Context ctx = new Context(LocaleContextHolder.getLocale());
+			ctx.setVariable("recipientName", recipientName);
+			ctx.setVariable("otpCode", otpCode);
+			ctx.setVariable("bmsLogo", WorkbenchEmailSenderService.BMS_LOGO_LOC);
+
+			message.setSubject(this.messageSource.getMessage("one.time.password.mail.subject", new String[] {}, "", LocaleContextHolder.getLocale()));
+			message.setFrom(this.senderEmail);
+			message.setTo(recipientEmail);
+
+			final String htmlContent = this.processTemplate(ctx, "one-time-password-email");
+			// true = isHtml
+			message.setText(htmlContent, true);
+
+			// add BMS logo
+			message.addInline(WorkbenchEmailSenderService.BMS_LOGO_LOC, this.retrieveLogoImage(), "image/png");
+
+			// Send the message
+			this.mailSender.send(mimeMessage);
+
+		} catch (final IOException e) {
+			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
+		}
+	}
+
 	public void doRequestPasswordReset(final WorkbenchUser user) throws MessagingException {
 
 		UserInfo userInfo = null;

@@ -13,6 +13,8 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.api.role.RoleService;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.security.OneTimePasswordDto;
+import org.generationcp.middleware.service.api.security.OneTimePasswordService;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
@@ -30,6 +32,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -76,6 +79,9 @@ public class AuthenticationController {
 
 	@Resource
 	private ApiAuthenticationService apiAuthenticationService;
+
+	@Resource
+	private OneTimePasswordService oneTimePasswordService;
 
 	@Resource
 	private ServletContext servletContext;
@@ -158,53 +164,87 @@ public class AuthenticationController {
 		model.addAttribute("version", this.workbenchVersion);
 	}
 
+	// TODO: Migrate this to BMSAPI.
+	@ResponseBody
+	@RequestMapping(value = "/verifyOTP", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> validateOTP(@RequestBody final UserAccountModel model,
+		final BindingResult result) {
+		if (this.workbenchUserService.isValidUserLogin(model) && this.oneTimePasswordService.isOneTimePasswordValid(model.getOtpCode())) {
+			/*
+			 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
+			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+			 * service in browsers.
+			 */
+			final Map<String, Object> response = new LinkedHashMap<>();
+			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+			if (apiAuthToken != null) {
+				response.put("token", apiAuthToken.getToken());
+				response.put("expires", apiAuthToken.getExpires());
+			}
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+
 	@ResponseBody
 	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
-		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		if (this.workbenchUserService.isValidUserLogin(model)) {
 
 			this.userAccountValidator.validateUserActive(model, result);
 			if (result.hasErrors()) {
 				this.generateErrors(result, out);
-				return new ResponseEntity<>(out, isSuccess);
+				return new ResponseEntity<>(out, HttpStatus.BAD_REQUEST);
 			}
 
-			isSuccess = HttpStatus.OK;
+			final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
+
+			if (workbenchUser.isMultiFactorAuthenticationEnabled()) {
+				//
+				final OneTimePasswordDto oneTimePasswordDto = this.oneTimePasswordService.createOneTimePassword();
+				try {
+					this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+				} catch (final MessagingException e) {
+					// Do nothing
+				}
+				out.put("requireOneTimePassword", Boolean.TRUE);
+			} else {
+				// If the user account is not enabled for two-factor authentication, immediately create authentication token.
+				/*
+				 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
+				 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+				 * service in browsers.
+				 */
+				final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+				if (apiAuthToken != null) {
+					out.put("token", apiAuthToken.getToken());
+					out.put("expires", apiAuthToken.getExpires());
+				}
+			}
+
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			/*
-			 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
-			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
-			 * service in browsers.
-			 */
-			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
-			if (apiAuthToken != null) {
-				out.put("token", apiAuthToken.getToken());
-				out.put("expires", apiAuthToken.getExpires());
-			}
+			return new ResponseEntity<>(out, HttpStatus.OK);
+		} else {
+			final Map<String, String> errors = new LinkedHashMap<>();
 
-			return new ResponseEntity<>(out, isSuccess);
+			errors.put(UserAccountFields.USERNAME, this.messageSource
+				.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
+
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, errors);
+
+			return new ResponseEntity<>(out, HttpStatus.BAD_REQUEST);
 		}
-
-		final Map<String, String> errors = new LinkedHashMap<>();
-
-		errors.put(UserAccountFields.USERNAME, this.messageSource
-			.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
-
-		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-		out.put(AuthenticationController.ERRORS, errors);
-
-		return new ResponseEntity<>(out, isSuccess);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -212,6 +252,7 @@ public class AuthenticationController {
 			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
 		}
 		final ImmutableMap<Integer, Role> roleMap = Maps.uniqueIndex(this.roles, new Function<Role, Integer>() {
+
 			@Override
 			public Integer apply(final Role role) {
 				return role.getId();
@@ -239,7 +280,7 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -264,7 +305,7 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(
-			@ModelAttribute("userAccount") final UserAccountModel model) {
+		@ModelAttribute("userAccount") final UserAccountModel model) {
 		return sendResetEmail(model.getUsername());
 	}
 
@@ -308,7 +349,7 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doResetPassword(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -336,7 +377,7 @@ public class AuthenticationController {
 		final Map<String, String> errors = new LinkedHashMap<>();
 		for (final FieldError error : result.getFieldErrors()) {
 			errors.put(error.getField(), this.messageSource
-					.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
+				.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
 		}
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
@@ -351,7 +392,7 @@ public class AuthenticationController {
 		} else {
 			return Boolean.parseBoolean(this.enableCreateAccount);
 		}*/
-			return false;
+		return false;
 	}
 
 	/*protected void setEnableCreateAccount(final String enableCreateAccount) {
@@ -361,8 +402,6 @@ public class AuthenticationController {
 	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
 		this.isSingleUserOnly = isSingleUserOnly;
 	}
-
-
 
 	public List<Role> getRoles() {
 		return roles;

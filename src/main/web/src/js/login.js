@@ -1,19 +1,22 @@
 /*global Modernizr*/
 
-(function() {
+(function () {
 	'use strict';
 
 	var $checkButton = $('.js-login-check'),
 		$checkInput = $('.js-login-checkbox-input'),
 		$loginForm = $('.js-login-form'),
 		$authorizeForm = $('#authorize-form'),
+		$oneTimePasswordForm = $('#one-time-password-form'),
 		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
 		$authorizeSubmit = $('.js-authorize-submit'),
+		$verifyOtpSubmit = $('.js-verify-otp-submit'),
+		$otpCode = $('.js-otp-code'),
 		$error = $('.js-login-error'),
 		$errorText = $('.js-login-error-text'),
 		$fakeUsername = $('.js-fake-username'),
-		$fakePassword =  $('.js-fake-password'),
+		$fakePassword = $('.js-fake-password'),
 		$username = $('.js-login-username'),
 		$password = $('.js-login-password'),
 		$select = $('.login-select'),
@@ -44,20 +47,21 @@
 	// this item from localStorage rathen than resetting its value.
 	localStorage['bms.xAuthToken'] = JSON.stringify({success: false, token: '', expires: 0});
 
+
 	var failedLoginAttemptCount = 0;
 
 	function toggleCheckbox() {
 		var tick = $checkButton.hasClass('fa-check');
 
-		if(!tick){
+		if (!tick) {
 			$checkButton.addClass('fa-check');
 			$checkInput.prop('checked', true);
 		} else {
 			$checkButton.removeClass('fa-check');
 			$checkInput.prop('checked', false);
 		}
-		
-		
+
+
 	}
 
 	function isLoginDisplayed() {
@@ -94,7 +98,7 @@
 		altAction = prevAction;
 
 		$loginForm.toggleClass(createAccount, switchToCreate);
-		$loginModeToggle.text(switchToCreate ?  signInText : createAccountText);
+		$loginModeToggle.text(switchToCreate ? signInText : createAccountText);
 		$loginSubmit.text(switchToCreate ? createAccountText : signInText);
 
 		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
@@ -114,7 +118,7 @@
 		forgotPasswordAction = prevAction;
 
 		$loginForm.toggleClass(forgotPasswordClass, switchToCreate);
-		$loginModeToggle.text(switchToCreate ?  signInText : createAccountText);
+		$loginModeToggle.text(switchToCreate ? signInText : createAccountText);
 		$loginSubmit.text(switchToCreate ? resetPasswordText : signInText);
 
 		// clear out password field
@@ -123,6 +127,11 @@
 		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
 		$forgotPasswordInputs.prop('disabled', !switchToCreate);
 		$checkInput.prop('disabled', switchToCreate);
+	}
+
+	function toggleVerifyOneTimePasswordScreen() {
+		$loginForm.hide();
+		$oneTimePasswordForm.show();
 	}
 
 	function toggleAuthorizeScreen() {
@@ -173,7 +182,7 @@
 		var errorMessage;
 
 		// Add validation error styling to all empty inputs
-		$('.js-login-form .login-form-control input').each(function(index, input) {
+		$('.js-login-form .login-form-control input').each(function (index, input) {
 			var $input = $(input);
 			$input.parent('.login-form-control').toggleClass(validationError, !$input.val());
 		});
@@ -192,7 +201,7 @@
 		var errorMessage;
 
 		// Add validation error styling to all empty inputs
-		$('.js-login-username, .js-login-forgot-password-input').each(function(index, input) {
+		$('.js-login-username, .js-login-forgot-password-input').each(function (index, input) {
 			var $input = $(input);
 			$input.parent('.login-form-control').toggleClass(validationError, !$input.val());
 		});
@@ -209,9 +218,9 @@
 	function applyValidationErrors(errors) {
 		var errorMessage = '';
 
-		$.each(errors, function(key, value) {
+		$.each(errors, function (key, value) {
 			$loginForm.find('*[name=' + key + ']').parent('.login-form-control').addClass('login-validation-error');
-			errorMessage +=  errorMessage ? (' ' + value) : value;
+			errorMessage += errorMessage ? (' ' + value) : value;
 		});
 		displayClientError(errorMessage);
 	}
@@ -233,6 +242,29 @@
 		return false;
 	}
 
+	function doVerifyOTP() {
+
+		var request = {
+			username: $username.val(),
+			password: $password.val(),
+			otpCode: $otpCode.val()
+		};
+		console.log(request);
+		$.ajax({
+			url: '/ibpworkbench/controller/auth/verifyOTP',
+			dataType: 'json',
+			type: 'post',
+			contentType: 'application/json',
+			data: JSON.stringify(request),
+			processData: false,
+			success: function (data) {
+				processLoginSuccess(data);
+			}
+		}).fail((error) => {
+			console.log(error);
+		});
+	}
+
 	// Record whether media queries are supported in this browser as a class
 	if (!Modernizr.mq('only all')) {
 		$('html').addClass('no-mq');
@@ -249,7 +281,7 @@
 	}).on('select2-focus', clearErrors);
 
 	// Making the select container act as though it was all one
-	$select2Container.on('click', function() {
+	$select2Container.on('click', function () {
 		$('.select2-container').toggleClass('select2-container-active', true);
 		$select.select2('open');
 	});
@@ -260,27 +292,31 @@
 	// Giving the select container the ability to be focused
 	$select2Container.attr('tabindex', 1);
 
-	$loginSubmit.on('click', function() {
+	$loginSubmit.on('click', function () {
 		return doFormSubmit();
 	});
 
-	$authorizeSubmit.on('click', function() {
+	$authorizeSubmit.on('click', function () {
 		return doAuthorizeSubmit();
 	});
 
+	$verifyOtpSubmit.on('click', function () {
+		return doVerifyOTP();
+	});
+
 	// Hook up our fake (better looking) checkbox with it's real, submit-able counterpart
-	$('.js-login-checkbox-control').on('click', '.js-login-remember-me', function(e) {
+	$('.js-login-checkbox-control').on('click', '.js-login-remember-me', function (e) {
 		e.preventDefault();
 		toggleCheckbox();
 	});
 
 	// Clear error messages if the user focuses a form input
-	$('body').delegate('.login-form-invalid .login-form-control, .login-form-invalid .login-submit', 'focusin click', function() {
+	$('body').delegate('.login-form-invalid .login-form-control, .login-form-invalid .login-submit', 'focusin click', function () {
 		clearErrors();
 	});
 
 	// Toggle between forms
-	$loginModeToggle.on('click', function(e) {
+	$loginModeToggle.on('click', function (e) {
 		e.preventDefault();
 		$('.login-forgot-password-email-notify').hide();
 
@@ -288,7 +324,7 @@
 		toggleLoginPage(toggleLoginCreateAccount);
 	});
 
-	$('.ac-login-forgot-password').on('click', function(e) {
+	$('.ac-login-forgot-password').on('click', function (e) {
 		e.preventDefault();
 		$('.login-forgot-password-email-notify').hide();
 
@@ -297,19 +333,20 @@
 
 	});
 
-	$('.login-form-control input').on('keypress', function(e) {
+	$('.login-form-control input').on('keypress', function (e) {
 		if (e.which === 13) {
 			e.preventDefault();
 			$loginForm.submit();
 		}
 	});
 
-	var doSendPasswordRequestEmail = function(userForm) {
+	var doSendPasswordRequestEmail = function (userForm) {
 		$.post($loginForm.data('reset-password-action'), userForm);
 		$('.login-forgot-password-email-notify').show();
 	};
 
-	$loginForm.on('submit', function(e) {
+	$loginForm.on('submit', function (e) {
+
 		// Prevent default submit behaviour and implement our own post / response handler
 		e.preventDefault();
 
@@ -335,24 +372,16 @@
 		// Continue with form submit - login is currently handled server side
 		if (login) {
 			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
-				.done(function(data) {
+				.done(function (data) {
 					clearErrors();
-					/**
-					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
-					 * and uses it to make calls to BMSAPI.
-					 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
-					 * The prefix "bms" is configured in ontology.js as part of app.config:
-					 *     localStorageServiceProvider.setPrefix('bms');
-					 */
-					localStorage['bms.xAuthToken'] = JSON.stringify(data);
-					if ((display_name && return_url) || (client_id && redirect_uri)) {
-						toggleAuthorizeScreen()
+
+					if (data && data.requireOneTimePassword) {
+						toggleVerifyOneTimePasswordScreen();
 					} else {
-						// no login problems! submit
-						loginFormRef.submit();
+						processLoginSuccess(data);
 					}
 				})
-				.fail(function(jqXHR) {
+				.fail(function (jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
 
 					if (failedLoginAttemptCount < 2) {
@@ -361,7 +390,7 @@
 						toggleForgotPasswordScreen();
 					}
 				})
-				.always(function() {
+				.always(function () {
 					$loginSubmit.removeClass('loading');
 				});
 		} else {
@@ -369,7 +398,7 @@
 			var userForm = $loginForm.serialize();
 
 			$.post($loginForm.attr('action'), userForm)
-				.done(function() {
+				.done(function () {
 					// Clear form fields and show the login screen
 					clearErrors();
 
@@ -386,13 +415,40 @@
 						loginFormRef.submit();
 					}
 				})
-				.fail(function(jqXHR) {
+				.fail(function (jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
 				})
-				.always(function() {
+				.always(function () {
 					$loginSubmit.removeClass('loading');
 				});
 		}
 	});
 
+	function processLoginSuccess(tokenData) {
+		/**
+		 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
+		 * and uses it to make calls to BMSAPI.
+		 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
+		 * The prefix "bms" is configured in ontology.js as part of app.config:
+		 *     localStorageServiceProvider.setPrefix('bms');
+		 */
+		localStorage['bms.xAuthToken'] = JSON.stringify(tokenData);
+		if ((display_name && return_url) || (client_id && redirect_uri)) {
+			toggleAuthorizeScreen();
+		} else {
+			// Detach validation so we can proceed with submit
+			$loginForm.off( "submit" );
+			$loginForm.submit();
+		}
+	}
+
 }());
+
+function numbersOnly(evt) {
+
+	// Only ASCII character in that range allowed
+	var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+	if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+		return false;
+	return true;
+}
