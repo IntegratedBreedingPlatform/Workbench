@@ -38,7 +38,7 @@ public class RepresentationDatasetQueryFactory implements QueryFactory {
 	private QueryDefinition definition;
 	private final boolean fromUrl; // this is true if this component is created by accessing the Study Details page directly from the URL
 
-	DatasetService datasetService;
+	private DatasetService datasetService;
 	/**
 	 * The constructor should be given the parameters which are then passed to RepresentationDataSetQuery which uses them to retrieve the
 	 * datasets by using the Middleware.
