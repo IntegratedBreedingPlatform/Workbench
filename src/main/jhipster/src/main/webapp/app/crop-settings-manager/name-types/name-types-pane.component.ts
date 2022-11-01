@@ -159,17 +159,17 @@ export class NameTypesPaneComponent implements OnInit {
     async deleteNameType(nameType: any) {
         const nameTypeMetadata = await this.nameTypeService.getMetadata(nameType.id).toPromise();
 
-        if (nameTypeMetadata.germplasm > 0) {
+        if (nameTypeMetadata.germplasmCount > 0) {
             this.alertService.error('crop-settings-manager.name-type.validation.delete.error.used.in.germplasm');
             return;
         } else {
             const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
             const messages = [];
 
-            if (nameTypeMetadata.studies > 0) {
+            if (nameTypeMetadata.studiesCount > 0) {
                 messages.push(this.translateService.instant('crop-settings-manager.name-type.modal.delete.summary.study'));
             }
-            if (nameTypeMetadata.germplasmList > 0) {
+            if (nameTypeMetadata.germplasmListCount > 0) {
                 messages.push(this.translateService.instant('crop-settings-manager.name-type.modal.delete.summary.germplasm.list'));
             }
 
@@ -181,10 +181,10 @@ export class NameTypesPaneComponent implements OnInit {
             try {
 
                 await confirmModalRef.result;
-                if (nameTypeMetadata.studies > 0) {
+                if (nameTypeMetadata.studiesCount > 0) {
                     await this.nameTypeService.deleteNameTypeFromStudy(nameType.id).toPromise();
                 }
-                if (nameTypeMetadata.germplasmList > 0) {
+                if (nameTypeMetadata.germplasmListCount > 0) {
                     await this.nameTypeService.deleteNameTypeFromGermplasmList(nameType.id).toPromise();
                 }
 

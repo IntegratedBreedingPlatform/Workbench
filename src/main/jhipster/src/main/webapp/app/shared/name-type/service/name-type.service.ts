@@ -3,7 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../../../app.constants';
 import { ParamContext } from '../../service/param.context';
-import { NameType, NameTypeDetails, NameTypeMetaData } from '../../germplasm/model/name-type.model';
+import { NameType, NameTypeDetails, NameTypeMetadata } from '../../germplasm/model/name-type.model';
 import { createRequestOption } from '../../model/request-util';
 
 @Injectable()
@@ -34,7 +34,7 @@ export class NameTypeService {
         return this.http.post<NameTypeDetails[]>(url, nameTypeMetadataFilterRequest, { params: options, observe: 'response' });
     }
 
-    getMetadata(nameTypeId: number): Observable<NameTypeMetaData> {
+    getMetadata(nameTypeId: number): Observable<NameTypeMetadata> {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/name-types/${nameTypeId}/metadata?programUUID=` + this.context.programUUID;
         return this.http.get(url);
     }
