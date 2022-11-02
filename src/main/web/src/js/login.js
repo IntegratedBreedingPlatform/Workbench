@@ -242,6 +242,27 @@
 		return false;
 	}
 
+	function doCreateOTP() {
+		var request = {
+			username: $username.val(),
+			password: $password.val(),
+			otpCode: $otpCode.val()
+		};
+		$.ajax({
+			url: '/ibpworkbench/controller/auth/otp/create',
+			dataType: 'json',
+			type: 'post',
+			contentType: 'application/json',
+			data: JSON.stringify(request),
+			processData: false,
+			success: function (data) {
+				// Do nothing
+			}
+		}).fail((error) => {
+			console.log(error);
+		});
+	}
+
 	function doVerifyOTP() {
 
 		var request = {
@@ -249,9 +270,8 @@
 			password: $password.val(),
 			otpCode: $otpCode.val()
 		};
-		console.log(request);
 		$.ajax({
-			url: '/ibpworkbench/controller/auth/verifyOTP',
+			url: '/ibpworkbench/controller/auth/otp/verify',
 			dataType: 'json',
 			type: 'post',
 			contentType: 'application/json',
@@ -376,6 +396,7 @@
 					clearErrors();
 
 					if (data && data.requireOneTimePassword) {
+						doCreateOTP();
 						toggleVerifyOneTimePasswordScreen();
 					} else {
 						processLoginSuccess(data);

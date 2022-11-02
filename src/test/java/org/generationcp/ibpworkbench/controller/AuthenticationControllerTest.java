@@ -30,6 +30,7 @@ import org.springframework.validation.FieldError;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +80,9 @@ public class AuthenticationControllerTest {
 
 	@Mock
 	private RoleService roleService;
+
+	@Mock
+	private HttpServletRequest httpServletRequest;
 
 	private List<Role> roles;
 	private Role selectedRole;
@@ -156,7 +160,7 @@ public class AuthenticationControllerTest {
 	public void testValidateLogin() throws Exception {
 		Mockito.when(this.workbenchUserService.isValidUserLogin(this.userAccountModel)).thenReturn(true);
 
-		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(this.userAccountModel, this.result);
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(this.userAccountModel, this.result, this.httpServletRequest);
 
 		Assert.assertTrue("ok status", out.getStatusCode().equals(HttpStatus.OK));
 
@@ -179,7 +183,7 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.result.hasErrors()).thenReturn(true);
 		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.<FieldError>emptyList());
 
-		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(this.userAccountModel, this.result);
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(this.userAccountModel, this.result, this.httpServletRequest);
 
 		ResponseEntity<Map<String, Object>> out2 = this.controller.validateForgotPasswordForm(this.userAccountModel, this.result);
 
@@ -274,7 +278,7 @@ public class AuthenticationControllerTest {
 				.authenticate(Mockito.eq(testUserAccountModel.getUsername()), Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(
 				testToken);
 
-		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result, this.httpServletRequest);
 		Assert.assertEquals(testToken.getToken(), out.getBody().get("token"));
 		Assert.assertEquals(testToken.getExpires(), out.getBody().get("expires"));
 	}
@@ -292,7 +296,7 @@ public class AuthenticationControllerTest {
 				this.apiAuthenticationService.authenticate(Mockito.eq(testUserAccountModel.getUsername()),
 						Mockito.eq(testUserAccountModel.getPassword()))).thenReturn(null);
 
-		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result, this.httpServletRequest);
 		Mockito.verify(this.apiAuthenticationService).authenticate(Mockito.anyString(), Mockito.anyString());
 		Assert.assertNull(out.getBody().get("token"));
 		Assert.assertNull(out.getBody().get("expires"));
@@ -303,7 +307,7 @@ public class AuthenticationControllerTest {
 
 		UserAccountModel testUserAccountModel = new UserAccountModel();
 		Mockito.when(this.workbenchUserService.isValidUserLogin(testUserAccountModel)).thenReturn(false);
-		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result);
+		ResponseEntity<Map<String, Object>> out = this.controller.validateLogin(testUserAccountModel, this.result, this.httpServletRequest);
 		Mockito.verify(this.apiAuthenticationService, Mockito.never()).authenticate(Mockito.anyString(), Mockito.anyString());
 		Assert.assertNull(out.getBody().get("token"));
 		Assert.assertNull(out.getBody().get("expires"));
