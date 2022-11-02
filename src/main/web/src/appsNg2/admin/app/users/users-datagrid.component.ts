@@ -172,7 +172,7 @@ export class UsersDatagrid implements OnInit {
                     this.userSelected = null;
                 },
                 error => {
-                    this.errorServiceMessage = error.json().ERROR.errors[0].message;
+                    this.errorServiceMessage = error.json().errors[0].message;
                     this.showErrorNotification = true;
                     this.userSelected.status = status;
                     this.userSelected = null;
