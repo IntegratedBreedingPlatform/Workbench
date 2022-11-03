@@ -10,7 +10,8 @@
 		<tr ng-repeat="item in filteredData = (data | filter:filterByOptions | filter:filterByProperties | paginate:rowsPerPage) track by item.id" ng-click="selectItem($index, item.id)" class="clickable-row" ng-class="{'active': activeItemId === item.id}">
 			<td ng-repeat="header in colHeaders" ng-class="{'action-icon': isAction(item[header])}">
 				<span class="om-li-data-cell-test" ng-if="isString(item[header])">{{item[header]}}</span>
-				<span class="om-li-data-cell-test glyphicon favourite-icon" ng-if="isAction(item[header])" ng-class="'glyphicon-' + item[header].iconValue" ng-click="toggleFavourites($index, item.id, $event, item[header])"></span>
+				<span class="om-li-data-cell-test glyphicon favourite-icon" ng-if="isAction(item[header])" ng-class="item[header].iconValue ? 'glyphicon-' + item[header].iconValue : ''"
+					  ng-click="toggleFavourites($index, item.id, $event, item[header])" title="{{item[header].tooltip ? item[header].tooltip : ''}}"></span>
 			</td>
 		</tr>
 		<tr class="om-no-items"><td colspan="{{colHeaders.length}}">{{'list.noResultsFound' | translate}}</td></tr>

@@ -179,7 +179,8 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
 
         this.attributes = await this.variableService.filterVariables({
             variableNames: codes,
-            variableTypeIds: [VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString(), VariableTypeEnum.GERMPLASM_PASSPORT.toString()]
+            variableTypeIds: [VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString(), VariableTypeEnum.GERMPLASM_PASSPORT.toString()],
+            showObsoletes: true
         }).toPromise();
         this.names = await this.germplasmService.getGermplasmNameTypes(codes).toPromise();
 
