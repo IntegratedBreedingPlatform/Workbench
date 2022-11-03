@@ -176,26 +176,31 @@ public class AuthenticationController {
 	@RequestMapping(value = "/otp/create", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> createOTP(@RequestBody final UserAccountModel model,
 		final BindingResult result) {
+		final Map<String, Object> response = new LinkedHashMap<>();
 		// Create one time password verification code and then send the code to the user's email
 		final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
 		if (this.workbenchUserService.isValidUserLogin(model)) {
 			final OneTimePasswordDto oneTimePasswordDto = this.oneTimePasswordService.createOneTimePassword();
 			try {
 				this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
-				return new ResponseEntity<>(HttpStatus.OK);
+				return new ResponseEntity<>(response, HttpStatus.OK);
 			} catch (final MessagingException e) {
-				final Map<String, Object> response = new LinkedHashMap<>();
-				// TODO: Error message in case there's a problem with email.
-				response.put(ERRORS, "");
+				response.put(ERRORS, this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
+					LocaleContextHolder.getLocale()));
 				return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
+		} else {
+			response.put(ERRORS, this.messageSource.getMessage("one.time.password.cannot.create.otp", new String[] {}, "",
+				LocaleContextHolder.getLocale()));
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/otp/verify", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request) {
+		final Map<String, Object> response = new LinkedHashMap<>();
 		// Verify if the OTP code is valid
 		if (this.workbenchUserService.isValidUserLogin(model) && this.oneTimePasswordService.isOneTimePasswordValid(model.getOtpCode())) {
 			final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
@@ -205,7 +210,7 @@ public class AuthenticationController {
 			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
 			 * service in browsers.
 			 */
-			final Map<String, Object> response = new LinkedHashMap<>();
+
 			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
 			if (apiAuthToken != null) {
 				response.put("token", apiAuthToken.getToken());
@@ -213,8 +218,11 @@ public class AuthenticationController {
 			}
 			this.addToKnownDevices(workbenchUser.getUserid(), request);
 			return new ResponseEntity<>(response, HttpStatus.OK);
+		} else {
+			response.put(ERRORS,
+				this.messageSource.getMessage("one.time.password.invalid.otp", new String[] {}, "", LocaleContextHolder.getLocale()));
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 	}
 
 	@ResponseBody
@@ -235,7 +243,7 @@ public class AuthenticationController {
 			final Optional<UserDeviceMetaDataDto> knownUserDeviceMetaDataDtoOptional =
 				this.getKnownUserDevice(workbenchUser.getUserid(), request);
 
-			// Require one time password if:
+			// Require one time password verification if:
 			// The user is explicitly enabled for two-factor authentication
 			// Or the user logged in from a new device/location.
 			if (workbenchUser.isMultiFactorAuthenticationEnabled() || !knownUserDeviceMetaDataDtoOptional.isPresent()) {

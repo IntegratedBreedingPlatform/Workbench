@@ -12,6 +12,8 @@
 		$loginSubmit = $('.js-login-submit'),
 		$authorizeSubmit = $('.js-authorize-submit'),
 		$verifyOtpSubmit = $('.js-verify-otp-submit'),
+		$otpError = $('.js-login-otp-error'),
+		$otpErrorText = $('.js-login-otp-error-text'),
 		$otpCode = $('.js-otp-code'),
 		$error = $('.js-login-error'),
 		$errorText = $('.js-login-error-text'),
@@ -140,6 +142,11 @@
 		$authorizeForm.show();
 	}
 
+	function displayOTPError(errorMessage) {
+		$otpErrorText.text(errorMessage);
+		$otpError.removeClass('login-otp-valid');
+	}
+
 	function displayClientError(errorMessage) {
 		$errorText.text(errorMessage);
 		$error.removeClass('login-valid');
@@ -257,9 +264,10 @@
 			processData: false,
 			success: function (data) {
 				// Do nothing
+				return;
 			}
 		}).fail((error) => {
-			console.log(error);
+			displayOTPError(error.responseJSON.errors);
 		});
 	}
 
@@ -281,7 +289,7 @@
 				processLoginSuccess(data);
 			}
 		}).fail((error) => {
-			console.log(error);
+			displayOTPError(error.responseJSON.errors);
 		});
 	}
 
