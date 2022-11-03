@@ -1,6 +1,9 @@
 package org.generationcp.ibpworkbench.controller;
 
 import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
@@ -50,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping(AuthenticationController.URL)
@@ -115,12 +119,27 @@ public class AuthenticationController {
 	@Value("${bms.version}")
 	private String workbenchVersion;
 
+	@Value("${security.2fa.otp.maximum.verification.attempts}")
+	private Integer maximumOtpVerificationAttempt;
+
+	@Value("${security.2fa.otp.maximum.verification.attempts.expiry.interval}")
+	private Integer otpVerificationAttemptExpiry;
+
 	private List<Role> roles;
+
+	private LoadingCache<String, Integer> otpMaximumAttemptCache;
 
 	@PostConstruct
 	public void initialize() {
 		this.roles = this.roleService.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
+		this.otpMaximumAttemptCache = CacheBuilder.newBuilder().refreshAfterWrite(this.otpVerificationAttemptExpiry, TimeUnit.MINUTES)
+			.build(new CacheLoader<String, Integer>() {
+
+				public Integer load(final String key) {
+					return 0;
+				}
+			});
 	}
 
 	@RequestMapping(value = "/login")
@@ -197,12 +216,34 @@ public class AuthenticationController {
 
 	}
 
+	private Integer getNumberOfAtemptPerUser(final String userName) {
+		try {
+			return this.otpMaximumAttemptCache.get(userName);
+		} catch (final Exception e) {
+			// If number of attempt does not yet exist per user, just return 1 (first attempt)
+			return 1;
+		}
+	}
+
 	@ResponseBody
 	@RequestMapping(value = "/otp/verify", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request) {
 		final Map<String, Object> response = new LinkedHashMap<>();
+
+		// To prevent a brute force attack, add a maximum number of OTP code verification attempts
+		final Integer numberOfAttempts = this.getNumberOfAtemptPerUser(model.getUsername());
+		if (numberOfAttempts >= this.maximumOtpVerificationAttempt) {
+			response.put(ERRORS,
+				this.messageSource.getMessage("one.time.password.maximum.verification.attempt.exceeded",
+					new String[] {String.valueOf(this.otpVerificationAttemptExpiry)}, "",
+					LocaleContextHolder.getLocale()));
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		this.otpMaximumAttemptCache.put(model.getUsername(), numberOfAttempts + 1);
+
 		// Verify if the OTP code is valid
 		if (this.workbenchUserService.isValidUserLogin(model) && this.oneTimePasswordService.isOneTimePasswordValid(model.getOtpCode())) {
+
 			final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
 			// If OTP is valid, return a valid token
 			/*

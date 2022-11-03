@@ -273,6 +273,9 @@
 
 	function doVerifyOTP() {
 
+		$verifyOtpSubmit.addClass('loading');
+		$verifyOtpSubmit.attr("disabled", true);
+
 		var request = {
 			username: $username.val(),
 			password: $password.val(),
@@ -286,9 +289,13 @@
 			data: JSON.stringify(request),
 			processData: false,
 			success: function (data) {
+				$verifyOtpSubmit.removeClass('loading');
+				$verifyOtpSubmit.removeAttr("disabled");
 				processLoginSuccess(data);
 			}
 		}).fail((error) => {
+			$verifyOtpSubmit.removeClass('loading');
+			$verifyOtpSubmit.removeAttr("disabled");
 			displayOTPError(error.responseJSON.errors);
 		});
 	}
