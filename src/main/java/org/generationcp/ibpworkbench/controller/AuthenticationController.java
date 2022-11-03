@@ -147,7 +147,7 @@ public class AuthenticationController {
 
 		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
 		model.addAttribute("roles", this.roles);
-		populateCommomModelAttributes(model);
+		this.populateCommomModelAttributes(model);
 
 		return "login";
 	}
@@ -159,7 +159,7 @@ public class AuthenticationController {
 	 * @return img src
 	 */
 	protected String findInstituteLogo(final String path) {
-		if (servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
+		if (this.servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
 			return "/controller/" + path;
 		} else {
 			return "";
@@ -175,7 +175,7 @@ public class AuthenticationController {
 
 			model.addAttribute("user", user);
 
-			populateCommomModelAttributes(model);
+			this.populateCommomModelAttributes(model);
 
 			return "new-password";
 
@@ -193,15 +193,25 @@ public class AuthenticationController {
 
 	@ResponseBody
 	@RequestMapping(value = "/otp/create", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> createOTP(@RequestBody final UserAccountModel model,
-		final BindingResult result) {
+	public ResponseEntity<Map<String, Object>> createOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request) {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		// Create one time password verification code and then send the code to the user's email
 		final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
 		if (this.workbenchUserService.isValidUserLogin(model)) {
 			final OneTimePasswordDto oneTimePasswordDto = this.oneTimePasswordService.createOneTimePassword();
+
+			final Optional<UserDeviceMetaDataDto> knownUserDeviceMetaDataDtoOptional =
+				this.getKnownUserDevice(workbenchUser.getUserid(), request);
+
 			try {
-				this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+				// If the user is not configured for 2FA, but is logging in a new device.
+				final boolean isNewDevice =
+					!workbenchUser.isMultiFactorAuthenticationEnabled() && !knownUserDeviceMetaDataDtoOptional.isPresent();
+				final String location = UserDeviceMetaDataUtil.extractIp(request);
+				final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(request);
+
+				this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode(), isNewDevice,
+					deviceDetails, location);
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} catch (final MessagingException e) {
 				response.put(ERRORS, this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
@@ -385,7 +395,7 @@ public class AuthenticationController {
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(
 		@ModelAttribute("userAccount") final UserAccountModel model) {
-		return sendResetEmail(model.getUsername());
+		return this.sendResetEmail(model.getUsername());
 	}
 
 	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
@@ -400,7 +410,7 @@ public class AuthenticationController {
 			out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
 			return new ResponseEntity<>(out, isSuccess);
 		}
-		return sendResetEmail(user.getName());
+		return this.sendResetEmail(user.getName());
 
 	}
 
@@ -415,7 +425,7 @@ public class AuthenticationController {
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-		} catch (MessagingException | MailException e) {
+		} catch (final MessagingException | MailException e) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 			out.put(AuthenticationController.ERRORS, e.getMessage());
 
@@ -483,10 +493,10 @@ public class AuthenticationController {
 	}
 
 	public List<Role> getRoles() {
-		return roles;
+		return this.roles;
 	}
 
-	public void setRoles(List<Role> roles) {
+	public void setRoles(final List<Role> roles) {
 		this.roles = roles;
 	}
 

@@ -1,17 +1,5 @@
 package org.generationcp.ibpworkbench.security;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-
 import org.apache.commons.io.IOUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
@@ -32,6 +20,17 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * Created by cyrus on 4/6/15.
@@ -76,7 +75,8 @@ public class WorkbenchEmailSenderService {
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
-	public void doSendOneTimePasswordRequest(final WorkbenchUser user, final Integer otpCode)
+	public void doSendOneTimePasswordRequest(final WorkbenchUser user, final Integer otpCode, final boolean isNewDevice,
+		final String deviceDetails, final String location)
 		throws MessagingException {
 
 		// Prepare message using a Spring helper
@@ -94,12 +94,16 @@ public class WorkbenchEmailSenderService {
 			ctx.setVariable("recipientName", recipientName);
 			ctx.setVariable("otpCode", otpCode);
 			ctx.setVariable("bmsLogo", WorkbenchEmailSenderService.BMS_LOGO_LOC);
+			ctx.setVariable("deviceDetails", deviceDetails);
+			ctx.setVariable("location", location);
 
-			message.setSubject(this.messageSource.getMessage("one.time.password.mail.subject", new String[] {}, "", LocaleContextHolder.getLocale()));
+			message.setSubject(
+				this.messageSource.getMessage("one.time.password.mail.subject", new String[] {}, "", LocaleContextHolder.getLocale()));
 			message.setFrom(this.senderEmail);
 			message.setTo(recipientEmail);
 
-			final String htmlContent = this.processTemplate(ctx, "one-time-password-email");
+			final String htmlContent =
+				this.processTemplate(ctx, isNewDevice ? "one-time-password-new-device-email" : "one-time-password-email");
 			// true = isHtml
 			message.setText(htmlContent, true);
 
@@ -150,12 +154,11 @@ public class WorkbenchEmailSenderService {
 		return cal.getTime();
 	}
 
-
 	/**
 	 * Pre-req: a validated user email account + username
 	 */
 	public void sendForgotPasswordRequest(final String recipientName, final String recipientEmail, final String forgotPasswordUrl)
-			throws MessagingException {
+		throws MessagingException {
 
 		// Prepare message using a Spring helper
 		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
@@ -193,7 +196,7 @@ public class WorkbenchEmailSenderService {
 
 	protected ByteArrayResource retrieveLogoImage() throws IOException {
 		return new ByteArrayResource(
-				IOUtils.toByteArray(this.servletContext.getResourceAsStream(WorkbenchEmailSenderService.BMS_LOGO_LOC)));
+			IOUtils.toByteArray(this.servletContext.getResourceAsStream(WorkbenchEmailSenderService.BMS_LOGO_LOC)));
 	}
 
 	protected String processTemplate(final Context ctx, final String template) {
