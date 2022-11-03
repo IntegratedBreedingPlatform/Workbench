@@ -139,6 +139,7 @@
 	function toggleAuthorizeScreen() {
 		$('#displayName').text(display_name || client_id);
 		$loginForm.hide();
+		$oneTimePasswordForm.hide();
 		$authorizeForm.show();
 	}
 
