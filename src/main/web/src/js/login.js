@@ -251,11 +251,13 @@
 	}
 
 	function doCreateOTP() {
+
 		var request = {
 			username: $username.val(),
-			password: $password.val(),
-			otpCode: $otpCode.val()
+			password: $password.val()
 		};
+		// Create one-time password verification code and send
+		// it to the user's email
 		$.ajax({
 			url: '/ibpworkbench/controller/auth/otp/create',
 			dataType: 'json',

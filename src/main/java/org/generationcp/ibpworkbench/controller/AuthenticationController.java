@@ -267,7 +267,7 @@ public class AuthenticationController {
 				response.put("token", apiAuthToken.getToken());
 				response.put("expires", apiAuthToken.getExpires());
 			}
-			this.addToKnownDevices(workbenchUser.getUserid(), request);
+			this.addOrUpdateKnownDevices(workbenchUser.getUserid(), request);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} else {
 			response.put(ERRORS,
@@ -311,7 +311,7 @@ public class AuthenticationController {
 					out.put("token", apiAuthToken.getToken());
 					out.put("expires", apiAuthToken.getExpires());
 				}
-				this.addToKnownDevices(workbenchUser.getUserid(), request);
+				this.addOrUpdateKnownDevices(workbenchUser.getUserid(), request);
 			}
 
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -500,13 +500,17 @@ public class AuthenticationController {
 		this.roles = roles;
 	}
 
-	private void addToKnownDevices(final Integer userId, final HttpServletRequest httpServletRequest) {
+	private void addOrUpdateKnownDevices(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
 		// Only add device details if it doesn't exist yet
-		if (!this.getKnownUserDevice(userId, httpServletRequest).isPresent()) {
+		final Optional<UserDeviceMetaDataDto> knownUserDevice = this.getKnownUserDevice(userId, httpServletRequest);
+		if (!knownUserDevice.isPresent()) {
 			this.userDeviceMetaDataService.addToExistingDevice(userId, deviceDetails, location);
+		} else {
+			// Update last logged in date of this device
+			this.userDeviceMetaDataService.updateLastLoggedIn(userId, deviceDetails, location);
 		}
 	}
 
