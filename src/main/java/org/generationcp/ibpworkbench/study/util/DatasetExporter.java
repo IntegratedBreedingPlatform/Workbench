@@ -317,7 +317,7 @@ public class DatasetExporter {
 			germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
 				final String value = experiment.getNameValueMap().get(germplasmNameTypeDTO.getId());
 				Integer columnIndexInteger = germplasmNameTypeDTOs.indexOf(germplasmNameTypeDTO);
-				columnIndexInteger += this.factors.size() + this.variates.size();
+				columnIndexInteger += this.factors.size() + this.variates.size() -1;
 				final short columnIndex = columnIndexInteger.shortValue();
 				final Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER,
 					CellStyle.ALIGN_CENTER);
