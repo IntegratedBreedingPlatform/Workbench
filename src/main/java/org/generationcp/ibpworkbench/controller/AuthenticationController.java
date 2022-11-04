@@ -119,6 +119,12 @@ public class AuthenticationController {
 	@Value("${bms.version}")
 	private String workbenchVersion;
 
+	@Value("${security.2fa.enabled}")
+	private boolean enable2FA;
+
+	@Value("${security.2fa.enforce.otp.on.unknown.device}")
+	private boolean enable2FAOnUnknownDevice;
+
 	@Value("${security.2fa.otp.maximum.verification.attempts}")
 	private Integer maximumOtpVerificationAttempt;
 
@@ -127,13 +133,16 @@ public class AuthenticationController {
 
 	private List<Role> roles;
 
-	private LoadingCache<String, Integer> otpMaximumAttemptCache;
+	// Stores the number of times the OTP verification is called per user.
+	// The value stored will expire in a specified number of minutes (otpVerificationAttemptExpiry).
+	private LoadingCache<String, Integer> otpVerificationAttemptCache;
 
 	@PostConstruct
 	public void initialize() {
 		this.roles = this.roleService.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
-		this.otpMaximumAttemptCache = CacheBuilder.newBuilder().refreshAfterWrite(this.otpVerificationAttemptExpiry, TimeUnit.MINUTES)
+		// This is to track the number of OTP verification attempts per user.
+		this.otpVerificationAttemptCache = CacheBuilder.newBuilder().refreshAfterWrite(this.otpVerificationAttemptExpiry, TimeUnit.MINUTES)
 			.build(new CacheLoader<String, Integer>() {
 
 				public Integer load(final String key) {
@@ -197,21 +206,28 @@ public class AuthenticationController {
 		final Map<String, Object> response = new LinkedHashMap<>();
 		// Create one time password verification code and then send the code to the user's email
 		final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
-		if (this.workbenchUserService.isValidUserLogin(model)) {
+		if (this.enable2FA && this.workbenchUserService.isValidUserLogin(model)) {
 			final OneTimePasswordDto oneTimePasswordDto = this.oneTimePasswordService.createOneTimePassword();
 
 			final Optional<UserDeviceMetaDataDto> knownUserDeviceMetaDataDtoOptional =
 				this.getKnownUserDevice(workbenchUser.getUserid(), request);
 
 			try {
-				// If the user is not configured for 2FA, but is logging in a new device.
-				final boolean isNewDevice =
-					!workbenchUser.isMultiFactorAuthenticationEnabled() && !knownUserDeviceMetaDataDtoOptional.isPresent();
-				final String location = UserDeviceMetaDataUtil.extractIp(request);
-				final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(request);
 
-				this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode(), isNewDevice,
-					deviceDetails, location);
+				if (workbenchUser.isMultiFactorAuthenticationEnabled()) {
+					// If the user is configured for 2FA, send OTP email
+					this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+
+				} else if (this.enable2FAOnUnknownDevice && !knownUserDeviceMetaDataDtoOptional.isPresent()) {
+					// If the user is not configured for 2FA, but is logging in a new device, send OTP email for unknown device
+					final String location = UserDeviceMetaDataUtil.extractIp(request);
+					final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(request);
+
+					this.workbenchEmailSenderService.doSendOneTimePasswordRequestOnUnknownDevice(workbenchUser,
+						oneTimePasswordDto.getOtpCode(),
+						deviceDetails, location);
+				}
+
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} catch (final MessagingException e) {
 				response.put(ERRORS, this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
@@ -226,9 +242,9 @@ public class AuthenticationController {
 
 	}
 
-	private Integer getNumberOfAtemptPerUser(final String userName) {
+	private Integer getNumberOfOTPVerificationAtemptPerUser(final String userName) {
 		try {
-			return this.otpMaximumAttemptCache.get(userName);
+			return this.otpVerificationAttemptCache.get(userName);
 		} catch (final Exception e) {
 			// If number of attempt does not yet exist per user, just return 1 (first attempt)
 			return 1;
@@ -241,7 +257,7 @@ public class AuthenticationController {
 		final Map<String, Object> response = new LinkedHashMap<>();
 
 		// To prevent a brute force attack, add a maximum number of OTP code verification attempts
-		final Integer numberOfAttempts = this.getNumberOfAtemptPerUser(model.getUsername());
+		final Integer numberOfAttempts = this.getNumberOfOTPVerificationAtemptPerUser(model.getUsername());
 		if (numberOfAttempts >= this.maximumOtpVerificationAttempt) {
 			response.put(ERRORS,
 				this.messageSource.getMessage("one.time.password.maximum.verification.attempt.exceeded",
@@ -249,7 +265,7 @@ public class AuthenticationController {
 					LocaleContextHolder.getLocale()));
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		this.otpMaximumAttemptCache.put(model.getUsername(), numberOfAttempts + 1);
+		this.otpVerificationAttemptCache.put(model.getUsername(), numberOfAttempts + 1);
 
 		// Verify if the OTP code is valid
 		if (this.workbenchUserService.isValidUserLogin(model) && this.oneTimePasswordService.isOneTimePasswordValid(model.getOtpCode())) {
@@ -297,7 +313,8 @@ public class AuthenticationController {
 			// Require one time password verification if:
 			// The user is explicitly enabled for two-factor authentication
 			// Or the user logged in from a new device/location.
-			if (workbenchUser.isMultiFactorAuthenticationEnabled() || !knownUserDeviceMetaDataDtoOptional.isPresent()) {
+			if (this.enable2FA && (workbenchUser.isMultiFactorAuthenticationEnabled() || (this.enable2FAOnUnknownDevice
+				&& !knownUserDeviceMetaDataDtoOptional.isPresent()))) {
 				out.put("requireOneTimePassword", Boolean.TRUE);
 			} else {
 				// If the user account is not enabled for two-factor authentication, immediately create authentication token.
@@ -500,7 +517,7 @@ public class AuthenticationController {
 		this.roles = roles;
 	}
 
-	private void addOrUpdateKnownDevices(final Integer userId, final HttpServletRequest httpServletRequest) {
+	protected void addOrUpdateKnownDevices(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
@@ -514,11 +531,31 @@ public class AuthenticationController {
 		}
 	}
 
-	private Optional<UserDeviceMetaDataDto> getKnownUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
+	protected Optional<UserDeviceMetaDataDto> getKnownUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
 
 		return this.userDeviceMetaDataService.findExistingDevice(userId, deviceDetails, location);
+	}
+
+	protected void setEnable2FA(final boolean enable2FA) {
+		this.enable2FA = enable2FA;
+	}
+
+	protected void setEnable2FAOnUnknownDevice(final boolean enable2FAOnUnknownDevice) {
+		this.enable2FAOnUnknownDevice = enable2FAOnUnknownDevice;
+	}
+
+	protected void setMaximumOtpVerificationAttempt(final Integer maximumOtpVerificationAttempt) {
+		this.maximumOtpVerificationAttempt = maximumOtpVerificationAttempt;
+	}
+
+	protected void setOtpVerificationAttemptExpiry(final Integer otpVerificationAttemptExpiry) {
+		this.otpVerificationAttemptExpiry = otpVerificationAttemptExpiry;
+	}
+
+	protected void setOtpVerificationAttemptCache(final LoadingCache<String, Integer> otpVerificationAttemptCache) {
+		this.otpVerificationAttemptCache = otpVerificationAttemptCache;
 	}
 }
