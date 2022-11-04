@@ -115,7 +115,7 @@ public class WorkbenchEmailSenderService {
 		}
 	}
 
-	public void doSendOneTimePasswordRequestOnUnknownDevice(final WorkbenchUser user, final Integer otpCode,
+	public void doSendOneTimePasswordRequestForUnknownDevice(final WorkbenchUser user, final Integer otpCode,
 		final String deviceDetails, final String location)
 		throws MessagingException {
 

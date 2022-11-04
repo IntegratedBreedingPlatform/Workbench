@@ -120,7 +120,7 @@ public class AuthenticationController {
 	private String workbenchVersion;
 
 	@Value("${security.2fa.enabled}")
-	private boolean enable2FA;
+	private boolean enableTwoFactorAuthentication;
 
 	@Value("${security.2fa.enforce.otp.on.unknown.device}")
 	private boolean enable2FAOnUnknownDevice;
@@ -204,26 +204,28 @@ public class AuthenticationController {
 	@RequestMapping(value = "/otp/create", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> createOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request) {
 		final Map<String, Object> response = new LinkedHashMap<>();
-		// Create one time password verification code and then send the code to the user's email
+		// Generate one-time password (OTP code) and then send it to the user's email
 		final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
-		if (this.enable2FA && this.workbenchUserService.isValidUserLogin(model)) {
+		// Generate OTP Code only if two-factor authentication is enabled in the system
+		// and username + password is valid
+		if (this.enableTwoFactorAuthentication && this.workbenchUserService.isValidUserLogin(model)) {
 			final OneTimePasswordDto oneTimePasswordDto = this.oneTimePasswordService.createOneTimePassword();
 
-			final Optional<UserDeviceMetaDataDto> knownUserDeviceMetaDataDtoOptional =
-				this.getKnownUserDevice(workbenchUser.getUserid(), request);
+			final Optional<UserDeviceMetaDataDto> existingUserDeviceMetaDataDtoOptional =
+				this.findExistingUserDevice(workbenchUser.getUserid(), request);
 
 			try {
 
 				if (workbenchUser.isMultiFactorAuthenticationEnabled()) {
-					// If the user is configured for 2FA, send OTP email
+					// If the user is configured for 2FA, send an OTP email
 					this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
 
-				} else if (this.enable2FAOnUnknownDevice && !knownUserDeviceMetaDataDtoOptional.isPresent()) {
+				} else if (this.enable2FAOnUnknownDevice && !existingUserDeviceMetaDataDtoOptional.isPresent()) {
 					// If the user is not configured for 2FA, but is logging in a new device, send OTP email for unknown device
 					final String location = UserDeviceMetaDataUtil.extractIp(request);
 					final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(request);
 
-					this.workbenchEmailSenderService.doSendOneTimePasswordRequestOnUnknownDevice(workbenchUser,
+					this.workbenchEmailSenderService.doSendOneTimePasswordRequestForUnknownDevice(workbenchUser,
 						oneTimePasswordDto.getOtpCode(),
 						deviceDetails, location);
 				}
@@ -283,7 +285,7 @@ public class AuthenticationController {
 				response.put("token", apiAuthToken.getToken());
 				response.put("expires", apiAuthToken.getExpires());
 			}
-			this.addOrUpdateKnownDevices(workbenchUser.getUserid(), request);
+			this.addOrUpdateUserDevice(workbenchUser.getUserid(), request);
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} else {
 			response.put(ERRORS,
@@ -308,12 +310,12 @@ public class AuthenticationController {
 
 			final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
 			final Optional<UserDeviceMetaDataDto> knownUserDeviceMetaDataDtoOptional =
-				this.getKnownUserDevice(workbenchUser.getUserid(), request);
+				this.findExistingUserDevice(workbenchUser.getUserid(), request);
 
 			// Require one time password verification if:
 			// The user is explicitly enabled for two-factor authentication
 			// Or the user logged in from a new device/location.
-			if (this.enable2FA && (workbenchUser.isMultiFactorAuthenticationEnabled() || (this.enable2FAOnUnknownDevice
+			if (this.enableTwoFactorAuthentication && (workbenchUser.isMultiFactorAuthenticationEnabled() || (this.enable2FAOnUnknownDevice
 				&& !knownUserDeviceMetaDataDtoOptional.isPresent()))) {
 				out.put("requireOneTimePassword", Boolean.TRUE);
 			} else {
@@ -328,7 +330,7 @@ public class AuthenticationController {
 					out.put("token", apiAuthToken.getToken());
 					out.put("expires", apiAuthToken.getExpires());
 				}
-				this.addOrUpdateKnownDevices(workbenchUser.getUserid(), request);
+				this.addOrUpdateUserDevice(workbenchUser.getUserid(), request);
 			}
 
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
@@ -517,30 +519,31 @@ public class AuthenticationController {
 		this.roles = roles;
 	}
 
-	protected void addOrUpdateKnownDevices(final Integer userId, final HttpServletRequest httpServletRequest) {
+	protected void addOrUpdateUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
-		// Only add device details if it doesn't exist yet
-		final Optional<UserDeviceMetaDataDto> knownUserDevice = this.getKnownUserDevice(userId, httpServletRequest);
+
+		final Optional<UserDeviceMetaDataDto> knownUserDevice = this.findExistingUserDevice(userId, httpServletRequest);
 		if (!knownUserDevice.isPresent()) {
-			this.userDeviceMetaDataService.addToExistingDevice(userId, deviceDetails, location);
+			// Only add device details if it doesn't exist yet
+			this.userDeviceMetaDataService.addUserDevice(userId, deviceDetails, location);
 		} else {
-			// Update last logged in date of this device
-			this.userDeviceMetaDataService.updateLastLoggedIn(userId, deviceDetails, location);
+			// If it already exists, update last_logged_in date of this device
+			this.userDeviceMetaDataService.updateUserDeviceLastLoggedIn(userId, deviceDetails, location);
 		}
 	}
 
-	protected Optional<UserDeviceMetaDataDto> getKnownUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
+	protected Optional<UserDeviceMetaDataDto> findExistingUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
 
-		return this.userDeviceMetaDataService.findExistingDevice(userId, deviceDetails, location);
+		return this.userDeviceMetaDataService.findUserDevice(userId, deviceDetails, location);
 	}
 
-	protected void setEnable2FA(final boolean enable2FA) {
-		this.enable2FA = enable2FA;
+	protected void setEnableTwoFactorAuthentication(final boolean enableTwoFactorAuthentication) {
+		this.enableTwoFactorAuthentication = enableTwoFactorAuthentication;
 	}
 
 	protected void setEnable2FAOnUnknownDevice(final boolean enable2FAOnUnknownDevice) {

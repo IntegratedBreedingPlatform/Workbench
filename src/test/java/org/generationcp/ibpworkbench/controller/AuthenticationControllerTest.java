@@ -118,9 +118,9 @@ public class AuthenticationControllerTest {
 		Mockito.doReturn("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36")
 			.when(this.httpServletRequest).getHeader("User-Agent");
 
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.empty());
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 
-		this.controller.setEnable2FA(false);
+		this.controller.setEnableTwoFactorAuthentication(false);
 		this.controller.setEnable2FAOnUnknownDevice(false);
 		this.controller.setMaximumOtpVerificationAttempt(5);
 		this.controller.setOtpVerificationAttemptExpiry(5);
@@ -214,7 +214,7 @@ public class AuthenticationControllerTest {
 	public void testValidateLogin_TwoFactorAuthenticationIsEnabledPerUser() throws Exception {
 
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername(RandomStringUtils.randomAlphabetic(10));
@@ -240,7 +240,7 @@ public class AuthenticationControllerTest {
 	public void testValidateLogin_TwoFactorAuthenticationIsNotEnabledPerUser_UserLogsInToUnknownDevice() throws Exception {
 
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 		// Enforce two-factor authentication if the user logs in to an unknown device
 		this.controller.setEnable2FAOnUnknownDevice(true);
 
@@ -257,7 +257,7 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.workbenchUserService.isValidUserLogin(userAccount)).thenReturn(true);
 
 		// Return en empty device, so that the system knows that it's the first time the user logs into the device
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.empty());
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 
 		final ResponseEntity<Map<String, Object>> out =
 			this.controller.validateLogin(userAccount, this.result, this.httpServletRequest);
@@ -271,7 +271,7 @@ public class AuthenticationControllerTest {
 	public void testValidateLogin_TwoFactorAuthenticationIsNotEnabledPerUser_UserLogsInToAKnownDevice() throws Exception {
 
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 		// Enforce two-factor authentication if the user logs in to an unknown device
 		this.controller.setEnable2FAOnUnknownDevice(true);
 
@@ -292,7 +292,7 @@ public class AuthenticationControllerTest {
 		userDeviceMetaDataDto.setUserId(workbenchUser.getUserid());
 		userDeviceMetaDataDto.setDeviceDetails(RandomStringUtils.randomAlphabetic(10));
 		userDeviceMetaDataDto.setLocation(RandomStringUtils.randomAlphabetic(10));
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
 
 		final ResponseEntity<Map<String, Object>> out =
 			this.controller.validateLogin(userAccount, this.result, this.httpServletRequest);
@@ -305,7 +305,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testCreateOTP_TwoFactorAuthenticationIsNotEnabledPerUser() throws MessagingException {
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername(RandomStringUtils.randomAlphabetic(10));
@@ -332,7 +332,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testCreateOTP_TwoFactorAuthenticationIsNotEnabledPerUser_UserLogsInToAKnownDevice() throws MessagingException {
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 		// Enforce two-factor authentication if the user logs in to an unknown device
 		this.controller.setEnable2FAOnUnknownDevice(true);
 
@@ -356,7 +356,7 @@ public class AuthenticationControllerTest {
 		userDeviceMetaDataDto.setUserId(workbenchUser.getUserid());
 		userDeviceMetaDataDto.setDeviceDetails(RandomStringUtils.randomAlphabetic(10));
 		userDeviceMetaDataDto.setLocation(RandomStringUtils.randomAlphabetic(10));
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
 
 		final ResponseEntity<Map<String, Object>> out =
 			this.controller.createOTP(userAccount, this.httpServletRequest);
@@ -372,7 +372,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testCreateOTP_TwoFactorAuthenticationIsNotEnabledPerUser_UserLogsInToAnUnknownDevice() throws MessagingException {
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 		// Enforce two-factor authentication if the user logs in to an unknown device
 		this.controller.setEnable2FAOnUnknownDevice(true);
 
@@ -392,7 +392,7 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.oneTimePasswordService.createOneTimePassword()).thenReturn(oneTimePasswordDto);
 
 		// Return en empty device, so that the system knows that it's the first time the user logs into the device
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.empty());
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 
 		final ResponseEntity<Map<String, Object>> out =
 			this.controller.createOTP(userAccount, this.httpServletRequest);
@@ -402,13 +402,13 @@ public class AuthenticationControllerTest {
 
 		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
 		Mockito.verify(this.workbenchEmailSenderService)
-			.doSendOneTimePasswordRequestOnUnknownDevice(workbenchUser, oneTimePasswordDto.getOtpCode(), deviceDetails, location);
+			.doSendOneTimePasswordRequestForUnknownDevice(workbenchUser, oneTimePasswordDto.getOtpCode(), deviceDetails, location);
 	}
 
 	@Test
 	public void testCreateOTP_ErrorInSendingEmail() throws MessagingException {
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 		// Enforce two-factor authentication if the user logs in to an unknown device
 		this.controller.setEnable2FAOnUnknownDevice(false);
 
@@ -446,7 +446,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testCreateOTP_UserIsNotValid() throws MessagingException {
 		// Enable two-factor-authentication in the system
-		this.controller.setEnable2FA(true);
+		this.controller.setEnableTwoFactorAuthentication(true);
 
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername(RandomStringUtils.randomAlphabetic(10));
@@ -473,7 +473,7 @@ public class AuthenticationControllerTest {
 	@Test
 	public void testCreateOTP_TwoFactorIsNotEnabledInTheSystem() throws MessagingException {
 		// Disable two-factor-authentication in the system
-		this.controller.setEnable2FA(false);
+		this.controller.setEnableTwoFactorAuthentication(false);
 
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setUsername(RandomStringUtils.randomAlphabetic(10));
@@ -526,7 +526,7 @@ public class AuthenticationControllerTest {
 		assertEquals(token.getExpires(), (long) out.getBody().get("expires"));
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
-		Mockito.verify(this.userDeviceMetaDataService).addToExistingDevice(workbenchUser.getUserid(), deviceDetails, location);
+		Mockito.verify(this.userDeviceMetaDataService).addUserDevice(workbenchUser.getUserid(), deviceDetails, location);
 	}
 
 	@Test
@@ -634,13 +634,13 @@ public class AuthenticationControllerTest {
 	public void testAddOrUpdateKnownDevices_AddUnknownDevice() {
 
 		// Return en empty device, so that the system knows that it's the first time the user logs into the device
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.empty());
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
 
-		this.controller.addOrUpdateKnownDevices(1, this.httpServletRequest);
+		this.controller.addOrUpdateUserDevice(1, this.httpServletRequest);
 
-		Mockito.verify(this.userDeviceMetaDataService).addToExistingDevice(1, deviceDetails, location);
+		Mockito.verify(this.userDeviceMetaDataService).addUserDevice(1, deviceDetails, location);
 
 	}
 
@@ -652,14 +652,14 @@ public class AuthenticationControllerTest {
 		userDeviceMetaDataDto.setUserId(userId);
 		userDeviceMetaDataDto.setDeviceDetails(RandomStringUtils.randomAlphabetic(10));
 		userDeviceMetaDataDto.setLocation(RandomStringUtils.randomAlphabetic(10));
-		Mockito.when(this.userDeviceMetaDataService.findExistingDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
 
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
 		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
 
-		this.controller.addOrUpdateKnownDevices(userId, this.httpServletRequest);
+		this.controller.addOrUpdateUserDevice(userId, this.httpServletRequest);
 
-		Mockito.verify(this.userDeviceMetaDataService).updateLastLoggedIn(userId, deviceDetails, location);
+		Mockito.verify(this.userDeviceMetaDataService).updateUserDeviceLastLoggedIn(userId, deviceDetails, location);
 	}
 
 	@Test
