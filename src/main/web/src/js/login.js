@@ -19,6 +19,9 @@
 		$select = $('.login-select'),
 		$select2Container = $('.select2-container'),
 
+		$licenseWarningModal = $('#licenseWarningModal'),
+		$dismissLicenseWarning = $('#dismissLicenseWarning'),
+
 		createAccount = 'login-create-account',
 		forgotPasswordClass = 'login-forgot-password',
 		validationError = 'login-validation-error',
@@ -233,6 +236,88 @@
 		return false;
 	}
 
+	function doProcessAction(loginFormRef) {
+		if (isLoginDisplayed()) {
+			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
+				.done(function (data) {
+					clearErrors();
+					/**
+					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
+					 * and uses it to make calls to BMSAPI.
+					 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
+					 * The prefix "bms" is configured in ontology.js as part of app.config:
+					 *     localStorageServiceProvider.setPrefix('bms');
+					 */
+					localStorage['bms.xAuthToken'] = JSON.stringify(data);
+					if ((display_name && return_url) || (client_id && redirect_uri)) {
+						toggleAuthorizeScreen()
+					} else {
+						// no login problems! submit
+						loginFormRef.submit();
+					}
+				})
+				.fail(function (jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+
+					if (failedLoginAttemptCount < 2) {
+						failedLoginAttemptCount++;
+					} else {
+						toggleForgotPasswordScreen();
+					}
+				})
+				.always(function () {
+					$loginSubmit.removeClass('loading');
+				});
+		} else {
+			// Create account or forgot password
+			var userForm = $loginForm.serialize();
+
+			$.post($loginForm.attr('action'), userForm)
+				.done(function() {
+					// Clear form fields and show the login screen
+					clearErrors();
+
+					if (isForgotPasswordScreenDisplayed()) {
+						// we add notification that the login email has been set
+						$('.js-login-forgot-password-input').val('');
+						toggleForgotPasswordScreen();
+
+						doSendPasswordRequestEmail(userForm);
+
+					} else {
+						// this will automatically login the user.
+						$loginForm.attr('action', loginAction);
+						loginFormRef.submit();
+					}
+				})
+				.fail(function(jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+				})
+				.always(function() {
+					$loginSubmit.removeClass('loading');
+				});
+		}
+	}
+
+	function showWarningModal(message, loginFormRef) {
+		bootbox.dialog({
+			message: "<span class=\"fa login-warning-icon login-modal-icon\">&#xf071;</span>"
+				+ message,
+			closeButton: false,
+			onEscape: false,
+			className: "login-modal",
+			buttons: {
+				ok: {
+					label: "Dismiss",
+					className: 'btn-primary',
+					callback: function() {
+						doProcessAction(loginFormRef);
+					}
+				}
+			}
+		});
+	}
+
 	// Record whether media queries are supported in this browser as a class
 	if (!Modernizr.mq('only all')) {
 		$('html').addClass('no-mq');
@@ -314,10 +399,8 @@
 		e.preventDefault();
 
 		var loginFormRef = this,
-			login = isLoginDisplayed(),
-			isPasswordScreen = isForgotPasswordScreenDisplayed(),
-			errorMessage = isPasswordScreen ? validateForgotPasswordInputs() :
-				(login ? validateSignInInputs() : validateCreateAccountInputs());
+			errorMessage = isForgotPasswordScreenDisplayed() ? validateForgotPasswordInputs() :
+				(isLoginDisplayed() ? validateSignInInputs() : validateCreateAccountInputs());
 
 		if (errorMessage) {
 			displayClientError(errorMessage);
@@ -332,67 +415,16 @@
 
 		$loginSubmit.addClass('loading').delay(200);
 
-		// Continue with form submit - login is currently handled server side
-		if (login) {
-			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
-				.done(function(data) {
-					clearErrors();
-					/**
-					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
-					 * and uses it to make calls to BMSAPI.
-					 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
-					 * The prefix "bms" is configured in ontology.js as part of app.config:
-					 *     localStorageServiceProvider.setPrefix('bms');
-					 */
-					localStorage['bms.xAuthToken'] = JSON.stringify(data);
-					if ((display_name && return_url) || (client_id && redirect_uri)) {
-						toggleAuthorizeScreen()
-					} else {
-						// no login problems! submit
-						loginFormRef.submit();
-					}
-				})
-				.fail(function(jqXHR) {
-					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
-
-					if (failedLoginAttemptCount < 2) {
-						failedLoginAttemptCount++;
-					} else {
-						toggleForgotPasswordScreen();
-					}
-				})
-				.always(function() {
-					$loginSubmit.removeClass('loading');
-				});
-		} else {
-			// Create account or forgot password
-			var userForm = $loginForm.serialize();
-
-			$.post($loginForm.attr('action'), userForm)
-				.done(function() {
-					// Clear form fields and show the login screen
-					clearErrors();
-
-					if (isPasswordScreen) {
-						// we add notification that the login email has been set
-						$('.js-login-forgot-password-input').val('');
-						toggleForgotPasswordScreen();
-
-						doSendPasswordRequestEmail(userForm);
-
-					} else {
-						// this will automatically login the user.
-						$loginForm.attr('action', loginAction);
-						loginFormRef.submit();
-					}
-				})
-				.fail(function(jqXHR) {
-					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
-				})
-				.always(function() {
-					$loginSubmit.removeClass('loading');
-				});
-		}
+		$.post('/bmsapi/breeding_view/validate-license').done(function(data) {
+			if(data && data.warnings) {
+				showWarningModal(data.warnings, loginFormRef);
+			}
+		}).fail(function(jqXHR) {
+			$errorText.append($.parseHTML(jqXHR.responseJSON ? jqXHR.responseJSON.errors : ""));
+			$error.removeClass('login-valid');
+			$loginForm.addClass(formInvalid);
+			$loginSubmit.removeClass('loading');
+		})
 	});
 
 }());
