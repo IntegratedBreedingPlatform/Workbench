@@ -42,6 +42,7 @@ describe('Variables Controller', function() {
 				description: ''
 			}],
 			favourite: true,
+			obsolete: false,
 			metadata: {
 				dateCreated: new Date()
 			}
@@ -622,13 +623,13 @@ describe('Variables Controller', function() {
 
 		it('should return true if filter options are not set', function() {
 			scope.filterOptions = undefined;
-			expect(scope.optionsFilter()).toBe(true);
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 
 			scope.filterOptions = { variableTypes: undefined };
-			expect(scope.optionsFilter()).toBe(true);
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 
-			scope.filterOptions = { variableTypes: [], obsolete: true };
-			expect(scope.optionsFilter()).toBe(true);
+			scope.filterOptions = { variableTypes: [] };
+			expect(scope.optionsFilter(PLANT_VIGOR_CONVERTED)).toBe(true);
 		});
 
 		it('should return true if there is a match of variable type in variable and filter options', function() {
