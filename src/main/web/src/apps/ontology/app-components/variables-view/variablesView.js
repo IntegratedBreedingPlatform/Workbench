@@ -58,7 +58,7 @@
 			ctrl.favouriteVariables = [];
 			ctrl.showAllVariablesThrobberWrapper = true;
 			ctrl.showFavouritesThrobberWrapper = true;
-			ctrl.colHeaders = ['name', 'property', 'method', 'scale', 'action-favourite'];
+			ctrl.colHeaders = ['action-obsolete' ,'name', 'property', 'method', 'scale', 'action-favourite'];
 			ctrl.colFormulaHeaders = ['calculation','inputVariables','buttons'];
 			ctrl.problemGettingList = false;
 
@@ -67,14 +67,15 @@
 			$scope.filterOptions = {
 				variableTypes: [],
 				scaleDataType: null,
-				obsolete: false
+				obsolete: false,
+				nonObsolete: false
 			};
 
 			$scope.isFilterActive = function() {
 				var variableTypesFilterActive = $scope.filterOptions.variableTypes.length > 0,
 					scaleDataTypeFilterActive = !!$scope.filterOptions.scaleDataType,
 					dateCreatedFilterActive = !!$scope.filterOptions.dateCreatedFrom || !!$scope.filterOptions.dateCreatedTo,
-					obsoleteFilterActive = !!$scope.filterOptions.obsolete;
+					obsoleteFilterActive = !!$scope.filterOptions.obsolete || !!$scope.filterOptions.nonObsolete;
 
 				return variableTypesFilterActive || scaleDataTypeFilterActive || dateCreatedFilterActive || obsoleteFilterActive;
 			};
@@ -101,7 +102,9 @@
 					});
 				}
 
-				obsoleteFilterMatch =  $scope.filterOptions.obsolete || angular.equals(variable.obsolete, $scope.filterOptions.obsolete);
+				obsoleteFilterMatch =  ($scope.filterOptions.obsolete && angular.equals(variable.obsolete, true))
+					|| ($scope.filterOptions.nonObsolete && angular.equals(variable.obsolete, false))
+					|| (!$scope.filterOptions.obsolete && !$scope.filterOptions.nonObsolete  && angular.equals(variable.obsolete, false));
 
 				if ($scope.filterOptions.scaleDataType) {
 					scaleDataTypeMatch =  angular.equals(variable.scaleDataType, $scope.filterOptions.scaleDataType);
@@ -206,9 +209,13 @@
 					metadata: {
 						dateCreated: tempDateCreated
 					},
+					'action-obsolete': {
+						iconValue: variable.obsolete ? 'warning-sign' : '',
+						tooltip: variable.obsolete ? 'This variable is obsolete' : ''
+					},
 					'action-favourite': {
-						iconValue: variable.favourite ? 'star' : 'star-empty',
-						iconFunction: $scope.toggleFavourite
+						iconValue: variable.obsolete ? '' : (variable.favourite ? 'star' : 'star-empty'),
+						iconFunction: variable.obsolete ? '' : $scope.toggleFavourite
 					}
 				};
 
@@ -248,7 +255,8 @@
 					variables.some(function(variable) {
 						if (variable.alias) {
 							// Add alias after name
-							ctrl.colHeaders.splice(1, 0, ALIAS);
+							const nameIndex = ctrl.colHeaders.indexOf('name');
+							ctrl.colHeaders.splice(nameIndex + 1, 0, ALIAS);
 							return true;
 						}
 					});

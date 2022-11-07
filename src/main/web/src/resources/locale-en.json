@@ -81,7 +81,7 @@
 		"scale": "Scale",
 		"variableType": "Variable Type",
 		"metadata": "Metadata",
-		"obsolete": "Show obsolete variables",
+		"obsolete": "Is obsolete?",
 		"date": {
 			"dateCreated": "Date Created",
 			"dateLastModified": "Date Last Modified",
@@ -225,9 +225,7 @@
 			"germplasm": "Germplasm",
             "breedingMethods": "BreedingMethods",
             "lists": "Lists",
-			"system.variable":"System Variable",
-			"markObsolete": "Mark variable obsolete",
-			"restoreVariable": "Restore variable"
+			"system.variable":"System Variable"
 		}
 	},
 
