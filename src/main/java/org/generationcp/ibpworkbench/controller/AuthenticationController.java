@@ -131,6 +131,9 @@ public class AuthenticationController {
 	@Value("${security.2fa.otp.maximum.verification.attempts.expiry.interval}")
 	private Integer otpVerificationAttemptExpiry;
 
+	@Value("${security.2fa.otp.length}")
+	private int otpCodeLength;
+
 	private List<Role> roles;
 
 	// Stores the number of times the OTP verification is called per user.
@@ -156,6 +159,7 @@ public class AuthenticationController {
 
 		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
 		model.addAttribute("roles", this.roles);
+		model.addAttribute("otpCodeLength", this.otpCodeLength);
 		this.populateCommomModelAttributes(model);
 
 		return "login";

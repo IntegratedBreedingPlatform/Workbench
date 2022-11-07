@@ -481,13 +481,20 @@
 		}
 	}
 
+	$otpCode.on('keypress', function (evt) {
+		// Only ASCII character in that range allowed
+		var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+		if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+			return false;
+		return true;
+	}).on('focusout', function (evt) {
+		var $this = $(this);
+		$this.val($this.val().replace(/[^0-9]/g, ''));
+	}).on('paste', function (evt) {
+		var $this = $(this);
+		setTimeout(function () {
+			$this.val($this.val().replace(/[^0-9]/g, ''));
+		}, 5);
+	});
+
 }());
-
-function numbersOnly(evt) {
-
-	// Only ASCII character in that range allowed
-	var ASCIICode = (evt.which) ? evt.which : evt.keyCode
-	if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
-		return false;
-	return true;
-}

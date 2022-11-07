@@ -109,7 +109,7 @@
 		</div>
 		<p>Please enter the verification code sent to your registered email:</p>
 		<div class="login-form-control">
-			<input class="js-otp-code login-otp-input login-flat-control" id="otpCode" name="otpCode" onkeypress="return numbersOnly(event)" type=text" maxlength="8"></input>
+			<input class="js-otp-code login-otp-input login-flat-control" id="otpCode" name="otpCode" type=text" th:maxlength="${otpCodeLength}" autocomplete="off"></input>
 		</div>
 		<div class="js-login-otp-error login-otp-valid">
 			<span class="fa login-warning-icon">&#xf12a;</span>
