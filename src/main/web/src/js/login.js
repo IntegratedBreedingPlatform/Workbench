@@ -438,12 +438,16 @@
 							$error.removeClass('login-valid');
 							$loginForm.addClass(formInvalid);
 							$loginSubmit.removeClass('loading');
+							return;
 						} else if (new Date(currentDate.getTime() + thirtyDaysInMs) > expiryDate) {
 							showWarningModal("Your organization\'s BMS licence is going to expire soon (" + expiry + ")."
 								+ CONTACT_SUPPORT_MSG, loginFormRef);
+							return;
 						}
 					}
 				}
+
+				doProcessAction(loginFormRef);
 			}).fail(function(jqXHR) {
 				$errorText.append("Cannot retrieve license information.");
 				$error.removeClass('login-valid');
