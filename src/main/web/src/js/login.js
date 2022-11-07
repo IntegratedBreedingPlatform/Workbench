@@ -419,12 +419,33 @@
 		var validateLicense = $isLicenseValidationEnabled.val() === "true";
 
 		if (validateLicense) {
-			$.post('/bmsapi/breeding_view/validate-license').done(function(data) {
-				if(data && data.warnings) {
-					showWarningModal(data.warnings, loginFormRef);
+			$.get('/bmsapi/breeding-view-licenses').done(function(data) {
+				if(data && data.length > 0) {
+					const expiry = data[0].expiry;
+
+					if (expiry) {
+						const CONTACT_SUPPORT_MSG = " Please contact <a "
+							+ "href=\"https://ibplatform.atlassian.net/servicedesk/customer/portal/4/group/25/create/51\" target=\"_blank\">"
+							+ "IBP support</a>.";
+
+						const expiryDate = new Date(expiry);
+						const currentDate = new Date();
+						const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+
+						if (currentDate > expiryDate) {
+							$errorText.append($.parseHTML("Login unauthorized: No BMS license has been found or has been expired."
+								+ CONTACT_SUPPORT_MSG));
+							$error.removeClass('login-valid');
+							$loginForm.addClass(formInvalid);
+							$loginSubmit.removeClass('loading');
+						} else if (new Date(currentDate.getTime() + thirtyDaysInMs) > expiryDate) {
+							showWarningModal("Your organization\'s BMS licence is going to expire soon (" + expiry + ")."
+								+ CONTACT_SUPPORT_MSG, loginFormRef);
+						}
+					}
 				}
 			}).fail(function(jqXHR) {
-				$errorText.append($.parseHTML(jqXHR.responseJSON ? jqXHR.responseJSON.errors : ""));
+				$errorText.append("Cannot retrieve license information.");
 				$error.removeClass('login-valid');
 				$loginForm.addClass(formInvalid);
 				$loginSubmit.removeClass('loading');
