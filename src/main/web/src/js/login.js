@@ -21,6 +21,7 @@
 
 		$licenseWarningModal = $('#licenseWarningModal'),
 		$dismissLicenseWarning = $('#dismissLicenseWarning'),
+		$isLicenseValidationEnabled = $('#isLicenseValidationEnabled'),
 
 		createAccount = 'login-create-account',
 		forgotPasswordClass = 'login-forgot-password',
@@ -415,16 +416,22 @@
 
 		$loginSubmit.addClass('loading').delay(200);
 
-		$.post('/bmsapi/breeding_view/validate-license').done(function(data) {
-			if(data && data.warnings) {
-				showWarningModal(data.warnings, loginFormRef);
-			}
-		}).fail(function(jqXHR) {
-			$errorText.append($.parseHTML(jqXHR.responseJSON ? jqXHR.responseJSON.errors : ""));
-			$error.removeClass('login-valid');
-			$loginForm.addClass(formInvalid);
-			$loginSubmit.removeClass('loading');
-		})
+		var validateLicense = $isLicenseValidationEnabled.val() === "true";
+
+		if (validateLicense) {
+			$.post('/bmsapi/breeding_view/validate-license').done(function(data) {
+				if(data && data.warnings) {
+					showWarningModal(data.warnings, loginFormRef);
+				}
+			}).fail(function(jqXHR) {
+				$errorText.append($.parseHTML(jqXHR.responseJSON ? jqXHR.responseJSON.errors : ""));
+				$error.removeClass('login-valid');
+				$loginForm.addClass(formInvalid);
+				$loginSubmit.removeClass('loading');
+			});
+		} else {
+			doProcessAction(loginFormRef);
+		}
 	});
 
 }());
