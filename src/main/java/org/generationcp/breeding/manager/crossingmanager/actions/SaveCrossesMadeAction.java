@@ -11,16 +11,8 @@
 
 package org.generationcp.breeding.manager.crossingmanager.actions;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.tuple.Triple;
 import org.generationcp.breeding.manager.crossingmanager.pojos.CrossesMade;
 import org.generationcp.breeding.manager.crossingmanager.pojos.GermplasmListEntry;
@@ -42,8 +34,15 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Creates Germplasm, GermplasmList, GermplasmListData records for crosses defined. Adds a ProjectActivity (Workbench) record for the save
@@ -60,7 +59,6 @@ public class SaveCrossesMadeAction implements Serializable {
 
 	private static final Integer GERMPLASM_GNPGS = 2;
 	private static final Integer GERMPLASM_GRPLCE = 0;
-	private static final Integer GERMPLASM_LGID = 0;
 	private static final Integer GERMPLASM_MGID = 0;
 	private static final Integer GERMPLASM_REFID = 0;
 
@@ -260,7 +258,6 @@ public class SaveCrossesMadeAction implements Serializable {
 			final Germplasm g = triple.getLeft();
 			g.setGnpgs(SaveCrossesMadeAction.GERMPLASM_GNPGS);
 			g.setGrplce(SaveCrossesMadeAction.GERMPLASM_GRPLCE);
-			g.setLgid(SaveCrossesMadeAction.GERMPLASM_LGID);
 			g.setMgid(SaveCrossesMadeAction.GERMPLASM_MGID);
 			g.setReferenceId(SaveCrossesMadeAction.GERMPLASM_REFID);
 
