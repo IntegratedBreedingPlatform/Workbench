@@ -441,7 +441,7 @@
 							$loginSubmit.removeClass('loading');
 							return;
 						} else if (new Date(currentDate.getTime() + thirtyDaysInMs) > expiryDate) {
-							showWarningModal("Your organization\'s BMS licence is going to expire soon (" + expiry + ")."
+							showWarningModal("Your organization\'s BMS license is going to expire soon (" + expiry + ")."
 								+ CONTACT_SUPPORT_MSG, loginFormRef);
 							return;
 						}
