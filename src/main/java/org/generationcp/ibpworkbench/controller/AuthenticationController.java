@@ -67,6 +67,7 @@ public class AuthenticationController {
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
 	private static final String NOT_EXISTENT_USER = "User does not exist";
+	public static final String USER_AGENT = "User-Agent";
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
@@ -222,22 +223,24 @@ public class AuthenticationController {
 
 				if (workbenchUser.isMultiFactorAuthenticationEnabled()) {
 					// If the user is configured for 2FA, send an OTP email
-					this.workbenchEmailSenderService.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+					this.workbenchEmailSenderService.sendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
 
 				} else if (this.enable2FAOnUnknownDevice && !existingUserDeviceMetaDataDtoOptional.isPresent()) {
 					// If the user is not configured for 2FA, but is logging in a new device, send OTP email for unknown device
 					final String location = UserDeviceMetaDataUtil.extractIp(request);
-					final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(request);
+					final String deviceDetails = request.getHeader(USER_AGENT);
 
-					this.workbenchEmailSenderService.doSendOneTimePasswordRequestForUnknownDevice(workbenchUser,
+					this.workbenchEmailSenderService.sendOneTimePasswordRequestForUnknownDevice(workbenchUser,
 						oneTimePasswordDto.getOtpCode(),
-						deviceDetails, location);
+						UserDeviceMetaDataUtil.parseDeviceDetailsForDisplay(deviceDetails), location);
 				}
 
 				return new ResponseEntity<>(response, HttpStatus.OK);
 			} catch (final MessagingException e) {
-				response.put(ERRORS, this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
-					LocaleContextHolder.getLocale()));
+				final String errorMessage = this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
+					LocaleContextHolder.getLocale());
+				AuthenticationController.LOG.error(errorMessage, e);
+				response.put(ERRORS, errorMessage);
 				return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} else {
@@ -526,7 +529,7 @@ public class AuthenticationController {
 	protected void addOrUpdateUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
+		final String deviceDetails = httpServletRequest.getHeader(USER_AGENT);
 
 		final Optional<UserDeviceMetaDataDto> knownUserDevice = this.findExistingUserDevice(userId, httpServletRequest);
 		if (!knownUserDevice.isPresent()) {
@@ -541,7 +544,7 @@ public class AuthenticationController {
 	protected Optional<UserDeviceMetaDataDto> findExistingUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
 
 		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(httpServletRequest);
+		final String deviceDetails = httpServletRequest.getHeader(USER_AGENT);
 
 		return this.userDeviceMetaDataService.findUserDevice(userId, deviceDetails, location);
 	}

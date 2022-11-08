@@ -60,6 +60,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class AuthenticationControllerTest {
 
 	private static final String TEST_RESET_PASSWORD_TOKEN = "bla_bla_bla";
+	public static final String USER_AGENT = "User-Agent";
 	@Mock
 	private UserAccountValidator userAccountValidator;
 
@@ -116,7 +117,7 @@ public class AuthenticationControllerTest {
 
 		Mockito.doReturn("1.2.3.4").when(this.httpServletRequest).getHeader("x-forwarded-for");
 		Mockito.doReturn("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36")
-			.when(this.httpServletRequest).getHeader("User-Agent");
+			.when(this.httpServletRequest).getHeader(USER_AGENT);
 
 		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 
@@ -326,7 +327,7 @@ public class AuthenticationControllerTest {
 			this.controller.createOTP(userAccount, this.httpServletRequest);
 
 		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
-		Mockito.verify(this.workbenchEmailSenderService).doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+		Mockito.verify(this.workbenchEmailSenderService).sendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
 	}
 
 	@Test
@@ -362,7 +363,7 @@ public class AuthenticationControllerTest {
 			this.controller.createOTP(userAccount, this.httpServletRequest);
 
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
+		final String deviceDetails = UserDeviceMetaDataUtil.parseDeviceDetailsForDisplay(this.httpServletRequest.getHeader(USER_AGENT));
 
 		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
 		// Make sure the system does not send an email.
@@ -398,11 +399,11 @@ public class AuthenticationControllerTest {
 			this.controller.createOTP(userAccount, this.httpServletRequest);
 
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
+		final String deviceDetails = UserDeviceMetaDataUtil.parseDeviceDetailsForDisplay(this.httpServletRequest.getHeader(USER_AGENT));
 
 		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
 		Mockito.verify(this.workbenchEmailSenderService)
-			.doSendOneTimePasswordRequestForUnknownDevice(workbenchUser, oneTimePasswordDto.getOtpCode(), deviceDetails, location);
+			.sendOneTimePasswordRequestForUnknownDevice(workbenchUser, oneTimePasswordDto.getOtpCode(), deviceDetails, location);
 	}
 
 	@Test
@@ -428,7 +429,7 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.oneTimePasswordService.createOneTimePassword()).thenReturn(oneTimePasswordDto);
 
 		Mockito.doThrow(MessagingException.class).when(this.workbenchEmailSenderService)
-			.doSendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+			.sendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
 
 		Mockito.when(this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
 			LocaleContextHolder.getLocale())).thenReturn("error sending email");
@@ -437,7 +438,7 @@ public class AuthenticationControllerTest {
 			this.controller.createOTP(userAccount, this.httpServletRequest);
 
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
+		final String deviceDetails = UserDeviceMetaDataUtil.parseDeviceDetailsForDisplay(this.httpServletRequest.getHeader(USER_AGENT));
 
 		assertEquals("internal error status", HttpStatus.INTERNAL_SERVER_ERROR, out.getStatusCode());
 		assertEquals("error sending email", (String) out.getBody().get("errors"));
@@ -525,7 +526,7 @@ public class AuthenticationControllerTest {
 		assertEquals(token.getToken(), (String) out.getBody().get("token"));
 		assertEquals(token.getExpires(), (long) out.getBody().get("expires"));
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
+		final String deviceDetails = this.httpServletRequest.getHeader(USER_AGENT);
 		Mockito.verify(this.userDeviceMetaDataService).addUserDevice(workbenchUser.getUserid(), deviceDetails, location);
 	}
 
@@ -636,7 +637,7 @@ public class AuthenticationControllerTest {
 		// Return en empty device, so that the system knows that it's the first time the user logs into the device
 		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
+		final String deviceDetails = this.httpServletRequest.getHeader(USER_AGENT);
 
 		this.controller.addOrUpdateUserDevice(1, this.httpServletRequest);
 
@@ -655,7 +656,7 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.of(userDeviceMetaDataDto));
 
 		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
-		final String deviceDetails = UserDeviceMetaDataUtil.getDeviceDetails(this.httpServletRequest);
+		final String deviceDetails = this.httpServletRequest.getHeader(USER_AGENT);
 
 		this.controller.addOrUpdateUserDevice(userId, this.httpServletRequest);
 

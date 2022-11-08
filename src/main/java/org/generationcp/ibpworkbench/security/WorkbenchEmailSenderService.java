@@ -26,6 +26,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -75,7 +76,7 @@ public class WorkbenchEmailSenderService {
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
-	public void doSendOneTimePasswordRequest(final WorkbenchUser user, final Integer otpCode)
+	public void sendOneTimePasswordRequest(final WorkbenchUser user, final Integer otpCode)
 		throws MessagingException {
 
 		// Prepare message using a Spring helper
@@ -83,10 +84,10 @@ public class WorkbenchEmailSenderService {
 		// true = multipart
 		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
 
-		try {
+		final String recipientName = user.getPerson().getDisplayName();
+		final String recipientEmail = user.getPerson().getEmail();
 
-			final String recipientName = user.getPerson().getDisplayName();
-			final String recipientEmail = user.getPerson().getEmail();
+		try {
 
 			// prepare the evaluation context
 			final Context ctx = new Context(LocaleContextHolder.getLocale());
@@ -111,11 +112,13 @@ public class WorkbenchEmailSenderService {
 			this.mailSender.send(mimeMessage);
 
 		} catch (final IOException e) {
+			WorkbenchEmailSenderService.LOG.error(
+				MessageFormat.format("There''s an error in sending OTP email to {0}", recipientEmail));
 			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
 		}
 	}
 
-	public void doSendOneTimePasswordRequestForUnknownDevice(final WorkbenchUser user, final Integer otpCode,
+	public void sendOneTimePasswordRequestForUnknownDevice(final WorkbenchUser user, final Integer otpCode,
 		final String deviceDetails, final String location)
 		throws MessagingException {
 
@@ -124,10 +127,10 @@ public class WorkbenchEmailSenderService {
 		// true = multipart
 		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
 
-		try {
+		final String recipientName = user.getPerson().getDisplayName();
+		final String recipientEmail = user.getPerson().getEmail();
 
-			final String recipientName = user.getPerson().getDisplayName();
-			final String recipientEmail = user.getPerson().getEmail();
+		try {
 
 			// prepare the evaluation context
 			final Context ctx = new Context(LocaleContextHolder.getLocale());
@@ -154,6 +157,8 @@ public class WorkbenchEmailSenderService {
 			this.mailSender.send(mimeMessage);
 
 		} catch (final IOException e) {
+			WorkbenchEmailSenderService.LOG.error(
+				MessageFormat.format("There''s an error in sending OTP email (Unknown Device) to {0}", recipientEmail));
 			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
 		}
 	}
