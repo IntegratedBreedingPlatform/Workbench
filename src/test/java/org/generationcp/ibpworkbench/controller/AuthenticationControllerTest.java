@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -498,7 +499,7 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testValidateOTP_ValidOTP() {
+	public void testValidateOTP_ValidOTP() throws ExecutionException {
 
 		this.controller.setOtpVerificationAttemptCache(this.createTestOtpVerificationAttemptCache());
 
@@ -531,7 +532,7 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testValidateOTP_InvalidOTP() {
+	public void testValidateOTP_InvalidOTP() throws ExecutionException {
 
 		this.controller.setOtpVerificationAttemptCache(this.createTestOtpVerificationAttemptCache());
 
@@ -558,7 +559,7 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testValidateOTP_InvalidUser() {
+	public void testValidateOTP_InvalidUser() throws ExecutionException {
 
 		this.controller.setOtpVerificationAttemptCache(this.createTestOtpVerificationAttemptCache());
 
@@ -585,7 +586,7 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testValidateOTP_MaximumVerificationAttemptError() {
+	public void testValidateOTP_MaximumVerificationAttemptError() throws ExecutionException {
 
 		final LoadingCache<String, Integer> otpVerificationAttemptCache = this.createTestOtpVerificationAttemptCache();
 		this.controller.setMaximumOtpVerificationAttempt(2);
@@ -913,7 +914,7 @@ public class AuthenticationControllerTest {
 			.build(new CacheLoader<String, Integer>() {
 
 				public Integer load(final String key) {
-					return 0;
+					return 1;
 				}
 			});
 	}

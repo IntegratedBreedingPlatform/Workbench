@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Controller
@@ -150,7 +151,7 @@ public class AuthenticationController {
 			.build(new CacheLoader<String, Integer>() {
 
 				public Integer load(final String key) {
-					return 0;
+					return 1;
 				}
 			});
 	}
@@ -251,23 +252,15 @@ public class AuthenticationController {
 
 	}
 
-	private Integer getNumberOfOTPVerificationAtemptPerUser(final String userName) {
-		try {
-			return this.otpVerificationAttemptCache.get(userName);
-		} catch (final Exception e) {
-			// If number of attempt does not yet exist per user, just return 1 (first attempt)
-			return 1;
-		}
-	}
-
 	@ResponseBody
 	@RequestMapping(value = "/otp/verify", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> validateOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request) {
+	public ResponseEntity<Map<String, Object>> validateOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request)
+		throws ExecutionException {
 		final Map<String, Object> response = new LinkedHashMap<>();
 
 		// To prevent a brute force attack, add a maximum number of OTP code verification attempts
-		final Integer numberOfAttempts = this.getNumberOfOTPVerificationAtemptPerUser(model.getUsername());
-		if (numberOfAttempts >= this.maximumOtpVerificationAttempt) {
+		final Integer numberOfAttempts = this.otpVerificationAttemptCache.get(model.getUsername());
+		if (numberOfAttempts > this.maximumOtpVerificationAttempt) {
 			response.put(ERRORS,
 				this.messageSource.getMessage("one.time.password.maximum.verification.attempt.exceeded",
 					new String[] {String.valueOf(this.otpVerificationAttemptExpiry)}, "",
