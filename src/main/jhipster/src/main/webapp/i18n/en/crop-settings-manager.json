@@ -16,10 +16,17 @@
       "name": "Name",
       "description": "Description",
       "date": "Date",
+      "validation": {
+        "delete.error.used.in.germplasm": "Name type can not be deleted because it is used to describe some germplasm in the system"
+      },
       "modal": {
         "delete": {
           "success": "Name Type deleted successfully.",
-          "warning": "Are you sure you want to delete the Name Type {{param}}?"
+          "warning": "Are you sure you want to delete the Name Type {{param1}}? {{param2}}",
+          "summary": {
+            "study": "It will be remove from Study",
+            "germplasm.list": "It will be remove from Germplasm List"
+          }
         },
         "create": {
           "header": "Create Name Type",

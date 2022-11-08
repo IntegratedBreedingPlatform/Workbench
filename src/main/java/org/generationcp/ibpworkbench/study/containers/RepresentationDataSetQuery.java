@@ -16,8 +16,10 @@ import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.themes.BaseTheme;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
+import org.generationcp.middleware.api.nametype.GermplasmNameTypeDTO;
 import org.generationcp.middleware.domain.dms.Enumeration;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.StandardVariable;
@@ -27,11 +29,13 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.domain.ontology.VariableType;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addons.lazyquerycontainer.Query;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +67,8 @@ public class RepresentationDataSetQuery implements Query {
 
 	public static final String MISSING_VALUE = "missing";
 
+	private DatasetService datasetService;
+
 	/**
 	 * These parameters are passed by the QueryFactory which instantiates
 	 * objects of this class.
@@ -71,7 +77,7 @@ public class RepresentationDataSetQuery implements Query {
 	 * @param datasetId
 	 * @param columnIds
 	 */
-	public RepresentationDataSetQuery(final StudyDataManager studyDataManager, final Integer datasetId,
+	public RepresentationDataSetQuery(final DatasetService datasetService, final StudyDataManager studyDataManager, final Integer datasetId,
 			final List<String> columnIds, final boolean fromUrl, final Integer studyId) {
 		super();
 		this.studyDataManager = studyDataManager;
@@ -80,6 +86,7 @@ public class RepresentationDataSetQuery implements Query {
 		this.columnIds = columnIds;
 		this.fromUrl = fromUrl;
 		this.size = -1;
+		this.datasetService = datasetService;
 	}
 
 	/**
@@ -117,6 +124,9 @@ public class RepresentationDataSetQuery implements Query {
 			experiments = new ArrayList<>();
 		}
 
+		final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs = this.datasetService.getDatasetNameTypes(this.datasetId);
+		germplasmNameTypeDTOs.sort(Comparator.comparing(GermplasmNameTypeDTO::getCode));
+
 		if (!experiments.isEmpty()) {
 			final Map<String, String> locationNameMap = this.studyDataManager.createInstanceLocationIdToNameMapFromStudy(this.studyId);
 			for (final Experiment experiment : experiments) {
@@ -132,6 +142,19 @@ public class RepresentationDataSetQuery implements Query {
 					variables.addAll(variates.getVariables());
 				}
 				this.populateItemMap(itemMap, experiment, variables, locationNameMap);
+
+				germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+					final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-")
+						.append(germplasmNameTypeDTO.getCode()).toString();
+					Item item = itemMap.get(Integer.valueOf(experiment.getId()));
+					if (item == null) {
+						// not yet in map so create a new Item and add to map
+						item = new PropertysetItem();
+						itemMap.put(Integer.valueOf(experiment.getId()), item);
+					}
+					final String value = experiment.getNameValueMap().get(germplasmNameTypeDTO.getId());
+					item.addItemProperty(columnId, new ObjectProperty<String>(StringUtils.isBlank(value) ? "" : value));
+				});
 			}
 		}
 

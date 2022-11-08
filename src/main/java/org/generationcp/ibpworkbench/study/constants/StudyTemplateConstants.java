@@ -28,7 +28,9 @@ public enum StudyTemplateConstants {
 
 	// constants for main factors for phenotypic type
 	, TRIAL_INSTANCE("TRIAL_INSTANCE"), GERMPLASM_ENTRY("GERMPLASM ENTRY"), FIELD_PLOT("FIELD PLOT"), NUMBER("NUMBER"), NESTED_NUMBER(
-			"NESTED NUMBER"), ENUMERATED("ENUMERATED"), ;
+			"NESTED NUMBER"), ENUMERATED("ENUMERATED")
+
+	, NAME_TYPE("NAME_TYPE"), NAME("NAME");
 
 	private String header;
 
@@ -56,4 +58,7 @@ public enum StudyTemplateConstants {
 		return Arrays.asList(VARIATE, DESCRIPTION, PROPERTY, SCALE, METHOD, DATA_TYPE, EMPTY_HEADER, SAMPLE_LEVEL);
 	}
 
+	public static List<StudyTemplateConstants> getNameHeaders() {
+		return Arrays.asList(NAME_TYPE, NAME, DESCRIPTION);
+	}
 }
