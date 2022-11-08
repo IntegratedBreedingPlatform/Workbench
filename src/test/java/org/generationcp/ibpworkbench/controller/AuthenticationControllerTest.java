@@ -258,6 +258,8 @@ public class AuthenticationControllerTest {
 
 		Mockito.when(this.workbenchUserService.isValidUserLogin(userAccount)).thenReturn(true);
 
+		Mockito.when(this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid())).thenReturn(1l);
+
 		// Return en empty device, so that the system knows that it's the first time the user logs into the device
 		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 
@@ -267,6 +269,40 @@ public class AuthenticationControllerTest {
 		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
 		Assert.assertTrue("success = true", (Boolean) out.getBody().get("success"));
 		Assert.assertTrue("requireOneTimePassword = true", (Boolean) out.getBody().get("requireOneTimePassword"));
+	}
+
+	@Test
+	public void testValidateLogin_TwoFactorAuthenticationIsNotEnabledPerUser_UserLogsInToUnknownDevice_ButLogsInForTheFirstTime()
+		throws Exception {
+
+		// Enable two-factor-authentication in the system
+		this.controller.setEnableTwoFactorAuthentication(true);
+		// Enforce two-factor authentication if the user logs in to an unknown device
+		this.controller.setEnable2FAOnUnknownDevice(true);
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setUsername(RandomStringUtils.randomAlphabetic(10));
+		userAccount.setPassword(RandomStringUtils.randomAlphabetic(10));
+
+		final WorkbenchUser workbenchUser = new WorkbenchUser();
+		workbenchUser.setUserid(1);
+		// Disable two-factor authentication for this user
+		workbenchUser.setMultiFactorAuthenticationEnabled(false);
+		Mockito.when(this.workbenchUserService.getUserByUserName(userAccount.getUsername())).thenReturn(workbenchUser);
+
+		Mockito.when(this.workbenchUserService.isValidUserLogin(userAccount)).thenReturn(true);
+
+		Mockito.when(this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid())).thenReturn(0l);
+
+		// Return en empty device, so that the system knows that it's the first time the user logs into the device
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
+
+		final ResponseEntity<Map<String, Object>> out =
+			this.controller.validateLogin(userAccount, this.result, this.httpServletRequest);
+
+		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
+		Assert.assertTrue("success = true", (Boolean) out.getBody().get("success"));
+		Assert.assertFalse(out.getBody().containsKey("requireOneTimePassword"));
 	}
 
 	@Test
@@ -288,6 +324,8 @@ public class AuthenticationControllerTest {
 		Mockito.when(this.workbenchUserService.getUserByUserName(userAccount.getUsername())).thenReturn(workbenchUser);
 
 		Mockito.when(this.workbenchUserService.isValidUserLogin(userAccount)).thenReturn(true);
+
+		Mockito.when(this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid())).thenReturn(1l);
 
 		// Return a known device, so that the system knows that it's not the first time the user logs into the device
 		final UserDeviceMetaDataDto userDeviceMetaDataDto = new UserDeviceMetaDataDto();
@@ -353,6 +391,8 @@ public class AuthenticationControllerTest {
 		oneTimePasswordDto.setOtpCode(123456);
 		Mockito.when(this.oneTimePasswordService.createOneTimePassword()).thenReturn(oneTimePasswordDto);
 
+		Mockito.when(this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid())).thenReturn(1l);
+
 		// Return a known device, so that the system knows that it's not the first time the user logs into the device
 		final UserDeviceMetaDataDto userDeviceMetaDataDto = new UserDeviceMetaDataDto();
 		userDeviceMetaDataDto.setUserId(workbenchUser.getUserid());
@@ -393,6 +433,8 @@ public class AuthenticationControllerTest {
 		oneTimePasswordDto.setOtpCode(123456);
 		Mockito.when(this.oneTimePasswordService.createOneTimePassword()).thenReturn(oneTimePasswordDto);
 
+		Mockito.when(this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid())).thenReturn(1l);
+
 		// Return en empty device, so that the system knows that it's the first time the user logs into the device
 		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
 
@@ -405,6 +447,44 @@ public class AuthenticationControllerTest {
 		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
 		Mockito.verify(this.workbenchEmailSenderService)
 			.sendOneTimePasswordRequestForUnknownDevice(workbenchUser, oneTimePasswordDto.getOtpCode(), deviceDetails, location);
+	}
+
+	@Test
+	public void testCreateOTP_TwoFactorAuthenticationIsNotEnabledPerUser_UserLogsInToAnUnknownDevice_ButLogsInForTheFirstTime()
+		throws MessagingException {
+		// Enable two-factor-authentication in the system
+		this.controller.setEnableTwoFactorAuthentication(true);
+		// Enforce two-factor authentication if the user logs in to an unknown device
+		this.controller.setEnable2FAOnUnknownDevice(true);
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setUsername(RandomStringUtils.randomAlphabetic(10));
+		userAccount.setPassword(RandomStringUtils.randomAlphabetic(10));
+
+		final WorkbenchUser workbenchUser = new WorkbenchUser();
+		workbenchUser.setUserid(1);
+		// Disable two-factor authentication for this user
+		workbenchUser.setMultiFactorAuthenticationEnabled(false);
+		Mockito.when(this.workbenchUserService.getUserByUserName(userAccount.getUsername())).thenReturn(workbenchUser);
+		Mockito.when(this.workbenchUserService.isValidUserLogin(userAccount)).thenReturn(true);
+		final OneTimePasswordDto oneTimePasswordDto = new OneTimePasswordDto();
+		oneTimePasswordDto.setExpires(new Date());
+		oneTimePasswordDto.setOtpCode(123456);
+		Mockito.when(this.oneTimePasswordService.createOneTimePassword()).thenReturn(oneTimePasswordDto);
+
+		Mockito.when(this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid())).thenReturn(0l);
+
+		// Return en empty device, so that the system knows that it's the first time the user logs into the device
+		Mockito.when(this.userDeviceMetaDataService.findUserDevice(any(), any(), any())).thenReturn(Optional.empty());
+
+		final ResponseEntity<Map<String, Object>> out =
+			this.controller.createOTP(userAccount, this.httpServletRequest);
+
+		final String location = UserDeviceMetaDataUtil.extractIp(this.httpServletRequest);
+		final String deviceDetails = UserDeviceMetaDataUtil.parseDeviceDetailsForDisplay(this.httpServletRequest.getHeader(USER_AGENT));
+
+		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
+		Mockito.verifyNoInteractions(this.workbenchEmailSenderService);
 	}
 
 	@Test

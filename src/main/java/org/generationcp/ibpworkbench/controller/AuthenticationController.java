@@ -226,8 +226,10 @@ public class AuthenticationController {
 					// If the user is configured for 2FA, send an OTP email
 					this.workbenchEmailSenderService.sendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
 
-				} else if (this.enable2FAOnUnknownDevice && !existingUserDeviceMetaDataDtoOptional.isPresent()) {
-					// If the user is not configured for 2FA, but is logging in a new device, send OTP email for unknown device
+				} else if (this.enable2FAOnUnknownDevice && this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid()) > 0
+					&& !existingUserDeviceMetaDataDtoOptional.isPresent()) {
+					// If the user is not configured for 2FA, but is logging in a new device (Only if the user already has history of devices),
+					// send OTP email for unknown device
 					final String location = UserDeviceMetaDataUtil.extractIp(request);
 					final String deviceDetails = request.getHeader(USER_AGENT);
 
@@ -314,8 +316,9 @@ public class AuthenticationController {
 
 			// Require one time password verification if:
 			// The user is explicitly enabled for two-factor authentication
-			// Or the user logged in from a new device/location.
+			// Or the user logged in from a new device/location (Only if the user already has history of devices)
 			if (this.enableTwoFactorAuthentication && (workbenchUser.isMultiFactorAuthenticationEnabled() || (this.enable2FAOnUnknownDevice
+				&& this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid()) > 0
 				&& !knownUserDeviceMetaDataDtoOptional.isPresent()))) {
 				out.put("requireOneTimePassword", Boolean.TRUE);
 			} else {
