@@ -167,7 +167,8 @@ describe('Filter Module', function() {
 					},
 					dateCreatedFrom: new Date(),
 					dateCreatedTo: new Date(),
-					obsolete: true
+					obsolete: true,
+					nonObsolete: true
 				};
 
 				isolateScope.clearFilters();
@@ -177,7 +178,8 @@ describe('Filter Module', function() {
 					scaleDataType: null,
 					dateCreatedFrom: null,
 					dateCreatedTo: null,
-					obsolete: false
+					obsolete: false,
+					nonObsolete: false
 				});
 			});
 		});
@@ -220,6 +222,11 @@ describe('Filter Module', function() {
 
 			it('should return true if show obsoletes filter option is ticked', function() {
 				isolateScope.filterOptions.obsolete = true;
+				expect(isolateScope.isFilterActive()).toBe(true);
+			});
+
+			it('should return true if show non obsoletes filter option is ticked', function() {
+				isolateScope.filterOptions.nonObsolete = true;
 				expect(isolateScope.isFilterActive()).toBe(true);
 			});
 		});
