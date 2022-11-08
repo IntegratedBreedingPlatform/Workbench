@@ -184,7 +184,7 @@ public class DatasetExporter {
 		final int nameTypeColumn = this.factors.size() + this.variates.size();
 		for (int i = 0; i < this.names.size(); i++) {
 			final String columnName = this.names.get(i);
-			final HSSFCell cell = datasetHeaderRow.createCell(i + startColumn);
+			final HSSFCell cell = datasetHeaderRow.createCell(i + nameTypeColumn);
 			cell.setCellValue(columnName);
 			cell.setCellStyle(this.headingStyle);
 		}
@@ -317,7 +317,7 @@ public class DatasetExporter {
 			germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
 				final String value = experiment.getNameValueMap().get(germplasmNameTypeDTO.getId());
 				Integer columnIndexInteger = germplasmNameTypeDTOs.indexOf(germplasmNameTypeDTO);
-				columnIndexInteger += this.factors.size() + this.variates.size() -1;
+				columnIndexInteger += this.factors.size() + this.variates.size();
 				final short columnIndex = columnIndexInteger.shortValue();
 				final Cell cell = PoiUtil.createCell(cellStyleForObservationSheet, row, columnIndex, CellStyle.ALIGN_CENTER,
 					CellStyle.ALIGN_CENTER);
@@ -356,7 +356,7 @@ public class DatasetExporter {
 
 		final int variateHeaderRowIndex = constantRowIndex + 1;
 		this.createVariatesSection(descriptionSheet, datasetVariableTypes, variateHeaderRowIndex);
-		final int variateRowIndex = variateHeaderRowIndex + 1;
+		final int variateRowIndex = variateHeaderRowIndex + this.variates.size() + 1;
 		descriptionSheet.createRow(variateRowIndex);
 
 		final int nameTypeHeaderRowIndex = variateRowIndex + 1;
