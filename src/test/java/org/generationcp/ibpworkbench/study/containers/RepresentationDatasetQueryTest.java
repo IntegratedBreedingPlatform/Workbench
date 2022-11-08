@@ -19,6 +19,7 @@ import org.generationcp.middleware.domain.dms.VariableConstraints;
 import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +37,14 @@ public class RepresentationDatasetQueryTest {
 	@Mock
 	private StudyDataManager studyDataManager;
 
+	@Mock
+	private DatasetService datasetService;
+
 	private RepresentationDataSetQuery query;
 
 	@Before
 	public void setUp() {
-		this.query = new RepresentationDataSetQuery(this.studyDataManager, new Integer(1), new ArrayList<String>(),
+		this.query = new RepresentationDataSetQuery(this.datasetService, this.studyDataManager, new Integer(1), new ArrayList<String>(),
 				false, 1);
 	}
 
@@ -186,7 +190,7 @@ public class RepresentationDatasetQueryTest {
 		final Experiment experiment = ExperimentTestDataInitializer.createExperiment(
 				VariableListTestDataInitializer.createVariableList(TermId.CROSS), Mockito.mock(VariableList.class));
 		Mockito.when(this.studyDataManager.getExperiments(1, 0, 1)).thenReturn(Arrays.asList(experiment));
-		final RepresentationDataSetQuery query = new RepresentationDataSetQuery(this.studyDataManager, new Integer(1),
+		final RepresentationDataSetQuery query = new RepresentationDataSetQuery(this.datasetService, this.studyDataManager, new Integer(1),
 				new ArrayList<String>(), false, 1);
 		final List<Item> items = query.loadItems(0, 1);
 		Mockito.verify(this.studyDataManager).getExperiments(1, 0, 1);

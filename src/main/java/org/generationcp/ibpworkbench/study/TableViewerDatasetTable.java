@@ -13,14 +13,19 @@ package org.generationcp.ibpworkbench.study;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.Message;
 import org.generationcp.ibpworkbench.study.listeners.GidLinkButtonClickListener;
+import org.generationcp.middleware.api.nametype.GermplasmNameTypeDTO;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
@@ -31,6 +36,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,6 +47,8 @@ import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.BaseTheme;
+
+import javax.annotation.Resource;
 
 /**
  * @author Mark Agarrado
@@ -62,6 +70,10 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 	@Autowired
 	private SimpleResourceBundleMessageSource messageSource;
 
+	@Resource
+	private DatasetService datasetService;
+
+
 	public TableViewerDatasetTable(StudyDataManager studyDataManager, Integer studyId, Integer datasetId) {
 		this.studyDataManager = studyDataManager;
 		this.studyId = studyId;
@@ -77,10 +89,20 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 		// set the column header ids
 		List<DMSVariableType> variables;
 		List<String> columnIds = new ArrayList<>();
-
+		List<GermplasmNameTypeDTO> germplasmNameTypeDTOs = null;
 		try {
 			DataSet dataset = this.studyDataManager.getDataSet(this.datasetId);
 			variables = dataset.getVariableTypes().getVariableTypes();
+
+			germplasmNameTypeDTOs = this.datasetService.getDatasetNameTypes(this.datasetId);
+			germplasmNameTypeDTOs.sort(Comparator.comparing(GermplasmNameTypeDTO::getCode));
+			germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+				final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-").append(germplasmNameTypeDTO.getCode()).toString();
+				if (!columnIds.contains(columnId)) {
+					columnIds.add(columnId);
+				}
+			});
+
 		} catch (MiddlewareException e) {
 			TableViewerDatasetTable.LOG.error(
 					"Error in getting variables of dataset: " + this.datasetId + "\n" + e.toString() + "\n" + e.getStackTrace(), e);
@@ -109,6 +131,12 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 			}
 		}
 
+		germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+			final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-").append(germplasmNameTypeDTO.getCode()).toString();
+			columnIds.add(columnId);
+			this.addContainerProperty(columnId, String.class, null);
+		});
+
 		// set column headers for the Table
 		for (DMSVariableType variable : variables) {
 			String columnId = new StringBuffer().append(variable.getId()).append("-").append(variable.getLocalName()).toString();
@@ -116,10 +144,15 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 			this.setColumnHeader(columnId, columnHeader);
 		}
 
-		this.populateDatasetTable();
+		germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+			final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-").append(germplasmNameTypeDTO.getCode()).toString();
+			this.setColumnHeader(columnId, germplasmNameTypeDTO.getCode());
+		});
+
+		this.populateDatasetTable(germplasmNameTypeDTOs);
 	}
 
-	void populateDatasetTable() {
+	void populateDatasetTable(List<GermplasmNameTypeDTO> germplasmNameTypeDTOs) {
 		List<Experiment> experiments = this.getExperimentsByBatch();
 
 		if (!experiments.isEmpty()) {
@@ -139,6 +172,13 @@ public class TableViewerDatasetTable extends Table implements InitializingBean {
 
 				Item item = this.addItem(experiment.getId());
 				setItemValues(locationNameMap, variables, item);
+
+				germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+					final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-")
+						.append(germplasmNameTypeDTO.getCode()).toString();
+					final String value = experiment.getNameValueMap().get(germplasmNameTypeDTO.getId());
+					item.getItemProperty(columnId).setValue(StringUtils.isBlank(value) ? "" : value);
+				});
 			}
 		}
 	}

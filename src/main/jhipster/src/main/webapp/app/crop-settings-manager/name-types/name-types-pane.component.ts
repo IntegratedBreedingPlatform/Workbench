@@ -156,18 +156,52 @@ export class NameTypesPaneComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'name-type-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
-    deleteNameType(nameType: any) {
-        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
-        confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', { param: nameType.name });
-        confirmModalRef.result.then(() => {
-            this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
-                this.alertService.success('crop-settings-manager.name-type.modal.delete.success');
-                this.loadNameType();
-            }).catch((response) => {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+    async deleteNameType(nameType: any) {
+        const nameTypeMetadata = await this.nameTypeService.getMetadata(nameType.id).toPromise();
+
+        if (nameTypeMetadata.germplasmCount > 0) {
+            this.alertService.error('crop-settings-manager.name-type.validation.delete.error.used.in.germplasm');
+            return;
+        } else {
+            const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+            const messages = [];
+
+            if (nameTypeMetadata.studiesCount > 0) {
+                messages.push(this.translateService.instant('crop-settings-manager.name-type.modal.delete.summary.study'));
+            }
+            if (nameTypeMetadata.germplasmListCount > 0) {
+                messages.push(this.translateService.instant('crop-settings-manager.name-type.modal.delete.summary.germplasm.list'));
+            }
+
+            confirmModalRef.componentInstance.title = this.translateService.instant('crop-settings-manager.confirmation.title');
+            confirmModalRef.componentInstance.message = this.translateService.instant('crop-settings-manager.name-type.modal.delete.warning', {
+                param1: nameType.name, param2: messages.map((item) => '<li>' + item + '</li>').join('')
             });
-        }, () => confirmModalRef.dismiss());
+
+            try {
+
+                await confirmModalRef.result;
+                if (nameTypeMetadata.studiesCount > 0) {
+                    await this.nameTypeService.deleteNameTypeFromStudy(nameType.id).toPromise();
+                }
+                if (nameTypeMetadata.germplasmListCount > 0) {
+                    await this.nameTypeService.deleteNameTypeFromGermplasmList(nameType.id).toPromise();
+                }
+
+                this.nameTypeService.deleteNameType(nameType.id).toPromise().then((result) => {
+                    this.alertService.success('crop-settings-manager.name-type.modal.delete.success');
+                    this.loadNameType();
+                }).catch((response) => {
+                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                });
+                confirmModalRef.dismiss();
+            } catch (rejected) {
+                confirmModalRef.dismiss();
+                return false;
+            }
+
+        }
+
     }
 
     async loadNameType() {
