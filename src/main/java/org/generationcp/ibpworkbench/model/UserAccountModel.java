@@ -47,6 +47,8 @@ public class UserAccountModel implements Serializable {
 	
 	private Role role;
 
+	private Integer otpCode;
+
 	/**
 	 * Initialize fields so that the "null" String value does not appear.
 	 */
@@ -125,7 +127,6 @@ public class UserAccountModel implements Serializable {
 		this.roleId = roleId;
 	}
 
-	
 	public Role getRole() {
 		return this.role;
 	}
@@ -133,6 +134,15 @@ public class UserAccountModel implements Serializable {
 	public void setRole(final Role role) {
 		this.role = role;
 	}
+
+	public Integer getOtpCode() {
+		return this.otpCode;
+	}
+
+	public void setOtpCode(final Integer otpCode) {
+		this.otpCode = otpCode;
+	}
+
 
 	public void trimAll() {
 		this.firstName = this.firstName.trim();

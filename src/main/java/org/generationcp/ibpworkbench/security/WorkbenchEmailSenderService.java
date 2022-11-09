@@ -1,17 +1,5 @@
 package org.generationcp.ibpworkbench.security;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.UUID;
-
-import javax.annotation.Resource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-
 import org.apache.commons.io.IOUtils;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.WorkbenchAppPathResolver;
@@ -32,6 +20,18 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.UUID;
 
 /**
  * Created by cyrus on 4/6/15.
@@ -76,6 +76,93 @@ public class WorkbenchEmailSenderService {
 	@Value("${reset.expiry.hours}")
 	private Integer noOfHoursBeforeExpire;
 
+	public void sendOneTimePasswordRequest(final WorkbenchUser user, final Integer otpCode)
+		throws MessagingException {
+
+		// Prepare message using a Spring helper
+		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+		// true = multipart
+		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
+
+		final String recipientName = user.getPerson().getDisplayName();
+		final String recipientEmail = user.getPerson().getEmail();
+
+		try {
+
+			// prepare the evaluation context
+			final Context ctx = new Context(LocaleContextHolder.getLocale());
+			ctx.setVariable("recipientName", recipientName);
+			ctx.setVariable("otpCode", otpCode);
+			ctx.setVariable("bmsLogo", WorkbenchEmailSenderService.BMS_LOGO_LOC);
+
+			message.setSubject(
+				this.messageSource.getMessage("one.time.password.mail.subject", new String[] {}, "", LocaleContextHolder.getLocale()));
+			message.setFrom(this.senderEmail);
+			message.setTo(recipientEmail);
+
+			final String htmlContent =
+				this.processTemplate(ctx, "one-time-password-email");
+			// true = isHtml
+			message.setText(htmlContent, true);
+
+			// add BMS logo
+			message.addInline(WorkbenchEmailSenderService.BMS_LOGO_LOC, this.retrieveLogoImage(), "image/png");
+
+			// Send the message
+			this.mailSender.send(mimeMessage);
+
+		} catch (final IOException e) {
+			WorkbenchEmailSenderService.LOG.error(
+				MessageFormat.format("There''s an error in sending OTP email to {0}", recipientEmail));
+			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
+		}
+	}
+
+	public void sendOneTimePasswordRequestForUnknownDevice(final WorkbenchUser user, final Integer otpCode,
+		final String deviceDetails, final String location)
+		throws MessagingException {
+
+		// Prepare message using a Spring helper
+		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
+		// true = multipart
+		final MimeMessageHelper message = this.getMimeMessageHelper(mimeMessage);
+
+		final String recipientName = user.getPerson().getDisplayName();
+		final String recipientEmail = user.getPerson().getEmail();
+
+		try {
+
+			// prepare the evaluation context
+			final Context ctx = new Context(LocaleContextHolder.getLocale());
+			ctx.setVariable("recipientName", recipientName);
+			ctx.setVariable("otpCode", otpCode);
+			ctx.setVariable("bmsLogo", WorkbenchEmailSenderService.BMS_LOGO_LOC);
+			ctx.setVariable("deviceDetails", deviceDetails);
+			ctx.setVariable("location", location);
+
+			message.setSubject(
+				this.messageSource.getMessage("one.time.password.mail.subject", new String[] {}, "", LocaleContextHolder.getLocale()));
+			message.setFrom(this.senderEmail);
+			message.setTo(recipientEmail);
+
+			final String htmlContent =
+				this.processTemplate(ctx, "one-time-password-new-device-email");
+			// true = isHtml
+			message.setText(htmlContent, true);
+
+			// add BMS logo
+			message.addInline(WorkbenchEmailSenderService.BMS_LOGO_LOC, this.retrieveLogoImage(), "image/png");
+
+			// Send the message
+			this.mailSender.send(mimeMessage);
+
+		} catch (final IOException e) {
+			WorkbenchEmailSenderService.LOG.error(
+				MessageFormat.format("There''s an error in sending OTP email (Unknown Device) to {0}", recipientEmail));
+			WorkbenchEmailSenderService.LOG.error(e.getMessage(), e);
+		}
+	}
+
 	public void doRequestPasswordReset(final WorkbenchUser user) throws MessagingException {
 
 		UserInfo userInfo = null;
@@ -112,12 +199,11 @@ public class WorkbenchEmailSenderService {
 		return cal.getTime();
 	}
 
-
 	/**
 	 * Pre-req: a validated user email account + username
 	 */
 	public void sendForgotPasswordRequest(final String recipientName, final String recipientEmail, final String forgotPasswordUrl)
-			throws MessagingException {
+		throws MessagingException {
 
 		// Prepare message using a Spring helper
 		final MimeMessage mimeMessage = this.mailSender.createMimeMessage();
@@ -155,7 +241,7 @@ public class WorkbenchEmailSenderService {
 
 	protected ByteArrayResource retrieveLogoImage() throws IOException {
 		return new ByteArrayResource(
-				IOUtils.toByteArray(this.servletContext.getResourceAsStream(WorkbenchEmailSenderService.BMS_LOGO_LOC)));
+			IOUtils.toByteArray(this.servletContext.getResourceAsStream(WorkbenchEmailSenderService.BMS_LOGO_LOC)));
 	}
 
 	protected String processTemplate(final Context ctx, final String template) {

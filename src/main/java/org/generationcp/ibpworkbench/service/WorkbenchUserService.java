@@ -52,6 +52,7 @@ public class WorkbenchUserService {
 		user.setInstalid(0);
 		user.setStatus(0);
 		user.setType(0);
+		user.setMultiFactorAuthenticationEnabled(true);
 
 		// add user roles to the particular user
 		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
