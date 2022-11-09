@@ -24,6 +24,7 @@ import { RolesAdmin } from './roles/roles-admin.component';
 import { SiteAdminComponent } from './site-admin.component';
 import { PermissionTree, RoleCardComponent } from './roles/role-card.component';
 import { RolesDatagrid } from './roles/roles-datagrid.component';
+import { AppParamContext } from './shared/services/app.param.context';
 
 @NgModule({
   imports: [BrowserModule, HttpModule, FormsModule, Select2Module, CommonModule, AppRoutingModule],
@@ -52,7 +53,8 @@ import { RolesDatagrid } from './roles/roles-datagrid.component';
   providers: [
       UserRouteAccessService,
       Principal,
-      AccountService
+      AccountService,
+      AppParamContext
   ],
   bootstrap: [AppComponent]
 })

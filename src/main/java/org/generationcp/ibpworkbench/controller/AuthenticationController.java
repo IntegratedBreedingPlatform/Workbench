@@ -1,6 +1,9 @@
 package org.generationcp.ibpworkbench.controller;
 
 import com.google.common.base.Function;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
@@ -13,7 +16,12 @@ import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.api.role.RoleService;
 import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
+import org.generationcp.middleware.service.api.security.OneTimePasswordDto;
+import org.generationcp.middleware.service.api.security.OneTimePasswordService;
+import org.generationcp.middleware.service.api.security.UserDeviceMetaDataDto;
+import org.generationcp.middleware.service.api.security.UserDeviceMetaDataService;
 import org.generationcp.middleware.service.api.user.RoleSearchDto;
+import org.generationcp.middleware.util.UserDeviceMetaDataUtil;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +38,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,10 +47,14 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping(AuthenticationController.URL)
@@ -55,6 +68,7 @@ public class AuthenticationController {
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
 	private static final String NOT_EXISTENT_USER = "User does not exist";
+	public static final String USER_AGENT = "User-Agent";
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
@@ -76,6 +90,12 @@ public class AuthenticationController {
 
 	@Resource
 	private ApiAuthenticationService apiAuthenticationService;
+
+	@Resource
+	private OneTimePasswordService oneTimePasswordService;
+
+	@Resource
+	private UserDeviceMetaDataService userDeviceMetaDataService;
 
 	@Resource
 	private ServletContext servletContext;
@@ -104,12 +124,39 @@ public class AuthenticationController {
 	@Value("${bv.design.validation.on.login.enabled}")
 	private Boolean bvDesignValidationEnabled;
 
+	@Value("${security.2fa.enabled}")
+	private boolean enableTwoFactorAuthentication;
+
+	@Value("${security.2fa.enforce.otp.on.unknown.device}")
+	private boolean enable2FAOnUnknownDevice;
+
+	@Value("${security.2fa.otp.maximum.verification.attempts}")
+	private Integer maximumOtpVerificationAttempt;
+
+	@Value("${security.2fa.otp.maximum.verification.attempts.expiry.interval}")
+	private Integer otpVerificationAttemptExpiry;
+
+	@Value("${security.2fa.otp.length}")
+	private int otpCodeLength;
+
 	private List<Role> roles;
+
+	// Stores the number of times the OTP verification is called per user.
+	// The value stored will expire in a specified number of minutes (otpVerificationAttemptExpiry).
+	private LoadingCache<String, Integer> otpVerificationAttemptCache;
 
 	@PostConstruct
 	public void initialize() {
 		this.roles = this.roleService.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
+		// This is to track the number of OTP verification attempts per user.
+		this.otpVerificationAttemptCache = CacheBuilder.newBuilder().refreshAfterWrite(this.otpVerificationAttemptExpiry, TimeUnit.MINUTES)
+			.build(new CacheLoader<String, Integer>() {
+
+				public Integer load(final String key) {
+					return 1;
+				}
+			});
 	}
 
 	@RequestMapping(value = "/login")
@@ -117,7 +164,8 @@ public class AuthenticationController {
 
 		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
 		model.addAttribute("roles", this.roles);
-		populateCommomModelAttributes(model);
+		model.addAttribute("otpCodeLength", this.otpCodeLength);
+		this.populateCommomModelAttributes(model);
 
 		return "login";
 	}
@@ -129,7 +177,7 @@ public class AuthenticationController {
 	 * @return img src
 	 */
 	protected String findInstituteLogo(final String path) {
-		if (servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
+		if (this.servletContext.getResourceAsStream("/WEB-INF/" + path) != null) {
 			return "/controller/" + path;
 		} else {
 			return "";
@@ -145,7 +193,7 @@ public class AuthenticationController {
 
 			model.addAttribute("user", user);
 
-			populateCommomModelAttributes(model);
+			this.populateCommomModelAttributes(model);
 
 			return "new-password";
 
@@ -163,59 +211,163 @@ public class AuthenticationController {
 	}
 
 	@ResponseBody
+	@RequestMapping(value = "/otp/create", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> createOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request) {
+		final Map<String, Object> response = new LinkedHashMap<>();
+		// Generate one-time password (OTP code) and then send it to the user's email
+		final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
+		// Generate OTP Code only if two-factor authentication is enabled in the system
+		// and username + password is valid
+		if (this.enableTwoFactorAuthentication && this.workbenchUserService.isValidUserLogin(model)) {
+			final OneTimePasswordDto oneTimePasswordDto = this.oneTimePasswordService.createOneTimePassword();
+
+			final Optional<UserDeviceMetaDataDto> existingUserDeviceMetaDataDtoOptional =
+				this.findExistingUserDevice(workbenchUser.getUserid(), request);
+
+			try {
+
+				if (workbenchUser.isMultiFactorAuthenticationEnabled()) {
+					// If the user is configured for 2FA, send an OTP email
+					this.workbenchEmailSenderService.sendOneTimePasswordRequest(workbenchUser, oneTimePasswordDto.getOtpCode());
+
+				} else if (this.enable2FAOnUnknownDevice && this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid()) > 0
+					&& !existingUserDeviceMetaDataDtoOptional.isPresent()) {
+					// If the user is not configured for 2FA, but is logging in a new device (Only if the user already has history of devices),
+					// send OTP email for unknown device
+					final String location = UserDeviceMetaDataUtil.extractIp(request);
+					final String deviceDetails = request.getHeader(USER_AGENT);
+
+					this.workbenchEmailSenderService.sendOneTimePasswordRequestForUnknownDevice(workbenchUser,
+						oneTimePasswordDto.getOtpCode(),
+						UserDeviceMetaDataUtil.parseDeviceDetailsForDisplay(deviceDetails), location);
+				}
+
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} catch (final MessagingException e) {
+				final String errorMessage = this.messageSource.getMessage("one.time.password.cannot.send.email", new String[] {}, "",
+					LocaleContextHolder.getLocale());
+				AuthenticationController.LOG.error(errorMessage, e);
+				response.put(ERRORS, errorMessage);
+				return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			response.put(ERRORS, this.messageSource.getMessage("one.time.password.cannot.create.otp", new String[] {}, "",
+				LocaleContextHolder.getLocale()));
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/otp/verify", method = RequestMethod.POST)
+	public ResponseEntity<Map<String, Object>> validateOTP(@RequestBody final UserAccountModel model, final HttpServletRequest request)
+		throws ExecutionException {
+		final Map<String, Object> response = new LinkedHashMap<>();
+
+		// To prevent a brute force attack, add a maximum number of OTP code verification attempts
+		final Integer numberOfAttempts = this.otpVerificationAttemptCache.get(model.getUsername());
+		if (numberOfAttempts > this.maximumOtpVerificationAttempt) {
+			response.put(ERRORS,
+				this.messageSource.getMessage("one.time.password.maximum.verification.attempt.exceeded",
+					new String[] {String.valueOf(this.otpVerificationAttemptExpiry)}, "",
+					LocaleContextHolder.getLocale()));
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		this.otpVerificationAttemptCache.put(model.getUsername(), numberOfAttempts + 1);
+
+		// Verify if the OTP code is valid
+		if (this.workbenchUserService.isValidUserLogin(model) && this.oneTimePasswordService.isOneTimePasswordValid(model.getOtpCode())) {
+
+			final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
+			// If OTP is valid, return a valid token
+			/*
+			 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
+			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+			 * service in browsers.
+			 */
+
+			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+			if (apiAuthToken != null) {
+				response.put("token", apiAuthToken.getToken());
+				response.put("expires", apiAuthToken.getExpires());
+			}
+			this.addOrUpdateUserDevice(workbenchUser.getUserid(), request);
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} else {
+			response.put(ERRORS,
+				this.messageSource.getMessage("one.time.password.invalid.otp", new String[] {}, "", LocaleContextHolder.getLocale()));
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+	}
+
+	@ResponseBody
 	@RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateLogin(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result, final HttpServletRequest request) {
 		final Map<String, Object> out = new LinkedHashMap<>();
-		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
 		if (this.workbenchUserService.isValidUserLogin(model)) {
 
 			this.userAccountValidator.validateUserActive(model, result);
 			if (result.hasErrors()) {
 				this.generateErrors(result, out);
-				return new ResponseEntity<>(out, isSuccess);
+				return new ResponseEntity<>(out, HttpStatus.BAD_REQUEST);
 			}
 
-			isSuccess = HttpStatus.OK;
+			final WorkbenchUser workbenchUser = this.workbenchUserService.getUserByUserName(model.getUsername());
+			final Optional<UserDeviceMetaDataDto> knownUserDeviceMetaDataDtoOptional =
+				this.findExistingUserDevice(workbenchUser.getUserid(), request);
+
+			// Require one time password verification if:
+			// The user is explicitly enabled for two-factor authentication
+			// Or the user logged in from a new device/location (Only if the user already has history of devices)
+			if (this.enableTwoFactorAuthentication && (workbenchUser.isMultiFactorAuthenticationEnabled() || (this.enable2FAOnUnknownDevice
+				&& this.userDeviceMetaDataService.countUserDevices(workbenchUser.getUserid()) > 0
+				&& !knownUserDeviceMetaDataDtoOptional.isPresent()))) {
+				out.put("requireOneTimePassword", Boolean.TRUE);
+			} else {
+				// If the user account is not enabled for two-factor authentication, immediately create authentication token.
+				/*
+				 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
+				 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
+				 * service in browsers.
+				 */
+				final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
+				if (apiAuthToken != null) {
+					out.put("token", apiAuthToken.getToken());
+					out.put("expires", apiAuthToken.getExpires());
+				}
+				this.addOrUpdateUserDevice(workbenchUser.getUserid(), request);
+			}
+
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-			/*
-			 * This is crucial for frontend apps which needs the authentication token to make calls to BMSAPI services.
-			 * See login.js and bmsAuth.js client side scripts to see how this token is used by front-end code via the local storage
-			 * service in browsers.
-			 */
-			final Token apiAuthToken = this.apiAuthenticationService.authenticate(model.getUsername(), model.getPassword());
-			if (apiAuthToken != null) {
-				out.put("token", apiAuthToken.getToken());
-				out.put("expires", apiAuthToken.getExpires());
-			}
+			return new ResponseEntity<>(out, HttpStatus.OK);
+		} else {
+			final Map<String, String> errors = new LinkedHashMap<>();
 
-			return new ResponseEntity<>(out, isSuccess);
+			errors.put(UserAccountFields.USERNAME, this.messageSource
+				.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
+
+			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
+			out.put(AuthenticationController.ERRORS, errors);
+
+			return new ResponseEntity<>(out, HttpStatus.BAD_REQUEST);
 		}
-
-		final Map<String, String> errors = new LinkedHashMap<>();
-
-		errors.put(UserAccountFields.USERNAME, this.messageSource
-			.getMessage(UserAccountValidator.LOGIN_ATTEMPT_UNSUCCESSFUL, new String[] {}, "", LocaleContextHolder.getLocale()));
-
-		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
-		out.put(AuthenticationController.ERRORS, errors);
-
-		return new ResponseEntity<>(out, isSuccess);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
-		if (!isAccountCreationEnabled()) {
+		if (!this.isAccountCreationEnabled()) {
 			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
 		}
 		final ImmutableMap<Integer, Role> roleMap = Maps.uniqueIndex(this.roles, new Function<Role, Integer>() {
+
 			@Override
 			public Integer apply(final Role role) {
 				return role.getId();
@@ -243,7 +395,7 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -268,8 +420,8 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/sendResetEmail", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doSendResetPasswordRequestEmail(
-			@ModelAttribute("userAccount") final UserAccountModel model) {
-		return sendResetEmail(model.getUsername());
+		@ModelAttribute("userAccount") final UserAccountModel model) {
+		return this.sendResetEmail(model.getUsername());
 	}
 
 	@RequestMapping(value = "/sendResetEmail/{userId}", method = RequestMethod.POST)
@@ -284,7 +436,7 @@ public class AuthenticationController {
 			out.put(AuthenticationController.ERRORS, NOT_EXISTENT_USER);
 			return new ResponseEntity<>(out, isSuccess);
 		}
-		return sendResetEmail(user.getName());
+		return this.sendResetEmail(user.getName());
 
 	}
 
@@ -299,7 +451,7 @@ public class AuthenticationController {
 			isSuccess = HttpStatus.OK;
 			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
 
-		} catch (MessagingException | MailException e) {
+		} catch (final MessagingException | MailException e) {
 			out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 			out.put(AuthenticationController.ERRORS, e.getMessage());
 
@@ -312,7 +464,7 @@ public class AuthenticationController {
 	@ResponseBody
 	@RequestMapping(value = "/reset", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> doResetPassword(@ModelAttribute("userAccount") final UserAccountModel model,
-			final BindingResult result) {
+		final BindingResult result) {
 		final Map<String, Object> out = new LinkedHashMap<>();
 		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
 
@@ -340,7 +492,7 @@ public class AuthenticationController {
 		final Map<String, String> errors = new LinkedHashMap<>();
 		for (final FieldError error : result.getFieldErrors()) {
 			errors.put(error.getField(), this.messageSource
-					.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
+				.getMessage(error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
 		}
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
@@ -355,7 +507,7 @@ public class AuthenticationController {
 		} else {
 			return Boolean.parseBoolean(this.enableCreateAccount);
 		}*/
-			return false;
+		return false;
 	}
 
 	/*protected void setEnableCreateAccount(final String enableCreateAccount) {
@@ -366,13 +518,54 @@ public class AuthenticationController {
 		this.isSingleUserOnly = isSingleUserOnly;
 	}
 
-
-
 	public List<Role> getRoles() {
-		return roles;
+		return this.roles;
 	}
 
-	public void setRoles(List<Role> roles) {
+	public void setRoles(final List<Role> roles) {
 		this.roles = roles;
+	}
+
+	protected void addOrUpdateUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
+
+		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
+		final String deviceDetails = httpServletRequest.getHeader(USER_AGENT);
+
+		final Optional<UserDeviceMetaDataDto> knownUserDevice = this.findExistingUserDevice(userId, httpServletRequest);
+		if (!knownUserDevice.isPresent()) {
+			// Only add device details if it doesn't exist yet
+			this.userDeviceMetaDataService.addUserDevice(userId, deviceDetails, location);
+		} else {
+			// If it already exists, update last_logged_in date of this device
+			this.userDeviceMetaDataService.updateUserDeviceLastLoggedIn(userId, deviceDetails, location);
+		}
+	}
+
+	protected Optional<UserDeviceMetaDataDto> findExistingUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
+
+		final String location = UserDeviceMetaDataUtil.extractIp(httpServletRequest);
+		final String deviceDetails = httpServletRequest.getHeader(USER_AGENT);
+
+		return this.userDeviceMetaDataService.findUserDevice(userId, deviceDetails, location);
+	}
+
+	protected void setEnableTwoFactorAuthentication(final boolean enableTwoFactorAuthentication) {
+		this.enableTwoFactorAuthentication = enableTwoFactorAuthentication;
+	}
+
+	protected void setEnable2FAOnUnknownDevice(final boolean enable2FAOnUnknownDevice) {
+		this.enable2FAOnUnknownDevice = enable2FAOnUnknownDevice;
+	}
+
+	protected void setMaximumOtpVerificationAttempt(final Integer maximumOtpVerificationAttempt) {
+		this.maximumOtpVerificationAttempt = maximumOtpVerificationAttempt;
+	}
+
+	protected void setOtpVerificationAttemptExpiry(final Integer otpVerificationAttemptExpiry) {
+		this.otpVerificationAttemptExpiry = otpVerificationAttemptExpiry;
+	}
+
+	protected void setOtpVerificationAttemptCache(final LoadingCache<String, Integer> otpVerificationAttemptCache) {
+		this.otpVerificationAttemptCache = otpVerificationAttemptCache;
 	}
 }

@@ -39,6 +39,15 @@
   <script>
       System.import('app').catch(function(err){ console.error(err); });
     </script>
+
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    // Add enableTwoFactorAuthentication to the window variable
+    // to pass its value to the Angular app.
+    // Passing the value through @Input() doesn't work in root component (https://github.com/angular/angular/issues/36898)
+    window.enableTwoFactorAuthentication = /*[[${enableTwoFactorAuthentication}]]*/ false;
+    /*]]>*/
+  </script>
 </head>
 
 <!-- 3. Display the application -->

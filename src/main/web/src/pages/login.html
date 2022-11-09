@@ -104,6 +104,24 @@
 		</button>
 	</form>
 
+	<form id="one-time-password-form" class="login-form">
+		<div>
+			<h1>One Time Password</h1>
+		</div>
+		<p>Please enter the verification code sent to your registered email:</p>
+		<div class="login-form-control">
+			<input class="js-otp-code login-otp-input login-flat-control" id="otpCode" name="otpCode" type=text" th:maxlength="${otpCodeLength}" autocomplete="off"></input>
+		</div>
+		<div class="js-login-otp-error login-otp-valid">
+			<span class="fa login-warning-icon">&#xf12a;</span>
+			<span class="js-login-otp-error-text"></span>
+		</div>
+		<button class="js-verify-otp-submit login-submit login-flat-control login-clickable" formnovalidate="" type="button">
+			<span class="login-submit-label">Verify</span>
+			<span class="throbber"></span>
+		</button>
+	</form>
+
 	<form id="authorize-form" class="login-form">
 		<div>
 			<h1><span id="displayName"></span> wants to access your BMS Account</h1>
@@ -132,4 +150,5 @@
 	<script type="text/javascript" th:src="@{/controller/static/js/lib/bootbox.min.js}"></script>
 	<script type="text/javascript" th:src="@{/controller/static/js/login.js}"></script>
 </body>
+
 </html>

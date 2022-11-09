@@ -12,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CropService } from '../shared/services/crop.service';
 import { EMAIL_LOCAL_PART_REGEX } from '../shared/validators/email-validator.component';
 import { NavbarMessageEvent } from '../../../../../../jhipster/src/main/webapp/app/shared/model/navbar-message.event';
+import { AppParamContext } from '../shared/services/app.param.context';
 
 @Component({
     selector: 'user-card',
@@ -57,10 +58,11 @@ export class UserCard implements OnInit {
         theme: 'classic'
     };
 
-    constructor(private cropService: CropService, private userService: UserService, private roleService: RoleService, private mailService: MailService, private router: Router, private activatedRoute: ActivatedRoute) {
+    constructor(private cropService: CropService, private userService: UserService, private roleService: RoleService, private mailService: MailService, private router: Router, private activatedRoute: ActivatedRoute,
+                public appParamContext: AppParamContext) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
-        this.model = new User('0', '', '', '', [], [], '', 'true');
+        this.model = new User('0', '', '', '', [], [], '', 'true', false);
         this.errorUserMessage = '';
     }
 

@@ -506,5 +506,13 @@
         <constructor-arg ref="workbenchHibernateSessionProvider" />
     </bean>
 
+	<bean id="oneTimePasswordService" class="org.generationcp.middleware.service.impl.security.OneTimePasswordServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
+	<bean id="userDeviceMetaDataService" class="org.generationcp.middleware.service.impl.security.UserDeviceMetaDataServiceImpl">
+        <constructor-arg ref="workbenchHibernateSessionProvider" />
+    </bean>
+
 	<!-- Nested <beans> elements can only be at the end. -->
 </beans>
