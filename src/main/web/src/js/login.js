@@ -431,7 +431,7 @@
 					const expiryDays = data[0].expiryDays;
 
 					if (expiryDays) {
-						if (expiryDays == 0) {
+						if (expiryDays <= 0) {
 							$errorText.append($.parseHTML(MISSING_OR_EXPIRED_LICENSE_MSG));
 							$error.removeClass('login-valid');
 							$loginForm.addClass(formInvalid);
