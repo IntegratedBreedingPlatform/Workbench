@@ -121,6 +121,9 @@ public class AuthenticationController {
 	@Value("${bms.version}")
 	private String workbenchVersion;
 
+	@Value("${bv.design.validation.on.login.enabled}")
+	private Boolean bvDesignValidationEnabled;
+
 	@Value("${security.2fa.enabled}")
 	private boolean enableTwoFactorAuthentication;
 
@@ -204,6 +207,7 @@ public class AuthenticationController {
 		model.addAttribute("instituteLogoPath", this.findInstituteLogo(this.instituteLogoPath));
 		model.addAttribute("footerMessage", this.footerMessage);
 		model.addAttribute("version", this.workbenchVersion);
+		model.addAttribute("isLicenseValidationEnabled", this.bvDesignValidationEnabled);
 	}
 
 	@ResponseBody
