@@ -19,6 +19,10 @@
 		$select = $('.login-select'),
 		$select2Container = $('.select2-container'),
 
+		$licenseWarningModal = $('#licenseWarningModal'),
+		$dismissLicenseWarning = $('#dismissLicenseWarning'),
+		$isLicenseValidationEnabled = $('#isLicenseValidationEnabled'),
+
 		createAccount = 'login-create-account',
 		forgotPasswordClass = 'login-forgot-password',
 		validationError = 'login-validation-error',
@@ -233,6 +237,88 @@
 		return false;
 	}
 
+	function doProcessAction(loginFormRef) {
+		if (isLoginDisplayed()) {
+			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
+				.done(function (data) {
+					clearErrors();
+					/**
+					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
+					 * and uses it to make calls to BMSAPI.
+					 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
+					 * The prefix "bms" is configured in ontology.js as part of app.config:
+					 *     localStorageServiceProvider.setPrefix('bms');
+					 */
+					localStorage['bms.xAuthToken'] = JSON.stringify(data);
+					if ((display_name && return_url) || (client_id && redirect_uri)) {
+						toggleAuthorizeScreen()
+					} else {
+						// no login problems! submit
+						loginFormRef.submit();
+					}
+				})
+				.fail(function (jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+
+					if (failedLoginAttemptCount < 2) {
+						failedLoginAttemptCount++;
+					} else {
+						toggleForgotPasswordScreen();
+					}
+				})
+				.always(function () {
+					$loginSubmit.removeClass('loading');
+				});
+		} else {
+			// Create account or forgot password
+			var userForm = $loginForm.serialize();
+
+			$.post($loginForm.attr('action'), userForm)
+				.done(function() {
+					// Clear form fields and show the login screen
+					clearErrors();
+
+					if (isForgotPasswordScreenDisplayed()) {
+						// we add notification that the login email has been set
+						$('.js-login-forgot-password-input').val('');
+						toggleForgotPasswordScreen();
+
+						doSendPasswordRequestEmail(userForm);
+
+					} else {
+						// this will automatically login the user.
+						$loginForm.attr('action', loginAction);
+						loginFormRef.submit();
+					}
+				})
+				.fail(function(jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+				})
+				.always(function() {
+					$loginSubmit.removeClass('loading');
+				});
+		}
+	}
+
+	function showWarningModal(message, loginFormRef) {
+		bootbox.dialog({
+			message: "<span class=\"fa login-warning-icon login-modal-icon\">&#xf071;</span>"
+				+ message,
+			closeButton: false,
+			onEscape: false,
+			className: "login-modal",
+			buttons: {
+				ok: {
+					label: "Dismiss",
+					className: 'btn-primary',
+					callback: function() {
+						doProcessAction(loginFormRef);
+					}
+				}
+			}
+		});
+	}
+
 	// Record whether media queries are supported in this browser as a class
 	if (!Modernizr.mq('only all')) {
 		$('html').addClass('no-mq');
@@ -314,10 +400,8 @@
 		e.preventDefault();
 
 		var loginFormRef = this,
-			login = isLoginDisplayed(),
-			isPasswordScreen = isForgotPasswordScreenDisplayed(),
-			errorMessage = isPasswordScreen ? validateForgotPasswordInputs() :
-				(login ? validateSignInInputs() : validateCreateAccountInputs());
+			errorMessage = isForgotPasswordScreenDisplayed() ? validateForgotPasswordInputs() :
+				(isLoginDisplayed() ? validateSignInInputs() : validateCreateAccountInputs());
 
 		if (errorMessage) {
 			displayClientError(errorMessage);
@@ -332,66 +416,47 @@
 
 		$loginSubmit.addClass('loading').delay(200);
 
-		// Continue with form submit - login is currently handled server side
-		if (login) {
-			$.post($loginForm.data('validate-login-action'), $loginForm.serialize())
-				.done(function(data) {
-					clearErrors();
-					/**
-					 * This is crucial for the Ontology Manager UI which retrieves the token from local storage
-					 * and uses it to make calls to BMSAPI.
-					 * See bmsAuth.js and ontology.js and the AuthenticationController.validateLogin() method on server side.
-					 * The prefix "bms" is configured in ontology.js as part of app.config:
-					 *     localStorageServiceProvider.setPrefix('bms');
-					 */
-					localStorage['bms.xAuthToken'] = JSON.stringify(data);
-					if ((display_name && return_url) || (client_id && redirect_uri)) {
-						toggleAuthorizeScreen()
-					} else {
-						// no login problems! submit
-						loginFormRef.submit();
-					}
-				})
-				.fail(function(jqXHR) {
-					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+		var validateLicense = $isLicenseValidationEnabled.val() === "true";
 
-					if (failedLoginAttemptCount < 2) {
-						failedLoginAttemptCount++;
-					} else {
-						toggleForgotPasswordScreen();
+		if (validateLicense) {
+			const CONTACT_SUPPORT_MSG = " Please contact <a "
+				+ "href=\"https://ibplatform.atlassian.net/servicedesk/customer/portal/4/group/25/create/51\" target=\"_blank\">"
+				+ "IBP support</a>.";
+			const MISSING_OR_EXPIRED_LICENSE_MSG = "Login unauthorized: No BMS license has been found or has been expired."
+				+ CONTACT_SUPPORT_MSG;
+
+			$.get('/bmsapi/breeding-view-licenses').done(function(data) {
+				if(data && data.length > 0) {
+					const expiry = data[0].expiry;
+
+					if (expiry) {
+						const expiryDate = new Date(expiry);
+						const currentDate = new Date();
+						const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+
+						if (currentDate > expiryDate) {
+							$errorText.append($.parseHTML(MISSING_OR_EXPIRED_LICENSE_MSG));
+							$error.removeClass('login-valid');
+							$loginForm.addClass(formInvalid);
+							$loginSubmit.removeClass('loading');
+							return;
+						} else if (new Date(currentDate.getTime() + thirtyDaysInMs) > expiryDate) {
+							showWarningModal("Your organization\'s BMS license is going to expire soon (" + expiry + ")."
+								+ CONTACT_SUPPORT_MSG, loginFormRef);
+							return;
+						}
 					}
-				})
-				.always(function() {
-					$loginSubmit.removeClass('loading');
-				});
+				}
+
+				doProcessAction(loginFormRef);
+			}).fail(function(jqXHR) {
+				$errorText.append($.parseHTML(MISSING_OR_EXPIRED_LICENSE_MSG));
+				$error.removeClass('login-valid');
+				$loginForm.addClass(formInvalid);
+				$loginSubmit.removeClass('loading');
+			});
 		} else {
-			// Create account or forgot password
-			var userForm = $loginForm.serialize();
-
-			$.post($loginForm.attr('action'), userForm)
-				.done(function() {
-					// Clear form fields and show the login screen
-					clearErrors();
-
-					if (isPasswordScreen) {
-						// we add notification that the login email has been set
-						$('.js-login-forgot-password-input').val('');
-						toggleForgotPasswordScreen();
-
-						doSendPasswordRequestEmail(userForm);
-
-					} else {
-						// this will automatically login the user.
-						$loginForm.attr('action', loginAction);
-						loginFormRef.submit();
-					}
-				})
-				.fail(function(jqXHR) {
-					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
-				})
-				.always(function() {
-					$loginSubmit.removeClass('loading');
-				});
+			doProcessAction(loginFormRef);
 		}
 	});
 
