@@ -407,7 +407,7 @@
 			displayClientError(errorMessage);
 			return;
 		}
-
+		clearErrors();
 		// Long story here: we use fake inputs to prevent Chrome's awful yellow autofill styling (see login.html for details). When Chrome
 		// offers to remember a password, it will try and take the value of these fake inputs - and because they're empty, it will never be
 		// satisfied - asking over and over again. So we set their value on submit, Chrome is happy, and everything is right with the World.
@@ -428,19 +428,16 @@
 			$.get('/bmsapi/breeding-view-licenses').done(function(data) {
 				if(data && data.length > 0) {
 					const expiry = data[0].expiry;
+					const expiryDays = data[0].expiryDays;
 
-					if (expiry) {
-						const expiryDate = new Date(expiry);
-						const currentDate = new Date();
-						const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
-
-						if (currentDate > expiryDate) {
+					if (expiryDays) {
+						if (expiryDays < 0) {
 							$errorText.append($.parseHTML(MISSING_OR_EXPIRED_LICENSE_MSG));
 							$error.removeClass('login-valid');
 							$loginForm.addClass(formInvalid);
 							$loginSubmit.removeClass('loading');
 							return;
-						} else if (new Date(currentDate.getTime() + thirtyDaysInMs) > expiryDate) {
+						} else if (expiryDays <= 30) {
 							showWarningModal("Your organization\'s BMS license is going to expire soon (" + expiry + ")."
 								+ CONTACT_SUPPORT_MSG, loginFormRef);
 							return;
