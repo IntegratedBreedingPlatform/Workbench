@@ -79,7 +79,7 @@ public class TableViewerDatasetTableTest {
 		Mockito.when(experiment.getFactors()).thenReturn(Mockito.mock(VariableList.class));
 		Mockito.when(experiment.getVariates()).thenReturn(Mockito.mock(VariableList.class));
 		Mockito.doReturn(Arrays.asList(experiment)).when(this.studyDataManager).getExperiments(1, 0, 1);
-		this.tableViewerTable.populateDatasetTable();
+		this.tableViewerTable.populateDatasetTable(new ArrayList<>());
 		Mockito.verify(this.studyDataManager).createInstanceLocationIdToNameMapFromStudy(Matchers.anyInt());
 		Mockito.verify(experiment).getFactors();
 		Mockito.verify(experiment).getVariates();

@@ -22,6 +22,7 @@ import org.generationcp.middleware.domain.oms.Term;
 import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +54,9 @@ public class RepresentationDatasetComponentTest {
 	@Mock
 	private Application application;
 
+	@Mock
+	private DatasetService datasetService;
+
 	private DataSet mockDataset;
 	private RepresentationDatasetComponent datasetComponent;
 
@@ -65,6 +69,7 @@ public class RepresentationDatasetComponentTest {
 		Mockito.doReturn(this.mockDataset).when(this.studyDataManager).getDataSet(RepresentationDatasetComponentTest.DATASET_ID);
 		Mockito.doReturn(XLS_FILEPATH).when(this.datasetExporter)
 				.exportToFieldBookExcelUsingIBDBv2(RepresentationDatasetComponent.TEMP_FILENAME);
+		this.datasetComponent.setDatasetService(this.datasetService);
 	}
 
 	private DataSet createMockDataset() {
@@ -144,7 +149,7 @@ public class RepresentationDatasetComponentTest {
 		columnIds.add(new StringBuffer().append(TermId.GID.getId()).append("-").append(TermId.GID.name()).toString());
 		columnIds.add(new StringBuffer().append(TermId.ENTRY_NO.getId()).append("-").append(TermId.ENTRY_NO.name()).toString());
 
-		final RepresentationDatasetQueryFactory factory = new RepresentationDatasetQueryFactory(this.studyDataManager, 1, columnIds, false, 1);
+		final RepresentationDatasetQueryFactory factory = new RepresentationDatasetQueryFactory(this.datasetService, this.studyDataManager, 1, columnIds, false, 1);
 		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
 
 		this.datasetComponent.populateDatasetContainerProperties(false, columnIds, datasetContainer);

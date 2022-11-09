@@ -11,14 +11,15 @@
 
 package org.generationcp.ibpworkbench.study;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import com.vaadin.addon.tableexport.CsvExport;
+import com.vaadin.addon.tableexport.TableExport;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Link;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.themes.Reindeer;
 import org.generationcp.commons.constant.AppConstants;
 import org.generationcp.commons.spring.util.ContextUtil;
 import org.generationcp.commons.util.FileNameGenerator;
@@ -35,6 +36,7 @@ import org.generationcp.ibpworkbench.study.listeners.StudyButtonClickListener;
 import org.generationcp.ibpworkbench.study.util.DatasetExporter;
 import org.generationcp.ibpworkbench.study.util.DatasetExporterException;
 import org.generationcp.ibpworkbench.util.Util;
+import org.generationcp.middleware.api.nametype.GermplasmNameTypeDTO;
 import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.PhenotypicType;
@@ -42,6 +44,7 @@ import org.generationcp.middleware.domain.oms.TermId;
 import org.generationcp.middleware.exceptions.MiddlewareException;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.StudyDataManager;
+import org.generationcp.middleware.service.api.dataset.DatasetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -49,15 +52,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import com.vaadin.addon.tableexport.CsvExport;
-import com.vaadin.addon.tableexport.TableExport;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Link;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import javax.annotation.Resource;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class creates the Vaadin Table where a dataset can be displayed.
@@ -101,6 +102,9 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 
 	@Resource
 	private ContextUtil contextUtil;
+
+	@Resource
+	private DatasetService datasetService;
 
 	private Map<String, Integer> studiesMappedByInstance = new HashMap<>();
 	private DatasetExporter datasetExporter;
@@ -269,9 +273,18 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			}
 		}
 
+		final List<GermplasmNameTypeDTO> germplasmNameTypeDTOs = this.datasetService.getDatasetNameTypes(this.datasetId);
+		germplasmNameTypeDTOs.sort(Comparator.comparing(GermplasmNameTypeDTO::getCode));
+		germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+			final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-").append(germplasmNameTypeDTO.getCode()).toString();
+			if (!columnIds.contains(columnId)) {
+				columnIds.add(columnId);
+			}
+		});
+
 		// create item container for dataset table
 		final RepresentationDatasetQueryFactory factory =
-				new RepresentationDatasetQueryFactory(this.studyDataManager, this.datasetId, columnIds, fromUrl, this.studyIdHolder);
+				new RepresentationDatasetQueryFactory(this.datasetService, this.studyDataManager, this.datasetId, columnIds, fromUrl, this.studyIdHolder);
 		final LazyQueryContainer datasetContainer = new LazyQueryContainer(factory, false, 50);
 		this.populateDatasetContainerProperties(fromUrl, columnIds, datasetContainer);
 
@@ -293,6 +306,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 			final String columnHeader = variable.getLocalName();
 			newTable.setColumnHeader(columnId, columnHeader);
 		}
+
+		germplasmNameTypeDTOs.forEach(germplasmNameTypeDTO -> {
+			final String columnId = new StringBuffer().append(germplasmNameTypeDTO.getId()).append("-").append(germplasmNameTypeDTO.getCode()).toString();
+				newTable.setColumnHeader(columnId, germplasmNameTypeDTO.getCode());
+		});
 
 		newTable.setCellStyleGenerator(new DatasetCellStyleGenerator(newTable));
 
@@ -331,4 +349,11 @@ public class RepresentationDatasetComponent extends VerticalLayout implements In
 		this.datasetExporter = datasetExporter;
 	}
 
+	public DatasetService getDatasetService() {
+		return this.datasetService;
+	}
+
+	public void setDatasetService(final DatasetService datasetService) {
+		this.datasetService = datasetService;
+	}
 }
