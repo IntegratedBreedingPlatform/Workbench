@@ -1,0 +1,118 @@
+<div class="modal-body">
+	<form name="form" #f="ngForm" class="form-horizontal">
+		<h3 jhiTranslate="advance-study.breeding-methods.title"></h3>
+		<div class="form-group row required">
+			<div class="col-sm-6">
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" name="breedingMethodCheck" [(ngModel)]="breedingMethodCheck">
+					<label class="col-form-label font-weight-bold" for="breedingMethodCheck" jhiTranslate="advance-study.breeding-methods.description">Breeding Method is the same for each advance</label>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions" style="margin-right: 5px;">
+				</ng-select2>
+				<a href="{{helpLink}}" target="_blank" style="vertical-align: middle"><i id="breedingMethod" class="fa fa-info-circle bms-helpicon"></i></a>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<div class="form-check form-check-inline">
+							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="1" (click)="fetch()">
+							<span style="margin-left: 2px;" jhiTranslate="advance-study.breeding-methods.all-methods">All methods</span>
+						</div>
+						<div class="form-check form-check-inline">
+							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="2" (click)="fetch()">
+							<span style="margin-left: 2px;" jhiTranslate="advance-study.breeding-methods.derivative-and-mantenance">Derivative and Maintenance methods</span>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-12">
+						<div class="form-check form-check-inline">
+							<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
+								   [(ngModel)]="useFavoriteBreedingMethods">
+							<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="advance-study.breeding-methods.favorite">
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div *ngIf="!breedingMethodCheck" class="form-group row required">
+			<div class="col-sm-6">
+				<label for="breedingMethod" class="col-form-label font-weight-bold" jhiTranslate="advance-study.breeding-methods.variable">Choose a variate that defines the breeding method for each advance</label>
+			</div>
+			<div class="col-sm-6">
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
+				</ng-select2>
+			</div>
+		</div>
+		<h3 jhiTranslate="advance-study.lines.title"></h3>
+		<div class="form-check form-check-inline">
+			<input type="checkbox" class="form-check-input" name="lineCheck" [(ngModel)]="linesCheck">
+			<label for="lineCheck" class="col-form-label font-weight-bold" jhiTranslate="advance-study.lines.description">Same number of lines is selected for each plot</label>
+		</div>
+		<div *ngIf="!linesCheck" class="form-group row required">
+			<div class="col-sm-6">
+				<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
+			</div>
+			<div class="col-sm-6">
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
+				</ng-select2>
+			</div>
+		</div>
+		<h3 jhiTranslate="advance-study.bulks.title"></h3>
+		<div class="form-check form-check-inline">
+			<input class="form-check-input" type="checkbox" name="bulksCheck" [(ngModel)]="bulksCheck">
+			<label class="col-form-label font-weight-bold" for="bulksCheck" jhiTranslate="advance-study.bulks.description">All plots are selected</label>
+		</div>
+		<div *ngIf="!bulksCheck" class="form-group row required">
+			<div class="col-sm-6">
+				<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
+			</div>
+			<div class="col-sm-6">
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
+				</ng-select2>
+			</div>
+		</div>
+		<h3 jhiTranslate="advance-study.reps.title"></h3>
+		<div class="form-group">
+			<div *ngFor="let rep of replicationsOptions" class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="togglecheck(rep.selected)"
+					   name="check-{{rep.repIndex}}" id="check-{{rep.repIndex}}">
+				<label class="col-form-label font-weight-bold" for="check-{{rep.repIndex}}">
+					{{rep.repIndex}}
+				</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" [(ngModel)]="checkallReplcations" (click)="checkUncheckAll()" name="selectAllReps" id="selectAllReps"/>
+				<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
+			</div>
+		</div>
+
+		<h3 jhiTranslate="advance-study.location.title"></h3>
+		<div class="col-xs-12 col-md-12">
+			<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="location-tab" style="padding-left: 0px;">
+				<table class="table table-striped table-bordered table-curved">
+					<thead>
+					<th><span jhiTranslate="advance-study.location.trial.instance">TRIAL_INSTANCE</span></th>
+					<th><span jhiTranslate="advance-study.location.name">LOCATION_NAME</span></th>
+					<th><span jhiTranslate="advance-study.location.abbr">LOCATION_ABBR</span></th>
+					</thead>
+					<tbody this.trialInstances>
+					<tr *ngFor="let trialInstance of trialInstances">
+						<td>{{trialInstance.instanceNumber}}</td>
+						<td>{{trialInstance.locAbbr}}</td>
+						<td>{{trialInstance.abbrCode}}</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
+		<span jhiTranslate="entity.action.back">Back</span>
+	</button>
+	<button (click)="save()" [disabled]="f.form.invalid || isSuccess || isLoading" class="btn btn-primary" data-test="createLotsButton">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+	</button>
+</div>

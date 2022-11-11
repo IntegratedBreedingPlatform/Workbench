@@ -1,0 +1,35 @@
+{
+  "advance-study": {
+    "title": "Advance Study",
+    "breeding-methods": {
+      "title": "Methods",
+      "description": "Breeding Method is the same for each advance",
+      "favorite": "Show only favorite methods",
+      "derivative-and-mantenance": "Derivative and Maintenance methods",
+      "all-methods": "All methods",
+      "variable": "Choose a variate that defines the breeding method for each advance"
+    },
+    "lines": {
+      "title": "Lines",
+      "description": "Same number of lines is selected for each plot",
+      "variable": "Choose a variate that defines the number of lines selected from eatch plot"
+    },
+    "bulks": {
+      "title": "Bulks",
+      "description": "All plots are selected",
+      "variable": "Choose a variate that defines which plots were selected"
+    },
+    "reps": {
+      "title": "Reps",
+      "description": "",
+      "select.all": "Select All"
+    },
+    "location": {
+      "title": "Location Detils",
+      "description": "",
+      "trial.instance": "TRIAL_INSTANCE",
+      "name": "LOCATION_NAME",
+      "abbr": "LOCATION_ABBR"
+    }
+  }
+}
