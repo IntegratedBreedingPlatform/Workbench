@@ -11,18 +11,14 @@ import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.api.role.RoleService;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.security.OneTimePasswordDto;
 import org.generationcp.middleware.service.api.security.OneTimePasswordService;
 import org.generationcp.middleware.service.api.security.UserDeviceMetaDataDto;
 import org.generationcp.middleware.service.api.security.UserDeviceMetaDataService;
-import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.generationcp.middleware.util.UserDeviceMetaDataUtil;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -42,10 +38,8 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -96,9 +90,6 @@ public class AuthenticationControllerTest {
 	private AuthenticationController controller;
 
 	@Mock
-	private RoleService roleService;
-
-	@Mock
 	private HttpServletRequest httpServletRequest;
 
 	@Mock
@@ -126,7 +117,6 @@ public class AuthenticationControllerTest {
 	public void testGetLoginPage() throws Exception {
 		final Model model = Mockito.mock(Model.class);
 		assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
-		Mockito.verify(model).addAttribute(Mockito.eq("roles"), Mockito.anyObject());
 		this.assertCommonAttributesWereAddedToModel(model);
 	}
 

@@ -128,15 +128,12 @@ public class AuthenticationController {
 	@Value("${security.2fa.otp.length}")
 	private int otpCodeLength;
 
-	private List<Role> roles;
-
 	// Stores the number of times the OTP verification is called per user.
 	// The value stored will expire in a specified number of minutes (otpVerificationAttemptExpiry).
 	private LoadingCache<String, Integer> otpVerificationAttemptCache;
 
 	@PostConstruct
 	public void initialize() {
-		this.roles = this.roleService.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 		// This is to track the number of OTP verification attempts per user.
 		this.otpVerificationAttemptCache = CacheBuilder.newBuilder().refreshAfterWrite(this.otpVerificationAttemptExpiry, TimeUnit.MINUTES)
@@ -151,7 +148,6 @@ public class AuthenticationController {
 	@RequestMapping(value = "/login")
 	public String getLoginPage(final Model model) {
 
-		model.addAttribute("roles", this.roles);
 		model.addAttribute("otpCodeLength", this.otpCodeLength);
 		this.populateCommomModelAttributes(model);
 
@@ -449,14 +445,6 @@ public class AuthenticationController {
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 		out.put(AuthenticationController.ERRORS, errors);
-	}
-
-	public List<Role> getRoles() {
-		return this.roles;
-	}
-
-	public void setRoles(final List<Role> roles) {
-		this.roles = roles;
 	}
 
 	protected void addOrUpdateUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {
