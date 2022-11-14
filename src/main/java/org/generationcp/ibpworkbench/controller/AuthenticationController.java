@@ -471,6 +471,8 @@ public class AuthenticationController {
 		AuthenticationController.LOG.debug("reset password submitted");
 
 		this.userAccountValidator.validateUserActive(model, result);
+		this.userAccountValidator.validatePasswordLength(model, result);
+		this.userAccountValidator.validatePasswordConfirmation(model, result);
 
 		if (result.hasErrors()) {
 			this.generateErrors(result, out);
