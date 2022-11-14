@@ -8,7 +8,6 @@
 		$loginForm = $('.js-login-form'),
 		$authorizeForm = $('#authorize-form'),
 		$oneTimePasswordForm = $('#one-time-password-form'),
-		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
 		$authorizeSubmit = $('.js-authorize-submit'),
 		$verifyOtpSubmit = $('.js-verify-otp-submit'),
@@ -28,12 +27,10 @@
 		$dismissLicenseWarning = $('#dismissLicenseWarning'),
 		$isLicenseValidationEnabled = $('#isLicenseValidationEnabled'),
 
-		createAccount = 'login-create-account',
 		forgotPasswordClass = 'login-forgot-password',
 		validationError = 'login-validation-error',
 		formInvalid = 'login-form-invalid',
 
-		createAccountText = 'Create Account',
 		signInText = 'Sign In',
 		resetPasswordText = 'Continue',
 
@@ -71,7 +68,7 @@
 	}
 
 	function isLoginDisplayed() {
-		return !($loginForm.hasClass(createAccount) || $loginForm.hasClass(forgotPasswordClass));
+		return !($loginForm.hasClass(forgotPasswordClass));
 	}
 
 	function isForgotPasswordScreenDisplayed() {
@@ -84,33 +81,11 @@
 	 */
 	function toggleLoginPage(toggleFunction) {
 
-		if ($loginForm.hasClass(createAccount)) {
-			toggleLoginCreateAccount();
-		} else if ($loginForm.hasClass(forgotPasswordClass)) {
+		if ($loginForm.hasClass(forgotPasswordClass)) {
 			toggleForgotPasswordScreen();
 		} else {
 			toggleFunction();
 		}
-	}
-
-	function toggleLoginCreateAccount() {
-		var switchToCreate = isLoginDisplayed(),
-			$createAccountInputs = $('.js-login-create-account-input'),
-			prevAction = $loginForm.attr('action');
-
-		// Once we have the create account post, change the form action to be stored on a data attribute, and toggle the URL stored
-		// when we toggle.
-		$loginForm.attr('action', altAction);
-		altAction = prevAction;
-
-		$loginForm.toggleClass(createAccount, switchToCreate);
-		$loginModeToggle.text(switchToCreate ? signInText : createAccountText);
-		$loginSubmit.text(switchToCreate ? createAccountText : signInText);
-
-		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
-		$createAccountInputs.prop('disabled', !switchToCreate);
-		$checkInput.prop('disabled', switchToCreate);
-		$select.select2('enable', switchToCreate);
 	}
 
 	function toggleForgotPasswordScreen() {
@@ -124,7 +99,6 @@
 		forgotPasswordAction = prevAction;
 
 		$loginForm.toggleClass(forgotPasswordClass, switchToCreate);
-		$loginModeToggle.text(switchToCreate ? signInText : createAccountText);
 		$loginSubmit.text(switchToCreate ? resetPasswordText : signInText);
 
 		// clear out password field
@@ -431,15 +405,6 @@
 	// Clear error messages if the user focuses a form input
 	$('body').delegate('.login-form-invalid .login-form-control, .login-form-invalid .login-submit', 'focusin click', function () {
 		clearErrors();
-	});
-
-	// Toggle between forms
-	$loginModeToggle.on('click', function (e) {
-		e.preventDefault();
-		$('.login-forgot-password-email-notify').hide();
-
-		clearErrors();
-		toggleLoginPage(toggleLoginCreateAccount);
 	});
 
 	$('.ac-login-forgot-password').on('click', function (e) {
