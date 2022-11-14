@@ -101,9 +101,6 @@ public class AuthenticationController {
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
 
-	@Value("${workbench.is.single.user.only}")
-	private String isSingleUserOnly;
-
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
 
@@ -452,10 +449,6 @@ public class AuthenticationController {
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 		out.put(AuthenticationController.ERRORS, errors);
-	}
-
-	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
-		this.isSingleUserOnly = isSingleUserOnly;
 	}
 
 	public List<Role> getRoles() {
