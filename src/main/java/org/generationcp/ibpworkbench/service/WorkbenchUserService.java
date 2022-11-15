@@ -1,22 +1,19 @@
 
 package org.generationcp.ibpworkbench.service;
 
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Resource;
-
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
 import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Transactional
@@ -112,8 +109,6 @@ public class WorkbenchUserService {
 		person.setNotes("-");
 		person.setPositionName("-");
 		person.setPhone("-");
-		this.userService.addPerson(person);
-
 		return person;
 	}
 }
