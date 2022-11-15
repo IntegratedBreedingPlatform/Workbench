@@ -273,7 +273,7 @@
 				// Do nothing
 				return;
 			}
-		}).fail((error) => {
+		}).fail(function (error) {
 			displayOTPError(error.responseJSON.errors);
 		});
 	}
@@ -300,7 +300,7 @@
 				$verifyOtpSubmit.removeAttr("disabled");
 				processLoginSuccess(data);
 			}
-		}).fail((error) => {
+		}).fail(function (error) {
 			$verifyOtpSubmit.removeClass('loading');
 			$verifyOtpSubmit.removeAttr("disabled");
 			displayOTPError(error.responseJSON.errors);
@@ -338,7 +338,7 @@
 			var userForm = $loginForm.serialize();
 
 			$.post($loginForm.attr('action'), userForm)
-				.done(function() {
+				.done(function () {
 					// Clear form fields and show the login screen
 					clearErrors();
 
@@ -355,10 +355,10 @@
 						loginFormRef.submit();
 					}
 				})
-				.fail(function(jqXHR) {
+				.fail(function (jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
 				})
-				.always(function() {
+				.always(function () {
 					$loginSubmit.removeClass('loading');
 				});
 		}
@@ -375,7 +375,7 @@
 				ok: {
 					label: "Dismiss",
 					className: 'btn-primary',
-					callback: function() {
+					callback: function () {
 						doProcessAction(loginFormRef);
 					}
 				}
@@ -494,8 +494,8 @@
 			const MISSING_OR_EXPIRED_LICENSE_MSG = "Login unauthorized: No BMS license has been found or has been expired."
 				+ CONTACT_SUPPORT_MSG;
 
-			$.get('/bmsapi/breeding-view-licenses').done(function(data) {
-				if(data && data.length > 0) {
+			$.get('/bmsapi/breeding-view-licenses').done(function (data) {
+				if (data && data.length > 0) {
 					const expiry = data[0].expiry;
 					const expiryDays = data[0].expiryDays;
 
@@ -515,7 +515,7 @@
 				}
 
 				doProcessAction(loginFormRef);
-			}).fail(function(jqXHR) {
+			}).fail(function (jqXHR) {
 				$errorText.append($.parseHTML(MISSING_OR_EXPIRED_LICENSE_MSG));
 				$error.removeClass('login-valid');
 				$loginForm.addClass(formInvalid);
@@ -539,7 +539,7 @@
 			toggleAuthorizeScreen();
 		} else {
 			// Detach validation so we can proceed with submit
-			$loginForm.off( "submit" );
+			$loginForm.off("submit");
 			$loginForm.submit();
 		}
 	}
