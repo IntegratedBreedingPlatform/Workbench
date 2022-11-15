@@ -28,39 +28,6 @@ public class WorkbenchUserService {
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	/**
-	 * Cretes new user account
-	 *
-	 * @param userAccount
-	 */
-	public void saveUserAccount(UserAccountModel userAccount) {
-		// user.access =  0 - Default User
-		// user.instalid =  0 - Access all areas (legacy from the ICIS system) (not used)
-		// user.status = 0 - Unassigned
-		// user.type = 0 - Default user type (not used)
-
-		userAccount.trimAll();
-		Integer currentDate = DateUtil.getCurrentDateAsIntegerValue();
-		Person person = this.createPerson(userAccount);
-
-		WorkbenchUser user = new WorkbenchUser();
-		user.setPerson(person);
-		user.setName(userAccount.getUsername());
-		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
-		user.setAccess(0);
-		user.setAssignDate(currentDate);
-		user.setCloseDate(currentDate);
-		user.setInstalid(0);
-		user.setStatus(0);
-		user.setType(0);
-		user.setMultiFactorAuthenticationEnabled(true);
-
-		// add user roles to the particular user
-		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		this.userService.addUser(user);
-
-	}
-
-	/**
 	 * Updates the password of the user
 	 *
 	 * @param username

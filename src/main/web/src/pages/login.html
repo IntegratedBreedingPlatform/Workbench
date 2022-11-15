@@ -30,27 +30,10 @@
 		The novalidate attribute disables form validation on submit which means that red outlines are not
 		applied to input elements in IE.
 	*/-->
-	<form th:action="@{/login}" th:attr="data-alt-action=@{/controller/auth/signup},data-forgot-password-action=@{/controller/auth/forgotPassword}, data-validate-login-action=@{/controller/auth/validateLogin}, data-reset-password-action=@{/controller/auth/sendResetEmail}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
+	<form th:action="@{/login}" th:attr="data-forgot-password-action=@{/controller/auth/forgotPassword}, data-validate-login-action=@{/controller/auth/validateLogin}, data-reset-password-action=@{/controller/auth/sendResetEmail}" autocomplete="off" class="js-login-form login-form" method="post" novalidate="" th:classappend="${param.error != null} ? login-form-invalid">
 		<!-- This is a dirty, necessary hack to avoid disgusting yellow inputs in Chrome. See http://stackoverflow.com/a/23467772/1712802 -->
 		<input class="js-fake-username" type="text" value="" style="display: none"/>
 		<input class="js-fake-password" type="password" value="" style="display: none"/>
-
-		<div class="login-form-control login-create-account-control login-name-control login-first-name-control">
-			<span class="login-icon fa" title="First Name">&#xf007;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="firstName" placeholder="First Name" type="text"></input>
-		</div
-		><div class="login-form-control login-create-account-control login-name-control login-last-name-control">
-			<span class="login-icon login-last-name-icon fa" title="Last Name">&#xf007;</span>
-			<input class="js-login-create-account-input login-last-name-input login-input login-flat-control" disabled="disabled" name="lastName" placeholder="Last Name" type="text"></input>
-		</div>
-		<div class="login-form-control login-create-account-control login-clear-float">
-			<span class="login-icon fa" title="Role">&#xf023;</span>
-			<span class="fa login-select-icon">&#xf063;</span>
-			<select class="login-select login-flat-control" name="roleId">
-				<option></option>
-				<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"/>
-			</select>
-		</div>
 
 		<div class="login-forgot-password-email-notify" th:text="#{login.forgot.request.mail.sent}">
 			Your request for reset password has been sent to your email.
@@ -60,9 +43,9 @@
 			To reset your password, enter the email address and username you use to sign in to BMS. You will receive an email with the link to change your password.
 		</div>
 
-		<div class="login-form-control login-create-account-control login-forgot-password-control">
+		<div class="login-form-control login-forgot-password-control">
 			<span class="login-icon fa" title="Email">&#xf0e0;</span>
-			<input class="js-login-create-account-input js-login-forgot-password-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
+			<input class="js-login-forgot-password-input login-input login-flat-control" disabled="disabled" name="email" placeholder="Email" type="email"></input>
 		</div>
 		<div class="login-form-control">
 			<span class="login-icon fa" title="Username">&#xf06c;</span>
@@ -71,10 +54,6 @@
 		<div class="login-form-control login-forgot-password-control-hide">
 			<span class="login-icon fa login-icon" title="Password">&#xf084;</span>
 			<input class="js-login-password login-input login-flat-control" name="password" placeholder="Password" type="password"></input>
-		</div>
-		<div class="login-form-control login-create-account-control login-confirm-password-control">
-			<span class="login-icon fa login-icon" title="Confirm Password">&#xf084;</span>
-			<input class="js-login-create-account-input login-input login-flat-control" disabled="disabled" name="passwordConfirmation" placeholder="Confirm Password" type="password"></input>
 		</div>
 		<div class="login-form-control login-grid">
 			<div class="js-login-checkbox-control login-input-inline login-checkbox-control login-unselectable">
@@ -130,10 +109,6 @@
 			<span class="login-submit-label">Authorize</span>
 		</button>
 	</form>
-
-	<div class="login-mode-toggle" th:if="${isCreateAccountEnable}">
-		<a class="js-login-mode-toggle ac-login-mode-toggle login-link login-unselectable" href="#">Create Account</a>
-	</div>
 
 	<div th:include="login-fragments :: message"></div>
 	<div th:include="login-fragments :: footer"></div>
