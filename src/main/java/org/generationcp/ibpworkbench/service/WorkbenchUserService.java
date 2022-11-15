@@ -4,7 +4,6 @@ package org.generationcp.ibpworkbench.service;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.pojos.Person;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -94,21 +93,4 @@ public class WorkbenchUserService {
 		return this.userService.getUserById(userId);
 	}
 
-	private Person createPerson(UserAccountModel userAccount) {
-		Person person = new Person();
-		person.setFirstName(userAccount.getFirstName());
-		person.setMiddleName(userAccount.getMiddleName());
-		person.setLastName(userAccount.getLastName());
-		person.setEmail(userAccount.getEmail());
-		person.setTitle("-");
-		person.setContact("-");
-		person.setExtension("-");
-		person.setFax("-");
-		person.setInstituteId(0);
-		person.setLanguage(0);
-		person.setNotes("-");
-		person.setPositionName("-");
-		person.setPhone("-");
-		return person;
-	}
 }
