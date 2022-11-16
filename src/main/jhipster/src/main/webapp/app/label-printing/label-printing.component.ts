@@ -1,6 +1,7 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BarcodeSetting, FileConfiguration, LabelPrintingData, LabelsNeededSummary, LabelType, PresetSetting, Sortable } from './label-printing.model';
+import { BarcodeSetting, FieldType, FileConfiguration, LabelPrintingData,
+    LabelsNeededSummary, LabelType, PresetSetting, Sortable } from './label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
@@ -50,7 +51,7 @@ export class LabelPrintingComponent implements OnInit {
     isLoading: boolean;
     defaultPresetSetting: PresetSetting;
     collapsedMap: { [key: string]: boolean; } = {};
-    labelTypesOrigMap: { [key: string]: {id: number, name: string }[]; } = {};
+    labelTypesOrigMap: { [key: string]: {id: number, name: string, fieldType: FieldType }[]; } = {};
     selectedFilterTextMap: { [key: string]: string; } = {};
     allLabels: any[];
 
@@ -101,7 +102,7 @@ export class LabelPrintingComponent implements OnInit {
         fieldsPromise.then((labelTypes) => {
             this.labelTypes = labelTypes;
             this.labelTypes.forEach((labelType) => {
-                this.collapsedMap[labelType.title] = false;
+                this.collapsedMap[labelType.title] = true;
                 this.labelTypesOrigMap[labelType.title] = labelType.fields.map((x) => Object.assign({}, x));
             });
             this.allLabels = Object.values(this.labelTypesOrigMap)
@@ -201,7 +202,7 @@ export class LabelPrintingComponent implements OnInit {
             const labelType = new LabelType(title, title, []);
             this.labelTypes.forEach((label: LabelType) => {
                 label.fields.forEach((field) => {
-                    if (idsSelected.indexOf(field.id) > -1) {
+                    if (idsSelected.indexOf(this.transformToCombinedKey(field)) > -1) {
                         labelType.fields.push(field);
                     }
                 });
@@ -225,9 +226,9 @@ export class LabelPrintingComponent implements OnInit {
         this.labelPrintingData.includeHeadings = presetSetting.includeHeadings;
 
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
-            this.labelPrintingData.firstBarcodeField = 0;
-            this.labelPrintingData.secondBarcodeField = 0;
-            this.labelPrintingData.thirdBarcodeField = 0;
+            this.labelPrintingData.firstBarcodeField = '';
+            this.labelPrintingData.secondBarcodeField = '';
+            this.labelPrintingData.thirdBarcodeField = '';
 
             if (presetSetting.barcodeSetting.barcodeFields[0]) {
                 this.labelPrintingData.firstBarcodeField = presetSetting.barcodeSetting.barcodeFields[0];
@@ -298,19 +299,19 @@ export class LabelPrintingComponent implements OnInit {
         const fieldsSelected = [];
         const barcodeFieldsSelected = [];
 
-        fieldsSelected.push(this.fieldsSelected[0].fields.map((field) => field.id));
+        fieldsSelected.push(this.fieldsSelected[0].fields.map((field) => this.transformToCombinedKey(field)));
         if (this.fileType === FileType.PDF) {
-            fieldsSelected.push(this.fieldsSelected[1].fields.map((field) => field.id));
+            fieldsSelected.push(this.fieldsSelected[1].fields.map((field) => this.transformToCombinedKey(field)));
         }
 
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
-            if (Number(this.labelPrintingData.firstBarcodeField) !== 0) {
+            if (this.labelPrintingData.firstBarcodeField !== '') {
                 barcodeFieldsSelected.push(this.labelPrintingData.firstBarcodeField);
             }
-            if (Number(this.labelPrintingData.secondBarcodeField) !== 0) {
+            if (this.labelPrintingData.secondBarcodeField !== '') {
                 barcodeFieldsSelected.push(this.labelPrintingData.secondBarcodeField);
             }
-            if (Number(this.labelPrintingData.thirdBarcodeField) !== 0) {
+            if (this.labelPrintingData.thirdBarcodeField !== '') {
                 barcodeFieldsSelected.push(this.labelPrintingData.thirdBarcodeField);
             }
 
@@ -379,9 +380,9 @@ export class LabelPrintingComponent implements OnInit {
 
         fileConfiguration.outputType = this.fileType.toString();
 
-        selectedFields.push(this.fieldsSelected[0].fields.map((field) => field.id));
+        selectedFields.push(this.fieldsSelected[0].fields.map((field) => this.transformToCombinedKey(field)));
         if (this.fileType === FileType.PDF) {
-            selectedFields.push(this.fieldsSelected[1].fields.map((field) => field.id));
+            selectedFields.push(this.fieldsSelected[1].fields.map((field) => this.transformToCombinedKey(field)));
             fileConfiguration.sizeOfLabelSheet = this.labelPrintingData.sizeOfLabelSheet;
             fileConfiguration.numberOfRowsPerPage = this.labelPrintingData.numberOfRowsPerPage;
         }
@@ -391,14 +392,14 @@ export class LabelPrintingComponent implements OnInit {
 
         if (this.labelPrintingData.barcodeNeeded && !this.labelPrintingData.barcodeGeneratedAutomatically) {
             barcodeSetting.barcodeFields = new Array();
-            if (Number(this.labelPrintingData.firstBarcodeField) !== 0) {
-                barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.firstBarcodeField));
+            if (this.labelPrintingData.firstBarcodeField !== '') {
+                barcodeSetting.barcodeFields.push(this.labelPrintingData.firstBarcodeField);
             }
-            if (Number(this.labelPrintingData.secondBarcodeField) !== 0) {
-                barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.secondBarcodeField));
+            if (this.labelPrintingData.secondBarcodeField !== '') {
+                barcodeSetting.barcodeFields.push(this.labelPrintingData.secondBarcodeField);
             }
-            if (Number(this.labelPrintingData.thirdBarcodeField) !== 0) {
-                barcodeSetting.barcodeFields.push(Number(this.labelPrintingData.thirdBarcodeField));
+            if (this.labelPrintingData.thirdBarcodeField !== '') {
+                barcodeSetting.barcodeFields.push(this.labelPrintingData.thirdBarcodeField);
             }
 
         }
@@ -592,6 +593,10 @@ export class LabelPrintingComponent implements OnInit {
         }
     }
 
+    transformToCombinedKey(field: any) {
+        return field.fieldType + '_' + field.id;
+    }
+
 }
 
 @Pipe({
@@ -606,6 +611,16 @@ export class FieldListFilterPipe implements PipeTransform {
                     item.name.toLowerCase().includes(filterText.toLowerCase())
             );
     }
+}
+
+@Pipe({
+    name: 'transformToCombinedKey'
+})
+export class TransformToCombinedKeyPipe implements PipeTransform {
+    transform(field: any): any {
+        return field.fieldType + '_' + field.id;
+    }
+
 }
 
 export enum FileType {

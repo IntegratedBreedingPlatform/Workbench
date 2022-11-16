@@ -312,12 +312,12 @@
 											<div class="row">
 												<div class="col-md-4">
 													<label class="col-form-label font-weight-bold"
-																   jhiTranslate="label-printing.first.bar.code.field"></label>:
+														   jhiTranslate="label-printing.first.bar.code.field"></label>:
 												</div>
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.firstBarcodeField" class="form-control">
-														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of allLabels" [value]="field.id">
+														<option [value]="''" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of allLabels" [value]="field | transformToCombinedKey">
 															{{field.name}}
 														</option>
 													</select>
@@ -329,8 +329,8 @@
 												</div>
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.secondBarcodeField" class="form-control">
-														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of allLabels" [value]="field.id">
+														<option [value]="''" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of allLabels" [value]="field | transformToCombinedKey">
 															{{field.name}}
 														</option>
 													</select>
@@ -342,8 +342,8 @@
 												</div>
 												<div class="col-md-8">
 													<select [(ngModel)]="labelPrintingData.thirdBarcodeField" class="form-control">
-														<option [value]="0" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
-														<option *ngFor="let field of allLabels" [value]="field.id">
+														<option [value]="''" jhiTranslate="label-printing.bar.code.please.choose.field">Please choose</option>
+														<option *ngFor="let field of allLabels" [value]="field | transformToCombinedKey">
 															{{field.name}}
 														</option>
 													</select>
