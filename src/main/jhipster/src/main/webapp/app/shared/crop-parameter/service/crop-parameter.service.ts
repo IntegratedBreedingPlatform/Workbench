@@ -26,7 +26,7 @@ export class CropParameterService {
 
     modifyCropParameters(key, value) {
         const baseUrl = SERVER_API_URL + 'crops/' + this.context.cropName;
-        return this.http.patch<CropParameter[]>(baseUrl + `/crop-parameters/${key}?programUUID=${this.context.programUUID}`, {value});
+        return this.http.patch<CropParameter[]>(baseUrl + `/crop-parameters/${key}?programUUID=${this.context.programUUID}`, value);
     }
 
 }

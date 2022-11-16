@@ -11,15 +11,21 @@
 			<tbody>
 			<tr *ngFor="let cropParameter of cropParameters; index as index">
 				<td>{{cropParameter.key}}</td>
-				<td class="editable">
+				<td class="editable input-group">
 					<jhi-inline-editor [observationVariable]="characterVariable"
 									   [value]="cropParameter.value"
+									   [isEncrypted]="cropParameter.encrypted && !showEncryptedText[index]"
 									   (onApply)="submit($event, index, cropParameter)"
 									   (onCancel)="cancel(index, cropParameter)"
 									   [(editing)]="editing[index]">
 						<span><!-- filler -->&nbsp;</span>
-						{{cropParameter.value}}
+						{{cropParameter.encrypted ? getEncryptedValueDisplay(cropParameter.value, index) : cropParameter.value}}
 					</jhi-inline-editor>
+					<div class="input-group-append" *ngIf="cropParameter.encrypted && !editing[index]">
+							<span [ngClass]="(showEncryptedText[index] ? 'fa pl-1 fa-eye' : 'fa pl-1 fa-eye-slash')"
+								  [title]="encryptedValueTooltip"
+								  (click)="toggleEncryptedValueDisplay(index)"></span>
+					</div>
 				</td>
 				<td>{{cropParameter.description}}</td>
 			</tr>
