@@ -84,8 +84,8 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     isGenotypingParameterConfigured() {
-        return this.cropGenotypingParameter && this.cropGenotypingParameter.cropName && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint
-            && this.cropGenotypingParameter.userName && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
+        return this.cropGenotypingParameter && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint && this.cropGenotypingParameter.userName
+            && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
     }
 
     linkBySelectOnChange() {
