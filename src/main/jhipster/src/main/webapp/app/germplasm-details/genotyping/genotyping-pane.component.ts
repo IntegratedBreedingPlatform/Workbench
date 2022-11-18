@@ -80,7 +80,7 @@ export class GenotypingPaneComponent implements OnInit {
     ngOnInit(): void {
         this.cropParameterService.getByGroupName(this.GENOTYPING_SERVER).subscribe(
             (cropParameters) => {
-                var cropParameterMap = cropParameters.reduce(function (map, row) {
+                const cropParameterMap = cropParameters.reduce(function(map, row) {
                     map[row.key] = row;
                     return map;
                 }, {});
