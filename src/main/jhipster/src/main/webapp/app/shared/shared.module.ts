@@ -92,7 +92,6 @@ import { RoleService } from './user/service/role.service';
 import { ScrollableTooltipDirective } from './tooltip/scrollable-tooltip.directive';
 import { TruncateWithEllipsisPipe } from './util/truncate-with-ellipsis.pipe';
 import { CropParameterService } from './crop-parameter/service/crop-parameter.service';
-import { CropGenotypingParameterService } from './crop/service/crop-genotyping-parameter.service';
 import { GenotypingBrapiService } from './brapi/service/genotyping-brapi.service';
 import { feedbackDialogRoutes } from './feedback/feedback-dialog.route';
 import { StudyService } from './study/study.service';
@@ -214,7 +213,6 @@ import { ModalAlertComponent } from './modal/modal-alert.component';
         FeedbackService,
         EntryDetailsImportContext,
         FeedbackService,
-        CropGenotypingParameterService,
         GenotypingBrapiService
     ],
     entryComponents: [

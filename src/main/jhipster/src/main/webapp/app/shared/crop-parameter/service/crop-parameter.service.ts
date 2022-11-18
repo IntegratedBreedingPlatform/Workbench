@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ParamContext } from '../../service/param.context';
 import { SERVER_API_URL } from '../../../app.constants';
 import { CropParameter } from '../model/crop-parameter';
@@ -29,4 +29,12 @@ export class CropParameterService {
         return this.http.patch<CropParameter[]>(baseUrl + `/crop-parameters/${key}?programUUID=${this.context.programUUID}`, value);
     }
 
+    getByGroupName(groupName: string): Observable<CropParameter[]> {
+        return this.http.get<CropParameter[]>(SERVER_API_URL + `crops/${this.context.cropName}/crop-parameters/${groupName}/group`);
+    }
+
+    getGenotypingToken(groupName: string): Observable<string> {
+        const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
+        return this.http.get<string>(SERVER_API_URL + `crops/${this.context.cropName}/crop-parameters/genotyping/${groupName}/token`, { headers, responseType: 'text' as 'json' });
+    }
 }
