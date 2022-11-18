@@ -33,6 +33,7 @@
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
+            "germplasmUUID" : "GERMPLASM UUID",
             "groupId": "GROUPID",
             "names": "NAMES",
             "methodName": "BREEDING METHOD NAME",

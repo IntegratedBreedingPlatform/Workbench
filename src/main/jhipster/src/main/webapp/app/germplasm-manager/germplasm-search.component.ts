@@ -99,7 +99,7 @@ export class GermplasmSearchComponent implements OnInit {
                 key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
                 matchType: MatchType.STARTSWITH, default: true
             },
-            { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
+            { key: 'germplasmUUID', name: 'Germplasm UUID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gids', name: 'GID', type: FilterType.LIST, default: true },
             {
                 key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
@@ -401,6 +401,7 @@ export class GermplasmSearchComponent implements OnInit {
         this.registerGermplasmDetailsChanged();
         this.request.addedColumnsPropertyIds = [];
         this.loadAll(this.request);
+        this.hiddenColumns[ColumnLabels['GERMPLASM UUID']] = true;
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
         this.hiddenColumns[ColumnLabels['GERMPLASM DATE']] = true;
         this.hiddenColumns[ColumnLabels['METHOD ABBREV']] = true;
@@ -928,6 +929,7 @@ export class GermplasmSearchComponent implements OnInit {
 
 export enum ColumnLabels {
     'GID' = 'GID',
+    'GERMPLASM UUID' = 'GERMPLASM UUID',
     'GROUP ID' = 'GROUP ID',
     'NAMES' = 'NAMES',
     'AVAILABLE' = 'AVAILABLE',
