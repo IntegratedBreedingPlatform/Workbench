@@ -36,6 +36,8 @@ export class GenotypingPaneComponent implements OnInit {
     isStudyLoading = false;
     isVariantSetLoading = false;
     isSamplesLoading = false;
+    genotypesView: any;
+    isGenotypingCallsLoading = false;
 
     public readonly LINK_BY_GUID = 'GUID';
     public readonly LINK_BY_SAMPLE_UID = 'SAMPLE_UID';
@@ -68,6 +70,7 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.genotypesView = '1';
         this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
             this.cropGenotypingParameter = result;
             this.genotypingBrapiService.brapiEndpoint = this.cropGenotypingParameter.endpoint;
@@ -174,6 +177,14 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
+        if (this.genotypesView === '2') {
+            this.loadFlapjackBytes();
+        } else {
+            this.loadGenotypesTable();
+        }
+    }
+
+    loadFlapjackBytes() {
         if (this.selectedVariantSet) {
             this.isExportingFlapjack = true;
             const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
@@ -197,6 +208,37 @@ export class GenotypingPaneComponent implements OnInit {
                     dataSetId: this.cropGenotypingParameter.programId,
                 });
             });
+        }
+    }
+
+    loadGenotypesTable() {
+        if (this.selectedVariantSet) {
+            this.genotypingBrapiService.searchCallsets({
+                variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
+                germplasmDbIds: [this.genotypingGermplasm.germplasmDbId]
+            }).subscribe((brapiResponse) => {
+                if (brapiResponse && brapiResponse.result.data.length) {
+                    this.genotypingCallSet = brapiResponse.result.data[0];
+                    this.loadGenotypingCalls();
+                } else {
+                    this.alertService.error('genotyping.no.genotyping.callsets.found');
+                }
+            });
+        }
+    }
+
+    loadGenotypingCalls() {
+        if (this.genotypingCallSet) {
+            this.isGenotypingCallsLoading = true;
+            this.genotypingBrapiService.searchCalls({
+                callSetDbIds: [this.genotypingCallSet.callSetDbId],
+                pageSize: this.pageSize,
+                page: (this.page - 1)
+            }).subscribe(((brapiResponse) => {
+                this.genotypingCalls = brapiResponse.result.data;
+                this.totalCount = brapiResponse.metadata.pagination.totalCount;
+                this.isGenotypingCallsLoading = false;
+            }));
         }
     }
 
