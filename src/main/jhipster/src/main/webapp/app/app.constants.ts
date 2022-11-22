@@ -54,3 +54,5 @@ export const ADD_NEW_PROGRAM = 'PROGRAM_CREATION';
 export const TRIAL_INSTANCE_CVTERM_ID = 8170;
 export const EXPT_DESIGN_CVTERM_ID = 8135;
 export const LOCATION_ID_CVTERM_ID = 8190;
+
+export const GENOTYPING_SERVER = 'gigwa';

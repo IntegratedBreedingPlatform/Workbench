@@ -127,8 +127,10 @@
       "columns": {
         "key": "Key",
         "value": "Value",
+        "encrypted.value": "Encrypted Value",
         "description": "Description"
       },
+      "encrypted.tooltip": "Show/hide encrypted value",
       "table.tooltip": "click the 'value' column to edit"
     }
   }

@@ -12,6 +12,7 @@ import { toUpper } from '../util/to-upper';
 export class InlineEditorComponent implements OnInit, AfterViewInit {
 
     @Input() observationVariable: ObservationVariable;
+    @Input() isEncrypted = false;
     @Input() value: any;
 
     /**
