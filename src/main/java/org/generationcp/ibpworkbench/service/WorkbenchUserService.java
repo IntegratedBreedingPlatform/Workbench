@@ -1,22 +1,18 @@
 
 package org.generationcp.ibpworkbench.service;
 
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Resource;
-
-import org.generationcp.commons.util.DateUtil;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.Operation;
-import org.generationcp.middleware.pojos.Person;
-import org.generationcp.middleware.pojos.workbench.UserRole;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.user.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @Transactional
@@ -26,39 +22,6 @@ public class WorkbenchUserService {
 	private UserService userService;
 
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-	/**
-	 * Cretes new user account
-	 *
-	 * @param userAccount
-	 */
-	public void saveUserAccount(UserAccountModel userAccount) {
-		// user.access =  0 - Default User
-		// user.instalid =  0 - Access all areas (legacy from the ICIS system) (not used)
-		// user.status = 0 - Unassigned
-		// user.type = 0 - Default user type (not used)
-
-		userAccount.trimAll();
-		Integer currentDate = DateUtil.getCurrentDateAsIntegerValue();
-		Person person = this.createPerson(userAccount);
-
-		WorkbenchUser user = new WorkbenchUser();
-		user.setPerson(person);
-		user.setName(userAccount.getUsername());
-		user.setPassword(passwordEncoder.encode(userAccount.getPassword()));
-		user.setAccess(0);
-		user.setAssignDate(currentDate);
-		user.setCloseDate(currentDate);
-		user.setInstalid(0);
-		user.setStatus(0);
-		user.setType(0);
-		user.setMultiFactorAuthenticationEnabled(true);
-
-		// add user roles to the particular user
-		user.setRoles(Arrays.asList(new UserRole(user, userAccount.getRole())));
-		this.userService.addUser(user);
-
-	}
 
 	/**
 	 * Updates the password of the user
@@ -130,23 +93,4 @@ public class WorkbenchUserService {
 		return this.userService.getUserById(userId);
 	}
 
-	private Person createPerson(UserAccountModel userAccount) {
-		Person person = new Person();
-		person.setFirstName(userAccount.getFirstName());
-		person.setMiddleName(userAccount.getMiddleName());
-		person.setLastName(userAccount.getLastName());
-		person.setEmail(userAccount.getEmail());
-		person.setTitle("-");
-		person.setContact("-");
-		person.setExtension("-");
-		person.setFax("-");
-		person.setInstituteId(0);
-		person.setLanguage(0);
-		person.setNotes("-");
-		person.setPositionName("-");
-		person.setPhone("-");
-		this.userService.addPerson(person);
-
-		return person;
-	}
 }
