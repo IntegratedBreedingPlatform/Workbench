@@ -3,18 +3,12 @@ export class Call {
         public additionalInfo: any,
         public callSetDbId: string,
         public callSetName: string,
-        public genotype: Genotype,
-        public genotype_likelihood: number[],
+        public genotypeMetadata: any[],
+        public genotypeValue: string,
         public phaseSet: string,
         public variantDbId: string,
-        public variantName: string) {
+        public variantName: string,
+        public variantSetDbId: string,
+        public variantSetName: string) {
     }
-}
-
-export class Genotype {
-    constructor(
-        public values: string[]
-    ) {
-    }
-
 }
