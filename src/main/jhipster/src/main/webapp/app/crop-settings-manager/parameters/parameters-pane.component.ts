@@ -7,6 +7,8 @@ import { CropParameterService } from '../../shared/crop-parameter/service/crop-p
 import { HttpErrorResponse } from '@angular/common/http';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { ColumnFilterComponent } from '../../shared/column-filter/column-filter.component';
 
 @Component({
     selector: 'jhi-parameters-pane',
@@ -18,11 +20,14 @@ export class ParametersPaneComponent {
 
     cropParameters: CropParameter[];
 
+    encryptedValueTooltip;
+
     // Only text edition supported for now
     characterVariable: ObservationVariable = <ObservationVariable>({
         dataTypeId: DataTypeIdEnum.CHARACTER
     });
     editing = {};
+    showEncryptedText = {};
 
     constructor(
         private cropParameterService: CropParameterService,
@@ -31,6 +36,7 @@ export class ParametersPaneComponent {
     ) {
         this.load();
         this.tableTooltip = this.translateService.instant('crop-settings-manager.parameters.table.tooltip');
+        this.encryptedValueTooltip = this.translateService.instant('crop-settings-manager.parameters.encrypted.tooltip');
     }
 
     load() {
@@ -38,8 +44,8 @@ export class ParametersPaneComponent {
     }
 
     submit($event, index, cropParameter) {
-        this.cropParameterService.modifyCropParameters(cropParameter.key, $event).subscribe(() => {
-            cropParameter.value = $event;
+        cropParameter.value = $event;
+        this.cropParameterService.modifyCropParameters(cropParameter.key, cropParameter).subscribe(() => {
             this.editing[index] = false;
         }, (error) => this.onError(error));
     }
@@ -49,8 +55,24 @@ export class ParametersPaneComponent {
         this.editing[index] = false;
     }
 
+    toggleEncryptedValueDisplay(index) {
+        this.showEncryptedText[index] = !this.showEncryptedText[index];
+    }
+
     isEditing() {
         return false;
+    }
+
+    getEncryptedValueDisplay(encryptedValue, index) {
+        if (encryptedValue) {
+            if (this.showEncryptedText[index]) {
+                return encryptedValue;
+            } else {
+                return encryptedValue.replace(/./gi, '*');
+            }
+        }
+
+        return '';
     }
 
     private onError(response: HttpErrorResponse) {

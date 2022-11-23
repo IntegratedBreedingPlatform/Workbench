@@ -66,7 +66,7 @@ export class GermplasmSelectorComponent implements OnInit {
                 key: 'nameFilter', name: 'Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
                 matchType: MatchType.STARTSWITH, default: true
             },
-            { key: 'germplasmUUID', name: 'Germplasm UID', placeholder: 'Match Text', type: FilterType.TEXT },
+            { key: 'germplasmUUID', name: 'Germplasm UUID', placeholder: 'Match Text', type: FilterType.TEXT },
             { key: 'gids', name: 'GID', type: FilterType.LIST, default: true },
             {
                 key: 'gidRange', name: 'GID Range', type: FilterType.NUMBER_RANGE,
@@ -364,6 +364,7 @@ export class GermplasmSelectorComponent implements OnInit {
         this.loadAll(this.request);
         this.registerChangeInGermplasm();
         this.request.addedColumnsPropertyIds = [];
+        this.hiddenColumns[ColumnLabels['GERMPLASM UUID']] = true;
         this.hiddenColumns[ColumnLabels['GROUP ID']] = true;
         this.hiddenColumns[ColumnLabels['GERMPLASM DATE']] = true;
         this.hiddenColumns[ColumnLabels['METHOD ABBREV']] = true;

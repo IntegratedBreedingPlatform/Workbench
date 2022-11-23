@@ -11,6 +11,7 @@
 			<ng-template #columnvisibility>
 				<div id="columnVisibility">
 					<jhi-col-vis-button [colName]="ColumnLabels.GID" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.gid"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['GERMPLASM UUID']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.germplasmUUID"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['GROUP ID']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.groupId"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels.NAMES" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.names"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['METHOD NAME']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.methodName"></span></jhi-col-vis-button>
@@ -62,6 +63,7 @@
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
 				<th *ngIf="!isSelectAllPages"><input *ngIf="selectMultiple" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" data-test="selectAllCurrentPage"></th>
 				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns[ColumnLabels.GID]"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['GERMPLASM UUID']" [hidden]="hiddenColumns[ColumnLabels['GERMPLASM UUID']]"><span jhiTranslate="search-germplasm.column.germplasmUUID"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GROUP ID']" [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="search-germplasm.column.groupId"></span><span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NAMES" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="search-germplasm.column.names"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.AVAILABLE" [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]"><span jhiTranslate="search-germplasm.column.availableBalance"></span> <span class="fa fa-sort"></span></th>
@@ -99,6 +101,7 @@
 					<input *ngIf="!selectMultiple" type="radio" name="gid-option-group" [checked]="isSelected(germplasm)" (click)="toggleSelect(germplasm)">
 				</td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a [href]="this.germplasmDetailsUrlService.getUrl(germplasm.gid)" target="_blank">{{germplasm.gid}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM UUID']]"><a [href]="this.germplasmDetailsUrlService.getUrl(germplasm.gid)" target="_blank">{{germplasm.germplasmUUID}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId"  [href]="this.germplasmDetailsUrlService.getUrl(germplasm.groupId)" target="_blank">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
 				<td jhiScrollableTooltip [tooltipText]="germplasm.names" placement="right" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a [href]="this.germplasmDetailsUrlService.getUrl(germplasm.gid)" target="_blank">{{germplasm.names | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE }}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>
@@ -148,7 +151,7 @@
 					<div class="pagination-box pagination-box-left">
 						<div>
 							<jhi-item-count-custom [page]="page" [total]="filteredItems" [itemsPerPage]="itemsPerPage"
-													   [limit]="5000"></jhi-item-count-custom>
+												   [limit]="5000"></jhi-item-count-custom>
 						</div>
 					</div>
 					<div class="pagination-box">
@@ -172,10 +175,10 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<jhi-alert ></jhi-alert>
+		<jhi-alert></jhi-alert>
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
-            <span jhiTranslate="entity.action.cancel">Cancel</span>
-        </button>
+			<span jhiTranslate="entity.action.cancel">Cancel</span>
+		</button>
 		<button data-test="selectButton" (click)="selectGermplasm()" [disabled]="!isSelectAllPages && selectedItems.length == 0" class="btn btn-primary">
 			<span jhiTranslate="entity.action.select">Select</span>
 		</button>
