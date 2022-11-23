@@ -22,6 +22,7 @@
 		$password = $('.js-login-password'),
 		$select = $('.login-select'),
 		$select2Container = $('.select2-container'),
+		$resetPasswordSection = $('#resetPasswordSection'),
 
 		$licenseWarningModal = $('#licenseWarningModal'),
 		$dismissLicenseWarning = $('#dismissLicenseWarning'),
@@ -410,6 +411,7 @@
 	$('.ac-login-forgot-password').on('click', function (e) {
 		e.preventDefault();
 		$('.login-forgot-password-email-notify').hide();
+		$resetPasswordSection.hide();
 
 		clearErrors();
 		toggleLoginPage(toggleForgotPasswordScreen);
