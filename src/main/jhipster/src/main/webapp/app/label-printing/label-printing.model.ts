@@ -115,6 +115,6 @@ export class Sortable {
 
 export enum FieldType {
     VARIABLE = 'VARIABLE',
-    VIRTUAL_VARIABLE = 'VIRTUAL_VARIABLE',
+    STATIC = 'STATIC',
     NAME = 'NAME'
 }
