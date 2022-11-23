@@ -3,6 +3,7 @@
 export class Germplasm {
     constructor(
         public gid: number,
+        public germplasmUUID: string,
         public groupId?: number,
         public names?: number,
         public methodName?: number,
