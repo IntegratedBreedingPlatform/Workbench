@@ -49,8 +49,9 @@
 		}
 	}
 
-	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities', '$routeParams',
-		function ($scope, variablesService, panelService, $timeout, collectionUtilities, $routeParams) {
+	app.controller('VariablesController', ['$scope', 'variablesService', 'panelService', '$timeout', 'collectionUtilities', '$routeParams', 'propertiesService', 'methodsService',
+		'scalesService',
+		function ($scope, variablesService, panelService, $timeout, collectionUtilities, $routeParams, propertiesService, methodsService, scalesService) {
 			var ctrl = this;
 
 			ctrl.variables = [];
@@ -64,6 +65,10 @@
 
 			$scope.filterByProperties = ['name', 'alias', 'property', 'method', 'scale'];
 			$scope.panelName = 'variables';
+			$scope.propertiesPanelName = 'properties';
+			$scope.methodsPanelName = 'methods';
+			$scope.scalesPanelName = 'scales';
+
 			$scope.filterOptions = {
 				variableTypes: [],
 				scaleDataType: null,
@@ -300,6 +305,56 @@
 				ctrl.showNoFavouritesMessage = ctrl.favouriteVariables.length > 0 ? false : true;
 			};
 
+			$scope.viewPropertyDetails = function (e) {
+				e.preventDefault();
+				$scope.selectedProperty = null;
+
+				propertiesService.getProperty($scope.selectedVariable.property.id).then(function(property) {
+					$scope.selectedProperty = property;
+				});
+
+				panelService.showPanel($scope.propertiesPanelName);
+			}
+
+			$scope.viewScaleDetails = function (e) {
+				e.preventDefault();
+				$scope.selectedScale = null;
+
+				scalesService.getScale($scope.selectedVariable.scale.id).then(function(scale) {
+					$scope.selectedScale = scale;
+				});
+
+				panelService.showPanel($scope.scalesPanelName);
+			}
+
+			$scope.viewMethodDetails = function (e) {
+				e.preventDefault();
+				$scope.selectedMethod = null;
+
+				methodsService.getMethod($scope.selectedVariable.method.id).then(function(method) {
+					$scope.selectedMethod = method;
+				});
+
+				panelService.showPanel($scope.methodsPanelName);
+			}
+
+			$scope.showSelectedVariable = function (e) {
+				e.preventDefault();
+				panelService.showPanel($scope.panelName);
+			}
+
+			$scope.filterByVariableTypes = function (e) {
+				e.preventDefault();
+				$scope.filterOptions = {
+					variableTypes: $scope.selectedVariable.variableTypes,
+					scaleDataType: null,
+					obsolete: false,
+					nonObsolete: false
+				};
+				$scope.searchTerm = '';
+				panelService.hidePanel();
+			}
+
 			$scope.updateSelectedVariable = function(updatedVariable) {
 				var transformedVariable,
 					isFavourite;
@@ -334,6 +389,9 @@
 			$scope.selectedItem = {id: null};
 			// Contains the entire selected variable object once it has been updated.
 			$scope.selectedVariable = {};
+			$scope.selectedProperty = {};
+			$scope.selectedMethod = {};
+			$scope.selectedScale = {};
 
 			if ($routeParams.id) {
 				$scope.showVariableDetails($routeParams.id);

@@ -5,4 +5,9 @@
 	</ui-select-choices>
 </ui-select>
 
-<div class="form-control-static" ng-hide="editable()">{{model[property].name}}</div>
+<div class="form-control-static" ng-hide="editable()">
+	<div ng-hide="isHyperLink">{{model[property].name}}</div>
+	<div ng-show="isHyperLink">
+		<a ng-hide="editing" href="#" ng-click="showModelPanel($event)">{{model[property].name}}</a>
+	</div>
+</div>
