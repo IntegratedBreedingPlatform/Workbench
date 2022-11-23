@@ -308,8 +308,10 @@
 			$scope.viewPropertyDetails = function (e) {
 				e.preventDefault();
 				$scope.selectedProperty = null;
+				$scope.selectedItem.id =
 
 				propertiesService.getProperty($scope.selectedVariable.property.id).then(function(property) {
+					$scope.selectedItem.id = property.id;
 					$scope.selectedProperty = property;
 				});
 
@@ -321,6 +323,7 @@
 				$scope.selectedScale = null;
 
 				scalesService.getScale($scope.selectedVariable.scale.id).then(function(scale) {
+					$scope.selectedItem.id = scale.id;
 					$scope.selectedScale = scale;
 				});
 
@@ -332,6 +335,7 @@
 				$scope.selectedMethod = null;
 
 				methodsService.getMethod($scope.selectedVariable.method.id).then(function(method) {
+					$scope.selectedItem.id = method.id;
 					$scope.selectedMethod = method;
 				});
 
@@ -340,6 +344,7 @@
 
 			$scope.showSelectedVariable = function (e) {
 				e.preventDefault();
+				$scope.selectedItem.id = $scope.selectedVariable.id;
 				panelService.showPanel($scope.panelName);
 			}
 

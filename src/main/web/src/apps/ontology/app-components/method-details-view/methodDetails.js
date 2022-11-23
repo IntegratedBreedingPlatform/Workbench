@@ -102,8 +102,11 @@
 							}, DELAY);
 
 							methodsService.updateMethod(id, model).then(function() {
-								// Update method on parent scope if we succeeded
-								$scope.updateSelectedMethod(model);
+								// Check if method details is not opened from Variables Panel
+								if (!$scope.selectedVariable) {
+									// Update method on parent scope if we succeeded
+									$scope.updateSelectedMethod(model);
+								}
 
 								$scope.editing = false;
 								resetSubmissionState();
