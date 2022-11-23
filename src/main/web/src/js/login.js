@@ -8,7 +8,6 @@
 		$loginForm = $('.js-login-form'),
 		$authorizeForm = $('#authorize-form'),
 		$oneTimePasswordForm = $('#one-time-password-form'),
-		$loginModeToggle = $('.js-login-mode-toggle'),
 		$loginSubmit = $('.js-login-submit'),
 		$authorizeSubmit = $('.js-authorize-submit'),
 		$verifyOtpSubmit = $('.js-verify-otp-submit'),
@@ -28,12 +27,10 @@
 		$dismissLicenseWarning = $('#dismissLicenseWarning'),
 		$isLicenseValidationEnabled = $('#isLicenseValidationEnabled'),
 
-		createAccount = 'login-create-account',
 		forgotPasswordClass = 'login-forgot-password',
 		validationError = 'login-validation-error',
 		formInvalid = 'login-form-invalid',
 
-		createAccountText = 'Create Account',
 		signInText = 'Sign In',
 		resetPasswordText = 'Continue',
 
@@ -71,7 +68,7 @@
 	}
 
 	function isLoginDisplayed() {
-		return !($loginForm.hasClass(createAccount) || $loginForm.hasClass(forgotPasswordClass));
+		return !($loginForm.hasClass(forgotPasswordClass));
 	}
 
 	function isForgotPasswordScreenDisplayed() {
@@ -84,33 +81,11 @@
 	 */
 	function toggleLoginPage(toggleFunction) {
 
-		if ($loginForm.hasClass(createAccount)) {
-			toggleLoginCreateAccount();
-		} else if ($loginForm.hasClass(forgotPasswordClass)) {
+		if ($loginForm.hasClass(forgotPasswordClass)) {
 			toggleForgotPasswordScreen();
 		} else {
 			toggleFunction();
 		}
-	}
-
-	function toggleLoginCreateAccount() {
-		var switchToCreate = isLoginDisplayed(),
-			$createAccountInputs = $('.js-login-create-account-input'),
-			prevAction = $loginForm.attr('action');
-
-		// Once we have the create account post, change the form action to be stored on a data attribute, and toggle the URL stored
-		// when we toggle.
-		$loginForm.attr('action', altAction);
-		altAction = prevAction;
-
-		$loginForm.toggleClass(createAccount, switchToCreate);
-		$loginModeToggle.text(switchToCreate ? signInText : createAccountText);
-		$loginSubmit.text(switchToCreate ? createAccountText : signInText);
-
-		// Disable / enable inputs as required, to ensure all and only appropriate inputs are submitted
-		$createAccountInputs.prop('disabled', !switchToCreate);
-		$checkInput.prop('disabled', switchToCreate);
-		$select.select2('enable', switchToCreate);
 	}
 
 	function toggleForgotPasswordScreen() {
@@ -124,7 +99,6 @@
 		forgotPasswordAction = prevAction;
 
 		$loginForm.toggleClass(forgotPasswordClass, switchToCreate);
-		$loginModeToggle.text(switchToCreate ? signInText : createAccountText);
 		$loginSubmit.text(switchToCreate ? resetPasswordText : signInText);
 
 		// clear out password field
@@ -273,7 +247,7 @@
 				// Do nothing
 				return;
 			}
-		}).fail((error) => {
+		}).fail(function (error) {
 			displayOTPError(error.responseJSON.errors);
 		});
 	}
@@ -300,7 +274,7 @@
 				$verifyOtpSubmit.removeAttr("disabled");
 				processLoginSuccess(data);
 			}
-		}).fail((error) => {
+		}).fail(function (error) {
 			$verifyOtpSubmit.removeClass('loading');
 			$verifyOtpSubmit.removeAttr("disabled");
 			displayOTPError(error.responseJSON.errors);
@@ -338,7 +312,7 @@
 			var userForm = $loginForm.serialize();
 
 			$.post($loginForm.attr('action'), userForm)
-				.done(function() {
+				.done(function () {
 					// Clear form fields and show the login screen
 					clearErrors();
 
@@ -355,10 +329,10 @@
 						loginFormRef.submit();
 					}
 				})
-				.fail(function(jqXHR) {
+				.fail(function (jqXHR) {
 					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
 				})
-				.always(function() {
+				.always(function () {
 					$loginSubmit.removeClass('loading');
 				});
 		}
@@ -375,7 +349,7 @@
 				ok: {
 					label: "Dismiss",
 					className: 'btn-primary',
-					callback: function() {
+					callback: function () {
 						doProcessAction(loginFormRef);
 					}
 				}
@@ -433,15 +407,6 @@
 		clearErrors();
 	});
 
-	// Toggle between forms
-	$loginModeToggle.on('click', function (e) {
-		e.preventDefault();
-		$('.login-forgot-password-email-notify').hide();
-
-		clearErrors();
-		toggleLoginPage(toggleLoginCreateAccount);
-	});
-
 	$('.ac-login-forgot-password').on('click', function (e) {
 		e.preventDefault();
 		$('.login-forgot-password-email-notify').hide();
@@ -494,8 +459,8 @@
 			const MISSING_OR_EXPIRED_LICENSE_MSG = "Login unauthorized: No BMS license has been found or has been expired."
 				+ CONTACT_SUPPORT_MSG;
 
-			$.get('/bmsapi/breeding-view-licenses').done(function(data) {
-				if(data && data.length > 0) {
+			$.get('/bmsapi/breeding-view-licenses').done(function (data) {
+				if (data && data.length > 0) {
 					const expiry = data[0].expiry;
 					const expiryDays = data[0].expiryDays;
 
@@ -515,7 +480,7 @@
 				}
 
 				doProcessAction(loginFormRef);
-			}).fail(function(jqXHR) {
+			}).fail(function (jqXHR) {
 				$errorText.append($.parseHTML(MISSING_OR_EXPIRED_LICENSE_MSG));
 				$error.removeClass('login-valid');
 				$loginForm.addClass(formInvalid);
@@ -539,7 +504,7 @@
 			toggleAuthorizeScreen();
 		} else {
 			// Detach validation so we can proceed with submit
-			$loginForm.off( "submit" );
+			$loginForm.off("submit");
 			$loginForm.submit();
 		}
 	}

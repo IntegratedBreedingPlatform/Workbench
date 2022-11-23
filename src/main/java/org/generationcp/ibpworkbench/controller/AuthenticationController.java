@@ -1,11 +1,8 @@
 package org.generationcp.ibpworkbench.controller;
 
-import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.security.InvalidResetTokenException;
 import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
@@ -104,14 +101,6 @@ public class AuthenticationController {
 	@Qualifier("workbenchProperties")
 	private Properties workbenchProperties;
 
-	//TODO: Disable this option until decide which is the best
-	// way to create user with roles in the Login page. ISSUE IBP-2958
-	//@Value("${workbench.enable.create.account}")
-	//private String enableCreateAccount;
-
-	@Value("${workbench.is.single.user.only}")
-	private String isSingleUserOnly;
-
 	@Value("${institute.logo.path}")
 	private String instituteLogoPath;
 
@@ -139,15 +128,12 @@ public class AuthenticationController {
 	@Value("${security.2fa.otp.length}")
 	private int otpCodeLength;
 
-	private List<Role> roles;
-
 	// Stores the number of times the OTP verification is called per user.
 	// The value stored will expire in a specified number of minutes (otpVerificationAttemptExpiry).
 	private LoadingCache<String, Integer> otpVerificationAttemptCache;
 
 	@PostConstruct
 	public void initialize() {
-		this.roles = this.roleService.getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
 		this.footerMessage = Sanitizers.FORMATTING.sanitize(this.footerMessage);
 		// This is to track the number of OTP verification attempts per user.
 		this.otpVerificationAttemptCache = CacheBuilder.newBuilder().refreshAfterWrite(this.otpVerificationAttemptExpiry, TimeUnit.MINUTES)
@@ -162,8 +148,6 @@ public class AuthenticationController {
 	@RequestMapping(value = "/login")
 	public String getLoginPage(final Model model) {
 
-		model.addAttribute("isCreateAccountEnable", this.isAccountCreationEnabled());
-		model.addAttribute("roles", this.roles);
 		model.addAttribute("otpCodeLength", this.otpCodeLength);
 		this.populateCommomModelAttributes(model);
 
@@ -357,42 +341,6 @@ public class AuthenticationController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/signup", method = RequestMethod.POST)
-	public ResponseEntity<Map<String, Object>> saveUserAccount(@ModelAttribute("userAccount") final UserAccountModel model,
-		final BindingResult result) {
-		final Map<String, Object> out = new LinkedHashMap<>();
-		HttpStatus isSuccess = HttpStatus.BAD_REQUEST;
-
-		if (!this.isAccountCreationEnabled()) {
-			new ResponseEntity<>(out, HttpStatus.FORBIDDEN);
-		}
-		final ImmutableMap<Integer, Role> roleMap = Maps.uniqueIndex(this.roles, new Function<Role, Integer>() {
-
-			@Override
-			public Integer apply(final Role role) {
-				return role.getId();
-			}
-		});
-		model.setRole(roleMap.get(model.getRoleId()));
-		this.userAccountValidator.validate(model, result);
-
-		if (result.hasErrors()) {
-
-			this.generateErrors(result, out);
-
-		} else {
-			// attempt to save the user to the database
-			this.workbenchUserService.saveUserAccount(model);
-
-			isSuccess = HttpStatus.OK;
-			out.put(AuthenticationController.SUCCESS, Boolean.TRUE);
-
-		}
-
-		return new ResponseEntity<>(out, isSuccess);
-	}
-
-	@ResponseBody
 	@RequestMapping(value = "/forgotPassword", method = RequestMethod.POST)
 	public ResponseEntity<Map<String, Object>> validateForgotPasswordForm(@ModelAttribute("userAccount") final UserAccountModel model,
 		final BindingResult result) {
@@ -499,33 +447,6 @@ public class AuthenticationController {
 
 		out.put(AuthenticationController.SUCCESS, Boolean.FALSE);
 		out.put(AuthenticationController.ERRORS, errors);
-	}
-
-	protected boolean isAccountCreationEnabled() {
-
-		// Do not display the Create Account link if BMS is in single user mode.
-		/*if (Boolean.parseBoolean(isSingleUserOnly)) {
-			return false;
-		} else {
-			return Boolean.parseBoolean(this.enableCreateAccount);
-		}*/
-		return false;
-	}
-
-	/*protected void setEnableCreateAccount(final String enableCreateAccount) {
-		this.enableCreateAccount = enableCreateAccount;
-	}*/
-
-	protected void setIsSingleUserOnly(final String isSingleUserOnly) {
-		this.isSingleUserOnly = isSingleUserOnly;
-	}
-
-	public List<Role> getRoles() {
-		return this.roles;
-	}
-
-	public void setRoles(final List<Role> roles) {
-		this.roles = roles;
 	}
 
 	protected void addOrUpdateUserDevice(final Integer userId, final HttpServletRequest httpServletRequest) {

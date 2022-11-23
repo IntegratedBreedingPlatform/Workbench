@@ -47,31 +47,6 @@ public class WorkbenchUserServiceTest {
 	@InjectMocks
 	private WorkbenchUserService userService;
 
-	@Test
-	public void testSaveUserAccount() throws Exception {
-		final UserAccountModel userAccount = this.createUserAccount();
-		final ArgumentCaptor<Person> personCaptor = ArgumentCaptor.forClass(Person.class);
-		final ArgumentCaptor<WorkbenchUser> userCaptor = ArgumentCaptor.forClass(WorkbenchUser.class);
-
-		this.userService.saveUserAccount(userAccount);
-
-		Mockito.verify(this.middlewareUserService).addPerson(personCaptor.capture());
-		Mockito.verify(this.middlewareUserService).addUser(userCaptor.capture());
-		final Person capturedPerson = personCaptor.getAllValues().get(0);
-		final WorkbenchUser capturedUser = userCaptor.getAllValues().get(0);
-
-		Assert.assertEquals(FIRST_NAME, capturedPerson.getFirstName());
-		Assert.assertEquals(LAST_NAME, capturedPerson.getLastName());
-		Assert.assertEquals(EMAIL, capturedPerson.getEmail());
-
-		Assert.assertEquals(TEST_USERNAME, capturedUser.getName());
-		Assert.assertEquals(60, capturedUser.getPassword().length());
-		// Check that non-encrypted password matches the encrypted one
-		Assert.assertTrue(this.passwordEncoder.matches(PASSWORD, capturedUser.getPassword()));
-		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getAssignDate());
-		Assert.assertEquals(DateUtil.getCurrentDateAsIntegerValue(), capturedUser.getCloseDate());
-	}
-
 	protected UserAccountModel createUserAccount() {
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setFirstName(FIRST_NAME);

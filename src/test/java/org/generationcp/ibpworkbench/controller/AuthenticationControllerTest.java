@@ -11,18 +11,14 @@ import org.generationcp.ibpworkbench.security.WorkbenchEmailSenderService;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
-import org.generationcp.middleware.api.role.RoleService;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.security.OneTimePasswordDto;
 import org.generationcp.middleware.service.api.security.OneTimePasswordService;
 import org.generationcp.middleware.service.api.security.UserDeviceMetaDataDto;
 import org.generationcp.middleware.service.api.security.UserDeviceMetaDataService;
-import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.generationcp.middleware.util.UserDeviceMetaDataUtil;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -46,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -97,9 +92,6 @@ public class AuthenticationControllerTest {
 	private AuthenticationController controller;
 
 	@Mock
-	private RoleService roleService;
-
-	@Mock
 	private HttpServletRequest httpServletRequest;
 
 	@Mock
@@ -108,15 +100,8 @@ public class AuthenticationControllerTest {
 	@Mock
 	private UserDeviceMetaDataService userDeviceMetaDataService;
 
-	private List<Role> roles;
-	private Role selectedRole;
-
 	@Before
 	public void setup() {
-		this.createTestRoles();
-		Mockito.doReturn(this.selectedRole.getId()).when(this.userAccountModel).getRoleId();
-		Mockito.doReturn(this.roles).when(this.roleService).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
-
 		Mockito.doReturn("1.2.3.4").when(this.httpServletRequest).getHeader("x-forwarded-for");
 		Mockito.doReturn("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36")
 			.when(this.httpServletRequest).getHeader(USER_AGENT);
@@ -131,17 +116,9 @@ public class AuthenticationControllerTest {
 	}
 
 	@Test
-	public void testIntialize() {
-		this.controller.initialize();
-		Mockito.verify(this.roleService).getRoles(new RoleSearchDto(Boolean.TRUE, null, null));
-		assertEquals(this.roles, this.controller.getRoles());
-	}
-
-	@Test
 	public void testGetLoginPage() throws Exception {
 		final Model model = Mockito.mock(Model.class);
 		assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
-		Mockito.verify(model).addAttribute(Mockito.eq("roles"), Mockito.anyObject());
 		this.assertCommonAttributesWereAddedToModel(model);
 	}
 
@@ -155,40 +132,6 @@ public class AuthenticationControllerTest {
 		final InputStream inputStream = Mockito.mock(InputStream.class);
 		Mockito.when(this.servletContext.getResourceAsStream(ArgumentMatchers.anyString())).thenReturn(inputStream);
 		Assert.assertThat(this.controller.findInstituteLogo(path), is(not("")));
-	}
-
-	@Test
-	public void loginPageIsPopulatedWithEnableAccountCreationParameter() throws Exception {
-		final Model model = Mockito.mock(Model.class);
-
-		assertEquals("should return the login url", "login", this.controller.getLoginPage(model));
-		Mockito.verify(model).addAttribute("isCreateAccountEnable", false);
-	}
-
-	@Test
-	public void testSaveUserAccount() throws Exception {
-		this.controller.setRoles(this.roles);
-		Mockito.when(this.result.hasErrors()).thenReturn(false);
-
-		final ResponseEntity<Map<String, Object>> out = this.controller.saveUserAccount(this.userAccountModel, this.result);
-		Mockito.verify(this.userAccountModel).setRole(this.selectedRole);
-		assertEquals("ok status", HttpStatus.OK, out.getStatusCode());
-
-		Assert.assertTrue("success = true", (Boolean) out.getBody().get("success"));
-
-	}
-
-	@Test
-	public void testSaveUserAccountWithErrors() throws Exception {
-		this.controller.setRoles(this.roles);
-		Mockito.when(this.result.hasErrors()).thenReturn(true);
-		Mockito.when(this.result.getFieldErrors()).thenReturn(Collections.<FieldError>emptyList());
-
-		final ResponseEntity<Map<String, Object>> out = this.controller.saveUserAccount(this.userAccountModel, this.result);
-
-		assertEquals("should output bad request status", HttpStatus.BAD_REQUEST, out.getStatusCode());
-		Assert.assertFalse("success = false", (Boolean) out.getBody().get("success"));
-
 	}
 
 	@Test
@@ -988,41 +931,6 @@ public class AuthenticationControllerTest {
 		Assert.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 		Assert.assertFalse((Boolean) result.getBody().get(AuthenticationController.SUCCESS));
 		Assert.assertTrue((result.getBody().containsKey(AuthenticationController.ERRORS)));
-	}
-
-	@Test
-	@Ignore
-	public void testIsAccountCreationEnabled() {
-
-		// If SingleUserOnly mode is enabled, it will override EnableCreateAccount
-		this.controller.setIsSingleUserOnly("true");
-		//this.controller.setEnableCreateAccount("true");
-
-		Assert.assertFalse(this.controller.isAccountCreationEnabled());
-
-		this.controller.setIsSingleUserOnly("true");
-		//this.controller.setEnableCreateAccount("false");
-
-		Assert.assertFalse(this.controller.isAccountCreationEnabled());
-
-		// If SingleUserOnly mode is disabled, return value is EnableCreateAccount
-		this.controller.setIsSingleUserOnly("false");
-		//this.controller.setEnableCreateAccount("true");
-
-		Assert.assertTrue(this.controller.isAccountCreationEnabled());
-
-		this.controller.setIsSingleUserOnly("false");
-		//this.controller.setEnableCreateAccount("false");
-
-		Assert.assertFalse(this.controller.isAccountCreationEnabled());
-	}
-
-	private void createTestRoles() {
-		this.roles = new ArrayList<>();
-		this.roles.add(new Role(1, "Admin"));
-		this.selectedRole = new Role(2, "Breeder");
-		this.roles.add(this.selectedRole);
-		this.roles.add(new Role(3, "Technician"));
 	}
 
 	private LoadingCache<String, Integer> createTestOtpVerificationAttemptCache() {

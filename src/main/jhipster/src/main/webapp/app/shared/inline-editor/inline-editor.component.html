@@ -2,7 +2,7 @@
 	<form #f='ngForm' autocomplete="off"
 		  [ngSwitch]="observationVariable.dataTypeId" (keyup.enter)="submit(f)" (keyup.escape)="cancel()">
 		<div *ngSwitchCase="DataTypeIdEnum.CHARACTER">
-			<input type="text" class="form-control" name="editorInput" #editorInput [(ngModel)]="value" (blur)="submit(f)"/>
+			<input type="{{isEncrypted ? 'password' : 'text'}}" class="form-control" name="editorInput" #editorInput [(ngModel)]="value" (blur)="submit(f)"/>
 		</div>
 		<div *ngSwitchCase="DataTypeIdEnum.NUMERIC">
 			<input type="number" class="form-control" name="editorInput" #editorInput [(ngModel)]="value" (blur)="submit(f)"/>
