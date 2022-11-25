@@ -117,9 +117,11 @@
 							}, DELAY);
 
 							propertiesService.updateProperty(id, model).then(function() {
-
-								// Update property on parent scope if we succeeded
-								$scope.updateSelectedProperty(model);
+								// Check if property details is not opened from Variables Panel
+								if (!$scope.selectedVariable) {
+									// Update property on parent scope if we succeeded
+									$scope.updateSelectedProperty(model);
+								}
 
 								$scope.editing = false;
 								resetSubmissionState();
