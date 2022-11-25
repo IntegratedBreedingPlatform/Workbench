@@ -344,8 +344,7 @@
 
 			$scope.showSelectedVariable = function (e) {
 				e.preventDefault();
-				$scope.selectedItem.id = $scope.selectedVariable.id;
-				panelService.showPanel($scope.panelName);
+				$scope.showVariableDetails( $scope.selectedVariable.id);
 			}
 
 			$scope.filterByVariableTypes = function (e) {
