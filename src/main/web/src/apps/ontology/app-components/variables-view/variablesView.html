@@ -2,6 +2,15 @@
 	<om-panel class="om-panel-large" om-panel-identifier="panelName">
 		<om-variable-details></om-variable-details>
 	</om-panel>
+	<om-panel class="om-panel-large" om-panel-identifier="propertiesPanelName" is-sub-panel="true" on-close-panel="showSelectedVariable(e)">
+		<om-property-details></om-property-details>
+	</om-panel>
+	<om-panel class="om-panel-large" om-panel-identifier="methodsPanelName" is-sub-panel="true" on-close-panel="showSelectedVariable(e)">
+		<om-method-details></om-method-details>
+	</om-panel>
+	<om-panel class="om-panel-large" om-panel-identifier="scalesPanelName" is-sub-panel="true" on-close-panel="showSelectedVariable(e)">
+		<om-scale-details></om-scale-details>
+	</om-panel>
 
 	<om-search om-model="searchTerm"></om-search>
 	<om-filter om-filter-options="filterOptions"></om-filter>

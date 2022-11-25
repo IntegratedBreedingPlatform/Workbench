@@ -80,6 +80,7 @@
 		"property": "Property",
 		"scale": "Scale",
 		"variableType": "Variable Type",
+		"variableType.viewVariables": "View variables with similar Variable Type(s)",
 		"metadata": "Metadata",
 		"obsolete": "Is obsolete?",
 		"date": {

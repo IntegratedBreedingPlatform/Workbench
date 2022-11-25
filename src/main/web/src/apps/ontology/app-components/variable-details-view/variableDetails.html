@@ -74,7 +74,9 @@
 				{{'formField.property' | translate}}
 			</label>
 			<div class="col-sm-9">
-				<om-select name="omProperty" om-name="om-property" om-property="property" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"></om-select>
+				<om-select name="omProperty" om-name="om-property" om-property="property" om-editing="editing" ng-model="model" om-options="data.properties" om-required="true"
+					is-hyper-link="true" show-details="viewPropertyDetails(e)">
+				</om-select>
 				<ng-messages for="vdForm.omProperty.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.propertyRequired' | translate}}</p></ng-message>
 				</ng-messages>
@@ -87,7 +89,9 @@
 				{{'formField.method' | translate}}
 			</label>
 			<div class="col-sm-9">
-				<om-select name="omMethod" om-name="om-method" om-property="method" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"></om-select>
+				<om-select name="omMethod" om-name="om-method" om-property="method" om-editing="editing" ng-model="model" om-options="data.methods" om-required="true"
+					is-hyper-link="true" show-details="viewMethodDetails(e)">
+				</om-select>
 				<ng-messages for="vdForm.omMethod.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.methodRequired' | translate}}</p></ng-message>
 				</ng-messages>
@@ -100,7 +104,10 @@
 				{{'formField.scale' | translate}}
 			</label>
 			<div class="col-sm-9">
-				<om-select name="omScale" om-name="om-scale" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"></om-select>
+				<om-select name="omScale" om-name="om-scale" om-property="scale" om-editing="editing" ng-model="model" om-options="data.scales" om-required="true"
+					is-hyper-link="true" show-details="viewScaleDetails(e)">
+				</om-select>
+
 				<ng-messages for="vdForm.omScale.$error" ng-if="editing && vdForm.$submitted">
 					<ng-message when="required"><p class="text-danger">{{'validation.variable.scaleRequired' | translate}}</p></ng-message>
 				</ng-messages>
@@ -114,6 +121,7 @@
 			</label>
 			<div class="col-sm-9">
 				<om-multi-select name="omVariableTypes" om-property="variableTypes" om-editing="editing" om-appendable="true" ng-model="model" om-options="data.types"></om-multi-select>
+				<a ng-hide="editing" href="#" ng-click="filterByVariableTypes($event)" style="font-size: 11px;">{{'formField.variableType.viewVariables' | translate}}</a>
 				<ng-messages for="vdForm.omVariableTypes.$error" ng-if="vdForm.$submitted">
 					<ng-message when="emptyValue"><p class="text-danger">{{'validation.variable.variableTypeEmpty' | translate}}</p></ng-message>
 				</ng-messages>

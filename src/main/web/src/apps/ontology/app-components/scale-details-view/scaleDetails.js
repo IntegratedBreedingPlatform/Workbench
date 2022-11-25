@@ -135,9 +135,11 @@
 							}, DELAY);
 
 							scalesService.updateScale(id, model).then(function() {
-
-								// Update scale on parent scope if we succeeded
-								$scope.updateSelectedScale(model);
+								// Check if scale details is not opened from Variables Panel
+								if (!$scope.selectedVariable) {
+									// Update scale on parent scope if we succeeded
+									$scope.updateSelectedScale(model);
+								}
 
 								$scope.editing = false;
 								resetSubmissionState();

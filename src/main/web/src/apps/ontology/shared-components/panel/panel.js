@@ -24,7 +24,12 @@
 				$scope.closePanel = function(e) {
 					e.preventDefault();
 					$scope.showThrobber = false;
-					panelService.hidePanel();
+
+					if ($scope.isSubPanel) {
+						$scope.onClosePanel({e: e});
+					} else {
+						panelService.hidePanel();
+					}
 				};
 
 				$scope.$on('$destroy', function() {
@@ -52,7 +57,9 @@
 			},
 			restrict: 'E',
 			scope: {
-				omPanelIdentifier: '='
+				omPanelIdentifier: '=',
+				isSubPanel: '=?isSubPanel',
+				onClosePanel: '&'
 			},
 			templateUrl: 'static/views/ontology/panel.html',
 			transclude: true

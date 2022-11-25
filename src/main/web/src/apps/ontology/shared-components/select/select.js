@@ -9,6 +9,7 @@
 			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
 				$scope.required = $scope.required || false;
+				$scope.isHyperLink = $scope.isHyperLink || false;
 			}],
 			link: function(scope, elm, attrs, ctrl) {
 				scope.$watch('model[property]', function(data) {
@@ -18,6 +19,10 @@
 						ctrl.$setValidity('required', false);
 					}
 				});
+
+				scope.showModelPanel = function (event) {
+					scope.showDetails({e: event});
+				}
 			},
 			require: 'ngModel',
 			restrict: 'E',
@@ -30,7 +35,9 @@
 				editing: '=omEditing',
 				model: '=ngModel',
 				required: '=?omRequired',
-				allowClear: '=omAllowClear'
+				allowClear: '=omAllowClear',
+				isHyperLink: '=?isHyperLink',
+				showDetails: '&'
 			},
 			templateUrl: 'static/views/ontology/select.html'
 		};
