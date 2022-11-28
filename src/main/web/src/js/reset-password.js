@@ -2,35 +2,19 @@
  * Created by cyrus on 4/7/15.
  */
 /*global $, MESSAGE*/
-(function() {
+(function () {
 	'use strict';
 
 	var $resetForm = $('.js-reset-form'),
-        $passwordField = $('.js-reset-password'),
-        $passwordConfirmationField = $('.js-reset-forgot-password'),
-        $error = $('.js-login-error'),
-        $errorText = $('.js-reset-error-text'),
+		$passwordField = $('.js-reset-password'),
+		$passwordConfirmationField = $('.js-reset-forgot-password'),
+		$error = $('.js-login-error'),
+		$errorText = $('.js-reset-error-text'),
 
-        validationErrorClass = 'login-validation-error',
-        formInvalid = 'login-form-invalid',
+		validationErrorClass = 'login-validation-error',
+		formInvalid = 'login-form-invalid',
 
-        resetActionUrl = $resetForm.data('reset-action');
-
-	function isResetFormValid(resetForm) {
-		return resetForm.password === resetForm.passwordConfirmation;
-	}
-
-	function validateResetFormFields() {
-		var errorMessage;
-
-		if (!isResetFormValid($resetForm.serializeObject())) {
-			$passwordConfirmationField.parent('.login-form-control').addClass(validationErrorClass);
-
-			errorMessage = MESSAGE.passwordNotEqual;
-		}
-
-		return errorMessage;
-	}
+		resetActionUrl = $resetForm.data('reset-action');
 
 	function displayClientError(errorMessage) {
 		$errorText.text(errorMessage);
@@ -46,38 +30,32 @@
 	function applyValidationErrors(errors) {
 		var errorMessage = '';
 
-		$.each(errors, function(key, value) {
+		$.each(errors, function (key, value) {
 			$resetForm.find('*[name=' + key + ']').parent('.login-form-control').addClass('login-validation-error');
-			errorMessage +=  errorMessage ? (' ' + value) : value;
+			errorMessage += errorMessage ? (' ' + value) : value;
 		});
 		displayClientError(errorMessage);
 	}
 
 	/* init on document load */
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$passwordField.focus();
 
-		$resetForm.on('submit', function(e) {
+		$resetForm.on('submit', function (e) {
 			e.preventDefault();
 
 			var resetFormRef = this;
-			var errorMessage = validateResetFormFields();
 
-			if (errorMessage) {
-				displayClientError(errorMessage);
-				return;
-			}
-
-			doPostResetAction($resetForm.serialize()).done(function(data) {
+			doPostResetAction($resetForm.serialize()).done(function (data) {
 				if (data && data.success) {
 					resetFormRef.submit();
 				} else {
 					displayClientError('Something Went Wrong :(');
 				}
 			})
-			.fail(function(jqXHR) {
-				applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
-			});
+				.fail(function (jqXHR) {
+					applyValidationErrors(jqXHR.responseJSON ? jqXHR.responseJSON.errors : {});
+				});
 
 		});
 

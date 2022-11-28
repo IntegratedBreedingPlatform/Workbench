@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.validator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -8,6 +9,7 @@ import org.generationcp.middleware.service.api.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
@@ -25,7 +27,7 @@ public class UserAccountValidator implements Validator {
 	private static final Logger LOG = LoggerFactory.getLogger(UserAccountValidator.class);
 
 	public static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+		+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
 	public static final String SIGNUP_FIELD_REQUIRED = "signup.field.required";
 	public static final String SIGNUP_FIELD_PASSWORD_NOT_MATCH = "signup.field.password.not.match";
@@ -36,6 +38,8 @@ public class UserAccountValidator implements Validator {
 	public static final String SIGNUP_FIELD_INVALID_EMAIL_FORMAT = "signup.field.email.invalid";
 	public static final String LOGIN_ATTEMPT_UNSUCCESSFUL = "login.attempt.unsuccessful";
 	public static final String LOGIN_ATTEMPT_USER_INACTIVE = "login.attempt.user.inactive";
+	public static final String PASSWORD_MINIMUM_LENGTH_MESSAGE = "login.password.minimum.length";
+	public static final String PASSWORD_CONFIRMATION_DOES_NOT_MATCH = "login.password.confirmation.does.not.match";
 
 	public static final String FIRST_NAME_STR = "First Name";
 	public static final String LAST_NAME_STR = "Last Name";
@@ -49,6 +53,9 @@ public class UserAccountValidator implements Validator {
 
 	@Resource
 	private WorkbenchUserService workbenchUserService;
+
+	@Value("${security.login.password.minimum.length:6}")
+	protected int passwordMinimumLength;
 
 	@Override
 	public boolean supports(final Class<?> aClass) {
@@ -83,6 +90,18 @@ public class UserAccountValidator implements Validator {
 		} catch (final MiddlewareQueryException e) {
 			errors.rejectValue(UserAccountFields.USERNAME, UserAccountValidator.DATABASE_ERROR);
 			UserAccountValidator.LOG.error(e.getMessage(), e);
+		}
+	}
+
+	public void validatePasswordLength(final UserAccountModel userAccount, final Errors errors) {
+		if (StringUtils.isEmpty(userAccount.getPassword()) || userAccount.getPassword().length() < this.passwordMinimumLength) {
+			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+		}
+	}
+
+	public void validatePasswordConfirmation(final UserAccountModel userAccount, final Errors errors) {
+		if (StringUtils.isNotEmpty(userAccount.getPassword()) && !userAccount.getPassword().equals(userAccount.getPasswordConfirmation())) {
+			errors.rejectValue(UserAccountFields.PASSWORD_CONFIRMATION, UserAccountValidator.PASSWORD_CONFIRMATION_DOES_NOT_MATCH);
 		}
 	}
 
@@ -146,5 +165,9 @@ public class UserAccountValidator implements Validator {
 			errors.rejectValue(UserAccountFields.EMAIL, UserAccountValidator.DATABASE_ERROR);
 			UserAccountValidator.LOG.error(e.getMessage(), e);
 		}
+	}
+
+	public void setPasswordMinimumLength(int passwordMinimumLength) {
+		this.passwordMinimumLength = passwordMinimumLength;
 	}
 }
