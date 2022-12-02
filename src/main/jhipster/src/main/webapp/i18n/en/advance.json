@@ -12,6 +12,7 @@
     "lines": {
       "title": "Lines",
       "description": "Same number of lines is selected for each plot",
+      "lines-number": "Lines Selected per Plot:",
       "variable": "Choose a variate that defines the number of lines selected from eatch plot"
     },
     "bulks": {
@@ -25,11 +26,15 @@
       "select.all": "Select All"
     },
     "location": {
-      "title": "Location Detils",
+      "title": "Location Details",
       "description": "",
       "trial.instance": "TRIAL_INSTANCE",
       "name": "LOCATION_NAME",
       "abbr": "LOCATION_ABBR"
+    },
+    "errors": {
+      "breeding-method.selection.variate.not-present": "The study must contain a Selection Variate that provides the breeding methods.",
+      "lines.selection.variate.not-present": "The study must contain a Selection Variate that provides the number of plants selected."
     }
   }
 }

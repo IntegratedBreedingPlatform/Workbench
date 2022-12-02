@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { ParamContext } from '../../../shared/service/param.context';
+import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
-import { Location } from '../../../shared/location/model/location';
 import { SERVER_API_URL } from '../../../app.constants';
-import { map } from 'rxjs/operators';
+import { DatasetModel } from '../model/dataset.model';
 
 @Injectable()
 export class DatasetService {
@@ -13,8 +12,9 @@ export class DatasetService {
                 private context: ParamContext) {
     }
 
-    getDataset(studyId: number, datasetId: number): Observable<any> {
+    getDataset(studyId: number, datasetId: number): Observable<HttpResponse<DatasetModel>> {
         return this.http.get<any>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}`,
-            { observe: 'response' }).pipe(map((res: HttpResponse<Location>) => res.body));
+            { observe: 'response' });
     }
+
 }

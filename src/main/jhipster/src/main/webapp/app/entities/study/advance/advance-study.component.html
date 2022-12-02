@@ -1,26 +1,32 @@
 <div class="modal-body">
 	<form name="form" #f="ngForm" class="form-horizontal">
+		<!-- Breeding method selection -->
 		<h3 jhiTranslate="advance-study.breeding-methods.title"></h3>
 		<div class="form-group row required">
 			<div class="col-sm-6">
 				<div class="form-check form-check-inline">
-					<input type="checkbox" class="form-check-input" name="breedingMethodCheck" [(ngModel)]="breedingMethodCheck">
-					<label class="col-form-label font-weight-bold" for="breedingMethodCheck" jhiTranslate="advance-study.breeding-methods.description">Breeding Method is the same for each advance</label>
+					<input type="checkbox" class="form-check-input" name="breedingMethodCheck" (click)="onSelectMethodVariable($event)" [checked]="true">
+					<label class="col-form-label font-weight-bold" for="breedingMethodCheck" id="breedingMethodCheck" jhiTranslate="advance-study.breeding-methods.description">Breeding Method is the same for each advance</label>
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions" style="margin-right: 5px;">
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="95%"
+							[(ngModel)]="breedingMethodSelectedId"
+							[options]="breedingMethodOptions"
+							[value]="breedingMethodSelectedId"
+							(valueChanged)="onMethodChange($event)"
+							[disabled]="showBreedingMethodVariableSelection">
 				</ng-select2>
-				<a href="{{helpLink}}" target="_blank" style="vertical-align: middle"><i id="breedingMethod" class="fa fa-info-circle bms-helpicon"></i></a>
+				<a href="{{helpLink}}" target="_blank" class="align-middle ml-2"><i class="fa fa-info-circle bms-helpicon"></i></a>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<div class="form-check form-check-inline">
-							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="1" (click)="fetch()">
-							<span style="margin-left: 2px;" jhiTranslate="advance-study.breeding-methods.all-methods">All methods</span>
+							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="1">
+							<span class="ml-1" jhiTranslate="advance-study.breeding-methods.derivative-and-mantenance">Derivative and Maintenance methods</span>
 						</div>
 						<div class="form-check form-check-inline">
-							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="2" (click)="fetch()">
-							<span style="margin-left: 2px;" jhiTranslate="advance-study.breeding-methods.derivative-and-mantenance">Derivative and Maintenance methods</span>
+							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="2" disabled>
+							<span class="ml-1" jhiTranslate="advance-study.breeding-methods.all-methods">All methods</span>
 						</div>
 					</div>
 					<div class="col-xs-12 col-md-12">
@@ -34,58 +40,88 @@
 				</div>
 			</div>
 		</div>
-		<div *ngIf="!breedingMethodCheck" class="form-group row required">
+		<div *ngIf="showBreedingMethodVariableSelection" class="form-group row required">
 			<div class="col-sm-6">
 				<label for="breedingMethod" class="col-form-label font-weight-bold" jhiTranslate="advance-study.breeding-methods.variable">Choose a variate that defines the breeding method for each advance</label>
 			</div>
 			<div class="col-sm-6">
-				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
-				</ng-select2>
+				<select class="form-control" name="breedingMethodVariable" id="breedingMethodVariable" [(ngModel)]="breedingMethodSelectedVariable">
+					<option *ngFor="let variable of selectionMethodVariables" [value]="variable.termId">
+						<label>{{variable.name}}</label>
+					</option>
+				</select>
 			</div>
 		</div>
-		<h3 jhiTranslate="advance-study.lines.title"></h3>
-		<div class="form-check form-check-inline">
-			<input type="checkbox" class="form-check-input" name="lineCheck" [(ngModel)]="linesCheck">
-			<label for="lineCheck" class="col-form-label font-weight-bold" jhiTranslate="advance-study.lines.description">Same number of lines is selected for each plot</label>
-		</div>
-		<div *ngIf="!linesCheck" class="form-group row required">
-			<div class="col-sm-6">
-				<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
+
+		<!-- Line selection -->
+		<div *ngIf="showLinesSelection">
+			<h3 jhiTranslate="advance-study.lines.title"></h3>
+			<div class="col-sm-12 form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" name="lineCheck" (click)="onSelectLineVariable($event)" [checked]="true">
+				<label for="lineCheck" id="lineCheck" class="col-form-label font-weight-bold" jhiTranslate="advance-study.lines.description">Same number of lines is selected for each plot</label>
 			</div>
-			<div class="col-sm-6">
-				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
-				</ng-select2>
+			<div *ngIf="!showLinesVariableSelection">
+				<div class="form-group row">
+					<div class="col-sm-6">
+						<label class="col-form-label font-weight-bold" for="linesNumber" id="linesNumber" jhiTranslate="advance-study.lines.lines-number">Lines Selected per Plot:</label>
+					</div>
+					<div class="col-sm-6">
+						<input type="number" class="ml-0 form-check-input" name="linesNumber" [ngModel]="selectedLinesNumber">
+					</div>
+				</div>
+			</div>
+			<div *ngIf="showLinesVariableSelection" class="form-group row required">
+				<div class="col-sm-6">
+					<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
+				</div>
+				<div class="col-sm-6">
+					<select class="form-control" name="lineSelectionVariable" id="lineSelectionVariable" [(ngModel)]="selectedLinesVariable">
+						<option *ngFor="let variable of selectionPlantVariables" [value]="variable.termId">
+							<label>{{variable.name}}</label>
+						</option>
+					</select>
+				</div>
 			</div>
 		</div>
-		<h3 jhiTranslate="advance-study.bulks.title"></h3>
-		<div class="form-check form-check-inline">
-			<input class="form-check-input" type="checkbox" name="bulksCheck" [(ngModel)]="bulksCheck">
-			<label class="col-form-label font-weight-bold" for="bulksCheck" jhiTranslate="advance-study.bulks.description">All plots are selected</label>
-		</div>
-		<div *ngIf="!bulksCheck" class="form-group row required">
-			<div class="col-sm-6">
-				<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
+
+		<!-- Bulking selection -->
+		<div *ngIf="showBreedingMethodVariableSelection">
+			<h3 jhiTranslate="advance-study.bulks.title"></h3>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="checkbox" name="bulksCheck" (click)="onSelectPlotVariable($event)" [checked]="true">
+				<label class="col-form-label font-weight-bold" id="bulksCheck" for="bulksCheck" jhiTranslate="advance-study.bulks.description">All plots are selected</label>
 			</div>
-			<div class="col-sm-6">
-				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
-				</ng-select2>
+			<div *ngIf="showPlotVariableSelection" class="form-group row">
+				<div class="col-sm-6">
+					<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
+				</div>
+				<div class="col-sm-6">
+					<select class="form-control" name="lineSelectionBulkingVariable" id="lineSelectionBulkingVariable" [(ngModel)]="selectedPlotVariable">
+						<option *ngFor="let variable of selectionPlantVariables" [value]="variable.termId">
+							<label>{{variable.name}}</label>
+						</option>
+					</select>
+				</div>
 			</div>
 		</div>
+
+		<!-- Repetition selection -->
 		<h3 jhiTranslate="advance-study.reps.title"></h3>
 		<div class="form-group">
 			<div *ngFor="let rep of replicationsOptions" class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="togglecheck(rep.selected)"
+				<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="toggleCheck(rep.selected)"
 					   name="check-{{rep.repIndex}}" id="check-{{rep.repIndex}}">
 				<label class="col-form-label font-weight-bold" for="check-{{rep.repIndex}}">
 					{{rep.repIndex}}
 				</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input type="checkbox" class="form-check-input" [(ngModel)]="checkallReplcations" (click)="checkUncheckAll()" name="selectAllReps" id="selectAllReps"/>
+				<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="checkUncheckAll()" name="selectAllReps" id="selectAllReps"/>
 				<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
 			</div>
 		</div>
 
+		<!-- Location Details -->
 		<h3 jhiTranslate="advance-study.location.title"></h3>
 		<div class="col-xs-12 col-md-12">
 			<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="location-tab" style="padding-left: 0px;">
@@ -116,3 +152,4 @@
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 	</button>
 </div>
+<jhi-alert></jhi-alert>

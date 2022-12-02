@@ -237,7 +237,6 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                     params.page = params.page || 1;
 
                     this.breedingMethods = this.breedingMethods.concat(...methods)
-                    console.log(this.breedingMethods.length);
 
                     return {
                         results: methods.map((method: BreedingMethod) => {
