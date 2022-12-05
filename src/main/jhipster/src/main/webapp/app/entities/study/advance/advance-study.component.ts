@@ -15,6 +15,7 @@ import { StudyInstanceModel } from '../../../shared/dataset/model/study-instance
 import { ObservationVariable } from '../../../shared/model/observation-variable.model';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
+import { DatasetTypeEnum } from '../../../shared/dataset/model/dataset-type.enum';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -37,23 +38,21 @@ export class AdvanceStudyComponent implements OnInit {
     showBreedingMethodVariableSelection = false;
     selectionMethodVariables: ObservationVariable[] = [];
 
+    linesCheck = true;
     showLinesSelection = true;
-    showLinesVariableSelection = false;
     selectedLinesNumber = 1;
     selectedLinesVariable: ObservationVariable;
 
-    showPlotVariableSelection = false;
+    bulksCheck = true;
+    showBulkingSelection = false;
     selectedPlotVariable: ObservationVariable;
 
-    checkAllReplications = true;
+    checkAllReplications = false;
 
     isLoading = false;
-    isSuccess = false;
     helpLink: string;
 
     studyId: any;
-    trialDatasetId: any;
-    plotDatasetId: any;
     selectedInstances: any[];
     trialInstances: any[] = [];
     replicationNumber: number;
@@ -76,16 +75,13 @@ export class AdvanceStudyComponent implements OnInit {
 
     ngOnInit(): void {
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
-        this.trialDatasetId = Number(this.route.snapshot.queryParamMap.get('trialDatasetId'));
-        this.plotDatasetId = Number(this.route.snapshot.queryParamMap.get('plotDatasetId'));
         this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
         this.replicationNumber = Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
 
         this.initializeReplicationOptions(this.replicationNumber);
 
         this.loadBreedingMethods();
-        this.loadTrialDataset();
-        this.loadPlotDataset();
+        this.loadDatasets();
 
         // Get helplink url
         if (!this.helpLink || !this.helpLink.length) {
@@ -99,17 +95,17 @@ export class AdvanceStudyComponent implements OnInit {
     initializeReplicationOptions(replicationNumber: number) {
         if (replicationNumber !== 0) {
             for (let rep = 1; rep <= replicationNumber; rep++) {
-                this.replicationsOptions.push({ repIndex: rep, selected: true });
+                this.replicationsOptions.push({ repIndex: rep, selected: (rep === 1) });
             }
         }
     }
 
-    checkUncheckAll() {
+    toogleAll() {
         this.replicationsOptions.forEach((replication) => replication.selected = !this.checkAllReplications);
     }
 
     toggleCheck(repCheck) {
-        this.checkAllReplications = !repCheck;
+        this.checkAllReplications = this.checkAllReplications && !repCheck;
     }
 
     save(): void {
@@ -132,6 +128,7 @@ export class AdvanceStudyComponent implements OnInit {
     onSelectMethodVariable(e) {
         if (this.selectionMethodVariables.length > 0) {
             this.showBreedingMethodVariableSelection = !this.showBreedingMethodVariableSelection;
+            this.showBulkingSelection = true;
         } else {
             e.preventDefault();
             this.alertService.error('advance-study.errors.breeding-method.selection.variate.not-present');
@@ -143,46 +140,80 @@ export class AdvanceStudyComponent implements OnInit {
             this.breedingMethodSelectedId = selectedMethodId;
             const selectedBreedingMethod: BreedingMethod = this.breedingMethods.find((method: BreedingMethod) => String(method.mid) === this.breedingMethodSelectedId);
             this.showLinesSelection = !selectedBreedingMethod.isBulkingMethod;
+            this.showBulkingSelection = selectedBreedingMethod.isBulkingMethod;
         }
     }
 
     onSelectLineVariable(e) {
-        if (this.selectionPlantVariables.length > 0) {
-            this.showLinesVariableSelection = !this.showLinesVariableSelection;
-        } else {
+        if (this.selectionPlantVariables.length === 0) {
             e.preventDefault();
+            e.stopPropagation();
+
             this.alertService.error('advance-study.errors.lines.selection.variate.not-present');
         }
     }
 
     onSelectPlotVariable(e) {
-        if (this.selectionPlantVariables.length > 0) {
-            this.showPlotVariableSelection = !this.showPlotVariableSelection;
-        } else {
+        if (this.selectionPlantVariables.length === 0) {
             e.preventDefault();
+            e.stopPropagation();
+
             this.alertService.error('advance-study.errors.lines.selection.variate.not-present');
         }
     }
 
-    private loadTrialDataset() {
-        this.datasetService.getDataset(this.studyId, this.trialDatasetId).toPromise().then((response: HttpResponse<DatasetModel>) => {
-            response.body.instances.forEach((instance: StudyInstanceModel) => {
-                if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
-                    this.trialInstances.push({
-                        instanceNumber: instance.instanceNumber,
-                        locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
-                        abbrCode: instance.customLocationAbbreviation
-                    });
-                }
-            });
-        });
+    isValid(): boolean {
+        // Variable for selection method was not selected
+        if (this.showBreedingMethodVariableSelection && !this.breedingMethodSelectedVariable) {
+            return false;
+        }
+        // No same method for each advance was selected
+        if (!this.showBreedingMethodVariableSelection && !this.breedingMethodSelectedId) {
+            return false;
+        }
+
+        if (this.showLinesSelection) {
+            // Same number of lines for each plot was not defined
+            if (this.linesCheck && (!this.selectedLinesNumber || this.selectedLinesNumber < 0)) {
+                return false;
+            }
+            // Variable that defines the number of selected lines was not selected
+            if (!this.linesCheck && !this.selectedLinesVariable) {
+                return false;
+            }
+        }
+
+        // Variable that defines the number of lines selected from each plot was not selected
+        if (this.showBulkingSelection && !this.bulksCheck && !this.selectedPlotVariable) {
+            return false;
+        }
+
+        // Replications were not selected
+        if (this.replicationsOptions.length && this.replicationsOptions.filter((rep: any) => rep.selected).length === 0 && !this.checkAllReplications) {
+            return false;
+        }
+
+        return true;
     }
 
-    private loadPlotDataset() {
-        this.datasetService.getDataset(this.studyId, this.plotDatasetId).toPromise().then((response: HttpResponse<DatasetModel>) => {
-            const dataset: DatasetModel = response.body;
-            this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.BREEDING_METHOD_PROPERTY);
-            this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.SELECTION_PLANT_PROPERTY);
+    private loadDatasets() {
+        this.datasetService.getDatasetsByTypeIds(this.studyId, [DatasetTypeEnum.ENVIRONMENT, DatasetTypeEnum.PLOT]).toPromise().then((response: HttpResponse<DatasetModel[]>) => {
+            response.body.forEach((dataset: DatasetModel) => {
+                if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
+                    dataset.instances.forEach((instance: StudyInstanceModel) => {
+                        if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
+                                    this.trialInstances.push({
+                                        instanceNumber: instance.instanceNumber,
+                                        locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
+                                        abbrCode: instance.customLocationAbbreviation
+                                    });
+                        }
+                    });
+                } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
+                    this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.BREEDING_METHOD_PROPERTY);
+                    this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.SELECTION_PLANT_PROPERTY);
+                }
+            });
         });
     }
 

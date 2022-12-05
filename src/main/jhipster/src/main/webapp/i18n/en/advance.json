@@ -13,7 +13,7 @@
       "title": "Lines",
       "description": "Same number of lines is selected for each plot",
       "lines-number": "Lines Selected per Plot:",
-      "variable": "Choose a variate that defines the number of lines selected from eatch plot"
+      "variable": "Choose a variate that defines the number of lines selected from each plot"
     },
     "bulks": {
       "title": "Bulks",

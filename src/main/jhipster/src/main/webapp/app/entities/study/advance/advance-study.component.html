@@ -2,7 +2,7 @@
 	<form name="form" #f="ngForm" class="form-horizontal">
 		<!-- Breeding method selection -->
 		<h3 jhiTranslate="advance-study.breeding-methods.title"></h3>
-		<div class="form-group row required">
+		<div class="form-group row">
 			<div class="col-sm-6">
 				<div class="form-check form-check-inline">
 					<input type="checkbox" class="form-check-input" name="breedingMethodCheck" (click)="onSelectMethodVariable($event)" [checked]="true">
@@ -10,7 +10,7 @@
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<ng-select2 name="breedingMethod" id="breedingMethod" width="95%"
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%"
 							[(ngModel)]="breedingMethodSelectedId"
 							[options]="breedingMethodOptions"
 							[value]="breedingMethodSelectedId"
@@ -40,7 +40,7 @@
 				</div>
 			</div>
 		</div>
-		<div *ngIf="showBreedingMethodVariableSelection" class="form-group row required">
+		<div *ngIf="showBreedingMethodVariableSelection" class="form-group row">
 			<div class="col-sm-6">
 				<label for="breedingMethod" class="col-form-label font-weight-bold" jhiTranslate="advance-study.breeding-methods.variable">Choose a variate that defines the breeding method for each advance</label>
 			</div>
@@ -54,23 +54,23 @@
 		</div>
 
 		<!-- Line selection -->
-		<div *ngIf="showLinesSelection">
+		<div *ngIf="showBreedingMethodVariableSelection || showLinesSelection">
 			<h3 jhiTranslate="advance-study.lines.title"></h3>
 			<div class="col-sm-12 form-check form-check-inline">
-				<input type="checkbox" class="form-check-input" name="lineCheck" (click)="onSelectLineVariable($event)" [checked]="true">
-				<label for="lineCheck" id="lineCheck" class="col-form-label font-weight-bold" jhiTranslate="advance-study.lines.description">Same number of lines is selected for each plot</label>
+				<input type="checkbox" class="form-check-input" name="linesCheck" (click)="onSelectLineVariable($event)" [(ngModel)]="linesCheck">
+				<label for="linesCheck" id="linesCheck" class="col-form-label font-weight-bold" jhiTranslate="advance-study.lines.description">Same number of lines is selected for each plot</label>
 			</div>
-			<div *ngIf="!showLinesVariableSelection">
+			<div *ngIf="linesCheck">
 				<div class="form-group row">
 					<div class="col-sm-6">
 						<label class="col-form-label font-weight-bold" for="linesNumber" id="linesNumber" jhiTranslate="advance-study.lines.lines-number">Lines Selected per Plot:</label>
 					</div>
 					<div class="col-sm-6">
-						<input type="number" class="ml-0 form-check-input" name="linesNumber" [ngModel]="selectedLinesNumber">
+						<input type="number" class="ml-0 form-check-input" name="linesNumber" [(ngModel)]="selectedLinesNumber">
 					</div>
 				</div>
 			</div>
-			<div *ngIf="showLinesVariableSelection" class="form-group row required">
+			<div *ngIf="!linesCheck" class="form-group row">
 				<div class="col-sm-6">
 					<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
 				</div>
@@ -85,13 +85,13 @@
 		</div>
 
 		<!-- Bulking selection -->
-		<div *ngIf="showBreedingMethodVariableSelection">
+		<div *ngIf="showBulkingSelection">
 			<h3 jhiTranslate="advance-study.bulks.title"></h3>
 			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" name="bulksCheck" (click)="onSelectPlotVariable($event)" [checked]="true">
+				<input class="form-check-input" type="checkbox" name="bulksCheck" (click)="onSelectPlotVariable($event)" [(ngModel)]="bulksCheck">
 				<label class="col-form-label font-weight-bold" id="bulksCheck" for="bulksCheck" jhiTranslate="advance-study.bulks.description">All plots are selected</label>
 			</div>
-			<div *ngIf="showPlotVariableSelection" class="form-group row">
+			<div *ngIf="!bulksCheck" class="form-group row">
 				<div class="col-sm-6">
 					<label class="col-form-label font-weight-bold" for="breedingMethod" jhiTranslate="advance-study.lines.variable">Choose a variate that defines the breeding method for each advance</label>
 				</div>
@@ -116,7 +116,7 @@
 				</label>
 			</div>
 			<div class="form-check form-check-inline">
-				<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="checkUncheckAll()" name="selectAllReps" id="selectAllReps"/>
+				<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="toogleAll()" name="selectAllReps" id="selectAllReps"/>
 				<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
 			</div>
 		</div>
@@ -147,7 +147,7 @@
 	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss()">
 		<span jhiTranslate="entity.action.back">Back</span>
 	</button>
-	<button (click)="save()" [disabled]="f.form.invalid || isSuccess || isLoading" class="btn btn-primary" data-test="createLotsButton">
+	<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">
 		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 	</button>
