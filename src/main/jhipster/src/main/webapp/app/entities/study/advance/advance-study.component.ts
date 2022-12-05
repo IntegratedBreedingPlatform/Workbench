@@ -16,6 +16,7 @@ import { ObservationVariable } from '../../../shared/model/observation-variable.
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
 import { DatasetTypeEnum } from '../../../shared/dataset/model/dataset-type.enum';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -26,7 +27,11 @@ export class AdvanceStudyComponent implements OnInit {
     static readonly BREEDING_METHODS_PAGE_SIZE = 300;
     static readonly BREEDING_METHOD_PROPERTY = 'Breeding method';
     static readonly SELECTION_PLANT_PROPERTY = 'Selections';
+    static readonly SELECTION_TRAIT_PROPERTY = 'Selection Criteria';
 
+    static readonly SELECTION_TRAIT_EXPRESSION = '[SELTRAIT]';
+
+    breedingMethodCheck = true;
     breedingMethods: BreedingMethod[] = [];
     breedingMethodOptions: any;
     breedingMethodSelectedId: string;
@@ -37,6 +42,8 @@ export class AdvanceStudyComponent implements OnInit {
 
     showBreedingMethodVariableSelection = false;
     selectionMethodVariables: ObservationVariable[] = [];
+
+    showSelectionTraitSelection = false;
 
     linesCheck = true;
     showLinesSelection = true;
@@ -49,10 +56,15 @@ export class AdvanceStudyComponent implements OnInit {
 
     checkAllReplications = false;
 
+    datasetsLoaded =  false;
+    studyVariablesLoaded = false;
     isLoading = false;
     helpLink: string;
 
     studyId: any;
+    environmentDatasetId: number;
+    plotDatasetId: number;
+
     selectedInstances: any[];
     trialInstances: any[] = [];
     replicationNumber: number;
@@ -61,6 +73,12 @@ export class AdvanceStudyComponent implements OnInit {
 
     selectionPlantVariables: ObservationVariable[] = [];
 
+    selectionTraitLevelOptions: any = [];
+    selectionTraitVariablesByDatasetIds: Map<number, ObservationVariable[]> = new Map();
+    selectionTraitVariables: ObservationVariable[] = [];
+    selectedSelectionTraitDatasetId: number;
+    selectedSelectionTraitVariableId: number;
+
     constructor(private route: ActivatedRoute,
                 private jhiLanguageService: JhiLanguageService,
                 private paramContext: ParamContext,
@@ -68,7 +86,8 @@ export class AdvanceStudyComponent implements OnInit {
                 private router: Router,
                 private breedingMethodService: BreedingMethodService,
                 private helpService: HelpService,
-                private datasetService: DatasetService
+                private datasetService: DatasetService,
+                private translateService: TranslateService
     ) {
         this.paramContext.readParams();
     }
@@ -78,10 +97,10 @@ export class AdvanceStudyComponent implements OnInit {
         this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
         this.replicationNumber = Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
 
-        this.initializeReplicationOptions(this.replicationNumber);
-
         this.loadBreedingMethods();
+        this.loadStudyVariables();
         this.loadDatasets();
+        this.initializeReplicationOptions(this.replicationNumber);
 
         // Get helplink url
         if (!this.helpLink || !this.helpLink.length) {
@@ -89,14 +108,6 @@ export class AdvanceStudyComponent implements OnInit {
                 this.helpLink = response.body;
             }).catch((error) => {
             });
-        }
-    }
-
-    initializeReplicationOptions(replicationNumber: number) {
-        if (replicationNumber !== 0) {
-            for (let rep = 1; rep <= replicationNumber; rep++) {
-                this.replicationsOptions.push({ repIndex: rep, selected: (rep === 1) });
-            }
         }
     }
 
@@ -129,6 +140,8 @@ export class AdvanceStudyComponent implements OnInit {
         if (this.selectionMethodVariables.length > 0) {
             this.showBreedingMethodVariableSelection = !this.showBreedingMethodVariableSelection;
             this.showBulkingSelection = true;
+
+            this.showSelectionTraitSelection = this.breedingMethodCheck && this.hasSelectTraitVariables();
         } else {
             e.preventDefault();
             this.alertService.error('advance-study.errors.breeding-method.selection.variate.not-present');
@@ -139,6 +152,9 @@ export class AdvanceStudyComponent implements OnInit {
         if (selectedMethodId && this.breedingMethods.length > 0) {
             this.breedingMethodSelectedId = selectedMethodId;
             const selectedBreedingMethod: BreedingMethod = this.breedingMethods.find((method: BreedingMethod) => String(method.mid) === this.breedingMethodSelectedId);
+            this.showSelectionTraitSelection = this.hasSelectTraitVariables() &&
+                (selectedBreedingMethod.suffix === AdvanceStudyComponent.SELECTION_TRAIT_EXPRESSION ||
+                    selectedBreedingMethod.prefix === AdvanceStudyComponent.SELECTION_TRAIT_EXPRESSION);
             this.showLinesSelection = !selectedBreedingMethod.isBulkingMethod;
             this.showBulkingSelection = selectedBreedingMethod.isBulkingMethod;
         }
@@ -172,6 +188,11 @@ export class AdvanceStudyComponent implements OnInit {
             return false;
         }
 
+        // Selection trait was no selected
+        if (this.showSelectionTraitSelection && (!this.selectedSelectionTraitDatasetId || !this.selectedSelectionTraitVariableId)) {
+            return false;
+        }
+
         if (this.showLinesSelection) {
             // Same number of lines for each plot was not defined
             if (this.linesCheck && (!this.selectedLinesNumber || this.selectedLinesNumber < 0)) {
@@ -196,30 +217,8 @@ export class AdvanceStudyComponent implements OnInit {
         return true;
     }
 
-    private loadDatasets() {
-        this.datasetService.getDatasetsByTypeIds(this.studyId, [DatasetTypeEnum.ENVIRONMENT, DatasetTypeEnum.PLOT]).toPromise().then((response: HttpResponse<DatasetModel[]>) => {
-            response.body.forEach((dataset: DatasetModel) => {
-                if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
-                    dataset.instances.forEach((instance: StudyInstanceModel) => {
-                        if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
-                                    this.trialInstances.push({
-                                        instanceNumber: instance.instanceNumber,
-                                        locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
-                                        abbrCode: instance.customLocationAbbreviation
-                                    });
-                        }
-                    });
-                } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
-                    this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.BREEDING_METHOD_PROPERTY);
-                    this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.SELECTION_PLANT_PROPERTY);
-                }
-            });
-        });
-    }
-
-    private filterVariablesByProperty(variables: ObservationVariable[], property: string): ObservationVariable[] {
-        return variables.filter((variable: ObservationVariable) =>
-            (VariableTypeEnum[VariableTypeEnum.SELECTION_METHOD] === variable.variableType.toString() && variable.property === property));
+    onSelectionTraitLevelChanged(datasetId) {
+        this.selectionTraitVariables = this.selectionTraitVariablesByDatasetIds.get(Number(datasetId));
     }
 
     private loadBreedingMethods() {
@@ -275,4 +274,95 @@ export class AdvanceStudyComponent implements OnInit {
         };
     }
 
+    private loadStudyVariables() {
+        this.datasetService.getVariablesByVariableType(this.studyId, null, [VariableTypeEnum.STUDY_DETAIL]).toPromise().then((response: HttpResponse<ObservationVariable[]>) => {
+            this.selectionTraitVariablesByDatasetIds.set(this.studyId, this.filterSelectionTraitVariable(response.body));
+            this.studyVariablesLoaded = true;
+            this.initializeSelectionTraitLevels();
+        });
+    }
+
+    private loadDatasets() {
+        this.datasetService.getDatasetsByTypeIds(this.studyId, [DatasetTypeEnum.ENVIRONMENT, DatasetTypeEnum.PLOT]).toPromise().then((response: HttpResponse<DatasetModel[]>) => {
+            response.body.forEach((dataset: DatasetModel) => {
+
+                if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
+                    this.environmentDatasetId = dataset.datasetId;
+                    this.selectionTraitVariablesByDatasetIds.set(this.environmentDatasetId, this.filterSelectionTraitVariable(dataset.variables));
+                    dataset.instances.forEach((instance: StudyInstanceModel) => {
+                        if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
+                            this.trialInstances.push({
+                                instanceNumber: instance.instanceNumber,
+                                locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
+                                abbrCode: instance.customLocationAbbreviation
+                            });
+                        }
+                    });
+
+                } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
+                    this.plotDatasetId = dataset.datasetId;
+
+                    this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.BREEDING_METHOD_PROPERTY);
+                    this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AdvanceStudyComponent.SELECTION_PLANT_PROPERTY);
+
+                    this.selectionTraitVariablesByDatasetIds.set(this.plotDatasetId, this.filterSelectionTraitVariable(dataset.variables));
+                }
+            });
+
+            this.datasetsLoaded = true;
+            this.initializeSelectionTraitLevels();
+        });
+    }
+
+    private filterVariablesByProperty(variables: ObservationVariable[], property: string): ObservationVariable[] {
+        return variables.filter((variable: ObservationVariable) =>
+            (VariableTypeEnum[VariableTypeEnum.SELECTION_METHOD] === variable.variableType.toString() && variable.property === property));
+    }
+
+    private filterSelectionTraitVariable(variables: ObservationVariable[]): ObservationVariable[] {
+        return variables.filter((variable: ObservationVariable) => variable.property === AdvanceStudyComponent.SELECTION_TRAIT_PROPERTY);
+    }
+
+    private hasSelectTraitVariables() {
+        for (const variables of this.selectionTraitVariablesByDatasetIds.values()) {
+            if (variables && variables.length > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private initializeReplicationOptions(replicationNumber: number) {
+        if (replicationNumber !== 0) {
+            for (let rep = 1; rep <= replicationNumber; rep++) {
+                this.replicationsOptions.push({ repIndex: rep, selected: (rep === 1) });
+            }
+        }
+    }
+
+    private initializeSelectionTraitLevels() {
+        if (this.datasetsLoaded && this.studyVariablesLoaded) {
+            this.selectionTraitLevelOptions.push(
+                this.getSelectionTraitLevel(SelectionTraitLevelTypes.STUDY, this.studyId));
+            this.selectionTraitLevelOptions.push(
+                this.getSelectionTraitLevel(SelectionTraitLevelTypes.ENVIRONMENT, this.environmentDatasetId));
+            this.selectionTraitLevelOptions.push(
+                this.getSelectionTraitLevel(SelectionTraitLevelTypes.PLOT, this.plotDatasetId));
+        }
+    }
+
+    private getSelectionTraitLevel(type: SelectionTraitLevelTypes, value: number): any {
+        return {
+            label: this.translateService.instant('advance-study.selection-trait.level-type.' + type),
+            show: this.selectionTraitVariablesByDatasetIds.get(value) && this.selectionTraitVariablesByDatasetIds.get(value).length > 0,
+            value
+        };
+    }
+
+}
+
+enum SelectionTraitLevelTypes {
+    STUDY = 'study',
+    ENVIRONMENT = 'environment',
+    PLOT = 'plot'
 }

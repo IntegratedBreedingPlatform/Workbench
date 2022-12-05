@@ -9,6 +9,17 @@
       "all-methods": "All methods",
       "variable": "Choose a variate that defines the breeding method for each advance"
     },
+    "selection-trait": {
+      "title": "Selection Trait",
+      "description": "Choose a variate that defines the value of the selection trait",
+      "level": "Level",
+      "variables": "Variables",
+      "level-type": {
+        "study": "Study",
+        "environment": "Enviroment",
+        "plot": "Plot"
+      }
+    },
     "lines": {
       "title": "Lines",
       "description": "Same number of lines is selected for each plot",
