@@ -360,7 +360,6 @@ export class AdvanceStudyComponent implements OnInit {
     }
 
 }
-
 enum SelectionTraitLevelTypes {
     STUDY = 'study',
     ENVIRONMENT = 'environment',

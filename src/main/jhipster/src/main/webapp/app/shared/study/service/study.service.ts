@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ParamContext } from '../service/param.context';
-import { SERVER_API_URL } from '../../app.constants';
+import { ParamContext } from '../../service/param.context';
+import { SERVER_API_URL } from '../../../app.constants';
 import { Observable } from 'rxjs';
 
 @Injectable()
