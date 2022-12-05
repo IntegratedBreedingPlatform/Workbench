@@ -19,6 +19,7 @@ import org.generationcp.middleware.domain.dms.DMSVariableType;
 import org.generationcp.middleware.domain.dms.DataSet;
 import org.generationcp.middleware.domain.dms.Experiment;
 import org.generationcp.middleware.domain.dms.Variable;
+import org.generationcp.middleware.domain.dms.VariableList;
 import org.generationcp.middleware.enumeration.DatasetTypeEnum;
 import org.generationcp.middleware.manager.api.StudyDataManager;
 import org.generationcp.middleware.pojos.workbench.Project;
@@ -191,11 +192,16 @@ public class MultiSiteDataExporter {
 		}
 
 		final List<String[]> tableItems = new ArrayList<>();
+		final DataSet environmentDataset =
+			this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_DATA.getId());
 		final DataSet plotDataset =
 			this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.PLOT_DATA.getId());
 		final DataSet summaryStatsDataSet =
 			this.studyDataManager.findOneDataSetByType(studyId, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
 		final List<Experiment> experiments = this.studyDataManager.getExperiments(summaryStatsDataSet.getId(), 0, Integer.MAX_VALUE);
+		final Map<Integer, VariableList> environmentFactorsVariableListMap =
+			this.studyDataManager.getExperiments(environmentDataset.getId(), 0, Integer.MAX_VALUE).stream()
+				.collect(Collectors.toMap(Experiment::getLocationId, Experiment::getFactors));
 
 		final String[] header =
 			new String[] {
@@ -232,7 +238,9 @@ public class MultiSiteDataExporter {
 
 					final List<String> row = new ArrayList<>();
 
-					final Variable factorVariable = experiment.getFactors().findByLocalName(environmentName);
+					// Get the environment detail factor variable from the Environment Dataset
+					final Variable factorVariable =
+						environmentFactorsVariableListMap.get(experiment.getLocationId()).findByLocalName(environmentName);
 					String envValue = factorVariable.getValue();
 					if (factorVariable.getVariableType().getLocalName().equalsIgnoreCase(environmentName)
 						&& isEnvironmentFactorALocationIdVariable) {
