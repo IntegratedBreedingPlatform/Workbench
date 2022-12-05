@@ -9,7 +9,7 @@ import { HttpResponse } from '@angular/common/http';
 import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
 import { HelpService } from '../../../shared/service/help.service';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
-import { DatasetService } from '../../../shared/dataset/service/datasetService';
+import { DatasetService } from '../../../shared/dataset/service/dataset.service';
 import { DatasetModel } from '../../../shared/dataset/model/dataset.model';
 import { StudyInstanceModel } from '../../../shared/dataset/model/study-instance.model';
 import { ObservationVariable } from '../../../shared/model/observation-variable.model';
