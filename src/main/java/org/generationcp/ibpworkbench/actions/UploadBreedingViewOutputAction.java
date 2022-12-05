@@ -96,7 +96,6 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 			}
 
 			try {
-
 				if (environmentExists) {
 					ConfirmDialog.show(event.getComponent().getWindow(), "",
 						this.messageSource.getMessage(Message.BV_UPLOAD_OVERWRITE_WARNING), this.messageSource.getMessage(Message.OK),
@@ -113,13 +112,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 				}
 
 			} catch (final RuntimeException e) {
-
 				UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
-
-				MessageNotifier.showError(
-					this.window.getParent(),
-					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-					this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
 			}
 
 		}
@@ -221,7 +214,7 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 
 	}
 
-	public void processTheUploadedFile(final int studyId, final Project project) {
+	public void processTheUploadedFile(final int studyId, final Project project) throws RuntimeException {
 
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -251,6 +244,12 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 				} catch (final BreedingViewImportException e) {
 
 					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+
+					MessageNotifier.showError(
+						UploadBreedingViewOutputAction.this.window.getParent(),
+						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
+						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS)
+							+ "\n" + e.getMessage());
 
 					// Wrapping in RuntimeException because TransactionCallbackWithoutResult will only send rollback signal if it is a runtime exception.
 					// See http://docs.spring.io/autorepo/docs/spring/3.2.11.RELEASE/javadoc-api/org/springframework/transaction/support/TransactionCallbackWithoutResult.html
