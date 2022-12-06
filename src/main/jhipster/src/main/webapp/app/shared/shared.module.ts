@@ -98,6 +98,7 @@ import { StudyService } from './study/service/study.service';
 import { EntryDetailsImportContext } from './ontology/entry-details-import.context';
 import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 import { ModalAlertComponent } from './modal/modal-alert.component';
+import { AdvanceService } from './study/service/advance.service';
 
 @NgModule({
     imports: [
@@ -213,7 +214,8 @@ import { ModalAlertComponent } from './modal/modal-alert.component';
         FeedbackService,
         EntryDetailsImportContext,
         FeedbackService,
-        GenotypingBrapiService
+        GenotypingBrapiService,
+        AdvanceService
     ],
     entryComponents: [
         ModalComponent,

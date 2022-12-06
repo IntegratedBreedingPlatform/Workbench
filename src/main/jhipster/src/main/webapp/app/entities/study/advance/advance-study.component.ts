@@ -5,7 +5,7 @@ import { ParamContext } from '../../../shared/service/param.context';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
 import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
 import { HelpService } from '../../../shared/service/help.service';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
@@ -17,6 +17,14 @@ import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
 import { DatasetTypeEnum } from '../../../shared/dataset/model/dataset-type.enum';
 import { TranslateService } from '@ngx-translate/core';
+import { AdvanceService } from '../../../shared/study/service/advance.service';
+import { AdvanceStudyRequest,
+    BreedingMethodSelectionRequest,
+    BulkingRequest,
+    LineSelectionRequest,
+    SelectionTraitRequest } from '../../../shared/study/model/advance-study-request.model';
+import { formatErrorList } from '../../../shared/alert/format-error-list';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -38,7 +46,7 @@ export class AdvanceStudyComponent implements OnInit {
     breedingMethodType = '1';
     useFavoriteBreedingMethods = false;
     methodTypes: BreedingMethodTypeEnum[] = [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
-    breedingMethodSelectedVariable: ObservationVariable;
+    breedingMethodSelectedVariableId: number;
 
     showBreedingMethodVariableSelection = false;
     selectionMethodVariables: ObservationVariable[] = [];
@@ -48,11 +56,11 @@ export class AdvanceStudyComponent implements OnInit {
     linesCheck = true;
     showLinesSelection = true;
     selectedLinesNumber = 1;
-    selectedLinesVariable: ObservationVariable;
+    selectedLinesVariableId: number;
 
     bulksCheck = true;
     showBulkingSelection = false;
-    selectedPlotVariable: ObservationVariable;
+    selectedPlotVariableId: number;
 
     checkAllReplications = false;
 
@@ -87,7 +95,8 @@ export class AdvanceStudyComponent implements OnInit {
                 private breedingMethodService: BreedingMethodService,
                 private helpService: HelpService,
                 private datasetService: DatasetService,
-                private translateService: TranslateService
+                private translateService: TranslateService,
+                private advanceService: AdvanceService
     ) {
         this.paramContext.readParams();
     }
@@ -120,10 +129,50 @@ export class AdvanceStudyComponent implements OnInit {
     }
 
     save(): void {
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
+        this.isLoading = true;
+
+        const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
+        const selectedReplicationNumbers: string[] =
+            this.replicationsOptions.filter((replication: any) => replication.selected)
+                .map((replication: any) => String(replication.index));
+        const breedingMethodSelectionRequest: BreedingMethodSelectionRequest = new BreedingMethodSelectionRequest();
+        if (this.showBreedingMethodVariableSelection) {
+            breedingMethodSelectionRequest.methodVariateId = this.breedingMethodSelectedVariableId;
+        } else {
+            breedingMethodSelectionRequest.breedingMethodId = Number(this.breedingMethodSelectedId);
+        }
+
+        const advanceStudyRequest: AdvanceStudyRequest = new AdvanceStudyRequest(selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+        if (this.showSelectionTraitSelection) {
+            const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
+            advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
+        }
+
+        if (this.showBreedingMethodVariableSelection || this.showLinesSelection) {
+            const lineSelectionRequest: LineSelectionRequest = new LineSelectionRequest();
+            if (this.linesCheck) {
+                lineSelectionRequest.linesSelected = this.selectedLinesNumber;
+            } else {
+                lineSelectionRequest.lineVariateId = this.selectedLinesVariableId;
+            }
+            advanceStudyRequest.lineSelectionRequest = lineSelectionRequest;
+        }
+
+        if (this.showBulkingSelection) {
+            const bulkingRequest: BulkingRequest = new BulkingRequest();
+            if (this.bulksCheck) {
+                bulkingRequest.allPlotsSelected = true;
+            } else {
+                bulkingRequest.plotVariateId = this.selectedPlotVariableId;
+            }
+            advanceStudyRequest.bulkingRequest = bulkingRequest;
+        }
+
+        this.advanceService.advanceStudy(this.studyId, advanceStudyRequest)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(
+            (res: number[]) => this.onAdvanceSuccess(),
+            (res) => this.onError(res));
     }
 
     dismiss() {
@@ -180,7 +229,7 @@ export class AdvanceStudyComponent implements OnInit {
 
     isValid(): boolean {
         // Variable for selection method was not selected
-        if (this.showBreedingMethodVariableSelection && !this.breedingMethodSelectedVariable) {
+        if (this.showBreedingMethodVariableSelection && !this.breedingMethodSelectedVariableId) {
             return false;
         }
         // No same method for each advance was selected
@@ -199,13 +248,13 @@ export class AdvanceStudyComponent implements OnInit {
                 return false;
             }
             // Variable that defines the number of selected lines was not selected
-            if (!this.linesCheck && !this.selectedLinesVariable) {
+            if (!this.linesCheck && !this.selectedLinesVariableId) {
                 return false;
             }
         }
 
         // Variable that defines the number of lines selected from each plot was not selected
-        if (this.showBulkingSelection && !this.bulksCheck && !this.selectedPlotVariable) {
+        if (this.showBulkingSelection && !this.bulksCheck && !this.selectedPlotVariableId) {
             return false;
         }
 
@@ -292,6 +341,7 @@ export class AdvanceStudyComponent implements OnInit {
                     dataset.instances.forEach((instance: StudyInstanceModel) => {
                         if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
                             this.trialInstances.push({
+                                instanceId: instance.instanceId,
                                 instanceNumber: instance.instanceNumber,
                                 locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
                                 abbrCode: instance.customLocationAbbreviation
@@ -335,7 +385,7 @@ export class AdvanceStudyComponent implements OnInit {
     private initializeReplicationOptions(replicationNumber: number) {
         if (replicationNumber !== 0) {
             for (let rep = 1; rep <= replicationNumber; rep++) {
-                this.replicationsOptions.push({ repIndex: rep, selected: (rep === 1) });
+                this.replicationsOptions.push({ index: rep, selected: (rep === 1) });
             }
         }
     }
@@ -357,6 +407,21 @@ export class AdvanceStudyComponent implements OnInit {
             show: this.selectionTraitVariablesByDatasetIds.get(value) && this.selectionTraitVariablesByDatasetIds.get(value).length > 0,
             value
         };
+    }
+
+    private onAdvanceSuccess() {
+        this.isLoading = false;
+        this.alertService.success('advance-study.success', {}, null);
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
+        this.isLoading = false;
     }
 
 }
