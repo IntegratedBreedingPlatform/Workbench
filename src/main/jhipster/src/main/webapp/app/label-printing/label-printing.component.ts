@@ -270,6 +270,12 @@ export class LabelPrintingComponent implements OnInit {
         return this.service.getAllPresets(this.getToolSection()).subscribe((PresetSettings) => {
             this.presetSettings = PresetSettings;
             this.presetSettingId = 0;
+        }, (response) => {
+            if (response.error.errors[0].message) {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            } else {
+                this.alertService.error('error.general');
+            }
         });
     }
 
@@ -422,7 +428,7 @@ export class LabelPrintingComponent implements OnInit {
         if (!presetSetting) {
             this.service.addPreset(preset).subscribe((presetCreated) => {
                 this.presetSettings.push(presetCreated);
-                this.presetSettingId = presetCreated.id;
+                this.presetSettingId = this.loadSavedSettings ? presetCreated.id : 0;
                 this.alertService.success('label-printing.save.preset.success');
             }, (response) => {
                 if (response.error.errors[0].message) {
