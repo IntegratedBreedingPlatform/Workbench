@@ -132,18 +132,20 @@
 		</div>
 
 		<!-- Repetition selection -->
-		<h3 jhiTranslate="advance-study.reps.title"></h3>
-		<div class="form-group">
-			<div *ngFor="let rep of replicationsOptions" class="form-check form-check-inline">
-				<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="toggleCheck(rep.selected)"
-					   name="check-{{rep.index}}" id="check-{{rep.index}}">
-				<label class="col-form-label font-weight-bold" for="check-{{rep.index}}">
-					{{rep.index}}
-				</label>
-			</div>
-			<div class="form-check form-check-inline">
-				<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="toogleAll()" name="selectAllReps" id="selectAllReps"/>
-				<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
+		<div *ngIf="replicationsOptions.length > 0">
+			<h3 jhiTranslate="advance-study.reps.title"></h3>
+			<div class="form-group">
+				<div *ngFor="let rep of replicationsOptions" class="form-check form-check-inline">
+					<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="toggleCheck(rep.selected)"
+						   name="check-{{rep.index}}" id="check-{{rep.index}}">
+					<label class="col-form-label font-weight-bold" for="check-{{rep.index}}">
+						{{rep.index}}
+					</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="toogleAll()" name="selectAllReps" id="selectAllReps"/>
+					<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
+				</div>
 			</div>
 		</div>
 
