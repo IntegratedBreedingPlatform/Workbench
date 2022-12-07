@@ -4,6 +4,7 @@ package org.generationcp.ibpworkbench.actions;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.apache.commons.lang3.StringUtils;
 import org.generationcp.commons.exceptions.BreedingViewImportException;
 import org.generationcp.commons.service.BreedingViewImportService;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -244,12 +246,20 @@ public class UploadBreedingViewOutputAction implements ClickListener {
 				} catch (final BreedingViewImportException e) {
 
 					UploadBreedingViewOutputAction.LOG.error(e.getMessage(), e);
+					final StringBuilder detailedError = new StringBuilder();
+					detailedError.append(
+						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS));
+
+					if (StringUtils.isNotEmpty(e.getMessageKey())) {
+						detailedError.append("\n");
+						detailedError.append(UploadBreedingViewOutputAction.this.messageSource.getMessage(
+							e.getMessageKey(), e.getMessageParameters()));
+					}
 
 					MessageNotifier.showError(
 						UploadBreedingViewOutputAction.this.window.getParent(),
 						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_HEADER),
-						UploadBreedingViewOutputAction.this.messageSource.getMessage(Message.BV_UPLOAD_ERROR_CANNOT_UPLOAD_MEANS)
-							+ "\n" + e.getMessage());
+						detailedError.toString());
 
 					// Wrapping in RuntimeException because TransactionCallbackWithoutResult will only send rollback signal if it is a runtime exception.
 					// See http://docs.spring.io/autorepo/docs/spring/3.2.11.RELEASE/javadoc-api/org/springframework/transaction/support/TransactionCallbackWithoutResult.html
