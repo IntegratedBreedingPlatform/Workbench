@@ -60,27 +60,28 @@
 
 					variables.forEach(function(variable) {
 
-                        var variableType = function(element) {
-                        	// $scope.variableTypeIds is a string of variable type ids separated by comma (e.g. 1808,1802,1806)
-                            return $scope.variableTypeIds.indexOf(element.id) >= 0;
-                        };
+						if(!variable.obsolete) {
+							var variableType = function (element) {
+								// $scope.variableTypeIds is a string of variable type ids separated by comma (e.g. 1808,1802,1806)
+								return $scope.variableTypeIds.indexOf(element.id) >= 0;
+							};
 
-					    if (variable.variableTypes && variable.variableTypes.some(variableType)) {
-                            if (properyTracker.indexOf(variable.property.id) > -1) {
-                                var property = properties[properyTracker.indexOf(variable.property.id)];
-                                property.variableNames += ', ' +  variable.name + (variable.alias ? ' (' + variable.alias + ')' : '');
-                                property.variables.push(variable);
-                            } else {
-                                properyTracker.push(variable.property.id);
-                                properties.push({
-                                    name: variable.property.name,
-                                    classes: variable.property.classes.join(','),
-                                    variableNames: variable.name + (variable.alias ? ' (' + variable.alias + ')' : ''),
-                                    variables: [ variable ]
-                                });
-                            }
-                        }
-
+							if (variable.variableTypes && variable.variableTypes.some(variableType)) {
+								if (properyTracker.indexOf(variable.property.id) > -1) {
+									var property = properties[properyTracker.indexOf(variable.property.id)];
+									property.variableNames += ', ' + variable.name + (variable.alias ? ' (' + variable.alias + ')' : '');
+									property.variables.push(variable);
+								} else {
+									properyTracker.push(variable.property.id);
+									properties.push({
+										name: variable.property.name,
+										classes: variable.property.classes.join(','),
+										variableNames: variable.name + (variable.alias ? ' (' + variable.alias + ')' : ''),
+										variables: [variable]
+									});
+								}
+							}
+						}
 					});
 
                     return properties;
