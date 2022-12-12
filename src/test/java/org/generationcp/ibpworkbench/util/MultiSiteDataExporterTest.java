@@ -77,6 +77,7 @@ public class MultiSiteDataExporterTest {
 	public static final int STUDY_ID = 1;
 	public static final int PLOT_DATASET_ID = 2;
 	public static final int SUMMARY_STATISTICS_DATASET_ID = 3;
+	public static final int ENVIRONMENT_DATASET_ID = 4;
 
 	private static final Term NUMERIC_VARIABLE = new Term(TermId.NUMERIC_VARIABLE.getId(), "", "");
 	private static final Term CATEGORICAL_VARIABLE = new Term(TermId.CATEGORICAL_VARIABLE.getId(), "", "");
@@ -143,10 +144,16 @@ public class MultiSiteDataExporterTest {
 		final List<Variable> plotFactorVariables = new ArrayList<>();
 		final List<Variable> plotVariateVariables = new ArrayList<>();
 
+		// environment dataset
+		final List<DMSVariableType> environmentFactors = new ArrayList<>();
+		final List<Variable> environmentFactorVariables = new ArrayList<>();
+
 		this.createFactorsAndVariatesTestDataForPlot(plotFactors, plotFactorVariables, plotVariates, plotVariateVariables);
 		final MultiKeyMap multiKeyMap = MultiKeyMap.decorate(new LinkedMap());
 		this.createFactorsAndVariatesTestDataForSummaryStatistics(summaryStatisticsFactors, summaryStatisticsFactorVariables,
 			summaryStatisticsVariates, summaryStatisticsVariateVariables, multiKeyMap);
+		this.createFactorsTestDataForEnvironmentDataset(environmentFactors, environmentFactorVariables);
+
 		final DataSet plotDataSet =
 			this.createDataSet(PLOT_DATASET_ID, DatasetTypeEnum.PLOT_DATA, "PLOT-DATA", plotFactors, plotFactorVariables,
 				plotVariates,
@@ -155,16 +162,27 @@ public class MultiSiteDataExporterTest {
 			this.createDataSet(SUMMARY_STATISTICS_DATASET_ID, DatasetTypeEnum.SUMMARY_STATISTICS_DATA,
 				"SUMMARY-STATISTICS-DATA", summaryStatisticsFactors,
 				summaryStatisticsFactorVariables, summaryStatisticsVariates, summaryStatisticsVariateVariables);
+		final DataSet environmentDataSet =
+			this.createDataSet(ENVIRONMENT_DATASET_ID, DatasetTypeEnum.SUMMARY_DATA,
+				"ENVIRONMENT-DATA", environmentFactors,
+				environmentFactorVariables, new ArrayList<>(), new ArrayList<>());
 
 		final List<Experiment> summaryStatisticsExperiments =
 			this.createSummaryStatisticsExperiments(summaryStatisticsFactors, summaryStatisticsVariates);
 
+		final List<Experiment> environmentExperiments =
+			this.createEnvironmentExperiments(environmentFactors);
+
+		Mockito.doReturn(environmentDataSet).when(this.studyDataManager)
+			.findOneDataSetByType(STUDY_ID, DatasetTypeEnum.SUMMARY_DATA.getId());
 		Mockito.doReturn(plotDataSet).when(this.studyDataManager)
 			.findOneDataSetByType(STUDY_ID, DatasetTypeEnum.PLOT_DATA.getId());
 		Mockito.doReturn(summaryStatisticsDataSet).when(this.studyDataManager)
 			.findOneDataSetByType(STUDY_ID, DatasetTypeEnum.SUMMARY_STATISTICS_DATA.getId());
 		Mockito.doReturn(summaryStatisticsExperiments).when(this.studyDataManager)
 			.getExperiments(summaryStatisticsDataSet.getId(), 0, Integer.MAX_VALUE);
+		Mockito.doReturn(environmentExperiments).when(this.studyDataManager)
+			.getExperiments(environmentDataSet.getId(), 0, Integer.MAX_VALUE);
 		Mockito.doReturn(multiKeyMap).when(this.ontologyVariableService)
 			.getAnalysisMethodsOfTraits(ArgumentMatchers.anyList(), ArgumentMatchers.anyList());
 
@@ -565,6 +583,21 @@ public class MultiSiteDataExporterTest {
 		return meansExperiments;
 	}
 
+	private List<Experiment> createEnvironmentExperiments(final List<DMSVariableType> factors) {
+		final List<Experiment> environmentExperiments = new ArrayList<>();
+		for (final String env : ENVIRONMENTS) {
+			final Experiment experiment = new Experiment();
+			final Map<Integer, DMSVariableType> factorVariablesMap =
+				factors.stream().collect(Collectors.toMap(v -> v.getId(), Function.identity()));
+			final Variable trialInstance = this.createVariableTestData(factorVariablesMap.get(TermId.TRIAL_INSTANCE_FACTOR.getId()), env);
+			final Variable lcoationId = this.createVariableTestData(factorVariablesMap.get(TermId.LOCATION_ID.getId()), "100");
+			experiment.setFactors(this.convertToVariableList(Arrays.asList(trialInstance, lcoationId)));
+			experiment.setLocationId(Integer.valueOf(env));
+			environmentExperiments.add(experiment);
+		}
+		return environmentExperiments;
+	}
+
 	private List<Experiment> createSummaryStatisticsExperiments(final List<DMSVariableType> factors,
 		final List<DMSVariableType> variates) {
 		this.summaryExperiments = new ArrayList<>();
@@ -582,6 +615,7 @@ public class MultiSiteDataExporterTest {
 			}
 			experiment.setFactors(this.convertToVariableList(Arrays.asList(trialInstance, lcoationId)));
 			experiment.setVariates(this.convertToVariableList(variatesList));
+			experiment.setLocationId(Integer.valueOf(env));
 			this.summaryExperiments.add(experiment);
 		}
 		return this.summaryExperiments;
@@ -651,6 +685,19 @@ public class MultiSiteDataExporterTest {
 				PhenotypicType.VARIATE, NUMERIC_VARIABLE, OBSERVATION_VARIATE_ROLE, null, null, null);
 		}
 
+	}
+
+	private void createFactorsTestDataForEnvironmentDataset(final List<DMSVariableType> factors, final List<Variable> factorVariables) {
+
+		int rank = 1;
+
+		this.addVariableToList(factors, factorVariables, TermId.TRIAL_INSTANCE_FACTOR.getId(), ENV_FACTOR, rank++,
+			"", PhenotypicType.TRIAL_ENVIRONMENT, NUMERIC_VARIABLE,
+			TRIAL_INSTANCE_ROLE, null, null, null);
+
+		this.addVariableToList(factors, factorVariables, TermId.LOCATION_ID.getId(), LOCATION_ID, rank++,
+			"", PhenotypicType.TRIAL_ENVIRONMENT, NUMERIC_VARIABLE,
+			TRIAL_ENVIRONMENT_ROLE, null, null, null);
 	}
 
 	private void createFactorsAndVariatesTestDataForSummaryStatistics(
