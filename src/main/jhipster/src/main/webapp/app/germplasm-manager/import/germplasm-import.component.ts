@@ -196,6 +196,8 @@ export class GermplasmImportComponent implements OnInit {
     }
 
     private validateData(errorMessage: string[]) {
+        let rowNum = 1;
+
         // row validations
         for (const row of this.context.data) {
             if (!row[HEADERS.ENTRY_NO]) {
@@ -206,7 +208,11 @@ export class GermplasmImportComponent implements OnInit {
                 || !Number.isInteger(Number(row[HEADERS.ENTRY_NO])) || row[HEADERS.ENTRY_NO] < 0)) {
                 errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo.format'));
                 break;
+            } else if (Number.parseInt(row[HEADERS.ENTRY_NO], 10) !== rowNum) {
+                errorMessage.push(this.translateService.instant('germplasm.import.file.validation.entryNo.incorrect', {param : rowNum}));
+                break;
             }
+
             // Amount
             if (row[HEADERS.AMOUNT] && (isNaN(row[HEADERS.AMOUNT]) || row[HEADERS.AMOUNT] < 0)) {
                 errorMessage.push(this.translateService.instant('germplasm.import.file.validation.amount.format'));
@@ -222,6 +228,8 @@ export class GermplasmImportComponent implements OnInit {
                 errorMessage.push(this.translateService.instant('germplasm.import.file.validation.reference'));
                 break;
             }
+
+            rowNum++;
         }
         // column validations
         if (this.context.data.map((row) => row[HEADERS.ENTRY_NO]).some((cell, i, col) => col.indexOf(cell) !== i)) {
