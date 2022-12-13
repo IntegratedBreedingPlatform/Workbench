@@ -1,7 +1,7 @@
 <div class="modal-body">
 	<form name="form" #f="ngForm" class="form-horizontal">
 		<!-- Breeding method selection -->
-		<h3 jhiTranslate="advance-study.breeding-methods.title"></h3>
+		<h4 jhiTranslate="advance-study.breeding-methods.title"></h4>
 		<div class="form-group row">
 			<div class="col-sm-6">
 				<div class="form-check form-check-inline">
@@ -55,7 +55,7 @@
 
 		<!-- Selection Trait -->
 		<div *ngIf="showSelectionTraitSelection">
-			<h3 jhiTranslate="advance-study.selection-trait.title">Selection Trait</h3>
+			<h4 jhiTranslate="advance-study.selection-trait.title">Selection Trait</h4>
 			<p for="selectionTraitLevel" class="col-form-label font-weight-bold" jhiTranslate="advance-study.selection-trait.description"></p>
 			<div class="col-sm-12">
 				<div class="form-group row">
@@ -81,7 +81,7 @@
 
 		<!-- Line selection -->
 		<div *ngIf="showBreedingMethodVariableSelection || showLinesSelection">
-			<h3 jhiTranslate="advance-study.lines.title"></h3>
+			<h4 jhiTranslate="advance-study.lines.title"></h4>
 			<div class="col-sm-12 form-check form-check-inline">
 				<input type="checkbox" class="form-check-input" name="linesCheck" (click)="onSelectLineVariable($event)" [(ngModel)]="linesCheck">
 				<label for="linesCheck" id="linesCheck" class="col-form-label font-weight-bold" jhiTranslate="advance-study.lines.description">Same number of lines is selected for each plot</label>
@@ -112,7 +112,7 @@
 
 		<!-- Bulking selection -->
 		<div *ngIf="showBulkingSelection">
-			<h3 jhiTranslate="advance-study.bulks.title"></h3>
+			<h4 jhiTranslate="advance-study.bulks.title"></h4>
 			<div class="form-check form-check-inline">
 				<input class="form-check-input" type="checkbox" name="bulksCheck" (click)="onSelectPlotVariable($event)" [(ngModel)]="bulksCheck">
 				<label class="col-form-label font-weight-bold" id="bulksCheck" for="bulksCheck" jhiTranslate="advance-study.bulks.description">All plots are selected</label>
@@ -133,7 +133,7 @@
 
 		<!-- Repetition selection -->
 		<div *ngIf="replicationsOptions.length > 0">
-			<h3 jhiTranslate="advance-study.reps.title"></h3>
+			<h4 jhiTranslate="advance-study.reps.title"></h4>
 			<div class="form-group">
 				<div *ngFor="let rep of replicationsOptions" class="form-check form-check-inline">
 					<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="toggleCheck(rep.selected)"
@@ -143,14 +143,14 @@
 					</label>
 				</div>
 				<div class="form-check form-check-inline">
-					<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="toogleAll()" name="selectAllReps" id="selectAllReps"/>
+					<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="toggleAll()" name="selectAllReps" id="selectAllReps"/>
 					<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
 				</div>
 			</div>
 		</div>
 
 		<!-- Location Details -->
-		<h3 jhiTranslate="advance-study.location.title"></h3>
+		<h4 jhiTranslate="advance-study.location.title"></h4>
 		<div class="col-xs-12 col-md-12">
 			<div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="location-tab" style="padding-left: 0px;">
 				<table class="table table-striped table-bordered table-curved">

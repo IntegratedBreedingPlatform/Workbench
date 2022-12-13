@@ -1,4 +1,6 @@
-export class AdvanceStudyRequest {
+import { AbstractAdvanceRequest, SelectionTraitRequest } from './abstract-advance-request.model';
+
+export class AdvanceStudyRequest extends AbstractAdvanceRequest {
     constructor(
         public instanceIds: number[],
         public selectedReplications: string[],
@@ -7,6 +9,7 @@ export class AdvanceStudyRequest {
         public lineSelectionRequest?: LineSelectionRequest,
         public bulkingRequest?: BulkingRequest,
     ) {
+        super(instanceIds, selectedReplications, selectionTraitRequest);
     }
 }
 
@@ -14,14 +17,6 @@ export class BreedingMethodSelectionRequest {
     constructor(
         public breedingMethodId?: number,
         public methodVariateId?: number
-    ) {
-    }
-}
-
-export class SelectionTraitRequest {
-    constructor(
-        public datasetId: number,
-        public variableId: number
     ) {
     }
 }

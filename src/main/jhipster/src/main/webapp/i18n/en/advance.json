@@ -1,6 +1,7 @@
 {
   "advance": {
-    "action": "Advance"
+    "action": "Advance",
+    "success": "Advancing lines finished successfully."
   },
   "advance-study": {
     "title": "Advance Study",
@@ -49,7 +50,16 @@
     "errors": {
       "breeding-method.selection.variate.not-present": "The study must contain a Selection Variate that provides the breeding methods.",
       "lines.selection.variate.not-present": "The study must contain a Selection Variate that provides the number of plants selected."
+    }
+  },
+  "advance-samples": {
+    "breeding-methods": {
+      "title": "Methods",
+      "description": "Breeding method"
     },
-    "success": "Advancing lines finished successfully."
+    "plants": {
+      "title": "Plants",
+      "description": "All plants are selected"
+    }
   }
 }

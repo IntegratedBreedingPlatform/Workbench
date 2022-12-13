@@ -7,6 +7,7 @@ import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-i
 import { AdvanceStudyComponent } from './advance/advance-study.component';
 import { GermplasmTreeService } from '../../shared/tree/germplasm/germplasm-tree.service';
 import { DatasetService } from '../../shared/dataset/service/dataset.service';
+import { AdvanceSamplesComponent } from './advance/advance-samples.component';
 
 @NgModule({
     imports: [
@@ -16,12 +17,14 @@ import { DatasetService } from '../../shared/dataset/service/dataset.service';
     declarations: [
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
-        AdvanceStudyComponent
+        AdvanceStudyComponent,
+        AdvanceSamplesComponent
     ],
     entryComponents: [
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
-        AdvanceStudyComponent
+        AdvanceStudyComponent,
+        AdvanceSamplesComponent
     ],
     providers: [
         EntryDetailsImportContext,
