@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { ParamContext } from '../../../shared/service/param.context';
+import { ParamContext } from '../../shared/service/param.context';
 import { Observable } from 'rxjs';
-import { Location } from '../../../shared/location/model/location';
-import { SERVER_API_URL } from '../../../app.constants';
+import { Location } from '../../shared/location/model/location';
+import { SERVER_API_URL } from '../../app.constants';
 import { map } from 'rxjs/operators';
 
 @Injectable()

@@ -1,21 +1,21 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../../../shared/modal/popup.service';
+import { PopupService } from '../../shared/modal/popup.service';
 import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { VariableService } from '../../../shared/ontology/service/variable.service';
-import { parseFile, saveFile } from '../../../shared/util/file-utils';
+import { VariableService } from '../../shared/ontology/service/variable.service';
+import { parseFile, saveFile } from '../../shared/util/file-utils';
 import { HttpErrorResponse } from '@angular/common/http';
-import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
-import { toUpper } from '../../../shared/util/to-upper';
+import { formatErrorList } from '../../shared/alert/format-error-list';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { toUpper } from '../../shared/util/to-upper';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
-import { EntryDetailsImportContext } from '../../../shared/ontology/entry-details-import.context';
-import { StudyService } from '../../../shared/study/study.service';
-import { DatasetVariable } from '../../../shared/study/dataset-variable';
-import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
-import { ModalAlertComponent } from '../../../shared/modal/modal-alert.component';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
+import { StudyService } from '../../shared/study/study.service';
+import { DatasetVariable } from '../../shared/study/dataset-variable';
+import { EntryDetailsImportService, HEADERS } from '../../shared/ontology/service/entry-details-import.service';
+import { ModalAlertComponent } from '../../shared/modal/modal-alert.component';
 
 @Component({
     selector: 'jhi-import-entry-details',

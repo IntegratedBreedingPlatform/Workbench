@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { TransactionService } from '../../../shared/inventory/service/transaction.service';
-import { ParamContext } from '../../../shared/service/param.context';
+import { TransactionService } from '../../shared/inventory/service/transaction.service';
+import { ParamContext } from '../../shared/service/param.context';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { AlertService } from '../../../shared/alert/alert.service';
-import { LocationService } from '../../../shared/location/service/location.service';
-import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
-import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
+import { AlertService } from '../../shared/alert/alert.service';
+import { LocationService } from '../../shared/location/service/location.service';
+import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
+import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 import { HttpResponse } from '@angular/common/http';
-import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
-import { HelpService } from '../../../shared/service/help.service';
-import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
-import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
+import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
+import { HelpService } from '../../shared/service/help.service';
+import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { DatasetService } from '../service/datasetService';
 
 @Component({
