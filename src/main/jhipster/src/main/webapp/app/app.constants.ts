@@ -14,6 +14,7 @@ export const GERMPLASM_SEARCH_SELECTOR = '/ibpworkbench/controller/jhipster#/ger
 export const INVENTORY_DETAILS_URL = '/ibpworkbench/controller/jhipster#/inventory-details/';
 export const GRAPHICAL_QUERIES_URL = '/ibpworkbench/controller/graphical-queries/';
 export const STUDY_URL = '/Fieldbook/TrialManager/openTrial/';
+export const CREATE_STUDY_URL = '/Fieldbook/TrialManager/createTrial/';
 export const MAX_PAGE_SIZE = process.env.MAX_PAGE_SIZE;
 export const USER_PROGRAM_INFO = '/ibpworkbench/controller/userProgramController/context/program';
 export const INSTITUTE_LOGO_PATH = process.env.INSTITUTE_LOGO_PATH;
@@ -49,7 +50,10 @@ export const HELP_GRAPHICAL_QUERIES = 'GRAPHICAL_QUERIES';
 export const HELP_MANAGE_PROGRAM_SETTINGS = 'MANAGE_PROGRAM_SETTINGS';
 export const HELP_MANAGE_CROP_SETTINGS = 'MANAGE_CROP_SETTINGS';
 export const HELP_NAME_RULES_FOR_NEW_GERMPLASM = 'NAME_RULES_FOR_NEW_GERMPLASM';
+export const HELP_MANAGE_STUDIES = 'MANAGE_STUDIES';
+
 export const ADD_NEW_PROGRAM = 'PROGRAM_CREATION';
+
 // CVTERM IDS
 export const TRIAL_INSTANCE_CVTERM_ID = 8170;
 export const EXPT_DESIGN_CVTERM_ID = 8135;

@@ -1,5 +1,14 @@
 {
     "study": {
+        "manager": {
+            "title": "Manage Studies",
+            "nav.search": "Search",
+            "browse-link": "Browse",
+            "browse-text": "for a study to work with.",
+            "actions": {
+                "new-study": "Start a New Study"
+            }
+        },
         "import-entry-details": {
             "title": "Import Entry Details",
             "columns": {
