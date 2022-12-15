@@ -250,7 +250,7 @@ export class MembersPaneComponent {
     }
 
     isRemovable(user: ProgramMember) {
-        return user.role.type === RoleTypeEnum.PROGRAM.name && user.userId !== this.context.loggedInUserId;
+        return user.role.roleType.name === RoleTypeEnum.PROGRAM.name && user.userId !== this.context.loggedInUserId;
     }
 
     dropMembers(event: CdkDragDrop<any>) {
@@ -317,7 +317,7 @@ export class MembersPaneComponent {
             roleName: this.filtersRight.roleName.value
         })).subscribe((allMembers) => {
             this.right.selectedItems = allMembers.reduce((obj, member) => {
-                if (member.role.type === RoleTypeEnum.PROGRAM.name) {
+                if (member.role.roleType.name === RoleTypeEnum.PROGRAM.n) {
                     obj[member.userId] = member;
                 }
                 return obj;
