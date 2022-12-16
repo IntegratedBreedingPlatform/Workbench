@@ -167,13 +167,17 @@ mainApp.constant('rcalls', {
 	ENTRIES_BY_STUDY_REP_AND_BLOCK: 12
 });
 
-mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observationService', function ($scope, $uibModal, $http, observationService) {
+mainApp.controller('MainController', ['$scope', '$uibModal', '$http', 'observationService', 'helpLinkService', function ($scope, $uibModal, $http, observationService, helpLinkService) {
 
 	$scope.nested = {};
 	$scope.flags = {
 		groupByAccession: false,
 		isDataLoaded: false
 	};
+
+	helpLinkService.helpLink('GRAPHICAL_QUERIES').then(function (url) {
+		$scope.helpLink = url;
+	});
 
 	$scope.tools = [
 		{id: 'graphical-filtering', name: 'Graphical Filtering'},
@@ -664,6 +668,22 @@ mainApp.factory('observationService', ['$http', function ($http) {
 
 	return observationService;
 
+}]);
+
+mainApp.factory('helpLinkService', ['$http', function ($http) {
+	return {
+		helpLink: function (value) {
+			var config = {responseType: 'text', observe: 'response'};
+			return $http({
+				method: 'GET',
+				url: '/ibpworkbench/controller/help/getUrl/' + value,
+				responseType: 'text',
+				transformResponse: undefined
+			}).then(function (response) {
+				return response.data;
+			});
+		}
+	};
 }]);
 
 angular.module('loadingStatus', []).config(function ($httpProvider) {
