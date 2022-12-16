@@ -10,6 +10,7 @@ import { DatasetService } from './service/datasetService';
 import { StudyManagerComponent } from './study-manager.component';
 import { StudySearchComponent } from './study-search.component';
 import { StudySummaryComponent } from './study-summary.component';
+import { StudyManagerTreeComponent } from './study-manager-tree.component';
 
 @NgModule({
     imports: [
@@ -20,6 +21,7 @@ import { StudySummaryComponent } from './study-summary.component';
         StudyManagerComponent,
         StudySearchComponent,
         StudySummaryComponent,
+        StudyManagerTreeComponent,
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
         AdvanceStudyComponent
@@ -28,6 +30,7 @@ import { StudySummaryComponent } from './study-summary.component';
         StudyManagerComponent,
         StudySearchComponent,
         StudySummaryComponent,
+        StudyManagerTreeComponent,
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
         AdvanceStudyComponent

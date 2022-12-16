@@ -91,7 +91,7 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    finish() {
+    finish(extraParams?: any) {
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
             const selected: TreeComponentResult[] = this.selectedNodes.filter((node: PrimeNgTreeNode) => {
@@ -100,7 +100,8 @@ export class TreeComponent implements OnInit {
             }).map((node: PrimeNgTreeNode) => {
                 return <TreeComponentResult>({
                     id: node.data.id,
-                    name: node.data.name
+                    name: node.data.name,
+                    extraParams
                 });
             });
             this.activeModal.close(selected);

@@ -4,10 +4,10 @@ import { HelpService } from '../shared/service/help.service';
 import { HELP_MANAGE_SAMPLES } from '../app.constants';
 import { JhiLanguageService } from 'ng-jhipster';
 import { UrlService } from '../shared/service/url.service';
-import { StudyTreeComponent } from '../shared/tree/study/study-tree.component';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { StudyManagerTreeComponent } from './study-manager-tree.component';
 
 @Component({
     selector: 'jhi-studies-manager',
@@ -63,14 +63,19 @@ export class StudyManagerComponent implements OnInit {
     browseStudy($event) {
         $event.preventDefault();
 
-        const studyTreeModal = this.modalService.open(StudyTreeComponent, { size: 'lg', backdrop: 'static' });
-        studyTreeModal.componentInstance.selectionMode = 'single';
-        studyTreeModal.result.then((studyIds) => {
-           if (studyIds && studyIds.length === 1) {
-               this.urlService.openStudy(studyIds[0].id);
-           }
+        this.modalService.open(StudyManagerTreeComponent, { size: 'lg', backdrop: 'static' }).result.then((studies) => {
+            if (studies && studies.length === 1) {
+                const study: any = studies[0];
+                const studyId: number = study.id;
+                if (study.extraParams && study.extraParams.showSummary) {
+                    this.router.navigate(['/study-manager/study/' + studyId], { queryParams: { studyId } });
+                } else {
+                    this.urlService.openStudy(studyId);
+                }
+            }
             this.activeModal.close();
-        }, () => {});
+        }, () => {
+        });
     }
 
     setActive(studyId: number) {
@@ -93,7 +98,7 @@ export class StudyManagerComponent implements OnInit {
             this.hideSearchTab = false;
         }
 
-        this.router.navigate(['/study-manager'], {queryParams: {}});
+        this.router.navigate(['/study-manager'], { queryParams: {} });
     }
 
     trackId(index: number, item: StudyTab) {
