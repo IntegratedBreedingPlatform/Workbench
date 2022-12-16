@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { ParamContext } from '../../service/param.context';
 import { SERVER_API_URL } from '../../../app.constants';
 import { Observable } from 'rxjs';
+import { createRequestOption } from '../..';
+import { StudySearchRequest } from '../model/study-search-request.model';
+import { StudySearchResponse } from '../model/study-search-response.model';
 
 @Injectable()
 export class StudyService {
@@ -28,4 +31,11 @@ export class StudyService {
             + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/${studyId}/entries/import`;
         return this.http.post(url, params);
     }
+
+    searchStudies(req: StudySearchRequest, pagination: any): Observable<HttpResponse<StudySearchResponse[]>> {
+        const params = createRequestOption(pagination);
+        const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/search`;
+        return this.http.post<StudySearchResponse[]>(url, req, { params, observe: 'response' });
+    }
+
 }

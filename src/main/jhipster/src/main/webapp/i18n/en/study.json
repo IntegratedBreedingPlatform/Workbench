@@ -7,6 +7,17 @@
             "browse-text": "for a study to work with.",
             "actions": {
                 "new-study": "Start a New Study"
+            },
+            "search": {
+                "columns": {
+                    "study-name": "Study Name",
+                    "study-type": "Study Type",
+                    "locked": "Locked",
+                    "created-by": "Created By",
+                    "date": "Date",
+                    "parent-folder": "Parent Folder",
+                    "objective": "Objective"
+                }
             }
         },
         "import-entry-details": {
