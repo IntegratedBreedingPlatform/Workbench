@@ -9,6 +9,7 @@ import { GermplasmTreeService } from '../shared/tree/germplasm/germplasm-tree.se
 import { DatasetService } from './service/datasetService';
 import { StudyManagerComponent } from './study-manager.component';
 import { StudySearchComponent } from './study-search.component';
+import { StudySummaryComponent } from './study-summary.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,7 @@ import { StudySearchComponent } from './study-search.component';
     declarations: [
         StudyManagerComponent,
         StudySearchComponent,
+        StudySummaryComponent,
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
         AdvanceStudyComponent
@@ -25,6 +27,7 @@ import { StudySearchComponent } from './study-search.component';
     entryComponents: [
         StudyManagerComponent,
         StudySearchComponent,
+        StudySummaryComponent,
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
         AdvanceStudyComponent

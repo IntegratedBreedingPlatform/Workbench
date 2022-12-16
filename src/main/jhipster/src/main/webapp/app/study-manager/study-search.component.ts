@@ -130,6 +130,15 @@ export class StudySearchComponent implements OnInit {
         this.loadAll(this.request);
     }
 
+    selectStudy($event, study: StudySearchResponse) {
+        $event.preventDefault();
+        this.router.navigate([`/study-manager/study/${study.studyId}`], {queryParams: {
+                studyId: study.studyId,
+                studyName: study.studyName
+            }
+        });
+    }
+
     private registerColumnFiltersChanged() {
         this.eventSubscriber = this.eventManager.subscribe(StudySearchComponent.COLUMN_FILTER_EVENT_NAME, (event) => {
             this.resetTable();

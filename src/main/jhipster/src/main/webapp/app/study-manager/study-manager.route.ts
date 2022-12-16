@@ -5,6 +5,7 @@ import { AdvanceStudyComponent } from './advance/advance-study.component';
 import { GermplasmListCreationPopupComponent } from '../germplasm-manager/germplasm-list/germplasm-list-creation-popup.component';
 import { StudyManagerComponent } from './study-manager.component';
 import { StudySearchComponent } from './study-search.component';
+import { StudySummaryComponent } from './study-summary.component';
 
 export const STUDY_MANAGER_ROUTES: Routes = [
     {
@@ -19,6 +20,19 @@ export const STUDY_MANAGER_ROUTES: Routes = [
             {
                 path: 'study-search',
                 component: StudySearchComponent,
+                // TODO: define permission
+                // data: { authorities: [...SEARCH_STUDY_PERMISSION] },
+                canActivate: [RouteAccessService]
+            },
+            {
+                /**
+                 * :studyId param is to track active link, but studyId queryParam is actually used to open tabs
+                 * because it's also available to parent (and all) component
+                 */
+                path: 'study/:studyId',
+                component: StudySummaryComponent,
+                // TODO: define permission
+                // data: { authorities: [...SEARCH_STUDY_PERMISSION] },
                 canActivate: [RouteAccessService]
             }
         ]

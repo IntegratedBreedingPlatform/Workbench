@@ -19,7 +19,7 @@
 			</thead>
 			<tbody>
 			<tr *ngFor="let study of studies; trackBy: trackId; index as index">
-				<td><span class="text-ellipsis" title="{{study.studyName}}">{{study.studyName}}</span></td>
+				<td><a href (click)="selectStudy($event, study)"><span class="text-ellipsis" title="{{study.studyName}}">{{study.studyName}}</span></a></td>
 				<td>{{study.studyTypeName}}</td>
 				<td>{{study.locked ? 'Yes' : 'No'}}</td>
 				<td>{{study.ownerName}}</td>
