@@ -81,6 +81,12 @@ export class StudyManagerComponent implements OnInit {
         });
     }
 
+    setSearchTabActive() {
+        this.hideSearchTab = false;
+        this.studyId = null;
+        this.studies.forEach((study: StudyTab) => study.active = false);
+    }
+
     closeTab(study: StudyTab) {
         this.studies.splice(this.studies.indexOf(study), 1);
         if (study.active) {
