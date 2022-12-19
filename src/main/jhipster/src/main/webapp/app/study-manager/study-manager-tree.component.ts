@@ -25,25 +25,4 @@ export class StudyManagerTreeComponent extends TreeComponent {
         super(false, 'single', service, activeModal, alertService, translateService, modalService);
     }
 
-    // showSummary() {
-    //     const persistPromise = this.persistTreeState();
-    //     persistPromise.then(() => {
-    //         const selected: TreeComponentResult[] = this.selectedNodes.filter((node: PrimeNgTreeNode) => {
-    //             const isFolder = !Boolean(node.leaf);
-    //             return this.isFolderSelectionMode ? isFolder : !isFolder;
-    //         }).map((node: PrimeNgTreeNode) => {
-    //             return <TreeComponentResult>({
-    //                 id: node.data.id,
-    //                 name: node.data.name,
-    //                 showSummary: true
-    //             });
-    //         });
-    //         this.activeModal.close(selected);
-    //     });
-    //     //
-    //     // this.finish();
-    //     //
-    //     // this.router.navigate(['/study-manager/study/' + ], {queryParams: {}});
-    // }
-
 }
