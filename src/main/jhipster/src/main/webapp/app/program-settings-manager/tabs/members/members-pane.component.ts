@@ -317,7 +317,7 @@ export class MembersPaneComponent {
             roleName: this.filtersRight.roleName.value
         })).subscribe((allMembers) => {
             this.right.selectedItems = allMembers.reduce((obj, member) => {
-                if (member.role.roleType.name === RoleTypeEnum.PROGRAM.n) {
+                if (member.role.roleType.name === RoleTypeEnum.PROGRAM.name) {
                     obj[member.userId] = member;
                 }
                 return obj;
