@@ -1,5 +1,5 @@
-import {DefaultObjectComparator} from './default-object-comparator.component';
-import {IObjectComparator} from './object-comparator.interface';
+import { DefaultObjectComparator } from './default-object-comparator.component';
+import { IObjectComparator } from './object-comparator.interface';
 
 
 export class NgDataGridModel<T> {
@@ -72,7 +72,8 @@ export class NgDataGridModel<T> {
             .sort((obj1: T, obj2: T) => {
                 let one: number = this.sortAsc ? 1 : -1;
                 if (!key) return 0;
-                if (!obj1[key] || !obj2[key]) return 0;
+                if (obj1[key] === undefined || obj2[key] === undefined) return 0;
+                if (obj1[key] === null || obj2[key] === null) return 0;
                 if (String(obj1[key]).toUpperCase() < String(obj2[key]).toUpperCase()) return -one;
                 if (String(obj1[key]).toUpperCase() > String(obj2[key]).toUpperCase()) return one;
                 return 0;
