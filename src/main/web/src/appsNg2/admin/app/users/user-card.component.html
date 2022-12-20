@@ -92,17 +92,17 @@
 					</div>
 				</div>
 				<div class="form-group required">
-					<label for="status" class="col-sm-3 control-label">User status</label>
+					<label for="active" class="col-sm-3 control-label">User status</label>
 					<div class="col-sm-9">
 						<div class="radio-inline">
 							<label>
-								<input type="radio" name="optionsStatus" [(ngModel)]="model.status" id="statuson" value="true" checked>
+								<input type="radio" name="optionsStatus" [(ngModel)]="model.active" id="statuson" [value]="true" checked>
 								Active
 							</label>
 						</div>
 						<div class="radio-inline">
 							<label>
-								<input type="radio" name="optionsStatus" [(ngModel)]="model.status" id="statusoff" value="false">
+								<input type="radio" name="optionsStatus" [(ngModel)]="model.active" id="statusoff" [value]="false">
 								Inactive
 							</label>
 						</div>
