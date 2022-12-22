@@ -232,7 +232,7 @@ export class TreeComponent implements OnInit {
         this.nodes = Object.assign([], this.nodes);
     }
 
-    private toPrimeNgNode(node: TreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {
+    toPrimeNgNode(node: TreeNode, parent?: PrimeNgTreeNode): PrimeNgTreeNode {
         return {
             label: node.name,
             data: {

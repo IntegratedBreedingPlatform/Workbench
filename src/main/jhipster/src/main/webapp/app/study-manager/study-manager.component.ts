@@ -63,7 +63,7 @@ export class StudyManagerComponent implements OnInit {
     browseStudy($event) {
         $event.preventDefault();
 
-        this.modalService.open(StudyManagerTreeComponent, { windowClass: 'modal-small', backdrop: 'static' }).result.then((studies) => {
+        this.modalService.open(StudyManagerTreeComponent, { windowClass: 'modal-medium', backdrop: 'static' }).result.then((studies) => {
             if (studies && studies.length === 1) {
                 const study: any = studies[0];
                 const studyId: number = study.id;
