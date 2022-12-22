@@ -18,10 +18,7 @@ export class UserComparator implements IObjectComparator {
             //Option for status Active
             if (prop == 'active') {
                 if (source[prop] == 'all' || source[prop] == 'undefined') continue;
-                if (source[prop] === target[prop]) continue;
-                if (source[prop] === String(target[prop])) continue;
-                if (String(source[prop]) === target[prop]) continue;
-                if (String(source[prop]) === String(target[prop])) continue;
+                if (String(source[prop]).toUpperCase() === String(target[prop]).toUpperCase()) continue;
             }
             //Option for Role type
             if (prop == 'roleNames') {
