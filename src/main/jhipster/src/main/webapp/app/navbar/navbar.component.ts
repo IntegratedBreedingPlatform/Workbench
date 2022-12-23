@@ -15,11 +15,12 @@ import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
 import { ProgramUsageService } from '../shared/service/program-usage.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavbarMessageEvent } from '../shared/model/navbar-message.event';
 import { CropParameterService } from '../shared/crop-parameter/service/crop-parameter.service';
 import { CropParameterTypeEnum } from '../shared/crop-parameter/model/crop-parameter-type-enum';
 import { CropParameter } from '../shared/crop-parameter/model/crop-parameter';
+import { ProgramService } from '../shared/program/service/program.service';
 
 declare const showReleaseNotes: string;
 
@@ -62,18 +63,17 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private jhiAlertService: JhiAlertService,
         private loginService: LoginService,
         private helpService: HelpService,
+        private programService: ProgramService,
         private programUsageService: ProgramUsageService,
         private cropParameterService: CropParameterService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute,
     ) {
         this.version = '';
         // Append a ".0" in BMS version if none is found. The .0 gets truncated from workbench.properties to webpack.common version
         if (VERSION) {
             this.version = VERSION.includes('.') ?  `BMS ${VERSION}` : `BMS ${VERSION}.0`;
         }
-        this.principal.identity().then((identity) => {
-            this.user = identity;
-        });
 
         // Get about bms help link url
         this.getHelpLink(this.aboutBMSHelpLink, HELP_NAVIGATION_BAR_ABOUT_BMS)
@@ -95,14 +95,19 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         };
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.user = await this.principal.identity();
+
         if (showReleaseNotes) {
             this.router.navigate(['/', { outlets: { popup: 'release-notes-popup' }, }], {
                 replaceUrl: false,
                 skipLocationChange: true,
                 queryParamsHandling: 'merge'
             });
+            return;
         }
+
+        this.restoreRoute();
     }
 
     ngAfterViewInit() {
@@ -112,6 +117,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     async openTool(url) {
         let authParams = '';
         const cropName = this.program ? this.program.crop : null;
+        const programUUID = this.program ? this.program.uniqueID : null;
         this.toolLinkSelected = url;
         if (url.includes('/brapi-sync')) {
             authParams += '?destinationToken=' + JSON.parse(localStorage['bms.xAuthToken']).token
@@ -119,7 +125,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 + '&silentRefreshRedirectUri=' + window.location.origin
                 + '/ibpworkbench/controller/pages/brapi-sync/static/silent-refresh.html'
 
-            const programUUID = this.program ? this.program.uniqueID : null;
             await this.cropParameterService.getCropParameter(cropName, programUUID, CropParameterTypeEnum.DEFAULT_BRAPI_SYNC_SOURCE)
                 .toPromise()
                 .then((cropParameter: CropParameter) => {
@@ -129,7 +134,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 });
         } else {
             const hasParams = url.includes('?');
-            const programUUID = this.program ? this.program.uniqueID : null;
             const selectedProjectId = this.program ? this.program.id : null;
             authParams += (hasParams ? '&' : '?') + 'cropName=' + cropName
                 + '&programUUID=' + programUUID
@@ -138,11 +142,20 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
         authParams += '&restartApplication';
         this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
+
+        this.router.navigate(['.'], {
+            queryParams: {
+                cropName,
+                programUUID,
+                toolUrl: url,
+            }
+        });
     }
 
     myPrograms() {
         this.program = null;
         this.toolUrl = '';
+        this.router.navigate(['']);
     }
 
     siteAdmin() {
@@ -234,6 +247,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     private expandParent() {
+        if (!this.treeControl.dataNodes.length) {
+            return;
+        }
         // Find node by selected tool name
         const selectedNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => this.toolLinkSelected.startsWith(node.link));
         if (selectedNode.length === 1) {
@@ -274,6 +290,26 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             skipLocationChange: true,
             queryParamsHandling: 'merge'
         });
+    }
+
+    private async restoreRoute() {
+        const programUUID = this.route.snapshot.queryParams.programUUID;
+        const cropName = this.route.snapshot.queryParams.cropName;
+        const toolUrl = this.route.snapshot.queryParams.toolUrl;
+        let program: Program;
+        if (cropName && programUUID) {
+            program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
+        }
+        const message: NavbarMessageEvent = {};
+        if (program) {
+            message.programSelected = program;
+        }
+        if (toolUrl) {
+            message.toolSelected = toolUrl;
+        }
+        if (Object.keys(message).length) {
+            this.onMessage({ data: message });
+        }
     }
 }
 
