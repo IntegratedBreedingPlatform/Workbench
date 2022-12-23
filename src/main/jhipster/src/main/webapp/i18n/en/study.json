@@ -16,7 +16,8 @@
                     "created-by": "Created By",
                     "date": "Date",
                     "parent-folder": "Parent Folder",
-                    "objective": "Objective"
+                    "objective": "Objective",
+                    "actions": "Actions"
                 }
             }
         },

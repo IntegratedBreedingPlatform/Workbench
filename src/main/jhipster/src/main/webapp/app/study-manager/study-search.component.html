@@ -15,17 +15,23 @@
 				<th [jhiSortBy]="ColumnLabels.START_DATE" style="width: 80px"><span jhiTranslate="study.manager.search.columns.date"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.PARENT_FOLDER_NAME"><span jhiTranslate="study.manager.search.columns.parent-folder"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.OBJECTIVE"><span jhiTranslate="study.manager.search.columns.objective"></span> <span class="fa fa-sort"></span></th>
+				<th style="width: 80px"><span jhiTranslate="study.manager.search.columns.actions"></span></th>
 			</tr>
 			</thead>
 			<tbody>
 			<tr *ngFor="let study of studies; trackBy: trackId; index as index">
-				<td><a href (click)="selectStudy($event, study)"><span class="text-ellipsis" title="{{study.studyName}}">{{study.studyName}}</span></a></td>
+				<td><a href (click)="openViewSummary($event, study)"><span class="text-ellipsis" title="{{study.studyName}}">{{study.studyName}}</span></a></td>
 				<td>{{study.studyTypeName}}</td>
 				<td>{{study.locked ? 'Yes' : 'No'}}</td>
 				<td>{{study.ownerName}}</td>
 				<td>{{study.startDate}}</td>
 				<td>{{study.parentFolderName}}</td>
 				<td><span class="text-ellipsis" title="{{study.objective}}">{{study.objective}}</span></td>
+				<td class="text-center" >
+					<button class="btn btn-info mr-2" (click)="openStudy(study.studyId)">
+						<i class="fa fa-edit fa-md" aria-hidden="true"></i>
+					</button>
+				</td>
 			</tr>
 			</tbody>
 		</table>

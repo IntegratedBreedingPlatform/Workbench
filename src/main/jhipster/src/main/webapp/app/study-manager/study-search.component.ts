@@ -14,6 +14,7 @@ import { ColumnFilterComponent, FilterType } from '../shared/column-filter/colum
 import { MatchType } from '../shared/column-filter/column-filter-text-with-match-options-component';
 import { ColumnFilterRadioButtonOption } from '../shared/column-filter/column-filter-radio-component';
 import { Subscription } from 'rxjs';
+import { UrlService } from '../shared/service/url.service';
 
 declare var $: any;
 
@@ -51,7 +52,8 @@ export class StudySearchComponent implements OnInit {
                 private router: Router,
                 private activatedRoute: ActivatedRoute,
                 private alertService: AlertService,
-                private eventManager: JhiEventManager) {
+                private eventManager: JhiEventManager,
+                private urlService: UrlService) {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
@@ -130,13 +132,17 @@ export class StudySearchComponent implements OnInit {
         this.loadAll(this.request);
     }
 
-    selectStudy($event, study: StudySearchResponse) {
+    openViewSummary($event, study: StudySearchResponse) {
         $event.preventDefault();
         this.router.navigate([`/study-manager/study/${study.studyId}`], {queryParams: {
                 studyId: study.studyId,
                 studyName: study.studyName
             }
         });
+    }
+
+    openStudy(studyId: number) {
+        this.urlService.openStudy(studyId);
     }
 
     private registerColumnFiltersChanged() {
