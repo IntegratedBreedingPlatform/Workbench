@@ -55,6 +55,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     );
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+    private readonly SESSION_STORAGE_QUERY_PARAM_KEY = 'bms.queryParams';
+
     constructor(
         private navService: NavService,
         private principal: Principal,
@@ -104,6 +106,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 skipLocationChange: true,
                 queryParamsHandling: 'merge'
             });
+            sessionStorage.removeItem(this.SESSION_STORAGE_QUERY_PARAM_KEY)
             return;
         }
 
@@ -292,7 +295,25 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         });
     }
 
+    @HostListener('window:beforeunload')
+    private beforeunload() {
+        this.persistQueryParams();
+    }
+
+    private persistQueryParams() {
+        const queryIndex = this.router.url.lastIndexOf('?');
+        if (queryIndex >= 0) {
+            sessionStorage.setItem(this.SESSION_STORAGE_QUERY_PARAM_KEY, this.router.url.substring(queryIndex));
+        }
+    }
+
     private async restoreRoute() {
+        const queryParams = sessionStorage.getItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+        if (queryParams) {
+            await this.router.navigateByUrl(queryParams);
+            sessionStorage.removeItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+        }
+
         const programUUID = this.route.snapshot.queryParams.programUUID;
         const cropName = this.route.snapshot.queryParams.cropName;
         const toolUrl = this.route.snapshot.queryParams.toolUrl;
