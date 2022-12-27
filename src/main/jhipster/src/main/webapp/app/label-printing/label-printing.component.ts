@@ -39,7 +39,6 @@ export class LabelPrintingComponent implements OnInit {
     fileType: FileType = FileType.NONE;
     selectedfileType: FileType = FileType.NONE;
     presetSettingId: number;
-    loadSavedSettings = false;
     fieldsSelected: LabelType[];
     presetSettings: PresetSetting[];
     modalTitle: string;
@@ -428,7 +427,7 @@ export class LabelPrintingComponent implements OnInit {
         if (!presetSetting) {
             this.service.addPreset(preset).subscribe((presetCreated) => {
                 this.presetSettings.push(presetCreated);
-                this.presetSettingId = this.loadSavedSettings ? presetCreated.id : 0;
+                this.presetSettingId = presetCreated.id;
                 this.alertService.success('label-printing.save.preset.success');
             }, (response) => {
                 if (response.error.errors[0].message) {
