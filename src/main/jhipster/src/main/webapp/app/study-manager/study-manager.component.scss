@@ -1,0 +1,12 @@
+.study-manager-text-ellipsis {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.study-manager-close-nav-tab {
+  position: relative;
+  top: -5px;
+}

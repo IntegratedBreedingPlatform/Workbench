@@ -11,7 +11,8 @@ import { StudyManagerTreeComponent } from './study-manager-tree.component';
 
 @Component({
     selector: 'jhi-studies-manager',
-    templateUrl: './study-manager.component.html'
+    templateUrl: './study-manager.component.html',
+    styleUrls: ['./study-manager.component.scss']
 })
 export class StudyManagerComponent implements OnInit {
 
