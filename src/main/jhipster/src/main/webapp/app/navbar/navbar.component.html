@@ -9,8 +9,8 @@
 		<span>{{program?.name}}</span>
 		<div class="toolbar-filler"></div>
 		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS">Site Admin</button>
-		<button mat-button *ngIf="toolUrl" (click)="myPrograms()">My Programs</button>
-		<ng-container *ngIf="!toolUrl">
+		<button mat-button *ngIf="toolLinkSelected" (click)="myPrograms()">My Programs</button>
+		<ng-container *ngIf="!toolLinkSelected">
 			<button mat-button (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION"><i class="fa fa-plus"></i> Add a Program</button>
 		</ng-container>
 
@@ -67,8 +67,7 @@
 			<div *ngIf="version" class="version">{{version}}</div>
 		</mat-sidenav>
 		<mat-sidenav-content>
-			<iframe #viewport name="PID_Sbrowser" *ngIf="toolUrl" [src]="toolUrl" style="border: 0; width: 100%; height: 100%"></iframe>
-			<iframe *ngIf="!toolUrl" src="/ibpworkbench/main/#programs" style="border: 0; width: 100%; height: 100%"></iframe>
+			<iframe #viewport name="PID_Sbrowser" id="viewport" src="about:blank" style="border: 0; width: 100%; height: 100%"></iframe>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
 </div>

@@ -14,6 +14,7 @@ import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
 import { MANAGE_STUDIES_VIEW_PERMISSIONS, SEARCH_GERMPLASM_LISTS_PERMISSION } from '../../shared/auth/permissions';
 import { Select2OptionData } from 'ng-select2';
 import { ProgramUsageService } from '../../shared/service/program-usage.service';
+import { ParamContext } from '../../shared/service/param.context';
 
 @Component({
     selector: 'jhi-program',
@@ -60,14 +61,21 @@ export class ProgramComponent implements OnInit {
         private languageService: JhiLanguageService,
         private router: Router,
         private route: ActivatedRoute,
+        private paramContext: ParamContext,
         public context: ProgramContext,
         public programUsageService: ProgramUsageService,
     ) {
     }
 
     async ngOnInit() {
+        /*
+         * specially needed for history.back that comes with programUUID params and no crop,
+         * thus causing an error in identity()
+         */
+        this.paramContext.clear();
         const identity = await this.principal.identity();
         this.user = identity;
+
         this.crops = await this.cropService.getCrops().toPromise();
 
         this.programUsageService.getLastestSelectedProgram(this.user.id).toPromise().then((response) => {

@@ -14,13 +14,14 @@ import { LoginService } from '../shared/login/login.service';
 import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
-import { ProgramUsageService } from '../shared/service/program-usage.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavbarMessageEvent } from '../shared/model/navbar-message.event';
+import { ProgramService } from '../shared/program/service/program.service';
+import { ProgramUsageService } from '../shared/service/program-usage.service';
 import { CropParameterService } from '../shared/crop-parameter/service/crop-parameter.service';
+import { Location, PopStateEvent } from '@angular/common';
 import { CropParameterTypeEnum } from '../shared/crop-parameter/model/crop-parameter-type-enum';
 import { CropParameter } from '../shared/crop-parameter/model/crop-parameter';
-import { ProgramService } from '../shared/program/service/program.service';
 
 declare const showReleaseNotes: string;
 
@@ -37,7 +38,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     ADD_PROGRAM_PERMISSION = ADD_PROGRAM_PERMISSION;
 
     version: string;
-    toolUrl: any;
     program: Program;
     user: any;
     toolLinkSelected: string;
@@ -46,6 +46,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     askForSupportHelpLink: string;
 
     @ViewChild('sideNav') sideNav: ElementRef;
+    @ViewChild('viewport') viewport: ElementRef;
 
     treeControl = new FlatTreeControl<FlatNode>((node) => node.level, (node) => node.expandable);
     treeFlattener = new MatTreeFlattener(
@@ -70,6 +71,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private cropParameterService: CropParameterService,
         private router: Router,
         private route: ActivatedRoute,
+        private location: Location,
     ) {
         this.version = '';
         // Append a ".0" in BMS version if none is found. The .0 gets truncated from workbench.properties to webpack.common version
@@ -99,6 +101,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     async ngOnInit() {
         this.user = await this.principal.identity();
+        this.myPrograms();
 
         if (showReleaseNotes) {
             this.router.navigate(['/', { outlets: { popup: 'release-notes-popup' }, }], {
@@ -111,6 +114,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
 
         this.restoreRoute();
+
+        this.location.subscribe((popStateEvent) => {
+            this.onPopStateEvent(popStateEvent);
+        })
     }
 
     ngAfterViewInit() {
@@ -121,7 +128,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         let authParams = '';
         const cropName = this.program ? this.program.crop : null;
         const programUUID = this.program ? this.program.uniqueID : null;
-        this.toolLinkSelected = url;
         if (url.includes('/brapi-sync')) {
             authParams += '?destinationToken=' + JSON.parse(localStorage['bms.xAuthToken']).token
                 + '&destination=' + window.location.origin + '/bmsapi/' + cropName + '/brapi/v2'
@@ -144,7 +150,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 + '&loggedInUserId=' + this.user.id;
         }
         authParams += '&restartApplication';
-        this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
+
+        this.toolLinkSelected = url
+
+        /*
+         * avoids glitch when rendering some tools directly (e.g. manage study)
+         * where main window is still visible in iframe content for a second
+         */
+        this.viewport.nativeElement.contentWindow.location.replace('about:blank');
+        setTimeout(() => this.viewport.nativeElement.contentWindow.location.replace(url + authParams), 100);
 
         this.router.navigate(['.'], {
             queryParams: {
@@ -157,8 +171,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     myPrograms() {
         this.program = null;
-        this.toolUrl = '';
+        this.toolLinkSelected = null;
         this.router.navigate(['']);
+        this.viewport.nativeElement.contentWindow.location.replace('/ibpworkbench/main/#programs')
     }
 
     siteAdmin() {
@@ -201,8 +216,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         } else if (event.data.programUpdated && this.program) {
             this.program.name = event.data.programUpdated.name;
         } else if (event.data.programDeleted) {
-            this.program = null;
-            this.toolUrl = '';
+            this.myPrograms();
         } else if (event.data.toolSelected) {
             this.openTool(event.data.toolSelected);
             this.expandParent();
@@ -330,6 +344,40 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
         if (Object.keys(message).length) {
             this.onMessage({ data: message });
+        }
+    }
+
+    private async onPopStateEvent(popStateEvent: PopStateEvent) {
+        if (popStateEvent.type === 'popstate') {
+            const urlTree = this.router.parseUrl(popStateEvent.url);
+            console.log('popstate event: ', popStateEvent.url, urlTree);
+
+            const programUUID = urlTree.queryParams.programUUID;
+            const cropName = urlTree.queryParams.cropName;
+            const toolUrl = urlTree.queryParams.toolUrl;
+            if (cropName && programUUID) {
+                this.program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
+            } else {
+                this.program = null;
+            }
+            if (toolUrl) {
+                this.toolLinkSelected = toolUrl;
+            }
+
+            /*
+             * This will override native iframe back/forth functionality.
+             * - Fixes Firefox back button, which won't reload iframe contents, though other browsers do (1).
+             * - Also fixes back and forward to site admin in all browsers
+             * - Fixes back issue to brapi-sync in (1)
+             * - in some browsers (1) it will change iframe location twice, but it's almost unnoticeable.
+             *
+             * (1) - Some browsers iframe history seem to work correctly (e.g. Chrome, Brave)
+             */
+            if (toolUrl) {
+                this.openTool(toolUrl);
+            } else {
+                this.myPrograms();
+            }
         }
     }
 }
