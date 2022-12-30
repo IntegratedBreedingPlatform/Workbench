@@ -7,6 +7,7 @@ import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { ObservationVariable, ValueReference } from '../shared/model/observation-variable.model';
 import { DataTypeEnum } from '../shared/ontology/data-type.enum';
+import { UrlService } from '../shared/service/url.service';
 
 @Component({
     selector: 'jhi-study-summary',
@@ -21,7 +22,8 @@ export class StudySummaryComponent implements OnInit {
 
     constructor(private studyService: StudyService,
                 private alertService: AlertService,
-                private translateService: TranslateService) {
+                private translateService: TranslateService,
+                private urlService: UrlService) {
     }
 
     ngOnInit(): void {
@@ -45,6 +47,10 @@ export class StudySummaryComponent implements OnInit {
 
     getPlotSize(): number {
         return this.studyDetails.numberOfPlots / this.studyDetails.numberOfEnvironments;
+    }
+
+    openStudy(studyId: number) {
+        this.urlService.openStudy(studyId);
     }
 
     private onError(response: HttpErrorResponse) {
