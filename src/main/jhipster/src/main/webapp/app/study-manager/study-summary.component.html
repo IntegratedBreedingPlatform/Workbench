@@ -312,4 +312,25 @@
 		</div>
 	</jhi-collapsible>
 
+	<jhi-collapsible heading="{{translateService.instant('study.details.datasets.title')}}">
+		<div class="container-fluid mb-2">
+			<div class="row">
+				<div>
+					<label class="font-weight-bold" jhiTranslate="study.details.datasets.select-dataset">Choose a dataset to open:</label>&nbsp;
+				</div>
+				<div class="col-4">
+					<ng-select [items]="datasets" [(ngModel)]="selectedDataset"
+							   bindValue="name" bindLabel="name"
+							   [searchFn]="searchDataset"
+							   (blur)="onDatasetSelected()"
+							   [dropdownPosition]="'bottom'">
+						<ng-template ng-option-tmp let-dataset="item">
+							<div title="{{dataset.name}}">{{dataset.name}}</div>
+						</ng-template>
+					</ng-select>
+				</div>
+			</div>
+		</div>
+	</jhi-collapsible>
+
 </div>

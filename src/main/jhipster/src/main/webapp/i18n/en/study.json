@@ -102,6 +102,10 @@
                     "column-factor": "Column Factor:"
                 },
                 "no-data": "No available experimental design details."
+            },
+            "datasets": {
+                "title": "Datasets",
+                "select-dataset": "Choose a dataset to open:"
             }
         },
         "import-entry-details": {

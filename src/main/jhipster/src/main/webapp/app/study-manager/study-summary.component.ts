@@ -8,6 +8,9 @@ import { AlertService } from '../shared/alert/alert.service';
 import { ObservationVariable, ValueReference } from '../shared/model/observation-variable.model';
 import { DataTypeEnum } from '../shared/ontology/data-type.enum';
 import { UrlService } from '../shared/service/url.service';
+import { DatasetService } from '../shared/dataset/service/dataset.service';
+import { DatasetModel } from '../shared/dataset/model/dataset.model';
+import { toUpper } from '../shared/util/to-upper';
 
 @Component({
     selector: 'jhi-study-summary',
@@ -19,16 +22,23 @@ export class StudySummaryComponent implements OnInit {
     studyId: number;
 
     studyDetails: StudyDetails;
+    datasets: DatasetModel[];
+    selectedDataset: any;
 
     constructor(private studyService: StudyService,
                 private alertService: AlertService,
                 private translateService: TranslateService,
-                private urlService: UrlService) {
+                private urlService: UrlService,
+                private datasetService: DatasetService) {
     }
 
     ngOnInit(): void {
         this.studyService.getStudyDetails(this.studyId).subscribe(
             (res: HttpResponse<StudyDetails>) => this.studyDetails = res.body,
+            (res: HttpErrorResponse) => this.onError(res)
+        );
+        this.datasetService.getDatasets(this.studyId, null).subscribe(
+            (res: HttpResponse<DatasetModel[]>) => this.datasets = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
@@ -51,6 +61,15 @@ export class StudySummaryComponent implements OnInit {
 
     openStudy(studyId: number) {
         this.urlService.openStudy(studyId);
+    }
+
+    searchDataset(term: string, item: DatasetModel) {
+        const termUpper = toUpper(term);
+        return toUpper(item.name).includes(termUpper);
+    }
+
+    onDatasetSelected() {
+        console.log('dataset selected: ' + this.selectedDataset);
     }
 
     private onError(response: HttpErrorResponse) {
