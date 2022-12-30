@@ -13,7 +13,7 @@ import { BreedingMethod } from '../../shared/breeding-method/model/breeding-meth
 import { HelpService } from '../../shared/service/help.service';
 import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
-import { DatasetService } from '../service/datasetService';
+import { DatasetService } from '../../shared/dataset/service/dataset.service';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -75,7 +75,7 @@ export class AdvanceStudyComponent implements OnInit {
         this.initializeReplicationOptions(this.replicationNumber);
 
         this.datasetService.getDataset(this.studyId, this.trialDatasetId).toPromise().then((response) => {
-            response.instances.forEach((instance) => {
+            response.body.instances.forEach((instance) => {
                 if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
                     this.trialInstances.push({
                         instanceNumber: instance.instanceNumber,
