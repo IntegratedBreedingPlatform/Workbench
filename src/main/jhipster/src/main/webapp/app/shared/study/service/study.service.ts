@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { createRequestOption } from '../..';
 import { StudySearchRequest } from '../model/study-search-request.model';
 import { StudySearchResponse } from '../model/study-search-response.model';
+import { StudyDetails } from '../model/study-details.model';
 
 @Injectable()
 export class StudyService {
@@ -36,6 +37,11 @@ export class StudyService {
         const params = createRequestOption(pagination);
         const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/search`;
         return this.http.post<StudySearchResponse[]>(url, req, { params, observe: 'response' });
+    }
+
+    getStudyDetails(studyId: number): Observable<HttpResponse<StudyDetails>> {
+        const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/${studyId}/details`;
+        return this.http.get<StudyDetails>(url, { observe: 'response' });
     }
 
 }

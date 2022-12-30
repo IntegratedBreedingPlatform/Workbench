@@ -21,6 +21,86 @@
                 }
             }
         },
+        "details": {
+            "table": {
+                "name": "Name",
+                "description": "Description"
+            },
+            "basic-details": {
+                "title": "BASIC DETAILS",
+                "study-name": "Study Name:",
+                "description": "Description:",
+                "study-type": "Study Type:",
+                "objective": "Objective:",
+                "created-by": "Created by:",
+                "last-updated": "Last Updated:",
+                "creation-date": "Creation Date:",
+                "completion-date": "Completion Date:",
+                "number-of-entries": "# of Entries:",
+                "number-of-plots": "# of Plots:",
+                "field-map-created": "Field Map Created:",
+                "number-of-variates-with-data": "# of Variates with Data:",
+                "of": "of"
+            },
+            "study-settings": {
+                "title": "STUDY SETTINGS",
+                "no-data": "No available study settings."
+            },
+            "selections": {
+                "title": "SELECTIONS",
+                "no-data": "No available study selections."
+            },
+            "entry-details": {
+                "title": "ENTRY DETAILS",
+                "no-data": "No available entry details."
+            },
+            "treatment-factors": {
+                "title": "ADDITIONAL TREATMENT FACTORS",
+                "no-data": "No available treatment factors.",
+                "table": {
+                    "treatment": "Treatment",
+                    "number-of-treatments": "No of Treatments",
+                    "label": "Label"
+                }
+            },
+            "experimental-design": {
+                "title": "EXPERIMENTAL DESIGN",
+                "design-parameters": {
+                    "title": "Design Parameters",
+                    "design-type": "Design type:",
+                    "replication-percentage": "% of test entries to replicate:",
+                    "number-of-replications": "Number of replications:",
+                    "number-of-blocks": "Number of blocks per Replication:",
+                    "block-size": "Block size:",
+                    "rows-in-reps": "Number of rows in replications:",
+                    "cols-in-reps": "Number of columns in replications:",
+                    "replication-arrangement": "How are the replications to be arranged in the field?",
+                    "reps-in-column": "Number of reps in each column, running from left to right:",
+                    "number-contiguous-blocks-latinize": "Number of contiguous blocks to latinize:",
+                    "number-contiguous-rows-latinize": "Number of contiguous rows to latinize:",
+                    "number-contiguous-cols-latinize": "Number of contiguous columns to latinize:",
+                    "number-of-environments": "Number of environments:"
+                },
+                "summary": {
+                    "title": "Summary of Design Details",
+                    "number-of-environments": "Number of environments:",
+                    "number-of-treatments": "Number of treatments:",
+                    "number-of-test-entries": "Number of Test entries:",
+                    "number-of-check-entries": "Number of Check entries:",
+                    "number-of-non-replicated-entries": "Number of Non Replicated entries:",
+                    "number-of-blocks": "Number of blocks per Replication:",
+                    "number-of-entries-per-block": "Number of entries per block:",
+                    "number-of-plots": "Total number of plots:",
+                    "treatment-factor": "Treatment Factor:",
+                    "replicate-factor": "Replicate Factor:",
+                    "block-factor": "Block Factor:",
+                    "plot-factor": "Plot Factor:",
+                    "row-factor": "Row Factor:",
+                    "column-factor": "Column Factor:"
+                },
+                "no-data": "No available experimental design details."
+            }
+        },
         "import-entry-details": {
             "title": "Import Entry Details",
             "columns": {

@@ -5,7 +5,7 @@ export class StudySearchRequest {
         public locked?: boolean,
         public ownerName?: string,
         public studyStartDateFrom?: number,
-        public studyStartDateTo?: string,
+        public studyStartDateTo?: number,
         public parentFolderName?: string,
         public objective?: string
     ) {
