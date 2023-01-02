@@ -33,16 +33,20 @@ export class StudySummaryComponent implements OnInit {
 
     private queryParamSubscription: Subscription;
 
-    constructor(private studyService: StudyService,
-                private alertService: AlertService,
-                private translateService: TranslateService,
-                private urlService: UrlService,
-                private datasetService: DatasetService,
-                private router: Router,
-                private activatedRoute: ActivatedRoute) {
+    constructor(public studyService: StudyService,
+                public alertService: AlertService,
+                public translateService: TranslateService,
+                public urlService: UrlService,
+                public datasetService: DatasetService,
+                public router: Router,
+                public activatedRoute: ActivatedRoute) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.datasetId = parseInt(params['datasetId'], 10);
+            const studyId = parseInt(params['studyId'], 10);
+            if (studyId !== this.studyId) {
+                return;
+            }
 
+            this.datasetId = parseInt(params['datasetId'], 10);
             if (!this.datasetId) {
                 return;
             }

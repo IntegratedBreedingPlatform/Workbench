@@ -26,7 +26,6 @@ export class StudySummaryDatasetComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log('StudySummaryDatasetComponent: ' + this.datasetId);
         this.datasetService.getDataset(this.studyId, this.datasetId).subscribe(
             (res: HttpResponse<DatasetModel>) => this.dataset = res.body,
             (res: HttpErrorResponse) => this.onError(res)

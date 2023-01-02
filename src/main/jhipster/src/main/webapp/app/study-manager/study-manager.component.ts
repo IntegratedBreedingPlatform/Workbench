@@ -24,18 +24,21 @@ export class StudyManagerComponent implements OnInit {
     private studyId: number;
     private queryParamSubscription: Subscription;
 
-    constructor(private paramContext: ParamContext,
-                private helpService: HelpService,
-                private jhiLanguageService: JhiLanguageService,
-                private urlService: UrlService,
-                private modalService: NgbModal,
-                private activeModal: NgbActiveModal,
-                private router: Router,
-                private activatedRoute: ActivatedRoute
+    constructor(public paramContext: ParamContext,
+                public helpService: HelpService,
+                public jhiLanguageService: JhiLanguageService,
+                public urlService: UrlService,
+                public modalService: NgbModal,
+                public activeModal: NgbActiveModal,
+                public router: Router,
+                public activatedRoute: ActivatedRoute
     ) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
-            this.studyId = parseInt(params['studyId'], 10);
+            if (params['datasetId']) {
+                return;
+            }
 
+            this.studyId = parseInt(params['studyId'], 10);
             if (!this.studyId) {
                 return;
             }
