@@ -270,7 +270,7 @@
 							{{getPlotSize()}}
 						</div>
 					</ng-container>
-					<div class="row" *ngIf="studyDetails?.experimentalDesignDetail.experimentalDesign.value !== '10164'">
+					<div class="row" *ngIf="studyDetails?.experimentalDesignDetail.experimentalDesign.value !== '10164' && studyDetails?.experimentalDesignDetail.blockSize">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.number-of-blocks">Number of blocks per Replication:</label>&nbsp;
 						{{studyDetails?.numberOfEntries / studyDetails?.experimentalDesignDetail.blockSize.value}}
 					</div>

@@ -104,7 +104,7 @@
                 "no-data": "No available experimental design details."
             },
             "datasets": {
-                "title": "Datasets",
+                "title": "DATASETS",
                 "select-dataset": "Choose a dataset to open:"
             }
         },
