@@ -11,6 +11,9 @@ import { UrlService } from '../shared/service/url.service';
 import { DatasetService } from '../shared/dataset/service/dataset.service';
 import { DatasetModel } from '../shared/dataset/model/dataset.model';
 import { toUpper } from '../shared/util/to-upper';
+import { NavTab } from '../shared/nav/tab/nav-tab.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'jhi-study-summary',
@@ -22,14 +25,34 @@ export class StudySummaryComponent implements OnInit {
     studyId: number;
 
     studyDetails: StudyDetails;
+
+    datasetId: number;
+    selectedDatasetId: number;
     datasets: DatasetModel[];
-    selectedDataset: any;
+    datasetTabs: NavTab[] = [];
+
+    private queryParamSubscription: Subscription;
 
     constructor(private studyService: StudyService,
                 private alertService: AlertService,
                 private translateService: TranslateService,
                 private urlService: UrlService,
-                private datasetService: DatasetService) {
+                private datasetService: DatasetService,
+                private router: Router,
+                private activatedRoute: ActivatedRoute) {
+        this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
+            this.datasetId = parseInt(params['datasetId'], 10);
+
+            if (!this.datasetId) {
+                return;
+            }
+
+            if (!this.exists(this.datasetId)) {
+                this.datasetTabs.push(new NavTab(this.datasetId, params['datasetName'], true));
+            }
+
+            this.setActive(this.datasetId);
+        });
     }
 
     ngOnInit(): void {
@@ -69,7 +92,24 @@ export class StudySummaryComponent implements OnInit {
     }
 
     onDatasetSelected() {
-        console.log('dataset selected: ' + this.selectedDataset);
+        this.navigateToDataset(this.selectedDatasetId);
+    }
+
+    setActive(datasetId: number) {
+        this.datasetTabs.forEach((tab: NavTab) => {
+            tab.active = (tab.id === datasetId);
+        });
+    }
+
+    closeTab(tab: NavTab) {
+        this.datasetTabs.splice(this.datasetTabs.indexOf(tab), 1);
+        if (tab.active && this.datasetTabs.length > 0) {
+            this.navigateToDataset(this.datasetTabs[0].id);
+        }
+    }
+
+    trackId(index: number, item: NavTab) {
+        return item.id;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -79,6 +119,21 @@ export class StudySummaryComponent implements OnInit {
         } else {
             this.alertService.error('error.general');
         }
+    }
+
+    private exists(datasetId: number) {
+        return this.datasetTabs.some((tab: NavTab) => tab.id === datasetId);
+    }
+
+    private navigateToDataset(activeDatasetId: number) {
+        const selectedDataset: DatasetModel = this.datasets.find((dataset: DatasetModel) => dataset.datasetId === activeDatasetId);
+        this.router.navigate([`/study-manager/study/${this.studyId}/summary/dataset/${activeDatasetId}`], {
+            queryParams: {
+                studyId: this.studyId,
+                datasetId: selectedDataset.datasetId,
+                datasetName: selectedDataset.name
+            }
+        });
     }
 
 }

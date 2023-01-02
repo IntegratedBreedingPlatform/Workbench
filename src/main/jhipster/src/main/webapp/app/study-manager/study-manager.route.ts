@@ -6,6 +6,7 @@ import { GermplasmListCreationPopupComponent } from '../germplasm-manager/germpl
 import { StudyManagerComponent } from './study-manager.component';
 import { StudySearchComponent } from './study-search.component';
 import { StudySummaryComponent } from './study-summary.component';
+import { StudySummaryDatasetComponent } from './study-summary-dataset.component';
 
 export const STUDY_MANAGER_ROUTES: Routes = [
     {
@@ -31,6 +32,13 @@ export const STUDY_MANAGER_ROUTES: Routes = [
                  */
                 path: 'study/:studyId',
                 component: StudySummaryComponent,
+                // TODO: define permission
+                // data: { authorities: [...SEARCH_STUDY_PERMISSION] },
+                canActivate: [RouteAccessService]
+            },
+            {
+                path: 'study/:studyId/summary/dataset/:datasetId',
+                component: StudySummaryDatasetComponent,
                 // TODO: define permission
                 // data: { authorities: [...SEARCH_STUDY_PERMISSION] },
                 canActivate: [RouteAccessService]

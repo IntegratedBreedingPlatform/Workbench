@@ -39,7 +39,7 @@
                         <jhi-study-search></jhi-study-search>
                     </div>
                     <!-- Tab panes -->
-                    <div *ngFor="let tab of tabs; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="tab.active" id="list-{{tab.id}}">
+                    <div *ngFor="let tab of tabs; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="tab.active" id="study-{{tab.id}}">
                         <div class="col-xs-12 col-md-12">
                             <jhi-study-summary [studyId]="tab.id"></jhi-study-summary>
                         </div>

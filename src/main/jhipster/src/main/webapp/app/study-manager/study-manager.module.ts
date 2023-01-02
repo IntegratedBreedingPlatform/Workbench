@@ -11,6 +11,7 @@ import { StudyManagerComponent } from './study-manager.component';
 import { StudySearchComponent } from './study-search.component';
 import { StudySummaryComponent } from './study-summary.component';
 import { StudyManagerTreeComponent } from './study-manager-tree.component';
+import { StudySummaryDatasetComponent } from './study-summary-dataset.component';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { StudyManagerTreeComponent } from './study-manager-tree.component';
         StudyManagerComponent,
         StudySearchComponent,
         StudySummaryComponent,
+        StudySummaryDatasetComponent,
         StudyManagerTreeComponent,
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
@@ -30,6 +32,7 @@ import { StudyManagerTreeComponent } from './study-manager-tree.component';
         StudyManagerComponent,
         StudySearchComponent,
         StudySummaryComponent,
+        StudySummaryDatasetComponent,
         StudyManagerTreeComponent,
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
