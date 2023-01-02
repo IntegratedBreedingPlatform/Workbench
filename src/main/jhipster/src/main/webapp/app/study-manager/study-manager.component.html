@@ -26,11 +26,11 @@
                         <a class="nav-link" href="#study-search" jhiTranslate="study.manager.nav.search" (click)="setSearchTabActive()"
                            [routerLink]="['study-search']" [routerLinkActive]="['active']">Search</a>
                     </li>
-                    <li class="nav-item" *ngFor="let study of studies" role="presentation">
-                        <a class="nav-link pb-0" role="tab" data-toggle="tab" (click)="setActive(study.id)"
-                           [routerLink]="['study/' + study.id]" [routerLinkActive]="['active']" [queryParams]="{ studyId: study.id }">
-                            <span class="study-manager-text-ellipsis" title="{{study.name}}">{{study.name}}</span>
-                            <i class="fa fa-times close-nav-tab study-manager-close-nav-tab " (click)="closeTab(study)"></i>
+                    <li class="nav-item" *ngFor="let tab of tabs" role="presentation">
+                        <a class="nav-link pb-0" role="tab" data-toggle="tab" (click)="setActive(tab.id)"
+                           [routerLink]="['study/' + tab.id]" [routerLinkActive]="['active']" [queryParams]="{ studyId: tab.id }">
+                            <span class="study-manager-text-ellipsis" title="{{tab.name}}">{{tab.name}}</span>
+                            <i class="fa fa-times close-nav-tab study-manager-close-nav-tab " (click)="closeTab(tab)"></i>
                         </a>
                     </li>
                 </ul>
@@ -39,9 +39,9 @@
                         <jhi-study-search></jhi-study-search>
                     </div>
                     <!-- Tab panes -->
-                    <div *ngFor="let study of studies; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="study.active" id="list-{{study.id}}">
+                    <div *ngFor="let tab of tabs; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="tab.active" id="list-{{tab.id}}">
                         <div class="col-xs-12 col-md-12">
-                            <jhi-study-summary [studyId]="study.id"></jhi-study-summary>
+                            <jhi-study-summary [studyId]="tab.id"></jhi-study-summary>
                         </div>
                     </div>
                 </div>

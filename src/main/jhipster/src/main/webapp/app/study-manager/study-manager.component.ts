@@ -17,7 +17,7 @@ import { NavTab } from '../shared/nav/tab/nav-tab.model';
 })
 export class StudyManagerComponent implements OnInit {
 
-    studies: NavTab[] = [];
+    tabs: NavTab[] = [];
 
     helpLink: string;
     hideSearchTab = false;
@@ -42,7 +42,7 @@ export class StudyManagerComponent implements OnInit {
             }
 
             if (!this.exists(this.studyId)) {
-                this.studies.push(new NavTab(this.studyId, params['studyName'], true));
+                this.tabs.push(new NavTab(this.studyId, params['studyName'], true));
             }
 
             this.setActive(this.studyId);
@@ -83,20 +83,20 @@ export class StudyManagerComponent implements OnInit {
     setActive(studyId: number) {
         this.hideSearchTab = true;
 
-        this.studies.forEach((study: NavTab) => {
-            study.active = (study.id === studyId);
+        this.tabs.forEach((tab: NavTab) => {
+            tab.active = (tab.id === studyId);
         });
     }
 
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.studyId = null;
-        this.studies.forEach((study: NavTab) => study.active = false);
+        this.tabs.forEach((tab: NavTab) => tab.active = false);
     }
 
-    closeTab(study: NavTab) {
-        this.studies.splice(this.studies.indexOf(study), 1);
-        if (study.active) {
+    closeTab(tab: NavTab) {
+        this.tabs.splice(this.tabs.indexOf(tab), 1);
+        if (tab.active) {
             this.hideSearchTab = false;
         }
 
@@ -108,7 +108,7 @@ export class StudyManagerComponent implements OnInit {
     }
 
     private exists(studyId: number) {
-        return this.studies.some((study: NavTab) => study.id === studyId);
+        return this.tabs.some((tab: NavTab) => tab.id === studyId);
     }
 
 }

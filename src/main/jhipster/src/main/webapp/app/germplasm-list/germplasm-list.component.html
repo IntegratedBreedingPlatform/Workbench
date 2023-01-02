@@ -20,11 +20,11 @@
                         <a class="nav-link" href="#germplasm-list" jhiTranslate="germplasm-list.nav.search" (click)="setSearchTabActive()"
                            [routerLink]="['germplasm-lists-search']" [routerLinkActive]="['active']">Search</a>
                     </li>
-                    <li class="nav-item" *ngFor="let list of lists" role="presentation">
-                        <a class="nav-link" role="tab" data-toggle="tab" (click)="setActive(list.id)"
-                           [routerLink]="['list/' + list.id]" [routerLinkActive]="['active']" [queryParams]="{ listId: list.id }">
-                            {{list.name}}
-                            <i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
+                    <li class="nav-item" *ngFor="let tab of tabs" role="presentation">
+                        <a class="nav-link" role="tab" data-toggle="tab" (click)="setActive(tab.id)"
+                           [routerLink]="['list/' + tab.id]" [routerLinkActive]="['active']" [queryParams]="{ listId: tab.id }">
+                            {{tab.name}}
+                            <i class="fa fa-times close-nav-tab" (click)="closeTab(tab)"></i>
                         </a>
                     </li>
                 </ul>
@@ -34,9 +34,9 @@
                         <jhi-germplasm-list-search></jhi-germplasm-list-search>
                     </div>
                     <!-- Tab panes -->
-                    <div *ngFor="let list of lists; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="list.active" id="list-{{list.id}}">
+                    <div *ngFor="let tab of tabs; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="tab.active" id="list-{{tab.id}}">
                         <div class="col-xs-12 col-md-12">
-                            <jhi-list [listId]="list.id"></jhi-list>
+                            <jhi-list [listId]="tab.id"></jhi-list>
                         </div>
                     </div>
                 </div>

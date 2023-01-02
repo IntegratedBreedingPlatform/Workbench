@@ -21,7 +21,7 @@ import { NavTab } from '../shared/nav/tab/nav-tab.model';
 })
 export class GermplasmListComponent implements OnInit {
 
-    lists: NavTab[] = [];
+    tabs: NavTab[] = [];
 
     helpLink: string;
     hideSearchTab = false;
@@ -50,7 +50,7 @@ export class GermplasmListComponent implements OnInit {
             }
 
             if (!this.exists(this.listId)) {
-                this.lists.push(new NavTab(this.listId, params['listName'], true));
+                this.tabs.push(new NavTab(this.listId, params['listName'], true));
             }
 
             this.setActive(this.listId);
@@ -73,19 +73,19 @@ export class GermplasmListComponent implements OnInit {
 
     registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
-            this.lists.forEach((list: NavTab) => {
-                if (event.content === list.id) {
-                    this.closeTab(list);
+            this.tabs.forEach((tab: NavTab) => {
+                if (event.content === tab.id) {
+                    this.closeTab(tab);
                 }
             });
             this.setSearchTabActive();
         });
 
         this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
-            this.lists.forEach((list: NavTab) => {
-                if (event.content === list.id) {
-                    this.germplasmListService.getGermplasmListById(list.id).subscribe(
-                        (res: HttpResponse<GermplasmListModel>) => list.name = res.body.listName,
+            this.tabs.forEach((tab: NavTab) => {
+                if (event.content === tab.id) {
+                    this.germplasmListService.getGermplasmListById(tab.id).subscribe(
+                        (res: HttpResponse<GermplasmListModel>) => tab.name = res.body.listName,
                         (res: HttpErrorResponse) => this.onError(res)
                     );
                 }
@@ -96,8 +96,8 @@ export class GermplasmListComponent implements OnInit {
     setActive(listId: number) {
         this.hideSearchTab = true;
 
-        this.lists.forEach((list: NavTab) => {
-            list.active = (list.id === listId);
+        this.tabs.forEach((tab: NavTab) => {
+            tab.active = (tab.id === listId);
         });
         this.germplasmListManagerContext.activeGermplasmListId = listId;
     }
@@ -105,13 +105,13 @@ export class GermplasmListComponent implements OnInit {
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.listId = null;
-        this.lists.forEach((list: NavTab) => list.active = false);
+        this.tabs.forEach((tab: NavTab) => tab.active = false);
         this.germplasmListManagerContext.activeGermplasmListId = null;
     }
 
-    closeTab(list: NavTab) {
-        this.lists.splice(this.lists.indexOf(list), 1);
-        if (list.active) {
+    closeTab(tab: NavTab) {
+        this.tabs.splice(this.tabs.indexOf(tab), 1);
+        if (tab.active) {
             this.hideSearchTab = false;
         }
 
@@ -131,7 +131,7 @@ export class GermplasmListComponent implements OnInit {
                         germplasmLists.forEach((germplasmList) => {
                             const germplasmListId = parseInt(germplasmList.id, 10);
                             if (!this.exists(germplasmListId)) {
-                                this.lists.push(new NavTab(germplasmListId, germplasmList.name, false));
+                                this.tabs.push(new NavTab(germplasmListId, germplasmList.name, false));
                             }
                         });
 
@@ -147,7 +147,7 @@ export class GermplasmListComponent implements OnInit {
     }
 
     private exists(listId: number) {
-        return this.lists.some((list) => list.id === listId);
+        return this.tabs.some((tab: NavTab) => tab.id === listId);
     }
 
     private onError(response: HttpErrorResponse) {
