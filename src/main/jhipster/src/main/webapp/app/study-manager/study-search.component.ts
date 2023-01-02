@@ -21,6 +21,7 @@ declare var $: any;
 @Component({
     selector: 'jhi-study-search',
     templateUrl: './study-search.component.html',
+    styleUrls: ['./study-search.component.scss']
 })
 export class StudySearchComponent implements OnInit {
 
