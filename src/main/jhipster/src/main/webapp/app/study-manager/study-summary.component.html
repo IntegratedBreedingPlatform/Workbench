@@ -261,16 +261,18 @@
 							<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.number-of-non-replicated-entries">Number of Non Replicated entries:</label>&nbsp;
 							{{studyDetails?.nonReplicatedEntriesCount}}
 						</div>
-						<div class="row">
+						<div class="row" *ngIf="studyDetails?.numberOfEnvironments && studyDetails?.experimentalDesignDetail.blockSize">
 							<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.number-of-entries-per-block">Number of entries per block:</label>&nbsp;
 							{{getPlotSize() / studyDetails?.experimentalDesignDetail.blockSize.value}}
 						</div>
-						<div class="row">
+						<div class="row" *ngIf="studyDetails?.numberOfEnvironments">
 							<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.number-of-plots">Total number of plots:</label>&nbsp;
 							{{getPlotSize()}}
 						</div>
 					</ng-container>
-					<div class="row" *ngIf="studyDetails?.experimentalDesignDetail.experimentalDesign.value !== '10164' && studyDetails?.experimentalDesignDetail.blockSize">
+					<div class="row" *ngIf="studyDetails?.experimentalDesignDetail.experimentalDesign.value !== '10164' &&
+						studyDetails?.numberOfEnvironments &&
+						studyDetails?.experimentalDesignDetail.blockSize">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.number-of-blocks">Number of blocks per Replication:</label>&nbsp;
 						{{studyDetails?.numberOfEntries / studyDetails?.experimentalDesignDetail.blockSize.value}}
 					</div>
