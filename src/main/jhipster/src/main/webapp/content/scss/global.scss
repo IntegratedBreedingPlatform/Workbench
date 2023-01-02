@@ -637,6 +637,20 @@ Text ellipsis
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.tab-text-ellipsis {
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nav-tab-text-ellipsis {
+    position: relative;
+    top: -5px;
+}
+
 /* ==========================================================================
 Favorite
 ========================================================================== */

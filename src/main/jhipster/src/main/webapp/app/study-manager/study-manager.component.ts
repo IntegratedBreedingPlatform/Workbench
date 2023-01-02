@@ -12,8 +12,7 @@ import { NavTab } from '../shared/nav/tab/nav-tab.model';
 
 @Component({
     selector: 'jhi-studies-manager',
-    templateUrl: './study-manager.component.html',
-    styleUrls: ['./study-manager.component.scss']
+    templateUrl: './study-manager.component.html'
 })
 export class StudyManagerComponent implements OnInit {
 
