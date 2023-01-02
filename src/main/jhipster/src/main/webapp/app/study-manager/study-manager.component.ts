@@ -8,6 +8,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { StudyManagerTreeComponent } from './study-manager-tree.component';
+import { NavTab } from '../shared/nav/tab/nav-tab.model';
 
 @Component({
     selector: 'jhi-studies-manager',
@@ -16,7 +17,7 @@ import { StudyManagerTreeComponent } from './study-manager-tree.component';
 })
 export class StudyManagerComponent implements OnInit {
 
-    studies: StudyTab[] = [];
+    studies: NavTab[] = [];
 
     helpLink: string;
     hideSearchTab = false;
@@ -41,7 +42,7 @@ export class StudyManagerComponent implements OnInit {
             }
 
             if (!this.exists(this.studyId)) {
-                this.studies.push(new StudyTab(this.studyId, params['studyName'], true));
+                this.studies.push(new NavTab(this.studyId, params['studyName'], true));
             }
 
             this.setActive(this.studyId);
@@ -82,7 +83,7 @@ export class StudyManagerComponent implements OnInit {
     setActive(studyId: number) {
         this.hideSearchTab = true;
 
-        this.studies.forEach((study: StudyTab) => {
+        this.studies.forEach((study: NavTab) => {
             study.active = (study.id === studyId);
         });
     }
@@ -90,10 +91,10 @@ export class StudyManagerComponent implements OnInit {
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.studyId = null;
-        this.studies.forEach((study: StudyTab) => study.active = false);
+        this.studies.forEach((study: NavTab) => study.active = false);
     }
 
-    closeTab(study: StudyTab) {
+    closeTab(study: NavTab) {
         this.studies.splice(this.studies.indexOf(study), 1);
         if (study.active) {
             this.hideSearchTab = false;
@@ -102,21 +103,12 @@ export class StudyManagerComponent implements OnInit {
         this.router.navigate(['/study-manager'], { queryParams: {} });
     }
 
-    trackId(index: number, item: StudyTab) {
+    trackId(index: number, item: NavTab) {
         return item.id;
     }
 
     private exists(studyId: number) {
-        return this.studies.some((study: StudyTab) => study.id === studyId);
+        return this.studies.some((study: NavTab) => study.id === studyId);
     }
 
-}
-
-export class StudyTab {
-    constructor(
-        public id: number,
-        public studyName: string,
-        public active: boolean
-    ) {
-    }
 }

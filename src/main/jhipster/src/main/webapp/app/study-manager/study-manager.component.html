@@ -29,7 +29,7 @@
                     <li class="nav-item" *ngFor="let study of studies" role="presentation">
                         <a class="nav-link pb-0" role="tab" data-toggle="tab" (click)="setActive(study.id)"
                            [routerLink]="['study/' + study.id]" [routerLinkActive]="['active']" [queryParams]="{ studyId: study.id }">
-                            <span class="study-manager-text-ellipsis" title="{{study.studyName}}">{{study.studyName}}</span>
+                            <span class="study-manager-text-ellipsis" title="{{study.name}}">{{study.name}}</span>
                             <i class="fa fa-times close-nav-tab study-manager-close-nav-tab " (click)="closeTab(study)"></i>
                         </a>
                     </li>

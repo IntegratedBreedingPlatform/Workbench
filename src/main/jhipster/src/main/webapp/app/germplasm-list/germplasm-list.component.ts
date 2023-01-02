@@ -13,6 +13,7 @@ import { GermplasmListModel } from '../shared/germplasm-list/model/germplasm-lis
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
 import { GermplasmListManagerContext } from './germplasm-list-manager.context';
+import { NavTab } from '../shared/nav/tab/nav-tab.model';
 
 @Component({
     selector: 'jhi-germplasm-list',
@@ -20,7 +21,7 @@ import { GermplasmListManagerContext } from './germplasm-list-manager.context';
 })
 export class GermplasmListComponent implements OnInit {
 
-    lists: GermplasmListTab[] = [];
+    lists: NavTab[] = [];
 
     helpLink: string;
     hideSearchTab = false;
@@ -49,7 +50,7 @@ export class GermplasmListComponent implements OnInit {
             }
 
             if (!this.exists(this.listId)) {
-                this.lists.push(new GermplasmListTab(this.listId, params['listName'], true));
+                this.lists.push(new NavTab(this.listId, params['listName'], true));
             }
 
             this.setActive(this.listId);
@@ -72,7 +73,7 @@ export class GermplasmListComponent implements OnInit {
 
     registerEvents() {
         this.eventSubscriber = this.eventManager.subscribe('germplasmListDeleted', (event) => {
-            this.lists.forEach((list: GermplasmListTab) => {
+            this.lists.forEach((list: NavTab) => {
                 if (event.content === list.id) {
                     this.closeTab(list);
                 }
@@ -81,10 +82,10 @@ export class GermplasmListComponent implements OnInit {
         });
 
         this.eventSubscriber = this.eventManager.subscribe('listMetadataUpdated', (event) => {
-            this.lists.forEach((list: GermplasmListTab) => {
+            this.lists.forEach((list: NavTab) => {
                 if (event.content === list.id) {
                     this.germplasmListService.getGermplasmListById(list.id).subscribe(
-                        (res: HttpResponse<GermplasmListModel>) => list.listName = res.body.listName,
+                        (res: HttpResponse<GermplasmListModel>) => list.name = res.body.listName,
                         (res: HttpErrorResponse) => this.onError(res)
                     );
                 }
@@ -95,7 +96,7 @@ export class GermplasmListComponent implements OnInit {
     setActive(listId: number) {
         this.hideSearchTab = true;
 
-        this.lists.forEach((list: GermplasmListTab) => {
+        this.lists.forEach((list: NavTab) => {
             list.active = (list.id === listId);
         });
         this.germplasmListManagerContext.activeGermplasmListId = listId;
@@ -104,11 +105,11 @@ export class GermplasmListComponent implements OnInit {
     setSearchTabActive() {
         this.hideSearchTab = false;
         this.listId = null;
-        this.lists.forEach((list: GermplasmListTab) => list.active = false);
+        this.lists.forEach((list: NavTab) => list.active = false);
         this.germplasmListManagerContext.activeGermplasmListId = null;
     }
 
-    closeTab(list: GermplasmListTab) {
+    closeTab(list: NavTab) {
         this.lists.splice(this.lists.indexOf(list), 1);
         if (list.active) {
             this.hideSearchTab = false;
@@ -117,7 +118,7 @@ export class GermplasmListComponent implements OnInit {
         this.router.navigate(['/germplasm-list'], {queryParams: {}});
     }
 
-    trackId(index: number, item: GermplasmListTab) {
+    trackId(index: number, item: NavTab) {
         return item.id;
     }
 
@@ -130,7 +131,7 @@ export class GermplasmListComponent implements OnInit {
                         germplasmLists.forEach((germplasmList) => {
                             const germplasmListId = parseInt(germplasmList.id, 10);
                             if (!this.exists(germplasmListId)) {
-                                this.lists.push(new GermplasmListTab(germplasmListId, germplasmList.name, false));
+                                this.lists.push(new NavTab(germplasmListId, germplasmList.name, false));
                             }
                         });
 
@@ -158,13 +159,4 @@ export class GermplasmListComponent implements OnInit {
         }
     }
 
-}
-
-export class GermplasmListTab {
-    constructor(
-        public id: number,
-        public listName: string,
-        public active: boolean
-    ) {
-    }
 }

@@ -23,7 +23,7 @@
                     <li class="nav-item" *ngFor="let list of lists" role="presentation">
                         <a class="nav-link" role="tab" data-toggle="tab" (click)="setActive(list.id)"
                            [routerLink]="['list/' + list.id]" [routerLinkActive]="['active']" [queryParams]="{ listId: list.id }">
-                            {{list.listName}}
+                            {{list.name}}
                             <i class="fa fa-times close-nav-tab" (click)="closeTab(list)"></i>
                         </a>
                     </li>
