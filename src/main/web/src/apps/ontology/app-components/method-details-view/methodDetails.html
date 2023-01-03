@@ -49,7 +49,7 @@
 				<div ng-if="!isSystemMethod">
 					<div ng-hide="editing || confirmationNecessary">
 						<button class="btn btn-primary" ng-click="editMethod($event)">{{'button.edit' | translate}}</button>
-
+						<button ng-show="selectedVariable" class="btn btn-secondary" ng-click="showSelectedVariable($event)">{{'button.back' | translate}}</button>
 						<button ng-hide="!deletable" type="button" class="btn btn-danger btn-icon" aria-label="{{'button.delete' | translate}}" ng-click="deleteMethod($event, methodId)">
 							<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</button>

@@ -1,6 +1,7 @@
 
 package org.generationcp.ibpworkbench.validator;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.generationcp.ibpworkbench.model.UserAccountModel;
 import org.generationcp.ibpworkbench.service.WorkbenchUserService;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
@@ -10,8 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -55,7 +56,8 @@ public class UserAccountValidatorTest {
 
 		partialValidator.validate(userAccount, this.errors);
 
-		Mockito.verify(partialValidator, Mockito.times(3)).validateFieldLength(ArgumentMatchers.any(Errors.class), ArgumentMatchers.anyString(),
+		Mockito.verify(partialValidator, Mockito.times(3))
+			.validateFieldLength(ArgumentMatchers.any(Errors.class), ArgumentMatchers.anyString(),
 				ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt());
 
 		Mockito.verify(partialValidator).validateEmailFormat(this.errors, userAccount);
@@ -143,7 +145,8 @@ public class UserAccountValidatorTest {
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateUsernameIfExists(this.errors, userAccount);
 
-		Mockito.verify(this.errors).rejectValue(arg1.capture(), arg2.capture(), ArgumentMatchers.any(String[].class), ArgumentMatchers.<String>isNull());
+		Mockito.verify(this.errors)
+			.rejectValue(arg1.capture(), arg2.capture(), ArgumentMatchers.any(String[].class), ArgumentMatchers.<String>isNull());
 		Assert.assertEquals("error should output username field", UserAccountFields.USERNAME, arg1.getValue());
 		Assert.assertEquals("show correct error code", UserAccountValidator.SIGNUP_FIELD_USERNAME_EXISTS, arg2.getValue());
 	}
@@ -217,7 +220,8 @@ public class UserAccountValidatorTest {
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateFieldLength(this.errors, "invalid length", "field.prop", "Field Name", 5);
 
-		Mockito.verify(this.errors).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+		Mockito.verify(this.errors)
+			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
 				ArgumentMatchers.<String>isNull());
 	}
 
@@ -226,7 +230,8 @@ public class UserAccountValidatorTest {
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
 		partialValidator.validateFieldLength(this.errors, "valid length", "field.prop", "Field Name", 30);
 
-		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+		Mockito.verify(this.errors, Mockito.never())
+			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
 				ArgumentMatchers.anyString());
 	}
 
@@ -277,5 +282,66 @@ public class UserAccountValidatorTest {
 		partialValidator.validatePersonEmailIfExists(this.errors, userAccount);
 
 		Mockito.verify(this.errors, Mockito.never()).rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString());
+	}
+
+	@Test
+	public void testValidatePasswordLength_PasswordIsLessThanMinimumLength() {
+
+		this.validator.setPasswordMinimumLength(6);
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setPassword(RandomStringUtils.randomAlphanumeric(5));
+
+		this.validator.validatePasswordLength(userAccount, this.errors);
+
+		Mockito.verify(this.errors).rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+	}
+
+	@Test
+	public void testValidatePasswordLength_ValidLength() {
+
+		this.validator.setPasswordMinimumLength(6);
+
+		final UserAccountModel userAccount1 = new UserAccountModel();
+		userAccount1.setPassword(RandomStringUtils.randomAlphanumeric(6));
+
+		this.validator.validatePasswordLength(userAccount1, this.errors);
+
+		Mockito.verify(this.errors, Mockito.times(0))
+			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+
+		final UserAccountModel userAccount2 = new UserAccountModel();
+		userAccount2.setPassword(RandomStringUtils.randomAlphanumeric(7));
+
+		this.validator.validatePasswordLength(userAccount2, this.errors);
+
+		Mockito.verify(this.errors, Mockito.times(0))
+			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+	}
+
+	@Test
+	public void testValidatePasswordConfirmation_PasswordConfirmationIsMatched() {
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setPassword(RandomStringUtils.randomAlphanumeric(5));
+		userAccount.setPasswordConfirmation(RandomStringUtils.randomAlphanumeric(5));
+
+		this.validator.validatePasswordConfirmation(userAccount, this.errors);
+
+		Mockito.verify(this.errors)
+			.rejectValue(UserAccountFields.PASSWORD_CONFIRMATION, UserAccountValidator.PASSWORD_CONFIRMATION_DOES_NOT_MATCH);
+	}
+
+	@Test
+	public void testValidatePasswordConfirmation_PasswordConfirmationDoesNotMatch() {
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setPassword(RandomStringUtils.randomAlphanumeric(5));
+		userAccount.setPasswordConfirmation(userAccount.getPassword());
+
+		this.validator.validatePasswordConfirmation(userAccount, this.errors);
+
+		Mockito.verify(this.errors, Mockito.times(0))
+			.rejectValue(UserAccountFields.PASSWORD_CONFIRMATION, UserAccountValidator.PASSWORD_CONFIRMATION_DOES_NOT_MATCH);
 	}
 }

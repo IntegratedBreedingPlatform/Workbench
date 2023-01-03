@@ -33,9 +33,9 @@ export class LabelPrintingData {
         public stockListTypeName?: string,
         public inventoryDetailsList?: string,
         public barcodeGeneratedAutomatically = true,
-        public firstBarcodeField = 0,
-        public secondBarcodeField = 0,
-        public thirdBarcodeField = 0,
+        public firstBarcodeField: any = '',
+        public secondBarcodeField: any = '',
+        public thirdBarcodeField: any = '',
         public filename = '',
         public barcodeNeeded = false,
         public includeHeadings = true
@@ -56,7 +56,7 @@ export class LabelType {
     constructor(
         public title?: string,
         public key?: string,
-        public fields?: { id: number, name: string }[]
+        public fields?: { id: number, name: string , fieldType: FieldType}[]
     ) {
     }
 }
@@ -77,7 +77,7 @@ export class PresetSetting {
         public toolSection?: string,
         public name?: string,
         public type?: string,
-        public selectedFields?: number[][],
+        public selectedFields?: string[][],
         public barcodeSetting?: BarcodeSetting,
         public includeHeadings?: boolean,
         public fileConfiguration?: FileConfiguration,
@@ -89,7 +89,7 @@ export class PresetSetting {
 export class BarcodeSetting {
     constructor(
         public automaticBarcode?: boolean,
-        public barcodeFields?: number[],
+        public barcodeFields?: string[],
         public barcodeNeeded?: boolean
     ) {
     }
@@ -111,4 +111,10 @@ export class Sortable {
     ) {
     }
 
+}
+
+export enum FieldType {
+    VARIABLE = 'VARIABLE',
+    STATIC = 'STATIC',
+    NAME = 'NAME'
 }

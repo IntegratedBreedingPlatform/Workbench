@@ -38,6 +38,7 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -894,6 +895,41 @@ public class AuthenticationControllerTest {
 		assertEquals("no http errors", HttpStatus.BAD_REQUEST, result.getStatusCode());
 		assertEquals("is successful", Boolean.FALSE, result.getBody().get(AuthenticationController.SUCCESS));
 
+	}
+
+	@Test
+	public void testResetPassword_OK() throws Exception {
+
+		Mockito.when(this.result.hasErrors()).thenReturn(false);
+
+		final ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(this.userAccountModel, this.result);
+
+		Mockito.verify(this.userAccountValidator).validateUserActive(this.userAccountModel, this.result);
+		Mockito.verify(this.userAccountValidator).validatePasswordLength(this.userAccountModel, this.result);
+		Mockito.verify(this.userAccountValidator).validatePasswordConfirmation(this.userAccountModel, this.result);
+		Mockito.verify(this.workbenchUserService).updateUserPassword(any(), any());
+		Mockito.verify(this.workbenchEmailSenderService).deleteToken(this.userAccountModel);
+		Assert.assertEquals(HttpStatus.OK, result.getStatusCode());
+		Assert.assertTrue((Boolean) result.getBody().get(AuthenticationController.SUCCESS));
+	}
+
+	@Test
+	public void testResetPassword_WithValidationError() throws Exception {
+
+		Mockito.when(this.result.hasErrors()).thenReturn(true);
+		Mockito.when(this.result.getFieldErrors()).thenReturn(Arrays.asList(new FieldError("password", "fieldName", "error")));
+		Mockito.when(this.messageSource.getMessage(any(), any(), any(), any())).thenReturn("some error");
+
+		final ResponseEntity<Map<String, Object>> result = this.controller.doResetPassword(this.userAccountModel, this.result);
+
+		Mockito.verify(this.userAccountValidator).validateUserActive(this.userAccountModel, this.result);
+		Mockito.verify(this.userAccountValidator).validatePasswordLength(this.userAccountModel, this.result);
+		Mockito.verify(this.userAccountValidator).validatePasswordConfirmation(this.userAccountModel, this.result);
+		Mockito.verifyNoInteractions(this.workbenchUserService);
+		Mockito.verifyNoInteractions(this.workbenchEmailSenderService);
+		Assert.assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+		Assert.assertFalse((Boolean) result.getBody().get(AuthenticationController.SUCCESS));
+		Assert.assertTrue((result.getBody().containsKey(AuthenticationController.ERRORS)));
 	}
 
 	private LoadingCache<String, Integer> createTestOtpVerificationAttemptCache() {

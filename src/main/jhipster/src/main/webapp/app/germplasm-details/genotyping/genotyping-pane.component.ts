@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CropGenotypingParameterService } from '../../shared/crop/service/crop-genotyping-parameter.service';
 import { ParamContext } from '../../shared/service/param.context';
 import { flatMap } from 'rxjs/operators';
 import { CropGenotypingParameter } from '../../shared/crop/model/crop-genotyping-parameter';
@@ -19,6 +18,8 @@ import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
 import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
 import { HttpClient } from '@angular/common/http';
+import { CropParameterService } from '../../shared/crop-parameter/service/crop-parameter.service';
+
 const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
 @Component({
@@ -36,6 +37,17 @@ export class GenotypingPaneComponent implements OnInit {
     isStudyLoading = false;
     isVariantSetLoading = false;
     isSamplesLoading = false;
+    genotypesView: any;
+    isGenotypingCallsLoading = false;
+
+    public readonly GENOTYPING_SERVER = 'gigwa';
+
+    public readonly ENDPOINT = this.GENOTYPING_SERVER + '_endpoint';
+    public readonly TOKEN_ENDPOINT = this.GENOTYPING_SERVER + '_token_endpoint';
+    public readonly PROGRAM_ID = this.GENOTYPING_SERVER + '_program_id';
+    public readonly USERNAME = this.GENOTYPING_SERVER + '_username';
+    public readonly PASSWORD = this.GENOTYPING_SERVER + '_password';
+    public readonly BASE_URL = this.GENOTYPING_SERVER + '_base_url';
 
     public readonly LINK_BY_GUID = 'GUID';
     public readonly LINK_BY_SAMPLE_UID = 'SAMPLE_UID';
@@ -58,7 +70,7 @@ export class GenotypingPaneComponent implements OnInit {
 
     constructor(
         private context: ParamContext,
-        private cropGenotypingParameterService: CropGenotypingParameterService,
+        private cropParameterService: CropParameterService,
         private genotypingBrapiService: GenotypingBrapiService,
         public germplasmDetailsContext: GermplasmDetailsContext,
         public germplasmService: GermplasmService,
@@ -68,24 +80,41 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.cropGenotypingParameterService.getByCropName(this.context.cropName).pipe(flatMap((result) => {
-            this.cropGenotypingParameter = result;
-            this.genotypingBrapiService.brapiEndpoint = this.cropGenotypingParameter.endpoint;
-            this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.baseUrl;
-            return this.cropGenotypingParameterService.getToken(this.context.cropName);
-        })).subscribe((accessToken) => {
-            this.genotypingBrapiService.accessToken = accessToken;
-            if (this.isGenotypingParameterConfigured()) {
-                this.linkBySelectOnChange();
-            }
-        }, (error) => {
-            this.alertService.error('genotyping.connection.error');
-        });
+        this.genotypesView = '1';
+        this.cropParameterService.getByGroupName(this.GENOTYPING_SERVER).subscribe(
+            (cropParameters) => {
+                const cropParameterMap = cropParameters.reduce(function(map, row) {
+                    map[row.key] = row;
+                    return map;
+                }, {});
+                this.populateGenotypingParameters(cropParameterMap);
+
+                if (this.isGenotypingParameterConfigured()) {
+                    this.genotypingBrapiService.brapiEndpoint = this.cropGenotypingParameter.endpoint;
+                    this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.baseUrl;
+
+                    this.cropParameterService.getGenotypingToken(this.GENOTYPING_SERVER).subscribe((accessToken) => {
+                        this.genotypingBrapiService.accessToken = accessToken;
+                        this.linkBySelectOnChange();
+                    }, (error) => {
+                        this.alertService.error('genotyping.connection.error');
+                    });
+                }
+            });
+    }
+
+    populateGenotypingParameters(cropParameterMap) {
+        if (cropParameterMap[this.ENDPOINT] && cropParameterMap[this.TOKEN_ENDPOINT] && cropParameterMap[this.PROGRAM_ID]
+            && cropParameterMap[this.USERNAME] && cropParameterMap[this.PASSWORD] && cropParameterMap[this.BASE_URL]) {
+            this.cropGenotypingParameter = new CropGenotypingParameter(cropParameterMap[this.ENDPOINT].value,
+                cropParameterMap[this.TOKEN_ENDPOINT].value, cropParameterMap[this.USERNAME].value, cropParameterMap[this.PASSWORD].value,
+                cropParameterMap[this.PROGRAM_ID].value, cropParameterMap[this.BASE_URL].value);
+        }
     }
 
     isGenotypingParameterConfigured() {
-        return this.cropGenotypingParameter && this.cropGenotypingParameter.cropName && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint
-            && this.cropGenotypingParameter.userName && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
+        return this.cropGenotypingParameter && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint && this.cropGenotypingParameter.userName
+            && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
     }
 
     linkBySelectOnChange() {
@@ -174,6 +203,14 @@ export class GenotypingPaneComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
+        if (this.genotypesView === '2') {
+            this.loadFlapjackBytes();
+        } else {
+            this.loadGenotypesTable();
+        }
+    }
+
+    loadFlapjackBytes() {
         if (this.selectedVariantSet) {
             this.isExportingFlapjack = true;
             const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
@@ -197,6 +234,37 @@ export class GenotypingPaneComponent implements OnInit {
                     dataSetId: this.cropGenotypingParameter.programId,
                 });
             });
+        }
+    }
+
+    loadGenotypesTable() {
+        if (this.selectedVariantSet) {
+            this.genotypingBrapiService.searchCallsets({
+                variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
+                germplasmDbIds: [this.genotypingGermplasm.germplasmDbId]
+            }).subscribe((brapiResponse) => {
+                if (brapiResponse && brapiResponse.result.data.length) {
+                    this.genotypingCallSet = brapiResponse.result.data[0];
+                    this.loadGenotypingCalls();
+                } else {
+                    this.alertService.error('genotyping.no.genotyping.callsets.found');
+                }
+            });
+        }
+    }
+
+    loadGenotypingCalls() {
+        if (this.genotypingCallSet) {
+            this.isGenotypingCallsLoading = true;
+            this.genotypingBrapiService.searchCalls({
+                callSetDbIds: [this.genotypingCallSet.callSetDbId],
+                pageSize: this.pageSize,
+                page: (this.page - 1)
+            }).subscribe(((brapiResponse) => {
+                this.genotypingCalls = brapiResponse.result.data;
+                this.totalCount = brapiResponse.metadata.pagination.totalCount;
+                this.isGenotypingCallsLoading = false;
+            }));
         }
     }
 

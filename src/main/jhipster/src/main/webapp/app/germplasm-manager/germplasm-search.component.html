@@ -73,6 +73,7 @@
 			<ng-template #columnvisibility>
 				<div id="columnVisibility">
 					<jhi-col-vis-button [colName]="ColumnLabels.GID" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.gid"></span></jhi-col-vis-button>
+					<jhi-col-vis-button [colName]="ColumnLabels['GERMPLASM UUID']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.germplasmUUID"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['GROUP ID']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.groupId"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels.NAMES" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.names"></span></jhi-col-vis-button>
 					<jhi-col-vis-button [colName]="ColumnLabels['METHOD NAME']" [hiddenColumns]="hiddenColumns" (click)="colVisPopOver.close()"><span jhiTranslate="search-germplasm.column.methodName"></span></jhi-col-vis-button>
@@ -130,6 +131,7 @@
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
 				<th *ngIf="!isSelectAll"><input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" data-test="checkSelectCurrentPage"></th>
 				<th [jhiSortBy]="ColumnLabels.GID" [hidden]="hiddenColumns[ColumnLabels.GID]"><span jhiTranslate="search-germplasm.column.gid"></span> <span class="fa fa-sort"></span></th>
+				<th [jhiSortBy]="ColumnLabels['GERMPLASM UUID']" [hidden]="hiddenColumns[ColumnLabels['GERMPLASM UUID']]"><span jhiTranslate="search-germplasm.column.germplasmUUID"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels['GROUP ID']" [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="search-germplasm.column.groupId" data-test="groupIdHeader"></span><span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.NAMES" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="search-germplasm.column.names"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.AVAILABLE" [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]"><span jhiTranslate="search-germplasm.column.availableBalance"></span> <span class="fa fa-sort"></span></th>
@@ -169,6 +171,7 @@
 
 				<td *ngIf="!isSelectAll"><input type="checkbox" [checked]="isSelected(germplasm)" (click)="toggleSelect($event, index, germplasm, true); $event.stopPropagation()"></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.GID]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.gid}}</a></td>
+				<td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM UUID']]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.germplasmUUID}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><a *ngIf="germplasm.groupId" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.groupId } }]" data-test="germplasmGroupIdLink">{{germplasm.groupId}}</a><span *ngIf="!germplasm.groupId">-</span></td>
 				<td jhiScrollableTooltip [tooltipText]="germplasm.names" placement="right" [hidden]="hiddenColumns[ColumnLabels.NAMES]"><a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + germplasm.gid } }]" queryParamsHandling="merge">{{germplasm.names | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</a></td>
 				<td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{germplasm.availableBalance}}</td>

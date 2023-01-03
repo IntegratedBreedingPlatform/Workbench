@@ -33,6 +33,7 @@
     "search-germplasm" : {
         "column" : {
             "gid" : "GID",
+            "germplasmUUID" : "GERMPLASM UUID",
             "groupId": "GROUPID",
             "names": "NAMES",
             "methodName": "BREEDING METHOD NAME",
@@ -131,6 +132,7 @@
                     "entryNo": "The ENTRY_NO column is mandatory",
                     "entryNo.format": "Some ENTRY_NO values are not a positive integer. Please correct them and try again",
                     "entryNo.duplicates": "Some ENTRY_NO values are duplicated. Please correct them and try again",
+                    "entryNo.incorrect": "ENTRY_NO value for entry #: {{param}} is incorrect. Please correct it and try again",
                     "pui.duplicates": "Some PUI values are duplicated. Please correct them and try again",
                     "amount.format": "Some AMOUNT values are not numeric. Please correct them and try again",
                     "names.no.column": "No suitable column found for germplasm name. Please check the CODES sheet for NAMES",
