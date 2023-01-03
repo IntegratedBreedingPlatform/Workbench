@@ -364,6 +364,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
     }
 
+    /**
+     * This (specifically, calling onMessage) will override native iframe back/forth functionality.
+     * - Fixes Firefox back button, which won't reload iframe contents, though other browsers do (1).
+     * - Also fixes back and forward to site admin in all browsers
+     * - Fixes back issue to brapi-sync in (1)
+     * - in some browsers (1) it will change iframe location twice, causing a double render of the component,
+     * but it's almost unnoticeable (except in slow servers).
+     *
+     * (1) - Some browsers iframe history seem to work correctly (e.g. Chrome, Brave)
+     */
     private async onPopStateEvent(popStateEvent: PopStateEvent) {
         if (popStateEvent.type === 'popstate') {
             const urlTree = this.router.parseUrl(popStateEvent.url);
@@ -372,28 +382,35 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             const programUUID = urlTree.queryParams.programUUID;
             const cropName = urlTree.queryParams.cropName;
             const toolUrl = urlTree.queryParams.toolUrl;
-            if (cropName && programUUID) {
-                this.program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
-            } else {
-                this.program = null;
-            }
+
             if (toolUrl) {
                 this.toolLinkSelected = toolUrl;
             }
 
-            /*
-             * This will override native iframe back/forth functionality.
-             * - Fixes Firefox back button, which won't reload iframe contents, though other browsers do (1).
-             * - Also fixes back and forward to site admin in all browsers
-             * - Fixes back issue to brapi-sync in (1)
-             * - in some browsers (1) it will change iframe location twice, but it's almost unnoticeable.
-             *
-             * (1) - Some browsers iframe history seem to work correctly (e.g. Chrome, Brave)
-             */
-            if (toolUrl) {
-                this.openTool(toolUrl);
-            } else {
+            if (!toolUrl) {
                 this.myPrograms();
+                return;
+            }
+
+            let program: Program;
+            if ((cropName && programUUID)) {
+                if (this.program && this.program.uniqueID === programUUID) {
+                    program = this.program;
+                } else {
+                    program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
+                }
+            } else {
+                this.program = null;
+            }
+            const message: NavbarMessageEvent = {};
+            if (program) {
+                message.programSelected = program;
+            }
+            if (toolUrl) {
+                message.toolSelected = toolUrl;
+            }
+            if (Object.keys(message).length) {
+                this.onMessage({ data: message });
             }
         }
     }
