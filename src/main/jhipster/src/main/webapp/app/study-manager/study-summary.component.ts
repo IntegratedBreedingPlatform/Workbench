@@ -42,15 +42,12 @@ export class StudySummaryComponent implements OnInit {
                 public activatedRoute: ActivatedRoute) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             const studyId = parseInt(params['studyId'], 10);
-            if (studyId !== this.studyId) {
+            const datasetId = parseInt(params['datasetId'], 10);
+            if (studyId !== this.studyId || !datasetId) {
                 return;
             }
 
-            this.datasetId = parseInt(params['datasetId'], 10);
-            if (!this.datasetId) {
-                return;
-            }
-
+            this.datasetId = datasetId;
             if (!this.exists(this.datasetId)) {
                 this.datasetTabs.push(new NavTab(this.datasetId, params['datasetName'], true));
             }

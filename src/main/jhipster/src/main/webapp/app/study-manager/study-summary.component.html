@@ -336,7 +336,7 @@
 				<ul class="nav nav-tabs">
 					<li class="nav-item" *ngFor="let tab of datasetTabs" role="presentation">
 						<a class="nav-link pb-0" role="tab" data-toggle="tab" (click)="setActive(tab.id)"
-						   [routerLink]="['study/' + studyId + '/summary/dataset/' + tab.id]" [routerLinkActive]="['active']" [class.active]="tab.active"
+						   [routerLink]="['study/' + studyId + '/summary/dataset/' + tab.id]" [class.active]="tab.active"
 						   [queryParams]="{ studyId: studyId, datasetId: tab.id, datasetName: tab.name }">
 							<span class="tab-text-ellipsis" title="{{tab.name}}">{{tab.name}}</span>
 							<i class="fa fa-times close-nav-tab nav-tab-text-ellipsis" (click)="closeTab(tab)"></i>
