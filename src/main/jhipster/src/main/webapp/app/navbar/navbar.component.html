@@ -60,7 +60,7 @@
 				<!-- This is the tree node template for leaf nodes -->
 				<mat-tree-node class="leaf" [class.selected]="toolLinkSelected.startsWith(node.link)"
 							   *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="34"
-							   (click)="openTool(node.link)">
+							   (click)="openTool(node.link, node.name)">
 					{{node.name}}
 				</mat-tree-node>
 			</mat-tree>

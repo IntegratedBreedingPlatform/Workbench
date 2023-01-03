@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavService } from './nav.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Program } from '../shared/program/model/program';
@@ -22,6 +22,7 @@ import { CropParameterService } from '../shared/crop-parameter/service/crop-para
 import { Location, PopStateEvent } from '@angular/common';
 import { CropParameterTypeEnum } from '../shared/crop-parameter/model/crop-parameter-type-enum';
 import { CropParameter } from '../shared/crop-parameter/model/crop-parameter';
+import { TranslateService } from '@ngx-translate/core';
 
 declare const showReleaseNotes: string;
 
@@ -72,6 +73,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private router: Router,
         private route: ActivatedRoute,
         private location: Location,
+        private readonly title: Title,
+        private translateService: TranslateService
     ) {
         this.version = '';
         // Append a ".0" in BMS version if none is found. The .0 gets truncated from workbench.properties to webpack.common version
@@ -124,7 +127,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.navService.sideNav = this.sideNav;
     }
 
-    async openTool(url) {
+    async openTool(url, toolName) {
         let authParams = '';
         const cropName = this.program ? this.program.crop : null;
         const programUUID = this.program ? this.program.uniqueID : null;
@@ -165,7 +168,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 cropName,
                 programUUID,
                 toolUrl: url,
+                toolName
             }
+        }).then(() => {
+            this.title.setTitle(this.translateService.instant('global.title') + ': ' + toolName)
         });
     }
 
@@ -178,11 +184,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     siteAdmin() {
         this.program = null;
-        this.openTool('/ibpworkbench/controller/admin');
+        this.openTool('/ibpworkbench/controller/admin', 'Site Admin');
     }
 
     about() {
-        this.openTool('/ibpworkbench/controller/jhipster#about')
+        this.openTool('/ibpworkbench/controller/jhipster#about', 'About')
     }
 
     isSideNavAvailable() {
@@ -202,13 +208,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 await this.getTools(program);
 
                 // Open program with specific tool (e.g a particular study in manage studies)
-                if (event.data.toolSelected) {
-                    this.openTool(event.data.toolSelected);
+                if (event.data.toolSelectedUrl) {
+                    this.openTool(event.data.toolSelectedUrl, event.data.toolSelectedName);
                     this.expandParent();
                 } else {
                     const firstNode = this.treeControl.dataNodes[0];
                     this.treeControl.expand(firstNode);
-                    this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
+                    const descendant = this.treeControl.getDescendants(firstNode)[0];
+                    this.openTool(descendant.link, descendant.name);
                 }
             } catch (error) {
                 this.onError(error);
@@ -217,8 +224,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             this.program.name = event.data.programUpdated.name;
         } else if (event.data.programDeleted) {
             this.myPrograms();
-        } else if (event.data.toolSelected) {
-            this.openTool(event.data.toolSelected);
+        } else if (event.data.toolSelectedUrl) {
+            this.openTool(event.data.toolSelectedUrl, event.data.toolSelectedName);
             this.expandParent();
         } else if (event.data.userProfileChanged) {
             this.user = await this.principal.identity(true)
@@ -328,6 +335,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         let programUUID = this.route.snapshot.queryParams.programUUID;
         let cropName = this.route.snapshot.queryParams.cropName;
         let toolUrl = this.route.snapshot.queryParams.toolUrl;
+        let toolName = this.route.snapshot.queryParams.toolName;
 
         const hasQueryParams = () => {
             return (programUUID && cropName) || toolUrl;
@@ -342,6 +350,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             programUUID = this.route.snapshot.queryParams.programUUID;
             cropName = this.route.snapshot.queryParams.cropName;
             toolUrl = this.route.snapshot.queryParams.toolUrl;
+            toolName = this.route.snapshot.queryParams.toolName;
         }
 
         if (!hasQueryParams()) {
@@ -357,7 +366,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             message.programSelected = program;
         }
         if (toolUrl) {
-            message.toolSelected = toolUrl;
+            message.toolSelectedUrl = toolUrl;
+            message.toolSelectedName = toolName;
         }
         if (Object.keys(message).length) {
             this.onMessage({ data: message });
@@ -382,6 +392,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             const programUUID = urlTree.queryParams.programUUID;
             const cropName = urlTree.queryParams.cropName;
             const toolUrl = urlTree.queryParams.toolUrl;
+            const toolName = urlTree.queryParams.toolName;
 
             if (toolUrl) {
                 this.toolLinkSelected = toolUrl;
@@ -407,7 +418,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 message.programSelected = program;
             }
             if (toolUrl) {
-                message.toolSelected = toolUrl;
+                message.toolSelectedUrl = toolUrl;
+                message.toolSelectedName = toolName;
             }
             if (Object.keys(message).length) {
                 this.onMessage({ data: message });
