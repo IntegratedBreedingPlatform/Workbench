@@ -321,16 +321,33 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
     }
 
+    /**
+     * Restores route after login or page reload
+     */
     private async restoreRoute() {
-        const queryParams = sessionStorage.getItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
-        if (queryParams) {
-            await this.router.navigateByUrl(queryParams);
-            sessionStorage.removeItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+        let programUUID = this.route.snapshot.queryParams.programUUID;
+        let cropName = this.route.snapshot.queryParams.cropName;
+        let toolUrl = this.route.snapshot.queryParams.toolUrl;
+
+        const hasQueryParams = () => {
+            return (programUUID && cropName) || toolUrl;
         }
 
-        const programUUID = this.route.snapshot.queryParams.programUUID;
-        const cropName = this.route.snapshot.queryParams.cropName;
-        const toolUrl = this.route.snapshot.queryParams.toolUrl;
+        const sessionQueryParams = sessionStorage.getItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+        sessionStorage.removeItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+
+        if (sessionQueryParams && !hasQueryParams()) {
+            await this.router.navigateByUrl(sessionQueryParams);
+
+            programUUID = this.route.snapshot.queryParams.programUUID;
+            cropName = this.route.snapshot.queryParams.cropName;
+            toolUrl = this.route.snapshot.queryParams.toolUrl;
+        }
+
+        if (!hasQueryParams()) {
+            return;
+        }
+
         let program: Program;
         if (cropName && programUUID) {
             program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
