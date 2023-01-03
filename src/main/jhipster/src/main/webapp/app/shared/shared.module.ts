@@ -98,6 +98,7 @@ import { StudyService } from './study/service/study.service';
 import { EntryDetailsImportContext } from './ontology/entry-details-import.context';
 import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 import { ModalAlertComponent } from './modal/modal-alert.component';
+import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
 
 @NgModule({
     imports: [
@@ -213,7 +214,8 @@ import { ModalAlertComponent } from './modal/modal-alert.component';
         FeedbackService,
         EntryDetailsImportContext,
         FeedbackService,
-        GenotypingBrapiService
+        GenotypingBrapiService,
+        ObservationVariableHelperService
     ],
     entryComponents: [
         ModalComponent,

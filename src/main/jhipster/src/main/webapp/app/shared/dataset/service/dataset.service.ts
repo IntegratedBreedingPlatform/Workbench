@@ -7,6 +7,7 @@ import { DatasetModel } from '../model/dataset.model';
 import { createRequestOption } from '../..';
 import { ObservationUnitsSearchRequest } from '../model/observation-units-search-request.model';
 import { ObservationUnitsSearchResponse } from '../model/observation-units-search-response.model';
+import { ObservationVariable } from '../../model/observation-variable.model';
 
 @Injectable()
 export class DatasetService {
@@ -26,6 +27,11 @@ export class DatasetService {
             url += `?datasetTypeIds=${datasetIds}`;
         }
         return this.http.get<DatasetModel[]>(url, { observe: 'response' });
+    }
+
+    getObservationSetColumns(studyId: number, datasetId: number): Observable<HttpResponse<ObservationVariable[]>> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}/observationUnits/table/columns`;
+        return this.http.get<ObservationVariable[]>(url, { observe: 'response' });
     }
 
     getObservationUnitTable(studyId: number,

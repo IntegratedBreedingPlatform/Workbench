@@ -5,8 +5,6 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { StudyDetails } from '../shared/study/model/study-details.model';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { AlertService } from '../shared/alert/alert.service';
-import { ObservationVariable, ValueReference } from '../shared/model/observation-variable.model';
-import { DataTypeEnum } from '../shared/ontology/data-type.enum';
 import { UrlService } from '../shared/service/url.service';
 import { DatasetService } from '../shared/dataset/service/dataset.service';
 import { DatasetModel } from '../shared/dataset/model/dataset.model';
@@ -14,6 +12,8 @@ import { toUpper } from '../shared/util/to-upper';
 import { NavTab } from '../shared/nav/tab/nav-tab.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { DatasetTypeEnum } from '../shared/dataset/model/dataset-type.enum';
+import { ObservationVariableHelperService } from '../shared/dataset/model/observation-variable.helper.service';
 
 @Component({
     selector: 'jhi-study-summary',
@@ -39,7 +39,8 @@ export class StudySummaryComponent implements OnInit {
                 public urlService: UrlService,
                 public datasetService: DatasetService,
                 public router: Router,
-                public activatedRoute: ActivatedRoute) {
+                public activatedRoute: ActivatedRoute,
+                public observationVariableHelperService: ObservationVariableHelperService) {
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             const studyId = parseInt(params['studyId'], 10);
             const datasetId = parseInt(params['datasetId'], 10);
@@ -65,18 +66,6 @@ export class StudySummaryComponent implements OnInit {
             (res: HttpResponse<DatasetModel[]>) => this.datasets = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
-    }
-
-    getVariableValue(variable: ObservationVariable) {
-        if (variable.dataType === DataTypeEnum.CATEGORICAL && variable.possibleValues && variable.possibleValues.length > 0) {
-            return variable.possibleValues.filter((valueReference: ValueReference) => String(valueReference.id) === variable.value)
-                .map((value: ValueReference) => value.description);
-        }
-        return variable.value;
-    }
-
-    getVariableDisplayName(variable: ObservationVariable): string {
-        return variable.alias ? variable.alias : variable.name;
     }
 
     getPlotSize(): number {
@@ -111,6 +100,10 @@ export class StudySummaryComponent implements OnInit {
 
     trackId(index: number, item: NavTab) {
         return item.id;
+    }
+
+    getDatasetTypeByDatasetId(datasetId: number): DatasetTypeEnum {
+        return this.datasets.filter((dataset: DatasetModel) => dataset.datasetId === datasetId).map((dataset: DatasetModel) => dataset.datasetTypeId)[0];
     }
 
     private onError(response: HttpErrorResponse) {

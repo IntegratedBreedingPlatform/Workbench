@@ -1,4 +1,5 @@
 import { DataTypeEnum, DataTypeIdEnum } from '../ontology/data-type.enum';
+import { VariableTypeEnum } from '../ontology/variable-type.enum';
 
 export class ObservationVariable {
     constructor(public termId: number,
@@ -12,7 +13,8 @@ export class ObservationVariable {
                 public scaleMaxRange?: number,
                 public variableMinRange?: number,
                 public variableMaxRange?: number,
-                public value?: string
+                public value?: string,
+                public variableType?: VariableTypeEnum
                 // TODO: added missing properties required for entry details
                 ) {
     }

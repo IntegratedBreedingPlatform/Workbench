@@ -98,8 +98,8 @@
 				<ng-container *ngFor="let studySetting of studyDetails?.studySettings; index as i">
 					<div *ngIf="i !== 0 && i % 3 === 0" class="w-100"></div>
 					<div class="col-4">
-						<label class="font-weight-bold">{{getVariableDisplayName(studySetting)}}:</label>&nbsp;
-						{{getVariableValue(studySetting)}}
+						<label class="font-weight-bold">{{ observationVariableHelperService.getVariableDisplayName(studySetting) }}:</label>&nbsp;
+						{{ observationVariableHelperService.getVariableValueFromVariable(studySetting) }}
 					</div>
 				</ng-container>
 			</div>
@@ -121,7 +121,7 @@
 				<tbody>
 				<tr *ngFor="let selection of studyDetails.selections">
 					<td><a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: selection.termId }">{{getVariableDisplayName(selection)}}</a></td>
+						   [queryParams]="{ variableId: selection.termId }">{{ observationVariableHelperService.getVariableDisplayName(selection) }}</a></td>
 					<td>{{selection.description}}</td>
 				</tr>
 				</tbody>
@@ -144,7 +144,7 @@
 				<tbody>
 				<tr *ngFor="let entryDetail of studyDetails.entryDetails">
 					<td><a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: entryDetail.termId }">{{getVariableDisplayName(entryDetail)}}</a></td>
+						   [queryParams]="{ variableId: entryDetail.termId }">{{ observationVariableHelperService.getVariableDisplayName(entryDetail) }}</a></td>
 					<td>{{entryDetail.description}}</td>
 				</tr>
 				</tbody>
@@ -168,7 +168,7 @@
 				<tbody>
 				<tr *ngFor="let treatmentFactor of studyDetails.treatmentFactors">
 					<td><a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: treatmentFactor.levelVariable.termId }">{{getVariableDisplayName(treatmentFactor.levelVariable)}}</a></td>
+						   [queryParams]="{ variableId: treatmentFactor.levelVariable.termId }">{{ observationVariableHelperService.getVariableDisplayName(treatmentFactor.levelVariable) }}</a></td>
 					<td>{{treatmentFactor.values != null ? treatmentFactor.values.length : 0}}</td>
 					<td>{{treatmentFactor.valueVariable.name}}</td>
 				</tr>
@@ -279,32 +279,32 @@
 					<div class="row" *ngIf="studyDetails?.factorsByIds[8230]">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.treatment-factor">Treatment Factor:</label>&nbsp;
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8230].termId }">{{getVariableDisplayName(studyDetails?.factorsByIds[8230])}}</a>
+						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8230].termId }">{{ observationVariableHelperService.getVariableDisplayName(studyDetails?.factorsByIds[8230]) }}</a>
 					</div>
 					<div class="row" *ngIf="studyDetails?.factorsByIds[8210]">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.replicate-factor">Replicate Factor:</label>&nbsp;
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8210].termId }">{{getVariableDisplayName(studyDetails?.factorsByIds[8210])}}</a>
+						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8210].termId }">{{ observationVariableHelperService.getVariableDisplayName(studyDetails?.factorsByIds[8210]) }}</a>
 					</div>
 					<div class="row" *ngIf="studyDetails?.factorsByIds[8220]">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.block-factor">Block Factor:</label>&nbsp;
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8220].termId }">{{getVariableDisplayName(studyDetails?.factorsByIds[8220])}}</a>
+						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8220].termId }">{{ observationVariableHelperService.getVariableDisplayName(studyDetails?.factorsByIds[8220]) }}</a>
 					</div>
 					<div class="row" *ngIf="studyDetails?.factorsByIds[8200]">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.plot-factor">Plot Factor:</label>&nbsp;
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8200].termId }">{{getVariableDisplayName(studyDetails?.factorsByIds[8200])}}</a>
+						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8200].termId }">{{ observationVariableHelperService.getVariableDisplayName(studyDetails?.factorsByIds[8200]) }}</a>
 					</div>
 					<div class="row" *ngIf="studyDetails?.factorsByIds[8581]">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.row-factor">Row Factor:</label>&nbsp;
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8581].termId }">{{getVariableDisplayName(studyDetails?.factorsByIds[8581])}}</a>
+						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8581].termId }">{{ observationVariableHelperService.getVariableDisplayName(studyDetails?.factorsByIds[8581]) }}</a>
 					</div>
 					<div class="row" *ngIf="studyDetails?.factorsByIds[8582]">
 						<label class="font-weight-bold" jhiTranslate="study.details.experimental-design.summary.column-factor">Column Factor:</label>&nbsp;
 						<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
-						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8582].termId }">{{getVariableDisplayName(studyDetails?.factorsByIds[8582])}}</a>
+						   [queryParams]="{ variableId: studyDetails?.factorsByIds[8582].termId }">{{ observationVariableHelperService.getVariableDisplayName(studyDetails?.factorsByIds[8582]) }}</a>
 					</div>
 				</div>
 			</div>
@@ -347,7 +347,7 @@
 					<!-- Tab panes -->
 					<div *ngFor="let tab of datasetTabs; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="tab.active" id="dataset-{{tab.id}}">
 						<div class="col-xs-12 col-md-12">
-							<jhi-study-summary-dataset [studyId]="studyId" [datasetId]="tab.id"></jhi-study-summary-dataset>
+							<jhi-study-summary-dataset [studyId]="studyId" [datasetId]="tab.id" [datasetType]="getDatasetTypeByDatasetId(tab.id)"></jhi-study-summary-dataset>
 						</div>
 					</div>
 				</div>
