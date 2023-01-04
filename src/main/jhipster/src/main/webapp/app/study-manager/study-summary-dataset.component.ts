@@ -146,6 +146,10 @@ export class StudySummaryDatasetComponent implements OnInit {
     }
 
     getTraits(): ObservationVariable[] {
+        if (!this.header) {
+            return [];
+        }
+
         return this.filterVariables(this.header, VariableTypeEnum.TRAIT);
     }
 
