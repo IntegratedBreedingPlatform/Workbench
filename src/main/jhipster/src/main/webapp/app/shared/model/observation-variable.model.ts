@@ -14,7 +14,8 @@ export class ObservationVariable {
                 public variableMinRange?: number,
                 public variableMaxRange?: number,
                 public value?: string,
-                public variableType?: VariableTypeEnum
+                public variableType?: VariableTypeEnum,
+                public factor?: boolean
                 // TODO: added missing properties required for entry details
                 ) {
     }

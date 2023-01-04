@@ -3,7 +3,7 @@
 		<table class="table table-striped table-bordered table-curved" *ngIf="header.length else nodata">
 			<thead>
 			<tr>
-				<th *ngFor="let column of header" [ngClass]="{ 'factors': isFactor(column) }">
+				<th *ngFor="let column of header" [ngClass]="{ 'factors': column.factor }">
 					{{ observationVariableHelperService.getVariableDisplayName(column) }}
 				</th>
 			</tr>
@@ -11,7 +11,14 @@
 			<tbody *ngIf="observations.length">
 			<tr *ngFor="let observation of observations; trackBy: trackId; index as index">
 				<td *ngFor="let column of header">
-					{{ getObservationByVariable(column, index) }}
+					<span *ngIf="column.termId === GID_TERM_ID || column.termId === DESIGNATION_TERM_ID else nolink">
+						<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.observations[index].gid } }]" queryParamsHandling="merge">
+							{{getObservationByVariable(column, index)}}
+						</a>
+					</span>
+					<ng-template #nolink>
+						{{ getObservationByVariable(column, index) }}
+					</ng-template>
 				</td>
 			</tr>
 			</tbody>

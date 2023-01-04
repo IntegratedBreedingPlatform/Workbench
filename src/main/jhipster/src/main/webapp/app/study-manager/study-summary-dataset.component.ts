@@ -25,6 +25,11 @@ export class StudySummaryDatasetComponent implements OnInit {
 
     static readonly TRIAL_INSTANCE_TERM_ID = 8170;
     static readonly LOCATION_ID_TERM_ID = 8190;
+    static readonly GID_TERM_ID = 8240;
+    static readonly DESIGNATION_TERM_ID = 8250;
+
+    GID_TERM_ID = StudySummaryDatasetComponent.GID_TERM_ID;
+    DESIGNATION_TERM_ID = StudySummaryDatasetComponent.DESIGNATION_TERM_ID;
 
     itemsPerPage = 20;
 
@@ -68,11 +73,12 @@ export class StudySummaryDatasetComponent implements OnInit {
     }
 
     getObservationByVariable(variable: ObservationVariable, index: number): any {
+        if (variable.termId === StudySummaryDatasetComponent.LOCATION_ID_TERM_ID || variable.termId === StudySummaryDatasetComponent.TRIAL_INSTANCE_TERM_ID) {
+            return this.observations[index].variables[variable.name].value;
+        }
+
         let observations: Map<string, ObservationUnitData>;
         if (this.isEnvironmentDataset()) {
-            if (variable.termId === StudySummaryDatasetComponent.LOCATION_ID_TERM_ID || variable.termId === StudySummaryDatasetComponent.TRIAL_INSTANCE_TERM_ID) {
-                return this.observations[index].variables[variable.name].value;
-            }
             observations = this.observations[index].environmentVariables;
         } else {
             observations = this.observations[index].variables;
@@ -80,10 +86,6 @@ export class StudySummaryDatasetComponent implements OnInit {
 
         const observationUnitData: ObservationUnitData = observations[variable.name];
         return this.observationVariableHelperService.getVariableValueFromUnitData(variable, observationUnitData);
-    }
-
-    isFactor(variable: ObservationVariable): boolean {
-        return variable.variableType.toString() === VariableTypeEnum[VariableTypeEnum.ENVIRONMENT_DETAIL];
     }
 
     loadPage(page: number) {
@@ -142,10 +144,7 @@ export class StudySummaryDatasetComponent implements OnInit {
     }
 
     private getSort() {
-        if (this.isEnvironmentDataset()) {
-            return ['8170, asc'];
-        }
-        return '';
+        return ['8170, asc'];
     }
 
     private onGetObservationSetColumnsSuccess(header: ObservationVariable[]) {
