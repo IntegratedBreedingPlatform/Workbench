@@ -96,6 +96,22 @@ export class StudySummaryComponent implements OnInit {
         if (tab.active && this.datasetTabs.length > 0) {
             this.navigateToDataset(this.datasetTabs[0].id);
         }
+
+        // Clear dropdown selection
+        if (tab.id === this.selectedDatasetId) {
+            this.selectedDatasetId = null;
+
+            if (this.datasetTabs.length === 0) {
+                this.router.navigate([], {
+                    queryParams: {
+                        studyId: null,
+                        datasetId: null,
+                        datasetName: null
+                    },
+                    queryParamsHandling: 'merge'
+                })
+            }
+        }
     }
 
     trackId(index: number, item: NavTab) {
