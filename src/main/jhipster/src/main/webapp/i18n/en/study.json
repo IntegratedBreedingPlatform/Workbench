@@ -66,6 +66,18 @@
                     "label": "Label"
                 }
             },
+            "environments":  {
+                "title": "ENVIRONMENTS",
+                "details": {
+                    "title": "ENVIRONMENT DETAILS",
+                    "no-data": "No available environment details"
+                },
+                "conditions": {
+                    "title": "ENVIRONMENT CONDITIONS",
+                    "no-data": "No available environmental conditions"
+                },
+                "no-data": "No available environments"
+            },
             "experimental-design": {
                 "title": "EXPERIMENTAL DESIGN",
                 "design-parameters": {
