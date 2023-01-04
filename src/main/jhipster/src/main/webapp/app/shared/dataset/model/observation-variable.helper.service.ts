@@ -28,8 +28,9 @@ export class ObservationVariableHelperService {
         return observationUnitData.value;
     }
 
-    private getCategoricalValue(variable: ObservationVariable, categoricalValueId: string) {
-        return variable.possibleValues.filter((valueReference: ValueReference) => String(valueReference.id) === categoricalValueId)
+    private getCategoricalValue(variable: ObservationVariable, categoricalValue: string) {
+        return variable.possibleValues.filter((valueReference: ValueReference) =>
+                String(valueReference.id) === categoricalValue || String(valueReference.name) === categoricalValue)
             .map((value: ValueReference) => value.description);
     }
 
