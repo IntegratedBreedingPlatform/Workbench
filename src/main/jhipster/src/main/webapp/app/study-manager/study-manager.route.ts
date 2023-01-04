@@ -26,10 +26,6 @@ export const STUDY_MANAGER_ROUTES: Routes = [
                 canActivate: [RouteAccessService]
             },
             {
-                /**
-                 * :studyId param is to track active link, but studyId queryParam is actually used to open tabs
-                 * because it's also available to parent (and all) component
-                 */
                 path: 'study/:studyId',
                 component: StudySummaryComponent,
                 // TODO: define permission

@@ -11,6 +11,8 @@ import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { DatasetTypeEnum } from '../shared/dataset/model/dataset-type.enum';
 import { ObservationUnitData } from '../shared/dataset/model/observation-unit-data.model';
 import { ObservationVariableHelperService } from '../shared/dataset/model/observation-variable.helper.service';
+import { finalize } from 'rxjs/internal/operators/finalize';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'jhi-study-summary-dataset',
@@ -38,16 +40,23 @@ export class StudySummaryDatasetComponent implements OnInit {
     header: ObservationVariable[];
     observations: ObservationUnitsSearchResponse[];
 
+    totalItems: number;
     page: number;
+    previousPage: number;
+    isLoading: boolean;
 
     constructor(public alertService: AlertService,
                 public translateService: TranslateService,
                 public datasetService: DatasetService,
-                public observationVariableHelperService: ObservationVariableHelperService) {
+                public observationVariableHelperService: ObservationVariableHelperService,
+                public router: Router,
+                public activatedRoute: ActivatedRoute) {
         this.page = 1;
+        this.totalItems = 0;
     }
 
     ngOnInit(): void {
+        this.isLoading = true;
         this.datasetService.getObservationSetColumns(this.studyId, this.datasetId).subscribe(
             (res: HttpResponse<ObservationVariable[]>) => this.onGetObservationSetColumnsSuccess(res.body),
             (res: HttpErrorResponse) => this.onError(res)
@@ -77,39 +86,87 @@ export class StudySummaryDatasetComponent implements OnInit {
         return variable.variableType.toString() === VariableTypeEnum[VariableTypeEnum.ENVIRONMENT_DETAIL];
     }
 
-    private onGetObservationSetColumnsSuccess(header: ObservationVariable[]) {
+    loadPage(page: number) {
+        if (page !== this.previousPage) {
+            this.previousPage = page;
+            this.transition();
+        }
+    }
+
+    transition() {
+        this.router.navigate([`./study/${this.studyId}/summary/dataset/${this.datasetId}`], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                studyId: this.studyId,
+                datasetId: this.datasetId,
+                sort: this.getSort(),
+                page: this.page,
+                size: this.itemsPerPage,
+            },
+            relativeTo: this.activatedRoute
+        });
+        this.loadAll();
+    }
+
+    loadAll() {
+        this.isLoading = true;
+
         const request: ObservationUnitsSearchRequest = new ObservationUnitsSearchRequest();
         if (this.isEnvironmentDataset()) {
-            const environmentConditions: ObservationVariable[] = [];
-            const environmentDetails: ObservationVariable[] = [];
-            const otherVariables: ObservationVariable[] = [];
-            header.forEach((variable: ObservationVariable) => {
-                if (variable.variableType) {
-                    if (variable.variableType.toString() === VariableTypeEnum[VariableTypeEnum.ENVIRONMENT_CONDITION]) {
-                        environmentConditions.push(variable);
-                    } else if (variable.variableType.toString() === VariableTypeEnum[VariableTypeEnum.ENVIRONMENT_DETAIL]) {
-                        environmentDetails.push(variable);
-                    } else {
-                        otherVariables.push(variable);
-                    }
-                }
-            });
-
-            this.header = environmentDetails.concat(environmentConditions).concat(otherVariables);
+            const environmentConditions: ObservationVariable[] = this.getEnvironmentConditionsVariables(this.header);
+            const environmentDetails: ObservationVariable[] = this.getEnvironmentDetailsVariables(this.header);
             request.environmentConditions = this.transformObservationVariableToDTO(environmentConditions);
             request.environmentDetails = this.transformObservationVariableToDTO(environmentDetails);
             request.environmentDatasetId = this.datasetId;
+        }
+
+        const pagination: any = {
+            page: this.page - 1,
+            size: this.itemsPerPage,
+            sort: this.getSort(),
+        }
+        this.datasetService.getObservationUnitTable(this.studyId, this.datasetId, request, pagination)
+            .pipe(finalize(() => {
+                this.isLoading = false;
+            }))
+            .subscribe(
+                (observationsResponse: HttpResponse<ObservationUnitsSearchResponse[]>) => this.onGetObservationUnitTableSuccess(observationsResponse),
+                (observationsResponse: HttpErrorResponse) => this.onError(observationsResponse)
+            );
+    }
+
+    resetTable() {
+        this.page = 1;
+        this.previousPage = 1;
+        this.loadAll();
+    }
+
+    private getSort() {
+        if (this.isEnvironmentDataset()) {
+            return ['8170, asc'];
+        }
+        return '';
+    }
+
+    private onGetObservationSetColumnsSuccess(header: ObservationVariable[]) {
+        if (this.isEnvironmentDataset()) {
+            const environmentConditions: ObservationVariable[] = this.getEnvironmentConditionsVariables(header);
+            const environmentDetails: ObservationVariable[] = this.getEnvironmentDetailsVariables(header);
+            const otherVariables: ObservationVariable[] =
+                header.filter((variable: ObservationVariable) => variable.variableType &&
+                    (variable.variableType.toString() !== VariableTypeEnum[VariableTypeEnum.ENVIRONMENT_CONDITION] &&
+                        variable.variableType.toString() !== VariableTypeEnum[VariableTypeEnum.ENVIRONMENT_DETAIL]));
+
+            this.header = environmentDetails.concat(environmentConditions).concat(otherVariables);
         } else {
             this.header = header;
         }
-        const pagination: any = {
-            page: this.page - 1,
-            size: this.itemsPerPage
-        }
-        this.datasetService.getObservationUnitTable(this.studyId, this.datasetId, request, pagination).subscribe(
-            (observationsResponse: HttpResponse<ObservationUnitsSearchResponse[]>) => this.observations = observationsResponse.body,
-            (observationsResponse: HttpErrorResponse) => this.onError(observationsResponse)
-        );
+        this.loadAll();
+    }
+
+    private onGetObservationUnitTableSuccess(response: HttpResponse<ObservationUnitsSearchResponse[]>) {
+        this.totalItems = Number(response.headers.get('X-Total-Count'));
+        this.observations = response.body;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -127,6 +184,18 @@ export class StudySummaryDatasetComponent implements OnInit {
 
     private isEnvironmentDataset(): boolean {
         return this.datasetType === DatasetTypeEnum.ENVIRONMENT;
+    }
+
+    private getEnvironmentConditionsVariables(header: ObservationVariable[]): ObservationVariable[] {
+        return this.filterVariables(header, VariableTypeEnum.ENVIRONMENT_CONDITION);
+    }
+
+    private getEnvironmentDetailsVariables(header: ObservationVariable[]): ObservationVariable[] {
+        return this.filterVariables(header, VariableTypeEnum.ENVIRONMENT_DETAIL);
+    }
+
+    private filterVariables(header: ObservationVariable[], variableType: VariableTypeEnum): ObservationVariable[] {
+        return header.filter((variable: ObservationVariable) => variable.variableType && variable.variableType.toString() === VariableTypeEnum[variableType]);
     }
 
 }
