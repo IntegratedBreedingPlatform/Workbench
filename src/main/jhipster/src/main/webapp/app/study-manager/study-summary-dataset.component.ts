@@ -31,6 +31,8 @@ export class StudySummaryDatasetComponent implements OnInit {
     GID_TERM_ID = StudySummaryDatasetComponent.GID_TERM_ID;
     DESIGNATION_TERM_ID = StudySummaryDatasetComponent.DESIGNATION_TERM_ID;
 
+    DatasetTypeEnum = DatasetTypeEnum;
+
     itemsPerPage = 20;
 
     @Input()
@@ -141,6 +143,10 @@ export class StudySummaryDatasetComponent implements OnInit {
         this.page = 1;
         this.previousPage = 1;
         this.loadAll();
+    }
+
+    getTraits(): ObservationVariable[] {
+        return this.filterVariables(this.header, VariableTypeEnum.TRAIT);
     }
 
     private getSort() {

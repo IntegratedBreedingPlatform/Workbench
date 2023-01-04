@@ -117,7 +117,11 @@
             },
             "datasets": {
                 "title": "DATASETS",
-                "select-dataset": "Choose a dataset to open:"
+                "select-dataset": "Choose a dataset to open:",
+                "traits": {
+                    "title": "TRAITS",
+                    "no-data": "No available traits."
+                }
             }
         },
         "import-entry-details": {
