@@ -151,8 +151,12 @@ export class StudySummaryDatasetComponent implements OnInit {
         return this.filterVariables(this.header, VariableTypeEnum.TRAIT);
     }
 
-    isObservationDataset(): boolean {
-        return this.datasetType === DatasetTypeEnum.PLOT;
+    isObservationOrSubObservationDataset(): boolean {
+        return this.datasetType === DatasetTypeEnum.PLOT ||
+            this.datasetType === DatasetTypeEnum.PLANT_SUBOBSERVATIONS ||
+            this.datasetType === DatasetTypeEnum.QUADRAT_SUBOBSERVATIONS ||
+            this.datasetType === DatasetTypeEnum.TIME_SERIES_SUBOBSERVATIONS ||
+            this.datasetType === DatasetTypeEnum.CUSTOM_SUBOBSERVATIONS;
     }
 
     private getSort() {
