@@ -118,6 +118,9 @@
             "datasets": {
                 "title": "DATASETS",
                 "select-dataset": "Choose a dataset to open:",
+                "observations": {
+                    "title": "OBSERVATIONS"
+                },
                 "traits": {
                     "title": "TRAITS",
                     "no-data": "No available traits."
