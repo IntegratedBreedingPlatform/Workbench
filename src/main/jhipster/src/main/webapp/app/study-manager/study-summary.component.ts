@@ -21,6 +21,13 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 })
 export class StudySummaryComponent implements OnInit {
 
+    static readonly SUPPORTED_DATASETS: DatasetTypeEnum[] = [DatasetTypeEnum.PLOT,
+        DatasetTypeEnum.ENVIRONMENT,
+        DatasetTypeEnum.PLANT_SUBOBSERVATIONS,
+        DatasetTypeEnum.QUADRAT_SUBOBSERVATIONS,
+        DatasetTypeEnum.TIME_SERIES_SUBOBSERVATIONS,
+        DatasetTypeEnum.CUSTOM_SUBOBSERVATIONS];
+
     @Input()
     studyId: number;
 
@@ -63,7 +70,7 @@ export class StudySummaryComponent implements OnInit {
             (res: HttpErrorResponse) => this.onError(res)
         );
         this.datasetService.getDatasets(this.studyId, null).subscribe(
-            (res: HttpResponse<DatasetModel[]>) => this.datasets = res.body,
+            (res: HttpResponse<DatasetModel[]>) => this.onGetDatasetsSuccess(res.body),
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
@@ -120,6 +127,10 @@ export class StudySummaryComponent implements OnInit {
 
     getDatasetTypeByDatasetId(datasetId: number): DatasetTypeEnum {
         return this.datasets.filter((dataset: DatasetModel) => dataset.datasetId === datasetId).map((dataset: DatasetModel) => dataset.datasetTypeId)[0];
+    }
+
+    private onGetDatasetsSuccess(datasets: DatasetModel[]) {
+        this.datasets = datasets.filter((dataset: DatasetModel) => StudySummaryComponent.SUPPORTED_DATASETS.includes(dataset.datasetTypeId));
     }
 
     private onError(response: HttpErrorResponse) {
