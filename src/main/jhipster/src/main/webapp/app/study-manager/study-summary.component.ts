@@ -21,12 +21,15 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 })
 export class StudySummaryComponent implements OnInit {
 
-    static readonly SUPPORTED_DATASETS: DatasetTypeEnum[] = [DatasetTypeEnum.PLOT,
+    static readonly SUPPORTED_DATASETS: DatasetTypeEnum[] = [
+        DatasetTypeEnum.MEANS,
+        DatasetTypeEnum.PLOT,
         DatasetTypeEnum.ENVIRONMENT,
         DatasetTypeEnum.PLANT_SUBOBSERVATIONS,
         DatasetTypeEnum.QUADRAT_SUBOBSERVATIONS,
         DatasetTypeEnum.TIME_SERIES_SUBOBSERVATIONS,
-        DatasetTypeEnum.CUSTOM_SUBOBSERVATIONS];
+        DatasetTypeEnum.CUSTOM_SUBOBSERVATIONS,
+        DatasetTypeEnum.SUMMARY_STATISTICS_DATA];
 
     @Input()
     studyId: number;
