@@ -8,10 +8,10 @@
 		</button>
 		<span>{{program?.name}}</span>
 		<div class="toolbar-filler"></div>
-		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS">Site Admin</button>
-		<button mat-button *ngIf="toolLinkSelected" (click)="myPrograms()">My Programs</button>
+		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS" data-test="siteAdminButton">Site Admin</button>
+		<button mat-button *ngIf="toolLinkSelected" (click)="myPrograms()" data-test="myProgramsButton">My Programs</button>
 		<ng-container *ngIf="!toolLinkSelected">
-			<button mat-button (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION"><i class="fa fa-plus"></i> Add a Program</button>
+			<button mat-button (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION" data-test="addProgramButton"><i class="fa fa-plus"></i> Add a Program</button>
 		</ng-container>
 
 		<button mat-icon-button (click)="about()">
