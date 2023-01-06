@@ -239,15 +239,6 @@ export class BreedingMethodsPaneComponent implements OnInit {
                 },
             },
             {
-                key: 'methodClassIds', name: 'Class', type: FilterType.DROPDOWN, values: this.getBreedingMethodClassOptions(), multipleSelect: true,
-                transform(req) {
-                    ColumnFilterComponent.transformDropdownFilter(this, req);
-                },
-                reset(req) {
-                    ColumnFilterComponent.resetDropdownFilter(this, req);
-                },
-            },
-            {
                 key: 'snameTypeIds', name: 'Source Name Types', type: FilterType.DROPDOWN, values: this.getNameTypeOptions(), multipleSelect: true,
                 transform(req) {
                     ColumnFilterComponent.transformDropdownFilter(this, req);
