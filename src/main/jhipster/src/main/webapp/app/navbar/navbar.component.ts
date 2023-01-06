@@ -88,6 +88,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // Get ask for support link url
         this.getHelpLink(this.askForSupportHelpLink, HELP_NAVIGATION_ASK_FOR_SUPPORT)
             .then((response) => this.askForSupportHelpLink = response);
+
+        this.location.subscribe((popStateEvent) => {
+            this.onPopStateEvent(popStateEvent);
+        })
     }
 
     hasChild = (_: number, node: any) => node.expandable;
@@ -117,10 +121,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         }
 
         this.restoreRoute();
-
-        this.location.subscribe((popStateEvent) => {
-            this.onPopStateEvent(popStateEvent);
-        })
     }
 
     ngAfterViewInit() {
