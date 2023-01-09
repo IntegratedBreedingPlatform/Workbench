@@ -137,6 +137,19 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
         filter.selectedValues = [];
     }
 
+    static transformVariablesFilter(filter, request) {
+        const variables: any = {};
+        for (const variable of filter.variables) {
+            variables[variable.id] = variable.value;
+        }
+        request[filter.key] = variables;
+    }
+
+    static resetVariablesFilter(filter, request) {
+        request[filter.key] = undefined;
+        filter.variables = [];
+    }
+
     static updateBadgeLabel(filter) {
         return ColumnFilterComponent.getBadgeLabelByType(filter).then((label) => {
             if (label) {
@@ -525,5 +538,6 @@ export enum FilterType {
     ATTRIBUTES,
     NUMBER_RANGE,
     NAME_TYPES,
-    DROPDOWN
+    DROPDOWN,
+    VARIABLES
 }

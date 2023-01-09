@@ -15,6 +15,7 @@ import { MatchType } from '../shared/column-filter/column-filter-text-with-match
 import { ColumnFilterRadioButtonOption } from '../shared/column-filter/column-filter-radio-component';
 import { Subscription } from 'rxjs';
 import { UrlService } from '../shared/service/url.service';
+import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 
 declare var $: any;
 
@@ -135,7 +136,8 @@ export class StudySearchComponent implements OnInit {
 
     openViewSummary($event, study: StudySearchResponse) {
         $event.preventDefault();
-        this.router.navigate([`/study-manager/study/${study.studyId}`], {queryParams: {
+        this.router.navigate([`/study-manager/study/${study.studyId}`], {
+            queryParams: {
                 studyId: study.studyId,
                 studyName: study.studyName
             }
@@ -209,6 +211,16 @@ export class StudySearchComponent implements OnInit {
             },
             { key: 'parentFolderName', name: 'Parent Folder', placeholder: 'Contains Text', type: FilterType.TEXT },
             { key: 'objective', name: 'Objective', placeholder: 'Contains Text', type: FilterType.TEXT },
+            {
+                key: 'studySettings', name: 'Study Settings', type: FilterType.VARIABLES, placeholder: 'Search study settings...',
+                description: 'Search for study settings that you want to filter', variableTypeIds: [VariableTypeEnum.STUDY_DETAIL.toString()], variables: [],
+                transform(req) {
+                    ColumnFilterComponent.transformVariablesFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetVariablesFilter(this, req);
+                },
+            },
         ];
     }
 

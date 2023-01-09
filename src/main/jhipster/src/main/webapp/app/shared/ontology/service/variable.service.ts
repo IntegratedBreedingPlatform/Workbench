@@ -20,7 +20,7 @@ export class VariableService {
         return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables`, { params });
     }
 
-    filterVariables(request: VariableFilterRequest) {
+    filterVariables(request: VariableFilterRequest): Observable<VariableDetails[]> {
         const params = Object.assign({
             programUUID: this.paramContext.programUUID,
         }, request);

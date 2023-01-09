@@ -99,6 +99,7 @@ import { EntryDetailsImportContext } from './ontology/entry-details-import.conte
 import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 import { ModalAlertComponent } from './modal/modal-alert.component';
 import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
+import { ColumnFilterVariablesComponent } from './column-filter/column-filter-variables-component';
 
 @NgModule({
     imports: [
@@ -139,6 +140,7 @@ import { ObservationVariableHelperService } from './dataset/model/observation-va
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ColumnFilterDropdownComponent,
+        ColumnFilterVariablesComponent,
         KeyValuePipe,
         SecureImagePipe,
         CropSelect2DataPipe,
@@ -270,6 +272,7 @@ import { ObservationVariableHelperService } from './dataset/model/observation-va
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ColumnFilterDropdownComponent,
+        ColumnFilterVariablesComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         GermplasmTreeTableComponent,

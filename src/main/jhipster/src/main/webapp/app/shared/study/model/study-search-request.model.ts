@@ -7,7 +7,8 @@ export class StudySearchRequest {
         public studyStartDateFrom?: number,
         public studyStartDateTo?: number,
         public parentFolderName?: string,
-        public objective?: string
+        public objective?: string,
+        public studySettings?: any
     ) {
     }
 }
