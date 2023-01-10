@@ -4,8 +4,10 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
 import { VariableService } from '../ontology/service/variable.service';
-import { VariableFilterRequest } from '../ontology/model/variable-filter-request';
-import { VariableDetails } from '../ontology/model/variable-details';
+import { VariableSearchRequest } from '../ontology/model/variable-search-request.model';
+import { MatchType } from './column-filter-text-with-match-options-component';
+import { Variable } from '../ontology/model/variable';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'jhi-column-filter-variables',
@@ -54,7 +56,7 @@ import { VariableDetails } from '../ontology/model/variable-details';
 export class ColumnFilterVariablesComponent implements OnInit {
 
     queryField: FormControl = new FormControl();
-    results: VariableDetails[] = [];
+    results: Variable[] = [];
 
     @Input() filter: any;
 
@@ -75,19 +77,22 @@ export class ColumnFilterVariablesComponent implements OnInit {
                     this.results = [];
                     return;
                 }
-                const request: VariableFilterRequest = <VariableFilterRequest>({});
-                request.variableNames = [query];
+                const request: VariableSearchRequest = <VariableSearchRequest>({});
+                request.nameFilter = {
+                    value: query,
+                    type: MatchType.CONTAINS
+                };
                 if (this.filter.variableTypeIds) {
                     request.variableTypeIds = this.filter.variableTypeIds;
                 }
-                return this.variableService.filterVariables(request)
+                return this.variableService.searchVariables(request)
             })
-            .subscribe((result: VariableDetails[]) => {
-                this.results = result;
+            .subscribe((result: HttpResponse<Variable[]>) => {
+                this.results = result.body;
             });
     }
 
-    addVariable(variable: VariableDetails) {
+    addVariable(variable: Variable) {
         // Reset query field value
         this.queryField.setValue('');
         // Do not add variable if it's already in the list
@@ -97,7 +102,7 @@ export class ColumnFilterVariablesComponent implements OnInit {
         this.onAdd.emit(variable);
     }
 
-    deleteVariable(variable: VariableDetails) {
+    deleteVariable(variable: Variable) {
         this.filter.variables = this.filter.variables.filter((e) => e.id !== variable.id);
         this.onDelete.emit(variable);
     }

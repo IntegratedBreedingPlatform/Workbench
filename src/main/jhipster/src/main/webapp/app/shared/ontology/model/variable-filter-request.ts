@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export class VariableFilterRequest {
     constructor(
         public propertyIds?: string[],
