@@ -231,6 +231,16 @@ export class StudySearchComponent implements OnInit {
                     ColumnFilterComponent.resetVariablesFilter(this, req);
                 },
             },
+            {
+                key: 'environmentConditions', name: 'Environment Conditions', type: FilterType.VARIABLES, placeholder: 'Search environment conditions...',
+                description: 'Search for environment conditions that you want to filter', variableTypeIds: [VariableTypeEnum.ENVIRONMENT_CONDITION.toString()], variables: [],
+                transform(req) {
+                    ColumnFilterComponent.transformVariablesFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetVariablesFilter(this, req);
+                },
+            }
         ];
     }
 
