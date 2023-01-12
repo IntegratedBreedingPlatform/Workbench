@@ -129,6 +129,7 @@
 							<!-- TODO [title] with translation not resolving correctly when opening from my-lists -->
 							<i class="fa fa-edit ml-2" role="button" title="Fill with cross expansion"
 							   [ngbPopover]="crossOptionsPopover" [placement]="['bottom', 'left']" [autoClose]="'outside'"
+							   data-test="specifyExpansionLevelButton"
 							></i>
 						</span>
 					</span>
@@ -194,6 +195,7 @@
 		</div>
 		<div class="footer text-center"><br>
 			<button type="submit" class="btn btn-primary btn-sm" jhiTranslate="apply"
+					data-test="crossExpansionApplyButton"
 					[disabled]="isLoading"
 					(click)="fillWithCrossExpansion()"></button>
 		</div>
