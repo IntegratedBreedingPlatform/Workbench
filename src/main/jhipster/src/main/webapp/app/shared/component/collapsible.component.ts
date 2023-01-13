@@ -5,6 +5,8 @@ import { Component, Input } from '@angular/core';
     template: `
 		<label (click)="isCollapsed = !isCollapsed"
 			   [attr.aria-expanded]="!isCollapsed">
+			<img *ngIf="img" src="{{img}}">
+            <span *ngIf="iconClass" class="{{iconClass}}"></span>&nbsp;
 			<i [ngClass]="isCollapsed?'fa fa-caret-right fa-lg':'fa fa-caret-down fa-lg'" aria-hidden="true"> </i>
 			<span class="d-inline-flex p-2 h4 font-weight-bold">{{heading}}</span>
 		</label><br>
@@ -17,4 +19,6 @@ export class CollapsibleComponent {
     @Input() isCollapsed = false;
     @Input() heading: string;
     @Input() collapsable = true;
+    @Input() img: string;
+    @Input() iconClass: string;
 }

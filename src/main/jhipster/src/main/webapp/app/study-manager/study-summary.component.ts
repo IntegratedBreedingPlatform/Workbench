@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { StudyService } from '../shared/study/service/study.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
@@ -18,6 +18,10 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 @Component({
     selector: 'jhi-study-summary',
     templateUrl: './study-summary.component.html',
+    styleUrls: [
+    './study-summary.component.scss'
+    ],
+    encapsulation: ViewEncapsulation.None
 })
 export class StudySummaryComponent implements OnInit {
 

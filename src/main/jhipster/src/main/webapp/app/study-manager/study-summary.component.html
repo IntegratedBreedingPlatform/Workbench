@@ -1,7 +1,7 @@
 <div class="container-fluid pt-3">
 	<button class="btn btn-info float-right" jhiTranslate="study.details.actions.open-study" (click)="openStudy(studyDetails.id)">
 	</button>
-	<jhi-collapsible heading="{{translateService.instant('study.details.basic-details.title')}}">
+	<jhi-collapsible heading="{{translateService.instant('study.details.basic-details.title')}}" img="content/img/basic-details.png">
 		<div class="container-fluid mb-2">
 			<div class="row">
 				<div class="col">
@@ -92,7 +92,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.study-settings.title')}}" img="content/img/basic-details.png" isCollapsed="true">
+	<jhi-collapsible heading="{{translateService.instant('study.details.study-settings.title')}}" isCollapsed="true" iconClass="bms-icon bms-mgt-details">
 		<div class="container-fluid mb-2">
 			<div class="row" *ngIf="studyDetails?.studySettings.length else studySettingsNoData">
 				<ng-container *ngFor="let studySetting of studyDetails?.studySettings; index as i">
@@ -109,7 +109,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.selections.title')}}" isCollapsed="true">
+	<jhi-collapsible heading="{{translateService.instant('study.details.selections.title')}}" isCollapsed="true" iconClass="bms-icon bms-variates">
 		<div class="container-fluid mb-2">
 			<div class="row">
 				<div class="col-6">
@@ -136,7 +136,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.entry-details.title')}}" isCollapsed="true">
+	<jhi-collapsible heading="{{translateService.instant('study.details.entry-details.title')}}" isCollapsed="true" iconClass="bms-icon bms-factors">
 		<div class="container-fluid mb-2">
 			<div class="row">
 				<div class="col-6">
@@ -163,7 +163,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.treatment-factors.title')}}" isCollapsed="true">
+	<jhi-collapsible heading="{{translateService.instant('study.details.treatment-factors.title')}}" isCollapsed="true" iconClass="bms-icon bms-treatment-factors">
 		<div class="container-fluid mb-2">
 			<div class="row">
 				<div class="col-6">
@@ -192,7 +192,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.environments.title')}}" isCollapsed="false">
+	<jhi-collapsible heading="{{translateService.instant('study.details.environments.title')}}" isCollapsed="false" iconClass="bms-icon bms-environments">
 		<div class="container-fluid mb-2">
 			<div class="row">
 				<div class="col-6">
@@ -242,7 +242,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.experimental-design.title')}}" isCollapsed="true">
+	<jhi-collapsible heading="{{translateService.instant('study.details.experimental-design.title')}}" isCollapsed="true" iconClass="bms-icon bms-exp-design">
 		<div class="container-fluid mb-2">
 			<div class="row" *ngIf="studyDetails?.experimentalDesignDetail else experimentalDesignNoData">
 				<div class="col-6">
@@ -376,7 +376,7 @@
 		</div>
 	</jhi-collapsible>
 
-	<jhi-collapsible heading="{{translateService.instant('study.details.datasets.title')}}">
+	<jhi-collapsible heading="{{translateService.instant('study.details.datasets.title')}}" img="content/img/matching-nurseries.png">
 		<div class="container-fluid mb-2 pl-0">
 			<div class="row pl-3">
 				<div>
