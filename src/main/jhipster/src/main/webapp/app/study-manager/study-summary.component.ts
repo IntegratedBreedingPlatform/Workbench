@@ -18,9 +18,6 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 @Component({
     selector: 'jhi-study-summary',
     templateUrl: './study-summary.component.html',
-    styleUrls: [
-    './study-summary.component.scss'
-    ],
     encapsulation: ViewEncapsulation.None
 })
 export class StudySummaryComponent implements OnInit {
