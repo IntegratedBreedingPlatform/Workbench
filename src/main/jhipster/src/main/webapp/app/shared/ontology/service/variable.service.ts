@@ -23,7 +23,7 @@ export class VariableService {
     }
 
     /**
-     * @deprecated
+     * @deprecated Please, instead use {@link searchVariables}
      */
     filterVariables(request: VariableFilterRequest): Observable<VariableDetails[]> {
         const params = Object.assign({
