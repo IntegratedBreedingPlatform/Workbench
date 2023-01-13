@@ -13,6 +13,7 @@ import { ObservationUnitData } from '../shared/dataset/model/observation-unit-da
 import { ObservationVariableHelperService } from '../shared/dataset/model/observation-variable.helper.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { ActivatedRoute, Router } from '@angular/router';
+import { isObservationOrSubObservationDataset } from '../shared/dataset/model/dataset.util';
 
 @Component({
     selector: 'jhi-study-summary-dataset',
@@ -30,6 +31,8 @@ export class StudySummaryDatasetComponent implements OnInit {
 
     GID_TERM_ID = StudySummaryDatasetComponent.GID_TERM_ID;
     DESIGNATION_TERM_ID = StudySummaryDatasetComponent.DESIGNATION_TERM_ID;
+
+    isObservationOrSubObservationDataset = isObservationOrSubObservationDataset;
 
     itemsPerPage = 20;
 
@@ -149,14 +152,6 @@ export class StudySummaryDatasetComponent implements OnInit {
         }
 
         return this.filterVariables(this.header, VariableTypeEnum.TRAIT);
-    }
-
-    isObservationOrSubObservationDataset(): boolean {
-        return this.datasetType === DatasetTypeEnum.PLOT ||
-            this.datasetType === DatasetTypeEnum.PLANT_SUBOBSERVATIONS ||
-            this.datasetType === DatasetTypeEnum.QUADRAT_SUBOBSERVATIONS ||
-            this.datasetType === DatasetTypeEnum.TIME_SERIES_SUBOBSERVATIONS ||
-            this.datasetType === DatasetTypeEnum.CUSTOM_SUBOBSERVATIONS;
     }
 
     private getSort() {
