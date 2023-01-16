@@ -25,11 +25,12 @@ export class DatasetService {
     }
 
     getVariablesByVariableType(studyId: number, datasetId: number, variableTypeIds: number[]): Observable<HttpResponse<ObservationVariable[]>> {
-        let url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/variables/types/${variableTypeIds}`;
-        if (datasetId != null) {
-            url += `?datasetId=${datasetId}`;
+        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/variables/types/${variableTypeIds}`;
+        const params: any = {}
+        if (datasetId) {
+            params['datasetId'] = datasetId;
         }
-        return this.http.get<any>(url, { observe: 'response' });
+        return this.http.get<any>(url, { params, observe: 'response' });
     }
 
 }
