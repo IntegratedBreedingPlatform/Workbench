@@ -207,7 +207,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     private loadStudyVariables() {
-        this.datasetService.getVariablesByVariableType(this.studyId, null, [VariableTypeEnum.STUDY_DETAIL]).toPromise().then((response: HttpResponse<ObservationVariable[]>) => {
+        this.datasetService.getVariablesByVariableType(this.studyId, [VariableTypeEnum.STUDY_DETAIL]).toPromise().then((response: HttpResponse<ObservationVariable[]>) => {
             this.selectionTraitVariablesByDatasetIds.set(this.studyId, this.filterSelectionTraitVariable(response.body));
             this.studyVariablesLoaded = true;
             this.initializeSelectionTraitLevels();
