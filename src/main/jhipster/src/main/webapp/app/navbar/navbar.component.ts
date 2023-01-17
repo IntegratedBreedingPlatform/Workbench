@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavService } from './nav.service';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { Program } from '../shared/program/model/program';
@@ -14,12 +14,15 @@ import { LoginService } from '../shared/login/login.service';
 import { HELP_NAVIGATION_ASK_FOR_SUPPORT, HELP_NAVIGATION_BAR_ABOUT_BMS, VERSION } from '../app.constants';
 import { HelpService } from '../shared/service/help.service';
 import { ADD_PROGRAM_PERMISSION, SITE_ADMIN_PERMISSIONS } from '../shared/auth/permissions';
-import { ProgramUsageService } from '../shared/service/program-usage.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavbarMessageEvent } from '../shared/model/navbar-message.event';
+import { ProgramService } from '../shared/program/service/program.service';
+import { ProgramUsageService } from '../shared/service/program-usage.service';
 import { CropParameterService } from '../shared/crop-parameter/service/crop-parameter.service';
+import { Location, PopStateEvent } from '@angular/common';
 import { CropParameterTypeEnum } from '../shared/crop-parameter/model/crop-parameter-type-enum';
 import { CropParameter } from '../shared/crop-parameter/model/crop-parameter';
+import { TranslateService } from '@ngx-translate/core';
 
 declare const showReleaseNotes: string;
 
@@ -36,7 +39,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     ADD_PROGRAM_PERMISSION = ADD_PROGRAM_PERMISSION;
 
     version: string;
-    toolUrl: any;
     program: Program;
     user: any;
     toolLinkSelected: string;
@@ -45,6 +47,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     askForSupportHelpLink: string;
 
     @ViewChild('sideNav') sideNav: ElementRef;
+    @ViewChild('viewport') viewport: ElementRef;
 
     treeControl = new FlatTreeControl<FlatNode>((node) => node.level, (node) => node.expandable);
     treeFlattener = new MatTreeFlattener(
@@ -54,6 +57,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     );
     dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
+    private readonly SESSION_STORAGE_QUERY_PARAM_KEY = 'bms.queryParams';
+
     constructor(
         private navService: NavService,
         private principal: Principal,
@@ -62,18 +67,20 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         private jhiAlertService: JhiAlertService,
         private loginService: LoginService,
         private helpService: HelpService,
+        private programService: ProgramService,
         private programUsageService: ProgramUsageService,
         private cropParameterService: CropParameterService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute,
+        private location: Location,
+        private readonly title: Title,
+        private translateService: TranslateService
     ) {
         this.version = '';
         // Append a ".0" in BMS version if none is found. The .0 gets truncated from workbench.properties to webpack.common version
         if (VERSION) {
             this.version = VERSION.includes('.') ?  `BMS ${VERSION}` : `BMS ${VERSION}.0`;
         }
-        this.principal.identity().then((identity) => {
-            this.user = identity;
-        });
 
         // Get about bms help link url
         this.getHelpLink(this.aboutBMSHelpLink, HELP_NAVIGATION_BAR_ABOUT_BMS)
@@ -81,6 +88,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         // Get ask for support link url
         this.getHelpLink(this.askForSupportHelpLink, HELP_NAVIGATION_ASK_FOR_SUPPORT)
             .then((response) => this.askForSupportHelpLink = response);
+
+        this.location.subscribe((popStateEvent) => {
+            this.onPopStateEvent(popStateEvent);
+        })
     }
 
     hasChild = (_: number, node: any) => node.expandable;
@@ -95,31 +106,37 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         };
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.user = await this.principal.identity();
+        this.myPrograms();
+
         if (showReleaseNotes) {
             this.router.navigate(['/', { outlets: { popup: 'release-notes-popup' }, }], {
                 replaceUrl: false,
                 skipLocationChange: true,
                 queryParamsHandling: 'merge'
             });
+            sessionStorage.removeItem(this.SESSION_STORAGE_QUERY_PARAM_KEY)
+            return;
         }
+
+        this.restoreRoute();
     }
 
     ngAfterViewInit() {
         this.navService.sideNav = this.sideNav;
     }
 
-    async openTool(url) {
+    async openTool(url, toolName) {
         let authParams = '';
         const cropName = this.program ? this.program.crop : null;
-        this.toolLinkSelected = url;
+        const programUUID = this.program ? this.program.uniqueID : null;
         if (url.includes('/brapi-sync')) {
             authParams += '?destinationToken=' + JSON.parse(localStorage['bms.xAuthToken']).token
                 + '&destination=' + window.location.origin + '/bmsapi/' + cropName + '/brapi/v2'
                 + '&silentRefreshRedirectUri=' + window.location.origin
                 + '/ibpworkbench/controller/pages/brapi-sync/static/silent-refresh.html'
 
-            const programUUID = this.program ? this.program.uniqueID : null;
             await this.cropParameterService.getCropParameter(cropName, programUUID, CropParameterTypeEnum.DEFAULT_BRAPI_SYNC_SOURCE)
                 .toPromise()
                 .then((cropParameter: CropParameter) => {
@@ -129,7 +146,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 });
         } else {
             const hasParams = url.includes('?');
-            const programUUID = this.program ? this.program.uniqueID : null;
             const selectedProjectId = this.program ? this.program.id : null;
             authParams += (hasParams ? '&' : '?') + 'cropName=' + cropName
                 + '&programUUID=' + programUUID
@@ -137,21 +153,42 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 + '&loggedInUserId=' + this.user.id;
         }
         authParams += '&restartApplication';
-        this.toolUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url + authParams);
+
+        this.toolLinkSelected = url
+
+        /*
+         * avoids glitch when rendering some tools directly (e.g. manage study)
+         * where main window is still visible in iframe content for a second
+         */
+        this.viewport.nativeElement.contentWindow.location.replace('about:blank');
+        setTimeout(() => this.viewport.nativeElement.contentWindow.location.replace(url + authParams), 100);
+
+        this.router.navigate(['.'], {
+            queryParams: {
+                cropName,
+                programUUID,
+                toolUrl: url,
+                toolName
+            }
+        }).then(() => {
+            this.title.setTitle(this.translateService.instant('global.title') + ': ' + toolName)
+        });
     }
 
     myPrograms() {
         this.program = null;
-        this.toolUrl = '';
+        this.toolLinkSelected = null;
+        this.router.navigate(['']);
+        this.viewport.nativeElement.contentWindow.location.replace('/ibpworkbench/main/#programs')
     }
 
     siteAdmin() {
         this.program = null;
-        this.openTool('/ibpworkbench/controller/admin');
+        this.openTool('/ibpworkbench/controller/admin', 'Site Admin');
     }
 
     about() {
-        this.openTool('/ibpworkbench/controller/jhipster#about')
+        this.openTool('/ibpworkbench/controller/jhipster#about', 'About')
     }
 
     isSideNavAvailable() {
@@ -171,13 +208,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
                 await this.getTools(program);
 
                 // Open program with specific tool (e.g a particular study in manage studies)
-                if (event.data.toolSelected) {
-                    this.openTool(event.data.toolSelected);
+                if (event.data.toolSelectedUrl) {
+                    this.openTool(event.data.toolSelectedUrl, event.data.toolSelectedName);
                     this.expandParent();
                 } else {
                     const firstNode = this.treeControl.dataNodes[0];
                     this.treeControl.expand(firstNode);
-                    this.openTool(this.treeControl.getDescendants(firstNode)[0].link);
+                    const descendant = this.treeControl.getDescendants(firstNode)[0];
+                    this.openTool(descendant.link, descendant.name);
                 }
             } catch (error) {
                 this.onError(error);
@@ -185,10 +223,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         } else if (event.data.programUpdated && this.program) {
             this.program.name = event.data.programUpdated.name;
         } else if (event.data.programDeleted) {
-            this.program = null;
-            this.toolUrl = '';
-        } else if (event.data.toolSelected) {
-            this.openTool(event.data.toolSelected);
+            this.myPrograms();
+        } else if (event.data.toolSelectedUrl) {
+            this.openTool(event.data.toolSelectedUrl, event.data.toolSelectedName);
             this.expandParent();
         } else if (event.data.userProfileChanged) {
             this.user = await this.principal.identity(true)
@@ -234,6 +271,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     private expandParent() {
+        if (!this.treeControl.dataNodes.length) {
+            return;
+        }
         // Find node by selected tool name
         const selectedNode: FlatNode[] = this.treeControl.dataNodes.filter((node) => this.toolLinkSelected.startsWith(node.link));
         if (selectedNode.length === 1) {
@@ -274,6 +314,117 @@ export class NavbarComponent implements OnInit, AfterViewInit {
             skipLocationChange: true,
             queryParamsHandling: 'merge'
         });
+    }
+
+    @HostListener('window:beforeunload')
+    private beforeunload() {
+        this.persistQueryParams();
+    }
+
+    private persistQueryParams() {
+        const queryIndex = this.router.url.lastIndexOf('?');
+        if (queryIndex >= 0) {
+            sessionStorage.setItem(this.SESSION_STORAGE_QUERY_PARAM_KEY, this.router.url.substring(queryIndex));
+        }
+    }
+
+    /**
+     * Restores route after login or page reload
+     */
+    private async restoreRoute() {
+        let programUUID = this.route.snapshot.queryParams.programUUID;
+        let cropName = this.route.snapshot.queryParams.cropName;
+        let toolUrl = this.route.snapshot.queryParams.toolUrl;
+        let toolName = this.route.snapshot.queryParams.toolName;
+
+        const hasQueryParams = () => {
+            return (programUUID && cropName) || toolUrl;
+        }
+
+        const sessionQueryParams = sessionStorage.getItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+        sessionStorage.removeItem(this.SESSION_STORAGE_QUERY_PARAM_KEY);
+
+        if (sessionQueryParams && !hasQueryParams()) {
+            await this.router.navigateByUrl(sessionQueryParams);
+
+            programUUID = this.route.snapshot.queryParams.programUUID;
+            cropName = this.route.snapshot.queryParams.cropName;
+            toolUrl = this.route.snapshot.queryParams.toolUrl;
+            toolName = this.route.snapshot.queryParams.toolName;
+        }
+
+        if (!hasQueryParams()) {
+            return;
+        }
+
+        let program: Program;
+        if (cropName && programUUID) {
+            program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
+        }
+        const message: NavbarMessageEvent = {};
+        if (program) {
+            message.programSelected = program;
+        }
+        if (toolUrl) {
+            message.toolSelectedUrl = toolUrl;
+            message.toolSelectedName = toolName;
+        }
+        if (Object.keys(message).length) {
+            this.onMessage({ data: message });
+        }
+    }
+
+    /**
+     * This (specifically, calling onMessage) will override native iframe back/forth functionality.
+     * - Fixes Firefox back button, which won't reload iframe contents, though other browsers do (1).
+     * - Also fixes back and forward to site admin in all browsers
+     * - Fixes back issue to brapi-sync in (1)
+     * - in some browsers (1) it will change iframe location twice, causing a double render of the component,
+     * but it's almost unnoticeable (except in slow servers).
+     *
+     * (1) - Some browsers iframe history seem to work correctly (e.g. Chrome, Brave)
+     */
+    private async onPopStateEvent(popStateEvent: PopStateEvent) {
+        if (popStateEvent.type === 'popstate') {
+            const urlTree = this.router.parseUrl(popStateEvent.url);
+            console.log('popstate event: ', popStateEvent.url, urlTree);
+
+            const programUUID = urlTree.queryParams.programUUID;
+            const cropName = urlTree.queryParams.cropName;
+            const toolUrl = urlTree.queryParams.toolUrl;
+            const toolName = urlTree.queryParams.toolName;
+
+            if (toolUrl) {
+                this.toolLinkSelected = toolUrl;
+            }
+
+            if (!toolUrl) {
+                this.myPrograms();
+                return;
+            }
+
+            let program: Program;
+            if ((cropName && programUUID)) {
+                if (this.program && this.program.uniqueID === programUUID) {
+                    program = this.program;
+                } else {
+                    program = await this.programService.getProgramByProgramUUID(cropName, programUUID).toPromise().then((resp) => resp.body);
+                }
+            } else {
+                this.program = null;
+            }
+            const message: NavbarMessageEvent = {};
+            if (program) {
+                message.programSelected = program;
+            }
+            if (toolUrl) {
+                message.toolSelectedUrl = toolUrl;
+                message.toolSelectedName = toolName;
+            }
+            if (Object.keys(message).length) {
+                this.onMessage({ data: message });
+            }
+        }
     }
 }
 

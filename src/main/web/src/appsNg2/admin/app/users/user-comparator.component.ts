@@ -10,15 +10,15 @@ export class UserComparator implements IObjectComparator {
         if (!(source instanceof Object) || !(target instanceof Object)) return false;
         // if they are not strictly equal, they both need to be Objects
         for (let prop in source) {
-            // console.log("source " + source[prop]);
+            // console.log("source " + source[prop] + target[prop]);
             if (!source.hasOwnProperty(prop)) continue;
             if (source[prop] === undefined || source[prop] === null || source[prop] === '') continue;
             if (source[prop] == 'undefined') continue;
 
             //Option for status Active
-            if (typeof target[prop] === 'string' && prop == 'status') {
+            if (prop == 'active') {
                 if (source[prop] == 'all' || source[prop] == 'undefined') continue;
-                if (source[prop].toUpperCase() === target[prop].toUpperCase()) continue;
+                if (String(source[prop]).toUpperCase() === String(target[prop]).toUpperCase()) continue;
             }
             //Option for Role type
             if (prop == 'roleNames') {

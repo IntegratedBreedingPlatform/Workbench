@@ -15,7 +15,7 @@ export class UserDetail implements Account {
     firstName: string;
     lastName: string;
     userRoles: UserRole[];
-    status: string;
+    active: boolean;
     email: string;
     crops: Crop[];
     authorities: string[];

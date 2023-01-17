@@ -82,7 +82,11 @@ export class CreateProgramDialogComponent implements OnInit, OnDestroy {
             programBasicDetails['breedingLocationDefaultId'] = this.breedingLocationDefaultId;
             programBasicDetails['storageLocationDefaultId'] = this.storageLocationDefaultId;
             this.programService.addProgram(programBasicDetails, this.cropName).subscribe((program) => {
-                    const message: NavbarMessageEvent = { programSelected: program, toolSelected: '/ibpworkbench/controller/jhipster#program-settings-manager' };
+                    const message: NavbarMessageEvent = {
+                        programSelected: program,
+                        toolSelectedUrl: '/ibpworkbench/controller/jhipster#program-settings-manager',
+                        toolSelectedName: 'Manage Program Settings'
+                    };
                     window.parent.postMessage(message, '*');
                     this.alertService.success('program.create.success');
                 }, (res: HttpErrorResponse) => {

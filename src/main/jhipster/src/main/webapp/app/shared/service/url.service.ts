@@ -11,17 +11,19 @@ export class UrlService {
         return false;
     }
 
-    openStudy(studyId: any, program: Program = null) {
+    openStudy(studyId: any, studyName: string, program: Program = null) {
         let message: NavbarMessageEvent;
         if (program) {
             message = {
                 programSelected: program,
-                toolSelected: STUDY_URL + studyId
+                toolSelectedUrl: STUDY_URL + studyId,
+                toolSelectedName: 'Study: ' + studyName
             }
         } else {
             // TODO untested
             message = {
-                toolSelected: STUDY_URL + studyId
+                toolSelectedUrl: STUDY_URL + studyId,
+                toolSelectedName: 'Study: ' + studyName
             }
         }
         window.top.postMessage(message, '*');
@@ -35,12 +37,14 @@ export class UrlService {
         if (program) {
             message = {
                 programSelected: program,
-                toolSelected: url
+                toolSelectedUrl: url,
+                toolSelectedName: 'List: ' + listName
             }
         } else {
             // TODO untested
             message = {
-                toolSelected: url
+                toolSelectedUrl: url,
+                toolSelectedName: 'List: ' + listName
             }
         }
         window.top.postMessage(message, '*');

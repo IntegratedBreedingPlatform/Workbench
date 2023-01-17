@@ -16,8 +16,8 @@
                 <div class="form-group">
                   <label class="">Status: </label>
                    &nbsp;
-                  <select class="form-control" name="status"
-                      [(ngModel)]="table.searchValue.status">
+                  <select class="form-control" name="active"
+                      [(ngModel)]="table.searchValue.active">
                       <option value="all">All</option>
                       <option value="true">Active</option>
                       <option value="false">Inactive</option>
@@ -47,7 +47,7 @@
                         <th [ngClass]="{ sort: isSorted('email'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('email')">Email</th>
                         <th>Crop</th>
                         <th>Roles</th>
-                        <th [ngClass]="{ sort: isSorted('status'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('status')">Status</th>
+                        <th [ngClass]="{ sort: isSorted('active'), asc: table.sortAsc, desc: !table.sortAsc }" (click)="sort('active')">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,11 +79,11 @@
                                       style="padding-left: 5px; color: #428bca;"> and {{(user.userRoles | dedupRoleNames).length - 1}} more</span>
                             </span>
                         </td>
-                        <td *ngIf="hasSuperAdminRole(user.userRoles) && user.status == 'true'">Active</td>
-                        <td *ngIf="hasSuperAdminRole(user.userRoles) && user.status == 'false'">Inactive</td>
+                        <td *ngIf="hasSuperAdminRole(user.userRoles) && user.active === true">Active</td>
+                        <td *ngIf="hasSuperAdminRole(user.userRoles) && user.active === false">Inactive</td>
                         <td *ngIf="!hasSuperAdminRole(user.userRoles)">
-                          <a href="javascript:void(0)" *ngIf="user.status == 'true'" (click)="showUserStatusConfirmPopUp(user)">Deactivate</a>
-                          <a href="javascript:void(0)" *ngIf="user.status == 'false'" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
+                          <a href="javascript:void(0)" *ngIf="user.active === true" (click)="showUserStatusConfirmPopUp(user)">Deactivate</a>
+                          <a href="javascript:void(0)" *ngIf="user.active === false" (click)="showUserStatusConfirmPopUp(user)">Activate</a>
                         </td>
                     </tr>
                     <div class="popup">
