@@ -67,7 +67,7 @@ export class UserService {
             crops: r.crops,
             userRoles: (r.userRoles == null) ? [] : r.userRoles,
             email: r.email,
-            status: r.status,
+            active: r.active,
             multiFactorAuthenticationEnabled: r.multiFactorAuthenticationEnabled
         });
         return user;

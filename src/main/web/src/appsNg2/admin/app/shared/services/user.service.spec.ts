@@ -60,7 +60,7 @@ export function main() {
                       expect(user.id).toBe(1);
                       expect(user.firstName).toBe('first');
                       expect(user.lastName).toBe('last');
-                      expect(user.status).toBe('true');
+                      expect(user.active).toBe(true);
                       expect(user.email).toBe('test-ng2@leafnode.io');
                   }
               );
@@ -78,7 +78,7 @@ export function main() {
                                 "username": "username",
                                 "firstName": "first",
                                 "lastName": "last",
-                                "status": "true",
+                                "active": true,
                                 "email": "test-ng2@leafnode.io"
                               },
                               {
@@ -86,7 +86,7 @@ export function main() {
                                 "username": "username2",
                                 "firstName": "first2",
                                 "lastName": "last2",
-                                "status": "false",
+                                "active": false,
                                 "email": "test-ng2-2@leafnode.io"
                               }
                           ]
@@ -104,13 +104,13 @@ export function main() {
                       expect(users[0].id).toBe(1);
                       expect(users[0].firstName).toBe('first');
                       expect(users[0].lastName).toBe('last');
-                      expect(users[0].status).toBe('true');
+                      expect(users[0].active).toBe(true);
                       expect(users[0].email).toBe('test-ng2@leafnode.io');
                       expect(users[1].username).toBe('username2');
                       expect(users[1].id).toBe(2);
                       expect(users[1].firstName).toBe('first2');
                       expect(users[1].lastName).toBe('last2');
-                      expect(users[1].status).toBe('false');
+                      expect(users[1].active).toBe(false);
                       expect(users[1].email).toBe('test-ng2-2@leafnode.io');
                   }
               );
@@ -133,7 +133,7 @@ export function main() {
               );
 
               spyOn(service, 'getHeaders').and.returnValue(header);
-              let user = new User('0', 'first', 'last', 'username', [], [], 'email', 'status');
+              let user = new User('0', 'first', 'last', 'username', [], [], 'email', true, true);
 
               service.save(user).subscribe(
                   (data) => {
@@ -158,7 +158,7 @@ export function main() {
               );
 
               spyOn(service, 'getHeaders').and.returnValue(header);
-              let user = new User('0', 'first', 'last', 'username', [], [], 'email', 'status');
+              let user = new User('0', 'first', 'last', 'username', [], [], 'email', true, true);
 
               service.update(user).subscribe(
                   (data) => {
