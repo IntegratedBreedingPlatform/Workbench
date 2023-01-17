@@ -16,6 +16,7 @@ import { ColumnFilterRadioButtonOption } from '../shared/column-filter/column-fi
 import { Subscription } from 'rxjs';
 import { UrlService } from '../shared/service/url.service';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
+import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
 
 declare var $: any;
 
@@ -27,6 +28,8 @@ declare var $: any;
 export class StudySearchComponent implements OnInit {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
+
+    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
 
     itemsPerPage = 20;
 

@@ -1,5 +1,5 @@
 <div class="container-fluid pt-3">
-	<button class="btn btn-info float-right" jhiTranslate="study.details.actions.open-study" (click)="openStudy(studyDetails)">
+	<button class="btn btn-info float-right" jhiTranslate="study.details.actions.open-study" *jhiHasAnyAuthority="MANAGE_STUDIES_VIEW_PERMISSIONS" (click)="openStudy(studyDetails)">
 	</button>
 	<jhi-collapsible heading="{{translateService.instant('study.details.basic-details.title')}}" img="content/img/basic-details.png">
 		<div class="container-fluid mb-2">

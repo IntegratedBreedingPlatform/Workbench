@@ -8,6 +8,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { Router } from '@angular/router';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-study-tree',
@@ -15,6 +16,8 @@ import { HttpErrorResponse } from '@angular/common/http';
     providers: [{ provide: TreeService, useClass: StudyTreeService }]
 })
 export class StudyManagerTreeComponent extends TreeComponent {
+
+    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
 
     title = 'Browse for studies';
 

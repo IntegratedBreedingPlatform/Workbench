@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DatasetTypeEnum } from '../shared/dataset/model/dataset-type.enum';
 import { ObservationVariableHelperService } from '../shared/dataset/model/observation-variable.helper.service';
+import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-study-summary',
@@ -31,6 +32,8 @@ export class StudySummaryComponent implements OnInit {
         DatasetTypeEnum.TIME_SERIES_SUBOBSERVATIONS,
         DatasetTypeEnum.CUSTOM_SUBOBSERVATIONS,
         DatasetTypeEnum.SUMMARY_STATISTICS_DATA];
+
+    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
 
     @Input()
     studyId: number;
