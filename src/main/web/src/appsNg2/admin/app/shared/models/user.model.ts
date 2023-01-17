@@ -9,7 +9,7 @@ export class User {
                 public crops: Crop[],
                 public userRoles: UserRole[],
                 public email: string,
-                public status: string,
+                public active: boolean,
                 public multiFactorAuthenticationEnabled: boolean) {
     }
 

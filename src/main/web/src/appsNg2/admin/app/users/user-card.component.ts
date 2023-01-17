@@ -62,7 +62,7 @@ export class UserCard implements OnInit {
                 public appParamContext: AppParamContext) {
         // New empty user is built to open a form with empty default values
         // id, firstName, lastName, username, role, email, status
-        this.model = new User('0', '', '', '', [], [], '', 'true', false);
+        this.model = new User('0', '', '', '', [], [], '', true, false);
         this.errorUserMessage = '';
     }
 

@@ -47,11 +47,11 @@ export class UsersDatagrid implements OnInit {
                 private roleService: RoleService,
                 private cropService: CropService, private router: Router, private activatedRoute: ActivatedRoute) {
         // TODO migrate to angular datatables
-        this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ status: 'true' });
+        this.table = new NgDataGridModel<User>([], 25, new UserComparator(), <User>{ active: true });
     }
 
     showNewUserForm() {
-        this.userService.user = new User('0', '', '', '', [], [], '', 'true', false);
+        this.userService.user = new User('0', '', '', '', [], [], '', true, false);
         this.router.navigate(['user-card', { isEditing: false }], { relativeTo: this.activatedRoute });
         scrollTop();
     }
@@ -59,7 +59,7 @@ export class UsersDatagrid implements OnInit {
     showEditUserForm(user: User) {
         this.originalUser = user;
         this.userService.user = new User(user.id, user.firstName, user.lastName,
-            user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.status, user.multiFactorAuthenticationEnabled);
+            user.username, user.crops, user.userRoles.map((x) => Object.assign({}, x)), user.email, user.active, user.multiFactorAuthenticationEnabled);
         this.router.navigate(['user-card', { isEditing: true }], { relativeTo: this.activatedRoute });
         scrollTop();
     }
@@ -156,14 +156,14 @@ export class UsersDatagrid implements OnInit {
     }
 
     changedActiveStatus() {
-        var status = this.userSelected.status;
+        var status = this.userSelected.active;
 
         // TODO Change status to boolean or int as in the backend
-        if (this.userSelected.status === 'true') {
-            this.userSelected.status = 'false';
-        } else {
-            this.userSelected.status = 'true';
-        }
+        if (this.userSelected.active === true) {
+            this.userSelected.active = false;
+         } else {
+             this.userSelected.active = true;
+         }
 
         this.userService
             .update(this.userSelected)
@@ -174,7 +174,7 @@ export class UsersDatagrid implements OnInit {
                 error => {
                     this.errorServiceMessage = error.json().errors[0].message;
                     this.showErrorNotification = true;
-                    this.userSelected.status = status;
+                    this.userSelected.active = status;
                     this.userSelected = null;
                 });
 
@@ -187,7 +187,7 @@ export class UsersDatagrid implements OnInit {
         this.showConfirmStatusDialog = true;
         this.confirmMessage = 'Please confirm that you would like to ';
 
-        if (e.status === 'true') {
+        if (e.active === true) {
             this.confirmMessage = this.confirmMessage + 'deactivate this user account.';
         } else {
             this.confirmMessage = this.confirmMessage + 'activate this user account.';
