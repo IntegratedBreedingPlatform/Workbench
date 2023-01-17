@@ -23,7 +23,7 @@
 					<tr *ngFor="let study of studies" [class.selected]="study.selected"
 						(mouseenter)="onMouseEnter(study)">
 						<td>
-							<a href (click)="urlService.openStudy(study.studyId, context.program)">
+							<a href (click)="urlService.openStudy(study.studyId, study.name, context.program)">
 								{{study.name}}
 							</a>
 						</td>

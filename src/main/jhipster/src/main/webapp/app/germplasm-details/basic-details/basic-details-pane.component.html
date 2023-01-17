@@ -121,7 +121,7 @@
 						</thead>
 						<tbody>
 						<tr>
-							<td><a *ngIf="germplasmDetailsContext.isModal && isStudyClickable(germplasm?.germplasmOrigin?.programUUID)" href (click)="urlService.openStudy(germplasm?.germplasmOrigin?.studyId)">{{germplasm?.germplasmOrigin?.studyName}}</a>
+							<td><a *ngIf="germplasmDetailsContext.isModal && isStudyClickable(germplasm?.germplasmOrigin?.programUUID)" href (click)="urlService.openStudy(germplasm?.germplasmOrigin?.studyId, germplasm?.germplasmOrigin?.studyName)">{{germplasm?.germplasmOrigin?.studyName}}</a>
 								<span *ngIf="germplasmDetailsContext.isModal && !isStudyClickable(germplasm?.germplasmOrigin?.programUUID)" class="btn btn-link disabled p-0">{{germplasm?.germplasmOrigin?.studyName}}</span>
 								<span *ngIf="!germplasmDetailsContext.isModal">{{germplasm?.germplasmOrigin?.studyName}}</span></td>
 							<td>{{germplasm?.germplasmOrigin?.observationUnitId}}</td>

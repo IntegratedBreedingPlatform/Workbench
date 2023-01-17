@@ -15,7 +15,7 @@ export class LoginService {
     }
 
     forceLogout() {
-        alert('Site Admin needs  to authenticate you again. Redirecting to login page.');
+        alert('Breeding Management System needs to authenticate you again. Redirecting to login page.');
         this.logout();
     }
 
