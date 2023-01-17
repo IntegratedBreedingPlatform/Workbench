@@ -144,8 +144,8 @@ export class StudySearchComponent implements OnInit {
         });
     }
 
-    openStudy(studyId: number) {
-        this.urlService.openStudy(studyId);
+    openStudy(study: StudySearchResponse) {
+        this.urlService.openStudy(study.studyId, study.studyName);
     }
 
     private registerColumnFiltersChanged() {

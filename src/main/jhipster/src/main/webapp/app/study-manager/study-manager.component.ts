@@ -74,7 +74,7 @@ export class StudyManagerComponent implements OnInit {
                 if (study.extraParams && study.extraParams.showSummary) {
                     this.router.navigate(['/study-manager/study/' + studyId], { queryParams: { studyId, studyName: study.name } });
                 } else {
-                    this.urlService.openStudy(studyId);
+                    this.urlService.openStudy(studyId, study.name);
                 }
             }
             this.activeModal.close();

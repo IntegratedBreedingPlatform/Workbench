@@ -83,8 +83,8 @@ export class StudySummaryComponent implements OnInit {
         return this.studyDetails.numberOfPlots / this.studyDetails.numberOfEnvironments;
     }
 
-    openStudy(studyId: number) {
-        this.urlService.openStudy(studyId);
+    openStudy(study: StudyDetails) {
+        this.urlService.openStudy(study.id, study.name);
     }
 
     searchDataset(term: string, item: DatasetModel) {

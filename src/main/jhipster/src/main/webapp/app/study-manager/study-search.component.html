@@ -28,7 +28,7 @@
 				<td>{{study.parentFolderName}}</td>
 				<td><span class="text-ellipsis study-manager-text-ellipsis" title="{{study.objective}}">{{study.objective}}</span></td>
 				<td class="text-center" >
-					<button class="btn btn-info mr-2" (click)="openStudy(study.studyId)">
+					<button class="btn btn-info mr-2" *jhiHasAnyAuthority="MANAGE_STUDIES_VIEW_PERMISSIONS" (click)="openStudy(study)">
 						<i class="fa fa-edit fa-md" aria-hidden="true"></i>
 					</button>
 				</td>

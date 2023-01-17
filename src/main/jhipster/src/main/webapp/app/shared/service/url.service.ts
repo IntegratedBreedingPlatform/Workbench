@@ -7,7 +7,7 @@ import { Program } from '../program/model/program';
 export class UrlService {
 
     createStudy() {
-        window.top.postMessage({ toolSelected: CREATE_STUDY_URL }, '*');
+        window.top.postMessage({ toolSelectedUrl: CREATE_STUDY_URL }, '*');
         return false;
     }
 
