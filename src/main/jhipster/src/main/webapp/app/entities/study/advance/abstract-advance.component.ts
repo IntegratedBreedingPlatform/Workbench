@@ -105,10 +105,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.checkAllReplications = this.checkAllReplications && !repCheck;
     }
 
-    dismiss() {
+    dismiss(advanceType: string) {
         // Handle closing of modal when this page is loaded outside of Angular.
         if ((<any>window.parent).closeModal) {
-            (<any>window.parent).closeModal();
+            (<any>window.parent).closeModal(advanceType);
         }
         if ((<any>window.parent)) {
             (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
