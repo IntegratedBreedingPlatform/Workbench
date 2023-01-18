@@ -4,7 +4,7 @@ export class AdvanceSamplesRequest extends AbstractAdvanceRequest {
 
     constructor(
         public instanceIds: number[],
-        public selectedReplications: string[],
+        public selectedReplications: number[],
         public breedingMethodId: number,
         public selectionTraitRequest?: SelectionTraitRequest
     ) {

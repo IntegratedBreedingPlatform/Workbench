@@ -1,7 +1,7 @@
 export abstract class AbstractAdvanceRequest {
     protected constructor(
         public instanceIds: number[],
-        public selectedReplications: string[],
+        public selectedReplications: number[],
         public selectionTraitRequest?: SelectionTraitRequest
     ) {
     }

@@ -50,9 +50,9 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         this.isLoading = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
-        const selectedReplicationNumbers: string[] =
+        const selectedReplicationNumbers: number[] =
             this.replicationsOptions.filter((replication: any) => replication.selected)
-                .map((replication: any) => String(replication.index));
+                .map((replication: any) => replication.index);
         const breedingMethodSelectionRequest: BreedingMethodSelectionRequest = new BreedingMethodSelectionRequest();
         if (this.showBreedingMethodVariableSelection) {
             breedingMethodSelectionRequest.methodVariateId = this.breedingMethodSelectedVariableId;

@@ -3,7 +3,7 @@ import { AbstractAdvanceRequest, SelectionTraitRequest } from './abstract-advanc
 export class AdvanceStudyRequest extends AbstractAdvanceRequest {
     constructor(
         public instanceIds: number[],
-        public selectedReplications: string[],
+        public selectedReplications: number[],
         public breedingMethodSelectionRequest: BreedingMethodSelectionRequest,
         public selectionTraitRequest?: SelectionTraitRequest,
         public lineSelectionRequest?: LineSelectionRequest,
