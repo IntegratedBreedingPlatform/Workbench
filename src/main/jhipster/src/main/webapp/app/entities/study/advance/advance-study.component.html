@@ -157,13 +157,11 @@
 					<thead>
 					<th><span jhiTranslate="advance-study.location.trial.instance">TRIAL_INSTANCE</span></th>
 					<th><span jhiTranslate="advance-study.location.name">LOCATION_NAME</span></th>
-					<th><span jhiTranslate="advance-study.location.abbr">LOCATION_ABBR</span></th>
 					</thead>
 					<tbody this.trialInstances>
 					<tr *ngFor="let trialInstance of trialInstances">
 						<td>{{trialInstance.instanceNumber}}</td>
 						<td>{{trialInstance.locAbbr}}</td>
-						<td>{{trialInstance.abbrCode}}</td>
 					</tr>
 					</tbody>
 				</table>

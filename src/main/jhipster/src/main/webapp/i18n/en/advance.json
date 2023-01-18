@@ -44,8 +44,7 @@
       "title": "Location Details",
       "description": "",
       "trial.instance": "TRIAL_INSTANCE",
-      "name": "LOCATION_NAME",
-      "abbr": "LOCATION_ABBR"
+      "name": "LOCATION_NAME"
     },
     "errors": {
       "breeding-method.selection.variate.not-present": "The study must contain a Selection Variate that provides the breeding methods.",

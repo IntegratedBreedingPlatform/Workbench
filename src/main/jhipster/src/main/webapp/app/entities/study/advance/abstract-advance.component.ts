@@ -249,8 +249,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                             this.trialInstances.push({
                                 instanceId: instance.instanceId,
                                 instanceNumber: instance.instanceNumber,
-                                locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
-                                abbrCode: instance.customLocationAbbreviation
+                                locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')'
                             });
                         }
                     });
