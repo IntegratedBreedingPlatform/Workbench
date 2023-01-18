@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AdvanceService } from '../../../shared/study/service/advance.service';
 import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../../shared/study/model/advance-study-request.model';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { AbstractAdvanceComponent } from './abstract-advance.component';
+import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { SelectionTraitRequest } from '../../../shared/study/model/abstract-advance-request.model';
 
 @Component({
@@ -43,7 +43,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, AdvanceType.STUDY);
     }
 
     save(): void {

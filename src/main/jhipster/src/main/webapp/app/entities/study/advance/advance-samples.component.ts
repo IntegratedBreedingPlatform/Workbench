@@ -9,7 +9,7 @@ import { BreedingMethodService } from '../../../shared/breeding-method/service/b
 import { TranslateService } from '@ngx-translate/core';
 import { AdvanceService } from '../../../shared/study/service/advance.service';
 import { finalize } from 'rxjs/internal/operators/finalize';
-import { AbstractAdvanceComponent } from './abstract-advance.component';
+import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { AdvanceSamplesRequest } from '../../../shared/study/model/advance-sample-request.model';
 import { SelectionTraitRequest } from '../../../shared/study/model/abstract-advance-request.model';
 
@@ -29,7 +29,7 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, AdvanceType.SAMPLES);
     }
 
     save(): void {

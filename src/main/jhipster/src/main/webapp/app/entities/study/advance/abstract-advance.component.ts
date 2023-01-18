@@ -17,6 +17,12 @@ import { BreedingMethodService } from '../../../shared/breeding-method/service/b
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
+import { BreedingMethodClassMethodEnum } from '../../../shared/breeding-method/model/breeding-method-class.enum';
+
+export enum AdvanceType {
+    STUDY,
+    SAMPLES
+}
 
 export abstract class AbstractAdvanceComponent implements OnInit {
 
@@ -70,7 +76,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public helpService: HelpService,
                           public datasetService: DatasetService,
                           public translateService: TranslateService,
-                          public alertService: AlertService) {
+                          public alertService: AlertService,
+                          public advanceType: AdvanceType) {
         this.paramContext.readParams();
     }
 
@@ -175,6 +182,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                         page: (params.data.page - 1),
                         size: AbstractAdvanceComponent.BREEDING_METHODS_PAGE_SIZE
                     };
+
+                    if (this.advanceType === AdvanceType.SAMPLES) {
+                        breedingMethodSearchRequest.methodClassIds = [BreedingMethodClassMethodEnum.NON_BULKING_BREEDING_METHOD_CLASS];
+                    }
 
                     this.breedingMethodService.searchBreedingMethods(
                         breedingMethodSearchRequest,
