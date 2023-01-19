@@ -20,6 +20,13 @@ export class ParamContext {
         this.loggedInUserId = Number(queryParams.loggedInUserId);
     }
 
+    clear() {
+        this.cropName = null;
+        this.programUUID = null;
+        this.selectedProjectId = null;
+        this.loggedInUserId = null;
+    }
+
     /**
      * Workaround until https://github.com/angular/angular/issues/12664
      */

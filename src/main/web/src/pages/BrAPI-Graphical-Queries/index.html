@@ -145,7 +145,8 @@
 				<div ng-if="!gid" class="row">
 					<label class="control-label col-sm-4">Query type</label>
 					<div class="col-sm-8">
-						<select class="form-control" ng-model="nested.toolId" ng-change="onQueryTypeChange()">
+						<select class="form-control" ng-model="nested.toolId" ng-change="onQueryTypeChange()"
+							data-test="queryTypeSelect">
 							<option ng-repeat="tool in tools" value="{{tool.id}}">{{tool.name}}</option>
 						</select>
 					</div>

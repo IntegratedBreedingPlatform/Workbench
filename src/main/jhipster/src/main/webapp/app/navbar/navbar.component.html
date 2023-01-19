@@ -8,10 +8,10 @@
 		</button>
 		<span>{{program?.name}}</span>
 		<div class="toolbar-filler"></div>
-		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS">Site Admin</button>
-		<button mat-button *ngIf="toolUrl" (click)="myPrograms()">My Programs</button>
-		<ng-container *ngIf="!toolUrl">
-			<button mat-button (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION"><i class="fa fa-plus"></i> Add a Program</button>
+		<button mat-button (click)="siteAdmin()" *jhiHasAnyAuthority="SITE_ADMIN_PERMISSIONS" data-test="siteAdminButton">Site Admin</button>
+		<button mat-button *ngIf="toolLinkSelected" (click)="myPrograms()" data-test="myProgramsButton">My Programs</button>
+		<ng-container *ngIf="!toolLinkSelected">
+			<button mat-button (click)="addProgram()" *jhiHasAnyAuthority="ADD_PROGRAM_PERMISSION" data-test="addProgramButton"><i class="fa fa-plus"></i> Add a Program</button>
 		</ng-container>
 
 		<button mat-icon-button (click)="about()">
@@ -60,15 +60,14 @@
 				<!-- This is the tree node template for leaf nodes -->
 				<mat-tree-node class="leaf" [class.selected]="toolLinkSelected.startsWith(node.link)"
 							   *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="34"
-							   (click)="openTool(node.link)">
+							   (click)="openTool(node.link, node.name)">
 					{{node.name}}
 				</mat-tree-node>
 			</mat-tree>
 			<div *ngIf="version" class="version">{{version}}</div>
 		</mat-sidenav>
 		<mat-sidenav-content>
-			<iframe #viewport name="PID_Sbrowser" *ngIf="toolUrl" [src]="toolUrl" style="border: 0; width: 100%; height: 100%"></iframe>
-			<iframe *ngIf="!toolUrl" src="/ibpworkbench/main/#programs" style="border: 0; width: 100%; height: 100%"></iframe>
+			<iframe #viewport name="PID_Sbrowser" id="viewport" src="about:blank" style="border: 0; width: 100%; height: 100%"></iframe>
 		</mat-sidenav-content>
 	</mat-sidenav-container>
 </div>
