@@ -89,7 +89,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceStudy(this.studyId, advanceStudyRequest)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(
-            (res: number[]) => this.onAdvanceSuccess(),
+            (res: number[]) => this.onAdvanceSuccess(res),
             (res) => this.onError(res));
     }
 

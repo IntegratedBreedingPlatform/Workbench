@@ -1,7 +1,8 @@
 {
   "advance": {
     "action": "Advance",
-    "success": "Advancing lines finished successfully."
+    "success": "Advancing lines finished successfully.",
+    "no-entries": "There are no entries selected for advancement. Please specify the entries to be advanced on the observations tab and try again."
   },
   "advance-study": {
     "title": "Advance Study",

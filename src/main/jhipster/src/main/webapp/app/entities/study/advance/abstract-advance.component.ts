@@ -145,9 +145,14 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         return false;
     }
 
-    protected onAdvanceSuccess() {
+    protected onAdvanceSuccess(result: number[]) {
         this.isLoading = false;
-        this.alertService.success('advance.success', {}, null);
+
+        if (result.length > 0) {
+            this.alertService.success('advance.success');
+        } else {
+            this.alertService.error('advance.no-entries');
+        }
     }
 
     protected onError(response: HttpErrorResponse) {
