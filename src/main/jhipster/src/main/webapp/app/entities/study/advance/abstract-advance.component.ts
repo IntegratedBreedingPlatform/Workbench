@@ -134,6 +134,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     onSelectionTraitLevelChanged(datasetId) {
         this.selectionTraitVariables = this.selectionTraitVariablesByDatasetIds.get(Number(datasetId));
+        this.selectedSelectionTraitVariableId = null;
     }
 
     protected hasSelectTraitVariables() {
