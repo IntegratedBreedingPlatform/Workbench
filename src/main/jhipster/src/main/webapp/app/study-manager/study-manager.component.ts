@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { StudyManagerTreeComponent } from './study-manager-tree.component';
 import { NavTab } from '../shared/nav/tab/nav-tab.model';
-import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-studies-manager',
@@ -17,7 +17,16 @@ import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
 })
 export class StudyManagerComponent implements OnInit {
 
-    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
+    STUDIES_CREATION_PERMISSIONS = [
+        ...MANAGE_STUDIES_PERMISSIONS,
+        'MS_MANAGE_OBSERVATION_UNITS',
+        'MS_WITHDRAW_INVENTORY',
+        'MS_CREATE_PENDING_WITHDRAWALS',
+        'MS_CREATE_CONFIRMED_WITHDRAWALS',
+        'MS_CANCEL_PENDING_TRANSACTIONS',
+        'MS_MANAGE_FILES',
+        'MS_CREATE_LOTS'
+    ];
 
     tabs: NavTab[] = [];
 

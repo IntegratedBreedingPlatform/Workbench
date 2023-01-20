@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, ElementRef, isDevMode, QueryList, ViewChildren } from '@angular/core';
+import { Component, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { switchMap, debounceTime, takeUntil, repeat, map, finalize } from 'rxjs/operators';
+import { debounceTime, finalize, map, repeat, takeUntil } from 'rxjs/operators';
 import { MyStudy, MyStudyMetadata, NgChartsBarPlotMetadata, ObservationsMetadata } from './my-study';
-import { empty, fromEvent, Subject, of } from 'rxjs';
+import { Subject } from 'rxjs';
 import { MyStudiesService } from './my-studies.service';
 import { Pageable } from '../../shared/model/pageable';
 import { UrlService } from '../../shared/service/url.service';
 import { ProgramContext } from './program.context';
 import { TranslateService } from '@ngx-translate/core';
+import { MANAGE_STUDIES_PERMISSIONS } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-my-studies',
@@ -16,6 +17,17 @@ import { TranslateService } from '@ngx-translate/core';
 export class MyStudiesComponent {
 
     readonly MAX_ENVIRONMENTS_TO_SHOW = 10;
+
+    STUDIES_EDITION_PERMISSIONS = [
+        ...MANAGE_STUDIES_PERMISSIONS,
+        'MS_MANAGE_OBSERVATION_UNITS',
+        'MS_WITHDRAW_INVENTORY',
+        'MS_CREATE_PENDING_WITHDRAWALS',
+        'MS_CREATE_CONFIRMED_WITHDRAWALS',
+        'MS_CANCEL_PENDING_TRANSACTIONS',
+        'MS_MANAGE_FILES',
+        'MS_CREATE_LOTS'
+    ];
 
     mouseEnter = new Subject();
     mouseLeave = new Subject();

@@ -8,7 +8,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { Router } from '@angular/router';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
+import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-study-tree',
@@ -17,7 +17,16 @@ import { MANAGE_STUDIES_VIEW_PERMISSIONS } from '../shared/auth/permissions';
 })
 export class StudyManagerTreeComponent extends TreeComponent {
 
-    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
+    STUDIES_EDITION_PERMISSIONS = [
+        ...MANAGE_STUDIES_PERMISSIONS,
+        'MS_MANAGE_OBSERVATION_UNITS',
+        'MS_WITHDRAW_INVENTORY',
+        'MS_CREATE_PENDING_WITHDRAWALS',
+        'MS_CREATE_CONFIRMED_WITHDRAWALS',
+        'MS_CANCEL_PENDING_TRANSACTIONS',
+        'MS_MANAGE_FILES',
+        'MS_CREATE_LOTS'
+    ];
 
     title = 'Browse for studies';
 

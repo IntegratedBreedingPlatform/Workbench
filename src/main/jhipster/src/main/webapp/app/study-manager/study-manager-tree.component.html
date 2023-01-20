@@ -63,5 +63,5 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">Cancel</button>
     <button type="button" class="btn btn-primary" aria-hidden="true" (click)="finish({ showSummary: true })">View Summary</button>
-    <button type="button" class="btn btn-primary" aria-hidden="true" *jhiHasAnyAuthority="MANAGE_STUDIES_VIEW_PERMISSIONS" (click)="finish()">Open</button>
+    <button type="button" class="btn btn-primary" aria-hidden="true" *jhiHasAnyAuthority="STUDIES_EDITION_PERMISSIONS" (click)="finish()">Open</button>
 </div>

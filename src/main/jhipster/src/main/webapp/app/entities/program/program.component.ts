@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramContext } from './program.context';
 import { NavbarMessageEvent } from '../../shared/model/navbar-message.event';
-import { MANAGE_STUDIES_VIEW_PERMISSIONS, SEARCH_GERMPLASM_LISTS_PERMISSION } from '../../shared/auth/permissions';
+import { SEARCH_GERMPLASM_LISTS_PERMISSION } from '../../shared/auth/permissions';
 import { Select2OptionData } from 'ng-select2';
 import { ProgramUsageService } from '../../shared/service/program-usage.service';
 import { ParamContext } from '../../shared/service/param.context';
@@ -25,10 +25,10 @@ import { ParamContext } from '../../shared/service/param.context';
 })
 export class ProgramComponent implements OnInit {
 
-    MANAGE_STUDIES_VIEW_PERMISSIONS = MANAGE_STUDIES_VIEW_PERMISSIONS;
+    MANAGE_STUDIES_VIEW_PERMISSIONS = ['ADMIN', 'STUDIES', 'MANAGE_STUDIES', 'VIEW_STUDIES'];
     SEARCH_GERMPLASM_LISTS_PERMISSION = SEARCH_GERMPLASM_LISTS_PERMISSION;
     PERMISSIONS = [
-        ...MANAGE_STUDIES_VIEW_PERMISSIONS,
+        ...this.MANAGE_STUDIES_VIEW_PERMISSIONS,
         ...SEARCH_GERMPLASM_LISTS_PERMISSION
     ];
 
@@ -127,7 +127,7 @@ export class ProgramComponent implements OnInit {
 
     private getPrograms(page: number, query = '') {
         this.isLoading = true;
-        return  this.programService.getPrograms(this.cropName, query, {
+        return this.programService.getPrograms(this.cropName, query, {
             page: page - 1,
             size: this.pageSize
         }).pipe(map((res) => {
@@ -151,7 +151,7 @@ export class ProgramComponent implements OnInit {
         const program = this.context.program;
         // force authority retrieval for specific program
         await this.principal.identity(true, program.crop, program.uniqueID)
-        if (this.principal.hasAnyAuthorityDirect(MANAGE_STUDIES_VIEW_PERMISSIONS)) {
+        if (this.principal.hasAnyAuthorityDirect(this.MANAGE_STUDIES_VIEW_PERMISSIONS)) {
             this.router.navigate(['my-studies'], {
                 relativeTo: this.route,
                 queryParams: {
