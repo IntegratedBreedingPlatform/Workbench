@@ -12,6 +12,7 @@ import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, Li
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { SelectionTraitRequest } from '../../../shared/study/model/abstract-advance-request.model';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -41,9 +42,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 public translateService: TranslateService,
                 public alertService: AlertService,
                 public jhiLanguageService: JhiLanguageService,
-                public advanceService: AdvanceService
+                public advanceService: AdvanceService,
+                public modalService: NgbModal
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, AdvanceType.STUDY);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY);
     }
 
     save(): void {

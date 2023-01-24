@@ -1,6 +1,6 @@
 import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
 import { ParamContext } from '../../../shared/service/param.context';
-import { OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ObservationVariable } from '../../../shared/model/observation-variable.model';
 import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
 import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
@@ -18,6 +18,9 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
 import { BreedingMethodClassMethodEnum } from '../../../shared/breeding-method/model/breeding-method-class.enum';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmListCreationComponent } from '../../../shared/list-creation/germplasm-list-creation.component';
+import { GermplasmListEntry } from '../../../shared/list-creation/model/germplasm-list';
 
 export enum AdvanceType {
     STUDY,
@@ -47,7 +50,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     checkAllReplications = false;
 
-    datasetsLoaded =  false;
+    datasetsLoaded = false;
     studyVariablesLoaded = false;
     isLoading = false;
     helpLink: string;
@@ -77,6 +80,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public datasetService: DatasetService,
                           public translateService: TranslateService,
                           public alertService: AlertService,
+                          public modalService: NgbModal,
                           public advanceType: AdvanceType) {
         this.paramContext.readParams();
     }
@@ -146,11 +150,18 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         return false;
     }
 
-    protected onAdvanceSuccess(result: number[]) {
+    protected onAdvanceSuccess(gids: number[]) {
         this.isLoading = false;
 
-        if (result.length > 0) {
+        if (gids.length > 0) {
             this.alertService.success('advance.success');
+            const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
+                { windowClass: 'modal-large', backdrop: 'static' });
+            germplasmListCreationModalRef.componentInstance.entries = gids.map((gid) => {
+                const entry: GermplasmListEntry = new GermplasmListEntry();
+                entry.gid = gid;
+                return entry;
+            })
         } else {
             this.alertService.error('advance.no-entries');
         }
