@@ -54,6 +54,11 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
     }
 
     isValid(): boolean {
+        // Breeding method was not selected
+        if (!this.breedingMethodSelectedId) {
+            return false;
+        }
+
         // Selection trait was no selected
         if (this.showSelectionTraitSelection && (!this.selectedSelectionTraitDatasetId || !this.selectedSelectionTraitVariableId)) {
             return false;
