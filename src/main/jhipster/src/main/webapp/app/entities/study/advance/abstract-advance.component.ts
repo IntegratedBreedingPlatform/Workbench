@@ -18,9 +18,10 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
 import { BreedingMethodClassMethodEnum } from '../../../shared/breeding-method/model/breeding-method-class.enum';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../../shared/list-creation/model/germplasm-list';
+import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../../app.events';
 
 export enum AdvanceType {
     STUDY,
@@ -117,12 +118,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     dismiss(advanceType: string) {
-        // Handle closing of modal when this page is loaded outside of Angular.
-        if ((<any>window.parent).closeModal) {
-            (<any>window.parent).closeModal(advanceType);
-        }
         if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
+            (<any>window.parent).postMessage({ name: SELECT_INSTANCES, advanceType }, '*');
         }
     }
 
@@ -155,13 +152,12 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
         if (gids.length > 0) {
             this.alertService.success('advance.success');
-            const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
-                { windowClass: 'modal-large', backdrop: 'static' });
-            germplasmListCreationModalRef.componentInstance.entries = gids.map((gid) => {
-                const entry: GermplasmListEntry = new GermplasmListEntry();
-                entry.gid = gid;
-                return entry;
-            })
+
+            if ((<any>window.parent)) {
+                (<any>window.parent).postMessage({ name: ADVANCE_SUCCESS }, '*');
+            }
+
+            this.showListCreationModal(gids);
         } else {
             this.alertService.error('advance.no-entries');
         }
@@ -175,6 +171,16 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             this.alertService.error('error.general');
         }
         this.isLoading = false;
+    }
+
+    private showListCreationModal(gids: number[]) {
+        const germplasmListCreationModalRef = this.modalService.open(GermplasmListCreationComponent as Component,
+            { windowClass: 'modal-large', backdrop: 'static' });
+        germplasmListCreationModalRef.componentInstance.entries = gids.map((gid: number) => {
+            const entry: GermplasmListEntry = new GermplasmListEntry();
+            entry.gid = gid;
+            return entry;
+        });
     }
 
     private loadBreedingMethods() {
