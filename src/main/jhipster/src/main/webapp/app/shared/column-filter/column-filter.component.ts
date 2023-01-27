@@ -167,6 +167,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                     return options.filter((option) => option.checked).map((option) => option.name)
                         .join(', ');
                 });
+
             case FilterType.RADIOBUTTON:
                 return filter.options.then((options) => {
                     for (const option of options) {
@@ -175,10 +176,12 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                         }
                     }
                 });
+
             case FilterType.DATE:
                 const from = (filter.from && `${filter.from.year}-${filter.from.month}-${filter.from.day}`) || '';
                 const to = (filter.to && `${filter.to.year}-${filter.to.month}-${filter.to.day}`) || '';
                 return Promise.resolve(from || to ? (from + ' - ' + to) : '');
+
             case FilterType.NUMBER:
                 if (!isNumeric(filter.min) && !isNumeric(filter.max)) {
                     return Promise.resolve();
@@ -186,6 +189,7 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return Promise.resolve((isNumeric(filter.min) ? filter.min : '')
                     + ' - '
                     + (isNumeric(filter.max) ? filter.max : ''));
+
             case FilterType.NUMBER_RANGE:
                 if (!isNumeric(filter.from) && !isNumeric(filter.to)) {
                     return Promise.resolve();
@@ -193,39 +197,53 @@ export class ColumnFilterComponent implements OnInit, OnDestroy {
                 return Promise.resolve((isNumeric(filter.from) ? filter.from : '')
                     + ' - '
                     + (isNumeric(filter.to) ? filter.to : ''));
+
             case FilterType.TEXT_WITH_MATCH_OPTIONS:
                 if (filter.matchType && filter.value) {
                     return Promise.resolve(`${filter.matchType} : ${filter.value}`);
                 }
                 return Promise.resolve();
+
             case FilterType.PEDIGREE_OPTIONS:
                 if (filter.value) {
                     return Promise.resolve(`${filter.pedigreeType} (Level ${filter.value})`);
                 }
                 return Promise.resolve();
+
             case FilterType.ATTRIBUTES:
                 if (filter.attributes && filter.attributes.length) {
                     return Promise.resolve(filter.attributes.map((attribute) => `${attribute.alias ? attribute.alias : attribute.name} : ${attribute.value}`)
                         .join(', '));
                 }
                 return Promise.resolve();
+
             case FilterType.NAME_TYPES:
                 if (filter.nameTypes && filter.nameTypes.length) {
                     return Promise.resolve(filter.nameTypes.map((nameType) => `${nameType.name} : ${nameType.value}`)
                         .join(', '));
                 }
                 return Promise.resolve();
+
             case FilterType.TEXT:
             case FilterType.LIST:
             case FilterType.BOOLEAN:
             case FilterType.MODAL:
                 return Promise.resolve(filter.value);
+
             case FilterType.DROPDOWN:
                 if (filter.selectedValues && filter.selectedValues.length) {
                     return Promise.resolve(filter.selectedValues.map((option: Select2OptionData) => `${option.text}`)
                         .join(', '));
                 }
                 return Promise.resolve();
+
+            case FilterType.VARIABLES:
+                if (filter.variables && filter.variables.length) {
+                    return Promise.resolve(filter.variables.map((variable) => `${variable.alias ? variable.alias : variable.name} : ${variable.value}`)
+                        .join(', '));
+                }
+                return Promise.resolve();
+
             default:
                 return Promise.resolve();
         }
