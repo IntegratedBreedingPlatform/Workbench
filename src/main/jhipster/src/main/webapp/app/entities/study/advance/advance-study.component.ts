@@ -12,7 +12,7 @@ import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, Li
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { SelectionTraitRequest } from '../../../shared/study/model/abstract-advance-request.model';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-advance-study',
