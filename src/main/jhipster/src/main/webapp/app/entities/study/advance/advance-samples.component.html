@@ -1,0 +1,107 @@
+<div class="modal-body">
+	<form name="form" #f="ngForm" class="form-horizontal">
+		<!-- Breeding method selection -->
+		<h4 jhiTranslate="advance-study.breeding-methods.title"></h4>
+		<div class="form-group row">
+			<div class="col-sm-6">
+				<div class="form-check form-check-inline">
+					<label class="col-form-label font-weight-bold" for="breedingMethodCheck" id="breedingMethodCheck" jhiTranslate="advance-samples.breeding-methods.description">Breeding Method</label>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%"
+							[(ngModel)]="breedingMethodSelectedId"
+							[options]="breedingMethodOptions"
+							[value]="breedingMethodSelectedId"
+							(valueChanged)="onMethodChange($event)">
+				</ng-select2>
+				<a href="{{helpLink}}" target="_blank" class="align-middle ml-2"><i class="fa fa-info-circle bms-helpicon"></i></a>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<div class="form-check form-check-inline">
+							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="1">
+							<span class="ml-1" jhiTranslate="advance-study.breeding-methods.derivative-and-mantenance">Derivative and Maintenance methods</span>
+						</div>
+						<div class="form-check form-check-inline">
+							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="2" disabled>
+							<span class="ml-1" jhiTranslate="advance-study.breeding-methods.all-methods">All methods</span>
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-12">
+						<div class="form-check form-check-inline">
+							<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
+								   [(ngModel)]="useFavoriteBreedingMethods">
+							<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="advance-study.breeding-methods.favorite">
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Selection Trait -->
+		<div *ngIf="showSelectionTraitSelection">
+			<h4 jhiTranslate="advance-study.selection-trait.title">Selection Trait</h4>
+			<p for="selectionTraitLevel" class="col-form-label font-weight-bold" jhiTranslate="advance-study.selection-trait.description"></p>
+			<div class="col-sm-12">
+				<div class="form-group row">
+					<div class="col-sm-6">
+						<label for="selectionTraitLevel" class="col-form-label font-weight-bold" jhiTranslate="advance-study.selection-trait.level">Level</label>
+						<select class="form-control" name="selectionTraitLevel" id="selectionTraitLevel" [(ngModel)]="selectedSelectionTraitDatasetId" (ngModelChange)="onSelectionTraitLevelChanged($event)">
+							<option *ngFor="let level of selectionTraitLevelOptions" [hidden]="!level.show" [value]="level.value">
+								<label>{{level.label}}</label>
+							</option>
+						</select>
+					</div>
+					<div class="col-sm-6">
+						<label for="selectionTraitLevel" class="col-form-label font-weight-bold" jhiTranslate="advance-study.selection-trait.variables">Variables</label>
+						<select class="form-control" name="selectionTraitVariables" id="selectionTraitVariables" [(ngModel)]="selectedSelectionTraitVariableId" [disabled]="selectionTraitVariables.length === 0">
+							<option *ngFor="let variable of selectionTraitVariables" [value]="variable.termId">
+								<label>{{variable.name}}</label>
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Plants -->
+		<h4 jhiTranslate="advance-samples.plants.title"></h4>
+		<div class="form-group row">
+			<div class="col-sm-6">
+				<div class="form-check form-check-inline">
+					<input type="radio" class="form-check-input" name="allPlantsSelected" ng-value="true" disabled checked>
+					<label class="col-form-label font-weight-bold" for="breedingMethodCheck" id="allPlantsSelected" jhiTranslate="advance-samples.plants.description">All plants are selected</label>
+				</div>
+			</div>
+		</div>
+
+		<!-- Repetition selection -->
+		<div *ngIf="replicationsOptions.length > 0">
+			<h4 jhiTranslate="advance-study.reps.title"></h4>
+			<div class="form-group">
+				<div *ngFor="let rep of replicationsOptions" class="form-check form-check-inline">
+					<input class="form-check-input" type="checkbox" [(ngModel)]="rep.selected" (click)="toggleCheck(rep.selected)"
+						   name="check-{{rep.index}}" id="check-{{rep.index}}">
+					<label class="col-form-label font-weight-bold" for="check-{{rep.index}}">
+						{{rep.index}}
+					</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" [(ngModel)]="checkAllReplications" (click)="toggleAll()" name="selectAllReps" id="selectAllReps"/>
+					<span class="col-form-label font-weight-bold" for="selectAllReps" jhiTranslate="advance-study.reps.select.all">Select All</span>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss('samples')">
+		<span jhiTranslate="entity.action.back">Back</span>
+	</button>
+	<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">
+		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span jhiTranslate="advance.action">Advance</span>
+	</button>
+</div>
+<jhi-alert></jhi-alert>

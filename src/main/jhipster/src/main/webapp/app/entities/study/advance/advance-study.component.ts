@@ -1,190 +1,171 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { TransactionService } from '../../../shared/inventory/service/transaction.service';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
 import { ParamContext } from '../../../shared/service/param.context';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../../../shared/alert/alert.service';
-import { LocationService } from '../../../shared/location/service/location.service';
-import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
-import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
-import { HttpResponse } from '@angular/common/http';
-import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
 import { HelpService } from '../../../shared/service/help.service';
-import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
+import { DatasetService } from '../../../shared/dataset/service/dataset.service';
 import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
-import { DatasetService } from '../service/datasetService';
+import { TranslateService } from '@ngx-translate/core';
+import { AdvanceService } from '../../../shared/study/service/advance.service';
+import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../../shared/study/model/advance-study-request.model';
+import { finalize } from 'rxjs/internal/operators/finalize';
+import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
+import { SelectionTraitRequest } from '../../../shared/study/model/abstract-advance-request.model';
 
 @Component({
     selector: 'jhi-advance-study',
     templateUrl: './advance-study.component.html'
 })
-export class AdvanceStudyComponent implements OnInit {
+export class AdvanceStudyComponent extends AbstractAdvanceComponent {
 
-    static readonly LOCATIONS_PAGE_SIZE = 300;
-    static readonly BREEDING_METHODS_PAGE_SIZE = 300;
+    breedingMethodCheck = true;
+    breedingMethodSelectedVariableId: number;
 
-    breedingMethodOptions: any;
-    breedingMethodSelected: string;
-    useFavoriteBreedingMethods = true;
-    breedingMethodCheck: boolean;
+    showBreedingMethodVariableSelection = false;
+
     linesCheck = true;
+    showLinesSelection = true;
+    selectedLinesNumber = 1;
+    selectedLinesVariableId: number;
+
     bulksCheck = true;
-    breedingMethodType: any;
-    isLoading: boolean;
-    isSuccess: boolean;
-    helpLink: string;
-    methodTypes: any[];
-    studyId: any;
-    trialDatasetId: any;
-    selectedInstances: any[];
-    trialInstances: any[] = [];
-    replicationNumber: number;
-    replicationsOptions: any[] = [];
-    checkallReplcations = true;
+    showBulkingSelection = false;
+    selectedPlotVariableId: number;
 
-    constructor(private route: ActivatedRoute,
-                private activatedRoute: ActivatedRoute,
-                private jhiLanguageService: JhiLanguageService,
-                private transactionService: TransactionService,
-                private eventManager: JhiEventManager,
-                private paramContext: ParamContext,
-                private activeModal: NgbActiveModal,
-                private alertService: AlertService,
-                private locationService: LocationService,
-                private router: Router,
-                private breedingMethodService: BreedingMethodService,
-                private helpService: HelpService,
-                private datasetService: DatasetService
+    constructor(public paramContext: ParamContext,
+                public route: ActivatedRoute,
+                public breedingMethodService: BreedingMethodService,
+                public helpService: HelpService,
+                public datasetService: DatasetService,
+                public translateService: TranslateService,
+                public alertService: AlertService,
+                public jhiLanguageService: JhiLanguageService,
+                public advanceService: AdvanceService
     ) {
-        this.paramContext.readParams();
-    }
-
-    ngOnInit(): void {
-        this.isLoading = false;
-        this.isSuccess = false;
-        this.breedingMethodCheck = true;
-        this.breedingMethodType = '2';
-        this.methodTypes = [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
-
-        this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
-        this.trialDatasetId = Number(this.route.snapshot.queryParamMap.get('trialDatasetId'));
-        this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
-        this.replicationNumber =  Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
-
-        this.initializeReplicationOptions(this.replicationNumber);
-
-        this.datasetService.getDataset(this.studyId, this.trialDatasetId).toPromise().then((response) => {
-            response.instances.forEach((instance) => {
-                if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
-                    this.trialInstances.push({
-                        instanceNumber: instance.instanceNumber,
-                        locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')',
-                        abbrCode: instance.customLocationAbbreviation
-                    });
-                }
-            });
-        });
-        this.loadBreedingMethods();
-        // Get helplink url
-        if (!this.helpLink || !this.helpLink.length) {
-
-            this.helpService.getHelpLink('MANAGE_CROP_BREEDING_METHODS').toPromise().then((response) => {
-                this.helpLink = response.body;
-            }).catch((error) => {
-            });
-        }
-    }
-
-    initializeReplicationOptions(replicationNumber: number) {
-        if (replicationNumber !== 0) {
-            for (let rep = 1; rep <= replicationNumber; rep++) {
-                this.replicationsOptions.push({repIndex: rep, selected: true});
-            }
-        }
-    }
-
-    checkUncheckAll() {
-        this.replicationsOptions.forEach((replication) => replication.selected = !this.checkallReplcations);
-    }
-
-    togglecheck(repCheck) {
-        this.checkallReplcations = !repCheck;
-    }
-
-    loadBreedingMethods() {
-        this.breedingMethodOptions = {
-            ajax: {
-                delay: 500,
-                transport: function(params, success, failure) {
-                    params.data.page = params.data.page || 1;
-
-                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
-                    breedingMethodSearchRequest.nameFilter = {
-                        type: MatchType.STARTSWITH,
-                        value: params.data.term
-                    };
-
-                    breedingMethodSearchRequest.methodTypes = this.methodTypes;
-                    const pagination = {
-                        page: (params.data.page - 1),
-                        size: AdvanceStudyComponent.BREEDING_METHODS_PAGE_SIZE
-                    };
-
-                    this.breedingMethodService.searchBreedingMethods(
-                        breedingMethodSearchRequest,
-                        this.useFavoriteBreedingMethods,
-                        pagination
-                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
-                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
-                        success(res.body);
-                    }, failure);
-                }.bind(this),
-                processResults: function(methods, params) {
-                    params.page = params.page || 1;
-
-                    return {
-                        results: methods.map((method: BreedingMethod) => {
-                            return {
-                                id: method.code,
-                                text: method.code + ' - ' + method.name
-                            };
-                        }),
-                        pagination: {
-                            more: (params.page * AdvanceStudyComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
-                        }
-                    };
-                }.bind(this)
-            }
-        };
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, AdvanceType.STUDY);
     }
 
     save(): void {
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
+        this.isLoading = true;
 
+        const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
+        const selectedReplicationNumbers: number[] =
+            this.replicationsOptions.filter((replication: any) => replication.selected)
+                .map((replication: any) => replication.index);
+        const breedingMethodSelectionRequest: BreedingMethodSelectionRequest = new BreedingMethodSelectionRequest();
+        if (this.showBreedingMethodVariableSelection) {
+            breedingMethodSelectionRequest.methodVariateId = this.breedingMethodSelectedVariableId;
+        } else {
+            breedingMethodSelectionRequest.breedingMethodId = Number(this.breedingMethodSelectedId);
+        }
+
+        const advanceStudyRequest: AdvanceStudyRequest = new AdvanceStudyRequest(selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+        if (this.showSelectionTraitSelection) {
+            const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
+            advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
+        }
+
+        if (this.showBreedingMethodVariableSelection || this.showLinesSelection) {
+            const lineSelectionRequest: LineSelectionRequest = new LineSelectionRequest();
+            if (this.linesCheck) {
+                lineSelectionRequest.linesSelected = this.selectedLinesNumber;
+            } else {
+                lineSelectionRequest.lineVariateId = this.selectedLinesVariableId;
+            }
+            advanceStudyRequest.lineSelectionRequest = lineSelectionRequest;
+        }
+
+        if (this.showBulkingSelection) {
+            const bulkingRequest: BulkingRequest = new BulkingRequest();
+            if (this.bulksCheck) {
+                bulkingRequest.allPlotsSelected = true;
+            } else {
+                bulkingRequest.plotVariateId = this.selectedPlotVariableId;
+            }
+            advanceStudyRequest.bulkingRequest = bulkingRequest;
+        }
+
+        this.advanceService.advanceStudy(this.studyId, advanceStudyRequest)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(
+            (res: number[]) => this.onAdvanceSuccess(res),
+            (res) => this.onError(res));
     }
 
-    fetch(): void {
-        if (this.breedingMethodType === '1') {
-            this.methodTypes = [];
+    onSelectMethodVariable(e) {
+        if (this.selectionMethodVariables.length > 0) {
+            this.showBreedingMethodVariableSelection = !this.showBreedingMethodVariableSelection;
+            this.showBulkingSelection = true;
 
-        } else if (this.breedingMethodType === '2') {
-            this.methodTypes = [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
-        }
-        this.loadBreedingMethods();
-
-    }
-
-    dismiss() {
-        // Handle closing of modal when this page is loaded outside of Angular.
-        if ((<any>window.parent).closeModal) {
-            (<any>window.parent).closeModal();
-        }
-        if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
+            this.showSelectionTraitSelection = this.breedingMethodCheck && this.hasSelectTraitVariables();
+        } else {
+            e.preventDefault();
+            this.alertService.error('advance-study.errors.breeding-method.selection.variate.not-present');
         }
     }
+
+    onMethodChange(selectedMethodId: string) {
+        super.onMethodChange(selectedMethodId);
+        this.showLinesSelection = !this.selectedBreedingMethod.isBulkingMethod;
+        this.showBulkingSelection = this.selectedBreedingMethod.isBulkingMethod;
+    }
+
+    onSelectLineVariable(e) {
+        if (this.selectionPlantVariables.length === 0) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            this.alertService.error('advance-study.errors.lines.selection.variate.not-present');
+        }
+    }
+
+    onSelectPlotVariable(e) {
+        if (this.selectionPlantVariables.length === 0) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            this.alertService.error('advance-study.errors.lines.selection.variate.not-present');
+        }
+    }
+
+    isValid(): boolean {
+        // Variable for selection method was not selected
+        if (this.showBreedingMethodVariableSelection && !this.breedingMethodSelectedVariableId) {
+            return false;
+        }
+        // No same method for each advance was selected
+        if (!this.showBreedingMethodVariableSelection && !this.breedingMethodSelectedId) {
+            return false;
+        }
+
+        // Selection trait was no selected
+        if (this.showSelectionTraitSelection && (!this.selectedSelectionTraitDatasetId || !this.selectedSelectionTraitVariableId)) {
+            return false;
+        }
+
+        if (this.showLinesSelection) {
+            // Same number of lines for each plot was not defined
+            if (this.linesCheck && (!this.selectedLinesNumber || this.selectedLinesNumber < 0)) {
+                return false;
+            }
+            // Variable that defines the number of selected lines was not selected
+            if (!this.linesCheck && !this.selectedLinesVariableId) {
+                return false;
+            }
+        }
+
+        // Variable that defines the number of lines selected from each plot was not selected
+        if (this.showBulkingSelection && !this.bulksCheck && !this.selectedPlotVariableId) {
+            return false;
+        }
+
+        // Replications were not selected
+        if (this.replicationsOptions.length && this.replicationsOptions.filter((rep: any) => rep.selected).length === 0 && !this.checkAllReplications) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

@@ -12,8 +12,8 @@ import { toUpper } from '../../../shared/util/to-upper';
 import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { EntryDetailsImportContext } from '../../../shared/ontology/entry-details-import.context';
-import { StudyService } from '../../../shared/study/study.service';
-import { DatasetVariable } from '../../../shared/study/dataset-variable';
+import { StudyService } from '../../../shared/study/service/study.service';
+import { DatasetVariable } from '../../../shared/study/model/dataset-variable';
 import { EntryDetailsImportService, HEADERS } from '../../../shared/ontology/service/entry-details-import.service';
 import { ModalAlertComponent } from '../../../shared/modal/modal-alert.component';
 

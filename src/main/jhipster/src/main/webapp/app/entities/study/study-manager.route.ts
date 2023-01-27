@@ -3,6 +3,7 @@ import { RouteAccessService } from '../../shared';
 import { ImportEntryDetailsComponent, ImportEntryDetailsPopupComponent } from './entry-details/import-entry-details.component';
 import { AdvanceStudyComponent } from './advance/advance-study.component';
 import { GermplasmListCreationPopupComponent } from '../../germplasm-manager/germplasm-list/germplasm-list-creation-popup.component';
+import { AdvanceSamplesComponent } from './advance/advance-samples.component';
 
 export const STUDY_MANAGER_ROUTES: Routes = [
     {
@@ -18,6 +19,11 @@ export const STUDY_MANAGER_ROUTES: Routes = [
     {
         path: 'advance-study',
         component: AdvanceStudyComponent,
+        canActivate: [RouteAccessService]
+    },
+    {
+        path: 'advance-samples',
+        component: AdvanceSamplesComponent,
         canActivate: [RouteAccessService]
     },
     {
