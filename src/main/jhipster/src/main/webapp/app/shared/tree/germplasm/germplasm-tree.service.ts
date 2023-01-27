@@ -99,7 +99,6 @@ export class GermplasmTreeService extends TreeService {
             params['programUUID'] = this.paramContext.programUUID;
         }
         const body = {
-            userId: this.paramContext.loggedInUserId,
             cropFolders,
             programFolders
         };
