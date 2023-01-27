@@ -160,6 +160,12 @@ export class StudySearchComponent implements OnInit {
         this.urlService.openStudy(study.studyId, study.studyName);
     }
 
+    onClearSort($event) {
+        $event.preventDefault();
+        this.clearSort();
+        this.transition();
+    }
+
     private registerColumnFiltersChanged() {
         this.eventSubscriber = this.eventManager.subscribe(StudySearchComponent.COLUMN_FILTER_EVENT_NAME, (event) => {
             this.resetTable();
