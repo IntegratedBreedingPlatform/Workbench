@@ -17,7 +17,8 @@ export class BreedingMethod {
         public count?: string,
         public suffix?: string,
         public programFavorites?: ProgramFavorite[],
-        public snameTypeId?: number
+        public snameTypeId?: number,
+        public isBulkingMethod?: boolean
     ) {
     }
 }

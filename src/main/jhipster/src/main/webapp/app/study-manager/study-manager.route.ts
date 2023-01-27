@@ -7,6 +7,7 @@ import { StudyManagerComponent } from './study-manager.component';
 import { StudySearchComponent } from './study-search.component';
 import { StudySummaryComponent } from './study-summary.component';
 import { StudySummaryDatasetComponent } from './study-summary-dataset.component';
+import { AdvanceSamplesComponent } from './advance/advance-samples.component';
 
 export const STUDY_MANAGER_ROUTES: Routes = [
     {
@@ -51,6 +52,11 @@ export const STUDY_MANAGER_ROUTES: Routes = [
     {
         path: 'advance-study',
         component: AdvanceStudyComponent,
+        canActivate: [RouteAccessService]
+    },
+    {
+        path: 'advance-samples',
+        component: AdvanceSamplesComponent,
         canActivate: [RouteAccessService]
     },
     {

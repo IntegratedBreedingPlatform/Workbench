@@ -4,6 +4,7 @@ import { ParamContext } from '../../service/param.context';
 import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../../../app.constants';
 import { DatasetModel } from '../model/dataset.model';
+import { DatasetTypeEnum } from '../model/dataset-type.enum';
 import { createRequestOption } from '../..';
 import { ObservationUnitsSearchRequest } from '../model/observation-units-search-request.model';
 import { ObservationUnitsSearchResponse } from '../model/observation-units-search-response.model';
@@ -17,16 +18,27 @@ export class DatasetService {
     }
 
     getDataset(studyId: number, datasetId: number): Observable<HttpResponse<DatasetModel>> {
-        return this.http.get<DatasetModel>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}`,
+        return this.http.get<any>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}`,
             { observe: 'response' });
     }
 
+    getDatasetsByTypeIds(studyId: number, datasetTypeIds: DatasetTypeEnum[]): Observable<HttpResponse<DatasetModel[]>> {
+        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets?datasetTypeIds=${datasetTypeIds}`;
+        return this.http.get<any>(url, { observe: 'response' });
+    }
+
+    getVariablesByVariableType(studyId: number, variableTypeIds: number[]): Observable<HttpResponse<ObservationVariable[]>> {
+        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/variables/types/${variableTypeIds}`;
+        return this.http.get<any>(url, { observe: 'response' });
+    }
+
     getDatasets(studyId: number, datasetIds: number[]): Observable<HttpResponse<DatasetModel[]>> {
-        let url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets`;
+        const params = {};
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets`;
         if (datasetIds) {
-            url += `?datasetTypeIds=${datasetIds}`;
+            params['datasetTypeIds'] = datasetIds;
         }
-        return this.http.get<DatasetModel[]>(url, { observe: 'response' });
+        return this.http.get<DatasetModel[]>(url, { params, observe: 'response' });
     }
 
     getObservationSetColumns(studyId: number, datasetId: number): Observable<HttpResponse<ObservationVariable[]>> {

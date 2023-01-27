@@ -98,6 +98,7 @@ import { StudyService } from './study/service/study.service';
 import { EntryDetailsImportContext } from './ontology/entry-details-import.context';
 import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 import { ModalAlertComponent } from './modal/modal-alert.component';
+import { AdvanceService } from './study/service/advance.service';
 import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
 import { ColumnFilterVariablesComponent } from './column-filter/column-filter-variables-component';
 
@@ -216,6 +217,8 @@ import { ColumnFilterVariablesComponent } from './column-filter/column-filter-va
         FeedbackService,
         EntryDetailsImportContext,
         FeedbackService,
+        GenotypingBrapiService,
+        AdvanceService,
         GenotypingBrapiService,
         ObservationVariableHelperService
     ],
