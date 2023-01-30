@@ -37,9 +37,6 @@ export class GermplasmTreeService extends TreeService {
     init(): any {
         const url = `${this.resourceUrl}/germplasm-lists/tree-state`;
         const params = {};
-        if (this.paramContext.loggedInUserId) {
-            params['userId'] = this.paramContext.loggedInUserId;
-        }
         if (this.paramContext.programUUID) {
             params['programUUID'] = this.paramContext.programUUID;
         }
@@ -102,7 +99,6 @@ export class GermplasmTreeService extends TreeService {
             params['programUUID'] = this.paramContext.programUUID;
         }
         const body = {
-            userId: this.paramContext.loggedInUserId,
             cropFolders,
             programFolders
         };
