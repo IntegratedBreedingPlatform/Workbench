@@ -117,7 +117,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.checkAllReplications = this.checkAllReplications && !repCheck;
     }
 
-    dismiss(advanceType: string) {
+    onBack(advanceType: string) {
         if ((<any>window.parent)) {
             (<any>window.parent).postMessage({ name: SELECT_INSTANCES, advanceType }, '*');
         }
