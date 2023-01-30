@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
 import { Role } from '../../models/role.model';
 import { RoleService } from '../../services/role.service';
-import { scrollTop } from '../../../shared/utils/scroll-top';
 import { RoleFilter } from '../../models/role-filter.model';
 import { Pageable } from '../../../shared/model/pageable';
 import { finalize } from 'rxjs/operators';
@@ -67,6 +66,7 @@ export class RolesPaneComponent implements OnInit {
             this.message = `${role.name} role was successfully saved!`;
             this.loadAll(this.request);
         });
+        this.registerRoleChanged();
     }
 
     private loadAll(request: RoleFilter) {
@@ -166,7 +166,7 @@ export class RolesPaneComponent implements OnInit {
         return item.id;
     }
 
-    registerUserChanged() {
+    registerRoleChanged() {
         this.eventSubscriber = this.eventManager.subscribe('onRoleViewChanged', (event) => {
             this.loadAll(this.request);
         });
