@@ -6,7 +6,8 @@ import { STUDY_MANAGER_ROUTES } from './study-manager.route';
 import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
 import { AdvanceStudyComponent } from './advance/advance-study.component';
 import { GermplasmTreeService } from '../../shared/tree/germplasm/germplasm-tree.service';
-import { DatasetService } from './service/datasetService';
+import { DatasetService } from '../../shared/dataset/service/dataset.service';
+import { AdvanceSamplesComponent } from './advance/advance-samples.component';
 
 @NgModule({
     imports: [
@@ -16,12 +17,14 @@ import { DatasetService } from './service/datasetService';
     declarations: [
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
-        AdvanceStudyComponent
+        AdvanceStudyComponent,
+        AdvanceSamplesComponent
     ],
     entryComponents: [
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
-        AdvanceStudyComponent
+        AdvanceStudyComponent,
+        AdvanceSamplesComponent
     ],
     providers: [
         EntryDetailsImportContext,
