@@ -17,7 +17,6 @@ import com.vaadin.ui.Layout;
 import org.generationcp.ibpworkbench.study.RepresentationDatasetComponent;
 import org.generationcp.ibpworkbench.study.SaveRepresentationDatasetExcelDialog;
 import org.generationcp.ibpworkbench.study.TableViewerComponent;
-import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
