@@ -1,7 +1,7 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="role-manager-tab">
 	<br/>
 	<div class="pull-right pb-3">
-		<button class="btn btn-outline-info" [routerLink]="['/', { outlets: { popup: 'role-edit-dialog' } }]" queryParamsHandling="merge"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Create role</button>
+		<button class="btn btn-outline-info" (click)="addRole()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Create role</button>
 	</div>
 	<div class="om-panel-header">
 		<h2 class="om-panel-title ">

@@ -112,6 +112,12 @@ export class RolesPaneComponent implements OnInit {
 
     editRole(role: Role) {
         this.context.role = Object.assign({}, role);
+        this.context.role.permissions = role.permissions.map((x) => Object.assign({}, x));
+        this.router.navigate(['/', { outlets: { popup: 'role-edit-dialog' }, }], { queryParamsHandling: 'merge' });
+    }
+
+    addRole(role: Role) {
+        this.context.role = new Role();
         this.router.navigate(['/', { outlets: { popup: 'role-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
