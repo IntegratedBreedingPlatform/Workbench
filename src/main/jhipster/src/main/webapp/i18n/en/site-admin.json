@@ -1,0 +1,54 @@
+{
+  "site-admin": {
+    "title": "Site Administration",
+    "tabs": {
+      "users": "Users",
+      "roles": "Roles"
+    },
+    "all-crops": "All crops",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "role": {
+      "columns": {
+        "role-name": "Role",
+        "role-description": "Description",
+        "role-type": "Type",
+        "permissions": "Permissions",
+        "status": "status"
+      },
+      "modal": {
+        "edit": {
+          "header": "Edit Role",
+          "success": "Role updated successfully"
+        },
+        "create": {
+          "header": "Create Role",
+          "success": "Role created successfully"
+        }
+      }
+    },
+    "user": {
+      "columns": {
+        "user-name": "User name",
+        "first-name": "First Name",
+        "last-name": "Last Name",
+        "email": "Email",
+        "crop": "Crop",
+        "Roles": "Roles",
+        "status": "Status"
+      },
+      "modal": {
+        "edit": {
+          "header": "Edit User",
+          "success": "User updated successfully"
+        },
+        "create": {
+          "header": "Create User",
+          "success": "User created successfully"
+        }
+      }
+    }
+  }
+}
