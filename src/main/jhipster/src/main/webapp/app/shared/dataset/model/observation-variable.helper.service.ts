@@ -25,7 +25,7 @@ export class ObservationVariableHelperService {
         if (variable.dataType === DataTypeEnum.CATEGORICAL && variable.possibleValues && variable.possibleValues.length > 0) {
             return this.getCategoricalValue(variable, observationUnitData.value);
         }
-        return observationUnitData.value;
+        return observationUnitData ? observationUnitData.value : null;
     }
 
     private getCategoricalValue(variable: ObservationVariable, categoricalValue: string) {
