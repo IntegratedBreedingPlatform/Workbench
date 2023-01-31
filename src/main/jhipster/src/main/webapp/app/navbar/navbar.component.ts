@@ -271,7 +271,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     private expandParent() {
-        if (!this.treeControl.dataNodes.length) {
+        if (!this.treeControl.dataNodes || !this.treeControl.dataNodes.length) {
             return;
         }
         // Find node by selected tool name
