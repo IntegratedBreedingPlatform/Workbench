@@ -5,6 +5,7 @@ import { RoleEditPopupComponent } from './tabs/roles/role-edit-dialog.component'
 import { UsersPaneComponent } from './tabs/users/users-pane.component';
 import { RolesPaneComponent } from './tabs/roles/roles-pane.component';
 import { UserEditPopupComponent } from './tabs/users/user-edit-dialog.component';
+import { UserRolePopupComponent } from './tabs/users/users-role-dialog.component';
 
 export const SITE_ADMIN_ROUTES: Routes = [
     {
@@ -39,6 +40,11 @@ export const SITE_ADMIN_ROUTES: Routes = [
     {
         path: 'user-edit-dialog',
         component: UserEditPopupComponent,
+        outlet: 'popup'
+    },
+    {
+        path: 'user-role-dialog',
+        component: UserRolePopupComponent,
         outlet: 'popup'
     },
 ];
