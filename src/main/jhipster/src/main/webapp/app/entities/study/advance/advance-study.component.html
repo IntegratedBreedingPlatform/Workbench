@@ -170,7 +170,7 @@
 	</form>
 </div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="dismiss('study')">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back('study')">
 		<span jhiTranslate="entity.action.back">Back</span>
 	</button>
 	<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">

@@ -6,6 +6,7 @@ import { SERVER_API_URL } from '../../../app.constants';
 import { DatasetModel } from '../model/dataset.model';
 import { DatasetTypeEnum } from '../model/dataset-type.enum';
 import { ObservationVariable } from '../../model/observation-variable.model';
+import { createRequestOption } from '../..';
 
 @Injectable()
 export class DatasetService {
@@ -25,8 +26,9 @@ export class DatasetService {
     }
 
     getVariablesByVariableType(studyId: number, variableTypeIds: number[]): Observable<HttpResponse<ObservationVariable[]>> {
-        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/variables/types/${variableTypeIds}`;
-        return this.http.get<any>(url, { observe: 'response' });
+        const params = createRequestOption(Object.assign({ variableTypeIds }));
+        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/variables/types`;
+        return this.http.get<any>(url, { params, observe: 'response' });
     }
 
 }

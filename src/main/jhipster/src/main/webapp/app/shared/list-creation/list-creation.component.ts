@@ -14,6 +14,7 @@ import { formatErrorList } from '../alert/format-error-list';
 import { ListEntry, ListModel } from '../list-builder/model/list.model';
 import { ListType } from '../list-builder/model/list-type.model';
 import { ListService } from './service/list.service';
+import { GERMPLASM_LIST_CREATED } from '../../app.events';
 
 declare var $: any;
 
@@ -107,6 +108,10 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
     }
 
     onSaveSuccess() {
+        if ((<any>window.parent)) {
+            (<any>window.parent).postMessage({ name: GERMPLASM_LIST_CREATED }, '*');
+        }
+
         this.alertService.success('germplasm-list-creation.success');
         this.modal.close();
     }

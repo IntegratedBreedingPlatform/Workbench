@@ -7,6 +7,7 @@ import { AlertService } from '../alert/alert.service';
 import { ModalConfirmComponent } from '../modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TREE_STATE_PERSISTED } from '../../app.events';
 
 declare var $: any;
 export type SelectionMode = 'single' | 'multiple';
@@ -193,6 +194,10 @@ export class TreeComponent implements OnInit {
     closeModal() {
         const persistPromise = this.persistTreeState();
         persistPromise.then(() => {
+            if ((<any>window.parent)) {
+                (<any>window.parent).postMessage({ name: TREE_STATE_PERSISTED }, '*');
+            }
+
             this.activeModal.dismiss();
         });
     }
