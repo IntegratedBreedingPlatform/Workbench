@@ -95,4 +95,12 @@ export class StudyManagerTreeComponent extends TreeComponent {
         };
     }
 
+    finish(extraParams?: any) {
+        if (!this.selectedNodes || this.selectedNodes.length === 0 || !this.selectedNodes[0].leaf) {
+            this.alertService.error('study.manager.tree.error.select-study');
+            return;
+        }
+        super.finish(extraParams);
+    }
+
 }

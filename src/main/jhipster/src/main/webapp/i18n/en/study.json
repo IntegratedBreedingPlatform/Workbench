@@ -19,6 +19,11 @@
                     "objective": "Objective",
                     "actions": "Actions"
                 }
+            },
+            "tree": {
+                "error": {
+                    "select-study": "Please choose a study."
+                }
             }
         },
         "details": {
