@@ -11,7 +11,6 @@ import { Program } from '../../../shared/user/model/program.model';
 import { RoleFilter } from '../../models/role-filter.model';
 import { UserRole } from '../../../shared/user/model/user-role.model';
 import { User } from '../../../shared/user/model/user.model';
-import { RoleTypeEnum } from '../../../shared/user/model/role-type.enum';
 import { SiteAdminContext } from '../../site-admin-context';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -148,6 +147,10 @@ export class UserRoleDialogComponent implements OnInit {
         this.modalService.open(UserEditDialogComponent as Component, { size: 'lg', backdrop: 'static' });
     }
 
+}
+
+enum RoleTypeEnum {
+    INSTANCE = 1, CROP = 2, PROGRAM = 3
 }
 
 @Component({
