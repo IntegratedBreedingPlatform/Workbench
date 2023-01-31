@@ -184,7 +184,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     siteAdmin() {
         this.program = null;
-        this.openTool('/ibpworkbench/controller/admin', 'Site Admin');
+        this.openTool('/ibpworkbench/controller/jhipster#site-admin', 'Site Admin');
     }
 
     about() {
