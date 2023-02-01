@@ -1,16 +1,16 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="user-manager-tab">
-	<br/>
-	<jhi-column-filter [request]="request" [resultSearch]="searchResult"
-					   [filters]="filters"></jhi-column-filter>
-	<div class="pull-right pb-3">
-		<button class="btn btn-outline-info" (click)="addUser()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Add user</button>
-	</div>
 	<div class="om-panel-header">
-		<h2 class="om-panel-title ">
+		<h2 class="om-panel-title">
 			Manage users</h2>
 		<div>Click a <strong>User name</strong>
 			to inspect or edit their personal information.
 		</div>
+	</div>
+	<br/>
+	<jhi-column-filter [request]="request"
+					   [filters]="filters"></jhi-column-filter>
+	<div class="pull-right pb-3">
+		<button class="btn btn-outline-info" (click)="addUser()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Add user</button>
 	</div>
 	<br/><br/>
 	<div class="table-responsive" *ngIf="users">
