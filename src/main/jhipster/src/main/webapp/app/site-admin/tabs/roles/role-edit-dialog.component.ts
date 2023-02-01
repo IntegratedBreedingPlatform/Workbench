@@ -205,7 +205,9 @@ export class RoleEditDialogComponent implements OnInit {
 				<jhi-permission-tree *ngIf="permission.children" [permissions]="permission.children"></jhi-permission-tree>
 			</li>
 		</ul>
-    `
+    `,
+    styleUrls: ['role-edit-dialog.component.css']
+
 })
 export class PermissionTreeComponent {
     @Input() permissions: Permission [];
