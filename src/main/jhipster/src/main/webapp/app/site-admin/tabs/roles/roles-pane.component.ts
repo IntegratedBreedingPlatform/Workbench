@@ -116,7 +116,7 @@ export class RolesPaneComponent implements OnInit {
         this.router.navigate(['/', { outlets: { popup: 'role-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
-    addRole(role: Role) {
+    addRole() {
         this.context.role = new Role();
         this.router.navigate(['/', { outlets: { popup: 'role-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
