@@ -16,9 +16,9 @@
 		<form name="form" #f="ngForm">
 			<div class="form-group row">
 				<label for="firstName" class="col-sm-3 col-form-label font-weight-bold">First Name</label>
-				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.firstName" #firstName="ngModel" [class.has-feedback]="!(firstName?.valid || firstName?.pristine)" [class.has-error]="!(firstName?.valid || firstName?.pristine)"
+				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.firstName" #firstName="ngModel"
 					   required name="firstName" id="firstName" placeholder="First Name" maxlength="20">
-				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.lastName" #lastName="ngModel" [class.has-feedback]="!(lastName?.valid || lastName?.pristine)" [class.has-error]="!(lastName?.valid || lastName?.pristine)"
+				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.lastName" #lastName="ngModel"
 					   required name="lastName" id="lastName" placeholder="Last Name" maxlength="50" style="margin-left: 51px;">
 			</div>
 			<div class="form-group row">
