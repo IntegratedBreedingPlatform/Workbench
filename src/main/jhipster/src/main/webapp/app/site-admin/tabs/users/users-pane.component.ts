@@ -101,7 +101,12 @@ export class UsersPaneComponent implements OnInit {
     editUser(user: User) {
         this.context.user = Object.assign({}, user);
         this.context.user.crops = user.crops.map((x) => Object.assign({}, x));
-        this.context.user.userRoles = user.userRoles.map((x) => Object.assign({}, x));
+        if (!user.userRoles) {
+            this.context.user.userRoles = [];
+        } else {
+            this.context.user.userRoles = user.userRoles.map((x) => Object.assign({}, x));
+        }
+
         this.router.navigate(['/', { outlets: { popup: 'user-edit-dialog' }, }], { queryParamsHandling: 'merge' });
     }
 
@@ -201,7 +206,7 @@ export class UsersPaneComponent implements OnInit {
     }
 
     hasSuperAdminRole(userRoles) {
-        return userRoles.some((userRole) => userRole.role.name === 'SuperAdmin');
+        return userRoles && userRoles.some((userRole) => userRole.role.name === 'SuperAdmin');
     }
 
     private onSuccess(data: any[], headers) {
