@@ -1,0 +1,67 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{title}}</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+            (click)="closeModal()">&times;
+    </button>
+</div>
+<div class="modal-body">
+    <div *ngIf="!this.isReadOnly" class="row form-group modal-popover ">
+        <div class="col-md-7">
+        </div>
+        <div class="col-md-5">
+            <div class="pull-right">
+                <img (click)="setMode(Modes.Add, $event)" src="/Fieldbook/static/img/add2.png" class="image-padding browse-action"
+                     [ngClass]="{ 'disable-image': this.isAddActionDisabled() }" [attr.title]="this.isAddActionDisabled() ? this.disabledAddActionMessage : ''"/>
+                <img (click)="setMode(Modes.Rename, $event)" src="/Fieldbook/static/img/edit.png" class="image-padding browse-action"
+                     [ngClass]="{ 'disable-image': this.isRenameActionDisabled() }" [attr.title]="this.isRenameActionDisabled() ? this.disabledRenameActionMessage : ''"/>
+                <img (click)="setMode(Modes.Delete, $event)" src="/Fieldbook/static/img/delete.png" class="image-padding browse-action"
+                     [ngClass]="{ 'disable-image': this.isDeleteActionDisabled() }" [attr.title]="this.isDeleteActionDisabled() ? this.disabledDeleteActionMessage : ''"/>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-xs-12 col-md-12">
+            <div *ngIf="!this.isReadOnly" class="form-horizontal form-group">
+                <div id="addFolderDiv" *ngIf="mode == Modes.Add || mode == Modes.Rename">
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label font-weight-bold">{{ Modes[mode] }} Folder</label>
+                        <input type="text" class="form-control col-md-6" placeholder="Folder Name" [(ngModel)]="this.name" [required]="true"  maxlength="{{ NAME_MAX_LENGTH }}"/>
+                        <button class="btn btn-success" [title]="Modes[mode]" (click)="submitAddOrRenameFolder()">
+                            <span class="fa fa-check"></span>
+                        </button>
+                        <button class="btn btn-danger" title="Cancel" (click)="mode = Modes.None">
+                            <span class="fa fa-times"></span>
+                        </button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="table-responsive">
+                <p-tree [value]="nodes"
+                        [(selection)]="_selectedNodes"
+                        [draggableNodes]="true"
+                        [droppableNodes]="true"
+                        [validateDrop]="true"
+                        (onNodeSelect)="onNodeSelect($event)"
+                        (onNodeDrop)="onNodeDrop($event, $event.dragNode, $event.dropNode)"
+                        (onNodeExpand)="onNodeExpand($event)"
+                        autoLayout="true"
+                        [selectionMode]="selectionMode"
+                        draggableScope="self"
+                        droppableScope="self"
+                        styleClass="tree-table">
+                    <ng-template pTemplate="default" let-node>
+                        <span [ngClass]="{ 'folder': !node.leaf, 'file': node.leaf }"></span>
+                        {{node.data.name}}
+                    </ng-template>
+                </p-tree>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">Cancel</button>
+    <button type="button" class="btn btn-primary" aria-hidden="true" (click)="finish({ showSummary: true })">View Summary</button>
+    <button type="button" class="btn btn-primary" aria-hidden="true" *jhiHasAnyAuthority="STUDIES_EDITION_PERMISSIONS" (click)="finish()">Open</button>
+</div>

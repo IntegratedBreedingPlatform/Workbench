@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { JhiLanguageService } from 'ng-jhipster';
-import { ParamContext } from '../../../shared/service/param.context';
-import { AlertService } from '../../../shared/alert/alert.service';
-import { HelpService } from '../../../shared/service/help.service';
-import { DatasetService } from '../../../shared/dataset/service/dataset.service';
-import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AdvanceService } from '../../../shared/study/service/advance.service';
-import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../../shared/study/model/advance-study-request.model';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
-import { SelectionTraitRequest } from '../../../shared/study/model/abstract-advance-request.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ParamContext } from '../../shared/service/param.context';
+import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
+import { HelpService } from '../../shared/service/help.service';
+import { DatasetService } from '../../shared/dataset/service/dataset.service';
+import { AlertService } from '../../shared/alert/alert.service';
+import { AdvanceService } from '../../shared/study/service/advance.service';
+import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../shared/study/model/advance-study-request.model';
+import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -91,8 +91,8 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceStudy(this.studyId, advanceStudyRequest)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(
-            (res: number[]) => this.onAdvanceSuccess(res),
-            (res) => this.onError(res));
+                (res: number[]) => this.onAdvanceSuccess(res),
+                (res) => this.onError(res));
     }
 
     onSelectMethodVariable(e) {

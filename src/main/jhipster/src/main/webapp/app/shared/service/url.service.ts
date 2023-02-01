@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
-import { GERMPLASM_LIST_MANAGER_URL, STUDY_URL } from '../../app.constants';
+import { CREATE_STUDY_URL, GERMPLASM_LIST_MANAGER_URL, STUDY_URL } from '../../app.constants';
 import { NavbarMessageEvent } from '../model/navbar-message.event';
 import { Program } from '../program/model/program';
 
 @Injectable()
 export class UrlService {
+
+    createStudy() {
+        window.top.postMessage({ toolSelectedUrl: CREATE_STUDY_URL }, '*');
+        return false;
+    }
 
     openStudy(studyId: any, studyName: string, program: Program = null) {
         let message: NavbarMessageEvent;

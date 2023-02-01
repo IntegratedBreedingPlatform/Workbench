@@ -99,6 +99,8 @@ import { EntryDetailsImportContext } from './ontology/entry-details-import.conte
 import { EntryDetailsImportService } from './ontology/service/entry-details-import.service';
 import { ModalAlertComponent } from './modal/modal-alert.component';
 import { AdvanceService } from './study/service/advance.service';
+import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
+import { ColumnFilterVariablesComponent } from './column-filter/column-filter-variables-component';
 
 @NgModule({
     imports: [
@@ -139,6 +141,7 @@ import { AdvanceService } from './study/service/advance.service';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ColumnFilterDropdownComponent,
+        ColumnFilterVariablesComponent,
         KeyValuePipe,
         SecureImagePipe,
         CropSelect2DataPipe,
@@ -215,7 +218,9 @@ import { AdvanceService } from './study/service/advance.service';
         EntryDetailsImportContext,
         FeedbackService,
         GenotypingBrapiService,
-        AdvanceService
+        AdvanceService,
+        GenotypingBrapiService,
+        ObservationVariableHelperService
     ],
     entryComponents: [
         ModalComponent,
@@ -270,6 +275,7 @@ import { AdvanceService } from './study/service/advance.service';
         ColumnFilterAttributesComponent,
         ColumnFilterNameTypesComponent,
         ColumnFilterDropdownComponent,
+        ColumnFilterVariablesComponent,
         ItemCountCustomComponent,
         LocationSelect2DataPipe,
         GermplasmTreeTableComponent,

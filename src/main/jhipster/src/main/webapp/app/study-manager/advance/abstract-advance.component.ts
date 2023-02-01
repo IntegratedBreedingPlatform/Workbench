@@ -1,27 +1,27 @@
-import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
-import { ParamContext } from '../../../shared/service/param.context';
+import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
+import { ParamContext } from '../../shared/service/param.context';
 import { Component, OnInit } from '@angular/core';
-import { ObservationVariable } from '../../../shared/model/observation-variable.model';
-import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
-import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
+import { ObservationVariable } from '../../shared/model/observation-variable.model';
+import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
+import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
-import { DatasetTypeEnum } from '../../../shared/dataset/model/dataset-type.enum';
-import { DatasetModel } from '../../../shared/dataset/model/dataset.model';
-import { StudyInstanceModel } from '../../../shared/dataset/model/study-instance.model';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { DatasetTypeEnum } from '../../shared/dataset/model/dataset-type.enum';
+import { DatasetModel } from '../../shared/dataset/model/dataset.model';
+import { StudyInstanceModel } from '../../shared/dataset/model/study-instance.model';
 import { ActivatedRoute } from '@angular/router';
-import { HelpService } from '../../../shared/service/help.service';
-import { DatasetService } from '../../../shared/dataset/service/dataset.service';
+import { HelpService } from '../../shared/service/help.service';
+import { DatasetService } from '../../shared/dataset/service/dataset.service';
 import { TranslateService } from '@ngx-translate/core';
-import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
-import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { AlertService } from '../../../shared/alert/alert.service';
-import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
-import { BreedingMethodClassMethodEnum } from '../../../shared/breeding-method/model/breeding-method-class.enum';
+import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
+import { formatErrorList } from '../../shared/alert/format-error-list';
+import { AlertService } from '../../shared/alert/alert.service';
+import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
+import { BreedingMethodClassMethodEnum } from '../../shared/breeding-method/model/breeding-method-class.enum';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmListCreationComponent } from '../../../shared/list-creation/germplasm-list-creation.component';
-import { GermplasmListEntry } from '../../../shared/list-creation/model/germplasm-list';
-import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../../app.events';
+import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
+import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
+import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
 
 export enum AdvanceType {
     STUDY,
