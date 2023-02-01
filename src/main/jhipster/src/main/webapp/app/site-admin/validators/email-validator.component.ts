@@ -5,7 +5,7 @@ import { FormControl } from '@angular/forms';
 export const EMAIL_LOCAL_PART_REGEX = '^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*';
 
 @Directive({
-    selector: '[jhi-validateEmail][ngModel]',
+    selector: '[jhiValidateEmail][ngModel]',
     providers: [
         { provide: NG_VALIDATORS, useExisting: EmailValidatorDirective, multi: true }
     ]
