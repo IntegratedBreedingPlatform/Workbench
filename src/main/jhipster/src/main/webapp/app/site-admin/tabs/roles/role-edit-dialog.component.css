@@ -1,4 +1,3 @@
-
 .panel {
     margin-bottom: 17px;
     background-color: #fff;
@@ -133,5 +132,13 @@
     border-bottom-color: #428bca;
 }
 
-
-
+.ul-tree {
+    list-style-type: none;
+    padding-left: 20px;
+}
+.ul-tree.ul-tree-level-zero {
+    padding: 0;
+}
+.ul-tree > li > div.checkbox {
+    padding-top: 0;
+}
