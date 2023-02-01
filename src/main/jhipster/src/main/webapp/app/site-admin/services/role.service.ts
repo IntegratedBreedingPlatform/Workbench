@@ -86,6 +86,12 @@ export class RoleService {
         const params = createRequestOption(pagination);
         return this.http.post<Role[]>(`${this.baseUrl}roles/search`, roleFilter, { params, observe: 'response' });
     }
+
+    getRoles(): Observable<Role[]> {
+        const roleFilter = new RoleFilter();
+        return this.http.post<Role[]>(`${this.baseUrl}roles/search`, roleFilter, { observe: 'response' })
+            .pipe(map((res: HttpResponse<Role[]>) => res.body));
+    }
 }
 
 /**
