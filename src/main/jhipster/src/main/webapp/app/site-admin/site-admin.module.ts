@@ -6,11 +6,8 @@ import { SiteAdminComponent } from './site-admin.component';
 import { AccountService, BmsjHipsterSharedModule, Principal } from '../shared';
 import { SITE_ADMIN_ROUTES } from './site-admin.routes';
 import { RouterModule } from '@angular/router';
-import { NgSelect2Module } from 'ng-select2';
 import { UserRouteAccessService } from '../shared/auth/user-route-access-service';
 import { EmailValidatorDirective } from './validators/email-validator.component';
-import { HttpModule } from '@angular/http';
-import { Select2Module } from 'ng2-select2';
 import { PermissionTreeComponent, RoleEditDialogComponent, RoleEditPopupComponent } from './tabs/roles/role-edit-dialog.component';
 import { UserService } from './services/user.service';
 import { RoleService } from './services/role.service';
@@ -18,14 +15,15 @@ import { CropService } from './services/crop.service';
 import { DedupRoleNamesPipe, UsersPaneComponent } from './tabs/users/users-pane.component';
 import { RolesPaneComponent } from './tabs/roles/roles-pane.component';
 import { SiteAdminContext } from './site-admin-context';
-import { UserEditDialogComponent, UserEditPopupComponent, ToSelect2OptionDataPipe, ToSelect2OptionIdPipe } from './tabs/users/user-edit-dialog.component';
+import { ToSelect2OptionDataPipe, ToSelect2OptionIdPipe, UserEditDialogComponent, UserEditPopupComponent } from './tabs/users/user-edit-dialog.component';
+import { UserRolePopupComponent, UserRoleDialogComponent } from './tabs/users/users-role-dialog.component';
+import { MailService } from './services/mail.service';
 
 @NgModule({
     imports: [BmsjHipsterSharedModule,
         RouterModule.forChild(SITE_ADMIN_ROUTES),
         RouterModule,
-        BrowserModule, FormsModule, CommonModule,
-        HttpModule, Select2Module],
+        BrowserModule, FormsModule, CommonModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         EmailValidatorDirective,
@@ -33,15 +31,19 @@ import { UserEditDialogComponent, UserEditPopupComponent, ToSelect2OptionDataPip
         RolesPaneComponent,
         SiteAdminComponent,
         PermissionTreeComponent,
-        DedupRoleNamesPipe,
+        UserRoleDialogComponent,
+        UserRolePopupComponent,
         UserEditDialogComponent,
         UserEditPopupComponent,
         RoleEditDialogComponent,
         RoleEditPopupComponent,
         ToSelect2OptionIdPipe,
         ToSelect2OptionDataPipe,
+        DedupRoleNamesPipe,
     ],
     entryComponents: [
+        UserRoleDialogComponent,
+        UserRolePopupComponent,
         UserEditDialogComponent,
         UserEditPopupComponent,
         RoleEditDialogComponent,
@@ -55,6 +57,7 @@ import { UserEditDialogComponent, UserEditPopupComponent, ToSelect2OptionDataPip
         CropService,
         Principal,
         AccountService,
+        MailService,
         SiteAdminContext
     ]
 })
