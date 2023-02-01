@@ -49,7 +49,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
                 private cropSettingsContext: CropSettingsContext,
                 private helpService: HelpService) {
 
-        this.breedingMethodRequest = { code: null, name: null, description: null, type: null, methodClass: null, group: null };
+        this.breedingMethodRequest = { code: null, name: null, description: null, type: null, methodClass: null, group: null, numberOfProgenitors: null };
         if (!this.helpLink || !this.helpLink.length) {
             this.helpService.getHelpLink(HELP_NAME_RULES_FOR_NEW_GERMPLASM).toPromise().then((response) => {
                 if (response.body) {
@@ -107,6 +107,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
             this.breedingMethodRequest.name = this.cropSettingsContext.breedingMethod.name;
             this.breedingMethodRequest.code = this.cropSettingsContext.breedingMethod.code;
             this.breedingMethodRequest.description = this.cropSettingsContext.breedingMethod.description;
+            this.breedingMethodRequest.numberOfProgenitors = this.cropSettingsContext.breedingMethod.numberOfProgenitors;
 
             this.breedingMethodRequest.separator = this.cropSettingsContext.breedingMethod.separator;
             this.breedingMethodRequest.prefix = this.cropSettingsContext.breedingMethod.prefix;
@@ -167,7 +168,18 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
             this.breedingMethodRequest.type = null;
             this.breedingMethodClassesFiltered = [];
         }
+
+        if(this.isGenerative()) {
+            this.breedingMethodRequest.numberOfProgenitors = null;
+        } else {
+            this.breedingMethodRequest.numberOfProgenitors = -1;
+        }
+
         this.breedingMethodRequest.methodClass = null;
+    }
+
+    isGenerative(): boolean {
+        return this.breedingMethodRequest && this.breedingMethodRequest.type === BreedingMethodTypeEnum.GENERATIVE;
     }
 }
 

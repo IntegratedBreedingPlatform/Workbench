@@ -54,6 +54,7 @@
         "description": "Description",
         "generation-advancement-type": "Generation Advancement Type",
         "crop-reproductive-system": "Crop Reproductive System",
+        "number-of-progenitors": "Number of Progenitors",
         "class": "Class",
         "snametype": "Source name type",
         "separator": "Separator",
