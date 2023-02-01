@@ -19,12 +19,10 @@ export class SiteAdminComponent {
 
         if (!this.helpLink || !this.helpLink.length) {
             helpService.getHelpLink(HELP_SITE_ADMINISTRATION).toPromise().then((response) => {
-                const body = response.text();
-                console.log(body);
+                const body = response.body;
                 if (body) {
                     this.helpLink = body.data || body;
                 }
-                console.log(this.helpLink);
             }).catch((error) => {
                 console.log(error);
             });
