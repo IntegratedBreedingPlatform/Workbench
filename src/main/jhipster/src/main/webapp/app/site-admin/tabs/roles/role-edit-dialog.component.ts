@@ -177,7 +177,7 @@ export class RoleEditDialogComponent implements OnInit {
 
     notifyChanges(): void {
         this.eventManager.broadcast({ name: 'onRoleViewChanged' });
-        this.clear();
+        this.activeModal.close();
     }
 }
 
