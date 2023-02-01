@@ -15,7 +15,6 @@ import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Location } from '../../../shared/location/model/location';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import { UserSearchRequest } from '../../../shared/user/model/user-search-request.model';
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
 import { RoleFilter } from '../../models/role-filter.model';
@@ -23,6 +22,8 @@ import { Crop } from '../../../shared/model/crop.model';
 import { User } from '../../../shared/user/model/user.model';
 import { UserRole } from '../../../shared/user/model/user-role.model';
 import { SiteAdminContext } from '../../site-admin-context';
+import { FilterType, ColumnFilterComponent } from '../../../shared/column-filter/column-filter.component';
+import { UserSearchRequest } from '../../models/UserSearchRequest';
 
 @Component({
     selector: 'jhi-users-pane',
@@ -48,20 +49,32 @@ export class UsersPaneComponent implements OnInit {
     errorServiceMessage = '';
     isEditing = false;
     dialogTitle: string;
-    showConfirmStatusDialog = false;
-    showErrorNotification = false;
     confirmStatusTitle = 'Confirm';
     confirmMessage = 'Please confirm that you would like to deactivate/activate this user account.';
     user: User;
     originalUser: User;
 
     public roles: Role[];
-    public userSelected: User;
     public crops: Crop[] = [];
     private message: string;
 
     // TODO upgrade angular, use ngIf-else and async pipe
     private isLoading: boolean;
+
+    private userFilters: any;
+    private static getInitialFilters(roles) {
+        return [
+            {
+                key: 'status', name: 'Status', default: true, defaultValue: 0, type: FilterType.RADIOBUTTON,
+                options: Promise.resolve([{
+                    id: 0, name: 'Active'
+                }, {
+                    id: 1, name: 'Inactive'
+                }, {
+                    id: undefined, name: 'All'
+                }])
+            }]
+    }
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
@@ -80,6 +93,20 @@ export class UsersPaneComponent implements OnInit {
         this.predicate = ['person.lastName'];
         this.reverse = false;
         this.userSearchRequest = new UserSearchRequest();
+
+        if (!this.filters) {
+            this.filters = UsersPaneComponent.getInitialFilters(undefined);
+            this.request.status = 0;
+            ColumnFilterComponent.reloadFilters(this.filters, this.request);
+        }
+    }
+
+    get filters() {
+        return this.userFilters;
+    }
+
+    set filters(filters) {
+        this.userFilters = filters;
     }
 
     editUser(user: User) {
@@ -114,23 +141,10 @@ export class UsersPaneComponent implements OnInit {
                 this.crops = crops;
                 this.cropService.crops = this.crops;
             });
-
-        this.userService.onUserAdded.subscribe((user) => {
-                this.message = `${user.username} user was successfully saved!`;
-                this.loadAll(this.request);
-                // this.sortAfterAddOrEdit();
-            }
-        );
-
-        this.userService.onUserUpdated.subscribe((user) => {
-                this.message = `${user.username} user was successfully updated!`;
-                this.loadAll(this.request);
-                // this.sortAfterAddOrEdit();
-            }
-        );
+        this.registerUserChanged();
     }
 
-    private loadAll(request: UserSearchRequest) {
+    loadAll(request: UserSearchRequest) {
         this.isLoading = true;
         this.userService.searchUsers(
             this.request,
@@ -155,33 +169,25 @@ export class UsersPaneComponent implements OnInit {
         window.top.location.href = '/ibpworkbench/logout';
     }
 
-    changedActiveStatus() {
-        const status = this.userSelected.active;
-        this.userSelected.active = !status;
+    changedActiveStatus(user) {
+        const userSelected = JSON.parse(JSON.stringify(user));
+        userSelected.active = !userSelected.active;
         this.userService
-            .update(this.userSelected)
+            .update(userSelected)
             .subscribe(
                 (resp) => {
-                    this.userSelected = null;
+                    this.loadAll(this.request);
+
                 },
-                (error) => {
-                    this.errorServiceMessage = error.json().errors[0].message;
-                    this.showErrorNotification = true;
-                    this.userSelected.active = status;
-                    this.userSelected = null;
-                    this.alertService.error('error.custom', { param: this.errorServiceMessage });
-                });
-
-        this.showConfirmStatusDialog = false;
-
+                (res: HttpErrorResponse) =>
+                    this.onError(res)
+            );
     }
 
-    showUserStatusConfirmPopUp(e: any) {
-        this.userSelected = e;
-        this.showConfirmStatusDialog = true;
+    showUserStatusConfirmPopUp(userSelected: User) {
         this.confirmMessage = 'Please confirm that you would like to ';
 
-        if (e.active === true) {
+        if (userSelected.active === true) {
             this.confirmMessage = this.confirmMessage + 'deactivate this user account.';
         } else {
             this.confirmMessage = this.confirmMessage + 'activate this user account.';
@@ -191,12 +197,8 @@ export class UsersPaneComponent implements OnInit {
         confirmModalRef.componentInstance.title = 'Confirmation';
         confirmModalRef.componentInstance.message = this.confirmMessage;
         confirmModalRef.result.then(() => {
-            this.changedActiveStatus();
+            this.changedActiveStatus(userSelected);
         }, () => confirmModalRef.dismiss());
-    }
-
-    closeUserStatusConfirmPopUp() {
-        this.showConfirmStatusDialog = false;
     }
 
     getCropsTitleFormat(crops) {
@@ -262,9 +264,32 @@ export class UsersPaneComponent implements OnInit {
     }
 
     registerUserChanged() {
-        this.eventSubscriber = this.eventManager.subscribe('userViewChanged', (event) => {
+        this.eventSubscriber = this.eventManager.subscribe('onUserViewChanged', (event) => {
             this.loadAll(this.request);
         });
+
+        this.eventSubscriber = this.eventManager.subscribe('columnFiltersChanged', (event) => {
+            if (event && event.content && event.content.filterBy) {
+                this.filterBy(event.content.filterBy);
+            }
+            this.resetTable();
+        });
+    }
+
+    resetFilters() {
+        this.userSearchRequest = new UserSearchRequest();
+        this.loadAll(this.request);
+    }
+
+    private filterBy(filterBy: { [p: string]: any }) {
+        if (!filterBy) {
+            return;
+        }
+        const entries = Object.entries(filterBy);
+        if (entries.length === 0) {
+            return;
+        }
+        this.resetFilters();
     }
 
 }
@@ -285,7 +310,7 @@ export class DedupRoleNamesPipe implements PipeTransform {
 }
 
 export enum ColumnLabels {
-    'USER_NAME' = 'username',
+    'USER_NAME' = 'name',
     'FIRST_NAME' = 'person.firstName',
     'LAST_NAME' = 'person.lastName',
     'EMAIL' = 'person.email',

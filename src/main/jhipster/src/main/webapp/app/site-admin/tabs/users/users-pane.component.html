@@ -1,10 +1,9 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="user-manager-tab">
 	<br/>
+	<jhi-column-filter [request]="request" [resultSearch]="searchResult"
+					   [filters]="filters"></jhi-column-filter>
 	<div class="pull-right pb-3">
-<!--		<button class="btn btn-outline-info" (click)="showNewUserForm()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Add user
-		</button>-->
 		<button class="btn btn-outline-info" (click)="addUser()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Add user</button>
-
 	</div>
 	<div class="om-panel-header">
 		<h2 class="om-panel-title ">
@@ -48,8 +47,7 @@
 				<td>
              	<span *ngIf="(user.userRoles | dedupRoleNames)">
                 <span *ngIf="(user.userRoles | dedupRoleNames)[0]" class="site-admin-badge">{{(user.userRoles | dedupRoleNames)[0]}}</span>
-                <span *ngIf="(user.userRoles | dedupRoleNames).length > 1"
-					  [title]="getRoleNamesTitleFormat((user.userRoles | dedupRoleNames))"
+                <span *ngIf="(user.userRoles | dedupRoleNames).length > 1" [title]="getRoleNamesTitleFormat((user.userRoles | dedupRoleNames))"
 					  style="padding-left: 5px; color: #428bca;"> and {{(user.userRoles | dedupRoleNames).length - 1}} more</span>
                 </span>
 				</td>
