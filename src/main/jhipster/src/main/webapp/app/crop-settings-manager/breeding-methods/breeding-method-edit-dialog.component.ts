@@ -169,7 +169,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
             this.breedingMethodClassesFiltered = [];
         }
 
-        if(this.isGenerative()) {
+        if (this.isGenerative()) {
             this.breedingMethodRequest.numberOfProgenitors = null;
         } else {
             this.breedingMethodRequest.numberOfProgenitors = -1;
