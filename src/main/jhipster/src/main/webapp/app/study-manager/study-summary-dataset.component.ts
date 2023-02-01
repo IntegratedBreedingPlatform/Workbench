@@ -28,6 +28,7 @@ export class StudySummaryDatasetComponent implements OnInit {
     static readonly LOCATION_ID_TERM_ID = 8190;
     static readonly GID_TERM_ID = 8240;
     static readonly DESIGNATION_TERM_ID = 8250;
+    static readonly SAMPLES = -2;
 
     GID_TERM_ID = StudySummaryDatasetComponent.GID_TERM_ID;
     DESIGNATION_TERM_ID = StudySummaryDatasetComponent.DESIGNATION_TERM_ID;
@@ -78,6 +79,10 @@ export class StudySummaryDatasetComponent implements OnInit {
     getObservationByVariable(variable: ObservationVariable, index: number): any {
         if (variable.termId === StudySummaryDatasetComponent.LOCATION_ID_TERM_ID || variable.termId === StudySummaryDatasetComponent.TRIAL_INSTANCE_TERM_ID) {
             return this.observations[index].variables[variable.name].value;
+        }
+
+        if (variable.termId === StudySummaryDatasetComponent.SAMPLES || variable.name === 'SUM_OF_SAMPLES') {
+            return this.observations[index].samplesCount;
         }
 
         let observations: Map<string, ObservationUnitData>;
