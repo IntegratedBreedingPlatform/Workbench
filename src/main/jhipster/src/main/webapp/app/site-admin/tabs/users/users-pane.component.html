@@ -45,8 +45,8 @@
 				</td>
 				<td>
              	<span *ngIf="(user.userRoles | dedupRoleNames)">
-                <span *ngIf="(user.userRoles | dedupRoleNames)[0]" class="site-admin-badge">{{(user.userRoles | dedupRoleNames)[0]}}</span>
-                <span *ngIf="(user.userRoles | dedupRoleNames).length > 1" [title]="getRoleNamesTitleFormat((user.userRoles | dedupRoleNames))"
+                	<span *ngIf="(user.userRoles | dedupRoleNames)[0]" class="site-admin-badge">{{(user.userRoles | dedupRoleNames)[0]}}</span>
+                	<span *ngIf="(user.userRoles | dedupRoleNames).length > 1" [title]="getRoleNamesTitleFormat((user.userRoles))"
 					  style="padding-left: 5px; color: #428bca;"> and {{(user.userRoles | dedupRoleNames).length - 1}} more</span>
                 </span>
 				</td>
