@@ -24,10 +24,12 @@ import { UserRole } from '../../../shared/user/model/user-role.model';
 import { SiteAdminContext } from '../../site-admin-context';
 import { FilterType, ColumnFilterComponent } from '../../../shared/column-filter/column-filter.component';
 import { UserSearchRequest } from '../../models/UserSearchRequest';
+import { Select2OptionData } from 'ng-select2';
 
 @Component({
     selector: 'jhi-users-pane',
     templateUrl: 'users-pane.component.html',
+    styleUrls: ['users-pane.component.css']
 })
 
 export class UsersPaneComponent implements OnInit {
@@ -62,19 +64,6 @@ export class UsersPaneComponent implements OnInit {
     private isLoading: boolean;
 
     private userFilters: any;
-    private static getInitialFilters(roles) {
-        return [
-            {
-                key: 'status', name: 'Status', default: true, defaultValue: 0, type: FilterType.RADIOBUTTON,
-                options: Promise.resolve([{
-                    id: 0, name: 'Active'
-                }, {
-                    id: 1, name: 'Inactive'
-                }, {
-                    id: undefined, name: 'All'
-                }])
-            }]
-    }
 
     constructor(private userService: UserService,
                 private roleService: RoleService,
@@ -95,7 +84,7 @@ export class UsersPaneComponent implements OnInit {
         this.userSearchRequest = new UserSearchRequest();
 
         if (!this.filters) {
-            this.filters = UsersPaneComponent.getInitialFilters(undefined);
+            this.filters = this.getInitialFilters();
             this.request.status = 0;
             ColumnFilterComponent.reloadFilters(this.filters, this.request);
         }
@@ -124,17 +113,19 @@ export class UsersPaneComponent implements OnInit {
     ngOnInit() {
         // get all users
         this.loadAll(this.request);
-        const roleFilter = new RoleFilter();
-        // get all roles
-        this.roleService
-            .searchRoles(roleFilter, null)
-            .subscribe(
-                (roles) => this.roles = roles.body,
-                (error) => {
-                    // XXX
-                    // handleReAuthentication is called on
-                    // userService error
-                });
+        /* const roleFilter = new RoleFilter();
+         // get all roles
+         this.roleService
+             .searchRoles(roleFilter, null)
+             .subscribe(
+                 (roles) => this.roles = roles.body,
+                 (error) => {
+                     // XXX
+                     // handleReAuthentication is called on
+                     // userService error
+                 });*/
+
+        // TODO change it to obtain the crop every time when it is need it.
         this.cropService
             .getAll()
             .subscribe((crops) => {
@@ -259,6 +250,7 @@ export class UsersPaneComponent implements OnInit {
         this.page = 1;
         this.loadAll(this.request);
     }
+
     trackId(index: number, item: Location) {
         return item.id;
     }
@@ -290,6 +282,39 @@ export class UsersPaneComponent implements OnInit {
             return;
         }
         this.resetFilters();
+    }
+
+    private getInitialFilters() {
+        return [
+            {
+                key: 'status', name: 'Status', default: true, defaultValue: 0, type: FilterType.RADIOBUTTON,
+                options: Promise.resolve([{
+                    id: 0, name: 'Active'
+                }, {
+                    id: 1, name: 'Inactive'
+                }, {
+                    id: undefined, name: 'All'
+                }])
+            }, {
+                key: 'roleId', name: 'Role', type: FilterType.DROPDOWN, values: this.getRoleOptions(), multipleSelect: false,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
+            }]
+    }
+
+    private getRoleOptions(): Promise<Select2OptionData[]> {
+        return this.roleService.getRoles().toPromise().then((roles: Role[]) => {
+            return roles.map((role: Role) => {
+                return {
+                    id: role.id.toString(),
+                    text: role.name
+                }
+            });
+        });
     }
 
 }
