@@ -15,6 +15,11 @@ import { GermplasmListVariableMatchesComponent } from '../../../germplasm-list/i
 import { UserRoleDialogComponent } from './users-role-dialog.component';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
+import { NavbarMessageEvent } from '../../../shared/model/navbar-message.event';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatErrorList } from '../../../shared/alert/format-error-list';
+import { MailService } from '../../services/mail.service';
+import { finalize } from 'rxjs/internal/operators/finalize';
 
 @Component({
     selector: 'jhi-user-edit-dialog',
@@ -27,10 +32,15 @@ export class UserEditDialogComponent implements OnInit {
 
     model: User;
 
-    sendMail: boolean;
-
     showDeleteUserRoleConfirmPopUpDialog = false;
     crops: Crop[];
+
+    // isLoading: boolean;
+    sendingEmail: boolean;
+    isEditing: boolean;
+    sendMail: boolean;
+
+    userSaved: boolean;
 
     public select2Options = {
         multiple: true,
@@ -42,15 +52,22 @@ export class UserEditDialogComponent implements OnInit {
                 private userService: UserService,
                 private cropService: CropService,
                 private alertService: AlertService,
+                private mailService: MailService,
                 private modalService: NgbModal,
                 private modal: NgbActiveModal,
                 public translateService: TranslateService,
-                private context: SiteAdminContext) {
+                public context: SiteAdminContext) {
+
+        this.sendingEmail = false;
+        this.userSaved = false;
     }
 
     ngOnInit(): void {
         this.crops = this.cropService.crops;
         this.model = this.context.user;
+
+        this.isEditing = this.model.id ? true : false;
+
     }
 
     onChangeCrop(data: { value: string[] }) {
@@ -78,15 +95,32 @@ export class UserEditDialogComponent implements OnInit {
 
     notifyChanges(): void {
         this.eventManager.broadcast({ name: 'onUserViewChanged' });
-        this.clear();
+        this.activeModal.close();
     }
 
     addUser() {
-
+        this.userService
+            .save(this.trimAll(this.model))
+            .subscribe(
+            (resp) => {
+                this.userSaved = true;
+                this.alertService.success('site-admin.user.modal.create.success');
+                this.sendEmailToResetPassword(resp);
+            }, (error) => this.onError(error));
     }
 
     updateUser() {
-
+        this.userService
+            .update(this.trimAll(this.model))
+            .subscribe(
+                (resp) => {
+                    this.userSaved = true;
+                    this.alertService.success('site-admin.user.modal.edit.success');
+                    this.sendEmailToResetPassword(resp);
+                    const message: NavbarMessageEvent = { userProfileChanged: true };
+                    window.parent.postMessage(message, '*');
+                },
+                (res: HttpErrorResponse) => this.onError(res));
     }
 
     AssignRole() {
@@ -95,7 +129,45 @@ export class UserEditDialogComponent implements OnInit {
     }
 
     private sendEmailToResetPassword(respSaving: any) {
+        if (!this.isEditing) {
+            this.model.id = respSaving;
+        }
+        if (this.sendMail) {
+            this.sendingEmail = true;
+            this.mailService
+                .send(this.model)
+                .subscribe(
+                    (resp) => {
+                        setTimeout(() => {
+                            this.sendingEmail = false;
+                            this.userSaved = false;
+                            this.sendMail = !this.isEditing;
+                            this.notifyChanges();
+                        }, 1000);
+                    }, (error) => {
+                        setTimeout(() => {
+                        this.sendingEmail = false;
+                        this.userSaved = false;
+                        this.sendMail = !this.isEditing;
+                        this.onError(error);
+                        }, 2000);
+                    });
+        } else {
+            setTimeout(() => {
+                this.userSaved = false;
+                this.sendMail = !this.isEditing;
+                this.notifyChanges();
+            }, 1000);
+        }
+    }
 
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.alertService.error('error.custom', { param: msg });
+        } else {
+            this.alertService.error('error.general');
+        }
     }
 
     private trimAll(model: User) {
