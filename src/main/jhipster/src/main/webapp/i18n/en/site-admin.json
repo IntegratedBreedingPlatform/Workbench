@@ -47,7 +47,8 @@
         "create": {
           "header": "Create User",
           "success": "User created successfully"
-        }
+        },
+        "delete-role-assigned-message": "Selected role will be dissociated from user. If it is a crop or program role, the user will no longer have access to the crop or program associated to the role. Do you want to proceed?"
       }
     }
   }
