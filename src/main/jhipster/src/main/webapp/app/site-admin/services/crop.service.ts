@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { Observable } from 'rxjs';
 import { SERVER_API_URL } from '../../app.constants';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { RoleType } from '../models/role-type.model';
 import { Crop } from '../../shared/model/crop.model';
 
 @Injectable()
@@ -16,17 +14,8 @@ export class CropService {
     }
 
     getAll(): Observable<Crop[]> {
-        return this.http.get(`${this.baseUrl}/crops`, { observe: 'response' }).pipe(map((response: HttpResponse<Crop[]>) => response.body));
+        return this.http.get(`${this.baseUrl}/crops`, { observe: 'response' })
+            .pipe(map((response: any) => response.body['result'].data.map((cropName) => new Crop(cropName))));
     }
 
-}
-
-function mapCrops(crops: Crop[]) {
-    return crops.map(toCrop);
-}
-
-function toCrop(r: any): Crop {
-    return {
-        cropName: r
-    };
 }

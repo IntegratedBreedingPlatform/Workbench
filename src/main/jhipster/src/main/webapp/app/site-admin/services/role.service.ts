@@ -1,5 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs/Rx';
 import { Role } from './../models/role.model';
 import { RoleFilter } from './../models/role-filter.model';
@@ -9,8 +8,8 @@ import { Permission } from '../models/permission.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { createRequestOption } from '../../shared';
-import { Crop } from '../../shared/model/crop.model';
 import { Program } from '../../shared/user/model/program.model';
+import { Crop } from '../../shared/model/crop.model';
 
 export type OnPermissionSelectedType = { id: string, selected: boolean };
 
@@ -73,80 +72,20 @@ export class RoleService {
     }
 
     getPrograms(cropName: string): Observable<Program[]> {
-        return this.http.get(`${this.baseUrl}/crops/${cropName}/programs`, { observe: 'response' }).pipe(map((response: HttpResponse<Program[]>) => response.body));
-
+        return this.http.get(`${this.baseUrl}/crops/${cropName}/programs`, { observe: 'response' }).pipe(map((response: HttpResponse<Program[]>) => response.body.map((p: any) => {
+            return <Program>{
+                id: p.id,
+                name: p.name,
+                uuid: p.uniqueID,
+                crop: new Crop(p.crop)
+            }
+        })));
     }
 
-    searchRoles(roleFilter: RoleFilter,  pagination: any): Observable<HttpResponse<Role[]>> {
+    searchRoles(roleFilter: RoleFilter, pagination: any): Observable<HttpResponse<Role[]>> {
         const params = createRequestOption(pagination);
         return this.http.post<Role[]>(`${this.baseUrl}roles/search`, roleFilter, { params, observe: 'response' });
-            //  .pipe(map((response: HttpResponse<Role[]>) => response.body));
     }
-
-/*    private getHeaders() {
-        return ServiceHelper.getHeaders();
-    }*/
-
-    private mapRoleType(response: Response): RoleType[] {
-        return response.json().map(toRoleType);
-    }
-
-    private mapCrop(response: Response): Crop[] {
-        return response.json().map(toCrop);
-    }
-/*
-    private mapProgram(response: Response): Program[] {
-        return response.json().map(toProgram);
-    }*/
-
-}
-
-function mapRoles(response: Response): Role[] {
-    return response.json().map(toRole)
-}
-
-function toRoleType(r: any): RoleType {
-  const roleType = <RoleType>({
-        id: r.id,
-        name: r.name
-    });
-    return roleType;
-}
-
-function toRole(r: any): Role {
-  const role = <Role>({
-        id: r.id,
-        name: r.name,
-        description: r.description,
-        type: r.roleType.name, // TODO Deprecate
-        roleType: r.roleType,
-        active: r.active,
-        editable: r.editable,
-        assignable: r.assignable,
-        permissions: r.permissions
-    });
-    return role;
-}
-
-function toCrop(r: any): Crop {
-  const crop = <Crop>({
-        cropName: r.cropName
-    });
-    return crop;
-}
-
-/*function toProgram(r: any): Program {
-  const program = <Program>({
-        id: r.id,
-        name: r.name,
-        uuid: r.uniqueID,
-        crop: new Crop(r.crop)
-    });
-    return program;
-}*/
-
-function mapRole(response: Response): Role {
-    return toRole(response.json());
 }
 
 /**
