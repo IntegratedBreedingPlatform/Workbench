@@ -104,8 +104,7 @@ export class UserEditDialogComponent implements OnInit {
             .subscribe(
             (resp) => {
                 this.userSaved = true;
-                this.alertService.success('site-admin.user.modal.create.success');
-                this.sendEmailToResetPassword(resp);
+                this.sendEmailToResetPassword(resp, 'site-admin.user.modal.create.success');
             }, (error) => this.onError(error));
     }
 
@@ -115,8 +114,7 @@ export class UserEditDialogComponent implements OnInit {
             .subscribe(
                 (resp) => {
                     this.userSaved = true;
-                    this.alertService.success('site-admin.user.modal.edit.success');
-                    this.sendEmailToResetPassword(resp);
+                    this.sendEmailToResetPassword(resp, 'site-admin.user.modal.edit.success');
                     const message: NavbarMessageEvent = { userProfileChanged: true };
                     window.parent.postMessage(message, '*');
                 },
@@ -128,7 +126,7 @@ export class UserEditDialogComponent implements OnInit {
         this.modalService.open(UserRoleDialogComponent as Component, { size: 'lg', backdrop: 'static' });
     }
 
-    private sendEmailToResetPassword(respSaving: any) {
+    private sendEmailToResetPassword(respSaving: any, msg: any) {
         if (!this.isEditing) {
             this.model.id = respSaving;
         }
@@ -139,6 +137,7 @@ export class UserEditDialogComponent implements OnInit {
                 .subscribe(
                     (resp) => {
                         setTimeout(() => {
+                            this.alertService.success(msg);
                             this.sendingEmail = false;
                             this.userSaved = false;
                             this.sendMail = !this.isEditing;
@@ -146,6 +145,7 @@ export class UserEditDialogComponent implements OnInit {
                         }, 1000);
                     }, (error) => {
                         setTimeout(() => {
+                        this.alertService.success(msg);
                         this.sendingEmail = false;
                         this.userSaved = false;
                         this.sendMail = !this.isEditing;
@@ -154,6 +154,7 @@ export class UserEditDialogComponent implements OnInit {
                     });
         } else {
             setTimeout(() => {
+                this.alertService.success(msg);
                 this.userSaved = false;
                 this.sendMail = !this.isEditing;
                 this.notifyChanges();
