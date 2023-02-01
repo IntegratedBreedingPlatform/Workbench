@@ -20,6 +20,7 @@ import { SiteAdminContext } from '../../site-admin-context';
 @Component({
     selector: 'jhi-roles-pane',
     templateUrl: 'roles-pane.component.html',
+    styleUrls: ['roles-pane.component.css']
 })
 
 export class RolesPaneComponent implements OnInit {
