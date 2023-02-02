@@ -23,9 +23,10 @@
 					<tr *ngFor="let study of studies" [class.selected]="study.selected"
 						(mouseenter)="onMouseEnter(study)">
 						<td>
-							<a href (click)="urlService.openStudy(study.studyId, study.name, context.program)">
+							<a href *jhiHasAnyAuthority="STUDIES_EDITION_PERMISSIONS" (click)="urlService.openStudy(study.studyId, study.name, context.program)">
 								{{study.name}}
 							</a>
+							<span *jhiHasNotAnyAuthority="STUDIES_EDITION_PERMISSIONS">{{study.name}}</span>
 						</td>
 						<td>{{study.type}}</td>
 						<td>{{study.date}}</td>

@@ -1,4 +1,5 @@
 import { TermSummary } from './term-summary';
+import { Property } from './property';
 
 /**
  * Represents Middleware/Variable, that some services return directly from Middleware
@@ -9,7 +10,8 @@ export class Variable extends TermSummary {
     constructor(
         public alias?: string,
         public minValue?: string,
-        public maxValue?: string
+        public maxValue?: string,
+        public property?: Property
         // TODO complete if necessary
     ) {
         super();

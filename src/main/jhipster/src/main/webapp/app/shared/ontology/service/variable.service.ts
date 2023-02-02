@@ -5,6 +5,8 @@ import { VariableDetails } from '../model/variable-details';
 import { SERVER_API_URL } from '../../../app.constants';
 import { Observable } from 'rxjs';
 import { VariableFilterRequest } from '../model/variable-filter-request';
+import { VariableSearchRequest } from '../model/variable-search-request.model';
+import { Variable } from '../model/variable';
 
 @Injectable()
 export class VariableService {
@@ -20,7 +22,10 @@ export class VariableService {
         return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables`, { params });
     }
 
-    filterVariables(request: VariableFilterRequest) {
+    /**
+     * @deprecated Please, instead use {@link searchVariables}
+     */
+    filterVariables(request: VariableFilterRequest): Observable<VariableDetails[]> {
         const params = Object.assign({
             programUUID: this.paramContext.programUUID,
         }, request);
@@ -37,4 +42,10 @@ export class VariableService {
             + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/studies/${studyId}/entries/variables?variableTypeId=${variableTypeId}`;
         return this.http.get<VariableDetails[]>(url, { observe: 'response' });
     }
+
+    searchVariables(req: VariableSearchRequest): Observable<HttpResponse<Variable[]>> {
+        const url = SERVER_API_URL + `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/variables/search`;
+        return this.http.post<Variable[]>(url, req, { observe: 'response' });
+    }
+
 }

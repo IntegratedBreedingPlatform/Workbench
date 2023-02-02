@@ -132,3 +132,79 @@
     font-style: italic;
 
 }
+
+@font-face {
+    font-family: "BMS";
+    src:url("../fonts/bms.eot");
+    src:url("../fonts/bms.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/bms.ttf") format("truetype"),
+    url("../fonts/bms.svg#bms") format("svg"),
+    url("../fonts/bms.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="bms-"]:before,
+[class*=" bms-"]:before {
+    display:inline-block;
+
+    font-family: "BMS" !important;
+    font-style: normal !important;
+    font-weight: normal !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+    speak: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.bms-mgt-details:before {
+    content: "\e05f";
+}
+.bms-variates:before {
+    content: "\e062";
+}
+.bms-factors:before {
+    content: "\e005";
+}
+.bms-treatment-factors:before {
+    content: "\e060";
+}
+.bms-environments:before {
+    content: "\e057";
+}
+.bms-exp-design:before {
+    content: "\e053";
+}
+
+.bms-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.bms-mgt-details {
+    color: #263798;
+}
+
+.bms-variates {
+    color: #A9DD28;
+}
+
+.bms-factors {
+    color: #C4A01B;
+}
+
+.bms-treatment-factors {
+    color: #C95B05;
+}
+
+.bms-environments {
+    color: #0074AC;
+}
+
+.bms-exp-design {
+    color: #9E8376;
+}

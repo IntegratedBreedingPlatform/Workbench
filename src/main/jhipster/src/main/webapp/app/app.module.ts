@@ -30,7 +30,7 @@ import { AboutModule } from './about/about.module';
 import { ProgramSettingsManagerModule } from './program-settings-manager/program-settings-manager.module';
 import { CreateProgramModule } from './entities/create-program/create-program.module';
 import { LotAttributeModule } from './entities/lot/lot-attribute.module';
-import { StudyManagerModule } from './entities/study/study-manager.module';
+import { StudyManagerModule } from './study-manager/study-manager.module';
 import { SiteAdminModule } from './site-admin/site-admin.module';
 
 @NgModule({

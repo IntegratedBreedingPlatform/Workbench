@@ -1,3 +1,6 @@
+/**
+ * @deprecated Please, instead use {@link VariableSearchRequest} and {@alias VariableService::searchVariables}
+ */
 export class VariableFilterRequest {
     constructor(
         public propertyIds?: string[],
