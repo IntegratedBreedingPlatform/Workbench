@@ -14,30 +14,31 @@
 	</div>
 	<div class="modal-body">
 		<form name="form" #f="ngForm">
-			<div class="form-group row required" [class.has-feedback]="!(roleName?.valid || roleName?.pristine)" [class.has-error]="!(roleName?.valid || roleName?.pristine)">
-				<label for="roleName" class="col-sm-3 control-label">Role name</label>
+			<div class="form-group row">
+				<div class="col-sm-12">
+					<span class="mandatory-asterisk"></span> Indicates a mandatory field
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right">Role name</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.name" #roleName="ngModel" required name="roleName" id="roleName"
 						   pattern="[A-Za-z0-9-\/_*\(\):\.\s]*[A-Za-z0-9-\/_*\(\):\.]+[A-Za-z0-9-\/_*\(\):\.\s]*"
 						   title="Role name field only accepts letters, numbers and special characters - / _ * ( ) : ."
 						   placeholder="" maxlength="100">
-					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-					<span class="sr-only">(error)</span>
 				</div>
 			</div>
-			<div class="form-group row" [class.has-feedback]="!(description?.valid || description?.pristine)" [class.has-error]="!(description?.valid || description?.pristine)">
-				<label for="description" class="col-sm-3 control-label">Description</label>
+			<div class="form-group row">
+				<label for="description" class="col-md-3 col-form-label font-weight-bold pull-right">Description</label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.description" #description="ngModel" name="description" id="description"
 						   pattern="[A-Za-z0-9-\/_*\(\):\.\s]*"
 						   title="Description field only accepts letters, numbers, spaces and special characters - / _ * ( ) : ."
 						   placeholder="" maxlength="255">
-					<span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-					<span class="sr-only">(error)</span>
 				</div>
 			</div>
-			<div class="row form-group row required" [class.has-feedback]="!(roleTypeInput?.valid || roleTypeInput?.pristine)" [class.has-error]="!(roleTypeInput?.valid || roleTypeInput?.pristine)">
-				<label for="roleType" class="col-sm-3 control-label">Role type</label>
+			<div class="form-group row required">
+				<label for="roleType" class="col-md-3 col-form-label font-weight-bold pull-right">Role type</label>
 				<div class="col-xs-9 col-md-9">
 					<select class="form-control" [(ngModel)]="roleTypeId" #roleTypeInput="ngModel" required name="roleType" id="roleType"
 							(ngModelChange)="onChangeRoleType()" [disabled]="roleTypeDisabled">
@@ -46,8 +47,8 @@
 					</select>
 				</div>
 			</div>
-			<div class="row form-group row required">
-				<label for="roleName" class="col-sm-3 control-label">Permissions</label>
+			<div class="form-group row required">
+				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right">Permissions</label>
 				<div class="col-sm-9">
 					<div class="permission-selector">
 						<div class="panel-wrapper">

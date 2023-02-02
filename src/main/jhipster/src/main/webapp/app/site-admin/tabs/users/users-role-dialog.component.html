@@ -1,4 +1,16 @@
 <div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">
+				<span>Assing Role</span>
+			</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="back()">&times;
+			</button>
+		</div>
+	</div>
 	<div class="modal-body">
 		<form class="form-horizontal" #userRoleForm="ngForm">
 			<div class="form-group">
@@ -6,12 +18,11 @@
 					<span class="mandatory-asterisk"></span> Indicates a mandatory field when field is enabled
 				</div>
 			</div>
-			<div class="col-sm-12"><br></div>
-			<div class="row form-group required" [class.has-feedback]="!(roleTypeInput.valid || roleTypeInput.pristine)" [class.has-error]="!(roleTypeInput.valid || roleTypeInput.pristine)">
-				<div class="col-md-3" style="padding-left: 25px;">
-					<label class="control-label pull-right">Role type</label>
+			<div class="form-group row required">
+				<div class="col-md-3">
+					<label for="roleTypeSelected" class="col-form-label font-weight-bold pull-right">Role type</label>
 				</div>
-				<div class="col-xs-7 col-md-7">
+				<div class="col-sm-7">
 					<select class="form-control" [(ngModel)]="roleTypeSelected" #roleTypeInput="ngModel" required name="roleTypeSelected" id="roleTypeCombo"
 							(ngModelChange)="changeRole()">
 						<option value="">Please select a role type</option>
@@ -19,12 +30,12 @@
 					</select>
 				</div>
 			</div>
-			<div class="row form-group required">
-				<div class="col-md-3" style="padding-left: 25px;">
-					<label class="control-label pull-right">Role name</label>
+			<div class="form-group row required">
+				<div class="col-md-3">
+					<label for="roleSelected" class="col-form-label font-weight-bold pull-right">Role name</label>
 				</div>
-				<div class="col-xs-7 col-md-7">
-					<select class="form-control" [(ngModel)]="roleSelected" name="roleSelected" id="roleNameCombo"
+				<div class="col-sm-7">
+					<select class="form-control" [(ngModel)]="roleSelected" #roleNameInput="ngModel" name="roleSelected" id="roleNameCombo" [required]="!isRoleNameComboDisable()"
 							[disabled]="isRoleNameComboDisable()">
 						<option value="">Please select a role</option>
 						<option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
@@ -32,11 +43,11 @@
 				</div>
 			</div>
 			<div class="row form-group required">
-				<div class="col-md-3" style="padding-left: 25px;">
-					<label class="control-label pull-right">Crop</label>
+				<div class="col-md-3">
+					<label class="col-form-label font-weight-bold pull-right">Crop</label>
 				</div>
-				<div class="col-xs-7 col-md-7">
-					<select class="form-control" [(ngModel)]="cropSelected" name="cropSelected" id="cropCombo"
+				<div class="col-md-7">
+					<select class="form-control" [(ngModel)]="cropSelected" #cropInput="ngModel" name="cropSelected" id="cropCombo" [required]="!isCropComboDisable()"
 							(ngModelChange)="changeCrop()" [disabled]="isCropComboDisable()">
 						<option value="">Please select a crop</option>
 						<option *ngFor="let crop of crops" [ngValue]="crop">{{crop.cropName}}</option>
@@ -44,11 +55,11 @@
 				</div>
 			</div>
 			<div class="row form-group required">
-				<div class="col-md-3" style="padding-left: 25px;">
-					<label class="control-label pull-right">Program</label>
+				<div class="col-md-3">
+					<label class="col-form-label font-weight-bold pull-right">Program</label>
 				</div>
-				<div class="col-xs-7 col-md-7">
-					<select class="form-control" [(ngModel)]="programSelected" name="programSelected" id="programCombo"
+				<div class="col-md-7">
+					<select class="form-control" [(ngModel)]="programSelected" #programInput="ngModel" name="programSelected" id="programCombo" [required]="!isProgramComboDisable()"
 							[disabled]="isProgramComboDisable()">
 						<option value="">Please select a program</option>
 						<option *ngFor="let program of programs" [ngValue]="program">{{program.name}}</option>
