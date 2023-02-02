@@ -16,7 +16,7 @@
         "role-description": "Description",
         "role-type": "Type",
         "permissions": "Permissions",
-        "status": "status"
+        "status": "Status"
       },
       "modal": {
         "edit": {
