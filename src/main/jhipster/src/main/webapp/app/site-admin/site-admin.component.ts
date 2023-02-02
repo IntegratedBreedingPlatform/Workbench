@@ -4,6 +4,8 @@ import { HelpService } from '../shared/service/help.service';
 import { HELP_SITE_ADMINISTRATION } from '../app.constants';
 import { SiteAdminContext } from './site-admin-context';
 
+declare const enableTwoFactorAuthentication: boolean;
+
 @Component({
     selector: 'jhi-site-admin',
     templateUrl: 'site-admin.component.html',
@@ -15,7 +17,7 @@ export class SiteAdminComponent {
     constructor(private context: SiteAdminContext,
                 private jhiLanguageService: JhiLanguageService,
                 private helpService: HelpService) {
-        this.context.enableTwoFactorAuthentication = (<any>window).enableTwoFactorAuthentication;
+        this.context.enableTwoFactorAuthentication = enableTwoFactorAuthentication;
 
         if (!this.helpLink || !this.helpLink.length) {
             helpService.getHelpLink(HELP_SITE_ADMINISTRATION).toPromise().then((response) => {
