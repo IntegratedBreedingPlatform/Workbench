@@ -63,8 +63,10 @@ export class SampleService {
     }
 
     removeEntries(sampleListId: number, selectedEntries: any) {
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/sample-lists/${sampleListId}/entries?selectedEntries=${selectedEntries}&programUUID=` + this.context.programUUID;
-        return this.http.delete<any>(url, { observe: 'response' });
+        const params = {};
+        params['selectedEntries'] = selectedEntries;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/sample-lists/${sampleListId}/entries?programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { params: params, observe: 'response' });
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {
