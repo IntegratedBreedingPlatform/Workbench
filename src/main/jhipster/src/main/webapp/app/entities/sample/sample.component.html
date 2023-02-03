@@ -71,7 +71,7 @@
 			<thead>
 			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 				<th>
-					<input *ngIf="!isSelectAllPages" type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" />
+					<input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" />
 				</th>
 				<th jhiSortBy="entryNumber"><span jhiTranslate="bmsjHipsterApp.sample.entryNo">SAMPLE_ENTRY</span><span class="fa fa-sort"></span></th>
 				<th jhiSortBy="name.nval"><span jhiTranslate="bmsjHipsterApp.sample.designation">DESIGNATION</span><span class="fa fa-sort"></span> </th>
@@ -93,7 +93,7 @@
 				cdkDrag [cdkDragDisabled]="!listBuilderContext.visible" (cdkDragEntered)="dragStart($event, sample)">
 				<div *cdkDragPlaceholder>&nbsp;</div>
 
-				<td *ngIf="!isSelectAllPages"><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect($event, index, sample, true); $event.stopPropagation()"></td>
+				<td><input type="checkbox" [checked]="isSelected(sample)" (click)="toggleSelect($event, index, sample, true); $event.stopPropagation()"></td>
 				<td>
 					<!--<a (click)="$event.stopPropagation()" [routerLink]="['../sample', sample.id ]">{{sample.id}}</a>-->
 					{{sample.entryNo}}
