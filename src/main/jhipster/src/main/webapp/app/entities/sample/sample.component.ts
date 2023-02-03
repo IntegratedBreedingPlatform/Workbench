@@ -49,7 +49,6 @@ export class SampleComponent implements OnInit, OnDestroy {
 
     // { <data-index>: sample }
     selectedItems: Map<number, Sample> = new Map<number, Sample>();
-    isSelectAllPages = false;
     lastClickIndex: any;
 
     constructor(
@@ -212,9 +211,6 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     toggleSelect($event, index, sample: Sample, checkbox = false) {
-        if (this.isSelectAllPages) {
-            return;
-        }
         if (!$event.ctrlKey && !checkbox) {
             this.selectedItems.clear();
         }
@@ -238,7 +234,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     isPageSelected() {
-        return this.size(this.selectedItems) && this.sampleList.samples.every((s) => Boolean(this.selectedItems.get(s.sampleId)));
+        return this.size() && this.sampleList.samples.every((s) => Boolean(this.selectedItems.get(s.sampleId)));
     }
 
     onSelectPage() {
@@ -250,13 +246,9 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.sampleList.samples.forEach((entry: Sample) => this.selectedItems.set(entry.sampleId, entry));
         }
     }
-    onSelectAllPages() {
-        this.isSelectAllPages = !this.isSelectAllPages;
-        this.selectedItems.clear();
-    }
 
-    size(obj) {
-        return Object.keys(obj).length;
+    size() {
+        return this.selectedItems.size;
     }
 
     dragStart($event, dragged: Sample) {
@@ -283,7 +275,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     private validateSelection() {
-        if (this.sampleList.samples.length === 0 || (!this.isSelectAllPages && this.selectedItems.size === 0)) {
+        if (this.sampleList.samples.length === 0 || this.selectedItems.size === 0) {
             this.alertService.error('germplasm-list.list-data.selection.empty');
             return false;
         }

@@ -63,11 +63,7 @@
 			<span class="mr-1 font-weight-bold" jhiTranslate="global.total.entries"></span>
 			<span>{{totalItems}}</span>
 			<span class="ml-3 mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
-			<span>{{isSelectAllPages ? totalItems : size(selectedItems)}}</span> -->
-			<div class="form-check form-check-inline ml-3">
-				<input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages()" id="sample-select-all-{{sampleList.id}}">
-				<label class="form-check-label ml-1" for="sample-select-all-{{sampleList.id}}" jhiTranslate="global.select.all"></label>
-			</div>
+			<span>{{this.size()}}</span>
 		</div>
 	</div>
 	<div class="table-responsive" *ngIf="sampleList.samples">
