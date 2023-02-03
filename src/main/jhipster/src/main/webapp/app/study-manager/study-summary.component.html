@@ -1,6 +1,9 @@
 <div class="container-fluid pt-3">
-	<button class="btn btn-info float-right" jhiTranslate="study.details.actions.open-study" *jhiHasAnyAuthority="STUDIES_EDITION_PERMISSIONS" (click)="openStudy(studyDetails)">
-	</button>
+	<div class="float-right" *ngIf="this.studyDetails && !(this.studyDetails?.locked && this.user.id !== this.studyDetails?.ownerId)">
+		<button class="btn btn-info" jhiTranslate="study.details.actions.open-study" *jhiHasAnyAuthority="STUDIES_EDITION_PERMISSIONS"
+				(click)="openStudy(studyDetails)">
+		</button>
+	</div>
 	<jhi-collapsible heading="{{translateService.instant('study.details.basic-details.title')}}" img="content/img/basic-details.png">
 		<div class="container-fluid mb-2">
 			<div class="row">

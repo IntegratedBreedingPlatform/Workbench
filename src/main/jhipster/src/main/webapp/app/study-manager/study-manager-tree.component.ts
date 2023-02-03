@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { TreeService } from '../shared/tree/tree.service';
@@ -9,13 +9,14 @@ import { Router } from '@angular/router';
 import { TreeNode as PrimeNgTreeNode } from 'primeng/components/common/treenode';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
+import { Principal } from '../shared';
 
 @Component({
     selector: 'jhi-study-tree',
     templateUrl: 'study-manager-tree.component.html',
     providers: [{ provide: TreeService, useClass: StudyTreeService }]
 })
-export class StudyManagerTreeComponent extends TreeComponent {
+export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
 
     STUDIES_EDITION_PERMISSIONS = [
         ...MANAGE_STUDIES_PERMISSIONS,
@@ -30,13 +31,22 @@ export class StudyManagerTreeComponent extends TreeComponent {
 
     title = 'Browse for studies';
 
+    user?: any;
+
     constructor(public treeService: TreeService,
                 public activeModal: NgbActiveModal,
                 public alertService: AlertService,
                 public translateService: TranslateService,
                 public modalService: NgbModal,
-                public router: Router) {
+                public router: Router,
+                private principal: Principal) {
         super(false, 'single', treeService, activeModal, alertService, translateService, modalService);
+    }
+
+    async ngOnInit() {
+        this.user = await this.principal.identity();
+
+        super.ngOnInit();
     }
 
     onNodeDrop(event, source: PrimeNgTreeNode, target: PrimeNgTreeNode) {
@@ -84,6 +94,8 @@ export class StudyManagerTreeComponent extends TreeComponent {
                 id: node.key,
                 name: node.name || '',
                 owner: node.owner || '',
+                ownerUserName: node.ownerUserName || '',
+                ownerId: node.ownerId,
                 isLocked: node.isLocked || '',
                 description: node.description || (parent && '-') // omit for root folders
             },
@@ -95,12 +107,33 @@ export class StudyManagerTreeComponent extends TreeComponent {
         };
     }
 
-    finish(extraParams?: any) {
-        if (!this.selectedNodes || this.selectedNodes.length === 0 || !this.selectedNodes[0].leaf) {
-            this.alertService.error('study.manager.tree.error.select-study');
+    viewSummary(extraParams?: any) {
+        if (!this.validateSelectedNodeIsStudy()) {
             return;
         }
         super.finish(extraParams);
+    }
+
+    open() {
+        if (!this.validateSelectedNodeIsStudy()) {
+            return;
+        }
+
+        const treeNode: PrimeNgTreeNode = this.selectedNodes[0];
+        if (treeNode.data.isLocked && treeNode.data.ownerId !== this.user.id.toString()) {
+            this.alertService.error('study.manager.errors.study-locked', { ownerName: treeNode.data.ownerUserName });
+            return;
+        }
+
+        super.finish();
+    }
+
+    private validateSelectedNodeIsStudy(): boolean {
+        if (!this.selectedNodes || this.selectedNodes.length === 0 || !this.selectedNodes[0].leaf) {
+            this.alertService.error('study.manager.tree.error.select-study');
+            return false;
+        }
+        return true;
     }
 
 }
