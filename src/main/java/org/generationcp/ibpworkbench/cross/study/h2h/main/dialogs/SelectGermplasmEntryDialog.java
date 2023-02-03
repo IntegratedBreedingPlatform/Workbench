@@ -35,8 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
 
-import java.util.List;
-
 @Configurable
 public class SelectGermplasmEntryDialog extends BaseSubWindow implements InitializingBean, InternationalizableComponent {
 
@@ -72,8 +70,6 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 
 	private Integer selectedGid;
 	private final boolean isTestEntry;
-
-	private List<Integer> environmentIds;
 
 	public SelectGermplasmEntryDialog(final Component source, Window parentWindow, final boolean isTestEntry) {
 		this.source = source;
@@ -177,20 +173,10 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 
 			// TODO : perhaps default to full search to prevent NPE
 			if (withNoError) {
-				LazyQueryContainer dataSourceResultLazy = null;
-				if (this.isTestEntry || this.environmentIds == null) {
-					dataSourceResultLazy =
+				LazyQueryContainer dataSourceResultLazy =
 						this.dataResultIndexContainer.getGermplasmResultLazyContainer(this.germplasmDataManager, searchChoice,
 							searchValue);
-				} else {
-					dataSourceResultLazy =
-						this.dataResultIndexContainer.getGermplasmEnvironmentResultLazyContainer(this.crossStudyDataManager,
-							searchChoice, searchValue, this.environmentIds);
-				}
 				this.resultComponent.setCaption("Germplasm Search Result: " + dataSourceResultLazy.size());
-				if (!this.isTestEntry && this.environmentIds != null && this.environmentIds.isEmpty()) {
-					this.resultComponent.setCaption("Selected Test Entries not used in Trials - no comparable data");
-				}
 				this.resultComponent.setContainerDataSource(dataSourceResultLazy);
 				this.mainLayout.requestRepaintAll();
 			}
@@ -227,10 +213,6 @@ public class SelectGermplasmEntryDialog extends BaseSubWindow implements Initial
 	@Override
 	public void updateLabels() {
 		// do nothing
-	}
-
-	public void setEnvironmentIds(final List<Integer> environmentIds) {
-		this.environmentIds = environmentIds;
 	}
 
 	public boolean isTestEntry() {
