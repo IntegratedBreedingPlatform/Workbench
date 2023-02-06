@@ -55,6 +55,10 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
             return;
         }
 
+        if (!this.validateStudyIsLocked(source)) {
+            return;
+        }
+
         // Prevent to move source if parent has a child with same name as the source
         if (event.dropNode.children && event.dropNode.children.find((node) => node.data.name === source.data.name)) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
@@ -119,9 +123,7 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
             return;
         }
 
-        const treeNode: PrimeNgTreeNode = this.selectedNodes[0];
-        if (treeNode.data.isLocked && treeNode.data.ownerId !== this.user.id.toString()) {
-            this.alertService.error('study.manager.errors.study-locked', { ownerName: treeNode.data.ownerUserName });
+        if (this.validateStudyIsLocked(this.selectedNodes[0])) {
             return;
         }
 
@@ -131,6 +133,14 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
     private validateSelectedNodeIsStudy(): boolean {
         if (!this.selectedNodes || this.selectedNodes.length === 0 || !this.selectedNodes[0].leaf) {
             this.alertService.error('study.manager.tree.error.select-study');
+            return false;
+        }
+        return true;
+    }
+
+    private validateStudyIsLocked(treeNode: PrimeNgTreeNode): boolean {
+        if (treeNode.data.isLocked && treeNode.data.ownerId !== this.user.id.toString()) {
+            this.alertService.error('study.manager.errors.study-locked', { ownerName: treeNode.data.ownerUserName });
             return false;
         }
         return true;
