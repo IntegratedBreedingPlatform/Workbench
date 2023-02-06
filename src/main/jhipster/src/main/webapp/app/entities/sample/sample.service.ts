@@ -66,7 +66,7 @@ export class SampleService {
         const params = {};
         params['selectedEntries'] = selectedEntries;
         const url = SERVER_API_URL + `crops/${this.context.cropName}/sample-lists/${sampleListId}/entries?programUUID=` + this.context.programUUID;
-        return this.http.delete<any>(url, { params: params, observe: 'response' });
+        return this.http.delete<any>(url, { params, observe: 'response' });
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {
