@@ -12,7 +12,6 @@
 package org.generationcp.ibpworkbench;
 
 import com.vaadin.terminal.Terminal;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 import org.dellroad.stuff.vaadin.ContextApplication;
 import org.dellroad.stuff.vaadin.SpringContextApplication;
@@ -22,10 +21,6 @@ import org.generationcp.commons.vaadin.util.MessageNotifier;
 import org.generationcp.ibpworkbench.cross.study.adapted.main.QueryForAdaptedGermplasmMain;
 import org.generationcp.ibpworkbench.cross.study.h2h.main.HeadToHeadCrossStudyMain;
 import org.generationcp.ibpworkbench.cross.study.traitdonors.main.TraitDonorsQueryMain;
-import org.generationcp.ibpworkbench.study.StudyAccordionMenu;
-import org.generationcp.ibpworkbench.study.StudyBrowserMain;
-import org.generationcp.ibpworkbench.study.StudyDetailComponent;
-import org.generationcp.ibpworkbench.study.tree.BrowseStudyTreeComponent;
 import org.generationcp.ibpworkbench.util.awhere.AWhereFormComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +44,6 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 	private static final long serialVersionUID = 1L;
 
 	public static final String STUDY_WINDOW_NAME = "study";
-	public static final String STUDY_DETAILS_PREFIX = "study-";
-	public static final String STUDY_BROWSER_PREFIX = "studybrowser-";
 	public static final String HEAD_TO_HEAD_COMPARISON_WINDOW_NAME = "Head_to_head_comparison";
 	public static final String QUERY_FOR_ADAPTED_GERMPLASM_WINDOW_NAME = "Query_For_Adapted_Germplasm";
 	public static final String TRAIT_DONORS_QUERY_NAME = "Trait_Donors_Query";
@@ -79,7 +72,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 
 		// create blank root layouts for the other tabs, the content will be
 		// added as the tabs are selected or as the buttons on the WelcomeTab are clicked
-		this.window = this.instantiateStudyBrowserWindow();
+		this.window = this.instantiateWindow();
 		this.setMainWindow(this.window);
 		this.setTheme("gcp-default");
 		this.window.setSizeUndefined();
@@ -93,68 +86,7 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 		// dynamically create other application-level windows which is associated with specific URLs
 		// these windows are the jumping on points to parts of the application
 		if (super.getWindow(name) == null) {
-			if (GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME.equals(name)) {
-				final Window studyBrowserWindow = this.instantiateStudyBrowserWindow();
-				this.addWindow(studyBrowserWindow);
-				return studyBrowserWindow;
-			} else if (name.startsWith(GermplasmStudyBrowserApplication.STUDY_BROWSER_PREFIX)) {
-				final String studyIdPart = name.substring(name.indexOf("-") + 1);
-				int studyId = 0;
-
-				Window studyBrowserWindow;
-				final String windowName = GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME + studyId;
-
-				this.removeWindow(this.getWindow(windowName));
-
-				final StudyBrowserMain studyBrowserMain = new StudyBrowserMain();
-				studyBrowserWindow = this.getWindow(windowName);
-
-				if (studyBrowserWindow == null) {
-					studyBrowserWindow = new Window(this.messageSource.getMessage(Message.STUDY_BROWSER_LINK)); // Study
-					studyBrowserWindow.setName(windowName);
-					studyBrowserWindow.setSizeUndefined();
-					studyBrowserWindow.addComponent(studyBrowserMain);
-					this.addWindow(studyBrowserWindow);
-				}
-
-				try {
-					studyId = Integer.parseInt(studyIdPart);
-				} catch (final NumberFormatException e) {
-					GermplasmStudyBrowserApplication.LOG.debug("Error parsing studyId", e);
-					MessageNotifier.showError(this.getWindow(windowName), this.messageSource.getMessage(Message.ERROR_INTERNAL),
-						this.messageSource.getMessage(Message.INVALID_PARAMETERS_SPECIFIED));
-					return studyBrowserWindow;
-				}
-
-				BrowseStudyTreeComponent studyTreeComponent = studyBrowserMain.getBrowseTreeComponent();
-				studyTreeComponent.openStudy(studyId);
-
-				return studyBrowserWindow;
-
-			} else if (name.startsWith(GermplasmStudyBrowserApplication.STUDY_DETAILS_PREFIX)) {
-				final String studyIdPart = name.substring(name.indexOf("-") + 1);
-				try {
-					final int studyId = Integer.parseInt(studyIdPart);
-					// "Study Details" + study id
-					final Window studyDetailsWindow = new Window(this.messageSource.getMessage(Message.STUDY_DETAILS_TEXT) + " " + studyId);
-					studyDetailsWindow.setSizeUndefined();
-					// TODO should disable export functions for this screen
-					studyDetailsWindow.addComponent(new StudyAccordionMenu(studyId,
-						new StudyDetailComponent(studyId), true, false));
-					this.addWindow(studyDetailsWindow);
-					return studyDetailsWindow;
-				} catch (final Exception ex) {
-					GermplasmStudyBrowserApplication.LOG.error(
-						this.messageSource.getMessage(Message.ERROR_IN_CREATING_STUDY_DETAILS_WINDOW) + " " + name + ex.toString()
-							+ "\n" + ex.getStackTrace(), ex);
-					final Window emptyStudyDetailsWindow = new Window(this.messageSource.getMessage(Message.STUDY_DETAILS_TEXT));
-					emptyStudyDetailsWindow.setSizeUndefined();
-					emptyStudyDetailsWindow.addComponent(new Label(this.messageSource.getMessage(Message.NULL_STUDY_DETAILS) + " "
-						+ studyIdPart));
-					this.addWindow(emptyStudyDetailsWindow);
-					return emptyStudyDetailsWindow;
-				}
-			}else if (GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME.equals(name)) {
+			if (GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME.equals(name)) {
 				final Window headToHeadQueryToolWindow = new Window("Cross Study: Head-to-Head Comparison");
 				// Browser
 				headToHeadQueryToolWindow.setName(GermplasmStudyBrowserApplication.HEAD_TO_HEAD_COMPARISON_WINDOW_NAME);
@@ -191,14 +123,13 @@ public class GermplasmStudyBrowserApplication extends SpringContextApplication i
 		return super.getWindow(name);
 	}
 
-	private Window instantiateStudyBrowserWindow() {
-		final Window studyBrowserWindow = new Window(this.messageSource.getMessage(Message.STUDY_BROWSER_LINK)); // Study
+	private Window instantiateWindow() {
+		final Window window = new Window(this.messageSource.getMessage(Message.STUDY_BROWSER_LINK)); // Study
 		// Browser
-		studyBrowserWindow.setName(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
-		studyBrowserWindow.setSizeUndefined();
-		final StudyBrowserMain studyBrowserMain = new StudyBrowserMain();
-		studyBrowserWindow.setContent(studyBrowserMain);
-		return studyBrowserWindow;
+		window.setName(GermplasmStudyBrowserApplication.STUDY_WINDOW_NAME);
+		window.setSizeUndefined();
+
+		return window;
 	}
 
 	/**

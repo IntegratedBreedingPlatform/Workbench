@@ -22,7 +22,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.generationcp.breeding.manager.service.GermplasmDetailsUrlService;
 import org.generationcp.commons.vaadin.ui.BaseSubWindow;
 import org.generationcp.ibpworkbench.cross.study.adapted.dialogs.ViewTraitObservationsDialog;
-import org.generationcp.ibpworkbench.study.TableViewerComponent;
 import org.generationcp.middleware.exceptions.MiddlewareQueryException;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.slf4j.Logger;
@@ -36,7 +35,6 @@ public class GidLinkButtonClickListener implements Button.ClickListener {
 	private static final long serialVersionUID = -6751894969990825730L;
 	private final static Logger LOG = LoggerFactory.getLogger(GidLinkButtonClickListener.class);
 	private final String[] CHILD_WINDOWS = {
-		TableViewerComponent.TABLE_VIEWER_WINDOW_NAME,
 		ViewTraitObservationsDialog.LINE_BY_TRAIT_WINDOW_NAME};
 
 	@Autowired
