@@ -16,12 +16,8 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
 import { ListEntry } from '../../shared/list-builder/model/list.model';
-import { Germplasm } from '../germplasm/germplasm.model';
-import {ModalConfirmComponent} from "../../shared/modal/modal-confirm.component";
-import {TranslateService} from "@ngx-translate/core";
-import {
-    GermplasmListDataSearchResponse
-} from "../../shared/germplasm-list/model/germplasm-list-data-search-response.model";
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-sample',
