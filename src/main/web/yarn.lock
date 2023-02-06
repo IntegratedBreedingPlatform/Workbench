@@ -2829,9 +2829,9 @@ braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-"brapi-sync@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#semver:1.8.1":
-  version "1.8.1"
-  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#8e48e0213007d987279b31429b011f7c59bf9360"
+"brapi-sync@git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#semver:1.8.4":
+  version "1.8.4"
+  resolved "git+ssh://git@github.com/IntegratedBreedingPlatform/brapi-sync.git#d655bf7594880dd13f731987bc1fc21ac8d942a1"
   dependencies:
     "@angular/animations" "~11.2.4"
     "@angular/common" "~11.2.4"

@@ -11,13 +11,8 @@
 
 package org.generationcp.ibpworkbench.germplasm.containers;
 
-import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQuery;
-import org.generationcp.ibpworkbench.cross.study.h2h.main.containers.GermplasmEnvironmentSearchQueryFactory;
-import org.generationcp.middleware.manager.api.CrossStudyDataManager;
 import org.generationcp.middleware.manager.api.GermplasmDataManager;
 import org.vaadin.addons.lazyquerycontainer.LazyQueryContainer;
-
-import java.util.List;
 
 public final class GermplasmIndexContainer {
 
@@ -36,23 +31,6 @@ public final class GermplasmIndexContainer {
 		container.addContainerProperty(GermplasmSearchQuery.NAMES, String.class, null);
 		container.addContainerProperty(GermplasmSearchQuery.METHOD, String.class, null);
 		container.addContainerProperty(GermplasmSearchQuery.LOCATION, String.class, null);
-
-		// initialize the first batch of data to be displayed
-		container.getQueryView().getItem(0);
-		return container;
-	}
-
-	public LazyQueryContainer getGermplasmEnvironmentResultLazyContainer(final CrossStudyDataManager crossStudyDataManager, final String searchChoice,
-			final String searchValue, final List<Integer> environmentIds) {
-
-		final GermplasmEnvironmentSearchQueryFactory factory =
-				new GermplasmEnvironmentSearchQueryFactory(crossStudyDataManager, searchChoice, searchValue, environmentIds);
-		final LazyQueryContainer container = new LazyQueryContainer(factory, false, 10);
-
-		// add the column ids to the LazyQueryContainer tells the container the columns to display for the Table
-		container.addContainerProperty(GermplasmEnvironmentSearchQuery.GID, String.class, null);
-		container.addContainerProperty(GermplasmEnvironmentSearchQuery.NAMES, String.class, null);
-		container.addContainerProperty(GermplasmEnvironmentSearchQuery.LOCATION, String.class, null);
 
 		// initialize the first batch of data to be displayed
 		container.getQueryView().getItem(0);
