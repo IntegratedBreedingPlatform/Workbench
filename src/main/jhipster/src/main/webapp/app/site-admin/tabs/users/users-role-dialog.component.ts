@@ -144,7 +144,7 @@ export class UserRoleDialogComponent implements OnInit {
 
     back() {
         this.modal.close();
-        this.modalService.open(UserEditDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+        this.modalService.open(UserEditDialogComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
     }
 
 }
