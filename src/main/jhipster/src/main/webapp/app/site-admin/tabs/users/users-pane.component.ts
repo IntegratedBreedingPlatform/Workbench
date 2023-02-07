@@ -57,10 +57,9 @@ export class UsersPaneComponent implements OnInit {
     originalUser: User;
 
     public roles: Role[];
-    public crops: Crop[] = [];
-    private message: string;
 
-    // TODO upgrade angular, use ngIf-else and async pipe
+    crops: Promise<Crop[]>;
+
     private isLoading: boolean;
 
     private userFilters: any;
@@ -118,25 +117,7 @@ export class UsersPaneComponent implements OnInit {
     ngOnInit() {
         // get all users
         this.loadAll(this.request);
-        /* const roleFilter = new RoleFilter();
-         // get all roles
-         this.roleService
-             .searchRoles(roleFilter, null)
-             .subscribe(
-                 (roles) => this.roles = roles.body,
-                 (error) => {
-                     // XXX
-                     // handleReAuthentication is called on
-                     // userService error
-                 });*/
-
-        // TODO change it to obtain the crop every time when it is need it.
-        this.cropService
-            .getAll()
-            .subscribe((crops) => {
-                this.crops = crops;
-                this.cropService.crops = this.crops;
-            });
+        this.crops = this.cropService.getAll().toPromise();
         this.registerUserChanged();
     }
 

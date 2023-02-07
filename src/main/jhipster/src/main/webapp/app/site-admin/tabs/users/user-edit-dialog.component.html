@@ -42,7 +42,7 @@
 				<label for="userCrops" class="col-sm-3 col-form-label font-weight-bold">Crops</label>
 				<div class="col-sm-9" style="padding-left: 0px;padding-right: 0px;">
 					<ng-select2  required id="userCrops" name="userCrops"
-								 [data]="crops | toSelect2OptionData"
+								 [data]="crops | async | toSelect2OptionData"
 								 [options]="select2Options"
 								 [value]="model.crops | toSelect2OptionId"
 								 [width]="'100%'"

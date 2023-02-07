@@ -33,7 +33,7 @@ export class UserEditDialogComponent implements OnInit {
     model: User;
 
     showDeleteUserRoleConfirmPopUpDialog = false;
-    crops: Crop[];
+    crops: Promise<Crop[]>;
 
     // isLoading: boolean;
     sendingEmail: boolean;
@@ -63,10 +63,9 @@ export class UserEditDialogComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.crops = this.cropService.crops;
         this.model = this.context.user;
-
         this.isEditing = this.model.id ? true : false;
+        this.crops = this.cropService.getAll().toPromise();
 
     }
 
@@ -83,7 +82,9 @@ export class UserEditDialogComponent implements OnInit {
 
     onSelectAllCrops($event: any) {
         if ($event.currentTarget.checked) {
-            this.model.crops = Object.assign([], this.crops);
+            this.crops.then((crop) => {
+                this.model.crops = Object.assign([], crop);
+            });
         } else {
             this.model.crops = [];
         }
