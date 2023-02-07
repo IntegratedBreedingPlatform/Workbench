@@ -123,7 +123,7 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
             return;
         }
 
-        if (this.validateStudyIsLocked(this.selectedNodes[0])) {
+        if (!this.validateStudyIsLocked(this.selectedNodes[0])) {
             return;
         }
 
@@ -139,7 +139,7 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
     }
 
     private validateStudyIsLocked(treeNode: PrimeNgTreeNode): boolean {
-        if (treeNode.data.isLocked && treeNode.data.ownerId !== this.user.id.toString()) {
+        if (treeNode.data.isLocked && !this.user.authorities.includes('ADMIN') && treeNode.data.ownerId !== this.user.id.toString()) {
             this.alertService.error('study.manager.errors.study-locked', { ownerName: treeNode.data.ownerUserName });
             return false;
         }

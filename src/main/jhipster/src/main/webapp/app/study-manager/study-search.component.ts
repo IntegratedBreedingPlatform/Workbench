@@ -60,7 +60,7 @@ export class StudySearchComponent implements OnInit {
 
     isLoading: boolean;
 
-    studyFilters: any;
+    studyFilters: any = [];
 
     user?: any;
 
