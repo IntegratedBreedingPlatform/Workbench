@@ -1,15 +1,13 @@
 <div class="tab-pane active container-fluid" role="tabpanel" aria-labelledby="user-manager-tab">
 	<div>
-		<h2>Manage users</h2>
-		<div>Click a <strong>User name</strong>
-			to inspect or edit their personal information.
-		</div>
+		<span jhiTranslate="site-admin.user.pane.title"></span>
+		<span jhiTranslate="site-admin.user.pane.comment"></span>
 	</div>
 	<br/>
 	<jhi-column-filter [request]="request"
 					   [filters]="filters"></jhi-column-filter>
 	<div class="pull-right pb-3">
-		<button class="btn btn-outline-info" (click)="addUser()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> Add user</button>
+		<button class="btn btn-outline-info" (click)="addUser()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> <span style="margin-left: 5px;" jhiTranslate="site-admin.user.add"></span></button>
 	</div>
 	<br/><br/>
 	<div class="table-responsive" *ngIf="users">

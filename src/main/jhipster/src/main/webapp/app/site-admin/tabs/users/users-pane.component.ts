@@ -150,17 +150,16 @@ export class UsersPaneComponent implements OnInit {
     }
 
     showUserStatusConfirmPopUp(userSelected: User) {
-        this.confirmMessage = 'Please confirm that you would like to ';
-
-        if (userSelected.active === true) {
-            this.confirmMessage = this.confirmMessage + 'deactivate this user account.';
+        let confirmMessage;
+        if (userSelected.active) {
+            confirmMessage = this.translateService.instant('site-admin.user.deactive.message');
         } else {
-            this.confirmMessage = this.confirmMessage + 'activate this user account.';
+            confirmMessage = this.translateService.instant('site-admin.user.active.message');
         }
 
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = 'Confirmation';
-        confirmModalRef.componentInstance.message = this.confirmMessage;
+        confirmModalRef.componentInstance.title = this.translateService.instant('site-admin.user.confirm.message.title');
+        confirmModalRef.componentInstance.message = confirmMessage;
         confirmModalRef.result.then(() => {
             this.changedActiveStatus(userSelected);
         }, () => confirmModalRef.dismiss());

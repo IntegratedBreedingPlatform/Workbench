@@ -30,6 +30,12 @@
       }
     },
     "user": {
+      "pane.title": "<h2>Manage users</h2> ",
+      "pane.comment": "Click a <strong>User name</strong> to inspect or edit their personal information.",
+      "add": "Add user",
+      "confirm.message.title": "Confirmation",
+      "deactive.message": "Please confirm that you would like to deactivate this user account.",
+      "active.message": "Please confirm that you would like to activate this user account.",
       "columns": {
         "user-name": "User name",
         "first-name": "First Name",
@@ -40,6 +46,21 @@
         "status": "Status"
       },
       "modal": {
+        "first.name": "First Name",
+        "username": "Username",
+        "email": "Email",
+        "crops": "Crops",
+        "roles": "Role(s)",
+        "crops.select.all": "Select all",
+        "assign.role": "+ Assign role",
+        "send.email.invitation.set.password": "Send an invitation email for the user to set their password",
+        "send.email.reset.password": "Send an email for the user to reset their password",
+        "columns": {
+          "role.name": "Role name",
+          "role.type": "Role type",
+          "crop": "Crop",
+          "program": "Program"
+        },
         "edit": {
           "header": "Edit User",
           "success": "User updated successfully"

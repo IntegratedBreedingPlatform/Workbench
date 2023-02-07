@@ -20,72 +20,69 @@
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="firstName" class="col-sm-3 col-form-label font-weight-bold">First Name</label>
-				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.firstName" #firstName="ngModel"
-					   required name="firstName" id="firstName" placeholder="First Name" maxlength="20">
-				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.lastName" #lastName="ngModel"
-					   required name="lastName" id="lastName" placeholder="Last Name" maxlength="50" style="margin-left: 51px;">
+				<label for="firstName" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="site-admin.user.modal.first.name"></label>
+				<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.firstName" #firstName="ngModel" required name="firstName" id="firstName" placeholder="First Name" maxlength="20">
+				<div class="col-sm-1">
+				</div>
+					<input type="text" class="col-sm-4 form-control" [(ngModel)]="model.lastName" #lastName="ngModel" required name="lastName" id="lastName" placeholder="Last Name" maxlength="50">
 			</div>
 			<div class="form-group row required">
-				<label for="userName" class="col-sm-3 col-form-label font-weight-bold">Username</label>
+				<label for="userName" class="col-sm-3 col-form-label font-weight-bold"><span jhiTranslate="site-admin.user.modal.username"></span></label>
 				<input type="text" class="col-sm-9 form-control" [(ngModel)]="model.username" #username="ngModel" required name="username" id="username"
 					   [pattern]="EMAIL_LOCAL_PART_REGEX"
 					   title="username field only accepts letters, numbers and special characters - _ . (e.g. user_name, user.name, user-name.company)"
 					   placeholder="Username" maxlength="30">
 			</div>
 			<div class="form-group row required">
-				<label for="email" class="col-sm-3 col-form-label font-weight-bold">Email</label>
+				<label for="email" class="col-sm-3 col-form-label font-weight-bold"><span jhiTranslate="site-admin.user.modal.email"></span></label>
 				<input type="text" class="col-sm-9 form-control" [(ngModel)]="model.email" #email="ngModel" jhiValidateEmail required name="email" id="email"
 					   placeholder="Email" maxlength="255">
 			</div>
 			<div class="form-group row required">
-				<label for="userCrops" class="col-sm-3 col-form-label font-weight-bold">Crops</label>
+				<label for="userCrops" class="col-sm-3 col-form-label font-weight-bold"><span jhiTranslate="site-admin.user.modal.crops"></span></label>
 				<div class="col-sm-9" style="padding-left: 0px;padding-right: 0px;">
-					<ng-select2  required id="userCrops" name="userCrops"
-								 [data]="crops | async | toSelect2OptionData"
-								 [options]="select2Options"
-								 [value]="model.crops | toSelect2OptionId"
-								 [width]="'100%'"
-								 (valueChanged)="onChangeCrop($event)"></ng-select2>
+					<ng-select2 required id="userCrops" name="userCrops"
+								[data]="crops | async | toSelect2OptionData"
+								[options]="select2Options"
+								[value]="model.crops | toSelect2OptionId"
+								[width]="'100%'"
+								(valueChanged)="onChangeCrop($event)"></ng-select2>
+				</div>
+				<div class="col-sm-3">
+				</div>
+				<div class="form-check form-check-inline">
+					<input type="checkbox" class="form-check-input" id="selectAllCrops" [checked]="model.crops.length === crops.length" (click)="onSelectAllCrops($event)"/>
+					<label class="form-check-label" for="selectAllCrops" jhiTranslate="site-admin.user.modal.crops.select.all"></label>
 				</div>
 			</div>
-				<div class="row">
-					<div class="col-sm-3">
+			<div class="form-group row">
+				<label for="userRoles" class="col-sm-3 col-form-label font-weight-bold"><span jhiTranslate="site-admin.user.modal.roles"></span></label>
+				<div class="col-sm-9" style="padding-right: 0px;padding-left: 0px;">
+					<div>
+						<a href="javascript:void(0)" (click)="AssignRole()"><span jhiTranslate="site-admin.user.modal.assign.role"></span></a>
 					</div>
-					<label>
-						<input type="checkbox"  id="selectAllCrops" [checked]="model.crops.length === crops.length" (click)="onSelectAllCrops($event)"/>
-						Select all
-					</label>
-				</div>
-
-				<div class="form-group row">
-					<label for="userRoles" class="col-sm-3 col-form-label font-weight-bold">Role(s)</label>
-					<div class="col-sm-9" style="padding-right: 0px;padding-left: 0px;">
-						<div>
-							<a href="javascript:void(0)" (click)="AssignRole()">+ Assign role</a>
-						</div>
-						<div *ngIf="model.userRoles?.length > 0" style="overflow-x: auto">
-							<table id="userRoles" class="table table-striped">
-								<thead>
-								<th>Role name</th>
-								<th>Role type</th>
-								<th>Crop</th>
-								<th>Program</th>
-								<th></th>
-								</thead>
-								<tbody>
-								<tr *ngFor="let userRole of model.userRoles">
-									<td>{{userRole.role.name}}</td>
-									<td>{{userRole.role.roleType.name}}</td>
-									<td>{{userRole.crop?.cropName}}</td>
-									<td>{{userRole.program?.name}}</td>
-									<td><a href="javascript:void(0)" (click)="showDeleteUserRoleConfirmPopUp(userRole)"><i class="fa fa-times" style="color:red"></i></a></td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
+					<div *ngIf="model.userRoles?.length > 0" style="overflow-x: auto">
+						<table id="userRoles" class="table table-striped">
+							<thead>
+							<th><span jhiTranslate="site-admin.user.modal.columns.role.name"></span></th>
+							<th><span jhiTranslate="site-admin.user.modal.columns.role.type"></span></th>
+							<th><span jhiTranslate="site-admin.user.modal.columns.crop"></span></th>
+							<th><span jhiTranslate="site-admin.user.modal.columns.program"></span></th>
+							<th></th>
+							</thead>
+							<tbody>
+							<tr *ngFor="let userRole of model.userRoles">
+								<td>{{userRole.role.name}}</td>
+								<td>{{userRole.role.roleType.name}}</td>
+								<td>{{userRole.crop?.cropName}}</td>
+								<td>{{userRole.program?.name}}</td>
+								<td><a href="javascript:void(0)" (click)="showDeleteUserRoleConfirmPopUp(userRole)"><i class="fa fa-times" style="color:red"></i></a></td>
+							</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
+			</div>
 			<div class="form-group row">
 				<label for="status" class="col-sm-3 col-form-label font-weight-bold">User status</label>
 				<div class="col-sm-9" style="padding-left: 0px;">
@@ -105,13 +102,11 @@
 				<div class="col-sm-3">
 				</div>
 				<div class="col-sm-9" style="padding-left: 0px;">
-					<div class="checkbox">
-						<label *ngIf="!isEditing">
-							<input type="checkbox" [(ngModel)]="sendMail" name="sendMail"> Send an invitation email for the user to set their password
-						</label>
-						<label *ngIf="isEditing">
-							<input type="checkbox" [(ngModel)]="sendMail" name="sendMail"> Send an email for the user to reset their password
-						</label>
+					<div *ngIf="!isEditing" class="form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" [(ngModel)]="sendMail" name="sendMail" id="sendMail"> <label class="form-check-label" for="sendMail" jhiTranslate="site-admin.user.modal.send.email.invitation.set.password"></label>
+					</div>
+					<div *ngIf="isEditing" class="form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" [(ngModel)]="sendMail" name="sendMail" id="sendMail"> <label class="form-check-label" for="sendMail" jhiTranslate="site-admin.user.modal.send.email.reset.password"></label>
 					</div>
 				</div>
 			</div>
