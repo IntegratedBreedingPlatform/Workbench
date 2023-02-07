@@ -16,7 +16,8 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ListBuilderContext } from '../../shared/list-builder/list-builder.context';
 import { ListEntry } from '../../shared/list-builder/model/list.model';
-import { Germplasm } from '../germplasm/germplasm.model';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'jhi-sample',
@@ -43,8 +44,7 @@ export class SampleComponent implements OnInit, OnDestroy {
     reverse: boolean;
 
     // { <data-index>: sample }
-    selectedItems: {[key: number]: Sample} = {};
-    isSelectAllPages = false;
+    selectedItems: Map<number, Sample> = new Map<number, Sample>();
     lastClickIndex: any;
 
     constructor(
@@ -59,7 +59,8 @@ export class SampleComponent implements OnInit, OnDestroy {
         private fileDownloadHelper: FileDownloadHelper,
         private modalService: NgbModal,
         public activeModal: NgbActiveModal,
-        public listBuilderContext: ListBuilderContext
+        public listBuilderContext: ListBuilderContext,
+        public translateService: TranslateService,
     ) {
         this.itemsPerPage = ITEMS_PER_PAGE;
         this.listBuilderContext.pageSize = this.itemsPerPage;
@@ -149,6 +150,26 @@ export class SampleComponent implements OnInit, OnDestroy {
             this.activeModal.close();
         }, () => this.activeModal.dismiss());
     }
+    removeEntries() {
+        if (!this.validateSelection()) {
+            return;
+        }
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.message = this.translateService.instant('bmsjHipsterApp.sample.remove-entries.confirm.message');
+        confirmModalRef.componentInstance.title = this.translateService.instant('bmsjHipsterApp.sample.remove-entries.confirm.header');
+
+        confirmModalRef.result.then(() => {
+            this.sampleService.removeEntries(this.sampleList.id, this.getSelectedItemIds()).subscribe(() => {
+                if (this.isPageSelected() && this.page === Math.ceil(this.totalItems / this.itemsPerPage)) {
+                    this.page = 1;
+                }
+                this.selectedItems.clear();
+                this.loadAll();
+                this.alertService.success('bmsjHipsterApp.sample.remove-entries.remove.success');
+            }, (error) => this.onError(error));
+        }, () => confirmModalRef.dismiss());
+    }
+
     ngOnInit() {
         this.loadAll();
         this.registerChangeInSamples();
@@ -178,15 +199,16 @@ export class SampleComponent implements OnInit, OnDestroy {
     }
 
     isSelected(sample: Sample) {
-        return this.selectedItems[sample.sampleId];
+        return this.selectedItems.get(sample.sampleId);
+    }
+
+    private getSelectedItemIds() {
+        return Array.from(this.selectedItems.keys()).map((listDataId: any) => Number(listDataId));
     }
 
     toggleSelect($event, index, sample: Sample, checkbox = false) {
-        if (this.isSelectAllPages) {
-            return;
-        }
         if (!$event.ctrlKey && !checkbox) {
-            this.selectedItems = {};
+            this.selectedItems.clear();
         }
         let items;
         if ($event.shiftKey) {
@@ -197,42 +219,37 @@ export class SampleComponent implements OnInit, OnDestroy {
             items = [sample];
             this.lastClickIndex = index;
         }
-        const isClickedItemSelected = this.selectedItems[sample.sampleId];
+        const isClickedItemSelected = this.selectedItems.get(sample.sampleId);
         for (const item of items) {
             if (isClickedItemSelected) {
-                delete this.selectedItems[item.sampleId];
+                this.selectedItems.delete(item.sampleId);
             } else {
-                this.selectedItems[item.sampleId] = item;
+                this.selectedItems.set(item.sampleId, item);
             }
         }
     }
 
     isPageSelected() {
-        return this.size(this.selectedItems) && this.sampleList.samples.every((s) => Boolean(this.selectedItems[s.sampleId]));
+        return this.size() && this.sampleList.samples.every((s) => Boolean(this.selectedItems.get(s.sampleId)));
     }
 
     onSelectPage() {
         if (this.isPageSelected()) {
             // remove all items
-            this.sampleList.samples.forEach((item) => delete this.selectedItems[item.sampleId]);
+            this.sampleList.samples.forEach((entry: Sample) => this.selectedItems.delete(entry.sampleId));
         } else {
             // check remaining items
-            this.sampleList.samples.forEach((item) => this.selectedItems[item.sampleId] = item);
+            this.sampleList.samples.forEach((entry: Sample) => this.selectedItems.set(entry.sampleId, entry));
         }
     }
 
-    onSelectAllPages() {
-        this.isSelectAllPages = !this.isSelectAllPages;
-        this.selectedItems = {};
-    }
-
-    size(obj) {
-        return Object.keys(obj).length;
+    size() {
+        return this.selectedItems.size;
     }
 
     dragStart($event, dragged: Sample) {
         let selected;
-        if (this.selectedItems[dragged.sampleId]) {
+        if (this.selectedItems.get(dragged.sampleId)) {
             // TODO sort as in table
             selected = Object.values(this.selectedItems).sort((a, b) => a.sampleId > b.sampleId ? 1 : -1);
         } else {
@@ -251,6 +268,14 @@ export class SampleComponent implements OnInit, OnDestroy {
             row['WELL'] = sample.well;
             return row;
         });
+    }
+
+    private validateSelection() {
+        if (this.sampleList.samples.length === 0 || this.selectedItems.size === 0) {
+            this.alertService.error('germplasm-list.list-data.selection.empty');
+            return false;
+        }
+        return true;
     }
 
     private onSuccess(data, headers) {
