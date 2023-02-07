@@ -1,5 +1,5 @@
 <div class="container-fluid pt-3">
-	<div class="float-right" *ngIf="this.user?.authorities?.includes('ADMIN') || (this.studyDetails && !(this.studyDetails?.locked && this.user.id !== this.studyDetails?.ownerId))">
+	<div class="float-right" *ngIf="shouldOpenStudy()">
 		<button class="btn btn-info" jhiTranslate="study.details.actions.open-study" *jhiHasAnyAuthority="STUDIES_EDITION_PERMISSIONS"
 				(click)="openStudy(studyDetails)">
 		</button>

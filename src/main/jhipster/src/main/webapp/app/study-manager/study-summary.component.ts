@@ -152,6 +152,11 @@ export class StudySummaryComponent implements OnInit {
         return this.datasets.filter((dataset: DatasetModel) => dataset.datasetId === datasetId).map((dataset: DatasetModel) => dataset.datasetTypeId)[0];
     }
 
+    shouldOpenStudy() {
+        return this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') ||
+            (this.studyDetails && !(this.studyDetails.locked && this.user.id !== this.studyDetails.ownerId));
+    }
+
     private onGetDatasetsSuccess(datasets: DatasetModel[]) {
         this.datasets = datasets.filter((dataset: DatasetModel) => StudySummaryComponent.SUPPORTED_DATASETS.includes(dataset.datasetTypeId));
     }
