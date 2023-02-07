@@ -62,6 +62,13 @@ export class SampleService {
             .pipe(map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res)));
     }
 
+    removeEntries(sampleListId: number, selectedEntries: any) {
+        const params = {};
+        params['selectedEntries'] = selectedEntries;
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/sample-lists/${sampleListId}/entries?programUUID=` + this.context.programUUID;
+        return this.http.delete<any>(url, { params, observe: 'response' });
+    }
+
     private convertResponse(res: EntityResponseType): EntityResponseType {
         const body: Sample = this.convertItemFromServer(res.body);
         return res.clone({body});
