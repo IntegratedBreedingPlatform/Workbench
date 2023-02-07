@@ -48,12 +48,8 @@ export class UsersPaneComponent implements OnInit {
 
     userSearchRequest: UserSearchRequest;
 
-    errorServiceMessage = '';
-    isEditing = false;
-    dialogTitle: string;
-    confirmStatusTitle = 'Confirm';
-    confirmMessage = 'Please confirm that you would like to deactivate/activate this user account.';
     user: User;
+
     originalUser: User;
 
     public roles: Role[];
@@ -136,14 +132,6 @@ export class UsersPaneComponent implements OnInit {
             (res: HttpResponse<User[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
-    }
-
-    // TODO
-    // - Move to interceptor
-    // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
-    handleReAuthentication() {
-        alert('Site Admin needs to authenticate you again. Redirecting to login page.');
-        window.top.location.href = '/ibpworkbench/logout';
     }
 
     changedActiveStatus(user) {
