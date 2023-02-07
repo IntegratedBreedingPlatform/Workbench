@@ -8,6 +8,11 @@
                 "createOrEditLabel": "Create or edit a Sample",
                 "search": "Search for Sample"
             },
+            "actions": {
+                "export-list": "Export list",
+                "import-plate-info": "Import Plate Information",
+                "delete-samples": "Delete Samples"
+            },
             "created": "A new Sample is created with identifier {{ param }}",
             "updated": "A Sample is updated with identifier {{ param }}",
             "deleted": "A Sample is deleted with identifier {{ param }}",
