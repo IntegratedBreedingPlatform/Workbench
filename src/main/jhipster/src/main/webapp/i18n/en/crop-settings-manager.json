@@ -55,6 +55,7 @@
         "generation-advancement-type": "Generation Advancement Type",
         "crop-reproductive-system": "Crop Reproductive System",
         "number-of-progenitors": "Number of Progenitors",
+        "mprgn-gen-valid-values": "Valid values for generative method type: 0, 1, 2. If the number of progenitors is variable, please use 0.",
         "class": "Class",
         "snametype": "Source name type",
         "separator": "Separator",
