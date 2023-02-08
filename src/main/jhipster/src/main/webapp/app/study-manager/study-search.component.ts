@@ -163,7 +163,7 @@ export class StudySearchComponent implements OnInit {
     }
 
     openStudy(study: StudySearchResponse) {
-        if (study.locked && !this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') && this.user.id !== study.ownerId) {
+        if (study.locked && this.user && !this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') && this.user.id !== study.ownerId) {
             this.alertService.error('study.manager.errors.study-locked', { ownerName: study.ownerName });
             return;
         }

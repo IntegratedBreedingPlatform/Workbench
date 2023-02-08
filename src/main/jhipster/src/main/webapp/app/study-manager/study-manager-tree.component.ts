@@ -139,7 +139,8 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
     }
 
     private validateStudyIsLocked(treeNode: PrimeNgTreeNode): boolean {
-        if (treeNode.data.isLocked && !this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') && treeNode.data.ownerId !== this.user.id.toString()) {
+        if (treeNode.data.isLocked &&
+            this.user && !this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') && treeNode.data.ownerId !== this.user.id.toString()) {
             this.alertService.error('study.manager.errors.study-locked', { ownerName: treeNode.data.ownerUserName });
             return false;
         }

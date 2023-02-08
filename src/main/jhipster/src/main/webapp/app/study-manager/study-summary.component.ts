@@ -153,7 +153,7 @@ export class StudySummaryComponent implements OnInit {
     }
 
     shouldOpenStudy() {
-        return this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') ||
+        return this.user && this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') ||
             (this.studyDetails && !(this.studyDetails.locked && this.user.id !== this.studyDetails.ownerId));
     }
 
