@@ -63,6 +63,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedInstances: any[];
     trialInstances: any[] = [];
     replicationNumber: number;
+    selectedDatasetId: number;
 
     replicationsOptions: any[] = [];
 
@@ -90,6 +91,11 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
         this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
         this.replicationNumber = Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
+
+        const selectedDatasetId = this.route.snapshot.queryParamMap.get('selectedDatasetId');
+        if (selectedDatasetId) {
+            this.selectedDatasetId = Number(selectedDatasetId);
+        }
 
         this.loadBreedingMethods();
         this.loadStudyVariables();
@@ -119,7 +125,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     back(advanceType: string) {
         if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: SELECT_INSTANCES, advanceType }, '*');
+            (<any>window.parent).postMessage({ name: SELECT_INSTANCES, advanceType, selectedDatasetId: this.selectedDatasetId }, '*');
         }
     }
 
