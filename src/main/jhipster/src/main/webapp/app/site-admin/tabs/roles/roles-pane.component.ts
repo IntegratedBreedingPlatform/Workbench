@@ -39,8 +39,6 @@ export class RolesPaneComponent implements OnInit {
 
     private isLoading: boolean;
 
-    errorServiceMessage;
-
     roleSearchRequest: RoleFilter;
 
     eventSubscriber: Subscription;
@@ -63,10 +61,6 @@ export class RolesPaneComponent implements OnInit {
 
     ngOnInit() {
         this.loadAll(this.request);
-        this.roleService.onRoleAdded.subscribe((role: Role) => {
-            this.message = `${role.name} role was successfully saved!`;
-            this.loadAll(this.request);
-        });
         this.registerRoleChanged();
     }
 
@@ -84,23 +78,6 @@ export class RolesPaneComponent implements OnInit {
             (res: HttpResponse<Role[]>) => this.onSuccess(res.body, res.headers),
             (res: HttpErrorResponse) => this.onError(res)
         );
-        /*}, (error) => {
-            this.loading = false;
-            this.errorServiceMessage = error;
-            if (error.status === 401) {
-                localStorage.removeItem('xAuthToken');
-                this.handleReAuthentication();
-            }
-
-        });*/
-    }
-
-    // TODO
-    // - Move to interceptor
-    // - see /ibpworkbench/src/main/web/src/apps/ontology/app-services/bmsAuth.js
-    handleReAuthentication() {
-        alert('Site Admin needs to authenticate you again. Redirecting to login page.');
-        window.top.location.href = '/ibpworkbench/logout';
     }
 
     getPermissionsTitleFormat(permissions) {
