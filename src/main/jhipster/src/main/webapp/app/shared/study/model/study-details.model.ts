@@ -12,6 +12,8 @@ export class StudyDetails {
         public startDate: number,
         public endDate: number,
         public lastUpdateDate: number,
+        public locked: boolean,
+        public ownerId: number,
         public numberOfEntries: number,
         public numberOfPlots: number,
         public hasFieldLayout: boolean,

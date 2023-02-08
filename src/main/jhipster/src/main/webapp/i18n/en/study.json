@@ -24,6 +24,9 @@
                 "error": {
                     "select-study": "Please choose a study."
                 }
+            },
+            "errors": {
+                "study-locked": "Study is locked by {{ownerName}} and can't be modified."
             }
         },
         "details": {

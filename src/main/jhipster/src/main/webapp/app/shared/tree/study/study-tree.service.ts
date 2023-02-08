@@ -83,6 +83,9 @@ export class StudyTreeService extends TreeService {
             noOfEntries: item.noOfEntries,
             numOfChildren: item.numOfChildren,
             isFolder: item.isFolder,
+            isLocked: item.isLocked,
+            ownerId: item.ownerId,
+            ownerUserName: item.ownerUserName
         });
     }
 }
