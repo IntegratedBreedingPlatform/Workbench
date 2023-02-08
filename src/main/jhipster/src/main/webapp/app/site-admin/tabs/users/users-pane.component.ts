@@ -268,7 +268,8 @@ export class UsersPaneComponent implements OnInit {
                 }, {
                     id: undefined, name: 'All'
                 }])
-            }, {
+            } // TODO Filter not implemented yet.
+            /*, {
                 key: 'roleId', name: 'Role', type: FilterType.DROPDOWN, values: this.getRoleOptions(), multipleSelect: false,
                 transform(req) {
                     ColumnFilterComponent.transformDropdownFilter(this, req);
@@ -276,7 +277,7 @@ export class UsersPaneComponent implements OnInit {
                 reset(req) {
                     ColumnFilterComponent.resetDropdownFilter(this, req);
                 },
-            }]
+            }*/]
     }
 
     private getRoleOptions(): Promise<Select2OptionData[]> {
