@@ -46,10 +46,10 @@
                 "success": "Sample Plate Information has been imported successfully.",
                 "error":"Something went wrong, please try again."
             },
-            "remove-entries": {
-                "confirm.message": "Are you sure you want to remove the selected entries from the list? The corresponding samples will be deleted.",
-                "confirm.header": "Remove entries",
-                "remove.success": "Successfully removed entries."
+            "delete-entries": {
+                "confirm.message": "Are you sure you want to delete the selected entries from the list?",
+                "confirm.header": "Delete entries",
+                "delete.success": "Successfully deleted entries."
             },
             "error": "{{ param }}"
         }
