@@ -16,11 +16,11 @@
 		<form name="form" #f="ngForm">
 			<div class="form-group row">
 				<div class="col-sm-12">
-					<span class="mandatory-asterisk"></span> Indicates a mandatory field
+					<span class="mandatory-asterisk"></span> <span jhiTranslate="site-admin.mandatory.fields"></span>
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right">Role name</label>
+				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.role.modal.role.name"></label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.name" #roleName="ngModel" required name="roleName" id="roleName"
 						   pattern="[A-Za-z0-9-\/_*\(\):\.\s]*[A-Za-z0-9-\/_*\(\):\.]+[A-Za-z0-9-\/_*\(\):\.\s]*"
@@ -29,7 +29,7 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="description" class="col-md-3 col-form-label font-weight-bold pull-right">Description</label>
+				<label for="description" class="col-md-3 col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.role.modal.description"></label>
 				<div class="col-sm-9">
 					<input type="text" class="form-control" [(ngModel)]="model.description" #description="ngModel" name="description" id="description"
 						   pattern="[A-Za-z0-9-\/_*\(\):\.\s]*"
@@ -38,22 +38,22 @@
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="roleType" class="col-md-3 col-form-label font-weight-bold pull-right">Role type</label>
+				<label for="roleType" class="col-md-3 col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.role.modal.role.type"></label>
 				<div class="col-xs-9 col-md-9">
 					<select class="form-control" [(ngModel)]="roleTypeId" #roleTypeInput="ngModel" required name="roleType" id="roleType"
 							(ngModelChange)="onChangeRoleType()" [disabled]="roleTypeDisabled">
-						<option value="">Please select a role type</option>
+						<option value=""><span jhiTranslate="site-admin.role.modal.dropdown.role.type"></span></option>
 						<option *ngFor="let roleType of roleTypes" [value]="roleType.id">{{roleType.name}}</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group row required">
-				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right">Permissions</label>
+				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.role.modal.permissions"></label>
 				<div class="col-sm-9">
 					<div class="permission-selector">
 						<div class="panel-wrapper">
 							<div class="panel panel-primary">
-								<div class="panel-heading">Select permissions</div>
+								<div class="panel-heading"><span jhiTranslate="site-admin.role.modal.dropdown.permission"></span></div>
 								<div class="panel-body">
 									<jhi-permission-tree [permissions]="permissions"
 													 [isLevelZero]="true"></jhi-permission-tree>
@@ -72,8 +72,8 @@
 		<button type="submit" class="btn btn-primary" [disabled]="!isFormValid(f)">
 			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 			<span class="fa fa-save"></span>&nbsp;
-			<span (click)="addRole(f)" *ngIf="!model.id">Add Role</span>
-			<span (click)="updateRole(f, true)" *ngIf="model.id">Update Role</span>
+			<span (click)="addRole(f)" *ngIf="!model.id" jhiTranslate="site-admin.role.modal.create.role"></span>
+			<span (click)="updateRole(f, true)" *ngIf="model.id" jhiTranslate="site-admin.role.modal.update.role"></span>
 		</button>
 
 	</div>
