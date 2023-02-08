@@ -2,7 +2,7 @@
 	<div class="modal-header">
 		<div class="col-xs-11 col-md-11">
 			<h4 class="modal-title font-weight-bold">
-				<span>Assing Role</span>
+				<span jhiTranslate="site-admin.user.modal.role.title"></span>
 			</h4>
 		</div>
 		<div class="col-xs-1 col-md-1">
@@ -15,12 +15,12 @@
 		<form class="form-horizontal" #userRoleForm="ngForm">
 			<div class="form-group">
 				<div class="col-sm-12">
-					<span class="mandatory-asterisk"></span> Indicates a mandatory field when field is enabled
+					<span class="mandatory-asterisk"></span><span jhiTranslate="site-admin.user.modal.role.mandatory.fields"></span>
 				</div>
 			</div>
 			<div class="form-group row required">
 				<div class="col-md-3">
-					<label for="roleTypeSelected" class="col-form-label font-weight-bold pull-right">Role type</label>
+					<label for="roleTypeSelected" class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.type"></label>
 				</div>
 				<div class="col-sm-7">
 					<select class="form-control" [(ngModel)]="roleTypeSelected" #roleTypeInput="ngModel" required name="roleTypeSelected" id="roleTypeCombo"
@@ -32,7 +32,7 @@
 			</div>
 			<div class="form-group row required">
 				<div class="col-md-3">
-					<label for="roleSelected" class="col-form-label font-weight-bold pull-right">Role name</label>
+					<label for="roleSelected" class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.name"></label>
 				</div>
 				<div class="col-sm-7">
 					<select class="form-control" [(ngModel)]="roleSelected" #roleNameInput="ngModel" name="roleSelected" id="roleNameCombo" [required]="!isRoleNameComboDisable()"
@@ -44,7 +44,7 @@
 			</div>
 			<div class="row form-group required">
 				<div class="col-md-3">
-					<label class="col-form-label font-weight-bold pull-right">Crop</label>
+					<label class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.crop"></label>
 				</div>
 				<div class="col-md-7">
 					<select class="form-control" [(ngModel)]="cropSelected" #cropInput="ngModel" name="cropSelected" id="cropCombo" [required]="!isCropComboDisable()"
@@ -56,7 +56,7 @@
 			</div>
 			<div class="row form-group required">
 				<div class="col-md-3">
-					<label class="col-form-label font-weight-bold pull-right">Program</label>
+					<label class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.program"></label>
 				</div>
 				<div class="col-md-7">
 					<select class="form-control" [(ngModel)]="programSelected" #programInput="ngModel" name="programSelected" id="programCombo" [required]="!isProgramComboDisable()"
@@ -72,7 +72,7 @@
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
 			<span jhiTranslate="back"></span>
 		</button>
-		<button type="button" class="btn btn-primary" (click)="assignRole()" [disabled]="isAssignRoleButtonDisable()" aria-hidden="true">Assign role
+		<button type="button" class="btn btn-primary" (click)="assignRole()" [disabled]="isAssignRoleButtonDisable()" aria-hidden="true" jhiTranslate="site-admin.user.modal.role.assign">
 		</button>
 	</div>
 </div>

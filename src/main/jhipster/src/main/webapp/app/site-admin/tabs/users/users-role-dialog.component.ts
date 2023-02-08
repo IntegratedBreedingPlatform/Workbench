@@ -13,6 +13,8 @@ import { UserRole } from '../../../shared/user/model/user-role.model';
 import { User } from '../../../shared/user/model/user.model';
 import { SiteAdminContext } from '../../site-admin-context';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertService } from '../../../shared/alert/alert.service';
 
 @Component({
     selector: 'jhi-users-role-dialog',
@@ -38,6 +40,8 @@ export class UserRoleDialogComponent implements OnInit {
                 private router: Router,
                 private modalService: NgbModal,
                 private modal: NgbActiveModal,
+                private alertService: AlertService,
+                public translateService: TranslateService,
                 private context: SiteAdminContext) {
 
         this.roleService.getRoleTypes().subscribe((resp) => {
@@ -115,21 +119,26 @@ export class UserRoleDialogComponent implements OnInit {
         let result: UserRole[];
         switch (Number(this.roleTypeSelected)) {
             case 1:
-                result = this.model.userRoles.filter((userRole) => userRole.role.roleType === newUserRole.role.roleType);
-                errorMessage = 'The user ' + this.model.username + ' has already assigned an Instance role.';
+                result = this.model.userRoles.filter((userRole) => userRole.role.roleType.id === newUserRole.role.roleType.id);
+                errorMessage = this.translateService.instant('site-admin.user.modal.role.instance.role.error', { user: this.model.username });
                 break;
             case 2:
-                result = this.model.userRoles.filter((userRole) => userRole.role.roleType === newUserRole.role.roleType && userRole.crop.cropName === newUserRole.crop.cropName);
-                errorMessage = 'The user ' + this.model.username + ' has already assigned a Crop role for ' + newUserRole.crop.cropName + ' crop.';
+                result = this.model.userRoles.filter((userRole) => userRole.role.roleType.id === newUserRole.role.roleType.id && //
+                    userRole.crop.cropName === newUserRole.crop.cropName);
+                errorMessage = this.translateService.instant('site-admin.user.modal.role.crop.role.error', { user: this.model.username, cropName: newUserRole.crop.cropName });
                 break;
             case 3:
-                result = this.model.userRoles.filter((userRole) => userRole.role.roleType === newUserRole.role.roleType && //
+                result = this.model.userRoles.filter((userRole) => userRole.role.roleType.id === newUserRole.role.roleType.id && //
                     userRole.crop.cropName === newUserRole.crop.cropName && userRole.program.uuid === newUserRole.program.uuid);
-                errorMessage = 'The user ' + this.model.username + ' has already assigned a Program role for ' + newUserRole.program.name + ' program.';
+                errorMessage = this.translateService.instant('site-admin.user.modal.role.program.role.error', {
+                    user: this.model.username,
+                    programName: newUserRole.program.name
+                });
                 break;
         }
 
         if (result.length > 0) {
+            this.alertService.error('error.custom', { param: errorMessage });
             return false;
         }
         return true;
