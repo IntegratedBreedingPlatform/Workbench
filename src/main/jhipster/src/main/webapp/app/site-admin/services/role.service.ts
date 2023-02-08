@@ -18,10 +18,7 @@ export class RoleService {
 
     private baseUrl: string = SERVER_API_URL;
 
-    public onRoleAdded = new Subject<Role>();
     public onPermissionSelected = new Subject<OnPermissionSelectedType>();
-
-    public role: Role;
 
     constructor(private http: HttpClient) {
     }
