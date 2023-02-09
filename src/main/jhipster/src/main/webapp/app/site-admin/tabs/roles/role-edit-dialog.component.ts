@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Role } from '../../models/role.model';
-import { Permission } from '../../models/permission.model';
-import { RoleType } from '../../models/role-type.model';
+import { Role } from '../../model/role.model';
+import { Permission } from '../../model/permission.model';
+import { RoleType } from '../../model/role-type.model';
 import { OnPermissionSelectedType, RoleService, setParent, visitPermissions } from '../../services/role.service';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';

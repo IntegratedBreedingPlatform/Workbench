@@ -1,7 +1,7 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
-import { Role } from '../../models/role.model';
+import { Role } from '../../model/role.model';
 import { UserService } from '../../services/user.service';
 import { RoleService } from '../../services/role.service';
 import { CropService } from '../../services/crop.service';
@@ -17,13 +17,13 @@ import { Location } from '../../../shared/location/model/location';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { JhiEventManager } from 'ng-jhipster';
 import { Subscription } from 'rxjs';
-import { RoleFilter } from '../../models/role-filter.model';
+import { RoleFilter } from '../../model/role-filter.model';
 import { Crop } from '../../../shared/model/crop.model';
 import { User } from '../../../shared/user/model/user.model';
 import { UserRole } from '../../../shared/user/model/user-role.model';
 import { SiteAdminContext } from '../../site-admin-context';
 import { FilterType, ColumnFilterComponent } from '../../../shared/column-filter/column-filter.component';
-import { UserSearchRequest } from '../../models/UserSearchRequest';
+import { UserSearchRequest } from '../../model/UserSearchRequest';
 import { Select2OptionData } from 'ng-select2';
 
 @Component({

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs/Rx';
-import { Role } from './../models/role.model';
-import { RoleFilter } from './../models/role-filter.model';
+import { Role } from '../model/role.model';
+import { RoleFilter } from '../model/role-filter.model';
 import { SERVER_API_URL } from '../../app.constants';
-import { RoleType } from '../models/role-type.model';
-import { Permission } from '../models/permission.model';
+import { RoleType } from '../model/role-type.model';
+import { Permission } from '../model/permission.model';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { createRequestOption } from '../../shared';

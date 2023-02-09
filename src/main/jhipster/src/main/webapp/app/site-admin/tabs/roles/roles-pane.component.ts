@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
-import { Role } from '../../models/role.model';
+import { Role } from '../../model/role.model';
 import { RoleService } from '../../services/role.service';
-import { RoleFilter } from '../../models/role-filter.model';
+import { RoleFilter } from '../../model/role-filter.model';
 import { Pageable } from '../../../shared/model/pageable';
 import { finalize } from 'rxjs/operators';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
