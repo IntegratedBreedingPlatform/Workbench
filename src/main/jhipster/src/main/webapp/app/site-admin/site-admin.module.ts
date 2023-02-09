@@ -3,10 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SiteAdminComponent } from './site-admin.component';
-import { AccountService, BmsjHipsterSharedModule, Principal } from '../shared';
+import { AccountService, BmsjHipsterSharedModule, Principal, RouteAccessService } from '../shared';
 import { SITE_ADMIN_ROUTES } from './site-admin.routes';
 import { RouterModule } from '@angular/router';
-import { UserRouteAccessService } from '../shared/auth/user-route-access-service';
 import { EmailValidatorDirective } from './validators/email-validator.component';
 import { PermissionTreeComponent, RoleEditDialogComponent, RoleEditPopupComponent } from './tabs/roles/role-edit-dialog.component';
 import { UserService } from './services/user.service';
@@ -51,7 +50,7 @@ import { MailService } from './services/mail.service';
         PermissionTreeComponent
     ],
     providers: [
-        UserRouteAccessService,
+        RouteAccessService,
         UserService,
         RoleService,
         CropService,
