@@ -42,9 +42,9 @@
 				<label for="userCrops" class="col-sm-3 col-form-label font-weight-bold"><span jhiTranslate="site-admin.user.modal.crops"></span></label>
 				<div class="col-sm-9" style="padding-left: 0px;padding-right: 0px;">
 					<ng-select2 required id="userCrops" name="userCrops"
-								[data]="crops | async | toSelect2OptionData"
+								[data]="crops | toSelect2OptionData"
 								[options]="select2Options"
-								[value]="model.crops | toSelect2OptionId"
+								[value]="cropSelected | toSelect2OptionId"
 								[width]="'100%'"
 								(valueChanged)="onChangeCrop($event)"></ng-select2>
 				</div>

@@ -31,11 +31,10 @@ export class UserEditDialogComponent implements OnInit {
     EMAIL_LOCAL_PART_REGEX = EMAIL_LOCAL_PART_REGEX;
 
     model: User;
+    crops: Crop[];
 
-    showDeleteUserRoleConfirmPopUpDialog = false;
-    crops: Promise<Crop[]>;
+    cropSelected: any;
 
-    // isLoading: boolean;
     sendingEmail: boolean;
     isEditing: boolean;
     sendMail: boolean;
@@ -60,33 +59,37 @@ export class UserEditDialogComponent implements OnInit {
 
         this.sendingEmail = false;
         this.userSaved = false;
+        this.crops = [];
     }
 
-    ngOnInit(): void {
+    async ngOnInit() {
         this.model = this.context.user;
+        this.cropSelected = this.model.crops;
         this.isEditing = this.model.id ? true : false;
-        this.crops = this.cropService.getAll().toPromise();
+        this.crops = await this.cropService.getAll().toPromise();
 
     }
 
-    onChangeCrop(data: { value: string[] }) {
-        if (!data || !data.value) {
+    onChangeCrop(crops: string[]) {
+        if (!crops) {
             return;
         }
-        this.model.crops = data.value.map((cropName) => {
+        this.model.crops = crops.map((crop) => {
             return {
-                cropName
+                cropName: crop
             };
         });
     }
 
     onSelectAllCrops($event: any) {
         if ($event.currentTarget.checked) {
-            this.crops.then((crop) => {
-                this.model.crops = Object.assign([], crop);
+            this.model.crops = Object.assign([], this.crops);
+            this.cropSelected = this.crops.map((crop) => {
+                return crop;
             });
         } else {
             this.model.crops = [];
+            this.cropSelected = [];
         }
     }
 
