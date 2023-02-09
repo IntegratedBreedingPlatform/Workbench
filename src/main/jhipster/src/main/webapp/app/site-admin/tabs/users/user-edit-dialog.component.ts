@@ -72,6 +72,7 @@ export class UserEditDialogComponent implements OnInit {
 
     onChangeCrop(crops: string[]) {
         if (!crops) {
+            this.model.crops = [];
             return;
         }
         this.model.crops = crops.map((crop) => {
