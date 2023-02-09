@@ -31,6 +31,7 @@ import { ProgramSettingsManagerModule } from './program-settings-manager/program
 import { CreateProgramModule } from './entities/create-program/create-program.module';
 import { LotAttributeModule } from './entities/lot/lot-attribute.module';
 import { StudyManagerModule } from './study-manager/study-manager.module';
+import { ObservationDetailsModule } from './entities/observation/observation-details.module';
 
 @NgModule({
     imports: [
@@ -45,6 +46,7 @@ import { StudyManagerModule } from './study-manager/study-manager.module';
         GermplasmManagerModule,
         InventoryDetailsModule,
         GermplasmDetailsModule,
+        ObservationDetailsModule,
         ReleaseNotesModule,
         UserProfileModule,
         FileManagerModule,
