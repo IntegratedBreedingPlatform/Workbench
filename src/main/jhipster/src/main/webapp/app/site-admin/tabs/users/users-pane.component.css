@@ -1,0 +1,8 @@
+.site-admin-badge {
+    border-radius: 4px;
+    background-color: #e6e6e6;
+    padding: 6px 12px;
+    border: 1px solid #cac8c8;
+    margin: -5px 0;
+    display: inline-block;
+}
