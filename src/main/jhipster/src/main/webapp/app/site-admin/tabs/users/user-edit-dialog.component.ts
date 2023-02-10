@@ -103,27 +103,31 @@ export class UserEditDialogComponent implements OnInit {
         this.activeModal.close();
     }
 
-    addUser() {
-        this.userService
-            .save(this.trimAll(this.model))
-            .subscribe(
-            (resp) => {
-                this.userSaved = true;
-                this.sendEmailToResetPassword(resp, 'site-admin.user.modal.create.success');
-            }, (error) => this.onError(error));
+    addUser(form) {
+        if (this.isFormValid(form)) {
+            this.userService
+                .save(this.trimAll(this.model))
+                .subscribe(
+                    (resp) => {
+                        this.userSaved = true;
+                        this.sendEmailToResetPassword(resp, 'site-admin.user.modal.create.success');
+                    }, (error) => this.onError(error));
+        }
     }
 
-    updateUser() {
-        this.userService
-            .update(this.trimAll(this.model))
-            .subscribe(
-                (resp) => {
-                    this.userSaved = true;
-                    this.sendEmailToResetPassword(resp, 'site-admin.user.modal.edit.success');
-                    const message: NavbarMessageEvent = { userProfileChanged: true };
-                    window.parent.postMessage(message, '*');
-                },
-                (res: HttpErrorResponse) => this.onError(res));
+    updateUser(form) {
+        if (this.isFormValid(form)) {
+            this.userService
+                .update(this.trimAll(this.model))
+                .subscribe(
+                    (resp) => {
+                        this.userSaved = true;
+                        this.sendEmailToResetPassword(resp, 'site-admin.user.modal.edit.success');
+                        const message: NavbarMessageEvent = { userProfileChanged: true };
+                        window.parent.postMessage(message, '*');
+                    },
+                    (res: HttpErrorResponse) => this.onError(res));
+        }
     }
 
     AssignRole() {

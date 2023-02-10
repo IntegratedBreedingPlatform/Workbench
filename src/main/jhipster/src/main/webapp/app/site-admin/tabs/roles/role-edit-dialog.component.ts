@@ -109,38 +109,42 @@ export class RoleEditDialogComponent implements OnInit {
     }
 
     addRole(form: NgForm) {
-        this.prepareModelForSaving();
-        this.roleService.createRole(this.model).pipe(
-            finalize(() => this.isLoading = false)
-        ).subscribe(() => {
-            this.alertService.success('site-admin.role.modal.create.success');
-            this.notifyChanges();
-            this.isLoading = false;
-        }, (error) => this.onError(error));
+        if (this.isFormValid(form)) {
+            this.prepareModelForSaving();
+            this.roleService.createRole(this.model).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
+                this.alertService.success('site-admin.role.modal.create.success');
+                this.notifyChanges();
+                this.isLoading = false;
+            }, (error) => this.onError(error));
+        }
     }
 
     updateRole(form: NgForm, showWarnings: boolean) {
-        this.prepareModelForSaving();
-        this.roleService.updateRole(this.model, showWarnings).pipe(
-            finalize(() => this.isLoading = false)
-        ).subscribe(() => {
-            this.alertService.success('site-admin.role.modal.edit.success');
-            this.notifyChanges();
-            this.isLoading = false;
-        }, (response) => {
-            if (response.status === 409) {
-                this.confirmMessages = response.error.errors;
-                const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-                confirmModalRef.componentInstance.title = 'Confirmation';
-                confirmModalRef.componentInstance.message = this.confirmMessages[0].message;
-                confirmModalRef.result.then(() => {
-                    this.updateRole(form, false);
-                }, () => confirmModalRef.dismiss());
+        if (this.isFormValid(form)) {
+            this.prepareModelForSaving();
+            this.roleService.updateRole(this.model, showWarnings).pipe(
+                finalize(() => this.isLoading = false)
+            ).subscribe(() => {
+                this.alertService.success('site-admin.role.modal.edit.success');
+                this.notifyChanges();
+                this.isLoading = false;
+            }, (response) => {
+                if (response.status === 409) {
+                    this.confirmMessages = response.error.errors;
+                    const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+                    confirmModalRef.componentInstance.title = 'Confirmation';
+                    confirmModalRef.componentInstance.message = this.confirmMessages[0].message;
+                    confirmModalRef.result.then(() => {
+                        this.updateRole(form, false);
+                    }, () => confirmModalRef.dismiss());
 
-            } else {
-                this.onError(response);
-            }
-        });
+                } else {
+                    this.onError(response);
+                }
+            });
+        }
     }
 
     private onError(response: HttpErrorResponse) {
