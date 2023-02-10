@@ -132,8 +132,8 @@
 		</button>
 		<button type="submit" *ngIf="!userSaved"  class="btn btn-primary" [disabled]="!isFormValid(f)">
 			<span class="fa fa-save"></span>&nbsp;
-			<span (click)="addUser()" *ngIf="!model.id" jhiTranslate="site-admin.user.modal.create.user"></span>
-			<span (click)="updateUser()" *ngIf="model.id" jhiTranslate="site-admin.user.modal.edit.user"></span>
+			<span (click)="addUser(f)" *ngIf="!model.id" jhiTranslate="site-admin.user.modal.create.user"></span>
+			<span (click)="updateUser(f)" *ngIf="model.id" jhiTranslate="site-admin.user.modal.edit.user"></span>
 		</button>
 		<button *ngIf="userSaved" type="submit" class="btn btn-success" [disabled]="!isFormValid(f)" jhiTranslate="site-admin.user.modal.saved"></button>
 	</div>
