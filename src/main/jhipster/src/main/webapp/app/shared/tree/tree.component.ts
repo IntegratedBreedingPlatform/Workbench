@@ -119,6 +119,9 @@ export class TreeComponent implements OnInit {
 
     onDrop(event, node: PrimeNgTreeNode) {
         if (this.draggedNode) {
+            if (this.draggedNode.parent.data.id === node.data.id) {
+                return;
+            }
             if (this.draggedNode.children && this.draggedNode.children.length !== 0) {
                 this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children', { folder: this.draggedNode.data.name });
                 this.draggedNode = null;
@@ -140,8 +143,10 @@ export class TreeComponent implements OnInit {
                     this.redrawNodes();
                     this.draggedNode = null;
                 },
-                (res: HttpErrorResponse) =>
-                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message }));
+                (res: HttpErrorResponse) => {
+                    this.alertService.error('bmsjHipsterApp.tree-table.messages.error', {param: res.error.errors[0].message})
+                    this.redrawNodes();
+                });
         }
     }
 
