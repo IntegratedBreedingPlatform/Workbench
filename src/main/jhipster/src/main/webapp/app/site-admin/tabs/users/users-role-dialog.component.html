@@ -1,0 +1,78 @@
+<div class="container">
+	<div class="modal-header">
+		<div class="col-xs-11 col-md-11">
+			<h4 class="modal-title font-weight-bold">
+				<span jhiTranslate="site-admin.user.modal.role.title"></span>
+			</h4>
+		</div>
+		<div class="col-xs-1 col-md-1">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+					(click)="back()">&times;
+			</button>
+		</div>
+	</div>
+	<div class="modal-body">
+		<form class="form-horizontal" #userRoleForm="ngForm">
+			<div class="form-group">
+				<div class="col-sm-12">
+					<span class="mandatory-asterisk"></span><span jhiTranslate="site-admin.user.modal.role.mandatory.fields"></span>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<div class="col-md-3">
+					<label for="roleTypeSelected" class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.type"></label>
+				</div>
+				<div class="col-sm-7">
+					<select class="form-control" [(ngModel)]="roleTypeSelected" #roleTypeInput="ngModel" required name="roleTypeSelected" id="roleTypeCombo"
+							(ngModelChange)="changeRole()">
+						<option value="">Please select a role type</option>
+						<option *ngFor="let roleType of roleTypes" [ngValue]="roleType.id">{{roleType.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group row required">
+				<div class="col-md-3">
+					<label for="roleSelected" class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.name"></label>
+				</div>
+				<div class="col-sm-7">
+					<select class="form-control" [(ngModel)]="roleSelected" #roleNameInput="ngModel" name="roleSelected" id="roleNameCombo" [required]="!isRoleNameComboDisable()"
+							[disabled]="isRoleNameComboDisable()">
+						<option value="">Please select a role</option>
+						<option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="row form-group required">
+				<div class="col-md-3">
+					<label class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.crop"></label>
+				</div>
+				<div class="col-md-7">
+					<select class="form-control" [(ngModel)]="cropSelected" #cropInput="ngModel" name="cropSelected" id="cropCombo" [required]="!isCropComboDisable()"
+							(ngModelChange)="changeCrop()" [disabled]="isCropComboDisable()">
+						<option value="">Please select a crop</option>
+						<option *ngFor="let crop of crops" [ngValue]="crop">{{crop.cropName}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="row form-group required">
+				<div class="col-md-3">
+					<label class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.program"></label>
+				</div>
+				<div class="col-md-7">
+					<select class="form-control" [(ngModel)]="programSelected" #programInput="ngModel" name="programSelected" id="programCombo" [required]="!isProgramComboDisable()"
+							[disabled]="isProgramComboDisable()">
+						<option value="">Please select a program</option>
+						<option *ngFor="let program of programs" [ngValue]="program">{{program.name}}</option>
+					</select>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
+			<span jhiTranslate="back"></span>
+		</button>
+		<button type="button" class="btn btn-primary" (click)="assignRole()" [disabled]="isAssignRoleButtonDisable()" aria-hidden="true" jhiTranslate="site-admin.user.modal.role.assign">
+		</button>
+	</div>
+</div>

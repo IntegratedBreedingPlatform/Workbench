@@ -184,7 +184,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     siteAdmin() {
         this.program = null;
-        this.openTool('/ibpworkbench/controller/admin', 'Site Admin');
+        this.openTool('/ibpworkbench/controller/jhipster#site-admin', 'Site Admin');
     }
 
     about() {
@@ -271,7 +271,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
 
     private expandParent() {
-        if (!this.treeControl.dataNodes.length) {
+        if (!this.treeControl.dataNodes || !this.treeControl.dataNodes.length) {
             return;
         }
         // Find node by selected tool name

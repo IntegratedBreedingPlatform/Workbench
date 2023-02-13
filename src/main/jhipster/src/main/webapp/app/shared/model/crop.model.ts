@@ -1,3 +1,6 @@
 export class Crop {
-    cropName: string;
+
+    constructor(public cropName: string) {
+    }
+
 }

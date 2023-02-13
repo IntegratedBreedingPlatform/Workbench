@@ -3,9 +3,12 @@ import { Program } from './program.model';
 import { Crop } from '../../model/crop.model';
 
 export class UserRole {
-    id: number;
-    role: Role;
-    crop: Crop;
-    program: Program;
-    createdBy: number
+    constructor(public id?: number,
+                public role?: Role,
+                public crop?: Crop,
+                public program?: Program,
+                public createdBy?: number) {
+
+    }
+
 }
