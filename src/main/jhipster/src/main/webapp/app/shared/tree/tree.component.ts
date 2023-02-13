@@ -249,8 +249,8 @@ export class TreeComponent implements OnInit {
                 type: node.type || '',
                 noOfEntries: node.noOfEntries || ''
             },
-            draggable: node.isFolder,
-            droppable: node.isFolder,
+            draggable: true,
+            droppable: true,
             selectable: this.isSelectable(node),
             leaf: !node.isFolder,
             parent,
