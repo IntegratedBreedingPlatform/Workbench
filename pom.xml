@@ -754,17 +754,6 @@
 					</execution>
 
 					<execution>
-						<id>javascript tests angular 2</id>
-						<goals>
-							<goal>karma</goal>
-						</goals>
-						<configuration>
-							<workingDirectory>src/main/web</workingDirectory>
-							<karmaConfPath>karma.conf-ng2.ci.js</karmaConfPath>
-						</configuration>
-					</execution>
-
-					<execution>
 						<id>jhipster test</id>
 						<goals>
 							<goal>yarn</goal>
