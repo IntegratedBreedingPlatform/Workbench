@@ -137,4 +137,3 @@ export class ObservationDetailsComponent implements OnInit {
     }
 
 }
-

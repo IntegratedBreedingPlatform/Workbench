@@ -62,7 +62,8 @@ export class DatasetService {
                              observationUnitId: string, variableId: number,
                              pagination: any): Observable<HttpResponse<PhenotypeAudit[]>> {
         const params = createRequestOption(pagination);
-        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}/observationUnits/${observationUnitId}/variable/${variableId}/phenotype-audit`;
+        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}`
+            + `/observationUnits/${observationUnitId}/variable/${variableId}/phenotype-audit`;
         return this.http.get<PhenotypeAudit[]>(url, { params, observe: 'response' });
     }
 }
