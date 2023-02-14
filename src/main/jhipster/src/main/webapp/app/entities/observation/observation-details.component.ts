@@ -1,13 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
-import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../../shared/modal/popup.service';
-import { BreedingMethodClass } from '../../shared/breeding-method/model/breeding-method-class.model';
-import { BreedingMethodGroup } from '../../shared/breeding-method/model/breeding-method-group.model';
-import { BreedingMethodType } from '../../shared/breeding-method/model/breeding-method-type.model';
-import { JhiLanguageService } from 'ng-jhipster';
+import { ActivatedRoute, Router } from '@angular/router';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
+import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { finalize } from 'rxjs/internal/operators/finalize';
+import { DatasetService } from '../../shared/dataset/service/dataset.service';
+import { PhenotypeAudit } from '../../shared/model/phenotype-audit.model';
+import { ObservationVariable } from '../../shared/model/observation-variable.model';
+import { formatErrorList } from '../../shared/alert/format-error-list';
+import { DateFormatEnum, formatDateToUTC } from '../../shared/util/date-utils';
 
 @Component({
     selector: 'jhi-observation-details',
@@ -15,18 +17,93 @@ import { JhiLanguageService } from 'ng-jhipster';
 })
 export class ObservationDetailsComponent implements OnInit {
 
-    @Input() public observationUnitId: number;
+    observationUnitId: string;
+    cropName: number;
+    programUUID: number;
+    studyId: number;
+    datasetId: number;
     editable = false;
+
+    selectedVariable: number;
+    studyVariables = [];
+    VARIABLE_TYPE_IDS;
+
+    isLoading: boolean;
+    totalItems: number;
+    queryCount: number;
+    page: number;
+    previousPage: number;
+
+    private readonly itemsPerPage: number = 10;
+
+    phenotypeAudits: PhenotypeAudit[];
 
     constructor(private route: ActivatedRoute,
                 public activeModal: NgbActiveModal,
-                private jhiLanguageService: JhiLanguageService) {
+                private jhiAlertService: JhiAlertService,
+                public datasetService: DatasetService,
+                private jhiLanguageService: JhiLanguageService,
+                private router: Router) {
     }
 
     ngOnInit(): void {
+        this.page = 1;
+        this.selectedVariable = 0;
+
+        this.observationUnitId = this.route.snapshot.params['observationUnitId'];
+        this.studyId = this.route.snapshot.queryParams['studyId'];
+        this.datasetId = this.route.snapshot.queryParams['datasetId'];
+
         (<any>window).onCloseModal = this.clear;
+
+        this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD, VariableTypeEnum.ENVIRONMENT_CONDITION];
+
+        this.datasetService.getObservationSetColumns(this.studyId, this.datasetId)
+            .subscribe(
+                (resp: HttpResponse<ObservationVariable[]>) => {
+                    this.studyVariables = resp.body.filter((variable: ObservationVariable) => !variable.factor)
+                }
+            );
     }
 
+    loadAll() {
+        this.isLoading = true;
+        console.log(this.selectedVariable);
+
+        const pagination: any = {
+            page: this.page - 1,
+            size: this.itemsPerPage
+        }
+        this.datasetService.getPhenotypeAuditRecords(this.studyId, this.datasetId, this.observationUnitId, this.selectedVariable, pagination)
+            .pipe(finalize(() => {
+                this.isLoading = false;
+            }))
+            .subscribe(
+                (res: HttpResponse<PhenotypeAudit[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+    }
+
+    private onSuccess(data: PhenotypeAudit[], headers) {
+        this.totalItems = headers.get('X-Total-Count');
+        this.queryCount = this.totalItems;
+        this.phenotypeAudits = data;
+    }
+
+    private onError(response: HttpErrorResponse) {
+        const msg = formatErrorList(response.error.errors);
+        if (msg) {
+            this.jhiAlertService.addAlert({ msg: 'error.custom', type: 'danger', toast: false, params: { param: msg } }, null);
+        } else {
+            this.jhiAlertService.addAlert({ msg: 'error.general', type: 'danger', toast: false }, null);
+        }
+    }
+
+    resetTable() {
+        this.page = 1;
+        this.previousPage = 1;
+        this.loadAll();
+    }
 
     clear() {
         this.activeModal.dismiss('cancel');
@@ -34,25 +111,30 @@ export class ObservationDetailsComponent implements OnInit {
             (<any>window.parent).closeModal();
         }
     }
-}
 
-@Component({
-    selector: 'jhi-observation-details-popup',
-    template: ``
-})
-export class ObservationDetailsPopupComponent implements OnInit {
-
-    constructor(private route: ActivatedRoute,
-                private popupService: PopupService) {
+    loadPage(page: number) {
+        if (page !== this.previousPage) {
+            this.previousPage = page;
+            this.transition();
+        }
     }
 
-    ngOnInit(): void {
-        const obsUnitId = this.route.snapshot.paramMap.get('observationUnitId');
-
-        const modal = this.popupService.open(ObservationDetailsComponent as Component);
-        modal.then((modalRef) => {
-            modalRef.componentInstance.observationUnitId = obsUnitId;
+    transition() {
+        this.router.navigate(['./'], {
+            queryParams:
+                {
+                    page: this.page,
+                    size: this.itemsPerPage
+                },
+            relativeTo: this.route,
+            queryParamsHandling: 'merge'
         });
+        this.loadAll();
+    }
+
+    formatDate(date: string): string {
+        return formatDateToUTC(date, DateFormatEnum.ISO_8601_AND_TIME) + ' UTC';
     }
 
 }
+

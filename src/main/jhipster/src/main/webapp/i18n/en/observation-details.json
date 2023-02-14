@@ -1,6 +1,14 @@
 {
     "observation-details": {
         "header": "Observation Details: ",
-        "observations": "Observations"
+        "observations": "Observations",
+        "variable": "Variable",
+        "columns": {
+            "value": "Accepted Value",
+            "draft-value": "Draft Value",
+            "timestamp": "Timestamp",
+            "user": "User",
+            "event": "Event"
+        }
     }
 }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BmsjHipsterSharedModule } from '../../shared';
-import { ObservationDetailsComponent, ObservationDetailsPopupComponent } from './observation-details.component';
+import { ObservationDetailsComponent } from './observation-details.component';
 import { RouterModule } from '@angular/router';
 import { observationDetailsRoutes } from './observation-details.route';
 
@@ -10,12 +10,10 @@ import { observationDetailsRoutes } from './observation-details.route';
         RouterModule.forChild([...observationDetailsRoutes]),
     ],
     declarations: [
-        ObservationDetailsComponent,
-        ObservationDetailsPopupComponent
+        ObservationDetailsComponent
     ],
     entryComponents: [
-        ObservationDetailsComponent,
-        ObservationDetailsPopupComponent
+        ObservationDetailsComponent
     ]
 })
 export class ObservationDetailsModule {
