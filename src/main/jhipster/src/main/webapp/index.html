@@ -91,7 +91,8 @@
 
 	<script type="text/javascript" th:inline="javascript">
 		//<![CDATA[
-		var showReleaseNotes = /*[[${showReleaseNotes}]]*/ '';
+		var showReleaseNotes = /*[[${showReleaseNotes}]]*/ '',
+			enableTwoFactorAuthentication = /*[[${enableTwoFactorAuthentication}]]*/ false;
 	//]]>
 	</script>
 	<div id="notification-container" style="display:none">

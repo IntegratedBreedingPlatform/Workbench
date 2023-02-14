@@ -5,7 +5,7 @@
 	<artifactId>ibpworkbench</artifactId>
 	<packaging>war</packaging>
 	<name>Workbench</name>
-        <version>23.0.1</version>
+        <version>23.1</version>
 
 	<properties>
 		<vaadin.version>6.8.18</vaadin.version>
@@ -750,17 +750,6 @@
 						<configuration>
 							<workingDirectory>src/main/web</workingDirectory>
 							<karmaConfPath>karma.conf.ci.js</karmaConfPath>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>javascript tests angular 2</id>
-						<goals>
-							<goal>karma</goal>
-						</goals>
-						<configuration>
-							<workingDirectory>src/main/web</workingDirectory>
-							<karmaConfPath>karma.conf-ng2.ci.js</karmaConfPath>
 						</configuration>
 					</execution>
 

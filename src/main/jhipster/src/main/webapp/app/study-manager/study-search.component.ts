@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 import { UrlService } from '../shared/service/url.service';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
 import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
+import { Principal } from '../shared';
 
 declare var $: any;
 
@@ -59,7 +60,9 @@ export class StudySearchComponent implements OnInit {
 
     isLoading: boolean;
 
-    studyFilters: any;
+    studyFilters: any = [];
+
+    user?: any;
 
     constructor(private jhiLanguageService: JhiLanguageService,
                 private studyService: StudyService,
@@ -67,7 +70,8 @@ export class StudySearchComponent implements OnInit {
                 private activatedRoute: ActivatedRoute,
                 private alertService: AlertService,
                 private eventManager: JhiEventManager,
-                private urlService: UrlService) {
+                private urlService: UrlService,
+                private principal: Principal) {
         this.page = 1;
         this.totalItems = 0;
         this.currentSearch = '';
@@ -77,7 +81,9 @@ export class StudySearchComponent implements OnInit {
         this.searchRequest = new StudySearchRequest();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.user = await this.principal.identity();
+
         this.filters = this.getInitialFilters();
         this.registerColumnFiltersChanged();
         this.loadAll(this.request);
@@ -157,6 +163,11 @@ export class StudySearchComponent implements OnInit {
     }
 
     openStudy(study: StudySearchResponse) {
+        if (study.locked && this.user && !this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') && this.user.id !== study.ownerId) {
+            this.alertService.error('study.manager.errors.study-locked', { ownerName: study.ownerName });
+            return;
+        }
+
         this.urlService.openStudy(study.studyId, study.studyName);
     }
 
@@ -282,7 +293,7 @@ export enum ColumnLabels {
     'STUDY_NAME' = 'STUDY_NAME',
     'STUDY_TYPE_NAME' = 'STUDY_TYPE_NAME',
     'LOCKED' = 'LOCKED',
-    'STUDY_OWNER' = 'STUDY_OWNER',
+    'STUDY_OWNER_NAME' = 'STUDY_OWNER_NAME',
     'START_DATE' = 'START_DATE',
     'PARENT_FOLDER_NAME' = 'PARENT_FOLDER_NAME',
     'OBJECTIVE' = 'OBJECTIVE'

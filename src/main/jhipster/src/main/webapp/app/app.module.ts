@@ -31,6 +31,7 @@ import { ProgramSettingsManagerModule } from './program-settings-manager/program
 import { CreateProgramModule } from './entities/create-program/create-program.module';
 import { LotAttributeModule } from './entities/lot/lot-attribute.module';
 import { StudyManagerModule } from './study-manager/study-manager.module';
+import { SiteAdminModule } from './site-admin/site-admin.module';
 import { ObservationDetailsModule } from './entities/observation/observation-details.module';
 
 @NgModule({
@@ -59,7 +60,8 @@ import { ObservationDetailsModule } from './entities/observation/observation-det
         AboutModule,
         CreateProgramModule,
         LotAttributeModule,
-        StudyManagerModule
+        StudyManagerModule,
+        SiteAdminModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [

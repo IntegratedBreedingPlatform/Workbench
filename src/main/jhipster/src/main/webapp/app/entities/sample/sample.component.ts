@@ -155,8 +155,8 @@ export class SampleComponent implements OnInit, OnDestroy {
             return;
         }
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.message = this.translateService.instant('bmsjHipsterApp.sample.remove-entries.confirm.message');
-        confirmModalRef.componentInstance.title = this.translateService.instant('bmsjHipsterApp.sample.remove-entries.confirm.header');
+        confirmModalRef.componentInstance.message = this.translateService.instant('bmsjHipsterApp.sample.delete-entries.confirm.message');
+        confirmModalRef.componentInstance.title = this.translateService.instant('bmsjHipsterApp.sample.delete-entries.confirm.header');
 
         confirmModalRef.result.then(() => {
             this.sampleService.removeEntries(this.sampleList.id, this.getSelectedItemIds()).subscribe(() => {
@@ -165,7 +165,7 @@ export class SampleComponent implements OnInit, OnDestroy {
                 }
                 this.selectedItems.clear();
                 this.loadAll();
-                this.alertService.success('bmsjHipsterApp.sample.remove-entries.remove.success');
+                this.alertService.success('bmsjHipsterApp.sample.delete-entries.delete.success');
             }, (error) => this.onError(error));
         }, () => confirmModalRef.dismiss());
     }

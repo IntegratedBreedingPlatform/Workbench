@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { DatasetTypeEnum } from '../shared/dataset/model/dataset-type.enum';
 import { ObservationVariableHelperService } from '../shared/dataset/model/observation-variable.helper.service';
 import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
+import { Principal } from '../shared';
 
 @Component({
     selector: 'jhi-study-summary',
@@ -56,6 +57,8 @@ export class StudySummaryComponent implements OnInit {
 
     private queryParamSubscription: Subscription;
 
+    user?: any;
+
     constructor(public studyService: StudyService,
                 public alertService: AlertService,
                 public translateService: TranslateService,
@@ -63,7 +66,9 @@ export class StudySummaryComponent implements OnInit {
                 public datasetService: DatasetService,
                 public router: Router,
                 public activatedRoute: ActivatedRoute,
-                public observationVariableHelperService: ObservationVariableHelperService) {
+                public observationVariableHelperService: ObservationVariableHelperService,
+                private principal: Principal) {
+
         this.queryParamSubscription = this.activatedRoute.queryParams.subscribe((params) => {
             const studyId = parseInt(params['studyId'], 10);
             const datasetId = parseInt(params['datasetId'], 10);
@@ -80,7 +85,9 @@ export class StudySummaryComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {
+    async ngOnInit() {
+        this.user = await this.principal.identity();
+
         this.studyService.getStudyDetails(this.studyId).subscribe(
             (res: HttpResponse<StudyDetails>) => this.studyDetails = res.body,
             (res: HttpErrorResponse) => this.onError(res)
@@ -143,6 +150,11 @@ export class StudySummaryComponent implements OnInit {
 
     getDatasetTypeByDatasetId(datasetId: number): DatasetTypeEnum {
         return this.datasets.filter((dataset: DatasetModel) => dataset.datasetId === datasetId).map((dataset: DatasetModel) => dataset.datasetTypeId)[0];
+    }
+
+    shouldOpenStudy() {
+        return this.user && this.user.userRoles.some((userRole) => userRole.role.name === 'SuperAdmin') ||
+            (this.studyDetails && !(this.studyDetails.locked && this.user.id !== this.studyDetails.ownerId));
     }
 
     private onGetDatasetsSuccess(datasets: DatasetModel[]) {

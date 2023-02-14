@@ -5,6 +5,7 @@ export class StudySearchResponse {
         public studyTypeName: string,
         public locked: boolean,
         public ownerName: string,
+        public ownerId: number,
         public startDate: number,
         public parentFolderName: string,
         public objective: string

@@ -1,0 +1,108 @@
+{
+  "site-admin": {
+    "title": "Site Administration",
+    "tabs": {
+      "users": "Users",
+      "roles": "Roles"
+    },
+    "all-crops": "All crops",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "mandatory.fields": "Indicates a mandatory field",
+    "role": {
+      "pane.title": "<h2>Manage Roles</h2>",
+      "pane.comment": "Click a <strong>Role name</strong> to inspect or edit their associated permissions and accessibility.",
+      "add": "Create role",
+      "columns": {
+        "role-name": "Role",
+        "role-description": "Description",
+        "role-type": "Type",
+        "permissions": "Permissions",
+        "status": "Status"
+      },
+      "modal": {
+        "role.name": "Role name",
+        "description": "Description",
+        "role.type": "Role type",
+        "permissions": "Permissions",
+        "dropdown": {
+          "role.type":"Please select a role type",
+          "permission": "Select permissions"
+        },
+        "edit": {
+          "header": "Edit Role",
+          "success": "Role updated successfully",
+          "role": "Update role"
+        },
+        "create": {
+          "header": "Create Role",
+          "success": "Role created successfully",
+          "role": "Add role"
+        }
+      }
+    },
+    "user": {
+      "pane.title": "<h2>Manage users</h2> ",
+      "pane.comment": "Click a <strong>User name</strong> to inspect or edit their personal information.",
+      "add": "Add user",
+      "confirm.message.title": "Confirmation",
+      "deactive.message": "Please confirm that you would like to deactivate this user account.",
+      "active.message": "Please confirm that you would like to activate this user account.",
+      "columns": {
+        "user-name": "User name",
+        "first-name": "First Name",
+        "last-name": "Last Name",
+        "email": "Email",
+        "crop": "Crop",
+        "Roles": "Roles",
+        "status": "Status"
+      },
+      "modal": {
+        "first.name": "First Name",
+        "username": "Username",
+        "email": "Email",
+        "crops": "Crops",
+        "roles": "Role(s)",
+        "crops.select.all": "Select all",
+        "assign.role.link": "+ Assign role",
+        "send.email.invitation.set.password": "Send an invitation email for the user to set their password",
+        "send.email.reset.password": "Send an email for the user to reset their password",
+        "assign.role": "Assign Role",
+        "mandatory.fields": "Indicates a mandatory field",
+        "saved": "User saved!",
+        "status": "User status",
+        "columns": {
+          "role.name": "Role name",
+          "role.type": "Role type",
+          "crop": "Crop",
+          "program": "Program"
+        },
+        "edit": {
+          "header": "Edit User",
+          "success": "User updated successfully",
+          "user": "Update user"
+        },
+        "create": {
+          "header": "Create User",
+          "success": "User created successfully",
+          "user": "Add user"
+        },
+        "role": {
+          "title": "Assign Role",
+          "mandatory.fields": "Indicates a mandatory field when field is enabled",
+          "type": "Role type",
+          "name": "Role Name",
+          "crop": "Crop",
+          "program": "Program",
+          "assign": "Assign role",
+          "instance.role.error": "The user {{user}} has already assigned an Instance role.",
+          "crop.role.error": "The user {{user}} has already assigned a Crop role for {{cropName}} crop.",
+          "program.role.error": "The user {{user}} has already assigned a Program role for {{programName}} program."
+        },
+        "delete-role-assigned-message": "Selected role will be dissociated from user. If it is a crop or program role, the user will no longer have access to the crop or program associated to the role. Do you want to proceed?"
+      }
+    }
+  }
+}
