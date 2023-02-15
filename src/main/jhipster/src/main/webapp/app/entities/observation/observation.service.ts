@@ -19,8 +19,7 @@ export class ObservationService {
                              observationUnitId: string, variableId: number,
                              pagination: any): Observable<HttpResponse<ObservationAudit[]>> {
         const params = createRequestOption(pagination);
-        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}`
-            + `/observationUnits/${observationUnitId}/variable/${variableId}/phenotype-audit`;
+        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/observationUnits/${observationUnitId}/variable/${variableId}/changes`;
         return this.http.get<ObservationAudit[]>(url, { params, observe: 'response' });
     }
 }
