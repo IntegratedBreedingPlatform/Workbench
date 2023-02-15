@@ -6,10 +6,11 @@ import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { DatasetService } from '../../shared/dataset/service/dataset.service';
-import { PhenotypeAudit } from '../../shared/model/phenotype-audit.model';
+import { ObservationAudit } from '../../shared/model/observation-audit.model';
 import { ObservationVariable } from '../../shared/model/observation-variable.model';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { DateFormatEnum, formatDateToUTC } from '../../shared/util/date-utils';
+import { ObservationService } from './observation.service';
 
 @Component({
     selector: 'jhi-observation-details',
@@ -36,12 +37,13 @@ export class ObservationDetailsComponent implements OnInit {
 
     private readonly itemsPerPage: number = 10;
 
-    phenotypeAudits: PhenotypeAudit[];
+    phenotypeAudits: ObservationAudit[];
 
     constructor(private route: ActivatedRoute,
                 public activeModal: NgbActiveModal,
                 private jhiAlertService: JhiAlertService,
                 public datasetService: DatasetService,
+                public observationService: ObservationService,
                 private jhiLanguageService: JhiLanguageService,
                 private router: Router) {
     }
@@ -74,17 +76,17 @@ export class ObservationDetailsComponent implements OnInit {
             page: this.page - 1,
             size: this.itemsPerPage
         }
-        this.datasetService.getPhenotypeAuditRecords(this.studyId, this.datasetId, this.observationUnitId, this.selectedVariable, pagination)
+        this.observationService.getPhenotypeAuditRecords(this.studyId, this.datasetId, this.observationUnitId, this.selectedVariable, pagination)
             .pipe(finalize(() => {
                 this.isLoading = false;
             }))
             .subscribe(
-                (res: HttpResponse<PhenotypeAudit[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpResponse<ObservationAudit[]>) => this.onSuccess(res.body, res.headers),
                 (res: HttpErrorResponse) => this.onError(res)
             );
     }
 
-    private onSuccess(data: PhenotypeAudit[], headers) {
+    private onSuccess(data: ObservationAudit[], headers) {
         this.totalItems = headers.get('X-Total-Count');
         this.queryCount = this.totalItems;
         this.phenotypeAudits = data;

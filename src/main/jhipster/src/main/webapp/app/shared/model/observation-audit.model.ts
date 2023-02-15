@@ -1,4 +1,4 @@
-export class PhenotypeAudit {
+export class ObservationAudit {
 
     constructor(
         public phenotypeId?: number,

@@ -3,6 +3,7 @@ import { BmsjHipsterSharedModule } from '../../shared';
 import { ObservationDetailsComponent } from './observation-details.component';
 import { RouterModule } from '@angular/router';
 import { observationDetailsRoutes } from './observation-details.route';
+import { ObservationService } from './observation.service';
 
 @NgModule({
     imports: [
@@ -14,6 +15,9 @@ import { observationDetailsRoutes } from './observation-details.route';
     ],
     entryComponents: [
         ObservationDetailsComponent
+    ],
+    providers: [
+        ObservationService
     ]
 })
 export class ObservationDetailsModule {

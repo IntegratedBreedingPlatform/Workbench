@@ -9,7 +9,7 @@ import { createRequestOption } from '../..';
 import { ObservationUnitsSearchRequest } from '../model/observation-units-search-request.model';
 import { ObservationUnitsSearchResponse } from '../model/observation-units-search-response.model';
 import { ObservationVariable } from '../../model/observation-variable.model';
-import { PhenotypeAudit } from '../../model/phenotype-audit.model';
+import { ObservationAudit } from '../../model/observation-audit.model';
 
 @Injectable()
 export class DatasetService {
@@ -57,13 +57,4 @@ export class DatasetService {
         return this.http.post<ObservationUnitsSearchResponse[]>(url, request, { params, observe: 'response' });
     }
 
-    getPhenotypeAuditRecords(studyId: number,
-                             datasetId: number,
-                             observationUnitId: string, variableId: number,
-                             pagination: any): Observable<HttpResponse<PhenotypeAudit[]>> {
-        const params = createRequestOption(pagination);
-        const url: string = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}`
-            + `/observationUnits/${observationUnitId}/variable/${variableId}/phenotype-audit`;
-        return this.http.get<PhenotypeAudit[]>(url, { params, observe: 'response' });
-    }
 }
