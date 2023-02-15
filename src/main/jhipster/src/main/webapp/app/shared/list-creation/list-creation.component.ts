@@ -68,39 +68,8 @@ export abstract class ListCreationComponent extends TreeComponent implements OnI
     }
 
     onNodeDrop(event, source: PrimeNgTreeNode, target: PrimeNgTreeNode) {
-        // Prevent to move source on same parent folder
-        if (source.parent.data.id === target.data.id) {
-            return;
-        }
-
-        // Prevent to move source if parent has a child with same name as the source
-        if (event.dropNode.children && event.dropNode.children.find((node) => node.data.name === source.data.name)) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
-            return;
-        }
-
-        if (source.children && source.children.length !== 0) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
-                { folder: source.data.name });
-            return;
-        }
-
-        if (target.leaf) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
-            return;
-        }
-
-        event.accept();
-
-        this.treeService.move(source.data.id, target.data.id).subscribe(
-            (res) => {},
-            (res: HttpErrorResponse) => {
-                // TODO: FIX ME! Due to primeng7 does not support accepting the event within subscribe, we are handling the re-render of the component by calling the expand method.
-                // Check issue reported: https://github.com/primefaces/primeng/issues/7386
-                this.expand(source.parent);
-                this.expand(target);
-                this.alertService.error('bmsjHipsterApp.tree-table.messages.error', { param: res.error.errors[0].message })
-            });
+        this.onDragStart(event, source);
+        this.onDrop(event, target);
     }
 
     isFormValid(f) {
