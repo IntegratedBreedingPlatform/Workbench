@@ -268,16 +268,29 @@ export class UsersPaneComponent implements OnInit {
                 }, {
                     id: undefined, name: 'All'
                 }])
-            } // TODO Filter not implemented yet.
-            /*, {
-                key: 'roleId', name: 'Role', type: FilterType.DROPDOWN, values: this.getRoleOptions(), multipleSelect: false,
+            },
+            { key: 'userName', name: 'User Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'firstName', name: 'First Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'lastName', name: 'Last Name', placeholder: 'Contains Text', type: FilterType.TEXT },
+            { key: 'email', name: 'Email', placeholder: 'Contains Text', type: FilterType.TEXT },
+            {
+                key: 'roleIds', name: 'Role', type: FilterType.DROPDOWN, values: this.getRoleOptions(), multipleSelect: false,
                 transform(req) {
                     ColumnFilterComponent.transformDropdownFilter(this, req);
                 },
                 reset(req) {
                     ColumnFilterComponent.resetDropdownFilter(this, req);
                 },
-            }*/]
+            },
+            {
+                key: 'crops', name: 'Crop', type: FilterType.DROPDOWN, values: this.getCropOptions(), multipleSelect: false,
+                transform(req) {
+                    ColumnFilterComponent.transformDropdownFilter(this, req);
+                },
+                reset(req) {
+                    ColumnFilterComponent.resetDropdownFilter(this, req);
+                },
+            }]
     }
 
     private getRoleOptions(): Promise<Select2OptionData[]> {
@@ -286,6 +299,17 @@ export class UsersPaneComponent implements OnInit {
                 return {
                     id: role.id.toString(),
                     text: role.name
+                }
+            });
+        });
+    }
+
+    private getCropOptions(): Promise<Select2OptionData[]> {
+        return this.cropService.getAll().toPromise().then((cropsArray: Crop[]) => {
+            return cropsArray.map((crop: Crop) => {
+                return {
+                    id: crop.cropName,
+                    text: crop.cropName
                 }
             });
         });
