@@ -9,6 +9,7 @@ import { createRequestOption } from '../..';
 import { ObservationUnitsSearchRequest } from '../model/observation-units-search-request.model';
 import { ObservationUnitsSearchResponse } from '../model/observation-units-search-response.model';
 import { ObservationVariable } from '../../model/observation-variable.model';
+import { ObservationAudit } from '../../model/observation-audit.model';
 
 @Injectable()
 export class DatasetService {
