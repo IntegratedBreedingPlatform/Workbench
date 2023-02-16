@@ -10,7 +10,7 @@
 			<div class="form-group row pt-4 pl-4">
 				<label for="dropdownvariable" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="observation-details.variable">Variable</label>
 				<div class="col-sm-9">
-					<select id="selectVariable" name="selectVariable"
+					<select class="form-control" id="selectVariable" name="selectVariable"
 							[(ngModel)]="selectedVariable" (ngModelChange)="loadAll()" #selectVariable="ngModel">
 						<option value="0">Please Choose</option>
 						<option *ngFor="let studyVar of studyVariables" [value]="studyVar.termId">{{studyVar.name}}</option>

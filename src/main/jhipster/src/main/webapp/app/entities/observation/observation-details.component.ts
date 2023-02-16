@@ -70,7 +70,6 @@ export class ObservationDetailsComponent implements OnInit {
 
     loadAll() {
         this.isLoading = true;
-        console.log(this.selectedVariable);
 
         const pagination: any = {
             page: this.page - 1,
