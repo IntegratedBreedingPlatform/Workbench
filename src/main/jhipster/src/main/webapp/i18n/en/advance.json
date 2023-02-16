@@ -22,7 +22,8 @@
       "level-type": {
         "study": "Study",
         "environment": "Enviroment",
-        "plot": "Plot"
+        "observation": "Observations",
+        "plant-sub-observation": "Plants: {{datasetName}}"
       }
     },
     "lines": {
