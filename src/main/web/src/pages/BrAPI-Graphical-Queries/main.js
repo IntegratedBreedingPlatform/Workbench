@@ -91,41 +91,45 @@ function loadTrials() {
 	$('#trials').html('<select multiple ></select>');
 	$('#trials select').select2({
 		ajax: {
+			type: 'POST',
 			dataType: "json",
 			contentType: "application/json;charset=utf-8",
-			url: "/bmsapi/crops/" + getUrlParameter("cropName") + "/programs/" + getUrlParameter('programUUID') + "/studies",
+			url: "/bmsapi/crops/" + getUrlParameter("cropName") + "/programs/" + getUrlParameter('programUUID') + "/studies/search",
 			beforeSend: beforeSend,
 			error: error,
 			delay: 500,
-			data: function (params) {
-				var query = {
-					studyNameContainsString: params.term,
-					page: params.page - 1 || 0,
-					size: pageSize,
-					sort: 'name,asc'
-				}
-				return query;
-			},
 			transport: function (params, success, failure) {
-				$.ajax(params.url, params)
+				const page = params.data.page - 1 || 0;
+				var body = {
+					studyNameFilter: {
+						value: params.data.term,
+						type: 'CONTAINS'
+					}
+				};
+				params.data = JSON.stringify(body);
+
+				const url = params.url + "?page=" + page + "&size=" + pageSize + "&sort=STUDY_NAME,asc";
+				$.ajax(url, params)
 					.done(function (data, textStatus, jqXHR) {
-						itemCount = jqXHR.getResponseHeader('x-total-count');
-						success({response: data, params: params.data});
+						itemCount = jqXHR.getResponseHeader('X-Total-Count');
+						success({response: data, params: params });
 					})
 					.fail(function () {
 						failure();
 					});
 			},
-			processResults: function (data) {
+			processResults: function (data, params) {
+				params.page = params.page || 1;
+
 				if (data.response) {
 					const results = data.response.map(function (study) {
-						return {id: study.studyId, text: study.name};
+						return {id: study.studyId, text: study.studyName};
 					});
 
 					return {
 						results: results,
 						pagination: {
-							more: ((data.params.page + 1) * pageSize) < itemCount
+							more: ((params.page) * pageSize) < itemCount
 						}
 					};
 				}
