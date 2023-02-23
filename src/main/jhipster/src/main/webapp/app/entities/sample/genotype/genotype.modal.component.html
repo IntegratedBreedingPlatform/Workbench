@@ -46,8 +46,8 @@
                     <ng-select #variantSelect
                                [ngStyle]="{'min-width': '85%'}"
                                placeholder="Select Variant"
-                               [items]="variants" [(ngModel)]="selectedVariant"
-                               [disabled]="!variants || variants?.length === 0"
+                               [items]="variantSelectItems" [(ngModel)]="selectedVariant"
+                               [disabled]="!variantSelectItems || variantSelectItems?.length === 0"
                                bindLabel="variantName"
                                [searchFn]="searchVariant"
                                name="variantSelect" id="variantSelect"
@@ -62,7 +62,7 @@
                                          (onVariableSelectedChange)="selectVariable($event)"
                                          [value]="variable?.id"
                                          [variableTypeIds]="[genotypeMarkersId]"
-                                         [disabled]="!variants || variants?.length === 0">
+                                         [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
                     </jhi-variable-select>
                     <span *ngIf="isVariantsLoading" class="throbber"></span>
                     <button type="button" class="btn btn-primary"  [disabled]="!selectedVariant || !variable" (click)="mapVariant()">Map</button>
@@ -78,7 +78,7 @@
         <div class="form-group row">
             <div class="col-md-8">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-curved" *ngIf="mappedVariants && mappedVariants.length else nodata">
+                    <table class="table table-striped table-bordered table-curved" *ngIf="mappedVariantsArray && mappedVariantsArray.length else nodata">
                         <thead>
                         <tr>
                             <th jhiTranslate="bmsjHipsterApp.sample.genotypes.marker.column">Marker</th>
@@ -87,11 +87,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr *ngFor="let item of mappedVariants">
+                        <tr *ngFor="let item of mappedVariantsArray">
                             <td>{{item.variant.variantName}}</td>
                             <td>{{item.variable.name}}</td>
                             <td class="fit">
-                                <button class="btn btn-info mr-2" (click)="removeMappedVariant(item.variantDbId)">
+                                <button class="btn btn-info mr-2" (click)="removeMappedVariant(item.variant.variantDbId)">
                                     <i class="fa fa-trash fa-md" aria-hidden="true"></i>
                                 </button>
                             </td>

@@ -42,11 +42,12 @@ export class GenotypeModalComponent implements OnInit {
     genotypeSamples: Sample[] = [];
     sampleUIDs: string[] = [];
     variants = [];
+    variantSelectItems = [];
     cropGenotypingParameter: CropGenotypingParameter;
     variable: VariableDetails = null;
     genotypeMarkersId: number = VariableTypeEnum.GENOTYPE_MARKER;
     mappedVariants = [];
-    mappedVariantDbIds = new Map();
+    mappedVariantsArray = [];
 
     isStudyLoading = false;
     isVariantSetLoading = false;
@@ -172,10 +173,11 @@ export class GenotypeModalComponent implements OnInit {
                     });
                     this.genotypingBrapiService.searchVariants({ callSetDbIds: callsetDbIds, variantSetDbIds: [this.selectedVariantSet.variantSetDbId], }).toPromise().then((brapiResponse) => {
                         if (brapiResponse && brapiResponse.result.data.length) {
-                            this.variants = brapiResponse.result.data.map(function(variant) {
-                                return {variantDbId: variant.variantDbId, variantName: variant.variantNames[0]};
-                            });
-                            this.isVariantsLoading = false;
+                             brapiResponse.result.data.forEach(variant => {
+                                 this.variants[variant.variantDbId] = {variantDbId: variant.variantDbId, variantName: variant.variantNames[0]};
+                             });
+                             this.variantSelectItems = Object.values(this.variants);
+                             this.isVariantsLoading = false;
                         }
                     });
                 } else {
@@ -194,26 +196,21 @@ export class GenotypeModalComponent implements OnInit {
     }
 
     mapVariant() {
-        if (this.mappedVariantDbIds.has(this.selectedVariant.variantDbId)) {
-            const index: number = this.mappedVariantDbIds.get(this.selectedVariant.variantDbId);
-            this.mappedVariants[index].variable = this.variable;
+        if (this.mappedVariants[this.selectedVariant.variantDbId]) {
+            this.mappedVariants[this.selectedVariant.variantDbId].variable = this.variable;
         } else {
-            this.mappedVariants.push({
-                variantDbId: this.selectedVariant.variantDbId,
+            this.mappedVariants[this.selectedVariant.variantDbId] = {
                 variant: this.selectedVariant,
                 variable: this.variable
-            });
-            this.mappedVariantDbIds.set(this.selectedVariant.variantDbId, this.mappedVariants.length - 1);
+            };
         }
+        this.mappedVariantsArray = Object.values(this.mappedVariants);
     }
 
     removeMappedVariant(variantDbId) {
-        if (this.mappedVariantDbIds.has(variantDbId)) {
-            this.mappedVariants.splice(this.mappedVariantDbIds.get(variantDbId), 1);
-            this.mappedVariantDbIds.delete(variantDbId);
-            this.mappedVariants.forEach((mapped, index) => {
-                this.mappedVariantDbIds.set(mapped.variant.variantDbId, index);
-            });
+        if (this.mappedVariants[variantDbId]) {
+            delete this.mappedVariants[variantDbId];
+            this.mappedVariantsArray = Object.values(this.mappedVariants);
         }
     }
 
