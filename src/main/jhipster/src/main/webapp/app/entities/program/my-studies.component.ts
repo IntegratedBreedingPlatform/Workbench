@@ -8,7 +8,7 @@ import { Pageable } from '../../shared/model/pageable';
 import { UrlService } from '../../shared/service/url.service';
 import { ProgramContext } from './program.context';
 import { TranslateService } from '@ngx-translate/core';
-import { MANAGE_STUDIES_PERMISSIONS } from '../../shared/auth/permissions';
+import { STUDIES_EDITION_PERMISSIONS } from '../../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-my-studies',
@@ -18,27 +18,7 @@ export class MyStudiesComponent {
 
     readonly MAX_ENVIRONMENTS_TO_SHOW = 10;
 
-    STUDIES_EDITION_PERMISSIONS = [
-        ...MANAGE_STUDIES_PERMISSIONS,
-        'MS_MANAGE_OBSERVATION_UNITS',
-        'MS_WITHDRAW_INVENTORY',
-        'MS_CREATE_PENDING_WITHDRAWALS',
-        'MS_CREATE_CONFIRMED_WITHDRAWALS',
-        'MS_CANCEL_PENDING_TRANSACTIONS',
-        'MS_MANAGE_FILES',
-        'MS_CREATE_LOTS',
-        'CREATE_STUDIES',
-        'CLOSE_STUDY',
-        'DELETE_STUDY',
-        'LOCK_STUDY',
-        'GERMPLASM_AND_CHECKS',
-        'VIEW_GERMPLASM_AND_CHECKS',
-        'ADD_ENTRY_DETAILS_VARIABLES',
-        'ADD_ENTRY_DETAILS_VALUES',
-        'MODIFY_COLUMNS',
-        'REPLACE_GERMPLASM',
-        'ADD_NEW_ENTRIES'
-    ];
+    STUDIES_EDITION_PERMISSIONS = [...STUDIES_EDITION_PERMISSIONS];
 
     mouseEnter = new Subject();
     mouseLeave = new Subject();
