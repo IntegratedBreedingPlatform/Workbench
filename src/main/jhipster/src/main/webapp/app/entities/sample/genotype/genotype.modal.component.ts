@@ -37,14 +37,18 @@ export class GenotypeModalComponent implements OnInit {
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
     selectedVariant: any;
+    rowSelectedVariant: any;
     genotypingStudies: Study[] = [];
     genotypingVariantsets: VariantSet[] = [];
     genotypeSamples: Sample[] = [];
     sampleUIDs: string[] = [];
     variants = [];
+    rowVariants = [];
     variantSelectItems = [];
+    rowVariantSelectItems = [];
     cropGenotypingParameter: CropGenotypingParameter;
     variable: VariableDetails = null;
+    rowVariable: VariableDetails = null;
     genotypeMarkersId: number = VariableTypeEnum.GENOTYPE_MARKER;
     mappedVariants = [];
     mappedVariantsArray = [];
@@ -52,6 +56,7 @@ export class GenotypeModalComponent implements OnInit {
     isStudyLoading = false;
     isVariantSetLoading = false;
     isVariantsLoading = false;
+    showAddMappingRow = false;
 
 
     constructor(private route: ActivatedRoute,
@@ -176,7 +181,9 @@ export class GenotypeModalComponent implements OnInit {
                              brapiResponse.result.data.forEach(variant => {
                                  this.variants[variant.variantDbId] = {variantDbId: variant.variantDbId, variantName: variant.variantNames[0]};
                              });
+                             this.rowVariants = this.variants;
                              this.variantSelectItems = Object.values(this.variants);
+                             this.rowVariantSelectItems = this.variantSelectItems;
                              this.isVariantsLoading = false;
                         }
                     });
@@ -195,6 +202,10 @@ export class GenotypeModalComponent implements OnInit {
         this.variable = variable;
     }
 
+    selectRowVariable(variable: VariableDetails) {
+        this.rowVariable = variable;
+    }
+
     mapVariant() {
         if (this.mappedVariants[this.selectedVariant.variantDbId]) {
             this.mappedVariants[this.selectedVariant.variantDbId].variable = this.variable;
@@ -205,10 +216,17 @@ export class GenotypeModalComponent implements OnInit {
             };
         }
         this.mappedVariantsArray = Object.values(this.mappedVariants);
+        delete this.rowVariants[this.selectedVariant.variantDbId];
+        this.rowVariantSelectItems = Object.values(this.rowVariants);
+        if (this.mappedVariantsArray.length === 10) {
+            this.showAddMappingRow = false;
+        }
     }
 
     removeMappedVariant(variantDbId) {
         if (this.mappedVariants[variantDbId]) {
+            this.rowVariants[variantDbId] = this.mappedVariants[variantDbId].variant;
+            this.rowVariantSelectItems.push(this.mappedVariants[variantDbId].variant);
             delete this.mappedVariants[variantDbId];
             this.mappedVariantsArray = Object.values(this.mappedVariants);
         }
@@ -217,5 +235,30 @@ export class GenotypeModalComponent implements OnInit {
     searchVariant(term: string, item: any) {
         const termUpper = toUpper(term);
         return toUpper(item.variantName).includes(termUpper);
+    }
+
+    addMapping() {
+        this.showAddMappingRow = true;
+    }
+
+    mapAddedRowVariant() {
+        this.mappedVariants[this.rowSelectedVariant.variantDbId] = {
+            variant: this.rowSelectedVariant,
+            variable: this.rowVariable
+        };
+        this.mappedVariantsArray = Object.values(this.mappedVariants);
+        delete this.rowVariants[this.rowSelectedVariant.variantDbId];
+        this.rowVariantSelectItems = Object.values(this.rowVariants);
+        this.showAddMappingRow = false;
+        this.rowSelectedVariant = null;
+        this.rowVariable = null;
+    }
+
+    showAddMappingButton() {
+        return !this.showAddMappingRow && this.mappedVariantsArray && this.mappedVariantsArray.length < 10;
+    }
+
+    disableMapButton() {
+        return (this.mappedVariantsArray && this.mappedVariantsArray.length >= 10) || !this.selectedVariant || !this.variable;
     }
 }

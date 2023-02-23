@@ -65,7 +65,7 @@
                                          [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
                     </jhi-variable-select>
                     <span *ngIf="isVariantsLoading" class="throbber"></span>
-                    <button type="button" class="btn btn-primary"  [disabled]="!selectedVariant || !variable" (click)="mapVariant()">Map</button>
+                    <button type="button" class="btn btn-primary"  [disabled]="disableMapButton()" (click)="mapVariant()">Map</button>
                 </div>
             </div>
         </div>
@@ -78,12 +78,12 @@
         <div class="form-group row">
             <div class="col-md-8">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-curved" *ngIf="mappedVariantsArray && mappedVariantsArray.length else nodata">
+                    <table class="table table-striped table-bordered table-curved" *ngIf="((mappedVariantsArray && mappedVariantsArray.length) || showAddMappingRow) else nodata">
                         <thead>
                         <tr>
                             <th jhiTranslate="bmsjHipsterApp.sample.genotypes.marker.column">Marker</th>
                             <th jhiTranslate="bmsjHipsterApp.sample.genotypes.variable.column">Variable</th>
-                            <th jhiTranslate="bmsjHipsterApp.sample.genotypes.remove.column">Remove</th>
+                            <th jhiTranslate="bmsjHipsterApp.sample.genotypes.action.column">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -96,8 +96,39 @@
                                 </button>
                             </td>
                         </tr>
+                        <tr *ngIf="showAddMappingRow">
+                            <td>
+                                <ng-select #rowVariantSelect
+                                           [ngStyle]="{'min-width': '85%'}"
+                                           placeholder="Select Variant"
+                                           [items]="rowVariantSelectItems" [(ngModel)]="rowSelectedVariant"
+                                           [disabled]="!rowVariantSelectItems || rowVariantSelectItems?.length === 0"
+                                           bindLabel="variantName"
+                                           [searchFn]="searchVariant"
+                                           name="rowVariantSelect" id="rowVariantSelect"
+                                           [dropdownPosition]="'bottom'"
+                                           [virtualScroll]="true"
+                                           appendTo="body">
+                                    <ng-template ng-option-tmp let-variant="item">
+                                        <div title="{{variant.variantName}}">{{variant.variantName}}</div>
+                                    </ng-template>
+                                </ng-select>
+                            </td>
+                            <td>
+                                <jhi-variable-select name="dropdownRowVariable" id="dropdownRowVariable"
+                                         (onVariableSelectedChange)="selectRowVariable($event)"
+                                         [value]="rowVariable?.id"
+                                         [variableTypeIds]="[genotypeMarkersId]"
+                                         [disabled]="!rowVariantSelectItems || rowVariantSelectItems?.length === 0">
+                                </jhi-variable-select>
+                            </td>
+                            <td class="fit">
+                                <button type="button" class="btn btn-primary" [disabled]="!rowSelectedVariant || !rowVariable" (click)="mapAddedRowVariant()">Map</button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
+                    <button type="button" class="btn btn-primary"  *ngIf="showAddMappingButton()" [disabled]="!rowVariantSelectItems || rowVariantSelectItems?.length === 0" (click)="addMapping()">Add Mapping</button>
                 </div>
             </div>
         </div>

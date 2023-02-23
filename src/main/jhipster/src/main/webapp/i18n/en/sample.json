@@ -60,7 +60,7 @@
                 "mapped.label": "Mapped Markers",
                 "variable.column": "Variable",
                 "marker.column": "Marker",
-                "remove.column": "Remove"
+                "action.column": "Actions"
 
             },
             "error": "{{ param }}"
