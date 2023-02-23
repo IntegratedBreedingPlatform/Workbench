@@ -13,6 +13,7 @@ import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ExcelService } from './excel.service';
 import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
 import { SampleContext } from './sample.context';
+import {GenotypeModalComponent} from "./genotype/genotype.modal.component";
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -30,6 +31,7 @@ const ENTITY_STATES = [
         SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
+        GenotypeModalComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -37,7 +39,8 @@ const ENTITY_STATES = [
         TreeTableComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
-        SampleImportPlateMappingComponent
+        SampleImportPlateMappingComponent,
+        GenotypeModalComponent
     ],
     providers: [
         SampleService,

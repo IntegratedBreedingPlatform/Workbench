@@ -14,4 +14,5 @@ export enum VariableTypeEnum {
     GERMPLASM_ATTRIBUTE = 1814,
     ENTRY_DETAILS = 1815,
     INVENTORY_ATTRIBUTE = 1816,
+    GENOTYPE_MARKER = 1817,
 }

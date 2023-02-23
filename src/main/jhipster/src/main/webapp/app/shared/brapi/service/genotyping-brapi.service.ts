@@ -15,6 +15,8 @@ import { Call } from '../model/calls/call';
 import { SearchSamplesRequest } from '../model/samples/search-samples-request';
 import { Sample } from '../model/samples/sample';
 import { ExportFlapjackRequest } from '../model/export/export-flapjack-request';
+import {SearchVariantRequest} from "../model/variants/search-variant-request";
+import {Variant} from "../model/variants/variant";
 
 @Injectable()
 export class GenotypingBrapiService {
@@ -36,6 +38,10 @@ export class GenotypingBrapiService {
 
     searchVariantsets(searchVariantsetRequest: SearchVariantsetRequest): Observable<BrapiResponse<VariantSet>> {
         return this.http.post<BrapiResponse<VariantSet>>(`${this.brapiEndpoint}/search/variantsets`, searchVariantsetRequest, { headers: this.createHeader() });
+    }
+
+    searchVariants(searchVariantRequest: SearchVariantRequest): Observable<BrapiResponse<Variant>> {
+        return this.http.post<BrapiResponse<Variant>>(`${this.brapiEndpoint}/search/variants`, searchVariantRequest, { headers: this.createHeader() });
     }
 
     searchCallsets(searchCallsetRequest: SearchCallsetsRequest): Observable<BrapiResponse<CallSet>> {

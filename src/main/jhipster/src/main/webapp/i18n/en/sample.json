@@ -11,7 +11,8 @@
             "actions": {
                 "export-list": "Export list",
                 "import-plate-info": "Import Plate Information",
-                "delete-samples": "Delete Samples"
+                "delete-samples": "Delete Samples",
+                "import-genotypes": "Import Genotypes"
             },
             "created": "A new Sample is created with identifier {{ param }}",
             "updated": "A Sample is updated with identifier {{ param }}",
@@ -50,6 +51,17 @@
                 "confirm.message": "Are you sure you want to delete the selected entries from the list?",
                 "confirm.header": "Delete entries",
                 "delete.success": "Successfully deleted entries."
+            },
+            "genotypes": {
+                "header": "Import Genotypes",
+                "study.label": "Genotyping Study:",
+                "run.label": "Run:",
+                "mapping.label": "Map Markers:",
+                "mapped.label": "Mapped Markers",
+                "variable.column": "Variable",
+                "marker.column": "Marker",
+                "remove.column": "Remove"
+
             },
             "error": "{{ param }}"
         }
