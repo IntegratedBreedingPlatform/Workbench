@@ -26,7 +26,18 @@ export class MyStudiesComponent {
         'MS_CREATE_CONFIRMED_WITHDRAWALS',
         'MS_CANCEL_PENDING_TRANSACTIONS',
         'MS_MANAGE_FILES',
-        'MS_CREATE_LOTS'
+        'MS_CREATE_LOTS',
+        'CREATE_STUDIES',
+        'CLOSE_STUDY',
+        'DELETE_STUDY',
+        'LOCK_STUDY',
+        'GERMPLASM_AND_CHECKS',
+        'VIEW_GERMPLASM_AND_CHECKS',
+        'ADD_ENTRY_DETAILS_VARIABLES',
+        'ADD_ENTRY_DETAILS_VALUES',
+        'MODIFY_COLUMNS',
+        'REPLACE_GERMPLASM',
+        'ADD_NEW_ENTRIES'
     ];
 
     mouseEnter = new Subject();
