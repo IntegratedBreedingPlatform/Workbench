@@ -1,4 +1,5 @@
 export enum DatasetTypeEnum {
+    STUDY_CONDITIONS = 1,
     MEANS = 2,
     ENVIRONMENT = 3,
     PLOT = 4,

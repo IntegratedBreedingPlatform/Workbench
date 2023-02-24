@@ -103,6 +103,8 @@ export class GermplasmOrigin {
         public positionCoordinateX?: string,
         public positionCoordinateY?: string,
         public geoCoordinates?: any,
+        public observationUnitType?: string,
+        public observationUnitNumber?: string,
     ) {
     }
 }
