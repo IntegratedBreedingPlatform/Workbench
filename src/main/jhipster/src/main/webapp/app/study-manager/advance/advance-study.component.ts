@@ -62,7 +62,8 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
             breedingMethodSelectionRequest.breedingMethodId = Number(this.breedingMethodSelectedId);
         }
 
-        const advanceStudyRequest: AdvanceStudyRequest = new AdvanceStudyRequest(selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+        const advanceStudyRequest: AdvanceStudyRequest =
+            new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;

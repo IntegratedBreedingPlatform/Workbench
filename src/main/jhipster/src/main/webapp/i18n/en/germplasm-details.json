@@ -43,7 +43,9 @@
             "rep": "Rep",
             "block": "Block",
             "x": "X",
-            "y": "Y"
+            "y": "Y",
+            "observation-unit-type": "Observation Unit Type",
+            "observation-unit-number": "Observation Unit Number"
         },
         "external-references": {
             "title": "EXTERNAL REFERENCES",
