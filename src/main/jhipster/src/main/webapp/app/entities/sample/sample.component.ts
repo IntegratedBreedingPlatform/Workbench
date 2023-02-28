@@ -18,7 +18,6 @@ import { ListBuilderContext } from '../../shared/list-builder/list-builder.conte
 import { ListEntry } from '../../shared/list-builder/model/list.model';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { TranslateService } from '@ngx-translate/core';
-import {GenotypeModalComponent} from "./genotype/genotype.modal.component";
 
 @Component({
     selector: 'jhi-sample',
@@ -169,13 +168,6 @@ export class SampleComponent implements OnInit, OnDestroy {
                 this.alertService.success('bmsjHipsterApp.sample.delete-entries.delete.success');
             }, (error) => this.onError(error));
         }, () => confirmModalRef.dismiss());
-    }
-
-    importGenotypes() {
-        const confirmModalRef = this.modalService.open(GenotypeModalComponent as Component, { size: 'lg', backdrop: 'static' });
-        confirmModalRef.result.then(() => {
-            this.activeModal.close();
-        }, () => this.activeModal.dismiss());
     }
 
     ngOnInit() {

@@ -34,6 +34,8 @@ export class GenotypeModalComponent implements OnInit {
     public readonly PASSWORD = this.GENOTYPING_SERVER + '_password';
     public readonly BASE_URL = this.GENOTYPING_SERVER + '_base_url';
 
+    listId: string;
+
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
     selectedVariant: any;
@@ -72,6 +74,7 @@ export class GenotypeModalComponent implements OnInit {
 
     }
     ngOnInit(): void {
+        this.listId = this.route.snapshot.paramMap.get('listId');
         this.cropParameterService.getByGroupName(this.GENOTYPING_SERVER).subscribe(
             (cropParameters) => {
                 const cropParameterMap = cropParameters.reduce(function(map, row) {
@@ -95,7 +98,7 @@ export class GenotypeModalComponent implements OnInit {
             });
 
         this.sampleService.query({
-                listId: this.sampleContext.activeList.id,
+                listId: this.listId,
             }).toPromise().then((samples) => {
                 this.sampleUIDs = samples.body.map(function(sample) {
                     return sample.sampleBusinessKey;
@@ -118,7 +121,9 @@ export class GenotypeModalComponent implements OnInit {
     }
 
     clear() {
-        this.activeModal.dismiss('cancel');
+        if ((<any>window.parent).closeModal) {
+            (<any>window.parent).closeModal();
+        }
     }
 
     loadGenotypingStudy() {
@@ -167,8 +172,6 @@ export class GenotypeModalComponent implements OnInit {
                         variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
                         sampleDbIds: sampleDbIds
                     })
-                } else {
-                    this.isVariantsLoading = false;
                 }
                 return Observable.empty();
             })).subscribe((brapiResponse) => {
@@ -185,14 +188,15 @@ export class GenotypeModalComponent implements OnInit {
                              this.variantSelectItems = Object.values(this.variants);
                              this.rowVariantSelectItems = this.variantSelectItems;
                              this.isVariantsLoading = false;
+                        } else {
+                            this.alertService.error('genotyping.no.genotyping.variants.found');
+                            this.isVariantsLoading = false;
                         }
                     });
                 } else {
-                    this.alertService.error('genotyping.no.genotyping.studies.found');
+                    this.alertService.error('genotyping.no.genotyping.samples.found');
                     this.isVariantsLoading = false;
                 }
-            }, (error) => {
-                this.isVariantsLoading = false;
             });
 
         }
