@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BreedingMethod } from '../../../shared/breeding-method/model/breeding-method';
-import { BreedingMethodService } from '../../../shared/breeding-method/service/breeding-method.service';
 import { GermplasmProgenitorsContext } from './germplasm-progenitors.context';
 import { GermplasmProgenitorsDetails } from '../../../shared/germplasm/model/germplasm.model';
 import { GermplasmService } from '../../../shared/germplasm/service/germplasm.service';
@@ -12,10 +11,7 @@ import { ParamContext } from '../../../shared/service/param.context';
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../../shared/modal/modal-confirm.component';
 import { BreedingMethodTypeEnum } from '../../../shared/breeding-method/model/breeding-method-type.model';
-import { BreedingMethodSearchRequest } from '../../../shared/breeding-method/model/breeding-method-search-request.model';
-import { HttpResponse } from '@angular/common/http';
-import { MatchType } from '../../../shared/column-filter/column-filter-text-with-match-options-component';
-import { Select2OptionData } from 'ng-select2';
+import { BreedingMethodFilterTypeEnum } from '../../../shared/breeding-methods-select/breeding-methods-select.component';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-modal',
@@ -23,16 +19,13 @@ import { Select2OptionData } from 'ng-select2';
 })
 export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
 
-    static readonly BREEDING_METHODS_PAGE_SIZE = 300;
-
     private readonly UNKNOWN = '0';
 
     gid: number;
     progenitorsDetails: GermplasmProgenitorsDetails;
     isLoading: boolean;
     isGenerative: boolean;
-    breedingMethodOptions: any;
-    breedingMethods: BreedingMethod[];
+    breedingMethodSelectedId: string;
     breedingMethodSelected: BreedingMethod;
     femaleParent: string;
     maleParent: string;
@@ -40,13 +33,8 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     selectorTarget: string;
 
-    breedingMethodsFilteredItemsCount;
-    initialData: Select2OptionData[];
-    breedingMethodSelectedId: string;
-
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
-                private breedingMethodService: BreedingMethodService,
                 private germplasmProgenitorsContext: GermplasmProgenitorsContext,
                 private germplasmService: GermplasmService,
                 private alertService: JhiAlertService,
@@ -54,14 +42,12 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
                 private paramContext: ParamContext,
                 private modalService: NgbModal) {
         this.progenitorsDetails = this.germplasmProgenitorsContext.germplasmProgenitorsDetails;
-        this.breedingMethods = [];
     }
 
     ngOnDestroy(): void {
     }
 
     ngOnInit(): void {
-        this.loadBreedingMethods();
         this.initializeForm();
         this.registerGermplasmSelectorSelected();
     }
@@ -145,6 +131,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     initializeForm() {
+        this.breedingMethodSelectedId = String(this.progenitorsDetails.breedingMethodId);
         this.isGenerative = this.progenitorsDetails.breedingMethodType === BreedingMethodTypeEnum.GENERATIVE;
         this.femaleParent = this.getFemaleParentId(this.progenitorsDetails);
         this.maleParent = this.getMaleParentId(this.progenitorsDetails);
@@ -153,12 +140,6 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     notifyChanges(): void {
         this.eventManager.broadcast({ name: 'progenitorsChanged' });
         this.clear();
-    }
-
-    breedingMethodOptionChanged() {
-        this.breedingMethodSelected = null;
-        this.breedingMethodSelectedId = null;
-        this.breedingMethods = [];
     }
 
     getFemaleParentId(progenitorsDetails: GermplasmProgenitorsDetails) {
@@ -189,71 +170,6 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         return this.breedingMethodSelected && this.breedingMethodSelected.type === BreedingMethodTypeEnum.GENERATIVE && this.breedingMethodSelected.numberOfProgenitors === 0;
     }
 
-    loadBreedingMethods() {
-
-        if (this.progenitorsDetails.breedingMethodId) {
-            this.breedingMethodSelectedId = String(this.progenitorsDetails.breedingMethodId);
-
-            this.breedingMethodService.queryBreedingMethod(this.progenitorsDetails.breedingMethodId).toPromise()
-                .then((method: BreedingMethod) => {
-                    this.breedingMethodSelected = method;
-                    this.initialData = [{ id: String(method.mid), text: method.name }];
-                });
-        }
-
-        this.breedingMethodOptions = {
-            ajax: {
-                delay: 500,
-                transport: function(params, success, failure) {
-                    params.data.page = params.data.page || 1;
-
-                    if (params.data.page === 1) {
-                        this.breedingMethods = [];
-                    }
-
-                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
-                    breedingMethodSearchRequest.nameFilter = {
-                        type: MatchType.STARTSWITH,
-                        value: params.data.term
-                    };
-                    breedingMethodSearchRequest.methodTypes = (this.isGenerative) ?
-                        [BreedingMethodTypeEnum.GENERATIVE] : [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
-
-                    const pagination = {
-                        page: (params.data.page - 1),
-                        size: GermplasmProgenitorsModalComponent.BREEDING_METHODS_PAGE_SIZE
-                    };
-
-                    this.breedingMethodService.searchBreedingMethods(
-                        breedingMethodSearchRequest,
-                        false,
-                        pagination
-                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
-                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
-                        success(res.body);
-                    }, failure);
-                }.bind(this),
-                processResults: function(methods, params) {
-                    params.page = params.page || 1;
-
-                    this.breedingMethods = this.breedingMethods.concat(...methods)
-
-                    return {
-                        results: methods.map((method: BreedingMethod) => {
-                            return {
-                                id: String(method.mid),
-                                text: method.name
-                            };
-                        }),
-                        pagination: {
-                            more: (params.page * GermplasmProgenitorsModalComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
-                        }
-                    };
-                }.bind(this)
-            }
-        };
-    }
-
     openGermplasmSelector(selectMultiple: boolean, target: string): void {
         this.selectorTarget = target;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-selector-dialog' } }], {
@@ -272,11 +188,17 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
         return numbersString.some((num) => Number.isNaN(Number.parseInt(num, 10)) || Number(num) > maxInteger);
     }
 
-    onValueChanged(selectedMethodId: string): void {
-        if (selectedMethodId && this.breedingMethods.length > 0) {
-            this.breedingMethodSelectedId = selectedMethodId;
-            this.breedingMethodSelected = this.breedingMethods.find((method: BreedingMethod) => String(method.mid) === this.breedingMethodSelectedId);
+    onMethodChanged(selectedBreedingMethod: BreedingMethod): void {
+        if (selectedBreedingMethod) {
+            this.breedingMethodSelectedId = String(selectedBreedingMethod.mid);
+            this.breedingMethodSelected = selectedBreedingMethod;
         }
+    }
+
+    breedingMethodOptionChanged(methodType: BreedingMethodFilterTypeEnum) {
+        this.isGenerative = methodType === BreedingMethodFilterTypeEnum.GENERATIVE_ONLY;
+        this.breedingMethodSelectedId = null;
+        this.breedingMethodSelected = null;
     }
 
 }
