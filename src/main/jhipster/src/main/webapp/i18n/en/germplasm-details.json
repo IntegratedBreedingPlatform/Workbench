@@ -194,6 +194,7 @@
         "no.genotyping.callsets.found": "No callsets are found in the configured genoytype DB for the crop",
         "no.genotyping.samples.found": "No samples are found in the configured genoytype DB for the crop",
         "no.genotyping.variants.found": "No variants are found in the configured genoytype DB for the crop",
+        "no.genotyping.calls.found": "No genotypes are found in the configured genoytype DB for the crop",
         "link.by.label": "Link By:",
         "study.label": "Genotyping Study:",
         "run.label": "Run:",

@@ -8,7 +8,7 @@ import {CropGenotypingParameter} from "../../../shared/crop/model/crop-genotypin
 import {CropParameterService} from "../../../shared/crop-parameter/service/crop-parameter.service";
 import {GenotypingBrapiService} from "../../../shared/brapi/service/genotyping-brapi.service";
 import {AlertService} from "../../../shared/alert/alert.service";
-import {JhiAlertService} from "ng-jhipster";
+import {JhiAlertService, JhiLanguageService} from "ng-jhipster";
 import {SampleContext} from "../sample.context";
 import {Sample} from "../../../shared/brapi/model/samples/sample";
 import {SampleService} from "../sample.service";
@@ -18,6 +18,10 @@ import {Observable} from "rxjs";
 import {VariableDetails} from "../../../shared/ontology/model/variable-details";
 import {VariableTypeEnum} from "../../../shared/ontology/variable-type.enum";
 import {toUpper} from "../../../shared/util/to-upper";
+import {TranslateService} from "@ngx-translate/core";
+import {Call} from "../../../shared/brapi/model/calls/call";
+import {GenotypeImportRequest} from "./genotype.import.request";
+import {GenotypeService} from "./genotype.service";
 
 @Component({
     selector: 'jhi-germplasm-details-modal',
@@ -44,6 +48,7 @@ export class GenotypeModalComponent implements OnInit {
     genotypingVariantsets: VariantSet[] = [];
     genotypeSamples: Sample[] = [];
     sampleUIDs: string[] = [];
+    callsetDbIds: string[] = [];
     variants = [];
     rowVariants = [];
     variantSelectItems = [];
@@ -58,8 +63,12 @@ export class GenotypeModalComponent implements OnInit {
     isStudyLoading = false;
     isVariantSetLoading = false;
     isVariantsLoading = false;
+    isGenotypesSaving = false;
     showAddMappingRow = false;
 
+    sampleUIDSampleIdMap = [];
+    sampleDbIdSampleUIDMap = [];
+    callsetDbIdSampleDbIdMap = [];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -70,7 +79,10 @@ export class GenotypeModalComponent implements OnInit {
                 public alertService: AlertService,
                 public jhiAlertService: JhiAlertService,
                 private sampleContext: SampleContext,
-                private sampleService: SampleService) {
+                private sampleService: SampleService,
+                private genotypeService: GenotypeService,
+                public jhiLanguageService: JhiLanguageService,
+                public translateService: TranslateService) {
 
     }
     ngOnInit(): void {
@@ -100,8 +112,9 @@ export class GenotypeModalComponent implements OnInit {
         this.sampleService.query({
                 listId: this.listId,
             }).toPromise().then((samples) => {
-                this.sampleUIDs = samples.body.map(function(sample) {
-                    return sample.sampleBusinessKey;
+                samples.body.forEach((sample) => {
+                    this.sampleUIDSampleIdMap[sample.sampleBusinessKey] = sample.id;
+                    this.sampleUIDs.push(sample.sampleBusinessKey);
                 });
             });
     }
@@ -165,8 +178,14 @@ export class GenotypeModalComponent implements OnInit {
             this.genotypingBrapiService.searchSamples(searchSamplesRequest).pipe(flatMap((response) => {
                 if (response && response.result.data.length) {
                     this.genotypeSamples = response.result.data;
-                    var sampleDbIds = this.genotypeSamples.map(function(sample) {
-                        return sample.sampleDbId;
+                    const sampleDbIds = [];
+                   this.genotypeSamples.forEach((sample) => {
+                        sample.externalReferences.forEach((externalReference) =>  {
+                            if (this.sampleUIDs.includes(externalReference.referenceID)) {
+                                this.sampleDbIdSampleUIDMap[sample.sampleDbId] = externalReference.referenceID;
+                            }
+                        });
+                        sampleDbIds.push(sample.sampleDbId);
                     });
                     return this.genotypingBrapiService.searchCallsets({
                         variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
@@ -176,10 +195,11 @@ export class GenotypeModalComponent implements OnInit {
                 return Observable.empty();
             })).subscribe((brapiResponse) => {
                 if (brapiResponse && brapiResponse.result.data.length) {
-                    var callsetDbIds = brapiResponse.result.data.map(function(callset) {
-                        return callset.callSetDbId;
+                    brapiResponse.result.data.forEach((callset) => {
+                        this.callsetDbIdSampleDbIdMap[callset.callSetDbId] = callset.sampleDbId;
+                        this.callsetDbIds.push(callset.callSetDbId);
                     });
-                    this.genotypingBrapiService.searchVariants({ callSetDbIds: callsetDbIds, variantSetDbIds: [this.selectedVariantSet.variantSetDbId], }).toPromise().then((brapiResponse) => {
+                    this.genotypingBrapiService.searchVariants({ callSetDbIds: this.callsetDbIds, variantSetDbIds: [this.selectedVariantSet.variantSetDbId], }).toPromise().then((brapiResponse) => {
                         if (brapiResponse && brapiResponse.result.data.length) {
                              brapiResponse.result.data.forEach(variant => {
                                  this.variants[variant.variantDbId] = {variantDbId: variant.variantDbId, variantName: variant.variantNames[0]};
@@ -264,5 +284,40 @@ export class GenotypeModalComponent implements OnInit {
 
     disableMapButton() {
         return (this.mappedVariantsArray && this.mappedVariantsArray.length >= 10) || !this.selectedVariant || !this.variable;
+    }
+
+    importGenotypes() {
+        this.isGenotypesSaving = true;
+        let variantDbIds = [];
+        this.mappedVariantsArray.forEach((mappedVariant) => {
+            variantDbIds.push(mappedVariant.variant.variantDbId);
+        });
+        this.genotypingBrapiService.searchCalls({callSetDbIds: this.callsetDbIds, variantSetDbIds: [this.selectedVariantSet.variantSetDbId], variantDbIds: variantDbIds}).toPromise().then((brapiResponse) => {
+            if (brapiResponse && brapiResponse.result.data.length) {
+                const calls = brapiResponse.result.data;
+                this.saveGenotypes(calls);
+            } else {
+                this.isGenotypesSaving = false;
+                this.alertService.error('genotyping.no.genotyping.calls.found');
+            }
+            this.isVariantSetLoading = false;
+        });
+    }
+
+    saveGenotypes(calls: Call[]) {
+        const genotypeImportRequest: GenotypeImportRequest[] = [];
+        calls.forEach((call) => {
+            const mappedVariant = this.mappedVariants[call.variantDbId];
+            const sampleDbid = this.callsetDbIdSampleDbIdMap[call.callSetDbId];
+            const sampleUID = this.sampleDbIdSampleUIDMap[sampleDbid];
+            const sampleId = this.sampleUIDSampleIdMap[sampleUID];
+            genotypeImportRequest.push({variableId: mappedVariant.variable.id, value: call.genotypeValue, sampleId: sampleId});
+        });
+        this.genotypeService.importGenotypes(genotypeImportRequest, this.listId).toPromise().then((genotypeIds) => {
+            this.isGenotypesSaving = false;
+            if ((<any>window.parent).handleImportGenotypesSuccess) {
+                (<any>window.parent).handleImportGenotypesSuccess();
+            }
+        });
     }
 }
