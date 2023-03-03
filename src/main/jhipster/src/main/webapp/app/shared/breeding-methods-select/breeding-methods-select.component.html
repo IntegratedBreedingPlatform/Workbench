@@ -1,0 +1,45 @@
+<ng-select2 name="breedingMethod" id="breedingMethod" width="{{selectWidth}}"
+			[(ngModel)]="selectedBreedingMethodId"
+			[data]="initialData"
+			[options]="breedingMethodOptions"
+			[value]="selectedBreedingMethodId"
+			[disabled]="disabled"
+			(valueChanged)="onValueChanged($event)">
+</ng-select2>
+<a *ngIf="helpLink" href="{{helpLink}}" target="_blank" class="align-middle ml-2"><i class="fa fa-info-circle bms-helpicon"></i></a>
+<div class="row">
+	<div *ngIf="showMethodTypeFilterSection" class="col-xs-12 col-md-12">
+		<div *ngIf="showGenerativeMethodTypesOption" class="form-check form-check-inline">
+			<input type="radio" name="methodType"
+				   [(ngModel)]="selectedBreedingMethodFilterTypeValue"
+				   [value]="BreedingMethodFilterTypeEnum.GENERATIVE_ONLY"
+				   [disabled]="disableMethodTypeFilterSection"
+			       (change)="onBreedingMethodFilterTypeValueChanged()">
+			<span class="ml-1" jhiTranslate="breeding-methods-select.filter.option.generative">Generative methods</span>
+		</div>
+		<div *ngIf="showDerivativeMethodTypesOption" class="form-check form-check-inline">
+			<input type="radio" name="methodType"
+				   [(ngModel)]="selectedBreedingMethodFilterTypeValue"
+				   [value]="BreedingMethodFilterTypeEnum.DERIVATIVE_AND_MAINTENANCE_ONLY"
+				   [disabled]="disableMethodTypeFilterSection"
+				   (change)="onBreedingMethodFilterTypeValueChanged()">
+			<span class="ml-1" jhiTranslate="breeding-methods-select.filter.option.derivative-and-mantenance">Derivative and Maintenance methods</span>
+		</div>
+		<div *ngIf="showAllMethodTypesOption" class="form-check form-check-inline">
+			<input type="radio" name="methodType"
+				   [(ngModel)]="selectedBreedingMethodFilterTypeValue"
+				   [value]="BreedingMethodFilterTypeEnum.ALL_METHODS"
+				   [disabled]="disableMethodTypeFilterSection"
+				   (change)="onBreedingMethodFilterTypeValueChanged()">
+			<span class="ml-1" jhiTranslate="breeding-methods-select.filter.option.all-methods">All methods</span>
+		</div>
+	</div>
+	<div *ngIf="showFavoritesCheckbox" class="col-xs-12 col-md-12">
+		<div class="form-check form-check-inline">
+			<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
+				   [(ngModel)]="selectedUseFavoriteBreedingMethods" [disabled]="disableFavoritesCheckbox">
+			<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="breeding-methods-select.use-favorite">
+			</label>
+		</div>
+	</div>
+</div>
