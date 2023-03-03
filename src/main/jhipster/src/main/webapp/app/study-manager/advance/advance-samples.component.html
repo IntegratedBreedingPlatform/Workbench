@@ -9,33 +9,12 @@
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<ng-select2 name="breedingMethod" id="breedingMethod" width="90%"
-							[(ngModel)]="breedingMethodSelectedId"
-							[options]="breedingMethodOptions"
-							[value]="breedingMethodSelectedId"
-							(valueChanged)="onMethodChange($event)">
-				</ng-select2>
-				<a href="{{helpLink}}" target="_blank" class="align-middle ml-2"><i class="fa fa-info-circle bms-helpicon"></i></a>
-				<div class="row">
-					<div class="col-xs-12 col-md-12">
-						<div class="form-check form-check-inline">
-							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="1">
-							<span class="ml-1" jhiTranslate="advance-study.breeding-methods.derivative-and-mantenance">Derivative and Maintenance methods</span>
-						</div>
-						<div class="form-check form-check-inline">
-							<input type="radio" name="methodType" [(ngModel)]="breedingMethodType" value="2" disabled>
-							<span class="ml-1" jhiTranslate="advance-study.breeding-methods.all-methods">All methods</span>
-						</div>
-					</div>
-					<div class="col-xs-12 col-md-12">
-						<div class="form-check form-check-inline">
-							<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
-								   [(ngModel)]="useFavoriteBreedingMethods">
-							<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="advance-study.breeding-methods.favorite">
-							</label>
-						</div>
-					</div>
-				</div>
+				<jhi-breeding-methods-select [(value)]="breedingMethodSelectedId"
+											 [disableMethodTypeFilterSection]="true"
+											 [helpLink]="helpLink"
+											 [nonBulkingOnly]="true"
+											 [selectWidth]="'90%'"
+											 (onMethodChanged)="onMethodChange($event)"></jhi-breeding-methods-select>
 			</div>
 		</div>
 

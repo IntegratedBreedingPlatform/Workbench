@@ -51,8 +51,8 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceSamples(this.studyId, advanceSamplesRequest)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(
-            (res: number[]) => this.onAdvanceSuccess(res),
-            (res) => this.onError(res));
+                (res: number[]) => this.onAdvanceSuccess(res),
+                (res) => this.onError(res));
     }
 
     isValid(): boolean {
