@@ -133,7 +133,7 @@ export class GenotypeModalComponent implements OnInit {
             && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
     }
 
-    clear() {
+    close() {
         if ((<any>window.parent).closeModal) {
             (<any>window.parent).closeModal();
         }
@@ -160,6 +160,9 @@ export class GenotypeModalComponent implements OnInit {
     selectStudyOnChange() {
         if (this.selectedGenotypingStudy) {
             this.isVariantSetLoading = true;
+            this.resetData();
+            this.genotypingVariantsets = [];
+            this.selectedVariantSet = null;
             this.genotypingBrapiService.searchVariantsets({ studyDbIds: [this.selectedGenotypingStudy.studyDbId] }).toPromise().then((brapiResponse) => {
                 if (brapiResponse && brapiResponse.result.data.length) {
                     this.genotypingVariantsets = brapiResponse.result.data;
@@ -173,6 +176,7 @@ export class GenotypeModalComponent implements OnInit {
 
     selectVariantsetOnChange() {
         if (this.selectedVariantSet && this.sampleUIDs && this.sampleUIDs.length !== 0) {
+            this.resetData();
             this.isVariantsLoading = true;
             const searchSamplesRequest: SearchSamplesRequest = { externalReferenceIds: this.sampleUIDs, programDbIds: [this.cropGenotypingParameter.programId] };
             this.genotypingBrapiService.searchSamples(searchSamplesRequest).pipe(flatMap((response) => {
@@ -319,5 +323,23 @@ export class GenotypeModalComponent implements OnInit {
                 (<any>window.parent).handleImportGenotypesSuccess();
             }
         });
+    }
+
+    resetData() {
+        this.selectedVariant = null;
+        this.rowSelectedVariant = null;
+        this.genotypeSamples = [];
+        this.callsetDbIds = [];
+        this.variants = [];
+        this.rowVariants = [];
+        this.variantSelectItems = [];
+        this.rowVariantSelectItems = [];
+        this.variable = null;
+        this.rowVariable = null;
+        this.mappedVariants = [];
+        this.mappedVariantsArray = [];
+        this.showAddMappingRow = false;
+        this.sampleDbIdSampleUIDMap = [];
+        this.callsetDbIdSampleDbIdMap = [];
     }
 }

@@ -5,7 +5,7 @@
         </div>
         <div class="col-xs-1 col-md-1">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-                    (click)="clear()">&times;
+                    (click)="close()">&times;
             </button>
         </div>
     </div>
@@ -36,10 +36,13 @@
                 </div>
             </div>
         </div>
-
+        <hr>
+        <div class="form-group row">
+            <label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapping.header">Map Markers</label>
+        </div>
         <div class="form-group row">
             <label class="col-3 col-form-label">
-                <label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapping.label">Map Markers</label>
+                <label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.label">Marker:</label>
             </label>
             <div class="col-5">
                 <div class="form-group row">
@@ -58,22 +61,30 @@
                             <div title="{{variant.variantName}}">{{variant.variantName}}</div>
                         </ng-template>
                     </ng-select>
-                    <jhi-variable-select name="dropdownvariable" id="dropdownvariable"
-                                         (onVariableSelectedChange)="selectVariable($event)"
-                                         [value]="variable?.id"
-                                         [variableTypeIds]="[genotypeMarkersId]"
-                                         [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
-                    </jhi-variable-select>
                     <span *ngIf="isVariantsLoading" class="throbber"></span>
-                    <button type="button" class="btn btn-primary"  [disabled]="disableMapButton()" (click)="mapVariant()">Map</button>
                 </div>
             </div>
         </div>
-
         <div class="form-group row">
             <label class="col-3 col-form-label">
-                <label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.label">Mapped Variants</label>
+                <label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.variable.label">Marker:</label>
             </label>
+            <div class="col-5">
+                <jhi-variable-select name="dropdownvariable" id="dropdownvariable"
+                                     (onVariableSelectedChange)="selectVariable($event)"
+                                     [value]="variable?.id"
+                                     [variableTypeIds]="[genotypeMarkersId]"
+                                     [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
+                </jhi-variable-select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4 col-form-label"></label>
+            <button type="button" class="btn btn-primary"  [disabled]="disableMapButton()" (click)="mapVariant()">Map</button>
+        </div>
+        <hr>
+        <div class="form-group row">
+            <label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>
         </div>
         <div class="form-group row">
             <div class="col-md-8">
@@ -132,12 +143,15 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row">
-            <label class="col-3 col-form-label">
-                <button type="button" class="btn btn-primary"  [disabled]="!mappedVariantsArray || mappedVariantsArray.length === 0" (click)="importGenotypes()">Import</button>
-                <span *ngIf="isGenotypesSaving" class="throbber"></span>
-            </label>
-        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="close()" aria-hidden="true">
+            Cancel
+        </button>
+        <button type="button" class="btn btn-primary"  [disabled]="!mappedVariantsArray || mappedVariantsArray.length === 0" (click)="importGenotypes()">
+            Import
+            <span *ngIf="isGenotypesSaving" class="throbber"></span>
+        </button>
     </div>
 </div>
 
