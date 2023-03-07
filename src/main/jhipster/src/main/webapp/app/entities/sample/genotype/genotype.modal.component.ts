@@ -43,19 +43,15 @@ export class GenotypeModalComponent implements OnInit {
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
     selectedVariant: any;
-    rowSelectedVariant: any;
     genotypingStudies: Study[] = [];
     genotypingVariantsets: VariantSet[] = [];
     genotypeSamples: Sample[] = [];
     sampleUIDs: string[] = [];
     callsetDbIds: string[] = [];
     variants = [];
-    rowVariants = [];
     variantSelectItems = [];
-    rowVariantSelectItems = [];
     cropGenotypingParameter: CropGenotypingParameter;
     variable: VariableDetails = null;
-    rowVariable: VariableDetails = null;
     genotypeMarkersId: number = VariableTypeEnum.GENOTYPE_MARKER;
     mappedVariants = [];
     mappedVariantsArray = [];
@@ -208,9 +204,7 @@ export class GenotypeModalComponent implements OnInit {
                              brapiResponse.result.data.forEach(variant => {
                                  this.variants[variant.variantDbId] = {variantDbId: variant.variantDbId, variantName: variant.variantNames[0]};
                              });
-                             this.rowVariants = this.variants;
                              this.variantSelectItems = Object.values(this.variants);
-                             this.rowVariantSelectItems = this.variantSelectItems;
                              this.isVariantsLoading = false;
                         } else {
                             this.alertService.error('genotyping.no.genotyping.variants.found');
@@ -230,10 +224,6 @@ export class GenotypeModalComponent implements OnInit {
         this.variable = variable;
     }
 
-    selectRowVariable(variable: VariableDetails) {
-        this.rowVariable = variable;
-    }
-
     mapVariant() {
         if (this.mappedVariants[this.selectedVariant.variantDbId]) {
             this.mappedVariants[this.selectedVariant.variantDbId].variable = this.variable;
@@ -244,17 +234,13 @@ export class GenotypeModalComponent implements OnInit {
             };
         }
         this.mappedVariantsArray = Object.values(this.mappedVariants);
-        delete this.rowVariants[this.selectedVariant.variantDbId];
-        this.rowVariantSelectItems = Object.values(this.rowVariants);
-        if (this.mappedVariantsArray.length === 10) {
-            this.showAddMappingRow = false;
-        }
+        this.showAddMappingRow = false;
+        this.selectedVariant = null;
+        this.variable = null;
     }
 
     removeMappedVariant(variantDbId) {
         if (this.mappedVariants[variantDbId]) {
-            this.rowVariants[variantDbId] = this.mappedVariants[variantDbId].variant;
-            this.rowVariantSelectItems.push(this.mappedVariants[variantDbId].variant);
             delete this.mappedVariants[variantDbId];
             this.mappedVariantsArray = Object.values(this.mappedVariants);
         }
@@ -269,25 +255,8 @@ export class GenotypeModalComponent implements OnInit {
         this.showAddMappingRow = true;
     }
 
-    mapAddedRowVariant() {
-        this.mappedVariants[this.rowSelectedVariant.variantDbId] = {
-            variant: this.rowSelectedVariant,
-            variable: this.rowVariable
-        };
-        this.mappedVariantsArray = Object.values(this.mappedVariants);
-        delete this.rowVariants[this.rowSelectedVariant.variantDbId];
-        this.rowVariantSelectItems = Object.values(this.rowVariants);
-        this.showAddMappingRow = false;
-        this.rowSelectedVariant = null;
-        this.rowVariable = null;
-    }
-
     showAddMappingButton() {
         return !this.showAddMappingRow && this.mappedVariantsArray && this.mappedVariantsArray.length < 10;
-    }
-
-    disableMapButton() {
-        return (this.mappedVariantsArray && this.mappedVariantsArray.length >= 10) || !this.selectedVariant || !this.variable;
     }
 
     importGenotypes() {
@@ -327,15 +296,11 @@ export class GenotypeModalComponent implements OnInit {
 
     resetData() {
         this.selectedVariant = null;
-        this.rowSelectedVariant = null;
         this.genotypeSamples = [];
         this.callsetDbIds = [];
         this.variants = [];
-        this.rowVariants = [];
         this.variantSelectItems = [];
-        this.rowVariantSelectItems = [];
         this.variable = null;
-        this.rowVariable = null;
         this.mappedVariants = [];
         this.mappedVariantsArray = [];
         this.showAddMappingRow = false;

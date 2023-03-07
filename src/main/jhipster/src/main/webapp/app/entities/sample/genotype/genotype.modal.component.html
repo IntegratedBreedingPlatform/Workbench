@@ -38,52 +38,6 @@
         </div>
         <hr>
         <div class="form-group row">
-            <label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapping.header">Map Markers</label>
-        </div>
-        <div class="form-group row">
-            <label class="col-3 col-form-label">
-                <label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.label">Marker:</label>
-            </label>
-            <div class="col-5">
-                <div class="form-group row">
-                    <ng-select #variantSelect
-                               [ngStyle]="{'min-width': '85%'}"
-                               placeholder="Select Variant"
-                               [items]="variantSelectItems" [(ngModel)]="selectedVariant"
-                               [disabled]="!variantSelectItems || variantSelectItems?.length === 0"
-                               bindLabel="variantName"
-                               [searchFn]="searchVariant"
-                               name="variantSelect" id="variantSelect"
-                               [dropdownPosition]="'bottom'"
-                               [virtualScroll]="true"
-                               appendTo="body">
-                        <ng-template ng-option-tmp let-variant="item">
-                            <div title="{{variant.variantName}}">{{variant.variantName}}</div>
-                        </ng-template>
-                    </ng-select>
-                    <span *ngIf="isVariantsLoading" class="throbber"></span>
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-3 col-form-label">
-                <label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.variable.label">Marker:</label>
-            </label>
-            <div class="col-5">
-                <jhi-variable-select name="dropdownvariable" id="dropdownvariable"
-                                     (onVariableSelectedChange)="selectVariable($event)"
-                                     [value]="variable?.id"
-                                     [variableTypeIds]="[genotypeMarkersId]"
-                                     [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
-                </jhi-variable-select>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-4 col-form-label"></label>
-            <button type="button" class="btn btn-primary"  [disabled]="disableMapButton()" (click)="mapVariant()">Map</button>
-        </div>
-        <hr>
-        <div class="form-group row">
             <label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>
         </div>
         <div class="form-group row">
@@ -112,8 +66,8 @@
                                 <ng-select #rowVariantSelect
                                            [ngStyle]="{'min-width': '85%'}"
                                            placeholder="Select Variant"
-                                           [items]="rowVariantSelectItems" [(ngModel)]="rowSelectedVariant"
-                                           [disabled]="!rowVariantSelectItems || rowVariantSelectItems?.length === 0"
+                                           [items]="variantSelectItems" [(ngModel)]="selectedVariant"
+                                           [disabled]="!variantSelectItems || variantSelectItems?.length === 0"
                                            bindLabel="variantName"
                                            [searchFn]="searchVariant"
                                            name="rowVariantSelect" id="rowVariantSelect"
@@ -127,19 +81,22 @@
                             </td>
                             <td>
                                 <jhi-variable-select name="dropdownRowVariable" id="dropdownRowVariable"
-                                         (onVariableSelectedChange)="selectRowVariable($event)"
-                                         [value]="rowVariable?.id"
+                                         (onVariableSelectedChange)="selectVariable($event)"
+                                         [value]="variable?.id"
                                          [variableTypeIds]="[genotypeMarkersId]"
-                                         [disabled]="!rowVariantSelectItems || rowVariantSelectItems?.length === 0">
+                                         [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
                                 </jhi-variable-select>
                             </td>
                             <td class="fit">
-                                <button type="button" class="btn btn-primary" [disabled]="!rowSelectedVariant || !rowVariable" (click)="mapAddedRowVariant()">Map</button>
+                                <button type="button" class="btn btn-primary" [disabled]="!selectedVariant || !variable" (click)="mapVariant()">Map</button>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <button type="button" class="btn btn-primary"  *ngIf="showAddMappingButton()" [disabled]="!rowVariantSelectItems || rowVariantSelectItems?.length === 0" (click)="addMapping()">Add Mapping</button>
+                    <button type="button" class="btn btn-primary"  *ngIf="showAddMappingButton()" [disabled]="!variantSelectItems || variantSelectItems?.length === 0" (click)="addMapping()">
+                        Add Mapping
+                        <span *ngIf="isVariantsLoading" class="throbber"></span>
+                    </button>
                 </div>
             </div>
         </div>

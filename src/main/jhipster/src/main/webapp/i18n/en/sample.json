@@ -56,10 +56,7 @@
                 "header": "Import Genotypes",
                 "study.label": "Genotyping Study:",
                 "run.label": "Run:",
-                "mapping.header": "Map Markers:",
                 "mapped.header": "Mapped Markers:",
-                "markers.label": "Marker:",
-                "variable.label": "Variable:",
                 "variable.column": "Variable",
                 "marker.column": "Marker",
                 "action.column": "Actions"
