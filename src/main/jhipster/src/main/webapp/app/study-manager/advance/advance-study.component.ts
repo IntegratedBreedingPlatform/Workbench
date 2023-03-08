@@ -13,6 +13,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { AdvanceService } from '../../shared/study/service/advance.service';
 import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../shared/study/model/advance-study-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
+import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -33,6 +34,18 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
     bulksCheck = true;
     showBulkingSelection = false;
     selectedPlotVariableId: number;
+
+    totalItems: number;
+    currentPageCount: number;
+    page: number = 1;
+    previousPage: number;
+    isPreview = false;
+
+    private readonly itemsPerPage: number = 5;
+
+    completePreviewList: AdvancedGermplasmPreview[];
+    listPerPage: AdvancedGermplasmPreview[][];
+    currentPagePreviewList: AdvancedGermplasmPreview[];
 
     constructor(public paramContext: ParamContext,
                 public route: ActivatedRoute,
@@ -94,6 +107,73 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
             .subscribe(
                 (res: number[]) => this.onAdvanceSuccess(res),
                 (res) => this.onError(res));
+    }
+
+    preview(): void {
+        this.isLoading = true;
+
+        const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
+        const selectedReplicationNumbers: number[] =
+            this.replicationsOptions.filter((replication: any) => replication.selected)
+                .map((replication: any) => replication.index);
+        const breedingMethodSelectionRequest: BreedingMethodSelectionRequest = new BreedingMethodSelectionRequest();
+        if (this.showBreedingMethodVariableSelection) {
+            breedingMethodSelectionRequest.methodVariateId = this.breedingMethodSelectedVariableId;
+        } else {
+            breedingMethodSelectionRequest.breedingMethodId = Number(this.breedingMethodSelectedId);
+        }
+
+        const advanceStudyRequest: AdvanceStudyRequest =
+            new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+        if (this.showSelectionTraitSelection) {
+            const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
+            advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
+        }
+
+        if (this.showBreedingMethodVariableSelection || this.showLinesSelection) {
+            const lineSelectionRequest: LineSelectionRequest = new LineSelectionRequest();
+            if (this.linesCheck) {
+                lineSelectionRequest.linesSelected = this.selectedLinesNumber;
+            } else {
+                lineSelectionRequest.lineVariateId = this.selectedLinesVariableId;
+            }
+            advanceStudyRequest.lineSelectionRequest = lineSelectionRequest;
+        }
+
+        if (this.showBulkingSelection) {
+            const bulkingRequest: BulkingRequest = new BulkingRequest();
+            if (this.bulksCheck) {
+                bulkingRequest.allPlotsSelected = true;
+            } else {
+                bulkingRequest.plotVariateId = this.selectedPlotVariableId;
+            }
+            advanceStudyRequest.bulkingRequest = bulkingRequest;
+        }
+
+        this.advanceService.advanceStudyPreview(this.studyId, advanceStudyRequest)
+            .pipe(finalize(() => this.isLoading = false))
+            .subscribe(
+                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res),
+                (res) => this.onError(res));
+
+        this.isPreview = true;
+    }
+
+    private onSuccess(data: AdvancedGermplasmPreview[]) {
+        this.totalItems = data.length;
+        this.completePreviewList = data;
+        this.listPerPage = data.reduce((resultArray, item, index) => {
+            const pageIndex = Math.floor(index / this.itemsPerPage)
+
+            if (!resultArray[pageIndex]) {
+                resultArray[pageIndex] = [] // start a new page
+            }
+
+            resultArray[pageIndex].push(item)
+
+            return resultArray
+        }, []);
+        this.loadPage(1);
     }
 
     onSelectMethodVariable(e) {
@@ -171,4 +251,12 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         return true;
     }
 
+    loadPage(page: number) {
+        if (page !== this.previousPage) {
+            this.previousPage = page;
+            this.currentPagePreviewList = this.listPerPage[page - 1];
+            var itemCount = this.currentPagePreviewList.length;
+            this.currentPageCount = ((page - 1) * this.itemsPerPage) + itemCount;
+        }
+    }
 }

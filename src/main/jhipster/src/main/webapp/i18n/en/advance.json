@@ -1,6 +1,7 @@
 {
   "advance": {
     "action": "Advance",
+    "preview": "Preview",
     "success": "Advancing lines finished successfully.",
     "no-entries": "There are no entries selected for advancement. Please specify the entries to be advanced on the observations tab and try again."
   },
@@ -61,6 +62,34 @@
     "plants": {
       "title": "Plants",
       "description": "All plants are selected"
+    }
+  },
+  "advance-preview": {
+    "summary": {
+      "title": "Summary",
+      "column": "#",
+      "count": {
+        "environment": "# of ENVIRONMENTS",
+        "reps": "# of REPS",
+        "plots": "# of PLOTS",
+        "plants": "# of PLANTS",
+        "germplasm": "# of ADVANCED GERMPLASM"
+      }
+    },
+    "data": {
+      "title": "Preview",
+      "pending": "Pending",
+      "columns": {
+        "environment": "ENVIRONMENT",
+        "plotNumber": "PLOT_NO",
+        "plantNumber": "PLANT_NO",
+        "entryNumber": "ENTRY_NO",
+        "cross": "CROSS",
+        "immediateSource": "IMMEDIATE SOURCE",
+        "breedingMethod": "BREEDING METHOD",
+        "gid": "GID",
+        "designation": "DESIGNATION"
+      }
     }
   }
 }
