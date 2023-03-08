@@ -44,17 +44,15 @@ export class GenotypeModalComponent implements OnInit {
 
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
-    selectedVariant: any;
+    selectedVariantItem: VariantItem;
     genotypingStudies: Study[] = [];
     genotypingVariantsets: VariantSet[] = [];
     sampleUIDs: string[] = [];
-    variants = [];
-    variantSelectItems = [];
+    variantSelectItems: VariantItem[] = [];
     cropGenotypingParameter: CropGenotypingParameter;
-    variable: VariableDetails = null;
+    selectedVariable: VariableDetails = null;
     genotypeMarkersId: number = VariableTypeEnum.GENOTYPE_MARKER;
-    mappedVariants = [];
-    mappedVariantsArray = [];
+    mappedVariants = new Map<string, VariantToVariableEntryItem>();
 
     isStudyLoading = false;
     isVariantSetLoading = false;
@@ -177,7 +175,7 @@ export class GenotypeModalComponent implements OnInit {
             this.isVariantsLoading = true;
 
             // Get the genotype samples corresponding to samples in BMS.
-            // The externalReferenceIds expected to be the sampleUIDs of samples in BMS.
+            // The externalReferenceIds are expected to be the sampleUIDs of samples in BMS.
             const searchSamplesRequest: SearchSamplesRequest = { externalReferenceIds: this.sampleUIDs, programDbIds: [this.cropGenotypingParameter.programId] };
             // TODO: Make sure this query returns all the results and not just the first page.
             this.genotypingBrapiService.searchSamples(searchSamplesRequest).pipe(flatMap((response) => {
@@ -220,10 +218,7 @@ export class GenotypeModalComponent implements OnInit {
             variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
         }).toPromise().then((searchVariantsResponse) => {
             if (searchVariantsResponse && searchVariantsResponse.result.data.length) {
-                searchVariantsResponse.result.data.forEach((variant) => {
-                    this.variants[variant.variantDbId] = { variantDbId: variant.variantDbId, variantName: variant.variantNames[0] };
-                });
-                this.variantSelectItems = Object.values(this.variants);
+                this.variantSelectItems = searchVariantsResponse.result.data.map((variant) => new VariantItem(variant.variantDbId, variant.variantNames[0]));
                 this.isVariantsLoading = false;
                 this.addMapping();
             } else {
@@ -246,28 +241,26 @@ export class GenotypeModalComponent implements OnInit {
     }
 
     selectVariable(variable: VariableDetails) {
-        this.variable = variable;
+        this.selectedVariable = variable;
     }
 
     mapVariant() {
-        if (this.mappedVariants[this.selectedVariant.variantDbId]) {
-            this.mappedVariants[this.selectedVariant.variantDbId].variable = this.variable;
+        if (this.mappedVariants.has(this.selectedVariantItem.variantDbId)) {
+            this.mappedVariants.get(this.selectedVariantItem.variantDbId).variable = this.selectedVariable;
         } else {
-            this.mappedVariants[this.selectedVariant.variantDbId] = {
-                variant: this.selectedVariant,
-                variable: this.variable
-            };
+            this.mappedVariants.set(this.selectedVariantItem.variantDbId, {
+                variant: this.selectedVariantItem,
+                variable: this.selectedVariable
+            });
         }
-        this.mappedVariantsArray = Object.values(this.mappedVariants);
         this.showAddMappingRow = false;
-        this.selectedVariant = null;
-        this.variable = null;
+        this.selectedVariantItem = null;
+        this.selectedVariable = null;
     }
 
     removeMappedVariant(variantDbId) {
-        if (this.mappedVariants[variantDbId]) {
-            delete this.mappedVariants[variantDbId];
-            this.mappedVariantsArray = Object.values(this.mappedVariants);
+        if (this.mappedVariants.has(variantDbId)) {
+            this.mappedVariants.delete(variantDbId);
         }
     }
 
@@ -281,13 +274,13 @@ export class GenotypeModalComponent implements OnInit {
     }
 
     showAddMappingButton() {
-        return !this.showAddMappingRow && this.mappedVariantsArray && this.mappedVariantsArray.length < 10;
+        return !this.showAddMappingRow && this.mappedVariants && this.mappedVariants.size < 10;
     }
 
     importGenotypes() {
         this.isGenotypesSaving = true;
         const variantDbIds = [];
-        this.mappedVariantsArray.forEach((mappedVariant) => {
+        this.mappedVariants.forEach((mappedVariant) => {
             variantDbIds.push(mappedVariant.variant.variantDbId);
         });
         const callSetDbIds: string[] = Array.from(this.callsetDbIdSampleDbIdMap.keys());
@@ -312,11 +305,11 @@ export class GenotypeModalComponent implements OnInit {
     saveGenotypes(calls: Call[]) {
         const genotypeImportRequest: GenotypeImportRequest[] = [];
         calls.forEach((call) => {
-            const mappedVariant = this.mappedVariants[call.variantDbId];
-            const sampleDbid = this.callsetDbIdSampleDbIdMap.get(call.callSetDbId);
-            const sampleUID = this.sampleDbIdSampleUIDMap.get(sampleDbid);
+            const mappedVariant = this.mappedVariants.get(call.variantDbId);
+            const sampleDbId = this.callsetDbIdSampleDbIdMap.get(call.callSetDbId);
+            const sampleUID = this.sampleDbIdSampleUIDMap.get(sampleDbId);
             const sampleId = String(this.sampleUIDSampleIdMap.get(sampleUID));
-            genotypeImportRequest.push({ variableId: mappedVariant.variable.id, value: call.genotypeValue, sampleId });
+            genotypeImportRequest.push({ variableId: Number(mappedVariant.variable.id), value: call.genotypeValue, sampleId });
         });
         this.genotypeService.importGenotypes(genotypeImportRequest, this.listId).toPromise().then((genotypeIds) => {
             this.isGenotypesSaving = false;
@@ -327,14 +320,24 @@ export class GenotypeModalComponent implements OnInit {
     }
 
     resetData() {
-        this.selectedVariant = null;
-        this.variants = [];
+        this.selectedVariantItem = null;
         this.variantSelectItems = [];
-        this.variable = null;
-        this.mappedVariants = [];
-        this.mappedVariantsArray = [];
+        this.selectedVariable = null;
+        this.mappedVariants.clear();
         this.showAddMappingRow = false;
         this.sampleDbIdSampleUIDMap.clear();
         this.callsetDbIdSampleDbIdMap.clear();
+    }
+}
+
+class VariantItem {
+    constructor(public variantDbId: string,
+                public variantName: string) {
+    }
+}
+
+class VariantToVariableEntryItem {
+    constructor(public variant: VariantItem,
+                public variable: VariableDetails) {
     }
 }
