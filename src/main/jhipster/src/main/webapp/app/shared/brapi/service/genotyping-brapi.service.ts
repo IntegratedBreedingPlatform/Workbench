@@ -18,6 +18,8 @@ import { ExportFlapjackRequest } from '../model/export/export-flapjack-request';
 import { SearchVariantRequest } from '../model/variants/search-variant-request';
 import { Variant } from '../model/variants/variant';
 import { getBrapiAllRecords } from '../get-brapi-all-records';
+import { BrapiListResponseTokenBasedPagination } from '../model/common/brapi-list-response-token-based-pagination';
+import { getBrapiAllRecordsTokenBased } from '../get-brapi-all-records-token-based';
 
 @Injectable()
 export class GenotypingBrapiService {
@@ -49,14 +51,14 @@ export class GenotypingBrapiService {
         });
     }
 
-    searchVariants(searchVariantRequest: SearchVariantRequest): Observable<BrapiListResponse<Variant>> {
-        return this.http.post<BrapiListResponse<Variant>>(`${this.brapiEndpoint}/search/variants`, searchVariantRequest, { headers: this.createHeader() });
+    searchVariants(searchVariantRequest: SearchVariantRequest): Observable<BrapiListResponseTokenBasedPagination<Variant>> {
+        return this.http.post<BrapiListResponseTokenBasedPagination<Variant>>(`${this.brapiEndpoint}/search/variants`, searchVariantRequest, { headers: this.createHeader() });
     }
 
     searchVariantsGetAll(searchVariantRequest: SearchVariantRequest): Observable<Variant[]> {
-        return getBrapiAllRecords<Variant>((page, pageSize) => {
+        return getBrapiAllRecordsTokenBased<Variant>((pageToken, pageSize) => {
             searchVariantRequest.pageSize = pageSize;
-            searchVariantRequest.page = page
+            searchVariantRequest.pageToken = String(pageToken);
             return this.searchVariants(searchVariantRequest);
         });
     }

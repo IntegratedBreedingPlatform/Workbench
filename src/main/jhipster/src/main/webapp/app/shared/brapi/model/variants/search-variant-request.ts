@@ -5,7 +5,8 @@ export class SearchVariantRequest {
         public studyNames?: Array<string>,
         public variantDbIds?: Array<string>,
         public variantSetDbIds?: Array<string>,
-        public page?: number,
-        public pageSize?: number
-    ) {}
+        public pageSize?: number,
+        public pageToken?: string
+    ) {
+    }
 }
