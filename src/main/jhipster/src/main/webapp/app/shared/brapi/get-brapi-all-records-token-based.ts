@@ -30,8 +30,6 @@ export function getBrapiAllRecordsTokenBased<T>(f: (pageToken: number, pageSize:
     return f(pageToken, GET_ALL_PAGE_SIZE).pipe(
         mapReponse(),
         expand((resp) => {
-            console.log('Records Count: ');
-            console.log(recordsCount);
             if (pageToken && resp.length && recordsCount < GET_ALL_LIMIT) {
                 return f(pageToken, GET_ALL_PAGE_SIZE).pipe(mapReponse());
             } else {
