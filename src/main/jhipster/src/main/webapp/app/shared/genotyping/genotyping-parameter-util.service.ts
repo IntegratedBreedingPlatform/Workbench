@@ -20,6 +20,10 @@ export class GenotypingParameterUtilService {
     constructor(private cropParameterService: CropParameterService) {
     }
 
+    /**
+     * Convenience method to get the genotyping parameters required for connecting to Gigwa server. This will also
+     * return the access token generated from Gigwa server.
+     */
     getGenotypingParametersAndAuthenticate(): Observable<CropGenotypingParameter> {
         return new Observable<CropGenotypingParameter>((observer) => {
             this.getCropGenotypingParameter().toPromise().then((cropGenotypingParameter) => {

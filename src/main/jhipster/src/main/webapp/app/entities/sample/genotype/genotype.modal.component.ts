@@ -22,7 +22,6 @@ import { Call } from '../../../shared/brapi/model/calls/call';
 import { GenotypeImportRequest } from './genotype.import.request';
 import { GenotypeService } from './genotype.service';
 import { CallSet } from '../../../shared/brapi/model/callsets/callset';
-import { BrapiResponse } from '../../../shared/brapi/model/common/brapi-response';
 import { GenotypingParameterUtilService } from '../../../shared/genotyping/genotyping-parameter-util.service';
 
 @Component({
@@ -83,14 +82,13 @@ export class GenotypeModalComponent implements OnInit {
             this.isStudyLoading = true;
             this.loadGenotypingStudy();
         }, (error) => {
-            console.log(error);
             this.alertService.error(error);
         });
 
-        this.sampleService.query({
+        this.sampleService.getAllSamples({
             listId: this.listId
         }).toPromise().then((samples) => {
-            samples.body.forEach((sample) => {
+            samples.forEach((sample) => {
                 this.sampleUIDSampleIdMap.set(sample.sampleBusinessKey, sample.id);
                 this.sampleUIDs.push(sample.sampleBusinessKey);
             });
@@ -127,9 +125,9 @@ export class GenotypeModalComponent implements OnInit {
             this.resetData();
             this.genotypingVariantsets = [];
             this.selectedVariantSet = null;
-            this.genotypingBrapiService.searchVariantsets({ studyDbIds: [this.selectedGenotypingStudy.studyDbId] }).toPromise().then((brapiResponse) => {
-                if (brapiResponse && brapiResponse.result.data.length) {
-                    this.genotypingVariantsets = brapiResponse.result.data;
+            this.genotypingBrapiService.searchVariantsetsGetAll({ studyDbIds: [this.selectedGenotypingStudy.studyDbId] }).toPromise().then((variantSets) => {
+                if (variantSets && variantSets.length) {
+                    this.genotypingVariantsets = variantSets;
                 } else {
                     this.alertService.error('genotyping.no.genotyping.variantsets.found');
                 }
@@ -147,16 +145,16 @@ export class GenotypeModalComponent implements OnInit {
             // The externalReferenceIds are expected to be the sampleUIDs of samples in BMS.
             const searchSamplesRequest: SearchSamplesRequest = { externalReferenceIds: this.sampleUIDs, programDbIds: [this.cropGenotypingParameter.programId] };
             // TODO: Make sure this query returns all the results and not just the first page.
-            this.genotypingBrapiService.searchSamples(searchSamplesRequest).pipe(flatMap((response) => {
-                if (response && response.result.data.length) {
+            this.genotypingBrapiService.searchSamplesGetAll(searchSamplesRequest).pipe(flatMap((samples) => {
+                if (samples && samples.length) {
                     // Get the Callsets (Individuals) that are associated to the specified genotype samples.
-                    return this.retrieveCallsets(response.result.data);
+                    return this.retrieveCallsets(samples);
                 }
                 return Observable.empty();
-            })).subscribe((searchCallsetsResponse) => {
-                if (searchCallsetsResponse && searchCallsetsResponse.result.data.length) {
+            })).subscribe((callSets) => {
+                if (callSets && callSets.length) {
                     // Get the variants (Markers) associated to the specified Callsets (Individuals)
-                    this.loadVariants(this.selectedVariantSet.variantSetDbId, searchCallsetsResponse.result.data);
+                    this.loadVariants(this.selectedVariantSet.variantSetDbId, callSets);
                 } else {
                     this.alertService.error('genotyping.no.genotyping.samples.found');
                     this.isVariantsLoading = false;
@@ -166,11 +164,11 @@ export class GenotypeModalComponent implements OnInit {
         }
     }
 
-    retrieveCallsets(genotypingSamples: Sample[]): Observable<BrapiResponse<CallSet>> {
+    retrieveCallsets(genotypingSamples: Sample[]): Observable<CallSet[]> {
         // Get the Callsets (Individuals) that are associated to the specified genotype samples.
         this.sampleDbIdSampleUIDMap = this.createSampleDbIdToSampleUIDMap(genotypingSamples);
         const sampleDbIds = Array.from(this.sampleDbIdSampleUIDMap.keys());
-        return this.genotypingBrapiService.searchCallsets({
+        return this.genotypingBrapiService.searchCallsetsGetAll({
             variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
             sampleDbIds
         });
@@ -182,12 +180,12 @@ export class GenotypeModalComponent implements OnInit {
             this.callsetDbIdSampleDbIdMap.set(callset.callSetDbId, callset.sampleDbId);
         });
 
-        this.genotypingBrapiService.searchVariants({
+        this.genotypingBrapiService.searchVariantsGetAll({
             callSetDbIds: Array.from(this.callsetDbIdSampleDbIdMap.keys()),
             variantSetDbIds: [this.selectedVariantSet.variantSetDbId],
-        }).toPromise().then((searchVariantsResponse) => {
-            if (searchVariantsResponse && searchVariantsResponse.result.data.length) {
-                this.variantSelectItems = searchVariantsResponse.result.data.map((variant) => new VariantItem(variant.variantDbId, variant.variantNames[0]));
+        }).toPromise().then((variants) => {
+            if (variants && variants.length) {
+                this.variantSelectItems = variants.map((variant) => new VariantItem(variant.variantDbId, variant.variantNames[0]));
                 this.isVariantsLoading = false;
                 this.addMapping();
             } else {
@@ -255,13 +253,12 @@ export class GenotypeModalComponent implements OnInit {
         const callSetDbIds: string[] = Array.from(this.callsetDbIdSampleDbIdMap.keys());
         const variantSetDbIds: string[] = [this.selectedVariantSet.variantSetDbId];
         // Retrieve the Calls (Genotype value) of the specified Markers + Individuals
-        this.genotypingBrapiService.searchCalls({
+        this.genotypingBrapiService.searchCallsGetAll({
             variantSetDbIds,
             callSetDbIds,
             variantDbIds
-        }).toPromise().then((brapiResponse) => {
-            if (brapiResponse && brapiResponse.result.data.length) {
-                const calls = brapiResponse.result.data;
+        }).toPromise().then((calls) => {
+            if (calls && calls.length) {
                 this.saveGenotypes(calls);
             } else {
                 this.isGenotypesSaving = false;
