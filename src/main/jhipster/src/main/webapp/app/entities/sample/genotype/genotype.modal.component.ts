@@ -149,15 +149,15 @@ export class GenotypeModalComponent implements OnInit {
                 if (samples && samples.length) {
                     // Get the Callsets (Individuals) that are associated to the specified genotype samples.
                     return this.retrieveCallsets(samples);
+                } else {
+                    this.alertService.error('genotyping.no.genotyping.samples.found');
+                    this.isVariantsLoading = false;
                 }
                 return Observable.empty();
             })).subscribe((callSets) => {
                 if (callSets && callSets.length) {
                     // Get the variants (Markers) associated to the specified Callsets (Individuals)
                     this.loadVariants(this.selectedVariantSet.variantSetDbId, callSets);
-                } else {
-                    this.alertService.error('genotyping.no.genotyping.samples.found');
-                    this.isVariantsLoading = false;
                 }
             });
 
