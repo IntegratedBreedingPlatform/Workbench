@@ -64,7 +64,8 @@
                 "markers.map.description": "Select the markers that you want to import and map them to an ontology variable where the value will be stored. You can only select and import up to 10 markers.",
                 "no.mapped.markers": "No mapped markers",
                 "loading.markers": "Loading the markers list. Please wait.",
-                "add.another.mapping": "Add another mapping"
+                "add.another.mapping": "Add another mapping",
+                "import.error": "Something went wrong, please try again."
 
             },
             "error": "{{ param }}"

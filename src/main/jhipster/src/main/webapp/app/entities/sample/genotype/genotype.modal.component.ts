@@ -19,8 +19,8 @@ import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
 import { TranslateService } from '@ngx-translate/core';
 import { Call } from '../../../shared/brapi/model/calls/call';
-import { GenotypeImportRequest } from './genotype.import.request';
-import { GenotypeService } from './genotype.service';
+import { SampleGenotypeImportRequest } from './sample-genotype-import-request';
+import { SampleGenotypeService } from './sample-genotype.service';
 import { CallSet } from '../../../shared/brapi/model/callsets/callset';
 import { GenotypingParameterUtilService } from '../../../shared/genotyping/genotyping-parameter-util.service';
 
@@ -64,7 +64,7 @@ export class GenotypeModalComponent implements OnInit {
                 public jhiAlertService: JhiAlertService,
                 private sampleContext: SampleContext,
                 private sampleService: SampleService,
-                private genotypeService: GenotypeService,
+                private genotypeService: SampleGenotypeService,
                 public jhiLanguageService: JhiLanguageService,
                 public translateService: TranslateService) {
 
@@ -272,7 +272,7 @@ export class GenotypeModalComponent implements OnInit {
     }
 
     saveGenotypes(calls: Call[]) {
-        const genotypeImportRequest: GenotypeImportRequest[] = [];
+        const genotypeImportRequest: SampleGenotypeImportRequest[] = [];
         calls.forEach((call) => {
             const mappedVariant = this.mappedVariants.get(call.variantDbId);
             const sampleDbId = this.callsetDbIdSampleDbIdMap.get(call.callSetDbId);
@@ -280,11 +280,13 @@ export class GenotypeModalComponent implements OnInit {
             const sampleId = String(this.sampleUIDSampleIdMap.get(sampleUID));
             genotypeImportRequest.push({ variableId: Number(mappedVariant.variable.id), value: call.genotypeValue, sampleId });
         });
-        this.genotypeService.importGenotypes(genotypeImportRequest, this.listId).toPromise().then((genotypeIds) => {
+        this.genotypeService.importSampleGenotypes(genotypeImportRequest).toPromise().then((genotypeIds) => {
             this.isGenotypesSaving = false;
             if ((<any>window.parent).handleImportGenotypesSuccess) {
                 (<any>window.parent).handleImportGenotypesSuccess();
             }
+        }).catch(() => {
+            this.alertService.error('bmsjHipsterApp.sample.genotypes.import.error');
         });
     }
 

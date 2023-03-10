@@ -8,7 +8,7 @@ import { SampleTreeService } from './tree-table/sample-tree.service';
 
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { SampleListService } from './sample-list.service';
-import { GenotypeService } from "./genotype/genotype.service";
+import { SampleGenotypeService } from "./genotype/sample-genotype.service";
 import { FileDownloadHelper } from './file-download.helper';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ExcelService } from './excel.service';
@@ -51,7 +51,7 @@ const ENTITY_STATES = [
         FileDownloadHelper,
         ExcelService,
         SampleContext,
-        GenotypeService
+        SampleGenotypeService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
