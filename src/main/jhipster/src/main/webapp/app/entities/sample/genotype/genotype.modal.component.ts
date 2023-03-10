@@ -143,7 +143,7 @@ export class GenotypeModalComponent implements OnInit {
 
             // Get the genotype samples corresponding to samples in BMS.
             // The externalReferenceIds are expected to be the sampleUIDs of samples in BMS.
-            const searchSamplesRequest: SearchSamplesRequest = { externalReferenceIds: this.sampleUIDs, programDbIds: [this.cropGenotypingParameter.programId] };
+            const searchSamplesRequest: SearchSamplesRequest = { sampleNames: this.sampleUIDs, programDbIds: [this.cropGenotypingParameter.programId] };
             // TODO: Make sure this query returns all the results and not just the first page.
             this.genotypingBrapiService.searchSamplesGetAll(searchSamplesRequest).pipe(flatMap((samples) => {
                 if (samples && samples.length) {
@@ -201,11 +201,15 @@ export class GenotypeModalComponent implements OnInit {
     createSampleDbIdToSampleUIDMap(genotypeSamples: Sample[]): Map<string, string> {
         const map = new Map<string, string>();
         genotypeSamples.forEach((sample) => {
-            sample.externalReferences.forEach((externalReference) => {
-                if (this.sampleUIDs.includes(externalReference.referenceID)) {
-                    map.set(sample.sampleDbId, externalReference.referenceID);
-                }
-            });
+            if (sample.externalReferences && sample.externalReferences.length) {
+                sample.externalReferences.forEach((externalReference) => {
+                    if (this.sampleUIDs.includes(externalReference.referenceID)) {
+                        map.set(sample.sampleDbId, externalReference.referenceID);
+                    }
+                });
+            } else {
+                map.set(sample.sampleDbId, sample.sampleName);
+            }
         });
         return map;
     }
