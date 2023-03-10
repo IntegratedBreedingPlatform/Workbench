@@ -201,13 +201,7 @@ export class GenotypeModalComponent implements OnInit {
     createSampleDbIdToSampleUIDMap(genotypeSamples: Sample[]): Map<string, string> {
         const map = new Map<string, string>();
         genotypeSamples.forEach((sample) => {
-            if (sample.externalReferences && sample.externalReferences.length) {
-                sample.externalReferences.forEach((externalReference) => {
-                    if (this.sampleUIDs.includes(externalReference.referenceID)) {
-                        map.set(sample.sampleDbId, externalReference.referenceID);
-                    }
-                });
-            } else {
+            if (this.sampleUIDs.includes(sample.sampleName)) {
                 map.set(sample.sampleDbId, sample.sampleName);
             }
         });
