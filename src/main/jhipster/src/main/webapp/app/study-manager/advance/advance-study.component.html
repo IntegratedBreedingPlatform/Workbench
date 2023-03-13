@@ -175,7 +175,7 @@
 		<span jhiTranslate="entity.action.back">Back</span>
 	</button>
 	<button (click)="preview()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyPreviewButton">
-		<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+		<span *ngIf="isLoadingPreview" class="throbber throbber-btn"></span>
 		<span jhiTranslate="advance.preview">Preview</span>
 	</button>
 	<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">
@@ -189,30 +189,107 @@
 	<div class="modal-body">
 		<jhi-collapsible heading="{{translateService.instant('advance-preview.summary.title')}}">
 			<div class="container-fluid">
-
+				<table class="table table-striped table-bordered table-curved table-fixed" style="width: 40%">
+					<thead>
+						<th></th>
+						<th><span jhiTranslate="advance-preview.summary.column">#</span></th>
+					</thead>
+					<tbody>
+						<tr>
+							<td><span jhiTranslate="advance-preview.summary.count.environment"></span></td>
+							<td>{{selectedInstances.length}}</td>
+						</tr>
+						<tr>
+							<td><span jhiTranslate="advance-preview.summary.count.reps"></span></td>
+							<td>{{replicationNumber}}</td>
+						</tr>
+						<tr *ngIf="isPlotDataset()">
+							<td><span jhiTranslate="advance-preview.summary.count.plots"></span></td>
+							<td>{{totalItems}}</td>
+						</tr>
+						<tr *ngIf="isPlantDataset()">
+							<td><span jhiTranslate="advance-preview.summary.count.plants"></span></td>
+							<td>{{totalItems}}</td>
+						</tr>
+						<tr>
+							<td><span jhiTranslate="advance-preview.summary.count.germplasm"></span></td>
+							<td>{{totalItems}}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</jhi-collapsible>
 		<jhi-collapsible heading="{{translateService.instant('advance-preview.data.title')}}">
 			<div class="table-responsive p-3" *ngIf="currentPagePreviewList">
-				<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="currentPagePreviewList.length else nodata">
+				<table class="table table-striped table-bordered table-curved table-fixed" >
 					<thead>
 					<tr>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.environment">ENVIRONMENT</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.plotNumber">PLOT_NO</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.plantNumber">PLANT_NO</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.entryNumber">ENTRY_NO</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.cross">CROSS</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.immediateSource">IMMEDIATE SOURCE</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.breedingMethod">BREEDING METHOD</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.gid">GID</th>
-						<th scope="col" jhiTranslate="advance-preview.data.columns.designation">DESIGNATION</th>
+						<th scope="col">
+							<input type="checkbox" tooltip="select current page"  [title]="'select current page'">
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.environment"></span>
+							<jhi-column-filter-inline [filter]="filters.environment"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th  *ngIf="isPlotDataset()" scope="col">
+							<span jhiTranslate="advance-preview.data.columns.plotNumber"></span>
+							<jhi-column-filter-inline [filter]="filters.plotNumber"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th  *ngIf="isPlantDataset()" scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.plantNumber"></span>
+							<jhi-column-filter-inline [filter]="filters.plantNumber"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col">
+							<span jhiTranslate="advance-preview.data.columns.entryNumber"></span>
+							<jhi-column-filter-inline [filter]="filters.entryNumber"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col">
+							<span jhiTranslate="advance-preview.data.columns.cross"></span>
+							<jhi-column-filter-inline [filter]="filters.cross"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.immediateSource"></span>
+							<jhi-column-filter-inline [filter]="filters.immediateSource"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col">
+							<span jhiTranslate="advance-preview.data.columns.breedingMethod"></span>
+							<jhi-column-filter-inline [filter]="filters.breedingMethod"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.gid"></span>
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.designation"></span>
+						</th>
 					</tr>
 					</thead>
-					<tbody>
+					<tbody *ngIf="currentPagePreviewList.length else nodata">
 					<tr *ngFor="let advancedGermplasm of currentPagePreviewList">
+						<td><input type="checkbox" [value]="advancedGermplasm.previewRowNum" [checked]="true" (click)="toggleSelect($event, index, entry, true); $event.stopPropagation()"></td>
 						<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
-						<td>{{advancedGermplasm.plotNumber}}</td>
-						<td>{{advancedGermplasm.plantNumber}}</td>
+						<td  *ngIf="isPlotDataset()">{{advancedGermplasm.plotNumber}}</td>
+						<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
 						<td>{{advancedGermplasm.entryNumber}}</td>
 						<td>{{advancedGermplasm.cross}}</td>
 						<td>{{advancedGermplasm.immediateSource}}</td>
@@ -223,18 +300,11 @@
 					</tbody>
 				</table>
 				<ng-template #nodata>
-					<table class="table table-striped table-bordered table-curved">
-						<thead>
+					<tbody>
 						<tr>
-							<th></th>
+							<td colspan="8" jhiTranslate="no.data"></td>
 						</tr>
-						</thead>
-						<tbody>
-						<tr>
-							<td jhiTranslate="no.data"></td>
-						</tr>
-						</tbody>
-					</table>
+					</tbody>
 				</ng-template>
 				<div *ngIf="currentPagePreviewList && currentPagePreviewList.length">
 					<div class="row">
@@ -257,5 +327,15 @@
 				</div>
 			</div>
 		</jhi-collapsible>
+	</div>
+
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="exitPreview()">
+			<span jhiTranslate="entity.action.back">Back</span>
+		</button>
+		<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span jhiTranslate="advance.action">Advance</span>
+		</button>
 	</div>
 </div>

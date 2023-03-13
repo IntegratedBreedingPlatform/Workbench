@@ -145,6 +145,14 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.selectedSelectionTraitVariableId = null;
     }
 
+    isPlotDataset() {
+        return this.selectedDatasetTypeId === DatasetTypeEnum.PLOT;
+    }
+
+    isPlantDataset() {
+        return this.selectedDatasetTypeId === DatasetTypeEnum.PLANT_SUBOBSERVATIONS;
+    }
+
     protected hasSelectTraitVariables() {
         for (const variables of this.selectionTraitVariablesByDatasetIds.values()) {
             if (variables && variables.length > 0) {
