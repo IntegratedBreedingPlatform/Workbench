@@ -150,6 +150,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 (res) => this.onError(res));
     }
 
+    deleteSelectedEntries(): void {
+        this.isLoadingPreview = true;
+    }
+
     preview(): void {
         this.isLoadingPreview = true;
 
