@@ -12,7 +12,8 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <button class="btn btn-info float-right" jhiTranslate="study.manager.actions.new-study" *jhiHasAnyAuthority="STUDIES_CREATION_PERMISSIONS" (click)="urlService.createStudy()">
+                <button class="btn btn-info float-right" jhiTranslate="study.manager.actions.new-study" data-test="startNewStudyButton"
+                        *jhiHasAnyAuthority="STUDIES_CREATION_PERMISSIONS" (click)="urlService.createStudy()">
                 </button>
             </div>
         </div>
