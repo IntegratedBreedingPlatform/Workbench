@@ -80,7 +80,7 @@ export class GenotypingPaneComponent implements OnInit {
                 this.genotypingBrapiService.accessToken = cropGenotypingParameter.accessToken;
                 this.linkBySelectOnChange();
             }, (error) => {
-                this.alertService.error('genotyping.connection.error');
+                this.alertService.error(error);
             });
     }
 

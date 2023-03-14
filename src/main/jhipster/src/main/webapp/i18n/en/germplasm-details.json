@@ -186,8 +186,6 @@
         }
     },
     "genotyping": {
-        "connection.error": "The system failed to connect to the genotyping database. Contact your system administrator.",
-        "database.not.configured": "Genotyping database is not configured for this BMS instance. Contact your system administrator.",
         "no.genotyping.germplasm.found": "No germplasm found with {{germplasmSearchValue}} ({{linkType}}) reference in the configured genotype DB for the crop. Please try other Link By options.",
         "no.genotyping.studies.found": "No studies are found in the configured genotype database for the crop",
         "no.genotyping.variantsets.found": "No variantsets are found in the configured genotype DB for the crop",

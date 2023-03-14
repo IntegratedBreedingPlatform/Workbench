@@ -27,7 +27,7 @@ export class GenotypingParameterUtilService {
     getGenotypingParametersAndAuthenticate(): Observable<CropGenotypingParameter> {
         return new Observable<CropGenotypingParameter>((observer) => {
             this.getCropGenotypingParameter().toPromise().then((cropGenotypingParameter) => {
-                if (cropGenotypingParameter) {
+                if (this.isGenotypingParameterConfigured(cropGenotypingParameter)) {
                     this.cropParameterService.getGenotypingToken(this.GENOTYPING_SERVER).toPromise().then((accessToken) => {
                         cropGenotypingParameter.accessToken = accessToken;
                         observer.next(cropGenotypingParameter);
@@ -35,7 +35,7 @@ export class GenotypingParameterUtilService {
                         observer.error('genotyping.connection.error');
                     });
                 } else {
-                    observer.error('genotyping.connection.error');
+                    observer.error('genotyping.database.not.configured');
                 }
             });
         });
@@ -59,6 +59,11 @@ export class GenotypingParameterUtilService {
                 cropParameterMap[this.TOKEN_ENDPOINT].value, cropParameterMap[this.USERNAME].value, cropParameterMap[this.PASSWORD].value,
                 cropParameterMap[this.PROGRAM_ID].value, cropParameterMap[this.BASE_URL].value);
         }
+    }
+
+    isGenotypingParameterConfigured(cropGenotypingParameter: CropGenotypingParameter) {
+        return cropGenotypingParameter && cropGenotypingParameter.endpoint && cropGenotypingParameter.tokenEndpoint && cropGenotypingParameter.userName
+            && cropGenotypingParameter.password && cropGenotypingParameter.programId && cropGenotypingParameter.baseUrl;
     }
 
 }

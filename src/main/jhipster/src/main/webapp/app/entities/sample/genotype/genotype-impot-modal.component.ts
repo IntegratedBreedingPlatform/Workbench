@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ParamContext } from '../../../shared/service/param.context';
+import { ActivatedRoute } from '@angular/router';
 import { Study } from '../../../shared/brapi/model/study/study';
 import { VariantSet } from '../../../shared/brapi/model/variantsets/variantset';
 import { CropGenotypingParameter } from '../../../shared/crop/model/crop-genotyping-parameter';
 import { GenotypingBrapiService } from '../../../shared/brapi/service/genotyping-brapi.service';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
-import { SampleContext } from '../sample.context';
 import { Sample } from '../../../shared/brapi/model/samples/sample';
 import { SampleService } from '../sample.service';
 import { SearchSamplesRequest } from '../../../shared/brapi/model/samples/search-samples-request';
@@ -25,13 +22,12 @@ import { CallSet } from '../../../shared/brapi/model/callsets/callset';
 import { GenotypingParameterUtilService } from '../../../shared/genotyping/genotyping-parameter-util.service';
 
 @Component({
-    selector: 'jhi-germplasm-details-modal',
-    templateUrl: './genotype.modal.component.html'
+    selector: 'jhi-genotype-import-modal',
+    templateUrl: './genotype-impot-modal.component.html'
 })
-export class GenotypeModalComponent implements OnInit {
+export class GenotypeImpotModalComponent implements OnInit {
 
     listId: string;
-
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
     selectedVariantItem: VariantItem;
@@ -55,14 +51,10 @@ export class GenotypeModalComponent implements OnInit {
     callsetDbIdSampleDbIdMap = new Map<string, string>();
 
     constructor(private route: ActivatedRoute,
-                private router: Router,
-                public activeModal: NgbActiveModal,
-                private paramContext: ParamContext,
                 private genotypingBrapiService: GenotypingBrapiService,
                 private genotypingParameterUtilService: GenotypingParameterUtilService,
                 public alertService: AlertService,
                 public jhiAlertService: JhiAlertService,
-                private sampleContext: SampleContext,
                 private sampleService: SampleService,
                 private genotypeService: SampleGenotypeService,
                 public jhiLanguageService: JhiLanguageService,
