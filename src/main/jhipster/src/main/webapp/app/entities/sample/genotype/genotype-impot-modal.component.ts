@@ -105,8 +105,7 @@ export class GenotypeImpotModalComponent implements OnInit {
             }
             this.isStudyLoading = false;
         }, (error) => {
-            // FIXME: Gigwa server throws an http 500 error if the germplasm is not found.
-            this.alertService.error('genotyping.no.genotyping.germplasm.found');
+            this.alertService.error('genotyping.no.genotyping.studies.found');
             this.isStudyLoading = false;
         });
     }
@@ -136,7 +135,6 @@ export class GenotypeImpotModalComponent implements OnInit {
             // Get the genotype samples corresponding to samples in BMS.
             // The externalReferenceIds are expected to be the sampleUIDs of samples in BMS.
             const searchSamplesRequest: SearchSamplesRequest = { sampleNames: this.sampleUIDs, programDbIds: [this.cropGenotypingParameter.programId] };
-            // TODO: Make sure this query returns all the results and not just the first page.
             this.genotypingBrapiService.searchSamplesGetAll(searchSamplesRequest).pipe(flatMap((samples) => {
                 if (samples && samples.length) {
                     // Get the Callsets (Individuals) that are associated to the specified genotype samples.
