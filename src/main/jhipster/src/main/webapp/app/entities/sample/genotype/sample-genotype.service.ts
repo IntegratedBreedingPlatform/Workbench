@@ -14,8 +14,8 @@ export class SampleGenotypeService {
     ) {
     }
 
-    importSampleGenotypes(genotypes: SampleGenotypeImportRequest[]): Observable<HttpResponse<number[]>> {
-        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/samples/genotypes`,
+    importSampleGenotypes(studyId: string, genotypes: SampleGenotypeImportRequest[]): Observable<HttpResponse<number[]>> {
+        return this.http.post<any>(SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/samples/genotypes/${studyId}`,
             genotypes, { observe: 'response' });
     }
 }

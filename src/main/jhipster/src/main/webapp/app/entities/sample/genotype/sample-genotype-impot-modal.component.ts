@@ -20,6 +20,7 @@ import { SampleGenotypeImportRequest } from './sample-genotype-import-request';
 import { SampleGenotypeService } from './sample-genotype.service';
 import { CallSet } from '../../../shared/brapi/model/callsets/callset';
 import { GenotypingParameterUtilService } from '../../../shared/genotyping/genotyping-parameter-util.service';
+import { formatErrorList } from '../../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-sample-genotype-import-modal',
@@ -30,6 +31,7 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
     private readonly MARKER_COUNT_LIMIT = 5000;
 
     listId: string;
+    studyId: string;
     selectedGenotypingStudy: Study;
     selectedVariantSet: VariantSet;
     selectedVariantItem: VariantItem;
@@ -66,6 +68,8 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
 
     ngOnInit(): void {
         this.listId = this.route.snapshot.paramMap.get('listId');
+        // Get the studyId from the query string params.
+        this.studyId = this.route.snapshot.queryParamMap.get('studyId');
 
         this.genotypingParameterUtilService.getGenotypingParametersAndAuthenticate().subscribe((cropGenotypingParameter) => {
             this.cropGenotypingParameter = cropGenotypingParameter;
@@ -287,13 +291,18 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
             const sampleId = String(this.sampleUIDSampleIdMap.get(sampleUID));
             genotypeImportRequest.push({ variableId: Number(mappedVariant.variable.id), value: call.genotypeValue, sampleId });
         });
-        this.genotypeService.importSampleGenotypes(genotypeImportRequest).toPromise().then((genotypeIds) => {
+        this.genotypeService.importSampleGenotypes(this.studyId, genotypeImportRequest).toPromise().then((genotypeIds) => {
             this.isGenotypesSaving = false;
             if ((<any>window.parent).handleImportGenotypesSuccess) {
                 (<any>window.parent).handleImportGenotypesSuccess();
             }
-        }).catch(() => {
-            this.alertService.error('bmsjHipsterApp.sample.genotypes.import.error');
+        }).catch((errorResponse) => {
+            const msg = formatErrorList(errorResponse.error.errors);
+            if (msg) {
+                this.alertService.error('error.custom', { param: msg });
+            } else {
+                this.alertService.error('error.general');
+            }
         });
     }
 
