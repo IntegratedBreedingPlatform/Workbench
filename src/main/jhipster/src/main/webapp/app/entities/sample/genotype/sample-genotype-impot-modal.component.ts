@@ -22,10 +22,12 @@ import { CallSet } from '../../../shared/brapi/model/callsets/callset';
 import { GenotypingParameterUtilService } from '../../../shared/genotyping/genotyping-parameter-util.service';
 
 @Component({
-    selector: 'jhi-genotype-import-modal',
-    templateUrl: './genotype-impot-modal.component.html'
+    selector: 'jhi-sample-genotype-import-modal',
+    templateUrl: './sample-genotype-impot-modal.component.html'
 })
-export class GenotypeImpotModalComponent implements OnInit {
+export class SampleGenotypeImpotModalComponent implements OnInit {
+
+    private readonly MARKER_COUNT_LIMIT = 5000;
 
     listId: string;
     selectedGenotypingStudy: Study;
@@ -128,6 +130,13 @@ export class GenotypeImpotModalComponent implements OnInit {
     }
 
     selectVariantsetOnChange() {
+        if (this.selectedVariantSet.variantCount > this.MARKER_COUNT_LIMIT) {
+            this.alertService.error('bmsjHipsterApp.sample.genotypes.database.marker.count.exceeds.limit', {
+                param1: this.MARKER_COUNT_LIMIT
+            });
+            return;
+        }
+
         if (this.selectedVariantSet && this.sampleUIDs && this.sampleUIDs.length !== 0) {
             this.resetData();
             this.isVariantsLoading = true;
@@ -296,6 +305,10 @@ export class GenotypeImpotModalComponent implements OnInit {
         this.showAddMappingRow = false;
         this.sampleDbIdSampleUIDMap.clear();
         this.callsetDbIdSampleDbIdMap.clear();
+    }
+
+    isMarkerMappingVisible(): boolean {
+        return this.selectedVariantSet && this.selectedVariantSet.variantCount <= this.MARKER_COUNT_LIMIT;
     }
 }
 

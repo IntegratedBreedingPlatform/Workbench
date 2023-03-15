@@ -21,7 +21,7 @@
 			<label class="col-3 col-form-label">
 				<label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.study.label">Genotyping Study:</label>
 			</label>
-			<div class="col-5">
+			<div class="col-8">
 				<div class="form-group row">
 					<select style="width: 85%" [disabled]="!genotypingStudies || genotypingStudies?.length === 0" class="form-control" name="genotypingStudy" id="genotypingStudy" [(ngModel)]="selectedGenotypingStudy" (ngModelChange)="selectStudyOnChange()" #genotypingStudy="ngModel">
 						<option value="">Please Choose</option>
@@ -34,27 +34,30 @@
 			<label class="col-3 col-form-label">
 				<label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.run.label">Run:</label>
 			</label>
-			<div class="col-5">
+			<div class="col-8">
 				<div class="form-group row">
 					<select style="width: 85%" [disabled]="!genotypingVariantsets || genotypingVariantsets?.length === 0" class="form-control" name="variantSetSelect" id="variantSetSelect" [(ngModel)]="selectedVariantSet" (ngModelChange)="selectVariantsetOnChange()" #variantSetSelect="ngModel">
 						<option value="">Please Choose</option>
 						<option *ngFor="let item of genotypingVariantsets" [ngValue]="item">{{item.variantSetName}}</option>
 					</select>&nbsp;&nbsp;<span *ngIf="isVariantSetLoading" class="throbber"></span>
 				</div>
+				<div *ngIf="selectedVariantSet" class="row">
+					<span jhiTranslate="bmsjHipsterApp.sample.genotypes.selected.study.summary.description" [translateValues]="{param1: selectedVariantSet.callSetCount, param2: selectedVariantSet.variantCount}"></span>
+				</div>
 			</div>
 		</div>
-		<hr>
-		<div class="form-group row">
+		<hr *ngIf="isMarkerMappingVisible()">
+		<div class="form-group row" *ngIf="isMarkerMappingVisible()">
 			<label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>
 		</div>
-		<div class="row">
+		<div class="row" *ngIf="isMarkerMappingVisible()">
 			<div class="col-md-12">
 				<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.map.description"></span>
 				<br><br>
 			</div>
 		</div>
-		<div class="form-group row">
-			<div class="col-md-8">
+		<div class="form-group row" *ngIf="isMarkerMappingVisible()">
+			<div class="col-md-12">
 				<div *ngIf="isVariantsLoading" class="row">
 					<div class="col">
 						<span class="throbber"></span>&nbsp;

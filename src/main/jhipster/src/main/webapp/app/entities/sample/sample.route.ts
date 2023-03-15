@@ -4,7 +4,7 @@ import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { SampleComponent, SampleManagerComponent } from './';
 import { RouteAccessService } from '../../shared';
-import {GenotypeImpotModalComponent} from "./genotype/genotype-impot-modal.component";
+import {SampleGenotypeImpotModalComponent} from './genotype/sample-genotype-impot-modal.component';
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -48,7 +48,7 @@ export const sampleRoute: Routes = [
     },
     {
         path: 'genotype-import/:listId',
-        component: GenotypeImpotModalComponent,
+        component: SampleGenotypeImpotModalComponent,
         canActivate: [RouteAccessService]
     },
 ];

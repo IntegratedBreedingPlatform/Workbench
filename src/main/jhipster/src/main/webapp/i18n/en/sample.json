@@ -66,6 +66,8 @@
                 "loading.markers": "Loading the markers list. Please wait.",
                 "add.another.mapping": "Add another mapping",
                 "variable.already.mapped.to.a.marker.error": "Variable \"{{param1}}\" is already mapped to the \"{{param2}}\" marker.",
+                "selected.study.summary.description": "This Genotyping Study contains <b>{{param1}}</b> Individuals and <b>{{param2}}</b> Markers.",
+                "database.marker.count.exceeds.limit": "The selected Genotyping Study contains more than {{param1}} markers. The application can only import data from a Genotyping Study with less than {{param1}} markers.",
                 "import.error": "Something went wrong, please try again."
             },
             "error": "{{ param }}"
