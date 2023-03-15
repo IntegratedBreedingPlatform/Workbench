@@ -3,8 +3,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgbActiveModal, NgbCalendar, NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmImportComponent, HEADERS } from './germplasm-import.component';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
-import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
-import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
 import { BREEDING_METHODS_BROWSER_DEFAULT_URL } from '../../app.constants';
 import { BreedingMethodManagerComponent } from '../../entities/breeding-method/breeding-method-manager.component';
 import { ParamContext } from '../../shared/service/param.context';
@@ -22,10 +20,11 @@ import { VariableValidationService, VariableValidationStatusType } from '../../s
 import { LocationTypeEnum } from '../../shared/location/model/location-type.enum';
 import { LocationSearchRequest } from '../../shared/location/model/location-search-request.model';
 import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
-import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
 import { HttpResponse } from '@angular/common/http';
 import { Location } from '../../shared/location/model/location';
 import { Select2OptionData } from 'ng-select2';
+import { BreedingMethodFilterTypeEnum } from '../../shared/breeding-methods-select/breeding-methods-select.component';
+import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
 
 @Component({
     selector: 'jhi-germplasm-import-basic-details',
@@ -34,7 +33,8 @@ import { Select2OptionData } from 'ng-select2';
 export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     static readonly LOCATIONS_PAGE_SIZE = 300;
-    static readonly BREEDING_METHODS_PAGE_SIZE = 300;
+
+    BreedingMethodFilterTypeEnum = BreedingMethodFilterTypeEnum;
 
     dataBackupPrev = [];
 
@@ -47,18 +47,15 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
     draggedCode: string;
     attributeStatusById: { [key: number]: VariableValidationStatusType } = {};
 
-    breedingMethodOptions: any;
-    breedingMethodSelected: string;
+    selectedBreedingMethodId: number;
+    selectedBreedingMethodCode: string;
 
-    useFavoriteBreedingMethods = true;
     locationsOptions: any;
     locationSelected: string;
     useFavoriteLocations = true;
     isBreedingAndCountryLocationsOnly = false;
     initialData: Select2OptionData[];
-
     locationsFilteredItemsCount;
-    breedingMethodsFilteredItemsCount;
 
     creationDateSelected: NgbDate | null;
 
@@ -72,7 +69,6 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         private modal: NgbActiveModal,
         private modalService: NgbModal,
         private germplasmService: GermplasmService,
-        private breedingMethodService: BreedingMethodService,
         private locationService: LocationService,
         private sanitizer: DomSanitizer,
         private paramContext: ParamContext,
@@ -94,7 +90,6 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     ngOnInit(): void {
         this.dataBackupPrev = this.context.data.map((row) => Object.assign({}, row));
-        this.loadBreedingMethods();
 
         this.hasEmptyPreferredName = this.context.data.some((row) => !row[HEADERS['PREFERRED NAME']]);
 
@@ -182,7 +177,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     fillData() {
         this.context.data.filter((row) => !row[HEADERS['BREEDING METHOD']])
-            .forEach((row) => row[HEADERS['BREEDING METHOD']] = this.breedingMethodSelected);
+            .forEach((row) => row[HEADERS['BREEDING METHOD']] = this.selectedBreedingMethodCode);
 
         this.context.data.filter((row) => !row[HEADERS['LOCATION ABBR']])
             .forEach((row) => row[HEADERS['LOCATION ABBR']] = this.locationSelected);
@@ -224,50 +219,10 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
             { size: 'lg', backdrop: 'static' });
     }
 
-    loadBreedingMethods() {
-        this.breedingMethodOptions = {
-            ajax: {
-                delay: 500,
-                transport: function(params, success, failure) {
-                    params.data.page = params.data.page || 1;
-
-                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
-                    breedingMethodSearchRequest.nameFilter = {
-                        type: MatchType.STARTSWITH,
-                        value: params.data.term
-                    };
-
-                    const pagination = {
-                        page: (params.data.page - 1),
-                        size: GermplasmImportBasicDetailsComponent.BREEDING_METHODS_PAGE_SIZE
-                    };
-
-                    this.breedingMethodService.searchBreedingMethods(
-                        breedingMethodSearchRequest,
-                        this.useFavoriteBreedingMethods,
-                        pagination
-                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
-                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
-                        success(res.body);
-                    }, failure);
-                }.bind(this),
-                processResults: function(methods, params) {
-                    params.page = params.page || 1;
-
-                    return {
-                        results: methods.map((method: BreedingMethod) => {
-                            return {
-                                id: method.code,
-                                text: method.code + ' - ' + method.name
-                            };
-                        }),
-                        pagination: {
-                            more: (params.page * GermplasmImportBasicDetailsComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
-                        }
-                    };
-                }.bind(this)
-            }
-        };
+    onMethodChange(selectedBreedingMethod: BreedingMethod) {
+        if (selectedBreedingMethod) {
+            this.selectedBreedingMethodCode = selectedBreedingMethod.code;
+        }
     }
 
     openBreedingMethodManager() {
@@ -278,7 +233,6 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         modal.then((modalRef) => {
             modalRef.componentInstance.safeUrl =
                 this.sanitizer.bypassSecurityTrustResourceUrl(BREEDING_METHODS_BROWSER_DEFAULT_URL + params);
-            modalRef.result.then(() => this.loadBreedingMethods());
         });
     }
 
@@ -308,7 +262,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     canProceed(f) {
         const form = f.form;
-        return form.valid && (this.breedingMethodSelected || this.hasAllBreedingMethods())
+        return form.valid && (this.selectedBreedingMethodCode || this.hasAllBreedingMethods())
             && (this.locationSelected || this.hasAllLocations())
             && (this.creationDateSelected || this.hasAllCreationDate())
             && this.unmapped.length === 0;

@@ -101,6 +101,7 @@ import { ModalAlertComponent } from './modal/modal-alert.component';
 import { AdvanceService } from './study/service/advance.service';
 import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
 import { ColumnFilterVariablesComponent } from './column-filter/column-filter-variables-component';
+import { BreedingMethodsSelectComponent } from './breeding-methods-select/breeding-methods-select.component';
 
 @NgModule({
     imports: [
@@ -161,6 +162,7 @@ import { ColumnFilterVariablesComponent } from './column-filter/column-filter-va
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
+        BreedingMethodsSelectComponent,
         OnlyNumbersDirective,
         PedigreeGraphComponent,
         VariableSelectComponent,
@@ -289,6 +291,7 @@ import { ColumnFilterVariablesComponent } from './column-filter/column-filter-va
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
+        BreedingMethodsSelectComponent,
         OnlyNumbersDirective,
         PedigreeGraphComponent,
         VariableSelectComponent,
