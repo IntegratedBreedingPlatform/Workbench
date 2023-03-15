@@ -205,6 +205,16 @@ export class GenotypeImpotModalComponent implements OnInit {
     }
 
     mapVariant() {
+        // Show an error if the selected ontology variable is already mapped to a marker (variant)
+        const mappedMarker = Array.from(this.mappedVariants.values()).find((v) => v.variable.id === this.selectedVariable.id);
+        if (mappedMarker) {
+            this.alertService.error('bmsjHipsterApp.sample.genotypes.variable.already.mapped.to.a.marker.error', {
+                param1: this.selectedVariable.name,
+                param2: mappedMarker.variant.variantName
+            });
+            return;
+        }
+
         if (this.mappedVariants.has(this.selectedVariantItem.variantDbId)) {
             this.mappedVariants.get(this.selectedVariantItem.variantDbId).variable = this.selectedVariable;
         } else {

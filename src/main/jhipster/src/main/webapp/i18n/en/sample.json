@@ -65,6 +65,7 @@
                 "no.mapped.markers": "No mapped markers",
                 "loading.markers": "Loading the markers list. Please wait.",
                 "add.another.mapping": "Add another mapping",
+                "variable.already.mapped.to.a.marker.error": "Variable \"{{param1}}\" is already mapped to the \"{{param2}}\" marker.",
                 "import.error": "Something went wrong, please try again."
             },
             "error": "{{ param }}"
