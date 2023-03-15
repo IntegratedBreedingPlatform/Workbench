@@ -84,7 +84,7 @@ export class BreedingMethodsSelectComponent implements OnInit {
         this.breedingMethodOptions = {
             ajax: {
                 delay: 500,
-                transport: function (params, success, failure) {
+                transport: function(params, success, failure) {
                     params.data.page = params.data.page || 1;
 
                     if (params.data.page === 1) {
@@ -121,7 +121,7 @@ export class BreedingMethodsSelectComponent implements OnInit {
                         success(res.body);
                     }, failure);
                 }.bind(this),
-                processResults: function (methods, params) {
+                processResults: function(methods, params) {
                     params.page = params.page || 1;
 
                     this.breedingMethods = this.breedingMethods.concat(...methods);

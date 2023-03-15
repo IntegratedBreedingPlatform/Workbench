@@ -123,7 +123,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
         this.locationsOptions = {
             ajax: {
                 delay: 500,
-                transport: function (params, success, failure) {
+                transport: function(params, success, failure) {
                     params.data.page = params.data.page || 1;
 
                     const locationSearchRequest: LocationSearchRequest = new LocationSearchRequest();
@@ -147,7 +147,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
                         success(res.body);
                     }, failure);
                 }.bind(this),
-                processResults: function (locations, params) {
+                processResults: function(locations, params) {
                     params.page = params.page || 1;
 
                     return {
