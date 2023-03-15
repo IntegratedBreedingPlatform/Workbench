@@ -43,7 +43,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
     previousPage: number;
     isPreview = false;
 
-    private readonly itemsPerPage: number = 5;
+    private readonly itemsPerPage: number = 10;
 
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
@@ -151,10 +151,14 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
     }
 
     deleteSelectedEntries(): void {
-        this.isLoadingPreview = true;
+        this.page = 1;
+        this.previousPage = 1;
+        this.completePreviewList = [];
+        this.listPerPage = [];
+        this.preview(true);
     }
 
-    preview(): void {
+    preview(isDeletingEntries=false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -170,6 +174,15 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
 
         const advanceStudyRequest: AdvanceStudyRequest =
             new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+
+        if (isDeletingEntries && this.selectedItems.length >= 1) {
+            advanceStudyRequest.excludedObservations = this.selectedItems
+        }
+
+        else if (isDeletingEntries && this.selectedItems.length < 1) {
+            this.alertService.error('error.custom', { param: "Please select at least 1 entry." });
+        }
+
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
@@ -198,14 +211,14 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceStudyPreview(this.studyId, advanceStudyRequest)
             .pipe(finalize(() => this.isLoadingPreview = false))
             .subscribe(
-                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res),
+                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, isDeletingEntries),
                 (res) => this.onError(res));
     }
 
-    private onSuccess(data: AdvancedGermplasmPreview[]) {
+    private onSuccess(data: AdvancedGermplasmPreview[], fromDelete=false) {
         this.completePreviewList = data;
         this.processPagination(this.completePreviewList);
-        this.loadPage(1);
+        this.loadPage(1, fromDelete);
         this.isPreview = true;
     }
 
@@ -284,8 +297,8 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         return true;
     }
 
-    loadPage(page: number, fromFilter = false) {
-        if (page !== this.previousPage || fromFilter) {
+    loadPage(page: number, forceReload = false) {
+        if (page !== this.previousPage || forceReload) {
             this.previousPage = page;
             this.currentPagePreviewList = this.listPerPage[page - 1];
             var itemCount = this.currentPagePreviewList.length;
@@ -340,9 +353,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
     }
 
     processPagination(list: AdvancedGermplasmPreview[]) {
-        console.log(list);
         this.totalItems = list.length;
-        console.log(this.totalItems);
 
         if (this.totalItems === 0) {
             this.listPerPage = [];
@@ -363,12 +374,18 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         }, []);
     }
 
-    toggleSelect = function (observationUnitId) {
+    toggleSelect = function ($event, idx, observationUnitId) {
         var idx = this.selectedItems.indexOf(observationUnitId);
         if (idx > -1) {
             this.selectedItems.splice(idx, 1)
         } else {
             this.selectedItems.push(observationUnitId);
         }
+
+        $event.stopPropagation();
     };
+
+    isSelected(observationUnitId: number) {
+        return observationUnitId && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === observationUnitId);
+    }
 }

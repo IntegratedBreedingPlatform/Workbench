@@ -9,6 +9,7 @@ export class AdvanceStudyRequest extends AbstractAdvanceRequest {
         public selectionTraitRequest?: SelectionTraitRequest,
         public lineSelectionRequest?: LineSelectionRequest,
         public bulkingRequest?: BulkingRequest,
+        public excludedObservations?: number[],
     ) {
         super(instanceIds, selectedReplications, selectionTraitRequest);
     }

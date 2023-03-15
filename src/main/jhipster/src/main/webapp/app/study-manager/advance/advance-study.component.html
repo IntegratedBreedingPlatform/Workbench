@@ -285,8 +285,10 @@
 					</tr>
 					</thead>
 					<tbody *ngIf="currentPagePreviewList.length else nodata">
-					<tr *ngFor="let advancedGermplasm of currentPagePreviewList">
-						<td><input type="checkbox" name="preview-row" [value]="advancedGermplasm.previewRowNum" [checked]="true" (click)="toggleSelect($event, index, entry, true); $event.stopPropagation()"></td>
+					<tr *ngFor="let advancedGermplasm of currentPagePreviewList; let idx = index">
+						<td><input type="checkbox" name="preview-row" [value]="advancedGermplasm.observationUnitId"
+								   [checked]="isSelected(advancedGermplasm.observationUnitId)"
+								   (click)="toggleSelect($event, idx, advancedGermplasm.observationUnitId);"></td>
 						<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
 						<td  *ngIf="isPlotDataset()">{{advancedGermplasm.plotNumber}}</td>
 						<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
