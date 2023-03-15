@@ -102,6 +102,7 @@ import { AdvanceService } from './study/service/advance.service';
 import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
 import { ColumnFilterVariablesComponent } from './column-filter/column-filter-variables-component';
 import { GenotypingParameterUtilService } from './genotyping/genotyping-parameter-util.service';
+import { BreedingMethodsSelectComponent } from './breeding-methods-select/breeding-methods-select.component';
 
 @NgModule({
     imports: [
@@ -162,6 +163,7 @@ import { GenotypingParameterUtilService } from './genotyping/genotyping-paramete
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
+        BreedingMethodsSelectComponent,
         OnlyNumbersDirective,
         PedigreeGraphComponent,
         VariableSelectComponent,
@@ -291,6 +293,7 @@ import { GenotypingParameterUtilService } from './genotyping/genotyping-paramete
         CollapsibleComponent,
         GeojsonMapComponent,
         LocationsSelectComponent,
+        BreedingMethodsSelectComponent,
         OnlyNumbersDirective,
         PedigreeGraphComponent,
         VariableSelectComponent,

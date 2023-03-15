@@ -13,6 +13,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { AdvanceService } from '../../shared/study/service/advance.service';
 import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../shared/study/model/advance-study-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
+import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -108,10 +109,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         }
     }
 
-    onMethodChange(selectedMethodId: string) {
-        super.onMethodChange(selectedMethodId);
-        this.showLinesSelection = !this.selectedBreedingMethod.isBulkingMethod;
-        this.showBulkingSelection = this.selectedBreedingMethod.isBulkingMethod;
+    onMethodChange(selectedBreedingMethod: BreedingMethod) {
+        super.onMethodChange(selectedBreedingMethod);
+        this.showLinesSelection = !selectedBreedingMethod.isBulkingMethod;
+        this.showBulkingSelection = selectedBreedingMethod.isBulkingMethod;
     }
 
     onSelectLineVariable(e) {
