@@ -52,7 +52,7 @@
 		</div>
 		<div class="row" *ngIf="isMarkerMappingVisible()">
 			<div class="col-md-12">
-				<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.map.description"></span>
+				<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.map.description" [translateValues]="{param1: MARKER_MAPPING_ITEM_COUNT_LIMIT}"></span>
 				<br><br>
 			</div>
 		</div>

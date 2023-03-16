@@ -29,6 +29,7 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 export class SampleGenotypeImpotModalComponent implements OnInit {
 
     private readonly MARKER_COUNT_LIMIT = 5000;
+    private readonly MARKER_MAPPING_ITEM_COUNT_LIMIT = 20;
 
     listId: string;
     studyId: string;
@@ -255,7 +256,7 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
     }
 
     showAddMappingButton() {
-        return !this.showAddMappingRow && this.mappedVariants && this.mappedVariants.size < 10;
+        return !this.showAddMappingRow && this.mappedVariants && this.mappedVariants.size < this.MARKER_MAPPING_ITEM_COUNT_LIMIT;
     }
 
     importGenotypes() {
