@@ -22,6 +22,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
+import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
+import { FilterType } from '../../shared/column-filter/column-filter.component';
 
 export enum AdvanceType {
     STUDY,
@@ -76,6 +78,59 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectionTraitVariables: ObservationVariable[] = [];
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
+
+    // for preview data table
+    isLoadingPreview = false;
+    totalItems: number;
+    currentPageCount: number;
+    page: number = 1;
+    previousPage: number;
+    isPreview = false;
+
+    private readonly itemsPerPage: number = 10;
+
+    completePreviewList: AdvancedGermplasmPreview[];
+    listPerPage: AdvancedGermplasmPreview[][];
+    currentPagePreviewList: AdvancedGermplasmPreview[];
+    selectedItems = [];
+
+    filters = {
+        environment: {
+            key: 'environment',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        plotNumber: {
+            key: 'plotNumber',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        plantNumber: {
+            key: 'plantNumber',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        entryNumber: {
+            key: 'entryNumber',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        cross: {
+            key: 'cross',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        immediateSource: {
+            key: 'immediateSource',
+            type: FilterType.TEXT,
+            value: ''
+        },
+        breedingMethod: {
+            key: 'breedingMethod',
+            type: FilterType.TEXT,
+            value: ''
+        }
+    }
 
     protected constructor(public paramContext: ParamContext,
                           public route: ActivatedRoute,
@@ -356,6 +411,129 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }
     }
 
+    // methods for advance preview
+    resetTable(): void {
+        this.page = 1;
+        this.previousPage = 1;
+        this.completePreviewList = [];
+        this.listPerPage = [];
+    }
+
+    onSuccess(data: AdvancedGermplasmPreview[], fromDelete=false) {
+        this.completePreviewList = data;
+        this.processPagination(this.completePreviewList);
+        this.loadPage(1, fromDelete);
+        this.isPreview = true;
+    }
+
+    loadPage(page: number, forceReload = false) {
+        if (page !== this.previousPage || forceReload) {
+            this.previousPage = page;
+            this.currentPagePreviewList = this.listPerPage[page - 1];
+            var itemCount = this.currentPagePreviewList.length;
+            this.currentPageCount = ((page - 1) * this.itemsPerPage) + itemCount;
+        }
+    }
+
+    exitPreview() {
+        this.isPreview = false;
+    }
+
+    applyFilters() {
+        this.page = 1;
+        this.previousPage = 1;
+        let filteredList = this.completePreviewList.filter(
+            row => {
+                let env = (row.trialInstance + "-" + row.locationName).toLowerCase();
+                if (this.filters.environment.value && !env.includes(this.filters.environment.value.toLowerCase())) {
+                    return false;
+                }
+
+                if (this.filters.plotNumber.value && row.plotNumber !== this.filters.plotNumber.value) {
+                    return false;
+                }
+
+                if (this.filters.plantNumber.value && row.plantNumber !== this.filters.plantNumber.value) {
+                    return false;
+                }
+
+                if (this.filters.entryNumber.value && row.entryNumber !== this.filters.entryNumber.value) {
+                    return false;
+                }
+
+                if (this.filters.cross.value && !row.cross.toLowerCase().includes(this.filters.cross.value.toLowerCase())) {
+                    return false;
+                }
+
+                if (this.filters.immediateSource.value && !row.immediateSource.toLowerCase().includes(this.filters.immediateSource.value.toLowerCase())) {
+                    return false;
+                }
+
+                if (this.filters.breedingMethod.value && !row.breedingMethodAbbr.toLowerCase().includes(this.filters.breedingMethod.value.toLowerCase())) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
+
+        this.processPagination(filteredList);
+        this.loadPage(1, true);
+    }
+
+    processPagination(list: AdvancedGermplasmPreview[]) {
+        this.totalItems = list.length;
+
+        if (this.totalItems === 0) {
+            this.listPerPage = [];
+            this.listPerPage.push([]);
+            return;
+        }
+
+        this.listPerPage = list.reduce((resultArray, item, index) => {
+            const pageIndex = Math.floor(index / this.itemsPerPage)
+
+            if (!resultArray[pageIndex]) {
+                resultArray[pageIndex] = [] // start a new page
+            }
+
+            resultArray[pageIndex].push(item)
+
+            return resultArray
+        }, []);
+    }
+
+    toggleSelect = function ($event, idx, uniqueId) {
+        var idx = this.selectedItems.indexOf(uniqueId);
+        if (idx > -1) {
+            this.selectedItems.splice(idx, 1)
+        } else {
+            this.selectedItems.push(uniqueId);
+        }
+
+        $event.stopPropagation();
+    };
+
+    isSelected(observationUnitId: number) {
+        return observationUnitId && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === observationUnitId);
+    }
+
+    onSelectPage() {
+        if (this.isPageSelected()) {
+            // remove all items
+            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
+                this.selectedItems.splice(this.selectedItems.indexOf(entry.uniqueId), 1));
+        } else {
+            // check remaining items
+            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
+                this.selectedItems.push(entry.uniqueId));
+        }
+    }
+
+    isPageSelected() {
+        return this.selectedItems.length && this.currentPagePreviewList.every(
+            (p) => Boolean(this.selectedItems.indexOf(p.uniqueId)  > -1));
+    }
 }
 
 enum SelectionTraitLevelTypes {

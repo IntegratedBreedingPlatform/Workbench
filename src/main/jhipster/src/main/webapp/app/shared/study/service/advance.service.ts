@@ -31,4 +31,8 @@ export class AdvanceService {
         return this.http.post<number[]>(url, request);
     }
 
+    advanceSamplesPreview(studyId: number, request: AdvanceSamplesRequest): Observable<AdvancedGermplasmPreview[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/advance/samples/preview`;
+        return this.http.post<AdvancedGermplasmPreview[]>(url, request);
+    }
 }
