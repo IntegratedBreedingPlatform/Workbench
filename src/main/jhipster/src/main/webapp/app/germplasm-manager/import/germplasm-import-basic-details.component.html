@@ -14,22 +14,16 @@
 			<div class="form-group row required">
 				<label for="breedingMethod" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="germplasm.import.basicDetails.breeding.methods"></label>
 				<div class="col-sm-6" *ngIf="!hasAllBreedingMethods() else allGood">
-					<ng-select2 name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelected" [options]="breedingMethodOptions">
-					</ng-select2>
 					<!-- TODO Permissions
 					<a style="margin-left: 5px; float: right" jhiTranslate="breeding-method.browser.title"
 					   (click)="openBreedingMethodManager()"></a>
 					   -->
-					<div class="row">
-						<div class="col-xs-12 col-md-12">
-							<div class="form-check form-check-inline">
-								<input type="checkbox" class="form-check-input" name="useFavoriteBreedingMethods" id="useFavoriteBreedingMethods"
-									   [(ngModel)]="useFavoriteBreedingMethods">
-								<label class="form-check-label" for="useFavoriteBreedingMethods" jhiTranslate="germplasm.import.basicDetails.breeding.methods.use.favorite">
-								</label>
-							</div>
-						</div>
-					</div>
+					<jhi-breeding-methods-select [(value)]="selectedBreedingMethodId"
+												 [useFavoriteBreedingMethods]="true"
+												 [breedingMethodFilterTypeValue]="BreedingMethodFilterTypeEnum.ALL_METHODS"
+												 [selectWidth]="'100%'"
+												 [showMethodTypeFilterSection]="false"
+												 (onMethodChanged)="onMethodChange($event)"></jhi-breeding-methods-select>
 				</div>
 			</div>
 

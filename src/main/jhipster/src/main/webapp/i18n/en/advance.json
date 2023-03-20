@@ -11,9 +11,6 @@
     "breeding-methods": {
       "title": "Methods",
       "description": "Breeding Method is the same for each advance",
-      "favorite": "Show only favorite methods",
-      "derivative-and-mantenance": "Derivative and Maintenance methods",
-      "all-methods": "All methods",
       "variable": "Choose a variate that defines the breeding method for each advance"
     },
     "selection-trait": {

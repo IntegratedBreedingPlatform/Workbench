@@ -16,7 +16,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
 import { BreedingMethodClassMethodEnum } from '../../shared/breeding-method/model/breeding-method-class.enum';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
@@ -39,13 +38,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     static readonly SELECTION_TRAIT_EXPRESSION = '[SELTRAIT]';
 
-    breedingMethods: BreedingMethod[] = [];
-    breedingMethodOptions: any;
     breedingMethodSelectedId: string;
-    breedingMethodType = '1';
-    useFavoriteBreedingMethods = false;
-    methodTypes: BreedingMethodTypeEnum[] = [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
-    selectedBreedingMethod: BreedingMethod;
 
     selectionMethodVariables: ObservationVariable[] = [];
 
@@ -154,7 +147,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             this.selectedDatasetId = Number(selectedDatasetId);
         }
 
-        this.loadBreedingMethods();
         this.loadStudyVariables();
         this.initializeReplicationOptions(this.replicationNumber);
 
@@ -185,13 +177,12 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }
     }
 
-    onMethodChange(selectedMethodId: string) {
-        if (selectedMethodId && this.breedingMethods.length > 0) {
-            this.breedingMethodSelectedId = selectedMethodId;
-            this.selectedBreedingMethod = this.breedingMethods.find((method: BreedingMethod) => String(method.mid) === this.breedingMethodSelectedId);
+    onMethodChange(selectedBreedingMethod: BreedingMethod) {
+        if (selectedBreedingMethod) {
+            this.breedingMethodSelectedId = String(selectedBreedingMethod.mid);
             this.showSelectionTraitSelection = this.hasSelectTraitVariables() &&
-                (this.selectedBreedingMethod.suffix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION ||
-                    this.selectedBreedingMethod.prefix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION);
+                (selectedBreedingMethod.suffix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION ||
+                    selectedBreedingMethod.prefix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION);
         }
     }
 
@@ -253,68 +244,11 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         });
     }
 
-    private loadBreedingMethods() {
-        this.breedingMethodOptions = {
-            ajax: {
-                delay: 500,
-                transport: function(params, success, failure) {
-                    params.data.page = params.data.page || 1;
-
-                    if (params.data.page === 1) {
-                        this.breedingMethods = [];
-                    }
-
-                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
-                    breedingMethodSearchRequest.nameFilter = {
-                        type: MatchType.STARTSWITH,
-                        value: params.data.term
-                    };
-
-                    breedingMethodSearchRequest.methodTypes = this.methodTypes;
-                    const pagination = {
-                        page: (params.data.page - 1),
-                        size: AbstractAdvanceComponent.BREEDING_METHODS_PAGE_SIZE
-                    };
-
-                    if (this.advanceType === AdvanceType.SAMPLES) {
-                        breedingMethodSearchRequest.methodClassIds = [BreedingMethodClassMethodEnum.NON_BULKING_BREEDING_METHOD_CLASS];
-                    }
-
-                    this.breedingMethodService.searchBreedingMethods(
-                        breedingMethodSearchRequest,
-                        this.useFavoriteBreedingMethods,
-                        pagination
-                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
-                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
-                        success(res.body);
-                    }, failure);
-                }.bind(this),
-                processResults: function(methods, params) {
-                    params.page = params.page || 1;
-
-                    this.breedingMethods = this.breedingMethods.concat(...methods)
-
-                    return {
-                        results: methods.map((method: BreedingMethod) => {
-                            return {
-                                id: String(method.mid),
-                                text: method.code + ' - ' + method.name
-                            };
-                        }),
-                        pagination: {
-                            more: (params.page * AbstractAdvanceComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
-                        }
-                    };
-                }.bind(this)
-            }
-        };
-    }
-
     private loadStudyVariables() {
         this.datasetService.getVariablesByVariableType(this.studyId, [VariableTypeEnum.STUDY_DETAIL])
             .toPromise().then((response: HttpResponse<ObservationVariable[]>) => {
-                this.selectionTraitVariablesByDatasetIds.set(this.studyId, this.filterSelectionTraitVariable(response.body));
-                this.loadDatasets();
+            this.selectionTraitVariablesByDatasetIds.set(this.studyId, this.filterSelectionTraitVariable(response.body));
+            this.loadDatasets();
         });
     }
 
@@ -349,50 +283,50 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     private loadDatasets() {
         this.datasetService.getDatasetsByTypeIds(this.studyId, [DatasetTypeEnum.ENVIRONMENT, DatasetTypeEnum.PLOT, DatasetTypeEnum.PLANT_SUBOBSERVATIONS])
             .toPromise().then((response: HttpResponse<DatasetModel[]>) => {
-                let advanceFromSubObservation = false;
-                response.body.forEach((dataset: DatasetModel) => {
+            let advanceFromSubObservation = false;
+            response.body.forEach((dataset: DatasetModel) => {
 
-                    if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
-                        this.environmentDatasetId = dataset.datasetId;
-                        this.selectionTraitVariablesByDatasetIds.set(this.environmentDatasetId, this.filterSelectionTraitVariable(dataset.variables));
-                        dataset.instances.forEach((instance: StudyInstanceModel) => {
-                            if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
-                                this.trialInstances.push({
-                                    instanceId: instance.instanceId,
-                                    instanceNumber: instance.instanceNumber,
-                                    locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')'
-                                });
-                            }
-                        });
-
-                    } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT || dataset.datasetTypeId === DatasetTypeEnum.PLANT_SUBOBSERVATIONS) {
-                        const isSelectedDataset = dataset.datasetId === this.selectedDatasetId;
-                        if (isSelectedDataset) {
-                            this.selectedDatasetName = dataset.name;
-                            this.selectedDatasetTypeId = dataset.datasetTypeId;
-
-                            if (dataset.datasetTypeId !== DatasetTypeEnum.PLOT) {
-                                advanceFromSubObservation = true;
-                            }
+                if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
+                    this.environmentDatasetId = dataset.datasetId;
+                    this.selectionTraitVariablesByDatasetIds.set(this.environmentDatasetId, this.filterSelectionTraitVariable(dataset.variables));
+                    dataset.instances.forEach((instance: StudyInstanceModel) => {
+                        if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
+                            this.trialInstances.push({
+                                instanceId: instance.instanceId,
+                                instanceNumber: instance.instanceNumber,
+                                locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')'
+                            });
                         }
+                    });
 
-                        if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
-                            this.observationDatasetId = dataset.datasetId;
-                        } else if (isSelectedDataset) {
-                            this.subObservationDatasetId = dataset.datasetId;
+                } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT || dataset.datasetTypeId === DatasetTypeEnum.PLANT_SUBOBSERVATIONS) {
+                    const isSelectedDataset = dataset.datasetId === this.selectedDatasetId;
+                    if (isSelectedDataset) {
+                        this.selectedDatasetName = dataset.name;
+                        this.selectedDatasetTypeId = dataset.datasetTypeId;
+
+                        if (dataset.datasetTypeId !== DatasetTypeEnum.PLOT) {
+                            advanceFromSubObservation = true;
                         }
-
-                        if (this.selectedDatasetId && dataset.datasetId !== this.selectedDatasetId) {
-                            return;
-                        }
-
-                        this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.BREEDING_METHOD_PROPERTY);
-                        this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.SELECTION_PLANT_PROPERTY);
-
-                        this.selectionTraitVariablesByDatasetIds.set(dataset.datasetId, this.filterSelectionTraitVariable(dataset.variables));
-
                     }
-                });
+
+                    if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
+                        this.observationDatasetId = dataset.datasetId;
+                    } else if (isSelectedDataset) {
+                        this.subObservationDatasetId = dataset.datasetId;
+                    }
+
+                    if (this.selectedDatasetId && dataset.datasetId !== this.selectedDatasetId) {
+                        return;
+                    }
+
+                    this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.BREEDING_METHOD_PROPERTY);
+                    this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.SELECTION_PLANT_PROPERTY);
+
+                    this.selectionTraitVariablesByDatasetIds.set(dataset.datasetId, this.filterSelectionTraitVariable(dataset.variables));
+
+                }
+            });
 
             this.initializeSelectionTraitLevels(advanceFromSubObservation);
         });
