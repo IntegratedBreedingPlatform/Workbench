@@ -263,10 +263,10 @@
 					</tr>
 					</thead>
 					<tbody *ngIf="currentPagePreviewList.length else nodata">
-					<tr *ngFor="let advancedGermplasm of currentPagePreviewList; let idx = index">
+					<tr *ngFor="let advancedGermplasm of currentPagePreviewList">
 						<td><input type="checkbox" name="preview-row" [value]="advancedGermplasm.uniqueId"
 								   [checked]="isSelected(advancedGermplasm.uniqueId)"
-								   (click)="toggleSelect($event, idx, advancedGermplasm.uniqueId);"></td>
+								   (click)="toggleSelect($event, advancedGermplasm.uniqueId);"></td>
 						<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
 						<td  *ngIf="isPlotDataset()">{{advancedGermplasm.plotNumber}}</td>
 						<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>

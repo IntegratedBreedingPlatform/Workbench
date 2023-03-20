@@ -85,7 +85,7 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
         this.preview(true);
     }
 
-    preview(isDeletingEntries=false): void {
+    preview(isDeletingEntries= false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -97,17 +97,14 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
 
         if (isDeletingEntries && this.selectedItems.length >= 1) {
             advanceSamplesRequest.excludedAdvancedRows = this.selectedItems;
-        }
-
-        else if (isDeletingEntries && this.selectedItems.length < 1) {
-            this.alertService.error('error.custom', { param: "Please select at least 1 entry." });
+        } else if (isDeletingEntries && this.selectedItems.length < 1) {
+            this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
         }
 
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;
         }
-
 
         this.advanceService.advanceSamplesPreview(this.studyId, advanceSamplesRequest)
             .pipe(finalize(() => this.isLoadingPreview = false))

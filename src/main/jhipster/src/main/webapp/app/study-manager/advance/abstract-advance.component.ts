@@ -76,7 +76,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     isLoadingPreview = false;
     totalItems: number;
     currentPageCount: number;
-    page: number = 1;
+    page = 1;
     previousPage: number;
     isPreview = false;
 
@@ -353,7 +353,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.listPerPage = [];
     }
 
-    onSuccess(data: AdvancedGermplasmPreview[], fromDelete=false) {
+    onSuccess(data: AdvancedGermplasmPreview[], fromDelete= false) {
         this.completePreviewList = data;
         this.processPagination(this.completePreviewList);
         this.loadPage(1, fromDelete);
@@ -364,7 +364,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         if (page !== this.previousPage || forceReload) {
             this.previousPage = page;
             this.currentPagePreviewList = this.listPerPage[page - 1];
-            var itemCount = this.currentPagePreviewList.length;
+            const itemCount = this.currentPagePreviewList.length;
             this.currentPageCount = ((page - 1) * this.itemsPerPage) + itemCount;
         }
     }
@@ -376,9 +376,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     applyFilters() {
         this.page = 1;
         this.previousPage = 1;
-        let filteredList = this.completePreviewList.filter(
-            row => {
-                let env = (row.trialInstance + "-" + row.locationName).toLowerCase();
+        const filteredList = this.completePreviewList.filter(
+            (row) => {
+                const env = (row.trialInstance + '-' + row.locationName).toLowerCase();
                 if (this.filters.environment.value && !env.includes(this.filters.environment.value.toLowerCase())) {
                     return false;
                 }
@@ -437,8 +437,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }, []);
     }
 
-    toggleSelect = function ($event, idx, uniqueId) {
-        var idx = this.selectedItems.indexOf(uniqueId);
+    toggleSelect = function($event, uniqueId) {
+        const idx = this.selectedItems.indexOf(uniqueId);
         if (idx > -1) {
             this.selectedItems.splice(idx, 1)
         } else {

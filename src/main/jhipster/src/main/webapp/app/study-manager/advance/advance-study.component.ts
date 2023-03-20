@@ -183,7 +183,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         this.preview(true);
     }
 
-    preview(isDeletingEntries=false): void {
+    preview(isDeletingEntries= false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -202,10 +202,8 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
 
         if (isDeletingEntries && this.selectedItems.length >= 1) {
             advanceStudyRequest.excludedAdvancedRows = this.selectedItems
-        }
-
-        else if (isDeletingEntries && this.selectedItems.length < 1) {
-            this.alertService.error('error.custom', { param: "Please select at least 1 entry." });
+        } else if (isDeletingEntries && this.selectedItems.length < 1) {
+            this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
         }
 
         if (this.showSelectionTraitSelection) {
