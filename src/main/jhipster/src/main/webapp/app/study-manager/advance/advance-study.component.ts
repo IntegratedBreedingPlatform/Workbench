@@ -200,7 +200,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         const advanceStudyRequest: AdvanceStudyRequest =
             new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
 
-        if (isDeletingEntries){
+        if (isDeletingEntries) {
             if (this.selectedItems.length >= 1) {
                 advanceStudyRequest.excludedAdvancedRows = this.selectedItems
             } else {

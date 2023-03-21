@@ -95,7 +95,7 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
 
         const advanceSamplesRequest: AdvanceSamplesRequest = new AdvanceSamplesRequest(selectedInstanceIds, selectedReplicationNumbers, Number(this.breedingMethodSelectedId));
 
-        if (isDeletingEntries){
+        if (isDeletingEntries) {
             if (this.selectedItems.length >= 1) {
                 advanceSamplesRequest.excludedAdvancedRows = this.selectedItems
             } else {
