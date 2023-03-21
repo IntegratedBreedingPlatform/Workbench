@@ -27,8 +27,11 @@
 		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 
-
 		<!--STUDIES-->
+
+		<!-- DESIGN CROSSES -->
+		<intercept-url pattern="/bm/createcrosses/**" access="hasAnyAuthority('ROLE_ADMIN','ROLE_STUDIES','ROLE_MANAGE_STUDIES','ROLE_MS_STUDY_ACTIONS','ROLE_MS_DESIGN_NEW_CROSSES')"/>
+
 		<!--ROLE_BROWSE_STUDIES-->
 		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_BROWSE_STUDIES')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_GRAPHICAL_QUERIES')"/>
