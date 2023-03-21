@@ -82,10 +82,10 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
 
     deleteSelectedEntries(): void {
         this.resetTable();
-        this.preview(true);
+        this.preview(true, true);
     }
 
-    preview(isDeletingEntries= false): void {
+    preview(forceReload = false, isDeletingEntries= false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -95,10 +95,14 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
 
         const advanceSamplesRequest: AdvanceSamplesRequest = new AdvanceSamplesRequest(selectedInstanceIds, selectedReplicationNumbers, Number(this.breedingMethodSelectedId));
 
-        if (isDeletingEntries && this.selectedItems.length >= 1) {
-            advanceSamplesRequest.excludedAdvancedRows = this.selectedItems;
-        } else if (isDeletingEntries && this.selectedItems.length < 1) {
-            this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
+        if (isDeletingEntries){
+            if (this.selectedItems.length >= 1) {
+                advanceSamplesRequest.excludedAdvancedRows = this.selectedItems
+            } else {
+                this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
+                this.isLoadingPreview = false;
+                return;
+            }
         }
 
         if (this.showSelectionTraitSelection) {
@@ -109,7 +113,7 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceSamplesPreview(this.studyId, advanceSamplesRequest)
             .pipe(finalize(() => this.isLoadingPreview = false))
             .subscribe(
-                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, isDeletingEntries),
+                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, forceReload),
                 (res) => this.onError(res));
     }
 }

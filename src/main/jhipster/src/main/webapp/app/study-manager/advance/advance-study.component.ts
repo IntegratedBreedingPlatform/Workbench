@@ -180,10 +180,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
 
     deleteSelectedEntries(): void {
         this.resetTable();
-        this.preview(true);
+        this.preview(true, true);
     }
 
-    preview(isDeletingEntries= false): void {
+    preview(forceReload = false, isDeletingEntries= false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -200,10 +200,14 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         const advanceStudyRequest: AdvanceStudyRequest =
             new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
 
-        if (isDeletingEntries && this.selectedItems.length >= 1) {
-            advanceStudyRequest.excludedAdvancedRows = this.selectedItems
-        } else if (isDeletingEntries && this.selectedItems.length < 1) {
-            this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
+        if (isDeletingEntries){
+            if (this.selectedItems.length >= 1) {
+                advanceStudyRequest.excludedAdvancedRows = this.selectedItems
+            } else {
+                this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
+                this.isLoadingPreview = false;
+                return;
+            }
         }
 
         if (this.showSelectionTraitSelection) {
@@ -234,7 +238,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceStudyPreview(this.studyId, advanceStudyRequest)
             .pipe(finalize(() => this.isLoadingPreview = false))
             .subscribe(
-                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, isDeletingEntries),
+                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, forceReload),
                 (res) => this.onError(res));
     }
 }

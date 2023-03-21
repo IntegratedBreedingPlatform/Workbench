@@ -80,7 +80,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     previousPage: number;
     isPreview = false;
 
-    private readonly itemsPerPage: number = 10;
+    itemsPerPage = 10;
 
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
@@ -353,10 +353,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.listPerPage = [];
     }
 
-    onSuccess(data: AdvancedGermplasmPreview[], fromDelete= false) {
+    onSuccess(data: AdvancedGermplasmPreview[], forceReload= false) {
         this.completePreviewList = data;
         this.processPagination(this.completePreviewList);
-        this.loadPage(1, fromDelete);
+        this.loadPage(1, forceReload);
         this.isPreview = true;
     }
 
