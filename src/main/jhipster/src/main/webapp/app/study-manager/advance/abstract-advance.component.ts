@@ -87,42 +87,46 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     currentPagePreviewList: AdvancedGermplasmPreview[];
     selectedItems = [];
 
-    filters = {
-        environment: {
-            key: 'environment',
-            type: FilterType.TEXT,
-            value: ''
-        },
-        plotNumber: {
-            key: 'plotNumber',
-            type: FilterType.TEXT,
-            value: ''
-        },
-        plantNumber: {
-            key: 'plantNumber',
-            type: FilterType.TEXT,
-            value: ''
-        },
-        entryNumber: {
-            key: 'entryNumber',
-            type: FilterType.TEXT,
-            value: ''
-        },
-        cross: {
-            key: 'cross',
-            type: FilterType.TEXT,
-            value: ''
-        },
-        immediateSource: {
-            key: 'immediateSource',
-            type: FilterType.TEXT,
-            value: ''
-        },
-        breedingMethod: {
-            key: 'breedingMethod',
-            type: FilterType.TEXT,
-            value: ''
-        }
+    filters = this.getInitialFilters();
+
+    private getInitialFilters() {
+        return {
+            environment: {
+                key: 'environment',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            plotNumber: {
+                key: 'plotNumber',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            plantNumber: {
+                key: 'plantNumber',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            entryNumber: {
+                key: 'entryNumber',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            cross: {
+                key: 'cross',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            immediateSource: {
+                key: 'immediateSource',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            breedingMethod: {
+                key: 'breedingMethod',
+                type: FilterType.TEXT,
+                value: ''
+            }
+        };
     }
 
     protected constructor(public paramContext: ParamContext,
@@ -351,6 +355,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.previousPage = 1;
         this.completePreviewList = [];
         this.listPerPage = [];
+        this.filters = this.getInitialFilters();
     }
 
     onSuccess(data: AdvancedGermplasmPreview[], forceReload= false) {
@@ -370,6 +375,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     exitPreview() {
+        this.resetTable();
         this.isPreview = false;
     }
 

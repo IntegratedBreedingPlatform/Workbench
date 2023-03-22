@@ -152,7 +152,7 @@
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back('study')">
 			<span jhiTranslate="entity.action.back">Back</span>
 		</button>
-		<button (click)="preview()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyPreviewButton">
+		<button (click)="preview(true)" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyPreviewButton">
 			<span *ngIf="isLoadingPreview" class="throbber throbber-btn"></span>
 			<span jhiTranslate="advance.preview">Preview</span>
 		</button>
