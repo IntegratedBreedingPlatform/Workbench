@@ -376,6 +376,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     exitPreview() {
         this.resetTable();
+        this.selectedItems = [];
         this.isPreview = false;
     }
 
