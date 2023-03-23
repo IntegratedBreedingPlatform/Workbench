@@ -475,6 +475,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         return this.selectedItems.length && this.currentPagePreviewList.every(
             (p) => Boolean(this.selectedItems.indexOf(p.uniqueId)  > -1));
     }
+
+    getReplicationNumber() {
+        return this.replicationNumber ? this.replicationsOptions.filter((rep) => rep.selected).length : '-';
+    }
 }
 
 enum SelectionTraitLevelTypes {

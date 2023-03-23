@@ -178,9 +178,9 @@
 						</tr>
 						<tr>
 							<td><span jhiTranslate="advance-preview.summary.count.reps"></span></td>
-							<td>{{replicationNumber || '-'}}</td>
+							<td>{{getReplicationNumber()}}</td>
 						</tr>
-						<tr *ngIf="isPlotDataset()">
+						<tr>
 							<td><span jhiTranslate="advance-preview.summary.count.plots"></span></td>
 							<td>{{totalItems}}</td>
 						</tr>
@@ -211,7 +211,7 @@
 													  (onReset)="applyFilters()">
 							</jhi-column-filter-inline>
 						</th>
-						<th  *ngIf="isPlotDataset()" scope="col">
+						<th  scope="col">
 							<span jhiTranslate="advance-preview.data.columns.plotNumber"></span>
 							<jhi-column-filter-inline [filter]="filters.plotNumber"
 													  (onApply)="applyFilters()"
@@ -268,8 +268,8 @@
 									   [checked]="isSelected(advancedGermplasm.uniqueId)"
 									   (click)="toggleSelect($event, advancedGermplasm.uniqueId);"></td>
 							<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
-							<td  *ngIf="isPlotDataset()">{{advancedGermplasm.plotNumber}}</td>
-							<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
+							<td>{{advancedGermplasm.plotNumber}}</td>
+							<td *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
 							<td>{{advancedGermplasm.entryNumber}}</td>
 							<td>{{advancedGermplasm.cross}}</td>
 							<td>{{advancedGermplasm.immediateSource}}</td>
