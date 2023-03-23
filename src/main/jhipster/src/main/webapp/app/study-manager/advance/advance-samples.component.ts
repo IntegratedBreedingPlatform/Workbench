@@ -105,6 +105,16 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
             }
         }
 
+        if (this.completePreviewList) {
+            const previouslyDeleted = this.completePreviewList.filter((row) => row.deleted).map((row) => row.uniqueId);
+
+            if (!advanceSamplesRequest.excludedAdvancedRows) {
+                advanceSamplesRequest.excludedAdvancedRows = previouslyDeleted;
+            } else {
+                advanceSamplesRequest.excludedAdvancedRows.concat(previouslyDeleted);
+            }
+        }
+
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;

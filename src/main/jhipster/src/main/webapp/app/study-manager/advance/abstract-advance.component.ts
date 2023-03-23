@@ -353,7 +353,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     resetTable(): void {
         this.page = 1;
         this.previousPage = 1;
-        this.completePreviewList = [];
         this.listPerPage = [];
         this.filters = this.getInitialFilters();
     }
@@ -423,7 +422,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     processPagination(list: AdvancedGermplasmPreview[]) {
-        this.totalItems = list.length;
+        const filteredList = list.filter((row) => !row.deleted);
+        this.totalItems = filteredList.length;
 
         if (this.totalItems === 0) {
             this.listPerPage = [];
@@ -431,7 +431,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             return;
         }
 
-        this.listPerPage = list.reduce((resultArray, item, index) => {
+        this.listPerPage = filteredList.reduce((resultArray, item, index) => {
             const pageIndex = Math.floor(index / this.itemsPerPage)
 
             if (!resultArray[pageIndex]) {

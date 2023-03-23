@@ -210,6 +210,16 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
             }
         }
 
+        if (this.completePreviewList) {
+            const previouslyDeleted = this.completePreviewList.filter((row) => row.deleted).map((row) => row.uniqueId);
+
+            if (!advanceStudyRequest.excludedAdvancedRows) {
+                advanceStudyRequest.excludedAdvancedRows = previouslyDeleted;
+            } else {
+                advanceStudyRequest.excludedAdvancedRows.concat(previouslyDeleted);
+            }
+        }
+
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;

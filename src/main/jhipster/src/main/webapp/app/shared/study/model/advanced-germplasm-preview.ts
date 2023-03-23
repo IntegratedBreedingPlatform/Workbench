@@ -1,6 +1,6 @@
 export class AdvancedGermplasmPreview {
     constructor(
-        public uniqueId: number,
+        public uniqueId: string,
         public trialInstance: string,
         public locationName: string,
         public entryNumber: string,
@@ -9,7 +9,8 @@ export class AdvancedGermplasmPreview {
         public cross: string,
         public immediateSource: string,
         public breedingMethodAbbr: string,
-        public designation: string
+        public designation: string,
+        public deleted: boolean
     ) {
     }
 }

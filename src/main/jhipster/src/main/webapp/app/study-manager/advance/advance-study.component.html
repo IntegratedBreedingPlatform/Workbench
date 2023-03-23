@@ -263,18 +263,20 @@
 					</thead>
 					<tbody *ngIf="currentPagePreviewList.length else nodata">
 					<tr *ngFor="let advancedGermplasm of currentPagePreviewList">
-						<td><input type="checkbox" name="preview-row" [value]="advancedGermplasm.uniqueId"
-								   [checked]="isSelected(advancedGermplasm.uniqueId)"
-								   (click)="toggleSelect($event, advancedGermplasm.uniqueId);"></td>
-						<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
-						<td  *ngIf="isPlotDataset()">{{advancedGermplasm.plotNumber}}</td>
-						<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
-						<td>{{advancedGermplasm.entryNumber}}</td>
-						<td>{{advancedGermplasm.cross}}</td>
-						<td>{{advancedGermplasm.immediateSource}}</td>
-						<td>{{advancedGermplasm.breedingMethodAbbr}}</td>
-						<td jhiTranslate="advance-preview.data.pending"></td>
-						<td>{{advancedGermplasm.designation}}</td>
+						<ng-container *ngIf="!advancedGermplasm.deleted">
+							<td><input type="checkbox" name="preview-row" [value]="advancedGermplasm.uniqueId"
+									   [checked]="isSelected(advancedGermplasm.uniqueId)"
+									   (click)="toggleSelect($event, advancedGermplasm.uniqueId);"></td>
+							<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
+							<td  *ngIf="isPlotDataset()">{{advancedGermplasm.plotNumber}}</td>
+							<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
+							<td>{{advancedGermplasm.entryNumber}}</td>
+							<td>{{advancedGermplasm.cross}}</td>
+							<td>{{advancedGermplasm.immediateSource}}</td>
+							<td>{{advancedGermplasm.breedingMethodAbbr}}</td>
+							<td jhiTranslate="advance-preview.data.pending"></td>
+							<td>{{advancedGermplasm.designation}}</td>
+						</ng-container>
 					</tr>
 					</tbody>
 				</table>
@@ -303,7 +305,8 @@
 							<div class="pagination-box pagination-box-right">
 								<div class="form-inline">
 									<label for="itemsPerPage" class="control-label control-label-left">Items Per Page</label>
-									<select [(ngModel)]="itemsPerPage" class="form-control ml-2" id="itemsPerPage" [disabled]="isLoading" (change)="resetTable();preview(true);" style="width:95px">
+									<select [(ngModel)]="itemsPerPage" class="form-control ml-2" id="itemsPerPage" [disabled]="isLoading"
+											(change)="resetTable();preview(true);" style="width:95px">
 										<option value="10">10</option>
 										<option value="20">20</option>
 										<option value="50">50</option>
