@@ -178,7 +178,7 @@
 						</tr>
 						<tr>
 							<td><span jhiTranslate="advance-preview.summary.count.reps"></span></td>
-							<td>{{replicationNumber}}</td>
+							<td>{{replicationNumber || '-'}}</td>
 						</tr>
 						<tr *ngIf="isPlotDataset()">
 							<td><span jhiTranslate="advance-preview.summary.count.plots"></span></td>

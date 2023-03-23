@@ -342,7 +342,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     private initializeReplicationOptions(replicationNumber: number) {
-        if (replicationNumber !== 0) {
+        if (!!replicationNumber && replicationNumber !== 0) {
             for (let rep = 1; rep <= replicationNumber; rep++) {
                 this.replicationsOptions.push({ index: rep, selected: (rep === 1) });
             }
