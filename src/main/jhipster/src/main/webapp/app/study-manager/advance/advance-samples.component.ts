@@ -13,6 +13,7 @@ import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.compon
 import { AdvanceSamplesRequest } from '../../shared/study/model/advance-sample-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 
 @Component({
     selector: 'jhi-advance-samples',
@@ -43,6 +44,11 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 .map((replication: any) => replication.index);
 
         const advanceSamplesRequest: AdvanceSamplesRequest = new AdvanceSamplesRequest(selectedInstanceIds, selectedReplicationNumbers, Number(this.breedingMethodSelectedId));
+
+        if (this.selectedItems.length >= 1) {
+            advanceSamplesRequest.excludedAdvancedRows = this.selectedItems;
+        }
+
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;
@@ -51,8 +57,8 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
         this.advanceService.advanceSamples(this.studyId, advanceSamplesRequest)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(
-            (res: number[]) => this.onAdvanceSuccess(res),
-            (res) => this.onError(res));
+                (res: number[]) => this.onAdvanceSuccess(res),
+                (res) => this.onError(res));
     }
 
     isValid(): boolean {
@@ -74,4 +80,40 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
         return true;
     }
 
+    deleteSelectedEntries(): void {
+        this.resetTable();
+        this.preview(true, true);
+    }
+
+    preview(forceReload = false, isDeletingEntries= false): void {
+        this.isLoadingPreview = true;
+
+        const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
+        const selectedReplicationNumbers: number[] =
+            this.replicationsOptions.filter((replication: any) => replication.selected)
+                .map((replication: any) => replication.index);
+
+        const advanceSamplesRequest: AdvanceSamplesRequest = new AdvanceSamplesRequest(selectedInstanceIds, selectedReplicationNumbers, Number(this.breedingMethodSelectedId));
+
+        if (isDeletingEntries) {
+            if (this.selectedItems.length >= 1) {
+                advanceSamplesRequest.excludedAdvancedRows = this.selectedItems
+            } else {
+                this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
+                this.isLoadingPreview = false;
+                return;
+            }
+        }
+
+        if (this.showSelectionTraitSelection) {
+            const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
+            advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;
+        }
+
+        this.advanceService.advanceSamplesPreview(this.studyId, advanceSamplesRequest)
+            .pipe(finalize(() => this.isLoadingPreview = false))
+            .subscribe(
+                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, forceReload),
+                (res) => this.onError(res));
+    }
 }

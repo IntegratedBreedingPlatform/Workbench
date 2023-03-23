@@ -15,21 +15,14 @@
 			<div class="form-group row required">
 				<label for="breedingMethod" class="col-sm-4 col-form-label font-weight-bold" jhiTranslate="germplasm-progenitors-modal.breeding.method"></label>
 				<div class="col-sm-8">
-					<ng-select2 name="breedingMethod" id="breedingMethod" width="100%" [(ngModel)]="breedingMethodSelectedId" [options]="breedingMethodOptions"
-								[value]="breedingMethodSelectedId" [data]="initialData" (valueChanged)="onValueChanged($event)">
-					</ng-select2>
-					<div class="row">
-						<div class="col-xs-12 col-md-12">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="option-group" id="generative" [value]="true" [(ngModel)]="isGenerative" (change)="breedingMethodOptionChanged()">
-								<label class="form-check-label" for="generative" jhiTranslate="germplasm-progenitors-modal.breeding.method.generative"></label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="option-group" id="derivative" [value]="false" [(ngModel)]="isGenerative" (change)="breedingMethodOptionChanged()">
-								<label class="form-check-label" for="derivative" jhiTranslate="germplasm-progenitors-modal.breeding.method.der.man"></label>
-							</div>
-						</div>
-					</div>
+					<jhi-breeding-methods-select [(value)]="breedingMethodSelectedId"
+												 [selectWidth]="'100%'"
+												 [showAllMethodTypesOption]="false"
+												 [showDerivativeMethodTypesOption]="true"
+												 [showGenerativeMethodTypesOption]="true"
+												 [showFavoritesCheckbox]="false"
+												 (onMethodChanged)="onMethodChanged($event)"
+												 (breedingMethodFilterTypeValueChange)="breedingMethodOptionChanged($event)"></jhi-breeding-methods-select>
 				</div>
 			</div>
 			<div *ngIf="!isMutation()" class="form-group row">

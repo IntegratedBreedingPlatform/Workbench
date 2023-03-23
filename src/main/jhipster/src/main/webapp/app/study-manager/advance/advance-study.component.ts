@@ -13,6 +13,8 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { AdvanceService } from '../../shared/study/service/advance.service';
 import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, LineSelectionRequest } from '../../shared/study/model/advance-study-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
+import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
+import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -64,6 +66,11 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
 
         const advanceStudyRequest: AdvanceStudyRequest =
             new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+
+        if (this.selectedItems.length >= 1) {
+            advanceStudyRequest.excludedAdvancedRows = this.selectedItems
+        }
+
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
@@ -108,10 +115,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         }
     }
 
-    onMethodChange(selectedMethodId: string) {
-        super.onMethodChange(selectedMethodId);
-        this.showLinesSelection = !this.selectedBreedingMethod.isBulkingMethod;
-        this.showBulkingSelection = this.selectedBreedingMethod.isBulkingMethod;
+    onMethodChange(selectedBreedingMethod: BreedingMethod) {
+        super.onMethodChange(selectedBreedingMethod);
+        this.showLinesSelection = !selectedBreedingMethod.isBulkingMethod;
+        this.showBulkingSelection = selectedBreedingMethod.isBulkingMethod;
     }
 
     onSelectLineVariable(e) {
@@ -171,4 +178,67 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         return true;
     }
 
+    deleteSelectedEntries(): void {
+        this.resetTable();
+        this.preview(true, true);
+    }
+
+    preview(forceReload = false, isDeletingEntries= false): void {
+        this.isLoadingPreview = true;
+
+        const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
+        const selectedReplicationNumbers: number[] =
+            this.replicationsOptions.filter((replication: any) => replication.selected)
+                .map((replication: any) => replication.index);
+        const breedingMethodSelectionRequest: BreedingMethodSelectionRequest = new BreedingMethodSelectionRequest();
+        if (this.showBreedingMethodVariableSelection) {
+            breedingMethodSelectionRequest.methodVariateId = this.breedingMethodSelectedVariableId;
+        } else {
+            breedingMethodSelectionRequest.breedingMethodId = Number(this.breedingMethodSelectedId);
+        }
+
+        const advanceStudyRequest: AdvanceStudyRequest =
+            new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
+
+        if (isDeletingEntries) {
+            if (this.selectedItems.length >= 1) {
+                advanceStudyRequest.excludedAdvancedRows = this.selectedItems
+            } else {
+                this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
+                this.isLoadingPreview = false;
+                return;
+            }
+        }
+
+        if (this.showSelectionTraitSelection) {
+            const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
+            advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
+        }
+
+        if (this.showBreedingMethodVariableSelection || this.showLinesSelection) {
+            const lineSelectionRequest: LineSelectionRequest = new LineSelectionRequest();
+            if (this.linesCheck) {
+                lineSelectionRequest.linesSelected = this.selectedLinesNumber;
+            } else {
+                lineSelectionRequest.lineVariateId = this.selectedLinesVariableId;
+            }
+            advanceStudyRequest.lineSelectionRequest = lineSelectionRequest;
+        }
+
+        if (this.showBulkingSelection) {
+            const bulkingRequest: BulkingRequest = new BulkingRequest();
+            if (this.bulksCheck) {
+                bulkingRequest.allPlotsSelected = true;
+            } else {
+                bulkingRequest.plotVariateId = this.selectedPlotVariableId;
+            }
+            advanceStudyRequest.bulkingRequest = bulkingRequest;
+        }
+
+        this.advanceService.advanceStudyPreview(this.studyId, advanceStudyRequest)
+            .pipe(finalize(() => this.isLoadingPreview = false))
+            .subscribe(
+                (res: AdvancedGermplasmPreview[]) => this.onSuccess(res, forceReload),
+                (res) => this.onError(res));
+    }
 }

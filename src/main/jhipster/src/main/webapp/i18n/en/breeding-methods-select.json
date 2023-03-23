@@ -1,0 +1,8 @@
+{
+    "breeding-methods-select": {
+        "filter.option.generative": "Generative methods",
+        "filter.option.derivative-and-mantenance": "Derivative and Maintenance methods",
+        "filter.option.all-methods": "All methods",
+        "use-favorite": "Show only favorite methods"
+    }
+}

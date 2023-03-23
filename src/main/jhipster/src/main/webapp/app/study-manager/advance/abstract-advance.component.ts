@@ -16,12 +16,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { BreedingMethodTypeEnum } from '../../shared/breeding-method/model/breeding-method-type.model';
 import { BreedingMethodClassMethodEnum } from '../../shared/breeding-method/model/breeding-method-class.enum';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
+import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
+import { FilterType } from '../../shared/column-filter/column-filter.component';
 
 export enum AdvanceType {
     STUDY,
@@ -37,13 +38,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     static readonly SELECTION_TRAIT_EXPRESSION = '[SELTRAIT]';
 
-    breedingMethods: BreedingMethod[] = [];
-    breedingMethodOptions: any;
     breedingMethodSelectedId: string;
-    breedingMethodType = '1';
-    useFavoriteBreedingMethods = false;
-    methodTypes: BreedingMethodTypeEnum[] = [BreedingMethodTypeEnum.DERIVATIVE, BreedingMethodTypeEnum.MAINTENANCE];
-    selectedBreedingMethod: BreedingMethod;
 
     selectionMethodVariables: ObservationVariable[] = [];
 
@@ -77,6 +72,63 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
 
+    // for preview data table
+    isLoadingPreview = false;
+    totalItems: number;
+    currentPageCount: number;
+    page = 1;
+    previousPage: number;
+    isPreview = false;
+
+    itemsPerPage = 10;
+
+    completePreviewList: AdvancedGermplasmPreview[];
+    listPerPage: AdvancedGermplasmPreview[][];
+    currentPagePreviewList: AdvancedGermplasmPreview[];
+    selectedItems = [];
+
+    filters = this.getInitialFilters();
+
+    private getInitialFilters() {
+        return {
+            environment: {
+                key: 'environment',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            plotNumber: {
+                key: 'plotNumber',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            plantNumber: {
+                key: 'plantNumber',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            entryNumber: {
+                key: 'entryNumber',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            cross: {
+                key: 'cross',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            immediateSource: {
+                key: 'immediateSource',
+                type: FilterType.TEXT,
+                value: ''
+            },
+            breedingMethod: {
+                key: 'breedingMethod',
+                type: FilterType.TEXT,
+                value: ''
+            }
+        };
+    }
+
     protected constructor(public paramContext: ParamContext,
                           public route: ActivatedRoute,
                           public breedingMethodService: BreedingMethodService,
@@ -99,7 +151,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             this.selectedDatasetId = Number(selectedDatasetId);
         }
 
-        this.loadBreedingMethods();
         this.loadStudyVariables();
         this.initializeReplicationOptions(this.replicationNumber);
 
@@ -130,19 +181,26 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }
     }
 
-    onMethodChange(selectedMethodId: string) {
-        if (selectedMethodId && this.breedingMethods.length > 0) {
-            this.breedingMethodSelectedId = selectedMethodId;
-            this.selectedBreedingMethod = this.breedingMethods.find((method: BreedingMethod) => String(method.mid) === this.breedingMethodSelectedId);
+    onMethodChange(selectedBreedingMethod: BreedingMethod) {
+        if (selectedBreedingMethod) {
+            this.breedingMethodSelectedId = String(selectedBreedingMethod.mid);
             this.showSelectionTraitSelection = this.hasSelectTraitVariables() &&
-                (this.selectedBreedingMethod.suffix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION ||
-                    this.selectedBreedingMethod.prefix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION);
+                (selectedBreedingMethod.suffix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION ||
+                    selectedBreedingMethod.prefix === AbstractAdvanceComponent.SELECTION_TRAIT_EXPRESSION);
         }
     }
 
     onSelectionTraitLevelChanged(datasetId) {
         this.selectionTraitVariables = this.selectionTraitVariablesByDatasetIds.get(Number(datasetId));
         this.selectedSelectionTraitVariableId = null;
+    }
+
+    isPlotDataset() {
+        return this.selectedDatasetTypeId === DatasetTypeEnum.PLOT;
+    }
+
+    isPlantDataset() {
+        return this.selectedDatasetTypeId === DatasetTypeEnum.PLANT_SUBOBSERVATIONS;
     }
 
     protected hasSelectTraitVariables() {
@@ -190,68 +248,11 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         });
     }
 
-    private loadBreedingMethods() {
-        this.breedingMethodOptions = {
-            ajax: {
-                delay: 500,
-                transport: function(params, success, failure) {
-                    params.data.page = params.data.page || 1;
-
-                    if (params.data.page === 1) {
-                        this.breedingMethods = [];
-                    }
-
-                    const breedingMethodSearchRequest: BreedingMethodSearchRequest = new BreedingMethodSearchRequest();
-                    breedingMethodSearchRequest.nameFilter = {
-                        type: MatchType.STARTSWITH,
-                        value: params.data.term
-                    };
-
-                    breedingMethodSearchRequest.methodTypes = this.methodTypes;
-                    const pagination = {
-                        page: (params.data.page - 1),
-                        size: AbstractAdvanceComponent.BREEDING_METHODS_PAGE_SIZE
-                    };
-
-                    if (this.advanceType === AdvanceType.SAMPLES) {
-                        breedingMethodSearchRequest.methodClassIds = [BreedingMethodClassMethodEnum.NON_BULKING_BREEDING_METHOD_CLASS];
-                    }
-
-                    this.breedingMethodService.searchBreedingMethods(
-                        breedingMethodSearchRequest,
-                        this.useFavoriteBreedingMethods,
-                        pagination
-                    ).subscribe((res: HttpResponse<BreedingMethod[]>) => {
-                        this.breedingMethodsFilteredItemsCount = res.headers.get('X-Total-Count');
-                        success(res.body);
-                    }, failure);
-                }.bind(this),
-                processResults: function(methods, params) {
-                    params.page = params.page || 1;
-
-                    this.breedingMethods = this.breedingMethods.concat(...methods)
-
-                    return {
-                        results: methods.map((method: BreedingMethod) => {
-                            return {
-                                id: String(method.mid),
-                                text: method.code + ' - ' + method.name
-                            };
-                        }),
-                        pagination: {
-                            more: (params.page * AbstractAdvanceComponent.BREEDING_METHODS_PAGE_SIZE) < this.breedingMethodsFilteredItemsCount
-                        }
-                    };
-                }.bind(this)
-            }
-        };
-    }
-
     private loadStudyVariables() {
         this.datasetService.getVariablesByVariableType(this.studyId, [VariableTypeEnum.STUDY_DETAIL])
             .toPromise().then((response: HttpResponse<ObservationVariable[]>) => {
-                this.selectionTraitVariablesByDatasetIds.set(this.studyId, this.filterSelectionTraitVariable(response.body));
-                this.loadDatasets();
+            this.selectionTraitVariablesByDatasetIds.set(this.studyId, this.filterSelectionTraitVariable(response.body));
+            this.loadDatasets();
         });
     }
 
@@ -286,50 +287,50 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     private loadDatasets() {
         this.datasetService.getDatasetsByTypeIds(this.studyId, [DatasetTypeEnum.ENVIRONMENT, DatasetTypeEnum.PLOT, DatasetTypeEnum.PLANT_SUBOBSERVATIONS])
             .toPromise().then((response: HttpResponse<DatasetModel[]>) => {
-                let advanceFromSubObservation = false;
-                response.body.forEach((dataset: DatasetModel) => {
+            let advanceFromSubObservation = false;
+            response.body.forEach((dataset: DatasetModel) => {
 
-                    if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
-                        this.environmentDatasetId = dataset.datasetId;
-                        this.selectionTraitVariablesByDatasetIds.set(this.environmentDatasetId, this.filterSelectionTraitVariable(dataset.variables));
-                        dataset.instances.forEach((instance: StudyInstanceModel) => {
-                            if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
-                                this.trialInstances.push({
-                                    instanceId: instance.instanceId,
-                                    instanceNumber: instance.instanceNumber,
-                                    locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')'
-                                });
-                            }
-                        });
-
-                    } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT || dataset.datasetTypeId === DatasetTypeEnum.PLANT_SUBOBSERVATIONS) {
-                        const isSelectedDataset = dataset.datasetId === this.selectedDatasetId;
-                        if (isSelectedDataset) {
-                            this.selectedDatasetName = dataset.name;
-                            this.selectedDatasetTypeId = dataset.datasetTypeId;
-
-                            if (dataset.datasetTypeId !== DatasetTypeEnum.PLOT) {
-                                advanceFromSubObservation = true;
-                            }
+                if (dataset.datasetTypeId === DatasetTypeEnum.ENVIRONMENT) {
+                    this.environmentDatasetId = dataset.datasetId;
+                    this.selectionTraitVariablesByDatasetIds.set(this.environmentDatasetId, this.filterSelectionTraitVariable(dataset.variables));
+                    dataset.instances.forEach((instance: StudyInstanceModel) => {
+                        if (this.selectedInstances.includes(instance.instanceNumber.toString())) {
+                            this.trialInstances.push({
+                                instanceId: instance.instanceId,
+                                instanceNumber: instance.instanceNumber,
+                                locAbbr: instance.locationName + ' - (' + instance.locationAbbreviation + ')'
+                            });
                         }
+                    });
 
-                        if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
-                            this.observationDatasetId = dataset.datasetId;
-                        } else if (isSelectedDataset) {
-                            this.subObservationDatasetId = dataset.datasetId;
+                } else if (dataset.datasetTypeId === DatasetTypeEnum.PLOT || dataset.datasetTypeId === DatasetTypeEnum.PLANT_SUBOBSERVATIONS) {
+                    const isSelectedDataset = dataset.datasetId === this.selectedDatasetId;
+                    if (isSelectedDataset) {
+                        this.selectedDatasetName = dataset.name;
+                        this.selectedDatasetTypeId = dataset.datasetTypeId;
+
+                        if (dataset.datasetTypeId !== DatasetTypeEnum.PLOT) {
+                            advanceFromSubObservation = true;
                         }
-
-                        if (this.selectedDatasetId && dataset.datasetId !== this.selectedDatasetId) {
-                            return;
-                        }
-
-                        this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.BREEDING_METHOD_PROPERTY);
-                        this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.SELECTION_PLANT_PROPERTY);
-
-                        this.selectionTraitVariablesByDatasetIds.set(dataset.datasetId, this.filterSelectionTraitVariable(dataset.variables));
-
                     }
-                });
+
+                    if (dataset.datasetTypeId === DatasetTypeEnum.PLOT) {
+                        this.observationDatasetId = dataset.datasetId;
+                    } else if (isSelectedDataset) {
+                        this.subObservationDatasetId = dataset.datasetId;
+                    }
+
+                    if (this.selectedDatasetId && dataset.datasetId !== this.selectedDatasetId) {
+                        return;
+                    }
+
+                    this.selectionMethodVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.BREEDING_METHOD_PROPERTY);
+                    this.selectionPlantVariables = this.filterVariablesByProperty(dataset.variables, AbstractAdvanceComponent.SELECTION_PLANT_PROPERTY);
+
+                    this.selectionTraitVariablesByDatasetIds.set(dataset.datasetId, this.filterSelectionTraitVariable(dataset.variables));
+
+                }
+            });
 
             this.initializeSelectionTraitLevels(advanceFromSubObservation);
         });
@@ -348,6 +349,132 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }
     }
 
+    // methods for advance preview
+    resetTable(): void {
+        this.page = 1;
+        this.previousPage = 1;
+        this.completePreviewList = [];
+        this.listPerPage = [];
+        this.filters = this.getInitialFilters();
+    }
+
+    onSuccess(data: AdvancedGermplasmPreview[], forceReload= false) {
+        this.completePreviewList = data;
+        this.processPagination(this.completePreviewList);
+        this.loadPage(1, forceReload);
+        this.isPreview = true;
+    }
+
+    loadPage(page: number, forceReload = false) {
+        if (page !== this.previousPage || forceReload) {
+            this.previousPage = page;
+            this.currentPagePreviewList = this.listPerPage[page - 1];
+            const itemCount = this.currentPagePreviewList.length;
+            this.currentPageCount = ((page - 1) * this.itemsPerPage) + itemCount;
+        }
+    }
+
+    exitPreview() {
+        this.resetTable();
+        this.selectedItems = [];
+        this.isPreview = false;
+    }
+
+    applyFilters() {
+        this.page = 1;
+        this.previousPage = 1;
+        const filteredList = this.completePreviewList.filter(
+            (row) => {
+                const env = (row.trialInstance + '-' + row.locationName).toLowerCase();
+                if (this.filters.environment.value && !env.includes(this.filters.environment.value.toLowerCase())) {
+                    return false;
+                }
+
+                if (this.filters.plotNumber.value && row.plotNumber !== this.filters.plotNumber.value) {
+                    return false;
+                }
+
+                if (this.filters.plantNumber.value && row.plantNumber !== this.filters.plantNumber.value) {
+                    return false;
+                }
+
+                if (this.filters.entryNumber.value && row.entryNumber !== this.filters.entryNumber.value) {
+                    return false;
+                }
+
+                if (this.filters.cross.value && !row.cross.toLowerCase().includes(this.filters.cross.value.toLowerCase())) {
+                    return false;
+                }
+
+                if (this.filters.immediateSource.value && !row.immediateSource.toLowerCase().includes(this.filters.immediateSource.value.toLowerCase())) {
+                    return false;
+                }
+
+                if (this.filters.breedingMethod.value && !row.breedingMethodAbbr.toLowerCase().includes(this.filters.breedingMethod.value.toLowerCase())) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
+
+        this.processPagination(filteredList);
+        this.loadPage(1, true);
+    }
+
+    processPagination(list: AdvancedGermplasmPreview[]) {
+        this.totalItems = list.length;
+
+        if (this.totalItems === 0) {
+            this.listPerPage = [];
+            this.listPerPage.push([]);
+            return;
+        }
+
+        this.listPerPage = list.reduce((resultArray, item, index) => {
+            const pageIndex = Math.floor(index / this.itemsPerPage)
+
+            if (!resultArray[pageIndex]) {
+                resultArray[pageIndex] = [] // start a new page
+            }
+
+            resultArray[pageIndex].push(item)
+
+            return resultArray
+        }, []);
+    }
+
+    toggleSelect = function($event, uniqueId) {
+        const idx = this.selectedItems.indexOf(uniqueId);
+        if (idx > -1) {
+            this.selectedItems.splice(idx, 1)
+        } else {
+            this.selectedItems.push(uniqueId);
+        }
+
+        $event.stopPropagation();
+    };
+
+    isSelected(observationUnitId: number) {
+        return observationUnitId && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === observationUnitId);
+    }
+
+    onSelectPage() {
+        if (this.isPageSelected()) {
+            // remove all items
+            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
+                this.selectedItems.splice(this.selectedItems.indexOf(entry.uniqueId), 1));
+        } else {
+            // check remaining items
+            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
+                this.selectedItems.push(entry.uniqueId));
+        }
+    }
+
+    isPageSelected() {
+        return this.selectedItems.length && this.currentPagePreviewList.every(
+            (p) => Boolean(this.selectedItems.indexOf(p.uniqueId)  > -1));
+    }
 }
 
 enum SelectionTraitLevelTypes {
