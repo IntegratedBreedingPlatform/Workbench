@@ -110,15 +110,15 @@
 					</tr>
 					<tr>
 						<td><span jhiTranslate="advance-preview.summary.count.plots"></span></td>
-						<td>{{totalItems}}</td>
+						<td>{{originalTotalItems}}</td>
 					</tr>
 					<tr *ngIf="isPlantDataset()">
 						<td><span jhiTranslate="advance-preview.summary.count.plants"></span></td>
-						<td>{{totalItems}}</td>
+						<td>{{originalTotalItems}}</td>
 					</tr>
 					<tr>
 						<td><span jhiTranslate="advance-preview.summary.count.germplasm"></span></td>
-						<td>{{totalItems}}</td>
+						<td>{{originalTotalItems}}</td>
 					</tr>
 					</tbody>
 				</table>
@@ -130,7 +130,38 @@
 					<thead>
 					<tr>
 						<th scope="col">
-							<input type="checkbox" tooltip="select current page" [checked]="isPageSelected()" (click)="onSelectPage()" [title]="'select current page'" />
+							<span jhiTranslate="advance-preview.data.columns.entryNumber"></span>
+							<jhi-column-filter-inline [filter]="filters.entryNumber"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.designation"></span>
+						</th>
+						<th scope="col">
+							<span jhiTranslate="advance-preview.data.columns.cross"></span>
+							<jhi-column-filter-inline [filter]="filters.cross"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.gid"></span>
+						</th>
+						<th scope="col" >
+							<span jhiTranslate="advance-preview.data.columns.immediateSource"></span>
+							<jhi-column-filter-inline [filter]="filters.immediateSource"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
+						</th>
+						<th scope="col">
+							<span jhiTranslate="advance-preview.data.columns.breedingMethod"></span>
+							<jhi-column-filter-inline [filter]="filters.breedingMethod"
+													  (onApply)="applyFilters()"
+													  (onReset)="applyFilters()">
+							</jhi-column-filter-inline>
 						</th>
 						<th scope="col" >
 							<span jhiTranslate="advance-preview.data.columns.environment"></span>
@@ -153,58 +184,19 @@
 													  (onReset)="applyFilters()">
 							</jhi-column-filter-inline>
 						</th>
-						<th scope="col">
-							<span jhiTranslate="advance-preview.data.columns.entryNumber"></span>
-							<jhi-column-filter-inline [filter]="filters.entryNumber"
-													  (onApply)="applyFilters()"
-													  (onReset)="applyFilters()">
-							</jhi-column-filter-inline>
-						</th>
-						<th scope="col">
-							<span jhiTranslate="advance-preview.data.columns.cross"></span>
-							<jhi-column-filter-inline [filter]="filters.cross"
-													  (onApply)="applyFilters()"
-													  (onReset)="applyFilters()">
-							</jhi-column-filter-inline>
-						</th>
-						<th scope="col" >
-							<span jhiTranslate="advance-preview.data.columns.immediateSource"></span>
-							<jhi-column-filter-inline [filter]="filters.immediateSource"
-													  (onApply)="applyFilters()"
-													  (onReset)="applyFilters()">
-							</jhi-column-filter-inline>
-						</th>
-						<th scope="col">
-							<span jhiTranslate="advance-preview.data.columns.breedingMethod"></span>
-							<jhi-column-filter-inline [filter]="filters.breedingMethod"
-													  (onApply)="applyFilters()"
-													  (onReset)="applyFilters()">
-							</jhi-column-filter-inline>
-						</th>
-						<th scope="col" >
-							<span jhiTranslate="advance-preview.data.columns.gid"></span>
-						</th>
-						<th scope="col" >
-							<span jhiTranslate="advance-preview.data.columns.designation"></span>
-						</th>
 					</tr>
 					</thead>
 					<tbody *ngIf="currentPagePreviewList.length else nodata">
 					<tr *ngFor="let advancedGermplasm of currentPagePreviewList">
-						<ng-container *ngIf="!advancedGermplasm.deleted">
-							<td><input type="checkbox" name="preview-row" [value]="advancedGermplasm.uniqueId"
-									   [checked]="isSelected(advancedGermplasm.uniqueId)"
-									   (click)="toggleSelect($event, advancedGermplasm.uniqueId);"></td>
-							<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
-							<td  >{{advancedGermplasm.plotNumber}}</td>
-							<td  *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
-							<td>{{advancedGermplasm.entryNumber}}</td>
-							<td>{{advancedGermplasm.cross}}</td>
-							<td>{{advancedGermplasm.immediateSource}}</td>
-							<td>{{advancedGermplasm.breedingMethodAbbr}}</td>
-							<td jhiTranslate="advance-preview.data.pending"></td>
-							<td>{{advancedGermplasm.designation}}</td>
-						</ng-container>
+						<td>{{advancedGermplasm.entryNumber}}</td>
+						<td>{{advancedGermplasm.designation}}</td>
+						<td>{{advancedGermplasm.cross}}</td>
+						<td jhiTranslate="advance-preview.data.pending"></td>
+						<td>{{advancedGermplasm.immediateSource}}</td>
+						<td>{{advancedGermplasm.breedingMethodAbbr}}</td>
+						<td>{{advancedGermplasm.trialInstance + "-" + advancedGermplasm.locationName}}</td>
+						<td>{{advancedGermplasm.plotNumber}}</td>
+						<td *ngIf="isPlantDataset()">{{advancedGermplasm.plantNumber}}</td>
 					</tr>
 					</tbody>
 				</table>
@@ -251,10 +243,6 @@
 	<div class="modal-footer">
 		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="exitPreview()">
 			<span jhiTranslate="entity.action.back">Back</span>
-		</button>
-		<button (click)="deleteSelectedEntries()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="deleteEntriesButton">
-			<span *ngIf="isLoadingPreview" class="throbber throbber-btn"></span>
-			<span jhiTranslate="advance.delete-entries">Delete Selected Entries</span>
 		</button>
 		<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">
 			<span *ngIf="isLoading" class="throbber throbber-btn"></span>

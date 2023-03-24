@@ -74,6 +74,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     // for preview data table
     isLoadingPreview = false;
+    originalTotalItems: number;
     totalItems: number;
     currentPageCount: number;
     page = 1;
@@ -85,7 +86,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
     currentPagePreviewList: AdvancedGermplasmPreview[];
-    selectedItems = [];
 
     filters = this.getInitialFilters();
 
@@ -359,6 +359,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     onSuccess(data: AdvancedGermplasmPreview[], forceReload= false) {
         this.completePreviewList = data;
+        this.originalTotalItems = data.length;
         this.processPagination(this.completePreviewList);
         this.loadPage(1, forceReload);
         this.isPreview = true;
@@ -375,7 +376,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     exitPreview() {
         this.resetTable();
-        this.selectedItems = [];
         this.isPreview = false;
     }
 
@@ -422,8 +422,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     processPagination(list: AdvancedGermplasmPreview[]) {
-        const filteredList = list.filter((row) => !row.deleted);
-        this.totalItems = filteredList.length;
+        this.totalItems = list.length;
 
         if (this.totalItems === 0) {
             this.listPerPage = [];
@@ -431,7 +430,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             return;
         }
 
-        this.listPerPage = filteredList.reduce((resultArray, item, index) => {
+        this.listPerPage = list.reduce((resultArray, item, index) => {
             const pageIndex = Math.floor(index / this.itemsPerPage)
 
             if (!resultArray[pageIndex]) {
@@ -442,38 +441,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
             return resultArray
         }, []);
-    }
-
-    toggleSelect = function($event, uniqueId) {
-        const idx = this.selectedItems.indexOf(uniqueId);
-        if (idx > -1) {
-            this.selectedItems.splice(idx, 1)
-        } else {
-            this.selectedItems.push(uniqueId);
-        }
-
-        $event.stopPropagation();
-    };
-
-    isSelected(observationUnitId: number) {
-        return observationUnitId && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === observationUnitId);
-    }
-
-    onSelectPage() {
-        if (this.isPageSelected()) {
-            // remove all items
-            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
-                this.selectedItems.splice(this.selectedItems.indexOf(entry.uniqueId), 1));
-        } else {
-            // check remaining items
-            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
-                this.selectedItems.push(entry.uniqueId));
-        }
-    }
-
-    isPageSelected() {
-        return this.selectedItems.length && this.currentPagePreviewList.every(
-            (p) => Boolean(this.selectedItems.indexOf(p.uniqueId)  > -1));
     }
 
     getReplicationNumber() {
