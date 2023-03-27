@@ -67,10 +67,6 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         const advanceStudyRequest: AdvanceStudyRequest =
             new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
 
-        if (this.selectedItems.length >= 1) {
-            advanceStudyRequest.excludedAdvancedRows = this.selectedItems
-        }
-
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceStudyRequest.selectionTraitRequest = selectionTraitRequest;
@@ -178,12 +174,7 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
         return true;
     }
 
-    deleteSelectedEntries(): void {
-        this.resetTable();
-        this.preview(true, true);
-    }
-
-    preview(forceReload = false, isDeletingEntries= false): void {
+    preview(forceReload = false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -199,16 +190,6 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
 
         const advanceStudyRequest: AdvanceStudyRequest =
             new AdvanceStudyRequest(this.selectedDatasetId, selectedInstanceIds, selectedReplicationNumbers, breedingMethodSelectionRequest);
-
-        if (isDeletingEntries) {
-            if (this.selectedItems.length >= 1) {
-                advanceStudyRequest.excludedAdvancedRows = this.selectedItems
-            } else {
-                this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
-                this.isLoadingPreview = false;
-                return;
-            }
-        }
 
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);

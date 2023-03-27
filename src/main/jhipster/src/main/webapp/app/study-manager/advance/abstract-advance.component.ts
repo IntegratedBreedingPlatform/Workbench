@@ -74,6 +74,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     // for preview data table
     isLoadingPreview = false;
+    originalTotalItems: number;
     totalItems: number;
     currentPageCount: number;
     page = 1;
@@ -85,7 +86,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
     currentPagePreviewList: AdvancedGermplasmPreview[];
-    selectedItems = [];
 
     filters = this.getInitialFilters();
 
@@ -342,7 +342,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     private initializeReplicationOptions(replicationNumber: number) {
-        if (replicationNumber !== 0) {
+        if (!!replicationNumber && replicationNumber !== 0) {
             for (let rep = 1; rep <= replicationNumber; rep++) {
                 this.replicationsOptions.push({ index: rep, selected: (rep === 1) });
             }
@@ -353,13 +353,13 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     resetTable(): void {
         this.page = 1;
         this.previousPage = 1;
-        this.completePreviewList = [];
         this.listPerPage = [];
         this.filters = this.getInitialFilters();
     }
 
     onSuccess(data: AdvancedGermplasmPreview[], forceReload= false) {
         this.completePreviewList = data;
+        this.originalTotalItems = data.length;
         this.processPagination(this.completePreviewList);
         this.loadPage(1, forceReload);
         this.isPreview = true;
@@ -376,7 +376,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     exitPreview() {
         this.resetTable();
-        this.selectedItems = [];
         this.isPreview = false;
     }
 
@@ -444,36 +443,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }, []);
     }
 
-    toggleSelect = function($event, uniqueId) {
-        const idx = this.selectedItems.indexOf(uniqueId);
-        if (idx > -1) {
-            this.selectedItems.splice(idx, 1)
-        } else {
-            this.selectedItems.push(uniqueId);
-        }
-
-        $event.stopPropagation();
-    };
-
-    isSelected(observationUnitId: number) {
-        return observationUnitId && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === observationUnitId);
-    }
-
-    onSelectPage() {
-        if (this.isPageSelected()) {
-            // remove all items
-            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
-                this.selectedItems.splice(this.selectedItems.indexOf(entry.uniqueId), 1));
-        } else {
-            // check remaining items
-            this.currentPagePreviewList.forEach((entry: AdvancedGermplasmPreview) =>
-                this.selectedItems.push(entry.uniqueId));
-        }
-    }
-
-    isPageSelected() {
-        return this.selectedItems.length && this.currentPagePreviewList.every(
-            (p) => Boolean(this.selectedItems.indexOf(p.uniqueId)  > -1));
+    getReplicationNumber() {
+        return this.replicationNumber ? this.replicationsOptions.filter((rep) => rep.selected).length : '-';
     }
 }
 
