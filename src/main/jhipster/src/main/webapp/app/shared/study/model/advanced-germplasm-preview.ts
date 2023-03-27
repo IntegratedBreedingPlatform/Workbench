@@ -1,6 +1,5 @@
 export class AdvancedGermplasmPreview {
     constructor(
-        public uniqueId: number,
         public trialInstance: string,
         public locationName: string,
         public entryNumber: string,

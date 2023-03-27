@@ -3,7 +3,6 @@ export abstract class AbstractAdvanceRequest {
         public instanceIds: number[],
         public selectedReplications: number[],
         public selectionTraitRequest?: SelectionTraitRequest,
-        public excludedAdvancedRows?: number[],
     ) {
     }
 }

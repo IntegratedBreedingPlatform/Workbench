@@ -45,10 +45,6 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
 
         const advanceSamplesRequest: AdvanceSamplesRequest = new AdvanceSamplesRequest(selectedInstanceIds, selectedReplicationNumbers, Number(this.breedingMethodSelectedId));
 
-        if (this.selectedItems.length >= 1) {
-            advanceSamplesRequest.excludedAdvancedRows = this.selectedItems;
-        }
-
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
             advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;
@@ -80,12 +76,7 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
         return true;
     }
 
-    deleteSelectedEntries(): void {
-        this.resetTable();
-        this.preview(true, true);
-    }
-
-    preview(forceReload = false, isDeletingEntries= false): void {
+    preview(forceReload = false): void {
         this.isLoadingPreview = true;
 
         const selectedInstanceIds: number[] = this.trialInstances.map((instance) => instance.instanceId);
@@ -94,16 +85,6 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 .map((replication: any) => replication.index);
 
         const advanceSamplesRequest: AdvanceSamplesRequest = new AdvanceSamplesRequest(selectedInstanceIds, selectedReplicationNumbers, Number(this.breedingMethodSelectedId));
-
-        if (isDeletingEntries) {
-            if (this.selectedItems.length >= 1) {
-                advanceSamplesRequest.excludedAdvancedRows = this.selectedItems
-            } else {
-                this.alertService.error('error.custom', { param: 'Please select at least 1 entry.' });
-                this.isLoadingPreview = false;
-                return;
-            }
-        }
 
         if (this.showSelectionTraitSelection) {
             const selectionTraitRequest: SelectionTraitRequest = new SelectionTraitRequest(this.selectedSelectionTraitDatasetId, this.selectedSelectionTraitVariableId);
