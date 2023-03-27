@@ -11,7 +11,8 @@
             "actions": {
                 "export-list": "Export list",
                 "import-plate-info": "Import Plate Information",
-                "delete-samples": "Delete Samples"
+                "delete-samples": "Delete Samples",
+                "import-genotypes": "Import Genotypes"
             },
             "created": "A new Sample is created with identifier {{ param }}",
             "updated": "A Sample is updated with identifier {{ param }}",
@@ -50,6 +51,24 @@
                 "confirm.message": "Are you sure you want to delete the selected entries from the list?",
                 "confirm.header": "Delete entries",
                 "delete.success": "Successfully deleted entries."
+            },
+            "genotypes": {
+                "header": "Import Genotypes",
+                "study.label": "Genotyping Study:",
+                "run.label": "Run:",
+                "mapped.header": "Mapped Markers:",
+                "variable.column": "Variable",
+                "marker.column": "Marker",
+                "action.column": "Actions",
+                "markers.select.study.description": "Select the Genotyping Project and Run where the genotyping data will be coming from.",
+                "markers.map.description": "Select the markers that you want to import and map them to an ontology variable where the value will be stored. You can only select and import up to {{param1}} markers.",
+                "no.mapped.markers": "No mapped markers",
+                "loading.markers": "Loading the markers list. Please wait.",
+                "add.another.mapping": "Add another mapping",
+                "variable.already.mapped.to.a.marker.error": "Variable \"{{param1}}\" is already mapped to the \"{{param2}}\" marker.",
+                "selected.study.summary.description": "This Genotyping Study contains <b>{{param1}}</b> Individuals and <b>{{param2}}</b> Markers.",
+                "database.marker.count.exceeds.limit": "The selected Genotyping Study contains more than {{param1}} markers. The application can only import data from a Genotyping Study with less than {{param1}} markers.",
+                "import.error": "Something went wrong, please try again."
             },
             "error": "{{ param }}"
         }

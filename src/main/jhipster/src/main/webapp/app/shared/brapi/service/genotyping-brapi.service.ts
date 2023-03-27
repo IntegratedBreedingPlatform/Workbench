@@ -6,7 +6,7 @@ import { SearchGermplasmRequest } from '../model/germplasm/search-germplasm-requ
 import { SearchVariantsetRequest } from '../model/variantsets/search-variantset-request';
 import { SearchCallsetsRequest } from '../model/callsets/search-callsets-request';
 import { SearchCallsRequest } from '../model/calls/search-calls-request';
-import { BrapiResponse } from '../model/common/brapi-response';
+import { BrapiListResponse } from '../model/common/brapi-list-response';
 import { Germplasm } from '../model/germplasm/germplasm';
 import { Study } from '../model/study/study';
 import { VariantSet } from '../model/variantsets/variantset';
@@ -15,6 +15,11 @@ import { Call } from '../model/calls/call';
 import { SearchSamplesRequest } from '../model/samples/search-samples-request';
 import { Sample } from '../model/samples/sample';
 import { ExportFlapjackRequest } from '../model/export/export-flapjack-request';
+import { SearchVariantRequest } from '../model/variants/search-variant-request';
+import { Variant } from '../model/variants/variant';
+import { getBrapiAllRecords } from '../get-brapi-all-records';
+import { BrapiListResponseTokenBasedPagination } from '../model/common/brapi-list-response-token-based-pagination';
+import { getBrapiAllRecordsTokenBased } from '../get-brapi-all-records-token-based';
 
 @Injectable()
 export class GenotypingBrapiService {
@@ -26,32 +31,76 @@ export class GenotypingBrapiService {
     constructor(private http: HttpClient) {
     }
 
-    searchStudies(searchStudiesRequest: SearchStudiesRequest): Observable<BrapiResponse<Study>> {
-        return this.http.post<BrapiResponse<Study>>(`${this.brapiEndpoint}/search/studies`, searchStudiesRequest, { headers: this.createHeader() });
+    searchStudies(searchStudiesRequest: SearchStudiesRequest): Observable<BrapiListResponse<Study>> {
+        return this.http.post<BrapiListResponse<Study>>(`${this.brapiEndpoint}/search/studies`, searchStudiesRequest, { headers: this.createHeader() });
     }
 
-    searchGermplasm(searchGermplasmRequest: SearchGermplasmRequest): Observable<BrapiResponse<Germplasm>> {
-        return this.http.post<BrapiResponse<Germplasm>>(`${this.brapiEndpoint}/search/germplasm`, searchGermplasmRequest, { headers: this.createHeader() });
+    searchGermplasm(searchGermplasmRequest: SearchGermplasmRequest): Observable<BrapiListResponse<Germplasm>> {
+        return this.http.post<BrapiListResponse<Germplasm>>(`${this.brapiEndpoint}/search/germplasm`, searchGermplasmRequest, { headers: this.createHeader() });
     }
 
-    searchVariantsets(searchVariantsetRequest: SearchVariantsetRequest): Observable<BrapiResponse<VariantSet>> {
-        return this.http.post<BrapiResponse<VariantSet>>(`${this.brapiEndpoint}/search/variantsets`, searchVariantsetRequest, { headers: this.createHeader() });
+    searchVariantsets(searchVariantsetRequest: SearchVariantsetRequest): Observable<BrapiListResponse<VariantSet>> {
+        return this.http.post<BrapiListResponse<VariantSet>>(`${this.brapiEndpoint}/search/variantsets`, searchVariantsetRequest, { headers: this.createHeader() });
     }
 
-    searchCallsets(searchCallsetRequest: SearchCallsetsRequest): Observable<BrapiResponse<CallSet>> {
-        return this.http.post<BrapiResponse<CallSet>>(`${this.brapiEndpoint}/search/callsets`, searchCallsetRequest, { headers: this.createHeader() });
+    searchVariantsetsGetAll(searchVariantsetRequest: SearchVariantsetRequest): Observable<VariantSet[]> {
+        return getBrapiAllRecords<VariantSet>((page, pageSize) => {
+            searchVariantsetRequest.pageSize = pageSize;
+            searchVariantsetRequest.page = page
+            return this.searchVariantsets(searchVariantsetRequest);
+        });
     }
 
-    searchCalls(searchCallsRequest: SearchCallsRequest): Observable<BrapiResponse<Call>> {
-        return this.http.post<BrapiResponse<Call>>(`${this.brapiEndpoint}/search/calls`, searchCallsRequest, { headers: this.createHeader() });
+    searchVariants(searchVariantRequest: SearchVariantRequest): Observable<BrapiListResponseTokenBasedPagination<Variant>> {
+        return this.http.post<BrapiListResponseTokenBasedPagination<Variant>>(`${this.brapiEndpoint}/search/variants`, searchVariantRequest, { headers: this.createHeader() });
     }
 
-    searchSamples(searchSamplesRequest: SearchSamplesRequest): Observable<BrapiResponse<Sample>> {
-        return this.http.post<BrapiResponse<Germplasm>>(`${this.brapiEndpoint}/search/samples`, searchSamplesRequest, { headers: this.createHeader() });
+    searchVariantsGetAll(searchVariantRequest: SearchVariantRequest): Observable<Variant[]> {
+        return getBrapiAllRecordsTokenBased<Variant>((pageToken, pageSize) => {
+            searchVariantRequest.pageSize = pageSize;
+            searchVariantRequest.pageToken = String(pageToken);
+            return this.searchVariants(searchVariantRequest);
+        });
+    }
+
+    searchCallsets(searchCallsetRequest: SearchCallsetsRequest): Observable<BrapiListResponse<CallSet>> {
+        return this.http.post<BrapiListResponse<CallSet>>(`${this.brapiEndpoint}/search/callsets`, searchCallsetRequest, { headers: this.createHeader() });
+    }
+
+    searchCallsetsGetAll(searchCallsetRequest: SearchCallsetsRequest): Observable<CallSet[]> {
+        return getBrapiAllRecords<CallSet>((page, pageSize) => {
+            searchCallsetRequest.pageSize = pageSize;
+            searchCallsetRequest.page = page
+            return this.searchCallsets(searchCallsetRequest);
+        });
+    }
+
+    searchCalls(searchCallsRequest: SearchCallsRequest): Observable<BrapiListResponse<Call>> {
+        return this.http.post<BrapiListResponse<Call>>(`${this.brapiEndpoint}/search/calls`, searchCallsRequest, { headers: this.createHeader() });
+    }
+
+    searchCallsGetAll(searchCallsRequest: SearchCallsRequest): Observable<Call[]> {
+        return getBrapiAllRecords<Call>((page, pageSize) => {
+            searchCallsRequest.pageSize = pageSize;
+            searchCallsRequest.page = page
+            return this.searchCalls(searchCallsRequest);
+        });
+    }
+
+    searchSamples(searchSamplesRequest: SearchSamplesRequest): Observable<BrapiListResponse<Sample>> {
+        return this.http.post<BrapiListResponse<Germplasm>>(`${this.brapiEndpoint}/search/samples`, searchSamplesRequest, { headers: this.createHeader() });
+    }
+
+    searchSamplesGetAll(searchSamplesRequest: SearchSamplesRequest): Observable<Sample[]> {
+        return getBrapiAllRecords<Sample>((page, pageSize) => {
+            searchSamplesRequest.pageSize = pageSize;
+            searchSamplesRequest.page = page
+            return this.searchSamples(searchSamplesRequest);
+        });
     }
 
     exportFlapjack(exportRequest: ExportFlapjackRequest): Observable<string> {
-        return this.http.post<string>(`${this.baseUrl}/rest/gigwa/exportData`, exportRequest, {headers: this.createHeader(), responseType: 'text' as 'json'});
+        return this.http.post<string>(`${this.baseUrl}/rest/gigwa/exportData`, exportRequest, { headers: this.createHeader(), responseType: 'text' as 'json' });
     }
 
     // FIXME: Find a way to have a separate instance of HttpClient with its own HttpInterceptor

@@ -8,11 +8,13 @@ import { SampleTreeService } from './tree-table/sample-tree.service';
 
 import { SampleSearchListComponent } from './sample-search-list.component';
 import { SampleListService } from './sample-list.service';
+import { SampleGenotypeService } from './genotype/sample-genotype.service';
 import { FileDownloadHelper } from './file-download.helper';
 import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ExcelService } from './excel.service';
 import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
 import { SampleContext } from './sample.context';
+import {SampleGenotypeImpotModalComponent} from './genotype/sample-genotype-impot-modal.component';
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -30,6 +32,7 @@ const ENTITY_STATES = [
         SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
+        SampleGenotypeImpotModalComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -37,7 +40,8 @@ const ENTITY_STATES = [
         TreeTableComponent,
         SampleSearchListComponent,
         SampleImportPlateComponent,
-        SampleImportPlateMappingComponent
+        SampleImportPlateMappingComponent,
+        SampleGenotypeImpotModalComponent
     ],
     providers: [
         SampleService,
@@ -47,6 +51,7 @@ const ENTITY_STATES = [
         FileDownloadHelper,
         ExcelService,
         SampleContext,
+        SampleGenotypeService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

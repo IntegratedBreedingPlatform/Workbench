@@ -8,6 +8,7 @@ import { Sample } from './sample.model';
 import { createRequestOption } from '../../shared';
 import { map } from 'rxjs/operators';
 import { ParamContext } from '../../shared/service/param.context';
+import { getAllRecords } from '../../shared/util/get-all-records';
 
 export type EntityResponseType = HttpResponse<Sample>;
 
@@ -25,7 +26,7 @@ export class SampleService {
     }
 
     setCropAndProgram(crop: string, programUUID: string) {
-        this.resourceUrl =  SERVER_API_URL + `crops/${crop}/programs/${programUUID}/samples`;
+        this.resourceUrl = SERVER_API_URL + `crops/${crop}/programs/${programUUID}/samples`;
         this.resourceSearchUrl = this.resourceUrl;
     }
 
@@ -42,7 +43,7 @@ export class SampleService {
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Sample>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+        return this.http.get<Sample>(`${this.resourceUrl}/${id}`, { observe: 'response' })
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
     }
 
@@ -52,8 +53,16 @@ export class SampleService {
             .pipe(map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res)));
     }
 
+    getAllSamples(req?: any): Observable<Sample[]> {
+        return getAllRecords<Sample>((page: number, pageSize: number) => {
+            const params = createRequestOption(Object.assign({ page, size: pageSize}, req));
+            return this.http.get<Sample[]>(this.resourceUrl, { params, observe: 'response' })
+                .pipe(map((res: HttpResponse<Sample[]>) => this.convertArrayResponse(res)));
+        });
+    }
+
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
     search(req?: any): Observable<HttpResponse<Sample[]>> {
@@ -71,7 +80,7 @@ export class SampleService {
 
     private convertResponse(res: EntityResponseType): EntityResponseType {
         const body: Sample = this.convertItemFromServer(res.body);
-        return res.clone({body});
+        return res.clone({ body });
     }
 
     private convertArrayResponse(res: HttpResponse<Sample[]>): HttpResponse<Sample[]> {
@@ -80,7 +89,7 @@ export class SampleService {
         for (let i = 0; i < jsonResponse.length; i++) {
             body.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return res.clone({body});
+        return res.clone({ body });
     }
 
     /**
