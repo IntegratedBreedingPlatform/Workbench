@@ -18,7 +18,7 @@ import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
 import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
 import { HttpClient } from '@angular/common/http';
-import { CropParameterService } from '../../shared/crop-parameter/service/crop-parameter.service';
+import { GenotypingParameterUtilService } from '../../shared/genotyping/genotyping-parameter-util.service';
 
 const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
@@ -39,15 +39,6 @@ export class GenotypingPaneComponent implements OnInit {
     isSamplesLoading = false;
     genotypesView: any;
     isGenotypingCallsLoading = false;
-
-    public readonly GENOTYPING_SERVER = 'gigwa';
-
-    public readonly ENDPOINT = this.GENOTYPING_SERVER + '_endpoint';
-    public readonly TOKEN_ENDPOINT = this.GENOTYPING_SERVER + '_token_endpoint';
-    public readonly PROGRAM_ID = this.GENOTYPING_SERVER + '_program_id';
-    public readonly USERNAME = this.GENOTYPING_SERVER + '_username';
-    public readonly PASSWORD = this.GENOTYPING_SERVER + '_password';
-    public readonly BASE_URL = this.GENOTYPING_SERVER + '_base_url';
 
     public readonly LINK_BY_GUID = 'GUID';
     public readonly LINK_BY_SAMPLE_UID = 'SAMPLE_UID';
@@ -70,8 +61,8 @@ export class GenotypingPaneComponent implements OnInit {
 
     constructor(
         private context: ParamContext,
-        private cropParameterService: CropParameterService,
         private genotypingBrapiService: GenotypingBrapiService,
+        private genotypingParameterUtilService: GenotypingParameterUtilService,
         public germplasmDetailsContext: GermplasmDetailsContext,
         public germplasmService: GermplasmService,
         public alertService: AlertService,
@@ -81,40 +72,16 @@ export class GenotypingPaneComponent implements OnInit {
 
     ngOnInit(): void {
         this.genotypesView = '1';
-        this.cropParameterService.getByGroupName(this.GENOTYPING_SERVER).subscribe(
-            (cropParameters) => {
-                const cropParameterMap = cropParameters.reduce(function(map, row) {
-                    map[row.key] = row;
-                    return map;
-                }, {});
-                this.populateGenotypingParameters(cropParameterMap);
-
-                if (this.isGenotypingParameterConfigured()) {
-                    this.genotypingBrapiService.brapiEndpoint = this.cropGenotypingParameter.endpoint;
-                    this.genotypingBrapiService.baseUrl = this.cropGenotypingParameter.baseUrl;
-
-                    this.cropParameterService.getGenotypingToken(this.GENOTYPING_SERVER).subscribe((accessToken) => {
-                        this.genotypingBrapiService.accessToken = accessToken;
-                        this.linkBySelectOnChange();
-                    }, (error) => {
-                        this.alertService.error('genotyping.connection.error');
-                    });
-                }
+        this.genotypingParameterUtilService.getGenotypingParametersAndAuthenticate().subscribe(
+            (cropGenotypingParameter) => {
+                this.cropGenotypingParameter = cropGenotypingParameter;
+                this.genotypingBrapiService.brapiEndpoint = cropGenotypingParameter.endpoint;
+                this.genotypingBrapiService.baseUrl = cropGenotypingParameter.baseUrl;
+                this.genotypingBrapiService.accessToken = cropGenotypingParameter.accessToken;
+                this.linkBySelectOnChange();
+            }, (error) => {
+                this.alertService.error(error);
             });
-    }
-
-    populateGenotypingParameters(cropParameterMap) {
-        if (cropParameterMap[this.ENDPOINT] && cropParameterMap[this.TOKEN_ENDPOINT] && cropParameterMap[this.PROGRAM_ID]
-            && cropParameterMap[this.USERNAME] && cropParameterMap[this.PASSWORD] && cropParameterMap[this.BASE_URL]) {
-            this.cropGenotypingParameter = new CropGenotypingParameter(cropParameterMap[this.ENDPOINT].value,
-                cropParameterMap[this.TOKEN_ENDPOINT].value, cropParameterMap[this.USERNAME].value, cropParameterMap[this.PASSWORD].value,
-                cropParameterMap[this.PROGRAM_ID].value, cropParameterMap[this.BASE_URL].value);
-        }
-    }
-
-    isGenotypingParameterConfigured() {
-        return this.cropGenotypingParameter && this.cropGenotypingParameter.endpoint && this.cropGenotypingParameter.tokenEndpoint && this.cropGenotypingParameter.userName
-            && this.cropGenotypingParameter.password && this.cropGenotypingParameter.programId && this.cropGenotypingParameter.baseUrl;
     }
 
     linkBySelectOnChange() {

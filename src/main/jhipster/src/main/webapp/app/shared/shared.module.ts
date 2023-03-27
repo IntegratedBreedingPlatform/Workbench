@@ -101,6 +101,7 @@ import { ModalAlertComponent } from './modal/modal-alert.component';
 import { AdvanceService } from './study/service/advance.service';
 import { ObservationVariableHelperService } from './dataset/model/observation-variable.helper.service';
 import { ColumnFilterVariablesComponent } from './column-filter/column-filter-variables-component';
+import { GenotypingParameterUtilService } from './genotyping/genotyping-parameter-util.service';
 import { BreedingMethodsSelectComponent } from './breeding-methods-select/breeding-methods-select.component';
 
 @NgModule({
@@ -222,7 +223,8 @@ import { BreedingMethodsSelectComponent } from './breeding-methods-select/breedi
         GenotypingBrapiService,
         AdvanceService,
         GenotypingBrapiService,
-        ObservationVariableHelperService
+        ObservationVariableHelperService,
+        GenotypingParameterUtilService
     ],
     entryComponents: [
         ModalComponent,

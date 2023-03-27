@@ -4,6 +4,7 @@ import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { SampleComponent, SampleManagerComponent } from './';
 import { RouteAccessService } from '../../shared';
+import {SampleGenotypeImpotModalComponent} from './genotype/sample-genotype-impot-modal.component';
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -44,7 +45,12 @@ export const sampleRoute: Routes = [
             authorities: ['ADMIN', 'LISTS', 'SAMPLES_LISTS']
         },
         canActivate: [RouteAccessService]
-    }
+    },
+    {
+        path: 'genotype-import/:listId',
+        component: SampleGenotypeImpotModalComponent,
+        canActivate: [RouteAccessService]
+    },
 ];
 
 // TODO Removing jhipster samplePopup component

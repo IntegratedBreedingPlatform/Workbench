@@ -1,0 +1,6 @@
+{
+    "genotyping": {
+        "database.not.configured": "Genotyping database is not configured for this BMS instance. Contact your system administrator.",
+        "connection.error": "The system failed to connect to the genotyping database. Contact your system administrator."
+    }
+}
