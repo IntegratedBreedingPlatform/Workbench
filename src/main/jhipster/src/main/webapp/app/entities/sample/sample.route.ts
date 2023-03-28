@@ -49,6 +49,10 @@ export const sampleRoute: Routes = [
     {
         path: 'genotype-import/:listId',
         component: SampleGenotypeImpotModalComponent,
+        data: {
+            pageTitle: 'bmsjHipsterApp.sample.genotypes.header',
+            authorities: ['ADMIN', 'STUDIES', 'MANAGE_STUDIES', 'MS_SAMPLE_LISTS', 'MS_IMPORT_GENOTYPES'],
+        },
         canActivate: [RouteAccessService]
     },
 ];
