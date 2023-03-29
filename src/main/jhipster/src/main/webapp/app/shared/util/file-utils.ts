@@ -75,3 +75,50 @@ export function saveFile(response: HttpResponse<any>, fileName?: string) {
         document.body.removeChild(link);
     }
 }
+
+export function parseCSV(file: File): Observable<CsvFileData> {
+    const reader: FileReader = new FileReader();
+    const observable: Observable<CsvFileData> = new Observable((observer) => {
+
+        reader.onload = (e: any) => {
+            /* read workbook */
+            let csvData = reader.result;
+            let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+            if(csvRecordsArray.length) {
+                const rawHeaders: string[] = csvRecordsArray[0].split(',');
+                const headers: string[] = [];
+                rawHeaders.forEach((rawHeader) => {
+                    headers.push(rawHeader.toUpperCase().trim());
+                });
+
+                const data: any[] = [];
+                if(csvRecordsArray.length > 1) {
+                    for(let i = 1; i < csvRecordsArray.length; i++) {
+                        // Skip empty rows
+                        if (!csvRecordsArray[i].match(/^[,\s]*$/)) {
+                            const rawData = csvRecordsArray[i].split(',');
+                            const row = [];
+                            for (let j = 0; j < headers.length; j++) {
+                                row[headers[j]] = rawData[j] ? rawData[j].trim() : null;
+                            }
+                            data.push(row);
+                        }
+                    }
+                }
+                observer.next(new CsvFileData(headers, data));
+            } else {
+                observer.next(null);
+            }
+
+        };
+        reader.readAsBinaryString(file);
+
+    });
+    return observable;
+}
+
+export class CsvFileData {
+    constructor(public headers?: string[],
+                public data?: any[]) {
+    }
+}

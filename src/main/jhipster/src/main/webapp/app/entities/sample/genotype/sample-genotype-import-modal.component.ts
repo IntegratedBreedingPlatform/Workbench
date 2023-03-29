@@ -24,9 +24,9 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 
 @Component({
     selector: 'jhi-sample-genotype-import-modal',
-    templateUrl: './sample-genotype-impot-modal.component.html'
+    templateUrl: './sample-genotype-import-modal.component.html'
 })
-export class SampleGenotypeImpotModalComponent implements OnInit {
+export class SampleGenotypeImportModalComponent implements OnInit {
 
     private readonly MARKER_COUNT_LIMIT = 5000;
     private readonly MARKER_MAPPING_ITEM_COUNT_LIMIT = 20;
@@ -51,7 +51,6 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
     isGenotypesSaving = false;
     showAddMappingRow = false;
 
-    sampleUIDSampleIdMap = new Map<string, number>();
     sampleDbIdSampleUIDMap = new Map<string, string>();
     callsetDbIdSampleDbIdMap = new Map<string, string>();
 
@@ -88,7 +87,6 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
             listId: this.listId
         }).toPromise().then((samples) => {
             samples.forEach((sample) => {
-                this.sampleUIDSampleIdMap.set(sample.sampleBusinessKey, sample.id);
                 this.sampleUIDs.push(sample.sampleBusinessKey);
             });
         });
@@ -289,8 +287,7 @@ export class SampleGenotypeImpotModalComponent implements OnInit {
             const mappedVariant = this.mappedVariants.get(call.variantDbId);
             const sampleDbId = this.callsetDbIdSampleDbIdMap.get(call.callSetDbId);
             const sampleUID = this.sampleDbIdSampleUIDMap.get(sampleDbId);
-            const sampleId = String(this.sampleUIDSampleIdMap.get(sampleUID));
-            genotypeImportRequest.push({ variableId: Number(mappedVariant.variable.id), value: call.genotypeValue, sampleId });
+            genotypeImportRequest.push({ variableId: Number(mappedVariant.variable.id), value: call.genotypeValue, sampleUID });
         });
         this.genotypeService.importSampleGenotypes(this.studyId, genotypeImportRequest).toPromise().then((genotypeIds) => {
             this.isGenotypesSaving = false;

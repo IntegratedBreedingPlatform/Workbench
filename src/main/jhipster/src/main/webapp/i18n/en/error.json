@@ -15,7 +15,10 @@
         "import": {
             "header.mandatory": "Mandatory columns should be specified in the imported file: {{param}}",
             "header.duplicated": "The column {{param}} is duplicated in the header",
-            "file.empty": "The file has no data to import. Please verify and try again"
+            "file.empty": "The file has no data to import. Please verify and try again",
+            "sample.uid.null": "Some SampleUIDs are null. Please verify and try again",
+            "markers.required": "The file has no markers to import. Please verify and try again",
+            "duplicate.sampleUIDs": "The file has duplicate SampleUIDs. Please verify and try again"
         },
         "no.tool.available": "There are no tools available",
         "secure-image.generic": "Something went wrong while loading the image"

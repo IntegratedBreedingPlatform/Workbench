@@ -14,7 +14,9 @@ import { SampleImportPlateComponent } from './sample-import-plate.component';
 import { ExcelService } from './excel.service';
 import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping.component';
 import { SampleContext } from './sample.context';
-import {SampleGenotypeImpotModalComponent} from './genotype/sample-genotype-impot-modal.component';
+import {SampleGenotypeImportModalComponent} from './genotype/sample-genotype-import-modal.component';
+import {SampleGenotypeImportFileComponent} from './genotype/sample-genotype-import-file.component';
+import {SampleGenotypeImportFileMappingComponent} from "./genotype/sample-genotype-import-file-mapping.component";
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -32,7 +34,9 @@ const ENTITY_STATES = [
         SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
-        SampleGenotypeImpotModalComponent
+        SampleGenotypeImportModalComponent,
+        SampleGenotypeImportFileComponent,
+        SampleGenotypeImportFileMappingComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -41,7 +45,9 @@ const ENTITY_STATES = [
         SampleSearchListComponent,
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
-        SampleGenotypeImpotModalComponent
+        SampleGenotypeImportModalComponent,
+        SampleGenotypeImportFileComponent,
+        SampleGenotypeImportFileMappingComponent
     ],
     providers: [
         SampleService,
