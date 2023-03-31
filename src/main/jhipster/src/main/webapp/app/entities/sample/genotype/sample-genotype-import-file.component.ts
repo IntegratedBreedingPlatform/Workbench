@@ -104,7 +104,6 @@ export class SampleGenotypeImportFileComponent implements OnInit {
 
         if (errorMessage.length !== 0) {
             this.alertService.error('error.custom', { param: formatErrorList(errorMessage) });
-            console.log(formatErrorList(errorMessage));
             return false;
         }
 
