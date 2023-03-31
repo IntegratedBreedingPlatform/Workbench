@@ -4,13 +4,13 @@ import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {parseCSV, CsvFileData} from "../../../shared/util/file-utils";
-import {ActivatedRoute} from "@angular/router";
-import {VariableDetails} from "../../../shared/ontology/model/variable-details";
-import {VariableTypeEnum} from "../../../shared/ontology/variable-type.enum";
-import {toUpper} from "../../../shared/util/to-upper";
-import {SampleGenotypeImportRequest} from "./sample-genotype-import-request";
-import {SampleGenotypeService} from "./sample-genotype.service";
+import {parseCSV, CsvFileData} from '../../../shared/util/file-utils';
+import {ActivatedRoute} from '@angular/router';
+import {VariableDetails} from '../../../shared/ontology/model/variable-details';
+import {VariableTypeEnum} from '../../../shared/ontology/variable-type.enum';
+import {toUpper} from '../../../shared/util/to-upper';
+import {SampleGenotypeImportRequest} from './sample-genotype-import-request';
+import {SampleGenotypeService} from './sample-genotype.service';
 
 @Component({
     selector: 'jhi-sample-genotype-import-file',
@@ -164,7 +164,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
 
         this.csvFileData.data.forEach((row) => {
             this.mappedMarkers.forEach((mappedMarker) => {
-                const value =row[mappedMarker.markerName];
+                const value = row[mappedMarker.markerName];
                 if (value !== null || value !== '') {
                     genotypeImportRequest.push({
                         variableId: Number(mappedMarker.variable.id),

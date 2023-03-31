@@ -82,9 +82,9 @@ export function parseCSV(file: File): Observable<CsvFileData> {
 
         reader.onload = (e: any) => {
             /* read workbook */
-            let csvData = reader.result;
-            let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
-            if(csvRecordsArray.length) {
+            const csvData = reader.result;
+            const csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
+            if (csvRecordsArray.length) {
                 const rawHeaders: string[] = csvRecordsArray[0].split(',');
                 const headers: string[] = [];
                 rawHeaders.forEach((rawHeader) => {
@@ -92,8 +92,8 @@ export function parseCSV(file: File): Observable<CsvFileData> {
                 });
 
                 const data: any[] = [];
-                if(csvRecordsArray.length > 1) {
-                    for(let i = 1; i < csvRecordsArray.length; i++) {
+                if (csvRecordsArray.length > 1) {
+                    for (let i = 1; i < csvRecordsArray.length; i++) {
                         // Skip empty rows
                         if (!csvRecordsArray[i].match(/^[,\s]*$/)) {
                             const rawData = csvRecordsArray[i].split(',');
