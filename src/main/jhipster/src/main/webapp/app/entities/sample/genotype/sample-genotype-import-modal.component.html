@@ -1,136 +1,132 @@
 <jhi-alert></jhi-alert>
-<div class="container">
-	<div class="modal-header">
-		<div class="col-xs-11 col-md-11">
-			<h4 class="modal-title font-weight-bold word-wrap"><span jhiTranslate="bmsjHipsterApp.sample.genotypes.header">Import Genotypes</span></h4>
-		</div>
-		<div class="col-xs-1 col-md-1">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
-					(click)="close()">&times;
-			</button>
+<div class="modal-header">
+	<h4 class="modal-title font-weight-bold">
+		<span jhiTranslate="bmsjHipsterApp.sample.genotypes.header">Import Genotypes</span>
+	</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+		(click)="close()">&times;
+	</button>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-md-12">
+			<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.select.study.description"></span>
+			<br><br>
 		</div>
 	</div>
-	<div class="modal-body">
-		<div class="row">
-			<div class="col-md-12">
-				<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.select.study.description"></span>
-				<br><br>
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-3 col-form-label">
-				<label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.study.label">Genotyping Study:</label>
-			</label>
-			<div class="col-8">
-				<div class="form-group row">
-					<select style="width: 85%" [disabled]="!genotypingStudies || genotypingStudies?.length === 0" class="form-control" name="genotypingStudy" id="genotypingStudy" [(ngModel)]="selectedGenotypingStudy" (ngModelChange)="selectStudyOnChange()" #genotypingStudy="ngModel">
-						<option value="">Please Choose</option>
-						<option *ngFor="let item of genotypingStudies" [ngValue]="item">{{item.studyName}}</option>
-					</select>&nbsp;&nbsp;&nbsp;<span *ngIf="isStudyLoading" class="throbber"></span>
-				</div>
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-3 col-form-label">
-				<label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.run.label">Run:</label>
-			</label>
-			<div class="col-8">
-				<div class="form-group row">
-					<select style="width: 85%" [disabled]="!genotypingVariantsets || genotypingVariantsets?.length === 0" class="form-control" name="variantSetSelect" id="variantSetSelect" [(ngModel)]="selectedVariantSet" (ngModelChange)="selectVariantsetOnChange()" #variantSetSelect="ngModel">
-						<option value="">Please Choose</option>
-						<option *ngFor="let item of genotypingVariantsets" [ngValue]="item">{{item.variantSetName}}</option>
-					</select>&nbsp;&nbsp;<span *ngIf="isVariantSetLoading" class="throbber"></span>
-				</div>
-				<div *ngIf="selectedVariantSet" class="row">
-					<span jhiTranslate="bmsjHipsterApp.sample.genotypes.selected.study.summary.description" [translateValues]="{param1: selectedVariantSet.callSetCount, param2: selectedVariantSet.variantCount}"></span>
-				</div>
-			</div>
-		</div>
-		<hr *ngIf="isMarkerMappingVisible()">
-		<div class="form-group row" *ngIf="isMarkerMappingVisible()">
-			<label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>
-		</div>
-		<div class="row" *ngIf="isMarkerMappingVisible()">
-			<div class="col-md-12">
-				<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.map.description" [translateValues]="{param1: MARKER_MAPPING_ITEM_COUNT_LIMIT}"></span>
-				<br><br>
-			</div>
-		</div>
-		<div class="form-group row" *ngIf="isMarkerMappingVisible()">
-			<div class="col-md-12">
-				<div *ngIf="isVariantsLoading" class="row">
-					<div class="col">
-						<span class="throbber"></span>&nbsp;
-						<span jhiTranslate="bmsjHipsterApp.sample.genotypes.loading.markers">Loading the markers list. Please wait.</span>
-					</div>
-				</div>
-				<div *ngIf="!isVariantsLoading" class="table-responsive">
-					<table class="table table-striped table-bordered table-curved" *ngIf="((mappedVariants && mappedVariants.size) || showAddMappingRow) else nodata">
-						<thead>
-						<tr>
-							<th jhiTranslate="bmsjHipsterApp.sample.genotypes.marker.column">Marker</th>
-							<th jhiTranslate="bmsjHipsterApp.sample.genotypes.variable.column">Variable</th>
-							<th jhiTranslate="bmsjHipsterApp.sample.genotypes.action.column">Actions</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr *ngFor="let item of mappedVariants.values()">
-							<td>{{item.variant.variantName}}</td>
-							<td>{{item.variable.name}}</td>
-							<td class="fit">
-								<button class="btn btn-info mr-2" (click)="removeMappedVariant(item.variant.variantDbId)">
-									<i class="fa fa-trash fa-md" aria-hidden="true"></i>
-								</button>
-							</td>
-						</tr>
-						<tr *ngIf="showAddMappingRow">
-							<td>
-								<ng-select #rowVariantSelect
-										   [ngStyle]="{'min-width': '85%'}"
-										   placeholder="Select Marker"
-										   [items]="variantSelectItems" [(ngModel)]="selectedVariantItem"
-										   [disabled]="!variantSelectItems || variantSelectItems?.length === 0"
-										   bindLabel="variantName"
-										   [searchFn]="searchVariant"
-										   name="rowVariantSelect" id="rowVariantSelect"
-										   [dropdownPosition]="'bottom'"
-										   [virtualScroll]="true"
-										   appendTo="body">
-									<ng-template ng-option-tmp let-variant="item">
-										<div title="{{variant.variantName}}">{{variant.variantName}}</div>
-									</ng-template>
-								</ng-select>
-							</td>
-							<td>
-								<jhi-variable-select name="dropdownRowVariable" id="dropdownRowVariable"
-													 (onVariableSelectedChange)="selectVariable($event)"
-													 [value]="selectedVariable?.id"
-													 [variableTypeIds]="[genotypeMarkersId]"
-													 [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
-								</jhi-variable-select>
-							</td>
-							<td class="fit">
-								<button type="button" class="btn btn-primary" [disabled]="!selectedVariantItem || !selectedVariable" (click)="mapVariant()">Map</button>
-							</td>
-						</tr>
-						</tbody>
-					</table>
-					<button type="button" class="btn btn-primary" *ngIf="showAddMappingButton()" [disabled]="!variantSelectItems || variantSelectItems?.length === 0" (click)="addMapping()">
-						<span jhiTranslate="bmsjHipsterApp.sample.genotypes.add.another.mapping">Add another mapping</span>
-					</button>
-				</div>
+	<div class="form-group row">
+		<label class="col-3 col-form-label">
+			<label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.study.label">Genotyping Study:</label>
+		</label>
+		<div class="col-8">
+			<div class="form-group row">
+				<select style="width: 85%" [disabled]="!genotypingStudies || genotypingStudies?.length === 0" class="form-control" name="genotypingStudy" id="genotypingStudy" [(ngModel)]="selectedGenotypingStudy" (ngModelChange)="selectStudyOnChange()" #genotypingStudy="ngModel">
+					<option value="">Please Choose</option>
+					<option *ngFor="let item of genotypingStudies" [ngValue]="item">{{item.studyName}}</option>
+				</select>&nbsp;&nbsp;&nbsp;<span *ngIf="isStudyLoading" class="throbber"></span>
 			</div>
 		</div>
 	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-default" (click)="close()" aria-hidden="true">
-			Cancel
-		</button>
-		<button type="button" class="btn btn-primary" [disabled]="!mappedVariants || mappedVariants.size === 0" (click)="importGenotypes()">
-			Import
-			<span *ngIf="isGenotypesSaving" class="throbber"></span>
-		</button>
+	<div class="form-group row">
+		<label class="col-3 col-form-label">
+			<label class="col-form-label" jhiTranslate="bmsjHipsterApp.sample.genotypes.run.label">Run:</label>
+		</label>
+		<div class="col-8">
+			<div class="form-group row">
+				<select style="width: 85%" [disabled]="!genotypingVariantsets || genotypingVariantsets?.length === 0" class="form-control" name="variantSetSelect" id="variantSetSelect" [(ngModel)]="selectedVariantSet" (ngModelChange)="selectVariantsetOnChange()" #variantSetSelect="ngModel">
+					<option value="">Please Choose</option>
+					<option *ngFor="let item of genotypingVariantsets" [ngValue]="item">{{item.variantSetName}}</option>
+				</select>&nbsp;&nbsp;<span *ngIf="isVariantSetLoading" class="throbber"></span>
+			</div>
+			<div *ngIf="selectedVariantSet" class="row">
+				<span jhiTranslate="bmsjHipsterApp.sample.genotypes.selected.study.summary.description" [translateValues]="{param1: selectedVariantSet.callSetCount, param2: selectedVariantSet.variantCount}"></span>
+			</div>
+		</div>
 	</div>
+	<hr *ngIf="isMarkerMappingVisible()">
+	<div class="form-group row" *ngIf="isMarkerMappingVisible()">
+		<label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>
+	</div>
+	<div class="row" *ngIf="isMarkerMappingVisible()">
+		<div class="col-md-12">
+			<span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.map.description" [translateValues]="{param1: MARKER_MAPPING_ITEM_COUNT_LIMIT}"></span>
+			<br><br>
+		</div>
+	</div>
+	<div class="form-group row" *ngIf="isMarkerMappingVisible()">
+		<div class="col-md-12">
+			<div *ngIf="isVariantsLoading" class="row">
+				<div class="col">
+					<span class="throbber"></span>&nbsp;
+					<span jhiTranslate="bmsjHipsterApp.sample.genotypes.loading.markers">Loading the markers list. Please wait.</span>
+				</div>
+			</div>
+			<div *ngIf="!isVariantsLoading" class="table-responsive">
+				<table class="table table-striped table-bordered table-curved" *ngIf="((mappedVariants && mappedVariants.size) || showAddMappingRow) else nodata">
+					<thead>
+					<tr>
+						<th jhiTranslate="bmsjHipsterApp.sample.genotypes.marker.column">Marker</th>
+						<th jhiTranslate="bmsjHipsterApp.sample.genotypes.variable.column">Variable</th>
+						<th jhiTranslate="bmsjHipsterApp.sample.genotypes.action.column">Actions</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let item of mappedVariants.values()">
+						<td>{{item.variant.variantName}}</td>
+						<td>{{item.variable.name}}</td>
+						<td class="fit">
+							<button class="btn btn-info mr-2" (click)="removeMappedVariant(item.variant.variantDbId)">
+								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+							</button>
+						</td>
+					</tr>
+					<tr *ngIf="showAddMappingRow">
+						<td>
+							<ng-select #rowVariantSelect
+									   [ngStyle]="{'min-width': '85%'}"
+									   placeholder="Select Marker"
+									   [items]="variantSelectItems" [(ngModel)]="selectedVariantItem"
+									   [disabled]="!variantSelectItems || variantSelectItems?.length === 0"
+									   bindLabel="variantName"
+									   [searchFn]="searchVariant"
+									   name="rowVariantSelect" id="rowVariantSelect"
+									   [dropdownPosition]="'bottom'"
+									   [virtualScroll]="true"
+									   appendTo="body">
+								<ng-template ng-option-tmp let-variant="item">
+									<div title="{{variant.variantName}}">{{variant.variantName}}</div>
+								</ng-template>
+							</ng-select>
+						</td>
+						<td>
+							<jhi-variable-select name="dropdownRowVariable" id="dropdownRowVariable"
+												 (onVariableSelectedChange)="selectVariable($event)"
+												 [value]="selectedVariable?.id"
+												 [variableTypeIds]="[genotypeMarkersId]"
+												 [disabled]="!variantSelectItems || variantSelectItems?.length === 0">
+							</jhi-variable-select>
+						</td>
+						<td class="fit">
+							<button type="button" class="btn btn-primary" [disabled]="!selectedVariantItem || !selectedVariable" (click)="mapVariant()">Map</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<button type="button" class="btn btn-primary" *ngIf="showAddMappingButton()" [disabled]="!variantSelectItems || variantSelectItems?.length === 0" (click)="addMapping()">
+					<span jhiTranslate="bmsjHipsterApp.sample.genotypes.add.another.mapping">Add another mapping</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" (click)="close()" aria-hidden="true">
+		Cancel
+	</button>
+	<button type="button" class="btn btn-primary" [disabled]="!mappedVariants || mappedVariants.size === 0" (click)="importGenotypes()">
+		Import
+		<span *ngIf="isGenotypesSaving" class="throbber"></span>
+	</button>
 </div>
 
 <ng-template #nodata>
