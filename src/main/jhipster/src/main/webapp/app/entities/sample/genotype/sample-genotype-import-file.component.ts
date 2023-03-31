@@ -67,7 +67,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
             this.fileName = '';
             target.value = '';
             this.fileUpload.nativeElement.innerText = this.fileName;
-            this.alertService.error('The import genotypes is only available for csv');
+            this.alertService.error('error.custom', { param: 'The import genotypes is only available for csv'});
             return;
         }
         this.fileUpload.nativeElement.innerText = this.fileName;

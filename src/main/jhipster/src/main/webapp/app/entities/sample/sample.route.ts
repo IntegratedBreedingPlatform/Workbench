@@ -6,7 +6,6 @@ import { SampleComponent, SampleManagerComponent } from './';
 import { RouteAccessService } from '../../shared';
 import {SampleGenotypeImportModalComponent} from './genotype/sample-genotype-import-modal.component';
 import {SampleGenotypeImportFileComponent} from './genotype/sample-genotype-import-file.component';
-import {SampleGenotypeImportFileMappingComponent} from "./genotype/sample-genotype-import-file-mapping.component";
 
 @Injectable()
 export class SampleResolvePagingParams implements Resolve<any> {
@@ -56,11 +55,6 @@ export const sampleRoute: Routes = [
     {
         path: 'genotype-import-file/:listId',
         component: SampleGenotypeImportFileComponent,
-        canActivate: [RouteAccessService]
-    },
-    {
-        path: 'genotype-import-file-mapping/:listId',
-        component: SampleGenotypeImportFileMappingComponent,
         canActivate: [RouteAccessService]
     }
 ];
