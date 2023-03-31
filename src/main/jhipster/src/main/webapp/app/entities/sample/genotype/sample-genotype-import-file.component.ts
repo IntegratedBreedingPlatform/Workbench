@@ -6,13 +6,18 @@ import { formatErrorList } from '../../../shared/alert/format-error-list';
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {parseCSV, CsvFileData} from "../../../shared/util/file-utils";
 import {ActivatedRoute} from "@angular/router";
-import {SampleGenotypeImportFileMappingComponent} from "./sample-genotype-import-file-mapping.component";
+import {VariableDetails} from "../../../shared/ontology/model/variable-details";
+import {VariableTypeEnum} from "../../../shared/ontology/variable-type.enum";
+import {toUpper} from "../../../shared/util/to-upper";
+import {SampleGenotypeImportRequest} from "./sample-genotype-import-request";
+import {SampleGenotypeService} from "./sample-genotype.service";
 
 @Component({
     selector: 'jhi-sample-genotype-import-file',
     templateUrl: './sample-genotype-import-file.component.html'
 })
 export class SampleGenotypeImportFileComponent implements OnInit {
+    isFileUploadMode = true;
     private readonly SAMPLE_UID: string = 'SAMPLE_UID';
 
     @ViewChild('fileUpload')
@@ -20,14 +25,24 @@ export class SampleGenotypeImportFileComponent implements OnInit {
 
     fileName = '';
     csvFileData: CsvFileData;
-
     selectedFileType = '.csv';
-
     listId: string;
     studyId: string;
 
+    readonly MARKER_MAPPING_ITEM_COUNT_LIMIT = 20;
+
+    selectedVariable: VariableDetails = null;
+    showAddMappingRow = true;
+    genotypeMarkersId: number = VariableTypeEnum.GENOTYPE_MARKER;
+    mappedMarkers = new Map<string, MarkerToVariableEntryItem>();
+    selectedMarker: string;
+    isGenotypesSaving = false;
+
+    markerSelectItems: string[];
+
     constructor(
         private route: ActivatedRoute,
+        private genotypeService: SampleGenotypeService,
         public alertService: AlertService,
         public activeModal: NgbActiveModal,
         public modalService: NgbModal,
@@ -50,11 +65,11 @@ export class SampleGenotypeImportFileComponent implements OnInit {
 
     import() {
         if (this.validate()) {
-            this.activeModal.close()
-            const sampleGenotypeImportFileMappingComponent = this.modalService.open(SampleGenotypeImportFileMappingComponent as Component,
-                { windowClass: 'modal-large', backdrop: 'static' });
-            sampleGenotypeImportFileMappingComponent.componentInstance.listId = this.listId;
-            sampleGenotypeImportFileMappingComponent.componentInstance.csvFileData = this.csvFileData;
+            const headers = this.csvFileData.headers;
+            const sampleUIDIndex = headers.indexOf(this.SAMPLE_UID);
+            headers.splice(sampleUIDIndex, 1);
+            this.markerSelectItems = headers;
+            this.isFileUploadMode = false;
         }
     }
 
@@ -96,6 +111,86 @@ export class SampleGenotypeImportFileComponent implements OnInit {
         return true;
     }
 
+    selectVariable(variable: VariableDetails) {
+        this.selectedVariable = variable;
+    }
+
+    mapMarker() {
+        // Show an error if the selected ontology variable is already mapped to a marker (variant)
+        const mappedMarker = Array.from(this.mappedMarkers.values()).find((v) => v.variable.id === this.selectedVariable.id);
+        if (mappedMarker) {
+            this.alertService.error('bmsjHipsterApp.sample.genotypes.variable.already.mapped.to.a.marker.error', {
+                param1: this.selectedVariable.name,
+                param2: mappedMarker.markerName
+            });
+            return;
+        }
+
+        if (this.mappedMarkers.has(this.selectedMarker)) {
+            this.mappedMarkers.get(this.selectedMarker).variable = this.selectedVariable;
+        } else {
+            this.mappedMarkers.set(this.selectedMarker, {
+                markerName: this.selectedMarker,
+                variable: this.selectedVariable
+            });
+        }
+        this.showAddMappingRow = false;
+        this.selectedMarker = null;
+        this.selectedVariable = null;
+    }
+
+    removeMappedMarker(markerName) {
+        if (this.mappedMarkers.has(markerName)) {
+            this.mappedMarkers.delete(markerName);
+        }
+    }
+
+    searchMarker(term: string, item: any) {
+        const termUpper = toUpper(term);
+        return toUpper(item).includes(termUpper);
+    }
+
+    addMapping() {
+        this.showAddMappingRow = true;
+    }
+
+    showAddMappingButton() {
+        return !this.showAddMappingRow && this.mappedMarkers && this.mappedMarkers.size < this.MARKER_MAPPING_ITEM_COUNT_LIMIT;
+    }
+
+    importGenotypes() {
+        this.isGenotypesSaving = true;
+        const genotypeImportRequest: SampleGenotypeImportRequest[] = [];
+
+        this.csvFileData.data.forEach((row) => {
+            this.mappedMarkers.forEach((mappedMarker) => {
+                const value =row[mappedMarker.markerName];
+                if (value !== null || value !== '') {
+                    genotypeImportRequest.push({
+                        variableId: Number(mappedMarker.variable.id),
+                        value,
+                        sampleUID: row[this.SAMPLE_UID]
+                    });
+                }
+            })
+        });
+
+        this.genotypeService.importSampleGenotypes(this.studyId, genotypeImportRequest).toPromise().then((genotypeIds) => {
+            this.isGenotypesSaving = false;
+            if ((<any>window.parent).handleImportGenotypesSuccess) {
+                (<any>window.parent).handleImportGenotypesSuccess();
+            }
+        }).catch((errorResponse) => {
+            const msg = formatErrorList(errorResponse.error.errors);
+            if (msg) {
+                this.alertService.error('error.custom', { param: msg });
+            } else {
+                this.alertService.error('error.general');
+            }
+        });
+
+    }
+
     private validateHeader(fileHeaders: string[], errorMessage: string[]) {
         if (!fileHeaders.includes(this.SAMPLE_UID)) {
             errorMessage.push(this.translateService.instant('error.import.header.mandatory', { param: this.SAMPLE_UID }));
@@ -133,4 +228,8 @@ export class SampleGenotypeImportFileComponent implements OnInit {
     }
 }
 
-
+class MarkerToVariableEntryItem {
+    constructor(public markerName: string,
+                public variable: VariableDetails) {
+    }
+}

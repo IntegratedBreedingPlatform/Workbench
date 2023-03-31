@@ -16,7 +16,6 @@ import { SampleImportPlateMappingComponent } from './sample-import-plate-mapping
 import { SampleContext } from './sample.context';
 import {SampleGenotypeImportModalComponent} from './genotype/sample-genotype-import-modal.component';
 import {SampleGenotypeImportFileComponent} from './genotype/sample-genotype-import-file.component';
-import {SampleGenotypeImportFileMappingComponent} from "./genotype/sample-genotype-import-file-mapping.component";
 
 const ENTITY_STATES = [
     ...sampleRoute,
@@ -35,8 +34,7 @@ const ENTITY_STATES = [
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
         SampleGenotypeImportModalComponent,
-        SampleGenotypeImportFileComponent,
-        SampleGenotypeImportFileMappingComponent
+        SampleGenotypeImportFileComponent
     ],
     entryComponents: [
         SampleComponent,
@@ -46,8 +44,7 @@ const ENTITY_STATES = [
         SampleImportPlateComponent,
         SampleImportPlateMappingComponent,
         SampleGenotypeImportModalComponent,
-        SampleGenotypeImportFileComponent,
-        SampleGenotypeImportFileMappingComponent
+        SampleGenotypeImportFileComponent
     ],
     providers: [
         SampleService,
