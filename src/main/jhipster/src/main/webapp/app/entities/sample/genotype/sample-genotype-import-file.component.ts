@@ -3,7 +3,7 @@ import { AlertService } from '../../../shared/alert/alert.service';
 import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {parseCSV, CsvFileData} from '../../../shared/util/file-utils';
 import {ActivatedRoute} from '@angular/router';
 import {VariableDetails} from '../../../shared/ontology/model/variable-details';
