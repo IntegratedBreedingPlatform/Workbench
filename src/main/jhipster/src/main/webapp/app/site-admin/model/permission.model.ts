@@ -7,7 +7,8 @@ export class Permission {
         public parent?: Permission,
         public selectable?: boolean,
         public selected?: boolean,
-        public disabled?: boolean
+        public disabled?: boolean,
+        public collapsed?: boolean
     ) {
     }
 }

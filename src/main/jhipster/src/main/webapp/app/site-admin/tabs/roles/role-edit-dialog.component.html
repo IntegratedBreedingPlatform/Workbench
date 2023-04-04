@@ -50,13 +50,23 @@
 			<div class="form-group row required">
 				<label for="roleName" class="col-md-3 col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.role.modal.permissions"></label>
 				<div class="col-sm-9">
+					<mat-form-field [style.width.%]="50">
+						<input matInput placeholder="Filter Permissions" [(ngModel)]="textFilter" #textSearch="ngModel" name="textFilter" id="textSearch">
+					</mat-form-field>
+					<button *ngIf="textFilter" class="btn btn btn-default btn-sm" (click)="textFilter=''">
+						Clear
+					</button>
+				</div>
+				<div class="col-md-3">
+				</div>
+				<div class="col-sm-9">
 					<div class="permission-selector">
 						<div class="panel-wrapper">
 							<div class="panel panel-primary">
 								<div class="panel-heading"><span jhiTranslate="site-admin.role.modal.dropdown.permission"></span></div>
 								<div class="panel-body">
 									<jhi-permission-tree [permissions]="permissions"
-													 [isLevelZero]="true"></jhi-permission-tree>
+													 [isLevelZero]="true" [textFilter]="textFilter"></jhi-permission-tree>
 								</div>
 							</div>
 						</div>
@@ -75,6 +85,5 @@
 			<span (click)="addRole(f)" *ngIf="!model.id" jhiTranslate="site-admin.role.modal.create.role"></span>
 			<span (click)="updateRole(f, true)" *ngIf="model.id" jhiTranslate="site-admin.role.modal.edit.role"></span>
 		</button>
-
 	</div>
 </div>
