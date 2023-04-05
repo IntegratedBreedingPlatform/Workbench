@@ -20,12 +20,14 @@ import { UserRoleDialogComponent, UserRolePopupComponent } from './tabs/users/us
 import { MailService } from './services/mail.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     imports: [BmsjHipsterSharedModule,
         RouterModule.forChild(SITE_ADMIN_ROUTES),
         RouterModule,
-        BrowserModule, FormsModule, CommonModule, MatFormFieldModule, MatInputModule],
+        BrowserModule, FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         EmailValidatorDirective,

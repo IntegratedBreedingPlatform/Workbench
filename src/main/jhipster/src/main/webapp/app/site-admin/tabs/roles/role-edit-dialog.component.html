@@ -52,10 +52,8 @@
 				<div class="col-sm-9">
 					<mat-form-field [style.width.%]="50">
 						<input matInput placeholder="Filter Permissions" [(ngModel)]="textFilter" #textSearch="ngModel" name="textFilter" id="textSearch">
+						<mat-icon *ngIf="textFilter"  matSuffix mat-icon-button (click)="textFilter=''">&times;</mat-icon>
 					</mat-form-field>
-					<button *ngIf="textFilter" class="btn btn btn-default btn-sm" (click)="textFilter=''">
-						Clear
-					</button>
 				</div>
 				<div class="col-md-3">
 				</div>
