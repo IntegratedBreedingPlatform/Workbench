@@ -16,14 +16,18 @@ import { DedupRoleNamesPipe, UsersPaneComponent } from './tabs/users/users-pane.
 import { RolesPaneComponent } from './tabs/roles/roles-pane.component';
 import { SiteAdminContext } from './site-admin-context';
 import { ToSelect2OptionDataPipe, ToSelect2OptionIdPipe, UserEditDialogComponent, UserEditPopupComponent } from './tabs/users/user-edit-dialog.component';
-import { UserRolePopupComponent, UserRoleDialogComponent } from './tabs/users/users-role-dialog.component';
+import { UserRoleDialogComponent, UserRolePopupComponent } from './tabs/users/users-role-dialog.component';
 import { MailService } from './services/mail.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
     imports: [BmsjHipsterSharedModule,
         RouterModule.forChild(SITE_ADMIN_ROUTES),
         RouterModule,
-        BrowserModule, FormsModule, CommonModule],
+        BrowserModule, FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         EmailValidatorDirective,
