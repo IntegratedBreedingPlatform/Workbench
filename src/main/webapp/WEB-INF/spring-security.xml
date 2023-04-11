@@ -30,7 +30,7 @@
 		<!--STUDIES-->
 
 		<!-- DESIGN CROSSES -->
-		<intercept-url pattern="/bm/createcrosses/**" access="hasAnyAuthority('ROLE_ADMIN','ROLE_STUDIES','ROLE_MANAGE_STUDIES','ROLE_MS_STUDY_ACTIONS','ROLE_MS_DESIGN_NEW_CROSSES')"/>
+		<intercept-url pattern="/bm/createcrosses/**" access="hasAnyAuthority('ROLE_ADMIN','ROLE_STUDIES','ROLE_MANAGE_STUDIES','ROLE_MS_STUDY_ACTIONS','ROLE_MS_CROSSING_OPTIONS','ROLE_MS_DESIGN_NEW_CROSSES')"/>
 
 		<!--ROLE_BROWSE_STUDIES-->
 		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_BROWSE_STUDIES')"/>
