@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import * as XLSX from 'xlsx';
 import { HttpResponse } from '@angular/common/http';
+import * as Papa from 'papaparse';
 
 /**
  * Parse file as a multidimensional array
@@ -73,5 +74,29 @@ export function saveFile(response: HttpResponse<any>, fileName?: string) {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+}
+
+export function parseCSV(file: File): Observable<CsvFileData> {
+    const observable: Observable<CsvFileData> = new Observable((observer) => {
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+                if (results && results.data && results.data.length > 0) {
+                    observer.next(new CsvFileData(Object.keys(results.data[0]), results.data));
+                } else {
+                    observer.next(null);
+                }
+            }
+        });
+
+    });
+    return observable;
+}
+
+export class CsvFileData {
+    constructor(public headers?: string[],
+                public data?: any[]) {
     }
 }

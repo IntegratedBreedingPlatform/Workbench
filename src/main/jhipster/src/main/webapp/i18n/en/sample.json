@@ -53,7 +53,9 @@
                 "delete.success": "Successfully deleted entries."
             },
             "genotypes": {
+                "import.label": "Choose the file you would like to import with the format: CSV",
                 "header": "Import Genotypes",
+                "import.instruction": "Provide a file with SAMPLE_UID and Markers. Specified Markers will be mapped later on to their corresponding Genotype Marker variables.",
                 "study.label": "Genotyping Study:",
                 "run.label": "Run:",
                 "mapped.header": "Mapped Markers:",
