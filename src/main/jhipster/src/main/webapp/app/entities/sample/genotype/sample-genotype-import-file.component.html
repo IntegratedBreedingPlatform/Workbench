@@ -1,0 +1,114 @@
+<jhi-alert></jhi-alert>
+<div class="modal-header">
+    <h4 class="modal-title font-weight-bold">
+        <span jhiTranslate="bmsjHipsterApp.sample.genotypes.header">Import Genotypes</span>
+    </h4>
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+            (click)="close()">&times;
+    </button>
+</div>
+<div *ngIf="showFileUpload">
+    <div class="modal-body">
+        <div class="form-group row">
+            <div class ="col-md-12">
+                <span jhiTranslate="bmsjHipsterApp.sample.genotypes.import.instruction"></span>
+            </div>
+        </div>
+        <div class="row form-group add_top_padding" style="margin-bottom: 35px;">
+            <div class="col-2"></div>
+            <div class="col-md-8">
+                <input type="file" class="custom-file-input" multiple="false" id="importFile" (change)="onFileChange($event)" accept="{{selectedFileType}}">
+                <label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search" jhiTranslate="bmsjHipsterApp.sample.genotypes.import.label"></i> </label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="close()">
+                <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+            </button>
+            <button (click)="import()" class="btn btn-primary" [disabled]="fileName === '' ? 'disabled' : null">
+                <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.import">Import</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div *ngIf="!showFileUpload">
+    <div class="modal-body">
+        <div class="form-group row">
+            <label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <span jhiTranslate="bmsjHipsterApp.sample.genotypes.markers.map.description" [translateValues]="{param1: MARKER_MAPPING_ITEM_COUNT_LIMIT}"></span>
+                <br><br>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-curved">
+                        <thead>
+                        <tr>
+                            <th jhiTranslate="bmsjHipsterApp.sample.genotypes.marker.column">Marker</th>
+                            <th jhiTranslate="bmsjHipsterApp.sample.genotypes.variable.column">Variable</th>
+                            <th jhiTranslate="bmsjHipsterApp.sample.genotypes.action.column">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of mappedMarkers.values()">
+                            <td>{{item.markerName}}</td>
+                            <td>{{item.variable.name}}</td>
+                            <td class="fit">
+                                <button class="btn btn-info mr-2" (click)="removeMappedMarker(item.markerName)">
+                                    <i class="fa fa-trash fa-md" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="showAddMappingRow || (mappedMarkers && mappedMarkers.size === 0)">
+                            <td>
+                                <ng-select #rowMarkerSelect
+                                           [ngStyle]="{'min-width': '85%'}"
+                                           placeholder="Select Marker"
+                                           [items]="markerSelectItems" [(ngModel)]="selectedMarker"
+                                           [disabled]="!markerSelectItems || markerSelectItems?.length === 0"
+                                           bindLabel="markerName"
+                                           [searchFn]="searchMarker"
+                                           name="markerSelect" id="markerSelect"
+                                           [dropdownPosition]="'bottom'"
+                                           [virtualScroll]="true"
+                                           appendTo="body">
+                                    <ng-template ng-option-tmp let-marker="item">
+                                        <div title="{{marker}}">{{marker}}</div>
+                                    </ng-template>
+                                </ng-select>
+                            </td>
+                            <td>
+                                <jhi-variable-select name="dropdownRowVariable" id="dropdownRowVariable"
+                                                     (onVariableSelectedChange)="selectVariable($event)"
+                                                     [value]="selectedVariable?.id"
+                                                     [variableTypeIds]="[genotypeMarkersId]"
+                                                     [disabled]="!markerSelectItems || markerSelectItems?.length === 0">
+                                </jhi-variable-select>
+                            </td>
+                            <td class="fit">
+                                <button type="button" class="btn btn-primary" [disabled]="!selectedMarker || !selectedVariable" (click)="mapMarker()">Map</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary" *ngIf="showAddMappingButton()" [disabled]="!markerSelectItems || markerSelectItems?.length === 0" (click)="addMapping()">
+                        <span jhiTranslate="bmsjHipsterApp.sample.genotypes.add.another.mapping">Add another mapping</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="close()" aria-hidden="true">
+            Cancel
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="!mappedMarkers || mappedMarkers.size === 0" (click)="importGenotypes()">
+            Import
+            <span *ngIf="isGenotypesSaving" class="throbber"></span>
+        </button>
+    </div>
+</div>

@@ -37,6 +37,7 @@
     "ngx-cookie": "2.0.1",
     "ngx-infinite-scroll": "6.0.0",
     "ngx-webstorage": "2.0.1",
+    "papaparse": "^5.4.1",
     "primeicons": "1.0.0",
     "primeng": "7.0.4",
     "properties-reader": "1.0.0",

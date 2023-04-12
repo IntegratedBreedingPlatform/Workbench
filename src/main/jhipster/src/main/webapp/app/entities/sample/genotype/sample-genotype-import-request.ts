@@ -1,7 +1,7 @@
 export class SampleGenotypeImportRequest {
     constructor(
         public variableId?: number,
-        public sampleId?: string,
+        public sampleUID?: string,
         public value?: string
     ) {
     }
