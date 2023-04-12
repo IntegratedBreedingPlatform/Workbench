@@ -31,6 +31,7 @@ export class RoleEditDialogComponent implements OnInit {
     permissions: Permission[] = [];
     confirmMessages: any[] = [];
     isLoading: boolean;
+    textFilter = '';
 
     constructor(public activeModal: NgbActiveModal,
                 private eventManager: JhiEventManager,
@@ -171,6 +172,7 @@ export class RoleEditDialogComponent implements OnInit {
                     permission.selected = true;
                     permission.disabled = true;
                 }
+                permission.collapsed = permission.selected;
             });
         });
     }
@@ -197,7 +199,13 @@ export class RoleEditDialogComponent implements OnInit {
 		<ul class="ul-tree" [class.ul-tree-level-zero]="isLevelZero">
 			<li *ngFor="let permission of permissions">
 				<ng-container>
-					<div [class.checkbox]="permission.selectable">
+					<div [class.checkbox]="permission.selectable" [hidden]="!matchesTextFilter(permission)">
+						<a *ngIf="permission.children?.length > 0" href="javascript:void(0)" (click)="collapse(permission)">
+							<span *ngIf="isCollapsed(permission)" class="fa fa-caret-up fa-rotate-90" style="margin-right: 5px;"></span>
+							<span *ngIf="!isCollapsed(permission)" class="fa fa-caret-up fa-rotate-180" style="margin-right: 5px;"></span>
+						</a>
+						<a *ngIf="permission.children?.length === 0" href="javascript:void(0)" style="margin-right: 12px;">
+						</a>
 						<label>
 							<input type="checkbox" *ngIf="isShowCheckbox(permission)" (click)="onPermissionClick($event, permission)"
 								   [disabled]="permission.disabled"
@@ -206,7 +214,7 @@ export class RoleEditDialogComponent implements OnInit {
 						</label>
 					</div>
 				</ng-container>
-				<jhi-permission-tree *ngIf="permission.children" [permissions]="permission.children"></jhi-permission-tree>
+				<jhi-permission-tree *ngIf="permission.children && !isCollapsed(permission)" [textFilter]="textFilter" [permissions]="permission.children"></jhi-permission-tree>
 			</li>
 		</ul>
     `,
@@ -216,6 +224,7 @@ export class RoleEditDialogComponent implements OnInit {
 export class PermissionTreeComponent {
     @Input() permissions: Permission [];
     @Input() isLevelZero: boolean;
+    @Input() textFilter: string;
 
     constructor(private roleService: RoleService) {
     }
@@ -224,10 +233,32 @@ export class PermissionTreeComponent {
         return permission.selectable;
     }
 
+    isCollapsed(permission: Permission) {
+        return permission.collapsed && this.textFilter === '';
+    }
+
+    matchesTextFilter(permission: Permission) {
+        if (this.textFilter === '') {
+            return true;
+        }
+
+        let result = permission.description.toLocaleLowerCase().indexOf(this.textFilter.toLocaleLowerCase()) > -1;
+        if (!result && permission.children.length > 0) {
+            result = permission.children.some((p) => {
+                return this.matchesTextFilter(p);
+            });
+        }
+
+        return result;
+    }
+    collapse(permission: Permission) {
+        return permission.collapsed = !permission.collapsed;
+    }
+
     onPermissionClick(event: any, permission: Permission) {
         const checked = event.currentTarget.checked;
         this.roleService.onPermissionSelected.next({ id: permission.id, selected: checked });
-        if (permission.children) {
+        if (permission.children && !permission.collapsed) {
             const permissions = Object.assign([], permission.children);
             while (permissions.length) {
                 const descendant: Permission = permissions.pop();
