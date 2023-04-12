@@ -82,7 +82,7 @@ export function parseCSV(file: File): Observable<CsvFileData> {
         Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
-            complete: function(results) {
+            complete: (results) => {
                 if (results && results.data && results.data.length > 0) {
                     observer.next(new CsvFileData(Object.keys(results.data[0]), results.data));
                 } else {
