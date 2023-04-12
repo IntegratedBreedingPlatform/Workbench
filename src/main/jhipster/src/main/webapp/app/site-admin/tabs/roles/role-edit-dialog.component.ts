@@ -249,6 +249,10 @@ export class PermissionTreeComponent {
             });
         }
 
+        if (result) {
+            permission.collapsed = false;
+
+        }
         return result;
     }
     collapse(permission: Permission) {
