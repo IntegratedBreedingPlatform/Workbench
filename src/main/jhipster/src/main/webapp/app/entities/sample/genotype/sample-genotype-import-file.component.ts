@@ -1,23 +1,23 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AlertService } from '../../../shared/alert/alert.service';
-import {JhiAlertService, JhiLanguageService} from 'ng-jhipster';
+import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {parseCSV, CsvFileData} from '../../../shared/util/file-utils';
-import {ActivatedRoute} from '@angular/router';
-import {VariableDetails} from '../../../shared/ontology/model/variable-details';
-import {VariableTypeEnum} from '../../../shared/ontology/variable-type.enum';
-import {toUpper} from '../../../shared/util/to-upper';
-import {SampleGenotypeImportRequest} from './sample-genotype-import-request';
-import {SampleGenotypeService} from './sample-genotype.service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { parseCSV, CsvFileData } from '../../../shared/util/file-utils';
+import { ActivatedRoute } from '@angular/router';
+import { VariableDetails } from '../../../shared/ontology/model/variable-details';
+import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
+import { toUpper } from '../../../shared/util/to-upper';
+import { SampleGenotypeImportRequest } from './sample-genotype-import-request';
+import { SampleGenotypeService } from './sample-genotype.service';
 
 @Component({
     selector: 'jhi-sample-genotype-import-file',
     templateUrl: './sample-genotype-import-file.component.html'
 })
 export class SampleGenotypeImportFileComponent implements OnInit {
-    isFileUploadMode = true;
+    showFileUpload = true;
     private readonly SAMPLE_UID: string = 'SAMPLE_UID';
 
     @ViewChild('fileUpload')
@@ -69,7 +69,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
             const sampleUIDIndex = headers.indexOf(this.SAMPLE_UID);
             headers.splice(sampleUIDIndex, 1);
             this.markerSelectItems = headers;
-            this.isFileUploadMode = false;
+            this.showFileUpload = false;
         }
     }
 
@@ -82,7 +82,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
             this.fileName = '';
             target.value = '';
             this.fileUpload.nativeElement.innerText = this.fileName;
-            this.alertService.error('error.custom', { param: 'The import genotypes is only available for csv'});
+            this.alertService.error('error.custom', { param: 'Import Genotypes only supports file in CSV format.'});
             return;
         }
         this.fileUpload.nativeElement.innerText = this.fileName;

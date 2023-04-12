@@ -7,7 +7,7 @@
             (click)="close()">&times;
     </button>
 </div>
-<div *ngIf="isFileUploadMode">
+<div *ngIf="showFileUpload">
     <div class="modal-body">
         <div class="form-group row">
             <div class ="col-md-12">
@@ -18,7 +18,7 @@
             <div class="col-2"></div>
             <div class="col-md-8">
                 <input type="file" class="custom-file-input" multiple="false" id="importFile" (change)="onFileChange($event)" accept="{{selectedFileType}}">
-                <label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search"></i> Choose the file you would like to import with the format: CSV</label>
+                <label class="custom-file-label" #fileUpload for="importFile"><i class="fa fa-search" jhiTranslate="bmsjHipsterApp.sample.genotypes.import.label"></i> </label>
             </div>
         </div>
         <div class="modal-footer">
@@ -31,7 +31,7 @@
         </div>
     </div>
 </div>
-<div *ngIf="!isFileUploadMode">
+<div *ngIf="!showFileUpload">
     <div class="modal-body">
         <div class="form-group row">
             <label class="font-weight-bold" jhiTranslate="bmsjHipsterApp.sample.genotypes.mapped.header">Mapped Variants</label>

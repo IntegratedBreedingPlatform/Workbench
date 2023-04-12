@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Observable';
 import * as XLSX from 'xlsx';
 import { HttpResponse } from '@angular/common/http';
+import * as Papa from 'papaparse';
 
 /**
  * Parse file as a multidimensional array
@@ -77,41 +78,18 @@ export function saveFile(response: HttpResponse<any>, fileName?: string) {
 }
 
 export function parseCSV(file: File): Observable<CsvFileData> {
-    const reader: FileReader = new FileReader();
     const observable: Observable<CsvFileData> = new Observable((observer) => {
-
-        reader.onload = (e: any) => {
-            /* read workbook */
-            const csvData = reader.result;
-            const csvRecordsArray = (<string>csvData).split(/\r\n|\n/);
-            if (csvRecordsArray.length) {
-                const rawHeaders: string[] = csvRecordsArray[0].split(',');
-                const headers: string[] = [];
-                rawHeaders.forEach((rawHeader) => {
-                    headers.push(rawHeader.toUpperCase().trim());
-                });
-
-                const data: any[] = [];
-                if (csvRecordsArray.length > 1) {
-                    for (let i = 1; i < csvRecordsArray.length; i++) {
-                        // Skip empty rows
-                        if (!csvRecordsArray[i].match(/^[,\s]*$/)) {
-                            const rawData = csvRecordsArray[i].split(',');
-                            const row = [];
-                            for (let j = 0; j < headers.length; j++) {
-                                row[headers[j]] = rawData[j] ? rawData[j].trim() : null;
-                            }
-                            data.push(row);
-                        }
-                    }
+        Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                if (results && results.data && results.data.length > 0) {
+                    observer.next(new CsvFileData(Object.keys(results.data[0]), results.data));
+                } else {
+                    observer.next(null);
                 }
-                observer.next(new CsvFileData(headers, data));
-            } else {
-                observer.next(null);
             }
-
-        };
-        reader.readAsBinaryString(file);
+        });
 
     });
     return observable;
