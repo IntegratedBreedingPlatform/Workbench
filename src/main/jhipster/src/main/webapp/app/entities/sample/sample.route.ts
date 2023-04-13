@@ -52,13 +52,17 @@ export const sampleRoute: Routes = [
         component: SampleGenotypeImportModalComponent,
         data: {
             pageTitle: 'bmsjHipsterApp.sample.genotypes.header',
-            authorities: ['ADMIN', 'STUDIES', 'MANAGE_STUDIES', 'MS_SAMPLE_LISTS', 'MS_IMPORT_GENOTYPES'],
+            authorities: ['ADMIN', 'STUDIES', 'MANAGE_STUDIES', 'MS_SAMPLE_LISTS', 'MS_IMPORT_GENOTYPES_OPTIONS', 'MS_IMPORT_GENOTYPES_FROM_GIGWA'],
         },
         canActivate: [RouteAccessService]
     },
     {
         path: 'genotype-import-file/:listId',
         component: SampleGenotypeImportFileComponent,
+        data: {
+            pageTitle: 'bmsjHipsterApp.sample.genotypes.header',
+            authorities: ['ADMIN', 'STUDIES', 'MANAGE_STUDIES', 'MS_SAMPLE_LISTS', 'MS_IMPORT_GENOTYPES_OPTIONS', 'MS_IMPORT_GENOTYPES_FROM_FILE'],
+        },
         canActivate: [RouteAccessService]
     }
 ];
