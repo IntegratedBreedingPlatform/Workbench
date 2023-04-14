@@ -201,8 +201,7 @@ export class RoleEditDialogComponent implements OnInit {
 				<ng-container>
 					<div [class.checkbox]="permission.selectable" [hidden]="!matchesTextFilter(permission)">
 						<a *ngIf="permission.children?.length > 0" href="javascript:void(0)" (click)="collapse(permission)">
-							<span *ngIf="isCollapsed(permission)" class="fa fa-caret-up fa-rotate-90" style="margin-right: 5px;"></span>
-							<span *ngIf="!isCollapsed(permission)" class="fa fa-caret-up fa-rotate-180" style="margin-right: 5px;"></span>
+							<span [ngClass]="isCollapsed(permission)? 'fa fa-caret-up fa-rotate-90':'fa fa-caret-up fa-rotate-180'" style="margin-right: 5px;"></span>
 						</a>
 						<a *ngIf="permission.children?.length === 0" href="javascript:void(0)" style="margin-right: 12px;">
 						</a>
@@ -249,6 +248,10 @@ export class PermissionTreeComponent {
             });
         }
 
+        if (result) {
+            permission.collapsed = false;
+
+        }
         return result;
     }
     collapse(permission: Permission) {
