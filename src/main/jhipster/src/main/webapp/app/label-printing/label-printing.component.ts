@@ -253,6 +253,7 @@ export class LabelPrintingComponent implements OnInit {
         confirmModalRef.result.then(() => {
             this.service.deletePreset(this.presetSettingId).subscribe(() => {
                 this.alertService.success('label-printing.delete.preset.success');
+                this.labelPrintingData.settingsName = '';
                 this.loadPresets();
             }, (response) => {
                 if (response.error.errors[0].message) {
@@ -428,7 +429,7 @@ export class LabelPrintingComponent implements OnInit {
         if (!presetSetting) {
             this.service.addPreset(preset).subscribe((presetCreated) => {
                 this.presetSettings.push(presetCreated);
-                this.presetSettingId = this.loadSavedSettings ? presetCreated.id : 0;
+                this.presetSettingId = presetCreated.id;
                 this.alertService.success('label-printing.save.preset.success');
             }, (response) => {
                 if (response.error.errors[0].message) {
@@ -444,6 +445,7 @@ export class LabelPrintingComponent implements OnInit {
             confirmModalRef.componentInstance.title = this.modalTitle;
             confirmModalRef.componentInstance.message = this.modalMessage;
             confirmModalRef.result.then(() => {
+                this.presetSettingId = presetSetting.id;
                 preset.id = presetSetting.id
                 this.service.updatePreset(preset).subscribe((res: void) => {
                     presetSetting.selectedFields = preset.selectedFields;
