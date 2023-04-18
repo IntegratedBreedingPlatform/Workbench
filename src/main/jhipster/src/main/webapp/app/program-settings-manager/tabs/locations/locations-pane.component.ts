@@ -180,11 +180,11 @@ export class LocationsPaneComponent implements OnInit {
                 key: 'locationNameFilter', name: 'Location Name', placeholder: 'Search Text', type: FilterType.TEXT_WITH_MATCH_OPTIONS,
                 matchType: MatchType.STARTSWITH, default: true
             },
-            { key: 'locationAbbreviations', name: 'Abbreviation', placeholder: 'Match Text', type: FilterType.TEXT,
+            { key: 'abbreviations', name: 'Abbreviation', placeholder: 'Match Text', type: FilterType.TEXT,
                 transform(req) {
                     req[this.key] = [this.value];
                 }},
-            { key: 'locationIds', name: 'Location ID', type: FilterType.LIST },
+            { key: 'locationDbIds', name: 'Location ID', type: FilterType.LIST },
             { key: 'countryName', name: 'Country Name', placeholder: 'Contains Text',  type: FilterType.TEXT },
             { key: 'provinceName', name: 'Province Name', placeholder: 'Contains Text',  type: FilterType.TEXT },
             {
@@ -219,8 +219,8 @@ export class LocationsPaneComponent implements OnInit {
             },
             {
                 key: 'altitude', name: 'Altitude', type: FilterType.NUMBER_RANGE,
-                fromKey: 'altitudeFrom',
-                toKey: 'altitudeTo',
+                fromKey: 'altitudeMin',
+                toKey: 'altitudeMax',
                 transform(req) {
                     ColumnFilterComponent.transformNumberRangeFilter(this, req, this.fromKey, this.toKey);
                 },
