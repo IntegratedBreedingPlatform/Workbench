@@ -16,7 +16,7 @@ import { VariableDetails } from '../shared/ontology/model/variable-details';
 import { FilterType } from '../shared/column-filter/column-filter.component';
 import { Pageable } from '../shared/model/pageable';
 import { VariableTypeEnum } from '../shared/ontology/variable-type.enum';
-import { MG_MANAGE_FILES_PERMISSION, MI_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_PERMISSION } from '../shared/auth/permissions';
+import { MANAGE_FILES_ENVIRONMENT_PERMISSION, MG_MANAGE_FILES_PERMISSION, MI_MANAGE_FILES_PERMISSION, MS_MANAGE_FILES_OBSERVATIONS_PERMISSION } from '../shared/auth/permissions';
 import { Principal } from '../shared';
 
 @Component({
@@ -86,14 +86,14 @@ export class FileManagerComponent implements OnInit {
         if (this.observationUnitUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.TRAIT, VariableTypeEnum.SELECTION_METHOD];
             this.datasetId = Number(queryParamMap.get('datasetId'));
-            this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
+            this.manageFilesPermissions = MS_MANAGE_FILES_OBSERVATIONS_PERMISSION;
         } else if (this.germplasmUUID) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
             this.manageFilesPermissions = MG_MANAGE_FILES_PERMISSION;
         } else if (this.instanceId) {
             this.datasetId = Number(queryParamMap.get('datasetId'));
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.ENVIRONMENT_CONDITION, VariableTypeEnum.ENVIRONMENT_DETAIL];
-            this.manageFilesPermissions = MS_MANAGE_FILES_PERMISSION;
+            this.manageFilesPermissions = MANAGE_FILES_ENVIRONMENT_PERMISSION;
         } else if (this.lotId) {
             this.VARIABLE_TYPE_IDS = [VariableTypeEnum.INVENTORY_ATTRIBUTE];
             this.manageFilesPermissions = MI_MANAGE_FILES_PERMISSION;

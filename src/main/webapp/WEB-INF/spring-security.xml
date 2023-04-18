@@ -27,14 +27,17 @@
 		<intercept-url pattern="/bm/list-manager/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 		<intercept-url pattern="/bm/list-manager/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_LISTS', 'ROLE_GERMPLASM_LISTS', 'ROLE_MG_MANAGE_INVENTORY', 'ROLE_MG_CREATE_LOTS')"/>
 
-
 		<!--STUDIES-->
+
+		<!-- DESIGN CROSSES -->
+		<intercept-url pattern="/bm/createcrosses/**" access="hasAnyAuthority('ROLE_ADMIN','ROLE_STUDIES','ROLE_MANAGE_STUDIES','ROLE_MS_STUDY_ACTIONS','ROLE_MS_CROSSING_OPTIONS','ROLE_MS_DESIGN_NEW_CROSSES')"/>
+
 		<!--ROLE_BROWSE_STUDIES-->
 		<intercept-url pattern="/maingpsb/study" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_BROWSE_STUDIES')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_GRAPHICAL_QUERIES')"/>
 		<intercept-url pattern="/controller/BrAPI-Graphical-Queries/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_GRAPHICAL_QUERIES')"/>
-		<intercept-url pattern="/controller/brapi-fieldmap/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_MANAGE_STUDIES')"/>
-		<intercept-url pattern="/controller/brapi-fieldmap/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_MANAGE_STUDIES')"/>
+		<intercept-url pattern="/controller/brapi-fieldmap/*" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_MANAGE_STUDIES','ROLE_MS_STUDY_ACTIONS','ROLE_MS_FIELD_MAP_OPTIONS','ROLE_MS_CREATE_GEOREFERENCE','ROLE_MS_EDIT_GEOREFERENCE')"/>
+		<intercept-url pattern="/controller/brapi-fieldmap/**" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_STUDIES', 'ROLE_MANAGE_STUDIES','ROLE_MS_STUDY_ACTIONS','ROLE_MS_FIELD_MAP_OPTIONS','ROLE_MS_CREATE_GEOREFERENCE','ROLE_MS_EDIT_GEOREFERENCE')"/>
 		<!--HEAD_TO_HEAD_QUERY-->
 		<intercept-url pattern="/maingpsb/Head_to_head_comparison" access="hasAnyAuthority('ROLE_ADMIN', 'ROLE_QUERIES', 'ROLE_HEAD_TO_HEAD_QUERY')"/>
 		<!--MULTI_TRAIT_QUERY-->

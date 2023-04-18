@@ -19,13 +19,7 @@ export class StudyManagerComponent implements OnInit {
 
     STUDIES_CREATION_PERMISSIONS = [
         ...MANAGE_STUDIES_PERMISSIONS,
-        'MS_MANAGE_OBSERVATION_UNITS',
-        'MS_WITHDRAW_INVENTORY',
-        'MS_CREATE_PENDING_WITHDRAWALS',
-        'MS_CREATE_CONFIRMED_WITHDRAWALS',
-        'MS_CANCEL_PENDING_TRANSACTIONS',
-        'MS_MANAGE_FILES',
-        'MS_CREATE_LOTS'
+        'CREATE_STUDIES'
     ];
 
     tabs: NavTab[] = [];

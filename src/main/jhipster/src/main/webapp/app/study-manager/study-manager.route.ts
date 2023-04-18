@@ -52,11 +52,13 @@ export const STUDY_MANAGER_ROUTES: Routes = [
     {
         path: 'advance-study',
         component: AdvanceStudyComponent,
+        data: { authorities: ['ADMIN', 'MANAGE_STUDIES', 'STUDIES', 'MS_STUDY_ACTIONS', 'MS_ADVANCES', 'MS_ADVANCE_STUDY'] },
         canActivate: [RouteAccessService]
     },
     {
         path: 'advance-samples',
         component: AdvanceSamplesComponent,
+        data: { authorities: ['ADMIN', 'MANAGE_STUDIES', 'STUDIES', 'MS_STUDY_ACTIONS', 'MS_ADVANCES', 'MS_ADVANCE_STUDY_FOR_PLANTS'] },
         canActivate: [RouteAccessService]
     },
     {
