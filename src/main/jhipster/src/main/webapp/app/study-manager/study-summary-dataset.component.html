@@ -1,4 +1,9 @@
 <div class="tab-pane active container-fluid pt-4" role="tabpanel" aria-labelledby="dataset-tab">
+	<div class="float-right">
+		<button class="btn btn-info" jhiTranslate="study.details.datasets.export" *jhiHasAnyAuthority="MANAGE_STUDIES_PERMISSIONS"
+				(click)="exportDataset()">
+		</button>
+	</div>
 	<jhi-collapsible heading="{{translateService.instant('study.details.datasets.traits.title')}}" isCollapsed="true" *ngIf="isObservationOrSubObservationDataset()" img="content/img/baseline-traits.png">
 		<div class="container-fluid mb-4 pl-0">
 			<div class="row">

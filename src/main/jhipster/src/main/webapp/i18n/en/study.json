@@ -132,7 +132,8 @@
                 "traits": {
                     "title": "TRAITS",
                     "no-data": "No available traits."
-                }
+                },
+                "export": "Export Dataset"
             }
         },
         "import-entry-details": {
