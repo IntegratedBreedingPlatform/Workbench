@@ -174,7 +174,9 @@ export class StudySummaryDatasetComponent implements OnInit {
     exportDataset() {
         const instanceIds = [];
         this.dataset.instances.forEach(instance => instanceIds.push(instance.instanceId));
-        this.datasetService.exportDataset(this.studyId, this.datasetId, instanceIds).pipe(finalize(() => {
+        const singleFile = DatasetTypeEnum.ENVIRONMENT === this.dataset.datasetTypeId
+            || DatasetTypeEnum.SUMMARY_STATISTICS_DATA === this.dataset.datasetTypeId ? true : false;
+        this.datasetService.exportDataset(this.studyId, this.datasetId, instanceIds, singleFile).pipe(finalize(() => {
             this.isLoading = false;
         })).subscribe((response: any) => {
             const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);

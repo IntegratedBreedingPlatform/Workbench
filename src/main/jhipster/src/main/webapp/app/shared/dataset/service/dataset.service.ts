@@ -59,7 +59,8 @@ export class DatasetService {
 
     exportDataset (studyId: number,
                    datasetId: number,
-                   instanceIds: any) {
+                   instanceIds: any,
+                   singleFile: any) {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}/xls`;
         return this.http.get(url,
             {
@@ -68,7 +69,7 @@ export class DatasetService {
                 params: {
                     'instanceIds': instanceIds,
                     'collectionOrderId': '1',
-                    'singleFile': 'false',
+                    'singleFile': singleFile,
                     'includeSampleGenotypeValues': 'false'
                 },
             }
