@@ -57,7 +57,7 @@ export class DatasetService {
         return this.http.post<ObservationUnitsSearchResponse[]>(url, request, { params, observe: 'response' });
     }
 
-    exportDataset (studyId: number,
+    exportDataset(studyId: number,
                    datasetId: number,
                    instanceIds: any,
                    singleFile: any) {

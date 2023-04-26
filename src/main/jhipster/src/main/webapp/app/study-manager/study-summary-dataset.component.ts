@@ -173,7 +173,7 @@ export class StudySummaryDatasetComponent implements OnInit {
 
     exportDataset() {
         const instanceIds = [];
-        this.dataset.instances.forEach(instance => instanceIds.push(instance.instanceId));
+        this.dataset.instances.forEach((instance) => instanceIds.push(instance.instanceId));
         const singleFile = DatasetTypeEnum.ENVIRONMENT === this.dataset.datasetTypeId
             || DatasetTypeEnum.SUMMARY_STATISTICS_DATA === this.dataset.datasetTypeId ? true : false;
         this.datasetService.exportDataset(this.studyId, this.datasetId, instanceIds, singleFile).pipe(finalize(() => {
