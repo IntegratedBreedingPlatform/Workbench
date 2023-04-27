@@ -57,4 +57,23 @@ export class DatasetService {
         return this.http.post<ObservationUnitsSearchResponse[]>(url, request, { params, observe: 'response' });
     }
 
+    exportDataset(studyId: number,
+                   datasetId: number,
+                   instanceIds: any,
+                   singleFile: any) {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/programs/${this.context.programUUID}/studies/${studyId}/datasets/${datasetId}/xls`;
+        return this.http.get(url,
+            {
+                responseType: 'blob',
+                observe: 'response',
+                params: {
+                    'instanceIds': instanceIds,
+                    'collectionOrderId': '1',
+                    'singleFile': singleFile,
+                    'includeSampleGenotypeValues': 'false'
+                },
+            }
+        );
+    };
+
 }

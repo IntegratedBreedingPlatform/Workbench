@@ -159,6 +159,7 @@
     "apply": "Apply",
     "search": "Search",
     "omit": "Omit",
+    "export": "Export",
     "template.download": {
         "description": "You can download a template",
         "here": "here"

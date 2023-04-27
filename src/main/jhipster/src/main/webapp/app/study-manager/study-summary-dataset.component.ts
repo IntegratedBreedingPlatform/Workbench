@@ -14,6 +14,9 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isObservationOrSubObservationDataset } from '../shared/dataset/model/dataset.util';
+import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
+import { DatasetModel } from '../shared/dataset/model/dataset.model';
+import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 
 @Component({
     selector: 'jhi-study-summary-dataset',
@@ -33,6 +36,8 @@ export class StudySummaryDatasetComponent implements OnInit {
     GID_TERM_ID = StudySummaryDatasetComponent.GID_TERM_ID;
     DESIGNATION_TERM_ID = StudySummaryDatasetComponent.DESIGNATION_TERM_ID;
 
+    MANAGE_STUDIES_PERMISSIONS = [...MANAGE_STUDIES_PERMISSIONS];
+
     isObservationOrSubObservationDataset = isObservationOrSubObservationDataset;
 
     itemsPerPage = 20;
@@ -45,6 +50,8 @@ export class StudySummaryDatasetComponent implements OnInit {
 
     @Input()
     datasetType: DatasetTypeEnum;
+
+    dataset: DatasetModel;
 
     header: ObservationVariable[];
     observations: ObservationUnitsSearchResponse[];
@@ -59,7 +66,8 @@ export class StudySummaryDatasetComponent implements OnInit {
                 public datasetService: DatasetService,
                 public observationVariableHelperService: ObservationVariableHelperService,
                 public router: Router,
-                public activatedRoute: ActivatedRoute) {
+                public activatedRoute: ActivatedRoute,
+                private fileDownloadHelper: FileDownloadHelper) {
         this.page = 1;
         this.totalItems = 0;
     }
@@ -68,6 +76,10 @@ export class StudySummaryDatasetComponent implements OnInit {
         this.isLoading = true;
         this.datasetService.getObservationSetColumns(this.studyId, this.datasetId).subscribe(
             (res: HttpResponse<ObservationVariable[]>) => this.onGetObservationSetColumnsSuccess(res.body),
+            (res: HttpErrorResponse) => this.onError(res)
+        );
+        this.datasetService.getDataset(this.studyId, this.datasetId).subscribe(
+            (res: HttpResponse<DatasetModel>) => this.dataset = res.body,
             (res: HttpErrorResponse) => this.onError(res)
         );
     }
@@ -157,6 +169,20 @@ export class StudySummaryDatasetComponent implements OnInit {
         }
 
         return this.filterVariables(this.header, VariableTypeEnum.TRAIT);
+    }
+
+    exportDataset() {
+        const instanceIds = [];
+        this.dataset.instances.forEach((instance) => instanceIds.push(instance.instanceId));
+        const singleFile = DatasetTypeEnum.ENVIRONMENT === this.dataset.datasetTypeId
+            || DatasetTypeEnum.SUMMARY_STATISTICS_DATA === this.dataset.datasetTypeId ? true : false;
+        this.datasetService.exportDataset(this.studyId, this.datasetId, instanceIds, singleFile).pipe(finalize(() => {
+            this.isLoading = false;
+        })).subscribe((response: any) => {
+            const fileName = this.fileDownloadHelper.getFileNameFromResponseContentDisposition(response);
+            this.fileDownloadHelper.save(response.body, fileName);
+
+        });
     }
 
     private getSort() {
