@@ -2,7 +2,7 @@
 	<div class="d-flex">
 		<jhi-column-filter [request]="request" [resultSearch]="resultSearch" [filters]="filters"
 						   class="flex-sm-grow-1"></jhi-column-filter>
-		<button class="btn btn-outline-info ml-auto align-self-start" (click)="toggleListBuilder()">
+		<button class="btn btn-outline-info ml-auto align-self-start" (click)="toggleListBuilder()" *jhiHasAnyAuthority="CREATE_GERMPLASM_LIST_PERMISSIONS">
 			<i class="fa mr-3" [ngClass]="listBuilderContext.visible ? 'fa-angle-right': 'fa-angle-left'"></i>
 			<span *ngIf="listBuilderContext.visible" jhiTranslate="list-builder.hide"></span>
 			<span *ngIf="!listBuilderContext.visible" jhiTranslate="list-builder.show"></span>

@@ -20,9 +20,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../shared/alert/format-error-list';
 import { GermplasmManagerContext } from './germplasm-manager.context';
 import { SearchComposite } from '../shared/model/search-composite';
-import { ADD_GERMPLASM_ENTRIES_TO_LIST_PERMISSIONS, CODE_GERMPLASM_PERMISSIONS, CREATE_INVENTORY_LOT_PERMISSIONS,
+import {
+    ADD_GERMPLASM_ENTRIES_TO_LIST_PERMISSIONS, CODE_GERMPLASM_PERMISSIONS, CREATE_INVENTORY_LOT_PERMISSIONS,
     DELETE_GERMPLASM_PERMISSIONS, GERMPLASM_LABEL_PRINTING_PERMISSIONS, GROUP_GERMPLASM_PERMISSIONS, IMPORT_GERMPLASM_PERMISSIONS,
-    IMPORT_GERMPLASM_UPDATES_PERMISSIONS, MERGE_GERMPLASM_PERMISSIONS, UNGROUP_GERMPLASM_PERMISSIONS } from '../shared/auth/permissions';
+    IMPORT_GERMPLASM_UPDATES_PERMISSIONS, MANAGE_GERMPLASM_PERMISSIONS, MERGE_GERMPLASM_PERMISSIONS, UNGROUP_GERMPLASM_PERMISSIONS
+} from '../shared/auth/permissions';
 import { AlertService } from '../shared/alert/alert.service';
 import { ListBuilderContext } from '../shared/list-builder/list-builder.context';
 import { ListEntry } from '../shared/list-builder/model/list.model';
@@ -50,7 +52,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     IMPORT_GERMPLASM_PERMISSIONS = IMPORT_GERMPLASM_PERMISSIONS;
     // TODO The Permissions will be change after implement IBP-4570 (New list manager)
-    CREATE_GERMPLASM_LIST_PERMISSIONS = [...IMPORT_GERMPLASM_PERMISSIONS, 'LISTS', 'GERMPLASM_LISTS'];
+    CREATE_GERMPLASM_LIST_PERMISSIONS = [...MANAGE_GERMPLASM_PERMISSIONS, 'CREATE_LIST'];
     ADD_GERMPLASM_ENTRIES_TO_LIST_PERMISSIONS = ADD_GERMPLASM_ENTRIES_TO_LIST_PERMISSIONS;
     IMPORT_GERMPLASM_UPDATES_PERMISSIONS = IMPORT_GERMPLASM_UPDATES_PERMISSIONS;
     GERMPLASM_LABEL_PRINTING_PERMISSIONS = GERMPLASM_LABEL_PRINTING_PERMISSIONS;
