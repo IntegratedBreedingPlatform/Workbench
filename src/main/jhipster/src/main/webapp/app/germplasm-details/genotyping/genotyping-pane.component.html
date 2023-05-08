@@ -76,7 +76,7 @@
 							<select style="width: 85%" [disabled]="!genotypingStudies || genotypingStudies?.length === 0" class="form-control" name="genotypingStudy" id="genotypingStudy" [(ngModel)]="selectedGenotypingStudy" (ngModelChange)="selectStudyOnChange()" #genotypingStudy="ngModel">
 								<option value="">Please Choose</option>
 								<option *ngFor="let item of genotypingStudies" [ngValue]="item">{{item.studyName}}</option>
-							</select>&nbsp;&nbsp;<i *ngIf="selectedGenotypingStudy" jhiScrollableTooltip [tooltipText]="selectedGenotypingStudy.studyDescription ? selectedGenotypingStudy.studyDescription : 'No description'" placement="right" class="fa fa-info-circle bms-helpicon"></i>
+							</select>&nbsp;&nbsp;<i *ngIf="selectedGenotypingStudy" jhiScrollableTooltip [tooltipText]="selectedGenotypingStudy.studyDescription ? selectedGenotypingStudy.studyDescription : 'No description'" placement="right" class="fa fa-info-circle help-icon"></i>
 							&nbsp;&nbsp;<span *ngIf="isStudyLoading" class="throbber"></span>
 						</div>
 					</div>
@@ -90,7 +90,7 @@
 							<select style="width: 85%" [disabled]="!genotypingVariantsets || genotypingVariantsets?.length === 0" class="form-control" name="variantSetSelect" id="variantSetSelect" [(ngModel)]="selectedVariantSet" (ngModelChange)="selectVariantsetOnChange()" #variantSetSelect="ngModel">
 								<option value="">Please Choose</option>
 								<option *ngFor="let item of genotypingVariantsets" [ngValue]="item">{{item.variantSetName}}</option>
-							</select>&nbsp;&nbsp;<i *ngIf="selectedVariantSet" jhiScrollableTooltip [tooltipText]="getCallsetAndVariantCountText()" placement="right" class="fa fa-info-circle bms-helpicon"></i>
+							</select>&nbsp;&nbsp;<i *ngIf="selectedVariantSet" jhiScrollableTooltip [tooltipText]="getCallsetAndVariantCountText()" placement="right" class="fa fa-info-circle help-icon"></i>
 							&nbsp;&nbsp;<span *ngIf="isVariantSetLoading" class="throbber"></span>
 						</div>
 					</div>
