@@ -186,6 +186,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
             } else {
                 this.alertService.error('error.general');
             }
+            this.isGenotypesSaving = false;
         });
 
     }
