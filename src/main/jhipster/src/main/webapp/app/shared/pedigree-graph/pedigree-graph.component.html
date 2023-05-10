@@ -23,6 +23,98 @@
 				</form>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-12">
+				<jhi-collapsible heading="{{translateService.instant('pedigree.tree.filter.title')}}">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-2">
+								<label class="font-weight-bold" jhiTranslate="pedigree.tree.filter.variable">Variable:</label>
+							</div>
+							<div class="col-4">
+								<jhi-variable-select name="dropdownvariable" id="dropdownvariable"
+									(onVariableSelectedChange)="selectVariable($event)"
+									[value]="selectedVariable?.id"
+									[variableTypeIds]="VARIABLE_TYPE_IDS"
+									[disabled]="isLoading">
+								</jhi-variable-select>
+							</div>
+							<div class="col-4">
+								<div class="form-group row" [ngSwitch]="selectedVariable?.scale?.dataType?.name">
+									<div class="col-12" *ngSwitchCase="DataType.CATEGORICAL">
+										<select class="form-control" name="variablevalue" id="variablevalue" [(ngModel)]="categoricalValue" #variablevalue="ngModel" required>
+											<option *ngFor="let category of selectedVariable.scale.validValues.categories"
+													[title]="category.description"
+													[value]="category.name">
+												<label>{{category.name}}</label>
+											</option>
+										</select>
+									</div>
+									<div class="col-12" *ngSwitchCase="DataType.CHARACTER">
+										<input class="form-control" [(ngModel)]="characterValue" type="text" placeholder="contains">
+									</div>
+									<div class="col-12" *ngSwitchCase="DataType.DATE">
+										<div class="form-group row">
+											<label for="fromDate" class="col-form-label col-md-3 font-weight-bold">From: </label>
+											<div class="input-group col-md-9">
+												<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="fromDate"
+													   ngbDatepicker #fromDatePicker="ngbDatepicker" id="fromDate" name="date" required/>
+												<div class="input-group-append">
+													<button class="btn btn-outline-secondary calendar" (click)="fromDatePicker.toggle()" type="button"></button>
+												</div>
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="toDate" class="col-form-label col-md-3 font-weight-bold">To: </label>
+											<div class="input-group col-md-9">
+												<input class="form-control" placeholder="yyyy-mm-dd" [(ngModel)]="toDate"
+													   ngbDatepicker #toDatePicker="ngbDatepicker" id="toDate" name="date" required/>
+												<div class="input-group-append">
+													<button class="btn btn-outline-secondary calendar" (click)="toDatePicker.toggle()" type="button"></button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-12" *ngSwitchCase="DataType.NUMERIC">
+										<div class="form-group row">
+											<label for="minNumberValue" class="col-form-label col-md-3 font-weight-bold">From: </label>
+											<div class="input-group col-md-9">
+												<input class="form-control" [(ngModel)]="minNumberValue" id="minNumberValue" name="minNumberValue" type="number">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="maxNumberValue" class="col-form-label col-md-3 font-weight-bold">To: </label>
+											<div class="input-group col-md-9">
+												<input class="form-control" [(ngModel)]="maxNumberValue" id="maxNumberValue" name="maxNumberValue" type="number">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-2">
+								<button class="btn btn-primary" [disabled]="disableHighlightButton()" jhiTranslate="pedigree.tree.filter.highlight" (click)="highlightFilteredNodes()"></button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-3">
+								<label class="font-weight-bold" jhiTranslate="pedigree.tree.filter.selected">Selected Germplasm:</label>
+							</div>
+							<div class="col-7">
+								<div class="selected-items">
+									<span *ngFor="let germplasm of selectedGermplasmList" class="selected-item">
+									  {{ germplasm.germplasmPreferredName }}
+										<button (click)="removeSelectedItem(germplasm)">x</button>
+									</span>
+								</div>
+							</div>
+							<div class="col-2">
+								<button class="btn btn-primary" [disabled]="selectedGermplasmList.length === 0" jhiTranslate="pedigree.tree.filter.save" (click)="openCreateList()"></button>
+							</div>
+						</div>
+					</div>
+				</jhi-collapsible>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="row">
