@@ -4,13 +4,13 @@ import { JhiAlertService, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { parseCSV, CsvFileData } from '../../../shared/util/file-utils';
 import { ActivatedRoute } from '@angular/router';
 import { VariableDetails } from '../../../shared/ontology/model/variable-details';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
 import { SampleGenotypeImportRequest } from './sample-genotype-import-request';
 import { SampleGenotypeService } from './sample-genotype.service';
+import { CsvFileData, parseCSV } from '../../../shared/util/file-utils';
 
 @Component({
     selector: 'jhi-sample-genotype-import-file',
@@ -82,7 +82,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
             this.fileName = '';
             target.value = '';
             this.fileUpload.nativeElement.innerText = this.fileName;
-            this.alertService.error('error.custom', { param: 'Import Genotypes only supports file in CSV format.'});
+            this.alertService.error('error.custom', { param: 'Import Genotypes only supports file in CSV format.' });
             return;
         }
         this.fileUpload.nativeElement.innerText = this.fileName;
@@ -174,7 +174,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
             })
         });
 
-        this.genotypeService.importSampleGenotypes(this.studyId, genotypeImportRequest).toPromise().then((genotypeIds) => {
+        this.genotypeService.importSampleGenotypes(this.studyId, this.listId, genotypeImportRequest).toPromise().then((genotypeIds) => {
             this.isGenotypesSaving = false;
             if ((<any>window.parent).handleImportGenotypesSuccess) {
                 (<any>window.parent).handleImportGenotypesSuccess();
