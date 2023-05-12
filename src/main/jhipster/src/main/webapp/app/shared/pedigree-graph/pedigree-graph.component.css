@@ -8,3 +8,48 @@
 svg g.node {
     cursor: pointer;
 }
+
+#context-menu {
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+    z-index: 9999;
+}
+
+#context-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#context-menu li {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+#context-menu li:hover {
+    background-color: #eef;
+}
+
+.tag-text {
+    margin-right: 5px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: normal;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.tag-text .close {
+    margin-left: 5px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+}

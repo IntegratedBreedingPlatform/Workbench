@@ -44,11 +44,12 @@ export class PedigreeGraphComponent implements OnInit {
     minNumberValue: number = null;
     maxNumberValue: number = null;
     pedigreTreeGIDs: number[] = [];
+    germplasmMap: {} = {};
     selectedGermplasmList: Germplasm[] = [];
     selectedGermplasmGids: number[] = [];
     nodesMap: {} =  {};
-
-
+    isNodeSelected: boolean = false;
+    selectedNode: any = null;
     MAX_NAME_DISPLAY_SIZE = 30;
 
     constructor(public germplasmPedigreeService: GermplasmPedigreeService,
@@ -108,11 +109,7 @@ export class PedigreeGraphComponent implements OnInit {
             this.germplasmService.getAllGermplasm(searchRequestId).toPromise().then((filteredGermplasm) => {
                 filteredGermplasm.forEach((filtered) => {
                     if (!this.selectedGermplasmGids.includes(filtered.gid)) {
-                        this.selectedGermplasmGids.push(filtered.gid);
-                        this.selectedGermplasmList.push(filtered);
-                        const node = this.nodesMap[Number(filtered.gid)];
-                        node.selectAll('polygon').attr('stroke', '#FCAE1E');
-                        node.selectAll('polygon').attr('stroke-width', '3');
+                        this.selectItem(filtered);
                     }
                 });
             });
@@ -124,24 +121,26 @@ export class PedigreeGraphComponent implements OnInit {
         request.gids = this.pedigreTreeGIDs;
         request.includeGroupMembers = false;
         request.addedColumnsPropertyIds = ["PREFERRED NAME"];
-        if (this.selectedVariable.scale.dataType.name === this.DataType.NUMERIC) {
-            request.attributeRangeMap = {};
-            request.attributeRangeMap[this.selectedVariable.name] = {
-                "fromValue": this.minNumberValue.toString(),
-                "toValue": this.maxNumberValue.toString()
-            };
-        } else if (this.selectedVariable.scale.dataType.name === this.DataType.CHARACTER) {
-            request.attributes = {};
-            request.attributes[this.selectedVariable.name] = this.characterValue;
-        } else if (this.selectedVariable.scale.dataType.name === this.DataType.CATEGORICAL) {
-            request.attributes = {};
-            request.attributes[this.selectedVariable.name] = this.categoricalValue;
-        } else if (this.selectedVariable.scale.dataType.name === this.DataType.DATE) {
-            request.attributeRangeMap = {};
-            request.attributeRangeMap[this.selectedVariable.name] = {
-                "fromValue": this.dateHelperService.convertNgbDateToString(this.fromDate),
-                "toValue": this.dateHelperService.convertNgbDateToString(this.toDate)
-            };
+        if (this.selectedVariable) {
+            if (this.selectedVariable.scale.dataType.name === this.DataType.NUMERIC) {
+                request.attributeRangeMap = {};
+                request.attributeRangeMap[this.selectedVariable.name] = {
+                    "fromValue": this.minNumberValue.toString(),
+                    "toValue": this.maxNumberValue.toString()
+                };
+            } else if (this.selectedVariable.scale.dataType.name === this.DataType.CHARACTER) {
+                request.attributes = {};
+                request.attributes[this.selectedVariable.name] = this.characterValue;
+            } else if (this.selectedVariable.scale.dataType.name === this.DataType.CATEGORICAL) {
+                request.attributes = {};
+                request.attributes[this.selectedVariable.name] = this.categoricalValue;
+            } else if (this.selectedVariable.scale.dataType.name === this.DataType.DATE) {
+                request.attributeRangeMap = {};
+                request.attributeRangeMap[this.selectedVariable.name] = {
+                    "fromValue": this.dateHelperService.convertNgbDateToString(this.fromDate),
+                    "toValue": this.dateHelperService.convertNgbDateToString(this.toDate)
+                };
+            }
         }
         return request;
 
@@ -165,28 +164,35 @@ export class PedigreeGraphComponent implements OnInit {
     }
 
     initializeNodes() {
+        const request = this.createGermplasmSearchRequest();
+        this.germplasmService.search(request).subscribe((searchRequestId) => {
+            this.germplasmService.getAllGermplasm(searchRequestId).toPromise().then((filteredGermplasm) => {
+                filteredGermplasm.forEach((filtered) => {
+                    this.germplasmMap[filtered.gid] = filtered;
+                });
+            });
+        });
+
+        // Append the context menu to the body
+        d3.select("body").append("div").attr("id", "context-menu");
+        d3.select("body").on("click", function() {
+            d3.select("#context-menu").style("display", "none");
+        });
+
         // Create a local nodesMap variable since function inside each can't access the component's nodesMap variable
         const nodesMap = {};
         const nodes = d3.selectAll('.node');
         nodes.each(function (d, i) {
-            // Access the current node
             const currentNode = d3.select(this);
             nodesMap[Number(d.key)] = currentNode;
         });
         this.nodesMap = nodesMap;
 
         // click and mousedown on nodes
-        nodes.on('click', (datum, i, group) => {
+        nodes.on('click', (datum) => {
             this.stopPropagation();
             if (!this.isUnknownGermplasm(datum)) {
-                const node = group[i];
-                const selection = d3.select(node);
-                selection.selectAll('polygon').attr('stroke', '#FCAE1E');
-                selection.selectAll('polygon').attr('stroke-width', '3');
-
-                // Show options upon click
-                /*const gid = datum.key;
-                window.open(this.germplasmDetailsUrlService.getUrlAsString(gid), '_blank');*/
+                this.showClickOptions(datum);
             }
         });
         nodes.on('mouseover', (datum, i, group) => {
@@ -198,6 +204,7 @@ export class PedigreeGraphComponent implements OnInit {
                 selection.selectAll('text').attr('fill', 'white');
             }
         });
+        
         nodes.on('mouseout', (datum, i, group) => {
             this.stopPropagation();
             if (!this.isUnknownGermplasm(datum)) {
@@ -207,6 +214,47 @@ export class PedigreeGraphComponent implements OnInit {
                 selection.selectAll('text').attr('fill', '#000000');
             }
         });
+    }
+
+    showClickOptions(datum) {
+        this.isNodeSelected = this.selectedGermplasmGids.includes(Number(datum.key));
+        this.selectedNode = datum;
+        const menu = d3.select("#context-menu");
+        var containerRect = menu.node().parentNode.getBoundingClientRect();
+
+        // Calculate the offset between the container and the page's top-left corner
+        var offsetX = containerRect.left + window.pageXOffset;
+        var offsetY = containerRect.top + window.pageYOffset;
+
+        // Calculate the click coordinates relative to the container
+        const x = d3.event.clientX - offsetX;
+        const y = d3.event.clientY - offsetY;
+
+        d3.select("#context-menu")
+            .style("left", x + "px")
+            .style("top", y + "px")
+            .style("display", "block");
+    }
+
+    selectNode() {
+        this.selectItem(this.germplasmMap[Number(this.selectedNode.key)]);
+        this.hideOptions();
+    }
+
+    deselectNode() {
+        this.removeSelectedItem(Number(this.selectedNode.key));
+        this.hideOptions();
+    }
+
+    openGermplasmDetails() {
+        const gid = this.selectedNode.key;
+        window.open(this.germplasmDetailsUrlService.getUrlAsString(gid), '_blank');
+        this.hideOptions();
+    }
+
+    hideOptions() {
+        d3.select("#context-menu").style("display", "none");
+        this.selectedNode = null;
     }
 
     isUnknownGermplasm(datum): boolean {
@@ -274,13 +322,21 @@ export class PedigreeGraphComponent implements OnInit {
             germplasmTreeNode.maleParentNode && germplasmTreeNode.maleParentNode.gid === 0;
     }
 
-    removeSelectedItem(item: Germplasm) {
-        const index = this.selectedGermplasmList.findIndex(germplasm => germplasm.germplasmUUID === item.germplasmUUID);
+    selectItem(germplasm: Germplasm) {
+        this.selectedGermplasmGids.push(germplasm.gid);
+        this.selectedGermplasmList.push(germplasm);
+        const node = this.nodesMap[Number(germplasm.gid)];
+        node.selectAll('polygon').attr('stroke', '#FCAE1E');
+        node.selectAll('polygon').attr('stroke-width', '3');
+    }
+
+    removeSelectedItem(gid: number) {
+        const index = this.selectedGermplasmList.findIndex(germplasm => germplasm.gid === gid);
         if (index !== -1) {
             this.selectedGermplasmList.splice(index, 1);
-            const gidIndex = this.selectedGermplasmGids.indexOf(item.gid);
+            const gidIndex = this.selectedGermplasmGids.indexOf(gid);
             this.selectedGermplasmGids.splice(gidIndex, 1);
-            const node = this.nodesMap[Number(item.gid)];
+            const node = this.nodesMap[Number(gid)];
             node.selectAll('polygon').attr('stroke', '#000000');
             node.selectAll('polygon').attr('stroke-width', '1');
         }
