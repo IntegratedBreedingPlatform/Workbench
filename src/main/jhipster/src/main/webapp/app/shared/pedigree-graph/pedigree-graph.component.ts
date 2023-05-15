@@ -6,20 +6,20 @@ import { Subject } from 'rxjs';
 import { JhiAlertService } from 'ng-jhipster';
 import * as d3 from 'd3';
 import { GermplasmDetailsUrlService } from '../germplasm/service/germplasm-details.url.service';
-import {TranslateService} from "@ngx-translate/core";
-import {VariableDetails} from "../ontology/model/variable-details";
-import {VariableTypeEnum} from "../ontology/variable-type.enum";
-import {DataTypeEnum} from "../ontology/data-type.enum";
-import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
-import {GermplasmSearchRequest} from "../../entities/germplasm/germplasm-search-request.model";
-import {Germplasm} from "../../entities/germplasm/germplasm.model";
-import {GermplasmService} from "../germplasm/service/germplasm.service";
-import {DateHelperService} from "../service/date.helper.service";
-import {SearchComposite} from "../model/search-composite";
-import {GermplasmManagerContext} from "../../germplasm-manager/germplasm-manager.context";
-import {Router} from "@angular/router";
-import {PopupService} from "../modal/popup.service";
-import {GermplasmListCreationComponent} from "../list-creation/germplasm-list-creation.component";
+import { TranslateService } from '@ngx-translate/core';
+import { VariableDetails } from '../ontology/model/variable-details';
+import { VariableTypeEnum } from '../ontology/variable-type.enum';
+import { DataTypeEnum } from '../ontology/data-type.enum';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
+import { Germplasm } from '../../entities/germplasm/germplasm.model';
+import { GermplasmService } from '../germplasm/service/germplasm.service';
+import { DateHelperService } from '../service/date.helper.service';
+import { SearchComposite } from '../model/search-composite';
+import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
+import { Router } from '@angular/router';
+import { PopupService } from '../modal/popup.service';
+import { GermplasmListCreationComponent } from '../list-creation/germplasm-list-creation.component';
 
 @Component({
     selector: 'jhi-pedigree-graph',
@@ -123,13 +123,13 @@ export class PedigreeGraphComponent implements OnInit {
         const request = new GermplasmSearchRequest();
         request.gids = this.pedigreTreeGIDs;
         request.includeGroupMembers = false;
-        request.addedColumnsPropertyIds = ["PREFERRED NAME"];
+        request.addedColumnsPropertyIds = ['PREFERRED NAME'];
         if (this.selectedVariable) {
             if (this.selectedVariable.scale.dataType.name === this.DataType.NUMERIC) {
                 request.attributeRangeMap = {};
                 request.attributeRangeMap[this.selectedVariable.name] = {
-                    "fromValue": this.minNumberValue.toString(),
-                    "toValue": this.maxNumberValue.toString()
+                    'fromValue': this.minNumberValue.toString(),
+                    'toValue': this.maxNumberValue.toString()
                 };
             } else if (this.selectedVariable.scale.dataType.name === this.DataType.CHARACTER) {
                 request.attributes = {};
@@ -140,8 +140,8 @@ export class PedigreeGraphComponent implements OnInit {
             } else if (this.selectedVariable.scale.dataType.name === this.DataType.DATE) {
                 request.attributeRangeMap = {};
                 request.attributeRangeMap[this.selectedVariable.name] = {
-                    "fromValue": this.dateHelperService.convertNgbDateToString(this.fromDate),
-                    "toValue": this.dateHelperService.convertNgbDateToString(this.toDate)
+                    'fromValue': this.dateHelperService.convertNgbDateToString(this.fromDate),
+                    'toValue': this.dateHelperService.convertNgbDateToString(this.toDate)
                 };
             }
         }
@@ -177,9 +177,9 @@ export class PedigreeGraphComponent implements OnInit {
         });
 
         // Append the context menu to the body
-        d3.select("body").append("div").attr("id", "context-menu");
-        d3.select("body").on("click", function() {
-            d3.select("#context-menu").style("display", "none");
+        d3.select('body').append('div').attr('id', 'context-menu');
+        d3.select('body').on('click', function() {
+            d3.select('#context-menu').style('display', 'none');
         });
 
         // Create a local nodesMap variable since function inside each can't access the component's nodesMap variable
@@ -222,7 +222,7 @@ export class PedigreeGraphComponent implements OnInit {
     showClickOptions(datum) {
         this.isNodeSelected = this.selectedGermplasmGids.includes(Number(datum.key));
         this.selectedNode = datum;
-        const menu = d3.select("#context-menu");
+        const menu = d3.select('#context-menu');
         var containerRect = menu.node().parentNode.getBoundingClientRect();
 
         // Calculate the offset between the container and the page's top-left corner
@@ -233,10 +233,10 @@ export class PedigreeGraphComponent implements OnInit {
         const x = d3.event.clientX - offsetX;
         const y = d3.event.clientY - offsetY;
 
-        d3.select("#context-menu")
-            .style("left", x + "px")
-            .style("top", y + "px")
-            .style("display", "block");
+        d3.select('#context-menu')
+            .style('left', x + 'px')
+            .style('top', y + 'px')
+            .style('display', 'block');
     }
 
     selectNode() {
@@ -256,7 +256,7 @@ export class PedigreeGraphComponent implements OnInit {
     }
 
     hideOptions() {
-        d3.select("#context-menu").style("display", "none");
+        d3.select('#context-menu').style('display', 'none');
         this.selectedNode = null;
     }
 
