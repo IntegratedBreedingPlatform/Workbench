@@ -18,6 +18,8 @@ import {DateHelperService} from "../service/date.helper.service";
 import {SearchComposite} from "../model/search-composite";
 import {GermplasmManagerContext} from "../../germplasm-manager/germplasm-manager.context";
 import {Router} from "@angular/router";
+import {PopupService} from "../modal/popup.service";
+import {GermplasmListCreationComponent} from "../list-creation/germplasm-list-creation.component";
 
 @Component({
     selector: 'jhi-pedigree-graph',
@@ -59,7 +61,8 @@ export class PedigreeGraphComponent implements OnInit {
                 public germplasmService: GermplasmService,
                 public dateHelperService: DateHelperService,
                 private germplasmManagerContext: GermplasmManagerContext,
-                private router: Router) {
+                private router: Router,
+                private popupService: PopupService) {
         this.levelChanged.debounceTime(500) // wait 500 milliseccond after the last event before emitting last event
             .distinctUntilChanged() // only emit if value is different from previous value
             .subscribe((model) => {
@@ -385,11 +388,7 @@ export class PedigreeGraphComponent implements OnInit {
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         searchComposite.itemIds = this.selectedGermplasmGids;
         this.germplasmManagerContext.searchComposite = searchComposite;
-
-        this.router.navigate(['/', { outlets: { popup: 'germplasm-list-creation-dialog' }, }], {
-            replaceUrl: true,
-            queryParamsHandling: 'merge'
-        });
+        this.popupService.open(GermplasmListCreationComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
     }
 
     disableHighlightButton(): boolean {
