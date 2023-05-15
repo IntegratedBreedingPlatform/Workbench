@@ -50,7 +50,7 @@ export class PedigreeGraphComponent implements OnInit {
     selectedGermplasmList: Germplasm[] = [];
     selectedGermplasmGids: number[] = [];
     nodesMap: {} =  {};
-    isNodeSelected: boolean = false;
+    isNodeSelected = false;
     selectedNode: any = null;
     MAX_NAME_DISPLAY_SIZE = 30;
 
@@ -185,7 +185,7 @@ export class PedigreeGraphComponent implements OnInit {
         // Create a local nodesMap variable since function inside each can't access the component's nodesMap variable
         const nodesMap = {};
         const nodes = d3.selectAll('.node');
-        nodes.each(function (d, i) {
+        nodes.each(function(d, i) {
             const currentNode = d3.select(this);
             nodesMap[Number(d.key)] = currentNode;
         });
@@ -207,7 +207,7 @@ export class PedigreeGraphComponent implements OnInit {
                 selection.selectAll('text').attr('fill', 'white');
             }
         });
-        
+
         nodes.on('mouseout', (datum, i, group) => {
             this.stopPropagation();
             if (!this.isUnknownGermplasm(datum)) {
@@ -223,11 +223,11 @@ export class PedigreeGraphComponent implements OnInit {
         this.isNodeSelected = this.selectedGermplasmGids.includes(Number(datum.key));
         this.selectedNode = datum;
         const menu = d3.select('#context-menu');
-        var containerRect = menu.node().parentNode.getBoundingClientRect();
+        const containerRect = menu.node().parentNode.getBoundingClientRect();
 
         // Calculate the offset between the container and the page's top-left corner
-        var offsetX = containerRect.left + window.pageXOffset;
-        var offsetY = containerRect.top + window.pageYOffset;
+        const offsetX = containerRect.left + window.pageXOffset;
+        const offsetY = containerRect.top + window.pageYOffset;
 
         // Calculate the click coordinates relative to the container
         const x = d3.event.clientX - offsetX;
@@ -334,7 +334,7 @@ export class PedigreeGraphComponent implements OnInit {
     }
 
     removeSelectedItem(gid: number) {
-        const index = this.selectedGermplasmList.findIndex(germplasm => germplasm.gid === gid);
+        const index = this.selectedGermplasmList.findIndex((germplasm) => germplasm.gid === gid);
         if (index !== -1) {
             this.selectedGermplasmList.splice(index, 1);
             const gidIndex = this.selectedGermplasmGids.indexOf(gid);
