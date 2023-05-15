@@ -123,12 +123,10 @@ export class GermplasmService {
         return this.http.patch(url, germplasmBasicDetailsDto);
     }
 
-    deleteGermplasm(gids: number[]): Observable<DeleteGermplasmResultType> {
-        const params = {};
-        params['gids'] = gids;
-        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm` +
+    deleteGermplasms(gids: number[]): Observable<DeleteGermplasmResultType> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/batch-delete` +
             '?programUUID=' + this.context.programUUID;
-        return this.http.delete<DeleteGermplasmResultType>(url, { params });
+        return this.http.post<DeleteGermplasmResultType>(url, gids);
     }
 
     createGermplasmCodeNames(germplasmCodeNameBatchRequestModel: GermplasmCodeNameBatchRequestModel): Observable<GermplasmCodeNameBatchResultModel[]> {
