@@ -176,8 +176,6 @@ export class PedigreeGraphComponent implements OnInit {
             });
         });
 
-        // Append the context menu to the body
-        d3.select('body').append('div').attr('id', 'context-menu');
         d3.select('body').on('click', function() {
             d3.select('#context-menu').style('display', 'none');
         });
