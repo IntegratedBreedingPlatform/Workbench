@@ -31,6 +31,14 @@ export class GermplasmService {
                 private context: ParamContext) {
     }
 
+    getAllGermplasm(req?: any): Observable<Germplasm[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID;
+        return getAllRecords<Germplasm>((page: number, pageSize: number) => {
+            const params = createRequestOption(Object.assign({ page, size: pageSize, searchRequestId: req}));
+            return this.http.get<Germplasm[]>(url, { params, observe: 'response' });
+        });
+    }
+
     getSearchResults(req?: any): Observable<HttpResponse<Germplasm[]>> {
         const options = createRequestOption(req);
         return this.http.get<Germplasm[]>(SERVER_API_URL + `crops/${this.context.cropName}/germplasm/search?programUUID=` + this.context.programUUID,
