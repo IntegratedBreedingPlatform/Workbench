@@ -20,7 +20,6 @@
     "germplasm-delete": {
         "success": "Germplasm are deleted successfully.",
         "warning": "Some germplasm can not be deleted due to internal validations (has inventory, is fixed, has descendants, present in a locked list, or it is associated with a study). For further information please contact support.",
-        "too-many-selected-germplasm": "You can only delete 500 germplasm records at a time.",
         "delete-all-germplasm-not-supported": "Deletion of germplasm in all pages is not supported. Please select individual germplasm to delete."
     },
     "germplasm-code": {
