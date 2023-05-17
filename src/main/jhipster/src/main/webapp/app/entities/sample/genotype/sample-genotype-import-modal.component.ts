@@ -289,7 +289,7 @@ export class SampleGenotypeImportModalComponent implements OnInit {
             const sampleUID = this.sampleDbIdSampleUIDMap.get(sampleDbId);
             genotypeImportRequest.push({ variableId: Number(mappedVariant.variable.id), value: call.genotypeValue, sampleUID });
         });
-        this.genotypeService.importSampleGenotypes(this.studyId, genotypeImportRequest).toPromise().then((genotypeIds) => {
+        this.genotypeService.importSampleGenotypes(this.studyId, this.listId, genotypeImportRequest).toPromise().then((genotypeIds) => {
             this.isGenotypesSaving = false;
             if ((<any>window.parent).handleImportGenotypesSuccess) {
                 (<any>window.parent).handleImportGenotypesSuccess();
@@ -301,6 +301,7 @@ export class SampleGenotypeImportModalComponent implements OnInit {
             } else {
                 this.alertService.error('error.general');
             }
+            this.isGenotypesSaving = false;
         });
     }
 
