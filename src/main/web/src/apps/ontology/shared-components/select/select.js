@@ -9,7 +9,6 @@
 			controller: ['$scope', function($scope) {
 				$scope.editable = editable($scope);
 				$scope.required = $scope.required || false;
-				$scope.isHyperLink = $scope.isHyperLink || false;
 			}],
 			link: function(scope, elm, attrs, ctrl) {
 				scope.$watch('model[property]', function(data) {
@@ -36,7 +35,6 @@
 				model: '=ngModel',
 				required: '=?omRequired',
 				allowClear: '=omAllowClear',
-				isHyperLink: '=?isHyperLink',
 				showDetails: '&'
 			},
 			templateUrl: 'static/views/ontology/select.html'
