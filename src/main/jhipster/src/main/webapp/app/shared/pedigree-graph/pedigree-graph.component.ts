@@ -86,6 +86,7 @@ export class PedigreeGraphComponent implements OnInit {
 
     render() {
         if (this.graphviz && this.gid && this.level > 0) {
+            this.pedigreTreeGIDs = [];
             this.isLoading = true;
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
                 try {
@@ -169,11 +170,19 @@ export class PedigreeGraphComponent implements OnInit {
     initializeNodes() {
         const request = this.createGermplasmSearchRequest();
         this.germplasmMap = {};
+        const selectedGIDs = [];
+        // Clear selected germplasm list and add selected germplasm visible on the graph
+        this.selectedGermplasmList = [];
         this.germplasmService.search(request).subscribe((searchRequestId) => {
             this.germplasmService.getAllGermplasm(searchRequestId).toPromise().then((filteredGermplasm) => {
                 filteredGermplasm.forEach((filtered) => {
                     this.germplasmMap[filtered.gid] = filtered;
+                    if (this.selectedGermplasmGids.includes(filtered.gid)) {
+                        selectedGIDs.push(filtered.gid);
+                        this.selectedGermplasmList.push(filtered);
+                    }
                 });
+                this.selectedGermplasmGids = selectedGIDs;
             });
         });
 
