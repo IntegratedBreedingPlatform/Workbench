@@ -86,6 +86,7 @@ export class PedigreeGraphComponent implements OnInit {
 
     render() {
         if (this.graphviz && this.gid && this.level > 0) {
+            this.pedigreTreeGIDs = [];
             this.isLoading = true;
             this.germplasmPedigreeService.getGermplasmTree(this.gid, this.level, this.includeDerivativeLines).subscribe((gemplasmTreeNode) => {
                 try {
@@ -168,11 +169,20 @@ export class PedigreeGraphComponent implements OnInit {
 
     initializeNodes() {
         const request = this.createGermplasmSearchRequest();
+        this.germplasmMap = {};
+        const selectedGIDs = [];
+        // Clear selected germplasm list and add selected germplasm visible on the graph
+        this.selectedGermplasmList = [];
         this.germplasmService.search(request).subscribe((searchRequestId) => {
             this.germplasmService.getAllGermplasm(searchRequestId).toPromise().then((filteredGermplasm) => {
                 filteredGermplasm.forEach((filtered) => {
                     this.germplasmMap[filtered.gid] = filtered;
+                    if (this.selectedGermplasmGids.includes(filtered.gid)) {
+                        selectedGIDs.push(filtered.gid);
+                        this.selectedGermplasmList.push(filtered);
+                    }
                 });
+                this.selectedGermplasmGids = selectedGIDs;
             });
         });
 
@@ -183,7 +193,7 @@ export class PedigreeGraphComponent implements OnInit {
         // Create a local nodesMap variable since function inside each can't access the component's nodesMap variable
         const nodesMap = {};
         const nodes = d3.selectAll('.node');
-        nodes.each(function(d, i) {
+        nodes.each(function(d) {
             const currentNode = d3.select(this);
             nodesMap[Number(d.key)] = currentNode;
         });
@@ -356,7 +366,11 @@ export class PedigreeGraphComponent implements OnInit {
             dot.push(germplasmTreeNode.gid + ' [shape=box, style=dashed];\n');
         } else {
             name.push('GID: ' + germplasmTreeNode.gid);
-            dot.push(`${germplasmTreeNode.gid} [shape=box];\n`);
+            if (this.selectedGermplasmGids.includes(Number(germplasmTreeNode.gid))) {
+                dot.push(`${germplasmTreeNode.gid} [shape=box, color=\"#FCAE1E\", penwidth=3];\n`);
+            } else {
+                dot.push(`${germplasmTreeNode.gid} [shape=box];\n`);
+            }
             if (this.includeBreedingMethod && germplasmTreeNode.methodName && germplasmTreeNode.methodCode) {
                 name.push(`\n\n${germplasmTreeNode.methodCode}: ${germplasmTreeNode.methodName}`);
             }
