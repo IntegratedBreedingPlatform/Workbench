@@ -1,7 +1,6 @@
 
 package org.generationcp.ibpworkbench.ui.breedingview.singlesiteanalysis;
-
-import com.mysql.jdbc.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
@@ -165,7 +164,7 @@ public class SingleSiteAnalysisStudyDetailsComponent extends VerticalLayout
 	}
 
 	public void setAnalysisName() {
-		if (!StringUtils.isNullOrEmpty(analysisName)) {
+		if (StringUtils.isNotBlank(analysisName)) {
 			this.txtAnalysisName.setValue(analysisName);
 		}
 	}
