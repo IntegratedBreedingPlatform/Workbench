@@ -14,12 +14,13 @@ import { CallSet } from '../model/callsets/callset';
 import { Call } from '../model/calls/call';
 import { SearchSamplesRequest } from '../model/samples/search-samples-request';
 import { Sample } from '../model/samples/sample';
-import { ExportFlapjackRequest } from '../model/export/export-flapjack-request';
+import { GigwaExportRequest } from '../model/export/gigwa-export-request';
 import { SearchVariantRequest } from '../model/variants/search-variant-request';
 import { Variant } from '../model/variants/variant';
 import { getBrapiAllRecords } from '../get-brapi-all-records';
 import { BrapiListResponseTokenBasedPagination } from '../model/common/brapi-list-response-token-based-pagination';
 import { getBrapiAllRecordsTokenBased } from '../get-brapi-all-records-token-based';
+import { GA4GHSearchRequest } from '../model/export/ga4gh-search-request';
 
 @Injectable()
 export class GenotypingBrapiService {
@@ -99,7 +100,7 @@ export class GenotypingBrapiService {
         });
     }
 
-    exportFlapjack(exportRequest: ExportFlapjackRequest): Observable<string> {
+    gigwaExportData(exportRequest: GigwaExportRequest): Observable<string> {
         return this.http.post<string>(`${this.baseUrl}/rest/gigwa/exportData`, exportRequest, { headers: this.createHeader(), responseType: 'text' as 'json' });
     }
 
@@ -110,5 +111,9 @@ export class GenotypingBrapiService {
             'Authorization': `Bearer ${this.accessToken}`
         });
         return headers;
+    }
+
+    ga4GhVariantsSearch(ga4GHSearchRequest: GA4GHSearchRequest) {
+        return this.http.post<any>(`${this.baseUrl}/rest/ga4gh/variants/search`, ga4GHSearchRequest, { headers: this.createHeader()});
     }
 }

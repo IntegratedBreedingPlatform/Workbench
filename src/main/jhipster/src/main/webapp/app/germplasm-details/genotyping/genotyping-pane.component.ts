@@ -16,9 +16,10 @@ import { Sample } from '../../entities/sample';
 import { SearchGermplasmRequest } from '../../shared/brapi/model/germplasm/search-germplasm-request';
 import { JhiAlertService } from 'ng-jhipster';
 import { SearchSamplesRequest } from '../../shared/brapi/model/samples/search-samples-request';
-import { ExportFlapjackRequest } from '../../shared/brapi/model/export/export-flapjack-request';
+import { GigwaExportRequest } from '../../shared/brapi/model/export/gigwa-export-request';
 import { HttpClient } from '@angular/common/http';
 import { GenotypingParameterUtilService } from '../../shared/genotyping/genotyping-parameter-util.service';
+import { GA4GHSearchRequest } from '../../shared/brapi/model/export/ga4gh-search-request';
 
 const flapjack = require('flapjack-bytes/src/flapjack-bytes');
 
@@ -180,26 +181,43 @@ export class GenotypingPaneComponent implements OnInit {
     loadFlapjackBytes() {
         if (this.selectedVariantSet) {
             this.isExportingFlapjack = true;
-            const exportFlapjackRequest = new ExportFlapjackRequest([], [], 'FLAPJACK', [this.genotypingGermplasm.germplasmName], true,
-                100, this.selectedVariantSet.referenceSetDbId);
-            this.genotypingBrapiService.exportFlapjack(exportFlapjackRequest).subscribe(async(response) => {
-                this.isExportingFlapjack = false;
-                let file = response.replace('.fjzip', '');
-                file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
 
-                const flapjackDiv = '#flapjack-div';
-                const renderer = flapjack.default();
-                renderer.renderGenotypesUrl({
-                    domParent: flapjackDiv,
-                    width: document.querySelector(flapjackDiv).getBoundingClientRect().width,
-                    height: 250,
-                    mapFileURL: file + '.map',
-                    genotypeFileURL: file + '.genotype',
-                    phenotypeFileURL: await this.getFileUrl(file + '.phenotype'),
-                    overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
-                    overviewHeight: 25,
-                    dataSetId: this.cropGenotypingParameter.programId,
-                });
+            const gigwaExportRequest = new GigwaExportRequest();
+            gigwaExportRequest.variantSetId = this.selectedVariantSet.referenceSetDbId;
+            gigwaExportRequest.exportFormat = 'FLAPJACK';
+            gigwaExportRequest.exportedIndividuals = [this.genotypingGermplasm.germplasmName];
+            gigwaExportRequest.keepExportOnServer = true;
+
+            const ga4GHVariantSearchRequest = new GA4GHSearchRequest();
+            ga4GHVariantSearchRequest.variantSetId = this.selectedVariantSet.referenceSetDbId;
+
+            // Before exporting the data into Flapjack format, invoking Variants Search first is required in order to be able to export
+            // because this is what tells the Gigwa which variants to include.
+            this.genotypingBrapiService.ga4GhVariantsSearch(ga4GHVariantSearchRequest).toPromise().then((searchResult) => {
+                if (searchResult.count) {
+                    this.genotypingBrapiService.gigwaExportData(gigwaExportRequest).toPromise().then(async(response) => {
+                        this.isExportingFlapjack = false;
+                        let file = response.replace('.fjzip', '');
+                        file = this.extractHostName(this.cropGenotypingParameter.baseUrl) + file;
+
+                        const flapjackDiv = '#flapjack-div';
+                        const renderer = flapjack.default();
+                        renderer.renderGenotypesUrl({
+                            domParent: flapjackDiv,
+                            width: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                            height: 250,
+                            mapFileURL: file + '.map',
+                            genotypeFileURL: file + '.genotype',
+                            phenotypeFileURL: await this.getFileUrl(file + '.phenotype'),
+                            overviewWidth: document.querySelector(flapjackDiv).getBoundingClientRect().width,
+                            overviewHeight: 25,
+                            dataSetId: this.cropGenotypingParameter.programId,
+                        });
+                    });
+                } else {
+                    this.isExportingFlapjack = false;
+                    this.alertService.error('genotyping.no.genotyping.callsets.found');
+                }
             });
         }
     }
@@ -243,11 +261,11 @@ export class GenotypingPaneComponent implements OnInit {
                     if (response.status === 200) {
                         resolve(url);
                     } else {
-                        resolve();
+                        resolve(undefined);
                     }
                 },
                 () => {
-                    resolve();
+                    resolve(undefined);
                 }
             );
         });
