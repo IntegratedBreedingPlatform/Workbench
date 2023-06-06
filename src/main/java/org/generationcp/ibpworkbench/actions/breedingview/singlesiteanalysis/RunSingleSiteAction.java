@@ -11,7 +11,7 @@
 package org.generationcp.ibpworkbench.actions.breedingview.singlesiteanalysis;
 
 import com.google.common.base.Strings;
-import com.mysql.jdbc.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Window;
@@ -182,7 +182,7 @@ public class RunSingleSiteAction implements ClickListener {
 		final String columnValue = this.source.getSelColumnFactorValue();
 		final String rowValue = this.source.getSelRowFactorValue();
 		// Do not generate RowPos and ColPos tags for Row-Col Design type
-		if (!StringUtils.isNullOrEmpty(rowValue) && !StringUtils.isNullOrEmpty(columnValue)
+		if (StringUtils.isNotBlank(rowValue) && StringUtils.isNotBlank(columnValue)
 			&& !ExperimentDesignType.ROW_COL.equals(designType)) {
 			breedingViewInput.setColPos(this.createColPos(columnValue));
 			breedingViewInput.setRowPos(this.createRowPos(rowValue));
@@ -223,7 +223,7 @@ public class RunSingleSiteAction implements ClickListener {
 			// Do not include the replicates factor if the design type is P-rep and Augmented Randomized design.
 			return null;
 
-		} else if (!StringUtils.isNullOrEmpty(replicatesFactor)) {
+		} else if (StringUtils.isNotBlank(replicatesFactor)) {
 			final Replicates reps = new Replicates();
 			reps.setName(BreedingViewUtil.trimAndSanitizeName(replicatesFactor));
 			return reps;
@@ -246,7 +246,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 		// TODO: We should not return null objects.
 
-		if (!StringUtils.isNullOrEmpty(rowFactor)) {
+		if (StringUtils.isNotBlank(rowFactor)) {
 			final Rows rows = new Rows();
 			rows.setName(BreedingViewUtil.trimAndSanitizeName(rowFactor));
 			return rows;
@@ -258,7 +258,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Columns createColumns(final String columnFactor) {
 
-		if (!StringUtils.isNullOrEmpty(columnFactor)) {
+		if (StringUtils.isNotBlank(columnFactor)) {
 			final Columns columns = new Columns();
 			columns.setName(BreedingViewUtil.trimAndSanitizeName(columnFactor));
 			return columns;
@@ -270,7 +270,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	RowPos createRowPos(final String rowPosFactor) {
 
-		if (!StringUtils.isNullOrEmpty(rowPosFactor)) {
+		if (StringUtils.isNotBlank(rowPosFactor)) {
 			final RowPos rowPos = new RowPos();
 			rowPos.setName(BreedingViewUtil.trimAndSanitizeName(rowPosFactor));
 			return rowPos;
@@ -282,7 +282,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	ColPos createColPos(final String colPosFactor) {
 
-		if (!StringUtils.isNullOrEmpty(colPosFactor)) {
+		if (StringUtils.isNotBlank(colPosFactor)) {
 			final ColPos colPos = new ColPos();
 			colPos.setName(BreedingViewUtil.trimAndSanitizeName(colPosFactor));
 			return colPos;
@@ -294,7 +294,7 @@ public class RunSingleSiteAction implements ClickListener {
 
 	Blocks createBlocks(final String blocksFactor) {
 
-		if (!StringUtils.isNullOrEmpty(blocksFactor)) {
+		if (StringUtils.isNotBlank(blocksFactor)) {
 			final Blocks blocks = new Blocks();
 			blocks.setName(BreedingViewUtil.trimAndSanitizeName(blocksFactor));
 			return blocks;
@@ -352,12 +352,12 @@ public class RunSingleSiteAction implements ClickListener {
 		final String rowFactor = this.source.getSelRowFactorValue();
 		final String genotypeFactor = this.source.getSelGenotypesValue();
 
-		if (StringUtils.isNullOrEmpty(analysisProjectName)) {
+		if (StringUtils.isBlank(analysisProjectName)) {
 			this.showErrorMessage(window, "Please enter an Analysis Name.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(environmentFactor)) {
+		if (StringUtils.isBlank(environmentFactor)) {
 			this.showErrorMessage(window, this.messageSource.getMessage(Message.SSA_SELECT_ENVIRONMENT_FACTOR_WARNING), "");
 			return false;
 		}
@@ -367,40 +367,40 @@ public class RunSingleSiteAction implements ClickListener {
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(designType)) {
+		if (StringUtils.isBlank(designType)) {
 			this.showErrorMessage(window, "Please specify design type.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(replicatesFactor) && designType.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName())
+		if (StringUtils.isBlank(replicatesFactor) && designType.equals(ExperimentDesignType.RANDOMIZED_COMPLETE_BLOCK.getBvName())
 			&& this.source.replicateFactorEnabled()) {
 			this.showErrorMessage(window, "Please specify replicates factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(blocksFactor) && (designType.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName())
+		if (StringUtils.isBlank(blocksFactor) && (designType.equals(ExperimentDesignType.RESOLVABLE_INCOMPLETE_BLOCK.getBvName())
 			|| designType.equals(ExperimentDesignType.P_REP.getBvName()))) {
 			this.showErrorMessage(window, "Please specify incomplete block factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(columnFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvName())) {
+		if (StringUtils.isBlank(columnFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvName())) {
 			this.showErrorMessage(window, "Please specify column factor.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(rowFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvName())) {
+		if (StringUtils.isBlank(rowFactor) && designType.equals(ExperimentDesignType.ROW_COL.getBvName())) {
 			this.showErrorMessage(window, "Please specify row factor.", "");
 			return false;
 		}
 
-		if (!StringUtils.isNullOrEmpty(rowFactor) && StringUtils.isNullOrEmpty(columnFactor)
-			|| StringUtils.isNullOrEmpty(rowFactor) && !StringUtils.isNullOrEmpty(columnFactor)) {
+		if (StringUtils.isNotBlank(rowFactor) && StringUtils.isBlank(columnFactor)
+			|| StringUtils.isBlank(rowFactor) && StringUtils.isNotBlank(columnFactor)) {
 			this.showErrorMessage(window, "Row and Column factors must be specified together.", "");
 			return false;
 		}
 
-		if (StringUtils.isNullOrEmpty(genotypeFactor)) {
+		if (StringUtils.isBlank(genotypeFactor)) {
 			this.showErrorMessage(window, "Please specify Genotypes factor.", "");
 			return false;
 		}
