@@ -8,7 +8,9 @@ export class AdvanceStudyRequest extends AbstractAdvanceRequest {
         public breedingMethodSelectionRequest: BreedingMethodSelectionRequest,
         public selectionTraitRequest?: SelectionTraitRequest,
         public lineSelectionRequest?: LineSelectionRequest,
-        public bulkingRequest?: BulkingRequest
+        public bulkingRequest?: BulkingRequest,
+        public propagateAttributesData?: boolean,
+        public propagatePassportDescriptorData?: boolean
     ) {
         super(instanceIds, selectedReplications, selectionTraitRequest);
     }
