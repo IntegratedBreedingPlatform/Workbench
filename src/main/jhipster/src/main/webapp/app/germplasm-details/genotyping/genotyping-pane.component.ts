@@ -9,7 +9,7 @@ import { VariantSet } from '../../shared/brapi/model/variantsets/variantset';
 import { Call } from '../../shared/brapi/model/calls/call';
 import { Germplasm } from '../../shared/brapi/model/germplasm/germplasm';
 import { CallSet } from '../../shared/brapi/model/callsets/callset';
-import { Observable } from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import { AlertService } from '../../shared/alert/alert.service';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { Sample } from '../../entities/sample';
@@ -141,7 +141,7 @@ export class GenotypingPaneComponent implements OnInit {
                 this.isStudyLoading = false;
                 this.alertService.error('genotyping.no.genotyping.germplasm.found', { linkType: this.selectedLinkBy, germplasmSearchValue: this.germplasmSearchValue });
             }
-            return Observable.empty();
+            return EMPTY;
         })).subscribe((brapiResponse) => {
             if (brapiResponse && brapiResponse.result.data.length) {
                 this.genotypingStudies = brapiResponse.result.data;

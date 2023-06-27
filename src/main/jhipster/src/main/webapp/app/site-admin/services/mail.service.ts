@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../../shared/user/model/user.model';
-import { Observable } from 'rxjs/Rx';
 import { HttpClient } from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class MailService {

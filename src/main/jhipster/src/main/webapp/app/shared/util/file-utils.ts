@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { HttpResponse } from '@angular/common/http';
 import * as Papa from 'papaparse';

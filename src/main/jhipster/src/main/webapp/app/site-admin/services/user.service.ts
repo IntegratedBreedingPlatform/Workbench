@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs/Rx';
 import { User } from '../../shared/user/model/user.model';
 import { SERVER_API_URL } from '../../app.constants';
 import { createRequestOption } from '../../shared';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import {Observable, Subject} from "rxjs";
 
 @Injectable()
 export class UserService {

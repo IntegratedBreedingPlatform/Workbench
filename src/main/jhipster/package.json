@@ -43,7 +43,6 @@
     "properties-reader": "1.0.0",
     "reflect-metadata": "0.1.10",
     "rxjs": "6.3.1",
-    "rxjs-compat": "6.1.0",
     "swagger-ui": "2.2.10",
     "tether": "1.4.0",
     "xlsx": "^0.13.2",

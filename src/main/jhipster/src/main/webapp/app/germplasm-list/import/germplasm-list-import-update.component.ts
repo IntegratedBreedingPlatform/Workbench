@@ -1,25 +1,26 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../../shared/modal/popup.service';
-import { TranslateService } from '@ngx-translate/core';
-import { AlertService } from '../../shared/alert/alert.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
-import { VariableService } from '../../shared/ontology/service/variable.service';
-import { parseFile, saveFile } from '../../shared/util/file-utils';
-import { HttpErrorResponse } from '@angular/common/http';
-import { formatErrorList } from '../../shared/alert/format-error-list';
-import { GermplasmListService } from '../../shared/germplasm-list/service/germplasm-list.service';
-import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
-import { toUpper } from '../../shared/util/to-upper';
-import { GermplasmListVariableMatchesComponent } from './germplasm-list-variable-matches.component';
-import { ListComponent } from '../list.component';
-import { JhiEventManager } from 'ng-jhipster';
-import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { HELP_GERMPLASM_LIST_IMPORT_UPDATE } from '../../app.constants';
-import { HelpService } from '../../shared/service/help.service';
-import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
-import { EntryDetailsImportService, HEADERS } from '../../shared/ontology/service/entry-details-import.service';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {PopupService} from '../../shared/modal/popup.service';
+import {TranslateService} from '@ngx-translate/core';
+import {AlertService} from '../../shared/alert/alert.service';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {GermplasmService} from '../../shared/germplasm/service/germplasm.service';
+import {VariableService} from '../../shared/ontology/service/variable.service';
+import {parseFile, saveFile} from '../../shared/util/file-utils';
+import {HttpErrorResponse} from '@angular/common/http';
+import {formatErrorList} from '../../shared/alert/format-error-list';
+import {GermplasmListService} from '../../shared/germplasm-list/service/germplasm-list.service';
+import {VariableTypeEnum} from '../../shared/ontology/variable-type.enum';
+import {toUpper} from '../../shared/util/to-upper';
+import {GermplasmListVariableMatchesComponent} from './germplasm-list-variable-matches.component';
+import {ListComponent} from '../list.component';
+import {JhiEventManager} from 'ng-jhipster';
+import {ModalConfirmComponent} from '../../shared/modal/modal-confirm.component';
+import {HELP_GERMPLASM_LIST_IMPORT_UPDATE} from '../../app.constants';
+import {HelpService} from '../../shared/service/help.service';
+import {EntryDetailsImportContext} from '../../shared/ontology/entry-details-import.context';
+import {EntryDetailsImportService, HEADERS} from '../../shared/ontology/service/entry-details-import.service';
+import {map} from "rxjs/operators";
 
 @Component({
     selector: 'jhi-germplasm-list-import-update',
@@ -76,7 +77,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
         if (this.extensions.indexOf(extension.toLowerCase()) === -1) {
             this.fileName = '';
             target.value = '';
-            this.alertService.error('germplasm-list.import.file.validation.extensions', { param: this.extensions.join(', ') });
+            this.alertService.error('germplasm-list.import.file.validation.extensions', {param: this.extensions.join(', ')});
             return;
         }
 
@@ -103,12 +104,18 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             if (valid) {
                 this.modal.close();
                 if (this.hasVariables()) {
-                    const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, { size: 'lg', backdrop: 'static' });
+                    const modalRef = this.modalService.open(GermplasmListVariableMatchesComponent as Component, {
+                        size: 'lg',
+                        backdrop: 'static'
+                    });
                     modalRef.result.then((variableMatchesResult) => {
                         if (variableMatchesResult) {
                             this.save(variableMatchesResult);
                         } else {
-                            this.modalService.open(GermplasmListImportUpdateComponent as Component, { size: 'lg', backdrop: 'static' });
+                            this.modalService.open(GermplasmListImportUpdateComponent as Component, {
+                                size: 'lg',
+                                backdrop: 'static'
+                            });
                         }
                     });
                 } else {
@@ -130,15 +137,15 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
         this.isLoading = true;
         const id = Number(this.route.snapshot.queryParamMap.get('listId'));
-        const germplasmListGenerator = { listId: id, entries: [] };
+        const germplasmListGenerator = {listId: id, entries: []};
         for (const row of this.context.data) {
             const entry = {
                 entryNo: row[HEADERS.ENTRY_NO],
-                data: Object.keys(variableMatchesResult).reduce((map, variableName) => {
+                data: Object.keys(variableMatchesResult).reduce((mapVal, variableName) => {
                     if (row[variableName]) {
-                        map[variableMatchesResult[variableName]] = { value: row[variableName] };
+                        mapVal[variableMatchesResult[variableName]] = {value: row[variableName]};
                     }
-                    return map;
+                    return mapVal;
                 }, {})
             };
             germplasmListGenerator.entries.push(entry);
@@ -148,7 +155,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({ name: id + ListComponent.GERMPLASM_LIST_CHANGED });
+                this.eventManager.broadcast({name: id + ListComponent.GERMPLASM_LIST_CHANGED});
             },
             (error) => {
                 this.isLoading = false;
@@ -160,7 +167,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
 
     private async showSummaryConfirmation() {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
-            { windowClass: 'modal-medium', backdrop: 'static' });
+            {windowClass: 'modal-medium', backdrop: 'static'});
         confirmModalRef.componentInstance.message = this.translateService.instant('germplasm-list.import-updates.confirmation', {param: this.context.data.length});
         try {
             await confirmModalRef.result;
@@ -209,7 +216,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             }).toPromise();
 
             variablesOfTheList = await this.germplasmListService.getVariables(this.listId, VariableTypeEnum.ENTRY_DETAILS)
-                .map((resp) => resp.body)
+                .pipe(map((resp) => resp.body))
                 .toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
@@ -230,10 +237,10 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     private getData() {
         const headers = this.rawData[0].map((header) => toUpper(header));
         return this.rawData.slice(1).map((fileRow, rowIndex) => {
-            return fileRow.reduce((map, col, colIndex) => {
+            return fileRow.reduce((mapVal, col, colIndex) => {
                 const columnName = headers[colIndex];
-                map[columnName] = col;
-                return map;
+                mapVal[columnName] = col;
+                return mapVal;
             }, {});
         });
     }
@@ -245,7 +252,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.alertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', {param: msg});
         } else {
             this.alertService.error('error.general', null, null);
         }

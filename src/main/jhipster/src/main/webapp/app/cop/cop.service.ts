@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { SERVER_API_URL } from '../app.constants';
 import { ParamContext } from '../shared/service/param.context';
 import { CopResponse } from './cop.model';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CopService {
