@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { GermplasmService } from '../../shared/germplasm/service/germplasm.service';
 import { GermplasmDetailsContext } from '../germplasm-details.context';
 import { GermplasmList, GermplasmStudy } from '../../shared/germplasm/model/germplasm.model';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { ParamContext } from '../../shared/service/param.context';
 import { GRAPHICAL_QUERIES_URL } from '../../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';

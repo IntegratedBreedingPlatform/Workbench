@@ -3,7 +3,7 @@ import { BreedingMethod } from '../../shared/breeding-method/model/breeding-meth
 import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
 import { SearchResult } from '../../shared/search-result.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster/src/language';
+import { JhiLanguageService } from 'ng-jhipster';
 import { JhiEventManager } from 'ng-jhipster';
 import { AlertService } from '../../shared/alert/alert.service';
 import { Subscription } from 'rxjs';

@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 export class SampleImportPlateComponent {
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     fileName = '';

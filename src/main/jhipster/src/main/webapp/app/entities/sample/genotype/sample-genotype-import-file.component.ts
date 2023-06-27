@@ -20,7 +20,7 @@ export class SampleGenotypeImportFileComponent implements OnInit {
     showFileUpload = true;
     private readonly SAMPLE_UID: string = 'SAMPLE_UID';
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     fileName = '';

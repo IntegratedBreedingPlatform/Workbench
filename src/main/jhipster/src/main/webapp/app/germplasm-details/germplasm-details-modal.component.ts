@@ -6,7 +6,7 @@ import { GermplasmDetailsContext } from './germplasm-details.context';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GERMPLASM_DETAILS_URL } from '../app.constants';
 import { DomSanitizer } from '@angular/platform-browser';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { GermplasmService } from '../shared/germplasm/service/germplasm.service';
 import { GermplasmDto } from '../shared/germplasm/model/germplasm.model';
 import { JhiEventManager } from 'ng-jhipster';

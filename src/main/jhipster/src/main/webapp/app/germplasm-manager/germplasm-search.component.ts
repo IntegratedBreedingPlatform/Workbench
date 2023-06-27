@@ -67,7 +67,7 @@ export class GermplasmSearchComponent implements OnInit {
 
     ColumnLabels = ColumnLabels;
 
-    @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
+    @ViewChild('colVisPopOver', {static: true}) public colVisPopOver: NgbPopover;
 
     eventSubscriber: Subscription;
     germplasmDetailsEventSubscriber: Subscription;

@@ -33,7 +33,7 @@ export class LocationsPaneComponent implements OnInit {
 
     static readonly COLUMN_FILTER_EVENT_NAME = 'searchColumnFiltersChanged';
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     COLUMN_FILTER_EVENT_NAME = LocationsPaneComponent.COLUMN_FILTER_EVENT_NAME;

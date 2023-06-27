@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PopupService } from '../../shared/modal/popup.service';
 import { VariableDetailsComponent } from './variable-details.component';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ParamContext } from '../../shared/service/param.context';

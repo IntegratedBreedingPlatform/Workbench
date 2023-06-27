@@ -7,7 +7,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { ReleaseNotesService } from './release-notes.service';
 import { HttpResponse } from '@angular/common/http';
 import { ReleaseNote } from './release-notes.model';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ReleaseNoteContext } from './release-note.context';
 import { finalize } from 'rxjs/operators';

@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { DomSanitizer } from '@angular/platform-browser';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
-import { PopupService } from '../../../shared/modal/popup.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ParamContext } from '../../../shared/service/param.context';
-import { GermplasmDetailsContext } from '../../germplasm-details.context';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
+import {PopupService} from '../../../shared/modal/popup.service';
+import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import {ParamContext} from '../../../shared/service/param.context';
+import {GermplasmDetailsContext} from '../../germplasm-details.context';
 
 @Component({
     selector: 'jhi-germplasm-progenitors-audit-modal',
@@ -24,9 +23,9 @@ export class GermplasmProgenitorsAuditModalComponent implements OnInit {
                 private germplasmDetailsContext: GermplasmDetailsContext
     ) {
         const url = '/ibpworkbench/controller/jhipster#/germplasm/progenitors/audit?restartApplication&modal' +
-        '&cropName=' + context.cropName +
-        '&programUUID=' + context.programUUID +
-        '&gid=' + this.germplasmDetailsContext.gid;
+            '&cropName=' + context.cropName +
+            '&programUUID=' + context.programUUID +
+            '&gid=' + this.germplasmDetailsContext.gid;
         this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
 
@@ -51,7 +50,10 @@ export class GermplasmBasicDetailsAuditPopupComponent implements OnInit {
 
     ngOnInit(): void {
         this.germplasmDetailsContext.gid = Number(this.route.snapshot.paramMap.get('gid'));
-        const modal = this.popupService.open(GermplasmProgenitorsAuditModalComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
+        const modal = this.popupService.open(GermplasmProgenitorsAuditModalComponent as Component, {
+            windowClass: 'modal-large',
+            backdrop: 'static'
+        });
     }
 
 }

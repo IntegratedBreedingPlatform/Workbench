@@ -25,7 +25,7 @@ import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-i
 export class GermplasmListImportComponent implements OnInit {
     helpLink: string;
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     fileName = '';

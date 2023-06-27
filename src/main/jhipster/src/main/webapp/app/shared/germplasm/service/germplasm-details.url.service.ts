@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
 import { GERMPLASM_DETAILS_URL } from '../../../app.constants';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable()

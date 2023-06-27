@@ -25,7 +25,7 @@ export class InlineEditorComponent implements OnInit, AfterViewInit {
     @Output() onApply = new EventEmitter();
     @Output() onCancel = new EventEmitter();
 
-    @ViewChild('editorInput')
+    @ViewChild('editorInput', {static: true})
     editorInput: ElementRef;
 
     DataTypeIdEnum = DataTypeIdEnum;

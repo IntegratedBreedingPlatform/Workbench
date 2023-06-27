@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { PopupService } from '../../shared/modal/popup.service';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { GERMPLASM_SEARCH_SELECTOR } from '../../app.constants';
 import { ParamContext } from '../../shared/service/param.context';

@@ -38,7 +38,7 @@ export class GermplasmImportBasicDetailsComponent implements OnInit {
 
     dataBackupPrev = [];
 
-    @ViewChild('detailsForm')
+    @ViewChild('detailsForm', {static: true})
     detailsForm: ElementRef;
 
     hasEmptyPreferredName: boolean;
