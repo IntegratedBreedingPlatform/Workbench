@@ -41,7 +41,7 @@ export class GermplasmBasicDetailsModalComponent implements OnInit {
         this.germplasm.creationDate = this.dateHelperService.convertNgbDateToString(this.germplasmDate);
         this.germplasmService.updateGermplasmBasicDetails(this.germplasm).toPromise().then((result) => {
             this.alertService.success('edit-basic-details.success');
-            this.eventManager.broadcast({ name: 'basicDetailsChanged' });
+            this.eventManager.broadcast({ name: 'basicDetailsChanged', content: '' });
             this.clear();
             this.isLoading = false;
         }).catch((response) => {

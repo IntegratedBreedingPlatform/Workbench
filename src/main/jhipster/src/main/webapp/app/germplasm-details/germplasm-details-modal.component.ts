@@ -65,7 +65,7 @@ export class GermplasmDetailsModalComponent implements OnInit {
         // hasChanges is true when any germplasm details information has changed/deleted/added (basic details, name, attributes, pedigree)
         if (this.hasChanges) {
             // Refresh the Germplasm Manager search germplasm table to reflect the changes made in a germplasm.
-            this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+            this.eventManager.broadcast({ name: 'germplasmDetailsChanged', content: '' });
         }
 
     }

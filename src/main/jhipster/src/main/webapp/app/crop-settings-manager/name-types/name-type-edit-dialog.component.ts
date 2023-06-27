@@ -71,7 +71,7 @@ export class NameTypeEditDialogComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'nameTypeViewChanged' });
+        this.eventManager.broadcast({ name: 'nameTypeViewChanged', content: '' });
         this.clear();
     }
 

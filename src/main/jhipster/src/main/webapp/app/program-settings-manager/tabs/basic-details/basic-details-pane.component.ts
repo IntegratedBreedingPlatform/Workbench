@@ -97,7 +97,7 @@ export class BasicDetailsPaneComponent implements OnInit, OnDestroy {
     reset() {
         this.program = Object.assign({}, this.programOrg);
         this.startDate = this.dateHelperService.convertFormattedDateStringToNgbDate(this.program.startDate, 'yyyy-mm-dd');
-        this.eventManager.broadcast({ name: 'resetLocationToDefault' });
+        this.eventManager.broadcast({ name: 'resetLocationToDefault', content: '' });
     }
 
     private onError(response: HttpErrorResponse) {

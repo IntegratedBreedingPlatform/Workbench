@@ -182,7 +182,7 @@ export class ImportEntryDetailsComponent implements OnInit {
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({name: id + 'StudyEntryDetailsChanged'});
+                this.eventManager.broadcast({name: id + 'StudyEntryDetailsChanged', content: ''});
                 this.handleImportSuccess();
             },
             (error) => {

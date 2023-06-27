@@ -26,9 +26,9 @@ export class VariableService {
      * @deprecated Please, instead use {@link searchVariables}
      */
     filterVariables(request: VariableFilterRequest): Observable<VariableDetails[]> {
-        const params = Object.assign({
-            programUUID: this.paramContext.programUUID,
-        }, request);
+        const params = {
+            programUUID: this.paramContext.programUUID, ...request };
+        // @ts-ignore
         return this.http.get<VariableDetails[]>(SERVER_API_URL + `crops/${this.paramContext.cropName}/variables/filter`, { params });
     }
 

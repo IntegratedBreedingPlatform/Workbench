@@ -138,7 +138,7 @@ export class GermplasmProgenitorsModalComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'progenitorsChanged' });
+        this.eventManager.broadcast({ name: 'progenitorsChanged', content: '' });
         this.clear();
     }
 

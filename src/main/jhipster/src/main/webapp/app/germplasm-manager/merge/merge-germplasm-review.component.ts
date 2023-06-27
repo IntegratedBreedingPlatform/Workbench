@@ -49,7 +49,7 @@ export class MergeGermplasmReviewComponent implements OnInit {
                 this.alertService.success('merge-germplasm.success')
                 this.modal.dismiss();
                 // Refresh the Germplasm Manager search germplasm table to reflect the changes made in germplasm.
-                this.eventManager.broadcast({ name: 'germplasmDetailsChanged' });
+                this.eventManager.broadcast({ name: 'germplasmDetailsChanged', content: '' });
             }, (error) => {
                 this.onError(error)
             });

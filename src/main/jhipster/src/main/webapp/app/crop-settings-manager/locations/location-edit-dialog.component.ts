@@ -84,7 +84,7 @@ export class LocationEditDialogComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'locationViewChanged' });
+        this.eventManager.broadcast({ name: 'locationViewChanged', content: '' });
         this.clear();
     }
 

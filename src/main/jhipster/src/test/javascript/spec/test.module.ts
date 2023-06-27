@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ElementRef, NgModule, Renderer } from '@angular/core';
+import { ElementRef, NgModule, Renderer2 } from '@angular/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiAlertService, JhiDataUtils, JhiDateUtils, JhiEventManager, JhiLanguageService, JhiParseLinks } from 'ng-jhipster';
@@ -56,7 +56,7 @@ import { MockTranslateService } from './helpers/mock-translate.service';
             useValue: null
         },
         {
-            provide: Renderer,
+            provide: Renderer2,
             useValue: null
         },
         {

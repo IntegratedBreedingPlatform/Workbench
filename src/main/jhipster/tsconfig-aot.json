@@ -18,6 +18,7 @@
     },
     "angularCompilerOptions": {
         "genDir": "target/aot",
-        "skipMetadataEmit" : true
+        "skipMetadataEmit" : true,
+        "enableIvy": false
     }
 }

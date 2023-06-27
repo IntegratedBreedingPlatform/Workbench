@@ -187,7 +187,7 @@ export class GermplasmImportComponent implements OnInit {
             errorMessage.push(this.translateService.instant('error.import.header.duplicated', { param: header }));
         });
         // Gather unknown columns
-        fileHeader.filter((header) => Object.values(HEADERS).indexOf(header) < 0)
+        fileHeader.filter((header) => Object.values(HEADERS).indexOf(HEADERS[header]) < 0)
             .forEach((header) => this.codes[header] = 1);
         // Known name types
         fileHeader.filter((header) => {

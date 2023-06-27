@@ -99,7 +99,7 @@ export class UserEditDialogComponent implements OnInit {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'onUserViewChanged' });
+        this.eventManager.broadcast({ name: 'onUserViewChanged' , content: ''});
         this.activeModal.close();
     }
 

@@ -102,7 +102,7 @@ export class GermplasmAttributeModalComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'attributeChanged' });
+        this.eventManager.broadcast({ name: 'attributeChanged', content: '' });
         this.clear();
     }
 

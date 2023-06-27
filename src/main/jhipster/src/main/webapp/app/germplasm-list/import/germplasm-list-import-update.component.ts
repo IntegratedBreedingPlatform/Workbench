@@ -155,7 +155,7 @@ export class GermplasmListImportUpdateComponent implements OnInit {
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({name: id + ListComponent.GERMPLASM_LIST_CHANGED});
+                this.eventManager.broadcast({name: id + ListComponent.GERMPLASM_LIST_CHANGED, content: ''});
             },
             (error) => {
                 this.isLoading = false;

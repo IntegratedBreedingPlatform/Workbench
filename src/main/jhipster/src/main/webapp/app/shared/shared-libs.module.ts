@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgJhipsterModule } from 'ng-jhipster';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { CookieModule } from 'ngx-cookie';
@@ -10,10 +9,12 @@ import { NgSelect2Module } from 'ng-select2';
 import { TreeDragDropService } from 'primeng/api';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatMenuModule } from '@angular/material/menu';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @NgModule({
     imports: [
-        NgbModule.forRoot(),
+        NgbModule,
         NgJhipsterModule.forRoot({
             // set below to true to make alerts look like toast
             alertAsToast: true,
@@ -21,7 +22,8 @@ import { MatMenuModule } from '@angular/material/menu';
             defaultI18nLang: 'en'
         }),
         InfiniteScrollModule,
-        CookieModule.forRoot()
+        CookieModule.forRoot(),
+        TranslateModule
     ],
     exports: [
         FormsModule,
@@ -32,10 +34,12 @@ import { MatMenuModule } from '@angular/material/menu';
         InfiniteScrollModule,
         NgSelect2Module,
         NgSelectModule,
-        MatMenuModule
+        MatMenuModule,
+        TranslateModule
     ],
     providers: [
-        TreeDragDropService
+        TreeDragDropService,
+        TranslateService
     ]
 })
 export class BmsjHipsterSharedLibsModule {}

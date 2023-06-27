@@ -148,7 +148,7 @@ export class BreedingMethodEditDialogComponent implements OnInit, OnDestroy {
     }
 
     notifyChanges(): void {
-        this.eventManager.broadcast({ name: 'breedingMethodViewChanged' });
+        this.eventManager.broadcast({ name: 'breedingMethodViewChanged', content: '' });
         this.clear();
     }
 
