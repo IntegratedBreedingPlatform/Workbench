@@ -29,7 +29,7 @@ import {map} from "rxjs/operators";
 export class GermplasmListImportUpdateComponent implements OnInit {
     helpLink: string;
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     listId: number;

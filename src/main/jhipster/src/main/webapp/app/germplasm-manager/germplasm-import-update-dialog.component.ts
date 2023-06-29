@@ -27,7 +27,7 @@ export class GermplasmImportUpdateDialogComponent implements OnInit, OnDestroy {
     helpLink: string;
     templateHelpLink: string;
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     isProcessing = false;

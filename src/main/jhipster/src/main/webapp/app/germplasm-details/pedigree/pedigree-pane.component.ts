@@ -22,7 +22,7 @@ export class PedigreePaneComponent implements OnInit {
     MODIFY_PEDIGREE_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_PEDIGREE'];
     PEDIGREE_ACTIONS_PERMISSIONS = [...this.MODIFY_PEDIGREE_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];
 
-    @ViewChild(PedigreeTreeComponent) pedigreeTreeComponent: PedigreeTreeComponent;
+    @ViewChild(PedigreeTreeComponent, {static: true}) pedigreeTreeComponent: PedigreeTreeComponent;
     eventSubscriber: Subscription;
     germplasmProgenitorsDetails: GermplasmProgenitorsDetails;
     isIframeLoaded: boolean;

@@ -20,7 +20,7 @@ import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.componen
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { Pageable } from '../../shared/model/pageable';
-import { JhiLanguageService } from 'ng-jhipster/src/language';
+import { JhiLanguageService } from 'ng-jhipster';
 
 declare var $: any;
 

@@ -26,7 +26,7 @@ export class GermplasmImportComponent implements OnInit {
     helpLink: string;
     templateHelpLink: string;
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     fileName = '';

@@ -30,11 +30,11 @@ export class FileManagerComponent implements OnInit {
 
     VARIABLE_TYPE_IDS;
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
     file: File;
     variable: VariableDetails;
-    @ViewChild('img')
+    @ViewChild('img', {static: true})
     img: ElementRef;
 
     fileMetadataSelected: FileMetadata;

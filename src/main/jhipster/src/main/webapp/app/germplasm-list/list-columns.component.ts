@@ -22,7 +22,7 @@ export class ListColumnsComponent implements OnInit {
 
     @Output() columnsSelectedEvent = new EventEmitter<GermplasmListColumnModel[]>();
 
-    @ViewChild('columnsDropdown') columnsDropdown: NgbDropdown;
+    @ViewChild('columnsDropdown', {static: true}) columnsDropdown: NgbDropdown;
 
     TermIdEnum = TermIdEnum;
 

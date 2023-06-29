@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
-import { JhiAlertService } from 'ng-jhipster';
-import { JhiAlert } from 'ng-jhipster/src/service/alert.service';
+import {Injectable} from '@angular/core';
+import {JhiAlert, JhiAlertService} from 'ng-jhipster';
 
 @Injectable()
 export class AlertService {

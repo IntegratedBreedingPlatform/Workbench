@@ -46,8 +46,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     aboutBMSHelpLink: string;
     askForSupportHelpLink: string;
 
-    @ViewChild('sideNav') sideNav: ElementRef;
-    @ViewChild('viewport') viewport: ElementRef;
+    @ViewChild('sideNav', {static: true}) sideNav: ElementRef;
+    @ViewChild('viewport', {static: true}) viewport: ElementRef;
 
     treeControl = new FlatTreeControl<FlatNode>((node) => node.level, (node) => node.expandable);
     treeFlattener = new MatTreeFlattener(

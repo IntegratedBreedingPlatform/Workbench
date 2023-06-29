@@ -24,7 +24,7 @@ import {map} from 'rxjs/operators';
 })
 export class ImportEntryDetailsComponent implements OnInit {
 
-    @ViewChild('fileUpload')
+    @ViewChild('fileUpload', {static: true})
     fileUpload: ElementRef;
 
     studyId: number;

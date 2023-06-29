@@ -9,7 +9,7 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { formatErrorList } from '../../../shared/alert/format-error-list';
 import { Location } from '../../../shared/location/model/location';
 import { TranslateService } from '@ngx-translate/core';
-import { JhiLanguageService } from 'ng-jhipster/src/language';
+import { JhiLanguageService } from 'ng-jhipster';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from '../../../shared/alert/alert.service';
 import { JhiEventManager } from 'ng-jhipster';

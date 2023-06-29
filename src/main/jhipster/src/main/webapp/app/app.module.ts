@@ -3,7 +3,7 @@ import './vendor.ts';
 import { Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { LocalStorageService, Ng2Webstorage, SessionStorageService } from 'ngx-webstorage';
+import { LocalStorageService, NgxWebstorageModule, SessionStorageService } from 'ngx-webstorage';
 
 import { AuthInterceptor } from './blocks/interceptor/auth.interceptor';
 import { BmsjHipsterSharedModule, RouteAccessService } from './shared';
@@ -39,7 +39,7 @@ import { ObservationDetailsModule } from './entities/observation/observation-det
         BrowserModule,
         BrowserAnimationsModule,
         BmsjHipsterAppRoutingModule,
-        Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-' }),
+        NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-' }),
         BmsjHipsterSharedModule,
         BmsjHipsterEntityModule,
         NavbarModule,

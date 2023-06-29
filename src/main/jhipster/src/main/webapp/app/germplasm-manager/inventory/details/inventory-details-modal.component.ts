@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
-import { SafeResourceUrl } from '@angular/platform-browser/src/security/dom_sanitization_service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { PopupService } from '../../../shared/modal/popup.service';
 import { ParamContext } from '../../../shared/service/param.context';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
