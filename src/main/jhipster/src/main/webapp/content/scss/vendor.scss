@@ -8,9 +8,9 @@ eg $input-color: red;
 // Override Boostrap variables
 @import "bootstrap-variables";
 // Import Bootstrap source files from node_modules
-@import 'node_modules/bootstrap/scss/bootstrap';
-@import 'node_modules/font-awesome/scss/font-awesome';
-@import 'node_modules/leaflet/dist/leaflet';
+@import '~bootstrap/scss/bootstrap';
+@import '~font-awesome/scss/font-awesome';
+@import '~leaflet/dist/leaflet';
 @import '~primeng/resources/primeng.min.css';
 @import '~primeicons/primeicons.css';
 @import "~@ng-select/ng-select/themes/default.theme.css";

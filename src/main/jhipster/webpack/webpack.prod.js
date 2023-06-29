@@ -34,14 +34,14 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
         },
             {
                 test: /\.scss$/,
-                loaders: ['to-string-loader', 'css-loader', 'sass-loader'],
+                loaders: ['to-string-loader', 'css-loader', 'fast-sass-loader'],
                 exclude: /(vendor\.scss|global\.scss)/
             },
             {
                 test: /(vendor\.scss|global\.scss)/,
                 use: extractSASS.extract({
                     fallback: 'style-loader',
-                    use: ['css-loader', 'postcss-loader', 'sass-loader'],
+                    use: ['css-loader', 'postcss-loader', 'fast-sass-loader'],
                     publicPath: '../'
                 })
             },
