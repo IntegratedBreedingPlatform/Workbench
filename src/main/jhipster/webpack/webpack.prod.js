@@ -1,17 +1,15 @@
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 // const TerserPlugin = require('terser-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const AngularCompilerPlugin = require('@ngtools/webpack').AngularCompilerPlugin;
-const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const path = require('path');
 const utils = require('./utils.js');
 const commonConfig = require('./webpack.common.js');
 
 const ENV = 'production';
-const extractSASS = new ExtractTextPlugin(`content/[name]-sass.[hash].css`);
-const extractCSS = new ExtractTextPlugin(`content/[name].[hash].css`);
 
 module.exports = webpackMerge(commonConfig({ env: ENV }), {
     // Enable source maps. Please note that this will slow down the build.
@@ -39,24 +37,19 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
             },
             {
                 test: /(vendor\.scss|global\.scss)/,
-                use: extractSASS.extract({
-                    fallback: 'style-loader',
-                    use: ['css-loader', 'postcss-loader', 'fast-sass-loader'],
-                    publicPath: '../'
-                })
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: '../',
+                    },
+                },
+                'css-loader',
+                'postcss-loader',
+                'fast-sass-loader']
             },
         {
             test: /\.css$/,
-            loaders: ['to-string-loader', 'css-loader'],
-            exclude: /(vendor\.css|global\.css)/
-        },
-        {
-            test: /(vendor\.css|global\.css)/,
-            use: extractCSS.extract({
-                fallback: 'style-loader',
-                    use: ['css-loader'],
-                    publicPath: '../'
-            })
+            loaders: ['to-string-loader', 'css-loader']
         }]
     },
     optimization: {
@@ -104,8 +97,9 @@ module.exports = webpackMerge(commonConfig({ env: ENV }), {
         ]
     },
     plugins: [
-        extractSASS,
-        extractCSS,
+        new MiniCssExtractPlugin({
+            filename: `content/[name]-sass.[hash].css`
+        }),
         new AngularCompilerPlugin({
             mainPath: utils.root('src/main/webapp/app/app.main.ts'),
             tsConfigPath: utils.root('tsconfig-aot.json'),
