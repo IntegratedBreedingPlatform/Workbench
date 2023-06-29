@@ -74,8 +74,8 @@ export class UsersPaneComponent implements OnInit {
     ) {
         this.page = 1;
         this.totalItems = 0;
-        this.predicate = ['person.lastName'];
-        this.reverse = false;
+        this.predicate = ColumnLabels.LAST_NAME;
+        this.reverse = true;
         this.userSearchRequest = new UserSearchRequest();
 
         if (!this.filters) {
@@ -194,7 +194,7 @@ export class UsersPaneComponent implements OnInit {
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
-            this.loadAll(this.request);
+            this.transition();
         }
     }
 
@@ -216,11 +216,6 @@ export class UsersPaneComponent implements OnInit {
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
-        this.loadAll(this.request);
-    }
-
-    sort() {
-        this.page = 1;
         this.loadAll(this.request);
     }
 
@@ -313,6 +308,19 @@ export class UsersPaneComponent implements OnInit {
                 }
             });
         });
+    }
+
+    transition() {
+        this.router.navigate(['/users'], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                page: this.page,
+                size: this.itemsPerPage,
+                sort: this.getSort()
+            },
+            relativeTo: this.activatedRoute
+        });
+        this.loadAll(this.request);
     }
 
 }

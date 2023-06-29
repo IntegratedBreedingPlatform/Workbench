@@ -13,7 +13,7 @@
 	<div class="table-responsive" *ngIf="users">
 		<table class="table table-striped table-bordered table-curved" *ngIf="users.length else nodata">
 			<thead>
-			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
+			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 				<th [jhiSortBy]="ColumnLabels.USER_NAME"><span jhiTranslate="site-admin.user.columns.user-name"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.FIRST_NAME"><span jhiTranslate="site-admin.user.columns.first-name"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.LAST_NAME"><span jhiTranslate="site-admin.user.columns.last-name"></span> <span class="fa fa-sort"></span></th>
