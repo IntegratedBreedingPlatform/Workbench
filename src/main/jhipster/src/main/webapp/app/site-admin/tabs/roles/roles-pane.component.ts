@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import 'rxjs/add/operator/toPromise';
 import { Role } from '../../model/role.model';
 import { RoleService } from '../../services/role.service';
@@ -45,6 +45,7 @@ export class RolesPaneComponent implements OnInit {
 
     constructor(private roleService: RoleService,
                 private router: Router,
+                private activatedRoute: ActivatedRoute,
                 public translateService: TranslateService,
                 private jhiLanguageService: JhiLanguageService,
                 private modalService: NgbModal,
@@ -54,8 +55,8 @@ export class RolesPaneComponent implements OnInit {
 
         this.page = 1;
         this.totalItems = 0;
-        this.predicate = ['name'];
-        this.reverse = false;
+        this.predicate = ColumnLabels.ROLE_NAME;
+        this.reverse = true;
         this.roleSearchRequest = new RoleFilter();
     }
 
@@ -116,7 +117,7 @@ export class RolesPaneComponent implements OnInit {
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
-            this.loadAll(this.request);
+            this.transition();
         }
     }
 
@@ -141,11 +142,6 @@ export class RolesPaneComponent implements OnInit {
         this.loadAll(this.request);
     }
 
-    sort() {
-        this.page = 1;
-        this.loadAll(this.request);
-    }
-
     trackId(index: number, item: Location) {
         return item.id;
     }
@@ -155,8 +151,22 @@ export class RolesPaneComponent implements OnInit {
             this.loadAll(this.request);
         });
     }
+
+    transition() {
+        this.router.navigate(['/roles'], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+                page: this.page,
+                size: this.itemsPerPage,
+                sort: this.getSort()
+            },
+            relativeTo: this.activatedRoute
+        });
+        this.loadAll(this.request);
+    }
 }
-    export enum ColumnLabels {
+
+export enum ColumnLabels {
     'ROLE_NAME' = 'name',
     'ROLE_DESCRIPTION' = 'description',
     'ROLE_TYPE' = 'roleType.id',
