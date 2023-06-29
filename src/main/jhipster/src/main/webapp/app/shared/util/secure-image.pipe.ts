@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AlertService } from '../alert/alert.service';
 import { JhiLanguageService } from 'ng-jhipster';
 import { TINY_BLANK_IMAGE } from '../../app.constants';

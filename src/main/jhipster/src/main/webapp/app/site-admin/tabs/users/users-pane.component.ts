@@ -1,6 +1,5 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import 'rxjs/add/operator/toPromise';
 import { Role } from '../../model/role.model';
 import { UserService } from '../../services/user.service';
 import { RoleService } from '../../services/role.service';

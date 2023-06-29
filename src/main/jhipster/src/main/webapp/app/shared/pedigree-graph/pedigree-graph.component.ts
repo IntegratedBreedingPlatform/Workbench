@@ -1,25 +1,26 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { Graphviz, graphviz } from 'd3-graphviz';
-import { GermplasmTreeNode } from '../germplasm/model/germplasm-tree-node.model';
-import { GermplasmPedigreeService } from '../germplasm/service/germplasm.pedigree.service';
-import { Subject } from 'rxjs';
-import { JhiAlertService } from 'ng-jhipster';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Graphviz, graphviz} from 'd3-graphviz';
+import {GermplasmTreeNode} from '../germplasm/model/germplasm-tree-node.model';
+import {GermplasmPedigreeService} from '../germplasm/service/germplasm.pedigree.service';
+import {Subject} from 'rxjs';
+import {JhiAlertService} from 'ng-jhipster';
 import * as d3 from 'd3';
-import { GermplasmDetailsUrlService } from '../germplasm/service/germplasm-details.url.service';
-import { TranslateService } from '@ngx-translate/core';
-import { VariableDetails } from '../ontology/model/variable-details';
-import { VariableTypeEnum } from '../ontology/variable-type.enum';
-import { DataTypeEnum } from '../ontology/data-type.enum';
-import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { GermplasmSearchRequest } from '../../entities/germplasm/germplasm-search-request.model';
-import { Germplasm } from '../../entities/germplasm/germplasm.model';
-import { GermplasmService } from '../germplasm/service/germplasm.service';
-import { DateHelperService } from '../service/date.helper.service';
-import { SearchComposite } from '../model/search-composite';
-import { GermplasmManagerContext } from '../../germplasm-manager/germplasm-manager.context';
-import { Router } from '@angular/router';
-import { PopupService } from '../modal/popup.service';
-import { GermplasmListCreationComponent } from '../list-creation/germplasm-list-creation.component';
+import {GermplasmDetailsUrlService} from '../germplasm/service/germplasm-details.url.service';
+import {TranslateService} from '@ngx-translate/core';
+import {VariableDetails} from '../ontology/model/variable-details';
+import {VariableTypeEnum} from '../ontology/variable-type.enum';
+import {DataTypeEnum} from '../ontology/data-type.enum';
+import {NgbDate} from '@ng-bootstrap/ng-bootstrap';
+import {GermplasmSearchRequest} from '../../entities/germplasm/germplasm-search-request.model';
+import {Germplasm} from '../../entities/germplasm/germplasm.model';
+import {GermplasmService} from '../germplasm/service/germplasm.service';
+import {DateHelperService} from '../service/date.helper.service';
+import {SearchComposite} from '../model/search-composite';
+import {GermplasmManagerContext} from '../../germplasm-manager/germplasm-manager.context';
+import {Router} from '@angular/router';
+import {PopupService} from '../modal/popup.service';
+import {GermplasmListCreationComponent} from '../list-creation/germplasm-list-creation.component';
+import {debounceTime, distinctUntilChanged} from "rxjs/operators";
 
 @Component({
     selector: 'jhi-pedigree-graph',
@@ -49,26 +50,29 @@ export class PedigreeGraphComponent implements OnInit {
     germplasmMap: {} = {};
     selectedGermplasmList: Germplasm[] = [];
     selectedGermplasmGids: number[] = [];
-    nodesMap: {} =  {};
+    nodesMap: {} = {};
     isNodeSelected = false;
     selectedNode: any = null;
     MAX_NAME_DISPLAY_SIZE = 30;
 
-    constructor(public germplasmPedigreeService: GermplasmPedigreeService,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
-                private alertService: JhiAlertService,
-                public translateService: TranslateService,
-                public germplasmService: GermplasmService,
-                public dateHelperService: DateHelperService,
-                private germplasmManagerContext: GermplasmManagerContext,
-                private router: Router,
-                private popupService: PopupService) {
-        this.levelChanged.debounceTime(500) // wait 500 milliseccond after the last event before emitting last event
-            .distinctUntilChanged() // only emit if value is different from previous value
-            .subscribe((model) => {
-                this.level = model;
-                this.render();
-            });
+    constructor(
+        public germplasmPedigreeService: GermplasmPedigreeService,
+        public germplasmDetailsUrlService: GermplasmDetailsUrlService,
+        private alertService: JhiAlertService,
+        public translateService: TranslateService,
+        public germplasmService: GermplasmService,
+        public dateHelperService: DateHelperService,
+        private germplasmManagerContext: GermplasmManagerContext,
+        private router: Router,
+        private popupService: PopupService
+    ) {
+        this.levelChanged.pipe(
+            debounceTime(500),
+            distinctUntilChanged()
+        ).subscribe((model) => {
+            this.level = model;
+            this.render();
+        });
     }
 
     ngOnInit(): void {
@@ -186,14 +190,14 @@ export class PedigreeGraphComponent implements OnInit {
             });
         });
 
-        d3.select('body').on('click', function() {
+        d3.select('body').on('click', function () {
             d3.select('#context-menu').style('display', 'none');
         });
 
         // Create a local nodesMap variable since function inside each can't access the component's nodesMap variable
         const nodesMap = {};
         const nodes = d3.selectAll('.node');
-        nodes.each(function(d) {
+        nodes.each(function (d) {
             const currentNode = d3.select(this);
             nodesMap[Number(d.key)] = currentNode;
         });
@@ -386,7 +390,7 @@ export class PedigreeGraphComponent implements OnInit {
         this.graphviz.resetZoom();
         const svgData = document.getElementsByTagName('svg')[0].outerHTML;
         const preface = '<?xml version="1.0" standalone="no"?>\r\n';
-        const svgBlob = new Blob([preface, svgData], { type: 'image/svg+xml;charset=utf-8' });
+        const svgBlob = new Blob([preface, svgData], {type: 'image/svg+xml;charset=utf-8'});
         const svgUrl = URL.createObjectURL(svgBlob);
         const downloadLink = document.createElement('a');
         downloadLink.href = svgUrl;
@@ -400,7 +404,10 @@ export class PedigreeGraphComponent implements OnInit {
         const searchComposite = new SearchComposite<GermplasmSearchRequest, number>();
         searchComposite.itemIds = this.selectedGermplasmGids;
         this.germplasmManagerContext.searchComposite = searchComposite;
-        this.popupService.open(GermplasmListCreationComponent as Component, { windowClass: 'modal-large', backdrop: 'static' });
+        this.popupService.open(GermplasmListCreationComponent as Component, {
+            windowClass: 'modal-large',
+            backdrop: 'static'
+        });
     }
 
     disableHighlightButton(): boolean {

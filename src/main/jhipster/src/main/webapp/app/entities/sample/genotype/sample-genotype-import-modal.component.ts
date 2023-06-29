@@ -10,7 +10,7 @@ import { Sample } from '../../../shared/brapi/model/samples/sample';
 import { SampleService } from '../sample.service';
 import { SearchSamplesRequest } from '../../../shared/brapi/model/samples/search-samples-request';
 import { flatMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import { VariableDetails } from '../../../shared/ontology/model/variable-details';
 import { VariableTypeEnum } from '../../../shared/ontology/variable-type.enum';
 import { toUpper } from '../../../shared/util/to-upper';
@@ -155,7 +155,7 @@ export class SampleGenotypeImportModalComponent implements OnInit {
                     this.alertService.error('genotyping.no.genotyping.samples.found');
                     this.isVariantsLoading = false;
                 }
-                return Observable.empty();
+                return EMPTY;
             })).subscribe((callSets) => {
                 if (callSets && callSets.length) {
                     // Get the variants (Markers) associated to the specified Callsets (Individuals)

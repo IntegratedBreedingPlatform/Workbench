@@ -1,9 +1,9 @@
-import { Observable } from 'rxjs/Rx';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { RoleFilter } from '../model/role-filter.model';
-import { Role } from '../model/role.model';
-import { SERVER_API_URL } from '../../../app.constants';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {RoleFilter} from '../model/role-filter.model';
+import {Role} from '../model/role.model';
+import {SERVER_API_URL} from '../../../app.constants';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class RoleService {

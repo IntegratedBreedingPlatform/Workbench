@@ -1,52 +1,57 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/switchMap';
-import { GermplasmService } from '../germplasm/service/germplasm.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {GermplasmService} from '../germplasm/service/germplasm.service';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-column-filter-attributes',
     template: `
-		<form #f='ngForm'>
-			<section class="filter-wrapper">
-				<div class="keyword-wrapper">
-					<input type="text" class="form-control" [formControl]="queryField" id="keyword" placeholder="search attributes..." autofocus/>
-				</div>
-				<ul class="filter-select">
-					<li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result)">
-						<div>
-							<img class="variable-select-icon" alt="Property" src="/ibpworkbench/controller/static/images/property.svg">
-							<span> {{result.property.name}} </span>
-						</div>
-						<div>
-							<img class="variable-select-icon" alt="Variable" src="/ibpworkbench/controller/static/images/variable.png">
-							<span *ngIf="result.alias"  class="label-info"> {{result.alias}} ({{result.name}})</span>
-							<span *ngIf="!result.alias" class="label-info"> {{result.name}}</span>
-						</div>
-					</li>
-				</ul>
-			</section>
-			<div *ngIf="this.filter.attributes.length === 0"><span>Search for attributes that you want to filter</span></div>
-			<br/>
-			<div *ngFor="let attribute of filter.attributes">
-				<div class="form-group">
-					<label *ngIf="attribute.alias" for="{{attribute.name}}">{{attribute.name}} ({{attribute.alias}})</label>
-					<label *ngIf="!attribute.alias" for="{{attribute.name}}">{{attribute.name}}</label>
-					<div class="input-group">
-						<input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.name}}">
-						<div class="input-group-append">
-							<button class="btn btn-default float-right fa fa-minus" (click)="deleteAttribute(attribute)"></button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<br/>
-			<div class="footer text-center"><br>
-				<button type="submit" class="btn btn-primary btn-sm" [disabled]="!f.valid" (click)="apply(f)">Apply</button>
-				<button class="btn btn btn-default btn-sm" (click)="reset(f)">Reset</button>
-			</div>
-		</form>
+        <form #f='ngForm'>
+            <section class="filter-wrapper">
+                <div class="keyword-wrapper">
+                    <input type="text" class="form-control" [formControl]="queryField" id="keyword"
+                           placeholder="search attributes..." autofocus/>
+                </div>
+                <ul class="filter-select">
+                    <li *ngFor="let result of results" class="filter-select-list" (click)="addAttribute(result)">
+                        <div>
+                            <img class="variable-select-icon" alt="Property"
+                                 src="/ibpworkbench/controller/static/images/property.svg">
+                            <span> {{result.property.name}} </span>
+                        </div>
+                        <div>
+                            <img class="variable-select-icon" alt="Variable"
+                                 src="/ibpworkbench/controller/static/images/variable.png">
+                            <span *ngIf="result.alias" class="label-info"> {{result.alias}} ({{result.name}})</span>
+                            <span *ngIf="!result.alias" class="label-info"> {{result.name}}</span>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <div *ngIf="this.filter.attributes.length === 0"><span>Search for attributes that you want to filter</span>
+            </div>
+            <br/>
+            <div *ngFor="let attribute of filter.attributes">
+                <div class="form-group">
+                    <label *ngIf="attribute.alias" for="{{attribute.name}}">{{attribute.name}} ({{attribute.alias}}
+                        )</label>
+                    <label *ngIf="!attribute.alias" for="{{attribute.name}}">{{attribute.name}}</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" [(ngModel)]="attribute.value" name="{{attribute.name}}">
+                        <div class="input-group-append">
+                            <button class="btn btn-default float-right fa fa-minus"
+                                    (click)="deleteAttribute(attribute)"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="footer text-center"><br>
+                <button type="submit" class="btn btn-primary btn-sm" [disabled]="!f.valid" (click)="apply(f)">Apply
+                </button>
+                <button class="btn btn btn-default btn-sm" (click)="reset(f)">Reset</button>
+            </div>
+        </form>
     `
 })
 export class ColumnFilterAttributesComponent implements OnInit {
@@ -65,10 +70,11 @@ export class ColumnFilterAttributesComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.queryField.valueChanges
-            .debounceTime(500)
-            .distinctUntilChanged()
-            .switchMap((query) => this.germplasmService.searchAttributes(query))
+        this.queryField.valueChanges.pipe(
+            debounceTime(500),
+            distinctUntilChanged(),
+            switchMap((query) => this.germplasmService.searchAttributes(query))
+        )
             .subscribe((result) => {
                 if (result.status === 400) {
                     return;
@@ -83,7 +89,7 @@ export class ColumnFilterAttributesComponent implements OnInit {
         this.queryField.setValue('');
         // Do not add attribute if it's already in the list
         if (!this.filter.attributes.some((e) => e.name === attribute.name)) {
-            this.filter.attributes.push({ ...attribute, value: '' });
+            this.filter.attributes.push({...attribute, value: ''});
         }
         this.onAdd.emit(attribute);
     }

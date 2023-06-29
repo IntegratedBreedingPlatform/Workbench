@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/switchMap';
 import { GermplasmService } from '../germplasm/service/germplasm.service';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-column-filter-name-types',
@@ -56,9 +54,11 @@ export class ColumnFilterNameTypesComponent implements OnInit {
 
     ngOnInit(): void {
         this.queryField.valueChanges
-            .debounceTime(500)
-            .distinctUntilChanged()
-            .switchMap((query) => this.germplasmService.searchNameTypes(query))
+            .pipe(
+                debounceTime(500),
+                distinctUntilChanged(),
+                switchMap((query) => this.germplasmService.searchNameTypes(query))
+            )
             .subscribe((result) => {
                 if (result.status === 400) {
                     return;

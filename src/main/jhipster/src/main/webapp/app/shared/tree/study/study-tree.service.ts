@@ -4,7 +4,7 @@ import { TreeNode } from '../index';
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ParamContext } from '../../service/param.context';
-import { Observable } from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import { SERVER_API_URL } from '../../../app.constants';
 
 @Injectable()
@@ -69,7 +69,7 @@ export class StudyTreeService extends TreeService {
 
     persist(folders: string[]) {
         // TODO
-        return Observable.empty();
+        return EMPTY;
     }
 
     private toTreeNode(item: any, parentKey: any): TreeNode {

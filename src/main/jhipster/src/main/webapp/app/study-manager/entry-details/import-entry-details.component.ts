@@ -1,21 +1,22 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { PopupService } from '../../shared/modal/popup.service';
-import { TranslateService } from '@ngx-translate/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { VariableService } from '../../shared/ontology/service/variable.service';
-import { parseFile, saveFile } from '../../shared/util/file-utils';
-import { HttpErrorResponse } from '@angular/common/http';
-import { formatErrorList } from '../../shared/alert/format-error-list';
-import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
-import { toUpper } from '../../shared/util/to-upper';
-import { JhiAlertService, JhiEventManager, JhiLanguageService } from 'ng-jhipster';
-import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { EntryDetailsImportContext } from '../../shared/ontology/entry-details-import.context';
-import { StudyService } from '../../shared/study/service/study.service';
-import { DatasetVariable } from '../../shared/study/model/dataset-variable';
-import { EntryDetailsImportService, HEADERS } from '../../shared/ontology/service/entry-details-import.service';
-import { ModalAlertComponent } from '../../shared/modal/modal-alert.component';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {PopupService} from '../../shared/modal/popup.service';
+import {TranslateService} from '@ngx-translate/core';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {VariableService} from '../../shared/ontology/service/variable.service';
+import {parseFile, saveFile} from '../../shared/util/file-utils';
+import {HttpErrorResponse} from '@angular/common/http';
+import {formatErrorList} from '../../shared/alert/format-error-list';
+import {VariableTypeEnum} from '../../shared/ontology/variable-type.enum';
+import {toUpper} from '../../shared/util/to-upper';
+import {JhiAlertService, JhiEventManager, JhiLanguageService} from 'ng-jhipster';
+import {ModalConfirmComponent} from '../../shared/modal/modal-confirm.component';
+import {EntryDetailsImportContext} from '../../shared/ontology/entry-details-import.context';
+import {StudyService} from '../../shared/study/service/study.service';
+import {DatasetVariable} from '../../shared/study/model/dataset-variable';
+import {EntryDetailsImportService, HEADERS} from '../../shared/ontology/service/entry-details-import.service';
+import {ModalAlertComponent} from '../../shared/modal/modal-alert.component';
+import {map} from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-import-entry-details',
@@ -74,7 +75,7 @@ export class ImportEntryDetailsComponent implements OnInit {
         if (this.extensions.indexOf(extension.toLowerCase()) === -1) {
             this.fileName = '';
             target.value = '';
-            this.alertService.error('study.import-entry-details.file.validation.extensions', { param: this.extensions.join(', ') });
+            this.alertService.error('study.import-entry-details.file.validation.extensions', {param: this.extensions.join(', ')});
             return;
         }
 
@@ -174,14 +175,14 @@ export class ImportEntryDetailsComponent implements OnInit {
                 });
             });
 
-            studyEntries.push({ entryNumber: entryNo, data: variables });
+            studyEntries.push({entryNumber: entryNo, data: variables});
         }
 
         this.studyService.importStudyEntries(id, studyEntries, newVariables).subscribe(
             () => {
                 this.isLoading = false;
                 this.modal.close();
-                this.eventManager.broadcast({ name: id + 'StudyEntryDetailsChanged' });
+                this.eventManager.broadcast({name: id + 'StudyEntryDetailsChanged'});
                 this.handleImportSuccess();
             },
             (error) => {
@@ -195,9 +196,9 @@ export class ImportEntryDetailsComponent implements OnInit {
 
     private async showSummaryConfirmation(affectedEntries: number) {
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component,
-            { windowClass: 'modal-medium', backdrop: 'static' });
+            {windowClass: 'modal-medium', backdrop: 'static'});
         confirmModalRef.componentInstance.message = this.translateService.instant('study.import-entry-details.confirmation',
-            { param: affectedEntries });
+            {param: affectedEntries});
         try {
             await confirmModalRef.result;
         } catch (rejected) {
@@ -208,7 +209,7 @@ export class ImportEntryDetailsComponent implements OnInit {
 
     private async showNoValuesWarning() {
         const modal = this.modalService.open(ModalAlertComponent as Component,
-            { windowClass: 'modal-medium', backdrop: 'static' });
+            {windowClass: 'modal-medium', backdrop: 'static'});
         modal.componentInstance.message = this.translateService.instant('study.import-entry-details.no-entries-values');
         modal.componentInstance.showCancelButton = false;
     }
@@ -255,12 +256,12 @@ export class ImportEntryDetailsComponent implements OnInit {
             }).toPromise();
 
             variablesOfTheList = await this.variableService.getStudyEntryVariables(this.studyId, VariableTypeEnum.ENTRY_DETAILS)
-                .map((resp) => resp.body)
+                .pipe(map((resp) => resp.body))
                 .toPromise();
 
             this.context.variablesOfTheList = variablesFiltered.filter((variable) =>
                 (!this.hasGeneratedDesign || this.hasGeneratedDesign && !variable.metadata.usage.systemTerm) &&
-                    variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
+                variablesOfTheList.some((v) => Number(v.id) === Number(variable.id))
             );
 
             this.context.unknownVariableNames = unknownColumnNames.filter((variableName) =>
@@ -269,7 +270,7 @@ export class ImportEntryDetailsComponent implements OnInit {
 
             this.context.newVariables = variablesFiltered.filter((variable) =>
                 (!this.hasGeneratedDesign || this.hasGeneratedDesign && !variable.metadata.usage.systemTerm) &&
-                    this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
+                this.context.variablesOfTheList.every((v) => Number(v.id) !== Number(variable.id))
             );
 
             if (this.hasGeneratedDesign) {
@@ -285,7 +286,7 @@ export class ImportEntryDetailsComponent implements OnInit {
             (<any>window.parent).handleImportSuccess();
         }
         if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: 'import-success', 'value': '' }, '*');
+            (<any>window.parent).postMessage({name: 'import-success', 'value': ''}, '*');
         }
     }
 
@@ -295,14 +296,14 @@ export class ImportEntryDetailsComponent implements OnInit {
             (<any>window.parent).closeModal();
         }
         if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: 'cancel', 'value': '' }, '*');
+            (<any>window.parent).postMessage({name: 'cancel', 'value': ''}, '*');
         }
     }
 
     private onError(response: HttpErrorResponse) {
         const msg = formatErrorList(response.error.errors);
         if (msg) {
-            this.alertService.error('error.custom', { param: msg });
+            this.alertService.error('error.custom', {param: msg});
         } else {
             this.alertService.error('error.general', null, null);
         }
@@ -320,14 +321,14 @@ export class ImportEntryDetailsComponent implements OnInit {
     private getData(cleanData: boolean) {
         const headers = this.rawData[0].map((header) => toUpper(header));
         return this.rawData.slice(1).map((fileRow, rowIndex) => {
-            return fileRow.reduce((map, col, colIndex) => {
+            return fileRow.reduce((mapVal, col, colIndex) => {
                 const columnName = headers[colIndex];
                 const shouldAddData = !(this.context.skipVariables.filter((variable) => variable.name === columnName).length > 0 ||
                     this.context.unknownVariableNames.includes(columnName));
                 if (!cleanData || shouldAddData) {
-                    map[columnName] = col;
+                    mapVal[columnName] = col;
                 }
-                return map;
+                return mapVal;
             }, {});
         });
     }

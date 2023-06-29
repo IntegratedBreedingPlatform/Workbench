@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import 'rxjs/add/operator/toPromise';
 import { Role } from '../../model/role.model';
 import { RoleService } from '../../services/role.service';
 import { RoleFilter } from '../../model/role-filter.model';
