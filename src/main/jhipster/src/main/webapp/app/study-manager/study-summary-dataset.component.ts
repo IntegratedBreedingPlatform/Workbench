@@ -14,9 +14,10 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isObservationOrSubObservationDataset } from '../shared/dataset/model/dataset.util';
-import { MANAGE_STUDIES_PERMISSIONS } from '../shared/auth/permissions';
+import {MANAGE_STUDIES_PERMISSIONS, VIEW_GERMPLASM_DETAILS_PERMISSION} from '../shared/auth/permissions';
 import { DatasetModel } from '../shared/dataset/model/dataset.model';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
+import {Principal} from "../shared";
 
 @Component({
     selector: 'jhi-study-summary-dataset',
@@ -67,7 +68,8 @@ export class StudySummaryDatasetComponent implements OnInit {
                 public observationVariableHelperService: ObservationVariableHelperService,
                 public router: Router,
                 public activatedRoute: ActivatedRoute,
-                private fileDownloadHelper: FileDownloadHelper) {
+                private fileDownloadHelper: FileDownloadHelper,
+                private principal: Principal) {
         this.page = 1;
         this.totalItems = 0;
     }
@@ -86,6 +88,10 @@ export class StudySummaryDatasetComponent implements OnInit {
 
     trackId(index: number, item: ObservationUnitsSearchResponse) {
         return item.observationUnitId;
+    }
+
+    showViewGermplasmDetailsLink(termId: any) {
+        return (termId === this.GID_TERM_ID || termId === this.DESIGNATION_TERM_ID) && this.principal.hasAnyAuthorityDirect(VIEW_GERMPLASM_DETAILS_PERMISSION);
     }
 
     getObservationByVariable(variable: ObservationVariable, index: number): any {
