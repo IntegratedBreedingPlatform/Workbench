@@ -50,6 +50,9 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
             advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;
         }
 
+        advanceSamplesRequest.propagateAttributesData = this.propagateAttributesData;
+        advanceSamplesRequest.propagatePassportDescriptorData = this.propagatePassportDescriptorData;
+
         this.advanceService.advanceSamples(this.studyId, advanceSamplesRequest)
             .pipe(finalize(() => this.isLoading = false))
             .subscribe(

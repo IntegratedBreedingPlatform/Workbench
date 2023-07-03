@@ -24,6 +24,11 @@
         "plant-sub-observation": "Plants: {{datasetName}}"
       }
     },
+    "attributes": {
+      "title": "Attributes",
+      "propagate.attributes.data": "Propagate attributes data to the advanced lines",
+      "propagate.passport.descriptor.data": "Propagate passport descriptor data to the advanced lines"
+    },
     "lines": {
       "title": "Lines",
       "description": "Same number of lines is selected for each plot",

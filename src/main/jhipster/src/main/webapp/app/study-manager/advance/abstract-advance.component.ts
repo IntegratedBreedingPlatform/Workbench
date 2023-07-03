@@ -72,6 +72,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
 
+    propagateAttributesData: boolean;
+    propagatePassportDescriptorData: boolean;
+
     // for preview data table
     isLoadingPreview = false;
     originalTotalItems: number;

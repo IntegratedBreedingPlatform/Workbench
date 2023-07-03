@@ -33,6 +33,24 @@
 				</div>
 			</div>
 
+			<!-- Attibutes -->
+			<div>
+				<h4 jhiTranslate="advance-study.attributes.title"></h4>
+				<div>
+					<div class="col-sm-12 form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" [(ngModel)]="propagatePassportDescriptorData" id="propagatePassportDescriptorData" name="propagatePassportDescriptorData">
+						<label class="col-form-label font-weight-bold" for="propagatePassportDescriptorData" jhiTranslate="advance-study.attributes.propagate.passport.descriptor.data"></label>
+					</div>
+				</div>
+				<div>
+					<div class="col-sm-12 form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" [(ngModel)]="propagateAttributesData" id="propagateAttributesData" name="propagateAttributesData">
+						<label class="col-form-label font-weight-bold" for="propagateAttributesData" jhiTranslate="advance-study.attributes.propagate.attributes.data"></label>
+					</div>
+				</div>
+			</div>
+
+
 			<!-- Selection Trait -->
 			<div *ngIf="showSelectionTraitSelection">
 				<h4 jhiTranslate="advance-study.selection-trait.title">Selection Trait</h4>

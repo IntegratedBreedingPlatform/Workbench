@@ -3,6 +3,8 @@ export abstract class AbstractAdvanceRequest {
         public instanceIds: number[],
         public selectedReplications: number[],
         public selectionTraitRequest?: SelectionTraitRequest,
+        public propagateAttributesData?: boolean,
+        public propagatePassportDescriptorData?: boolean
     ) {
     }
 }
