@@ -21,6 +21,7 @@ import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.crossingmanager.listeners.GidLinkClickListener;
+import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.middleware.api.germplasm.GermplasmNameService;
 import org.generationcp.middleware.constant.ColumnLabels;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
@@ -33,6 +34,7 @@ import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
+import org.generationcp.middleware.pojos.workbench.PermissionsEnum;
 import org.generationcp.middleware.service.api.PedigreeService;
 import org.generationcp.middleware.util.CrossExpansionProperties;
 import org.slf4j.Logger;
@@ -89,6 +91,9 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 		private static final String CLICK_TO_VIEW_GERMPLASM_INFORMATION = "Click to view Germplasm information";
 		private static final long serialVersionUID = -3048433522366977000L;
+
+		@Autowired
+		protected AuthorizationService authorizationService;
 
 		@Override
 		public void drop(final DragAndDropEvent dropEvent) {
@@ -150,11 +155,6 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 							if (listData.getStatus() != 9) {
 								final String parentValue = preferredNamesMap.get(listData.getGid());
 
-								final Button gidButton =
-									new Button(parentValue, new GidLinkClickListener(listData.getGid().toString(), true));
-								gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-								gidButton.setDescription(ListDataTableDropHandler.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
-
 								final CheckBox tag = new CheckBox();
 								tag.setDebugId("tag");
 
@@ -174,8 +174,16 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 								targetTable.removeItem(entryObject);
 
 								final Item item = targetTable.getContainerDataSource().addItem(entryObject);
+								if (this.authorizationService.hasAnyAuthority(PermissionsEnum.VIEW_GERMPLASM_DETAILS_PERMISSIONS)) {
+									final Button gidButton =
+											new Button(parentValue, new GidLinkClickListener(listData.getGid().toString(), true));
+									gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+									gidButton.setDescription(ListDataTableDropHandler.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
+									item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
+								} else {
+									item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(parentValue);
+								}
 
-								item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
 								item.getItemProperty(ParentTabComponent.TAG_COLUMN_ID).setValue(tag);
 
 								addedCount++;
@@ -281,6 +289,11 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 	@Autowired
 	private InventoryDataManager inventoryDataManager;
 
+	@Autowired
+	protected AuthorizationService authorizationService;
+
+	private boolean hasViewGermplasmDetailsPermission;
+
 	private GermplasmList germplasmList;
 	private final String parentLabel;
 	private Integer rowCount;
@@ -304,6 +317,7 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		this.hasViewGermplasmDetailsPermission = this.authorizationService.hasAnyAuthority(PermissionsEnum.VIEW_GERMPLASM_DETAILS_PERMISSIONS);
 		this.instantiateComponents();
 		this.initializeValues();
 		this.addListeners();
@@ -368,7 +382,12 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 		this.listDataTable.setImmediate(true);
 		this.listDataTable.addContainerProperty(ParentTabComponent.TAG_COLUMN_ID, CheckBox.class, null);
 		this.listDataTable.addContainerProperty(ColumnLabels.ENTRY_ID.getName(), Integer.class, Integer.valueOf(0));
-		this.listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
+		if (this.hasViewGermplasmDetailsPermission) {
+			this.listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
+		} else {
+			this.listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), String.class, null);
+		}
+
 		this.listDataTable.addContainerProperty(ColumnLabels.PARENTAGE.getName(), String.class, null);
 
 		this.listDataTable.setColumnHeader(ParentTabComponent.TAG_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
