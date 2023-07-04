@@ -20,7 +20,7 @@ import {GermplasmManagerContext} from '../../germplasm-manager/germplasm-manager
 import {Router} from '@angular/router';
 import {PopupService} from '../modal/popup.service';
 import {GermplasmListCreationComponent} from '../list-creation/germplasm-list-creation.component';
-import {debounceTime, distinctUntilChanged} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-pedigree-graph',
@@ -190,14 +190,14 @@ export class PedigreeGraphComponent implements OnInit {
             });
         });
 
-        d3.select('body').on('click', function () {
+        d3.select('body').on('click', function() {
             d3.select('#context-menu').style('display', 'none');
         });
 
         // Create a local nodesMap variable since function inside each can't access the component's nodesMap variable
         const nodesMap = {};
         const nodes = d3.selectAll('.node');
-        nodes.each(function (d) {
+        nodes.each(function(d) {
             const currentNode = d3.select(this);
             nodesMap[Number(d.key)] = currentNode;
         });

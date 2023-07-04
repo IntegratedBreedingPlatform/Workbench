@@ -20,7 +20,7 @@ import {HELP_GERMPLASM_LIST_IMPORT_UPDATE} from '../../app.constants';
 import {HelpService} from '../../shared/service/help.service';
 import {EntryDetailsImportContext} from '../../shared/ontology/entry-details-import.context';
 import {EntryDetailsImportService, HEADERS} from '../../shared/ontology/service/entry-details-import.service';
-import {map} from "rxjs/operators";
+import {map} from 'rxjs/operators';
 
 @Component({
     selector: 'jhi-germplasm-list-import-update',
