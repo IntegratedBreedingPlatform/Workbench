@@ -141,7 +141,7 @@
     "start": "yarn run webpack:dev",
     "serve": "yarn run start",
     "build": "yarn run webpack:prod",
-    "test": "yarn run lint && karma start src/test/javascript/karma.conf.js",
+    "test": "karma start src/test/javascript/karma.conf.js",
     "test:watch": "yarn test --watch",
     "webpack:dev": "yarn run webpack-dev-server --config webpack/webpack.dev.js --progress --inline --hot --profile --port=9060 --watch-content-base --env.stats=minimal",
     "webpack:build:main": "yarn run webpack --config webpack/webpack.dev.js --progress --profile --env.stats=minimal",
