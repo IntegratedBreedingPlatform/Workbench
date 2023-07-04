@@ -590,4 +590,8 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 		return this.maleParentTabSheet;
 	}
 
+	public void setHasViewGermplasmDetailsPermission(final boolean hasViewGermplasmDetailsPermission) {
+		this.hasViewGermplasmDetailsPermission = hasViewGermplasmDetailsPermission;
+	}
+
 }
