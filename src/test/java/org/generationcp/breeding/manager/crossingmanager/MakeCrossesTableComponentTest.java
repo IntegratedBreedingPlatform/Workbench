@@ -133,6 +133,7 @@ public class MakeCrossesTableComponentTest {
 		this.makeCrossesTableComponent.initializeTotalCrossesLabel();
 		this.makeCrossesTableComponent.setGermplasmListManager(this.germplasmListManager);
 		this.makeCrossesTableComponent.setStudyInstanceService(this.studyInstanceService);
+		this.makeCrossesTableComponent.setHasViewGermplasmDetailsPermission(true);
 
 
 		this.femaleParent = new GermplasmListEntry(1, 1, 1);

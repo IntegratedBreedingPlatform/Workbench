@@ -1041,4 +1041,8 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	public void setStudyInstanceMap(final Map<Integer, StudyInstance> studyInstanceMap) {
 		this.studyInstanceMap = studyInstanceMap;
 	}
+
+	public void setHasViewGermplasmDetailsPermission(final boolean hasViewGermplasmDetailsPermission) {
+		this.hasViewGermplasmDetailsPermission = hasViewGermplasmDetailsPermission;
+	}
 }
