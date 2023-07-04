@@ -93,7 +93,7 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 		private static final long serialVersionUID = -3048433522366977000L;
 
 		@Autowired
-		protected AuthorizationService authorizationService;
+		private AuthorizationService authorizationService;
 
 		@Override
 		public void drop(final DragAndDropEvent dropEvent) {
@@ -290,7 +290,7 @@ public class ParentTabComponent extends VerticalLayout implements InitializingBe
 	private InventoryDataManager inventoryDataManager;
 
 	@Autowired
-	protected AuthorizationService authorizationService;
+	private AuthorizationService authorizationService;
 
 	private boolean hasViewGermplasmDetailsPermission;
 

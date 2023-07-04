@@ -14,7 +14,7 @@ import { ObservationVariableHelperService } from '../shared/dataset/model/observ
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { ActivatedRoute, Router } from '@angular/router';
 import { isObservationOrSubObservationDataset } from '../shared/dataset/model/dataset.util';
-import {MANAGE_STUDIES_PERMISSIONS, VIEW_GERMPLASM_DETAILS_PERMISSION} from '../shared/auth/permissions';
+import { MANAGE_STUDIES_PERMISSIONS, VIEW_GERMPLASM_DETAILS_PERMISSION } from '../shared/auth/permissions';
 import { DatasetModel } from '../shared/dataset/model/dataset.model';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
 import { Principal } from '../shared';

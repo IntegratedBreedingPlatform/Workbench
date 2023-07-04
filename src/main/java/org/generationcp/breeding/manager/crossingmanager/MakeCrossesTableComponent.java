@@ -168,7 +168,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	private StudyDataManager studyDataManager;
 
 	@Autowired
-	protected AuthorizationService authorizationService;
+	private AuthorizationService authorizationService;
 
 	private boolean hasViewGermplasmDetailsPermission;
 
@@ -348,7 +348,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			return maleParentCell;
 		}
 		for(int i=0; i<maleParents.size(); i++) {
-			GermplasmListEntry maleParent = maleParents.get(i);
+			final GermplasmListEntry maleParent = maleParents.get(i);
 			final String maleParentPreferredName = this.getGermplasmPreferredName(preferredNamesMap.get(maleParent.getGid()));
 			if (this.hasViewGermplasmDetailsPermission) {
 				final Button designationMaleParentButton =
@@ -389,7 +389,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	void removeSelfIfNecessary(final GermplasmListEntry femaleParent, final List<GermplasmListEntry> maleParents, final boolean excludeSelf) {
 		if(excludeSelf) {
-			Iterator i = maleParents.iterator();
+			final Iterator i = maleParents.iterator();
 			while (i.hasNext()) {
 				final GermplasmListEntry maleParent = (GermplasmListEntry)i.next();
 				if (femaleParent.getGid().equals(maleParent.getGid())) {
@@ -471,7 +471,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		tag.addListener(new PreviewCrossesTabCheckBoxListener(tableCrossesMade, parents, this.tableWithSelectAllLayout.getCheckBox()));
 		tag.setImmediate(true);
 
-		Object[] item = new Object[] {
+		final Object[] item = new Object[] {
 			tag, entryCounter, this.getDesignationFemaleParentObject(femalePreferredName, femaleGid),
 			maleParentCell, femaleParentPedigreeString, maleParentPedigreeString, seedSource};
 
@@ -481,7 +481,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	private Object getDesignationFemaleParentObject (final String femalePreferredName, final Integer femaleGid) {
 		if (this.hasViewGermplasmDetailsPermission) {
-			Button designationFemaleParentButton = new Button(femalePreferredName, new GidLinkClickListener(femaleGid.toString(), true));
+			final Button designationFemaleParentButton = new Button(femalePreferredName, new GidLinkClickListener(femaleGid.toString(), true));
 			designationFemaleParentButton.setStyleName(BaseTheme.BUTTON_LINK);
 			designationFemaleParentButton.setDescription(CLICK_TO_VIEW_GERMPLASM_INFORMATION);
 			return designationFemaleParentButton;
@@ -550,8 +550,8 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	}
 
 
-	private boolean shouldBeAddedToCrossesTable(CrossParents parents, Set<CrossParents> existingCrosses, boolean excludeSelf,
-		GermplasmListEntry femaleParent, GermplasmListEntry maleParent) {
+	private boolean shouldBeAddedToCrossesTable(final CrossParents parents, final Set<CrossParents> existingCrosses, final boolean excludeSelf,
+												final GermplasmListEntry femaleParent, final GermplasmListEntry maleParent) {
 		return !existingCrosses.contains(parents) && (this.tableCrossesMade.size() == 0 || this.tableCrossesMade.getItem(parents) == null)
 			&& (!excludeSelf || (excludeSelf && !this.hasSameParent(femaleParent, maleParent)));
 	}
@@ -607,7 +607,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		return femaleParent.getGid().intValue() == maleParent.getGid().intValue();
 	}
 
-	private String getGermplasmPreferredName(Germplasm germplasm) {
+	private String getGermplasmPreferredName(final Germplasm germplasm) {
 		if(germplasm != null && germplasm.getPreferredName() != null && StringUtils.isNotBlank(germplasm.getPreferredName().getNval())) {
 			return germplasm.getPreferredName().getNval();
 		}
@@ -655,7 +655,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			name.setNval(crossSource);
 			name.setTypeId(crossingNameTypeId);
 
-			List<Progenitor> progenitors = new ArrayList<>();
+			final List<Progenitor> progenitors = new ArrayList<>();
 			if(parents.getMaleParents() != null && !parents.getMaleParents().isEmpty()) {
 				// Start the progenitor number at 3
 				int progenitorNumber = 3;
@@ -878,7 +878,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	 * Save Temporary list
 	 */
 	Integer saveTemporaryList() {
-		GermplasmList tempList = new GermplasmList();
+		final GermplasmList tempList = new GermplasmList();
 		tempList.setType(GermplasmListType.F1CRT.toString());
 		// use same pattern as deleted study
 		tempList.setName("TEMP_LIST" + "#" + Util.getCurrentDateAsStringValue("yyyyMMddHHmmssSSS"));
@@ -962,7 +962,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	}
 
 	
-	protected void setGermplasmDataManager(GermplasmDataManager germplasmDataManager) {
+	protected void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
 		this.germplasmDataManager = germplasmDataManager;
 	}
 
@@ -1006,11 +1006,11 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	}
 
 	
-	protected void setPedigreeService(PedigreeService pedigreeService) {
+	protected void setPedigreeService(final PedigreeService pedigreeService) {
 		this.pedigreeService = pedigreeService;
 	}
 
-	protected void setCrossExpansionProperties(CrossExpansionProperties crossExpansionProperties) {
+	protected void setCrossExpansionProperties(final CrossExpansionProperties crossExpansionProperties) {
 		this.crossExpansionProperties = crossExpansionProperties;
 	}
 

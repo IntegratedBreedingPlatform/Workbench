@@ -79,7 +79,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 	private GermplasmListService germplasmListService;
 
 	@Autowired
-	protected AuthorizationService authorizationService;
+	private AuthorizationService authorizationService;
 
 	private boolean hasViewGermplasmDetailsPermission;
 

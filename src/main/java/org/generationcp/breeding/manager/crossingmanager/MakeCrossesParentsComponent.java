@@ -68,7 +68,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 	private GermplasmNameService germplasmNameService;
 
 	@Autowired
-	protected AuthorizationService authorizationService;
+	private AuthorizationService authorizationService;
 
 	private boolean hasViewGermplasmDetailsPermission;
 
@@ -189,9 +189,9 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 				final Integer entryId = (Integer) sourceTable.getItem(itemId).getItemProperty(ColumnLabels.ENTRY_ID.getName()).getValue();
 
 				final String parentage = (String) sourceTable.getItem(itemId).getItemProperty(ColumnLabels.PARENTAGE.getName()).getValue();
-				String designation;
-				Integer gid;
-				if (hasViewGermplasmDetailsPermission) {
+				final String designation;
+				final Integer gid;
+				if (this.hasViewGermplasmDetailsPermission) {
 					final Button designationBtn =
 							(Button) sourceTable.getItem(itemId).getItemProperty(ColumnLabels.DESIGNATION.getName()).getValue();
 					designation  =designationBtn.getCaption();
@@ -209,16 +209,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 				final Item item = targetTable.addItem(entryObject);
 
 				if (item != null) {
-					if (hasViewGermplasmDetailsPermission) {
-						final Button newGidButton = new Button(designation, new GidLinkClickListener(gid.toString(), true));
-						newGidButton.setDebugId("newGidButton");
-						newGidButton.setStyleName(BaseTheme.BUTTON_LINK);
-						newGidButton.setDescription(MakeCrossesParentsComponent.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
-
-						item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(newGidButton);
-					} else {
-						item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(designation);
-					}
+					this.getDesignationComponent(designation, gid, "newGidButton", item);
 					if (targetTable.equals(this.femaleParentTab.getListDataTable())) {
 						entryObject.setFromFemaleTable(true);
 						this.femaleParentTab.updateNoOfEntries(this.femaleParentTab.getListDataTable().size());
@@ -384,15 +375,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 						this.maleParentTab.getListDataTable().removeItem(entryObject);
 
 						final Item item = this.maleParentTab.getListDataTable().addItem(entryObject);
-						if (this.hasViewGermplasmDetailsPermission) {
-							final Button gidButton = new Button(maleParentValue, new GidLinkClickListener(listData.getGid().toString(), true));
-							gidButton.setDebugId("gidButton");
-							gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-							gidButton.setDescription(MakeCrossesParentsComponent.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
-							item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
-						} else {
-							item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(maleParentValue);
-						}
+						this.getDesignationComponent(maleParentValue, listData.getGid(), "gidButton", item);
 
 						item.getItemProperty(MakeCrossesParentsComponent.TAG_COLUMN_ID).setValue(tag);
 
@@ -423,6 +406,18 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 
 		this.maleParentTab.updateNoOfEntries(this.maleParentTab.getListDataTable().size());
 
+	}
+
+	private void getDesignationComponent(final String maleParentValue, final Integer listData, final String debugId, final Item item) {
+		if (this.hasViewGermplasmDetailsPermission) {
+			final Button gidButton = new Button(maleParentValue, new GidLinkClickListener(listData.toString(), true));
+			gidButton.setDebugId(debugId);
+			gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+			gidButton.setDescription(MakeCrossesParentsComponent.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
+			item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
+		} else {
+			item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(maleParentValue);
+		}
 	}
 
 	public void addListToFemaleTable(final Integer germplasmListId) {
@@ -459,15 +454,7 @@ public class MakeCrossesParentsComponent extends VerticalLayout implements Breed
 						this.femaleParentTab.getListDataTable().removeItem(entryObject);
 
 						final Item item = this.femaleParentTab.getListDataTable().addItem(entryObject);
-						if (this.hasViewGermplasmDetailsPermission) {
-							final Button gidButton = new Button(femaleParentValue, new GidLinkClickListener(listData.getGid().toString(), true));
-							gidButton.setDebugId("gidButton");
-							gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-							gidButton.setDescription(MakeCrossesParentsComponent.CLICK_TO_VIEW_GERMPLASM_INFORMATION);
-							item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(gidButton);
-						} else {
-							item.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(femaleParentValue);
-						}
+						this.getDesignationComponent(femaleParentValue, listData.getGid(), "gidButton", item);
 
 						item.getItemProperty(MakeCrossesParentsComponent.TAG_COLUMN_ID).setValue(tag);
 
