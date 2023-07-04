@@ -17,7 +17,7 @@ import { isObservationOrSubObservationDataset } from '../shared/dataset/model/da
 import {MANAGE_STUDIES_PERMISSIONS, VIEW_GERMPLASM_DETAILS_PERMISSION} from '../shared/auth/permissions';
 import { DatasetModel } from '../shared/dataset/model/dataset.model';
 import { FileDownloadHelper } from '../entities/sample/file-download.helper';
-import {Principal} from "../shared";
+import { Principal } from '../shared';
 
 @Component({
     selector: 'jhi-study-summary-dataset',
