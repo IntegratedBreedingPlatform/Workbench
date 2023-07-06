@@ -50,6 +50,8 @@ import org.generationcp.breeding.manager.customcomponent.SaveListAsDialogSource;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
 import org.generationcp.breeding.manager.util.BreedingManagerTransformationUtil;
 import org.generationcp.breeding.manager.util.BreedingManagerUtil;
+import org.generationcp.commons.security.AuthorizationService;
+import org.generationcp.middleware.pojos.workbench.PermissionsEnum;
 import org.generationcp.middleware.ruleengine.pojo.ImportedCross;
 import org.generationcp.middleware.ruleengine.pojo.ImportedGermplasmParent;
 import org.generationcp.middleware.ruleengine.generator.SeedSourceGenerator;
@@ -165,6 +167,11 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	@Autowired
 	private StudyDataManager studyDataManager;
 
+	@Autowired
+	private AuthorizationService authorizationService;
+
+	private boolean hasViewGermplasmDetailsPermission;
+
 	private Label lblReviewCrosses;
 
 	private Label totalCrossesLabel;
@@ -201,6 +208,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		this.hasViewGermplasmDetailsPermission = this.authorizationService.hasAnyAuthority(PermissionsEnum.VIEW_GERMPLASM_DETAILS_PERMISSIONS);
 		this.instantiateComponents();
 		this.initializeValues();
 		this.addListeners();
@@ -340,13 +348,18 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			return maleParentCell;
 		}
 		for(int i=0; i<maleParents.size(); i++) {
-			GermplasmListEntry maleParent = maleParents.get(i);
+			final GermplasmListEntry maleParent = maleParents.get(i);
 			final String maleParentPreferredName = this.getGermplasmPreferredName(preferredNamesMap.get(maleParent.getGid()));
-			final Button designationMaleParentButton =
-				new Button(maleParentPreferredName, new GidLinkClickListener(maleParent.getGid().toString(), true));
-			designationMaleParentButton.setStyleName(BaseTheme.BUTTON_LINK);
-			designationMaleParentButton.setDescription(CLICK_TO_VIEW_GERMPLASM_INFORMATION);
-			maleParentCell.addComponent(designationMaleParentButton);
+			if (this.hasViewGermplasmDetailsPermission) {
+				final Button designationMaleParentButton =
+						new Button(maleParentPreferredName, new GidLinkClickListener(maleParent.getGid().toString(), true));
+				designationMaleParentButton.setStyleName(BaseTheme.BUTTON_LINK);
+				designationMaleParentButton.setDescription(CLICK_TO_VIEW_GERMPLASM_INFORMATION);
+				maleParentCell.addComponent(designationMaleParentButton);
+			} else {
+				final Label parentPreferredName = new Label(maleParentPreferredName);
+				maleParentCell.addComponent(parentPreferredName);
+			}
 			if(i + 1 != maleParents.size()) {
 				final Label separator = new Label(SEPARATOR);
 				maleParentCell.addComponent(separator);
@@ -376,7 +389,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	void removeSelfIfNecessary(final GermplasmListEntry femaleParent, final List<GermplasmListEntry> maleParents, final boolean excludeSelf) {
 		if(excludeSelf) {
-			Iterator i = maleParents.iterator();
+			final Iterator i = maleParents.iterator();
 			while (i.hasNext()) {
 				final GermplasmListEntry maleParent = (GermplasmListEntry)i.next();
 				if (femaleParent.getGid().equals(maleParent.getGid())) {
@@ -453,22 +466,27 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		final String maleParentPedigreeString = hasUnknownMaleParent? Name.UNKNOWN : this.generateMalePedigreeString(maleParents, parentPedigreeStringMap);
 		final HorizontalLayout maleParentCell = this.getMaleParentCell(maleParents, preferredNamesMap, hasUnknownMaleParent);
 
-		final Button designationFemaleParentButton = new Button(femalePreferredName, new GidLinkClickListener(femaleGid.toString(), true));
-		designationFemaleParentButton.setStyleName(BaseTheme.BUTTON_LINK);
-		designationFemaleParentButton.setDescription(CLICK_TO_VIEW_GERMPLASM_INFORMATION);
-
-
 		final CheckBox tag = new CheckBox();
 		tag.setDebugId(TAG_COLUMN_ID);
 		tag.addListener(new PreviewCrossesTabCheckBoxListener(tableCrossesMade, parents, this.tableWithSelectAllLayout.getCheckBox()));
 		tag.setImmediate(true);
 
-		Object[] item = new Object[] {
-			tag, entryCounter, designationFemaleParentButton,
+		final Object[] item = new Object[] {
+			tag, entryCounter, this.getDesignationFemaleParentObject(femalePreferredName, femaleGid),
 			maleParentCell, femaleParentPedigreeString, maleParentPedigreeString, seedSource};
 
 		this.tableCrossesMade.addItem(item, parents);
 		existingCrosses.add(parents);
+	}
+
+	private Object getDesignationFemaleParentObject (final String femalePreferredName, final Integer femaleGid) {
+		if (this.hasViewGermplasmDetailsPermission) {
+			final Button designationFemaleParentButton = new Button(femalePreferredName, new GidLinkClickListener(femaleGid.toString(), true));
+			designationFemaleParentButton.setStyleName(BaseTheme.BUTTON_LINK);
+			designationFemaleParentButton.setDescription(CLICK_TO_VIEW_GERMPLASM_INFORMATION);
+			return designationFemaleParentButton;
+		}
+		return femalePreferredName;
 	}
 
 	private void setMakeCrossesTableVisibleColumn() {
@@ -532,8 +550,8 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	}
 
 
-	private boolean shouldBeAddedToCrossesTable(CrossParents parents, Set<CrossParents> existingCrosses, boolean excludeSelf,
-		GermplasmListEntry femaleParent, GermplasmListEntry maleParent) {
+	private boolean shouldBeAddedToCrossesTable(final CrossParents parents, final Set<CrossParents> existingCrosses, final boolean excludeSelf,
+												final GermplasmListEntry femaleParent, final GermplasmListEntry maleParent) {
 		return !existingCrosses.contains(parents) && (this.tableCrossesMade.size() == 0 || this.tableCrossesMade.getItem(parents) == null)
 			&& (!excludeSelf || (excludeSelf && !this.hasSameParent(femaleParent, maleParent)));
 	}
@@ -589,7 +607,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 		return femaleParent.getGid().intValue() == maleParent.getGid().intValue();
 	}
 
-	private String getGermplasmPreferredName(Germplasm germplasm) {
+	private String getGermplasmPreferredName(final Germplasm germplasm) {
 		if(germplasm != null && germplasm.getPreferredName() != null && StringUtils.isNotBlank(germplasm.getPreferredName().getNval())) {
 			return germplasm.getPreferredName().getNval();
 		}
@@ -637,7 +655,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 			name.setNval(crossSource);
 			name.setTypeId(crossingNameTypeId);
 
-			List<Progenitor> progenitors = new ArrayList<>();
+			final List<Progenitor> progenitors = new ArrayList<>();
 			if(parents.getMaleParents() != null && !parents.getMaleParents().isEmpty()) {
 				// Start the progenitor number at 3
 				int progenitorNumber = 3;
@@ -704,7 +722,11 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 		this.tableCrossesMade.addContainerProperty(TAG_COLUMN_ID, CheckBox.class, null);
 		this.tableCrossesMade.addContainerProperty(ColumnLabels.ENTRY_ID.getName(), Integer.class, null);
-		this.tableCrossesMade.addContainerProperty(ColumnLabels.FEMALE_PARENT.getName(), Button.class, null);
+		if (this.hasViewGermplasmDetailsPermission) {
+			this.tableCrossesMade.addContainerProperty(ColumnLabels.FEMALE_PARENT.getName(), Button.class, null);
+		} else {
+			this.tableCrossesMade.addContainerProperty(ColumnLabels.FEMALE_PARENT.getName(), String.class, null);
+		}
 		this.tableCrossesMade.addContainerProperty(ColumnLabels.MALE_PARENT.getName(), HorizontalLayout.class, null);
 		this.tableCrossesMade.addContainerProperty(FEMALE_CROSS, String.class, null);
 		this.tableCrossesMade.addContainerProperty(MALE_CROSS, String.class, null);
@@ -856,7 +878,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	 * Save Temporary list
 	 */
 	Integer saveTemporaryList() {
-		GermplasmList tempList = new GermplasmList();
+		final GermplasmList tempList = new GermplasmList();
 		tempList.setType(GermplasmListType.F1CRT.toString());
 		// use same pattern as deleted study
 		tempList.setName("TEMP_LIST" + "#" + Util.getCurrentDateAsStringValue("yyyyMMddHHmmssSSS"));
@@ -940,7 +962,7 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	}
 
 	
-	protected void setGermplasmDataManager(GermplasmDataManager germplasmDataManager) {
+	protected void setGermplasmDataManager(final GermplasmDataManager germplasmDataManager) {
 		this.germplasmDataManager = germplasmDataManager;
 	}
 
@@ -984,11 +1006,11 @@ public class MakeCrossesTableComponent extends VerticalLayout
 	}
 
 	
-	protected void setPedigreeService(PedigreeService pedigreeService) {
+	protected void setPedigreeService(final PedigreeService pedigreeService) {
 		this.pedigreeService = pedigreeService;
 	}
 
-	protected void setCrossExpansionProperties(CrossExpansionProperties crossExpansionProperties) {
+	protected void setCrossExpansionProperties(final CrossExpansionProperties crossExpansionProperties) {
 		this.crossExpansionProperties = crossExpansionProperties;
 	}
 
@@ -1018,5 +1040,9 @@ public class MakeCrossesTableComponent extends VerticalLayout
 
 	public void setStudyInstanceMap(final Map<Integer, StudyInstance> studyInstanceMap) {
 		this.studyInstanceMap = studyInstanceMap;
+	}
+
+	public void setHasViewGermplasmDetailsPermission(final boolean hasViewGermplasmDetailsPermission) {
+		this.hasViewGermplasmDetailsPermission = hasViewGermplasmDetailsPermission;
 	}
 }

@@ -75,6 +75,7 @@ public class MakeCrossesParentsComponentTest {
 	@Before
 	public void setUp() {
 		Mockito.doReturn("Parent List").when(this.messageSource).getMessage(Message.PARENTS_LISTS);
+		this.makeCrossesParentsComponent.setHasViewGermplasmDetailsPermission(true);
 
 		this.femaleParent = this.createParentTable();
 		this.maleParent = this.createParentTable();

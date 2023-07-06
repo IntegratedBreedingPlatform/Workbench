@@ -23,6 +23,7 @@ import org.generationcp.breeding.manager.crossingmanager.util.CrossingManagerUti
 import org.generationcp.breeding.manager.customcomponent.ActionButton;
 import org.generationcp.breeding.manager.customcomponent.HeaderLabelLayout;
 import org.generationcp.breeding.manager.customcomponent.TableWithSelectAllLayout;
+import org.generationcp.commons.security.AuthorizationService;
 import org.generationcp.commons.vaadin.spring.InternationalizableComponent;
 import org.generationcp.commons.vaadin.spring.SimpleResourceBundleMessageSource;
 import org.generationcp.commons.vaadin.theme.Bootstrap;
@@ -37,6 +38,7 @@ import org.generationcp.middleware.manager.api.InventoryDataManager;
 import org.generationcp.middleware.manager.api.OntologyDataManager;
 import org.generationcp.middleware.pojos.GermplasmList;
 import org.generationcp.middleware.pojos.GermplasmListData;
+import org.generationcp.middleware.pojos.workbench.PermissionsEnum;
 import org.generationcp.middleware.service.api.study.StudyEntryDto;
 import org.generationcp.middleware.service.api.study.StudyEntryService;
 import org.slf4j.Logger;
@@ -75,6 +77,12 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	@Autowired
 	private GermplasmListService germplasmListService;
+
+	@Autowired
+	private AuthorizationService authorizationService;
+
+	private boolean hasViewGermplasmDetailsPermission;
+
 
 	private final class ListDataTableActionHandler implements Action.Handler {
 
@@ -228,6 +236,7 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		this.hasViewGermplasmDetailsPermission = this.authorizationService.hasAnyAuthority(PermissionsEnum.VIEW_GERMPLASM_DETAILS_PERMISSIONS);
 		this.instantiateComponents();
 		this.initializeValues();
 		this.addListeners();
@@ -298,10 +307,19 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 			listDataTable.addContainerProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, CheckBox.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_ID.getName(), Integer.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
+			if (this.hasViewGermplasmDetailsPermission) {
+				listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), Button.class, null);
+			} else {
+				listDataTable.addContainerProperty(ColumnLabels.DESIGNATION.getName(), String.class, null);
+			}
 			listDataTable.addContainerProperty(ColumnLabels.PARENTAGE.getName(), String.class, null);
 			listDataTable.addContainerProperty(ColumnLabels.ENTRY_CODE.getName(), String.class, null);
-			listDataTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
+			if (this.hasViewGermplasmDetailsPermission) {
+				listDataTable.addContainerProperty(ColumnLabels.GID.getName(), Button.class, null);
+			} else {
+				listDataTable.addContainerProperty(ColumnLabels.GID.getName(), String.class, null);
+			}
+
 			listDataTable.addContainerProperty(ColumnLabels.GROUP_ID.getName(), String.class, null);
 
 			listDataTable.setColumnHeader(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID, this.messageSource.getMessage(Message.CHECK_ICON));
@@ -387,18 +405,6 @@ public class SelectParentsListDataComponent extends VerticalLayout
 
 	private void addGermplasmItem(final int gid, final String designation, final Integer entryNumber, final String groupName,
 		final Optional<String> entryCode, final Optional<String> groupId) {
-
-		final String gidString = String.format("%s", gid);
-		final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
-		gidButton.setDebugId("gidButton");
-		gidButton.setStyleName(BaseTheme.BUTTON_LINK);
-		gidButton.setDescription("Click to view Germplasm information");
-
-		final Button desigButton = new Button(designation, new GidLinkClickListener(gidString, true));
-		desigButton.setDebugId("desigButton");
-		desigButton.setStyleName(BaseTheme.BUTTON_LINK);
-		desigButton.setDescription("Click to view Germplasm information");
-
 		final CheckBox itemCheckBox = new CheckBox();
 		itemCheckBox.setDebugId("itemCheckBox");
 		itemCheckBox.setData(entryNumber);
@@ -421,10 +427,27 @@ public class SelectParentsListDataComponent extends VerticalLayout
 		final Item newItem = this.getListDataTable().getContainerDataSource().addItem(entryNumber);
 		newItem.getItemProperty(SelectParentsListDataComponent.CHECKBOX_COLUMN_ID).setValue(itemCheckBox);
 		newItem.getItemProperty(ColumnLabels.ENTRY_ID.getName()).setValue(entryNumber);
-		newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
+
+		final String gidString = String.format("%s", gid);
+		if (this.hasViewGermplasmDetailsPermission) {
+
+			final Button gidButton = new Button(gidString, new GidLinkClickListener(gidString, true));
+			gidButton.setDebugId("gidButton");
+			gidButton.setStyleName(BaseTheme.BUTTON_LINK);
+			gidButton.setDescription("Click to view Germplasm information");
+			final Button desigButton = new Button(designation, new GidLinkClickListener(gidString, true));
+			desigButton.setDebugId("desigButton");
+			desigButton.setStyleName(BaseTheme.BUTTON_LINK);
+			desigButton.setDescription("Click to view Germplasm information");
+			newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(desigButton);
+			newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
+		} else {
+			newItem.getItemProperty(ColumnLabels.DESIGNATION.getName()).setValue(designation);
+			newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidString);
+		}
 		newItem.getItemProperty(ColumnLabels.PARENTAGE.getName()).setValue(groupName == null ? "" : groupName);
 		newItem.getItemProperty(ColumnLabels.ENTRY_CODE.getName()).setValue(entryCode.orElse(""));
-		newItem.getItemProperty(ColumnLabels.GID.getName()).setValue(gidButton);
+
 		final String groupIdDisplayValue = groupId.orElse("-");
 		newItem.getItemProperty(ColumnLabels.GROUP_ID.getName()).setValue(groupIdDisplayValue);
 

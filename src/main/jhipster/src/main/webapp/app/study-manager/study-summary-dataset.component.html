@@ -54,7 +54,7 @@
 			<tbody *ngIf="observations.length">
 			<tr *ngFor="let observation of observations; trackBy: trackId; index as index">
 				<td *ngFor="let column of header">
-					<span *ngIf="column.termId === GID_TERM_ID || column.termId === DESIGNATION_TERM_ID else nolink">
+					<span *ngIf="showViewGermplasmDetailsLink(column.termId) else nolink">
 						<a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + this.observations[index].gid } }]" queryParamsHandling="merge">
 							{{ getObservationByVariable(column, index) }}
 						</a>
