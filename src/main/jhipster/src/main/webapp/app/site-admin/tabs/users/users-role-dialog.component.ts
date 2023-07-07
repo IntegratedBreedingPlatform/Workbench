@@ -15,6 +15,7 @@ import { SiteAdminContext } from '../../site-admin-context';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertService } from '../../../shared/alert/alert.service';
+import { Pageable } from '../../../shared/model/pageable';
 
 @Component({
     selector: 'jhi-users-role-dialog',
@@ -27,6 +28,7 @@ export class UserRoleDialogComponent implements OnInit {
     roleSelected: any = '';
     cropSelected: any = '';
     programSelected: any = '';
+    predicate: any;
 
     roleTypes: RoleType[];
     roles: Role[];
@@ -44,6 +46,7 @@ export class UserRoleDialogComponent implements OnInit {
                 public translateService: TranslateService,
                 private context: SiteAdminContext) {
 
+        this.predicate = ['name'];
         this.roleService.getRoleTypes().subscribe((resp) => {
                 this.roleTypes = resp;
             }
@@ -56,7 +59,11 @@ export class UserRoleDialogComponent implements OnInit {
 
     changeRole() {
         const roleFilter = new RoleFilter([], true, this.roleTypeSelected);
-        this.roleService.searchRoles(roleFilter, null).subscribe((resp) => {
+        this.roleService.searchRoles(roleFilter, <Pageable>({
+            page: null,
+            size: null,
+            sort: this.getSort()
+        })).subscribe((resp) => {
                 this.roles = resp.body;
                 this.crops = this.model.crops;
 
@@ -154,6 +161,13 @@ export class UserRoleDialogComponent implements OnInit {
     back() {
         this.modal.close();
         this.modalService.open(UserEditDialogComponent as Component, { windowClass: 'modal-medium', backdrop: 'static' });
+    }
+
+    private getSort() {
+        if (!this.predicate) {
+            return '';
+        }
+        return [this.predicate + ',asc'];
     }
 
 }

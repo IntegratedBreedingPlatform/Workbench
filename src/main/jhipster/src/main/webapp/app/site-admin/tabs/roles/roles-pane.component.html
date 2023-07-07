@@ -11,7 +11,7 @@
 	<div class="table-responsive" *ngIf="roles">
 		<table class="table table-striped table-bordered table-curved" *ngIf="roles.length else nodata">
 			<thead>
-			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="sort.bind(this)">
+			<tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
 				<th [jhiSortBy]="ColumnLabels.ROLE_NAME"><span jhiTranslate="site-admin.role.columns.role-name"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.ROLE_DESCRIPTION"><span jhiTranslate="site-admin.role.columns.role-description"></span> <span class="fa fa-sort"></span></th>
 				<th [jhiSortBy]="ColumnLabels.ROLE_TYPE"><span jhiTranslate="site-admin.role.columns.role-type"></span> <span class="fa fa-sort"></span></th>
