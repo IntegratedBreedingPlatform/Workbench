@@ -33,7 +33,7 @@ public class UserAccountValidatorTest {
 	@InjectMocks
 	private UserAccountValidator validator;
 
-	protected int passwordMinimumLength = 8;
+	final protected int passwordMinimumLength = 8;
 
 	@Test
 	public void testSupports() {
