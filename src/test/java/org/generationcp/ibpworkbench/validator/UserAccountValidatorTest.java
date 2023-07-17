@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.Errors;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -34,8 +33,7 @@ public class UserAccountValidatorTest {
 	@InjectMocks
 	private UserAccountValidator validator;
 
-	@Value("${security.login.password.minimum.length}")
-	protected int passwordMinimumLength;
+	protected int passwordMinimumLength = 8;
 
 	@Test
 	public void testSupports() {
@@ -339,9 +337,8 @@ public class UserAccountValidatorTest {
 
 		this.validator.validatePasswordLength(userAccount1, this.errors);
 
-		final String[] argArray = {passwordMinimumLength + ""};
 		Mockito.verify(this.errors, Mockito.times(0))
-			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE, argArray, null);
+			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
 
 		final UserAccountModel userAccount2 = new UserAccountModel();
 		userAccount2.setPassword(RandomStringUtils.randomAlphanumeric(7));
@@ -349,7 +346,7 @@ public class UserAccountValidatorTest {
 		this.validator.validatePasswordLength(userAccount2, this.errors);
 
 		Mockito.verify(this.errors, Mockito.times(0))
-			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE, argArray, null);
+			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
 	}
 
 	@Test
