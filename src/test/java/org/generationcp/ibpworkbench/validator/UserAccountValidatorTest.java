@@ -16,7 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.Errors;
+
+import java.util.Arrays;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserAccountValidatorTest {
@@ -32,6 +35,9 @@ public class UserAccountValidatorTest {
 
 	@InjectMocks
 	private UserAccountValidator validator;
+
+	@Value("${security.login.password.minimum.length}")
+	protected int passwordMinimumLength;
 
 	@Test
 	public void testSupports() {
@@ -236,6 +242,32 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
+	public void testValidatePasswordStrength() {
+		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setPassword("password");
+		partialValidator.validatePasswordStrength(userAccount, this.errors);
+
+		Mockito.verify(this.errors)
+			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+				ArgumentMatchers.<String>isNull());
+	}
+
+	@Test
+	public void testValidatePasswordStrengthValidValue() {
+		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setPassword("Str0ngPW");
+		partialValidator.validatePasswordStrength(userAccount, this.errors);
+
+		Mockito.verify(this.errors, Mockito.never())
+			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+				ArgumentMatchers.anyString());
+	}
+
+	@Test
 	public void testValidateEmailIfExists() {
 		final ArgumentCaptor<String> arg1 = ArgumentCaptor.forClass(String.class);
 		final ArgumentCaptor<String> arg2 = ArgumentCaptor.forClass(String.class);
@@ -287,28 +319,31 @@ public class UserAccountValidatorTest {
 	@Test
 	public void testValidatePasswordLength_PasswordIsLessThanMinimumLength() {
 
-		this.validator.setPasswordMinimumLength(6);
+		this.validator.setPasswordMinimumLength(passwordMinimumLength);
 
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setPassword(RandomStringUtils.randomAlphanumeric(5));
 
 		this.validator.validatePasswordLength(userAccount, this.errors);
 
-		Mockito.verify(this.errors).rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+		final String[] argArray = {passwordMinimumLength + ""};
+		Mockito.verify(this.errors).rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE,
+			argArray, null);
 	}
 
 	@Test
 	public void testValidatePasswordLength_ValidLength() {
 
-		this.validator.setPasswordMinimumLength(6);
+		this.validator.setPasswordMinimumLength(passwordMinimumLength);
 
 		final UserAccountModel userAccount1 = new UserAccountModel();
-		userAccount1.setPassword(RandomStringUtils.randomAlphanumeric(6));
+		userAccount1.setPassword(RandomStringUtils.randomAlphanumeric(passwordMinimumLength));
 
 		this.validator.validatePasswordLength(userAccount1, this.errors);
 
+		final String[] argArray = {passwordMinimumLength + ""};
 		Mockito.verify(this.errors, Mockito.times(0))
-			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE, argArray, null);
 
 		final UserAccountModel userAccount2 = new UserAccountModel();
 		userAccount2.setPassword(RandomStringUtils.randomAlphanumeric(7));
@@ -316,7 +351,7 @@ public class UserAccountValidatorTest {
 		this.validator.validatePasswordLength(userAccount2, this.errors);
 
 		Mockito.verify(this.errors, Mockito.times(0))
-			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+			.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE, argArray, null);
 	}
 
 	@Test

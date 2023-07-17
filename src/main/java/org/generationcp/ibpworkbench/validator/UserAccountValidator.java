@@ -39,6 +39,7 @@ public class UserAccountValidator implements Validator {
 	public static final String LOGIN_ATTEMPT_UNSUCCESSFUL = "login.attempt.unsuccessful";
 	public static final String LOGIN_ATTEMPT_USER_INACTIVE = "login.attempt.user.inactive";
 	public static final String PASSWORD_MINIMUM_LENGTH_MESSAGE = "login.password.minimum.length";
+	public static final String PASSWORD_STRENGTH_CATEGORIES_MESSAGE = "login.password.strength.not.enough";
 	public static final String PASSWORD_CONFIRMATION_DOES_NOT_MATCH = "login.password.confirmation.does.not.match";
 
 	public static final String FIRST_NAME_STR = "First Name";
@@ -54,7 +55,7 @@ public class UserAccountValidator implements Validator {
 	@Resource
 	private WorkbenchUserService workbenchUserService;
 
-	@Value("${security.login.password.minimum.length:6}")
+	@Value("${security.login.password.minimum.length}")
 	protected int passwordMinimumLength;
 
 	@Override
@@ -95,7 +96,42 @@ public class UserAccountValidator implements Validator {
 
 	public void validatePasswordLength(final UserAccountModel userAccount, final Errors errors) {
 		if (StringUtils.isEmpty(userAccount.getPassword()) || userAccount.getPassword().length() < this.passwordMinimumLength) {
-			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE);
+			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_LENGTH_MESSAGE,
+				new String[] {this.passwordMinimumLength + ""}, null);
+		}
+	}
+
+	/**
+	 * Validations related to password strength (IBPS-1025)
+	 * Password should pass at least 3 of the 5 categories
+	 *
+	 * @param userAccount
+	 * @param errors
+	 */
+	public void validatePasswordStrength(final UserAccountModel userAccount, final Errors errors) {
+		final String password = userAccount.getPassword();
+		Integer passwordScore = 0;
+
+		if (!password.matches("\\A\\p{ASCII}*\\z")) { //password contains non-ascii character
+			passwordScore++;
+			password.replaceAll("\\A\\p{ASCII}*\\z", "");
+		}
+		if (password.matches(".*[A-Z].*")) {
+			passwordScore++;
+		}
+		if (password.matches(".*[a-z].*")) {
+			passwordScore++;
+		}
+		if (password.matches(".*\\d.*")) {
+			passwordScore++;
+		}
+		if (!StringUtils.isAlphanumeric(password)) { //contains symbols
+			passwordScore++;
+		}
+
+		if (passwordScore <= 3) {
+			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_STRENGTH_CATEGORIES_MESSAGE,
+				new String[] {this.passwordMinimumLength + ""}, null);
 		}
 	}
 
