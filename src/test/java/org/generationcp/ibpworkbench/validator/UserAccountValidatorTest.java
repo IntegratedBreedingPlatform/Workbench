@@ -19,8 +19,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.Errors;
 
-import java.util.Arrays;
-
 @RunWith(MockitoJUnitRunner.class)
 public class UserAccountValidatorTest {
 
