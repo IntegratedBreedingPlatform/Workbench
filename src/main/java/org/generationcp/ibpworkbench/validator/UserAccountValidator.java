@@ -114,7 +114,7 @@ public class UserAccountValidator implements Validator {
 
 		if (!password.matches("\\A\\p{ASCII}*\\z")) { //password contains non-ascii character
 			passwordScore++;
-			password.replaceAll("\\A\\p{ASCII}*\\z", "");
+			password.replaceAll("\\A\\p{ASCII}*\\z", ""); // so it won't be counted again for !isAlphanumeric checking
 		}
 		if (password.matches(".*[A-Z].*")) {
 			passwordScore++;
