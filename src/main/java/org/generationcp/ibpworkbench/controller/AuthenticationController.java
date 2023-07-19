@@ -420,6 +420,7 @@ public class AuthenticationController {
 
 		this.userAccountValidator.validateUserActive(model, result);
 		this.userAccountValidator.validatePasswordLength(model, result);
+		this.userAccountValidator.validatePasswordStrength(model, result);
 		this.userAccountValidator.validatePasswordConfirmation(model, result);
 
 		if (result.hasErrors()) {
