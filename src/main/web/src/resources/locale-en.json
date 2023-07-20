@@ -226,6 +226,7 @@
 			"germplasm": "Germplasm",
             "breedingMethods": "BreedingMethods",
             "lists": "Lists",
+			"lots": "Lots",
 			"system.variable":"System Variable"
 		}
 	},
