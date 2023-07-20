@@ -222,10 +222,10 @@
 			"expectedRange": "Expected Range",
 			"observations": "Observations",
 			"studies": "Nurseries and Trials",
-		  	"datasets": "Datasets",
+			"datasets": "Datasets",
 			"germplasm": "Germplasm",
-            "breedingMethods": "BreedingMethods",
-            "lists": "Lists",
+			"breedingMethods": "BreedingMethods",
+			"lists": "Lists",
 			"lots": "Lots",
 			"system.variable":"System Variable"
 		}
