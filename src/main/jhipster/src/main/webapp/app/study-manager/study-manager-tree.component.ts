@@ -65,12 +65,6 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
             return;
         }
 
-        if (source.children && source.children.length !== 0) {
-            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.cannot.move.has.children',
-                { folder: source.data.name });
-            return;
-        }
-
         if (target.leaf) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.not.allowed');
             return;
