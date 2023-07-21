@@ -6,6 +6,7 @@ import { InventoryDetailsComponent } from './inventory-details.component';
 import { LotComponent } from './lot.component';
 import { TransactionComponent } from './transaction.component';
 import { InventoryDetailsModalComponent, InventoryDetailsPopupComponent } from './inventory-details-modal.component';
+import { TransactionDetailsModalComponent } from './transaction-details-modal.component';
 
 @NgModule({
     imports: [
@@ -17,14 +18,16 @@ import { InventoryDetailsModalComponent, InventoryDetailsPopupComponent } from '
         InventoryDetailsModalComponent,
         InventoryDetailsPopupComponent,
         LotComponent,
-        TransactionComponent
+        TransactionComponent,
+        TransactionDetailsModalComponent
     ],
     entryComponents: [
         InventoryDetailsComponent,
         InventoryDetailsModalComponent,
         InventoryDetailsPopupComponent,
         LotComponent,
-        TransactionComponent
+        TransactionComponent,
+        TransactionDetailsModalComponent
     ],
     providers: []
 })
