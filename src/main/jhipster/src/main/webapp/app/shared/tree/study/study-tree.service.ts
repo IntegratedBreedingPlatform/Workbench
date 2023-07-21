@@ -85,7 +85,8 @@ export class StudyTreeService extends TreeService {
             isFolder: item.isFolder,
             isLocked: item.isLocked,
             ownerId: item.ownerId,
-            ownerUserName: item.ownerUserName
+            ownerUserName: item.ownerUserName,
+            programUUID: item.programUUID
         });
     }
 }

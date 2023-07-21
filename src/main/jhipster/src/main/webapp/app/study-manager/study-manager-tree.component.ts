@@ -59,6 +59,13 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
             return;
         }
 
+        // If node/study has no programUUID, it means it is a templates folder/study.
+        if (!source.data.programUUID) {
+            // Prevent templates from moving
+            this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.templates.move.not.allowed');
+            return;
+        }
+
         // Prevent to move source if parent has a child with same name as the source
         if (event.dropNode.children && event.dropNode.children.find((node) => node.data.name === source.data.name)) {
             this.alertService.error('bmsjHipsterApp.tree-table.messages.folder.move.parent.duplicated.name');
@@ -95,7 +102,8 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
                 ownerUserName: node.ownerUserName || '',
                 ownerId: node.ownerId,
                 isLocked: node.isLocked || '',
-                description: node.description || (parent && '-') // omit for root folders
+                description: node.description || (parent && '-'), // omit for root folders
+                programUUID: node.programUUID
             },
             draggable: true,
             droppable: true,
