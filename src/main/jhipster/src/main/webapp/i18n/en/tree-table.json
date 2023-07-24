@@ -19,7 +19,8 @@
           "name.too.long": "The name exceeds the limit of {{ length }} characters",
           "delete.not.owner": "You cannot delete a list that you do not own",
           "cannot.delete.has.children": "Can not delete, {{ folder }} has children",
-          "select.one.folder": "Please, select one folder."
+          "select.one.folder": "Please, select one folder.",
+          "templates.move.not.allowed": "Templates can't be moved."
         },
         "disabled": {
           "no.folder.selected": "Disabled because there is no folder selected.",

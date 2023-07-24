@@ -12,7 +12,8 @@ export class TreeNode {
         public children?: Array<TreeNode>,
         public numOfChildren?: number,
         public noOfEntries?: number,
-        public isLocked?: boolean
+        public isLocked?: boolean,
+        public programUUID?: string
     ) {
     }
 }
