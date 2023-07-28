@@ -93,7 +93,7 @@
 	/* init on document load */
 	$(document).ready(function () {
 		$passwordField.focus();
-		$('[data-toggle="tooltip"]').tooltip();
+		$passwordField.tooltip();
 
 		$passwordField.keyup(function () {
 			return assessPasswordStrength($(this).val());

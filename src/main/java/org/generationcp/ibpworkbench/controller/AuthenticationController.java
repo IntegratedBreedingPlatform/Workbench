@@ -128,9 +128,6 @@ public class AuthenticationController {
 	@Value("${security.login.password.minimum.uppercase}")
 	protected int passwordMinimumUppercase;
 
-	@Value("${security.login.password.minimum.lowercase}")
-	protected int passwordMinimumLowercase;
-
 	@Value("${security.login.password.minimum.numeric}")
 	protected int passwordMinimumNumeric;
 
@@ -185,11 +182,18 @@ public class AuthenticationController {
 			final WorkbenchUser user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
-			model.addAttribute("passwordRequirementsMessage", this.messageSource.getMessage(
-				"login.password.minimum.characters.requirements",
-				new String[] {
-					this.passwordMinimumUppercase + "", this.passwordMinimumLowercase + "",
-					this.passwordMinimumNumeric + "", this.passwordMinimumSpecialCharacter + ""}, "", LocaleContextHolder.getLocale()));
+
+			String requirementMessage = "";
+			if (this.passwordMinimumUppercase > 0 || this.passwordMinimumNumeric > 0 ||
+				this.passwordMinimumSpecialCharacter > 0) {
+				requirementMessage = this.messageSource.getMessage(
+					"login.password.minimum.characters.requirements",
+					new String[] {
+						this.passwordMinimumUppercase + "", this.passwordMinimumNumeric + "",
+						this.passwordMinimumSpecialCharacter + ""}, "", LocaleContextHolder.getLocale());
+			}
+
+			model.addAttribute("passwordRequirementsMessage", requirementMessage);
 
 			this.populateCommomModelAttributes(model);
 

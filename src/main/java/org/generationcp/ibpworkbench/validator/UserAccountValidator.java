@@ -61,9 +61,6 @@ public class UserAccountValidator implements Validator {
 	@Value("${security.login.password.minimum.uppercase}")
 	protected int passwordMinimumUppercase;
 
-	@Value("${security.login.password.minimum.lowercase}")
-	protected int passwordMinimumLowercase;
-
 	@Value("${security.login.password.minimum.numeric}")
 	protected int passwordMinimumNumeric;
 
@@ -125,16 +122,12 @@ public class UserAccountValidator implements Validator {
 		if (!this.isPasswordMinimumRequirementsSatisfied(password)) {
 			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_CHARS_REQTS,
 				new String[] {
-					this.passwordMinimumUppercase + "", this.passwordMinimumLowercase + "",
-					this.passwordMinimumNumeric + "", this.passwordMinimumSpecialCharacter + ""}, null);
+					this.passwordMinimumUppercase + "", this.passwordMinimumNumeric + "",
+					this.passwordMinimumSpecialCharacter + ""}, null);
 		}
 	}
 
 	private boolean isPasswordMinimumRequirementsSatisfied(final String password) {
-		if (this.passwordMinimumLowercase > 0 &&
-			password.chars().filter((s) -> Character.isLowerCase(s)).count() < this.passwordMinimumLowercase) {
-			return false;
-		}
 
 		if (this.passwordMinimumUppercase > 0 &&
 			password.chars().filter((s) -> Character.isUpperCase(s)).count() < this.passwordMinimumUppercase) {
@@ -228,10 +221,9 @@ public class UserAccountValidator implements Validator {
 		this.passwordMinimumLength = passwordMinimumLength;
 	}
 
-	public void setPasswordMinimumCharsReqts(final int passwordMinimumUppercase, final int passwordMinimumLowercase,
+	public void setPasswordMinimumCharsReqts(final int passwordMinimumUppercase,
 		final int passwordMinimumNumeric, final int passwordMinimumSpecialCharacter) {
 		this.passwordMinimumUppercase = passwordMinimumUppercase;
-		this.passwordMinimumLowercase = passwordMinimumLowercase;
 		this.passwordMinimumNumeric = passwordMinimumNumeric;
 		this.passwordMinimumSpecialCharacter = passwordMinimumSpecialCharacter;
 	}
