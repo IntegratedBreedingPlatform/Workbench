@@ -39,7 +39,7 @@ public class UserAccountValidator implements Validator {
 	public static final String LOGIN_ATTEMPT_UNSUCCESSFUL = "login.attempt.unsuccessful";
 	public static final String LOGIN_ATTEMPT_USER_INACTIVE = "login.attempt.user.inactive";
 	public static final String PASSWORD_MINIMUM_LENGTH_MESSAGE = "login.password.minimum.length";
-	public static final String PASSWORD_STRENGTH_CATEGORIES_MESSAGE = "login.password.strength.not.enough";
+	public static final String PASSWORD_MINIMUM_CHARS_REQTS = "login.password.minimum.characters.requirements";
 	public static final String PASSWORD_CONFIRMATION_DOES_NOT_MATCH = "login.password.confirmation.does.not.match";
 
 	public static final String FIRST_NAME_STR = "First Name";
@@ -57,6 +57,18 @@ public class UserAccountValidator implements Validator {
 
 	@Value("${security.login.password.minimum.length}")
 	protected int passwordMinimumLength;
+
+	@Value("${security.login.password.minimum.uppercase}")
+	protected int passwordMinimumUppercase;
+
+	@Value("${security.login.password.minimum.lowercase}")
+	protected int passwordMinimumLowercase;
+
+	@Value("${security.login.password.minimum.numeric}")
+	protected int passwordMinimumNumeric;
+
+	@Value("${security.login.password.minimum.special.character}")
+	protected int passwordMinimumSpecialCharacter;
 
 	@Override
 	public boolean supports(final Class<?> aClass) {
@@ -102,37 +114,44 @@ public class UserAccountValidator implements Validator {
 	}
 
 	/**
-	 * Validations related to password strength (IBPS-1025)
-	 * Password should pass at least 3 of the 5 categories
+	 * Validations related to minimim password requirements defined in the properties file
 	 *
 	 * @param userAccount
 	 * @param errors
 	 */
-	public void validatePasswordStrength(final UserAccountModel userAccount, final Errors errors) {
+	public void validatePasswordMinimumRequirements(final UserAccountModel userAccount, final Errors errors) {
 		final String password = userAccount.getPassword();
-		Integer passwordScore = 0;
 
-		if (!password.matches("\\A\\p{ASCII}*\\z")) { //password contains non-ascii character
-			passwordScore++;
-			password.replaceAll("\\A\\p{ASCII}*\\z", ""); // so it won't be counted again for !isAlphanumeric checking
+		if (!this.isPasswordMinimumRequirementsSatisfied(password)) {
+			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_MINIMUM_CHARS_REQTS,
+				new String[] {
+					this.passwordMinimumUppercase + "", this.passwordMinimumLowercase + "",
+					this.passwordMinimumNumeric + "", this.passwordMinimumSpecialCharacter + ""}, null);
 		}
-		if (password.matches(".*[A-Z].*")) {
-			passwordScore++;
-		}
-		if (password.matches(".*[a-z].*")) {
-			passwordScore++;
-		}
-		if (password.matches(".*\\d.*")) {
-			passwordScore++;
-		}
-		if (!StringUtils.isAlphanumeric(password)) { //contains symbols
-			passwordScore++;
+	}
+
+	private boolean isPasswordMinimumRequirementsSatisfied(final String password) {
+		if (this.passwordMinimumLowercase > 0 &&
+			password.chars().filter((s) -> Character.isLowerCase(s)).count() < this.passwordMinimumLowercase) {
+			return false;
 		}
 
-		if (passwordScore <= 3) {
-			errors.rejectValue(UserAccountFields.PASSWORD, UserAccountValidator.PASSWORD_STRENGTH_CATEGORIES_MESSAGE,
-				new String[] {this.passwordMinimumLength + ""}, null);
+		if (this.passwordMinimumUppercase > 0 &&
+			password.chars().filter((s) -> Character.isUpperCase(s)).count() < this.passwordMinimumUppercase) {
+			return false;
 		}
+
+		if (this.passwordMinimumNumeric > 0 &&
+			password.chars().filter((s) -> Character.isDigit(s)).count() < this.passwordMinimumNumeric) {
+			return false;
+		}
+
+		if (this.passwordMinimumSpecialCharacter > 0 &&
+			password.chars().filter((s) -> !Character.isLetterOrDigit(s)).count() < this.passwordMinimumSpecialCharacter) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public void validatePasswordConfirmation(final UserAccountModel userAccount, final Errors errors) {
@@ -207,5 +226,13 @@ public class UserAccountValidator implements Validator {
 
 	public void setPasswordMinimumLength(final int passwordMinimumLength) {
 		this.passwordMinimumLength = passwordMinimumLength;
+	}
+
+	public void setPasswordMinimumCharsReqts(final int passwordMinimumUppercase, final int passwordMinimumLowercase,
+		final int passwordMinimumNumeric, final int passwordMinimumSpecialCharacter) {
+		this.passwordMinimumUppercase = passwordMinimumUppercase;
+		this.passwordMinimumLowercase = passwordMinimumLowercase;
+		this.passwordMinimumNumeric = passwordMinimumNumeric;
+		this.passwordMinimumSpecialCharacter = passwordMinimumSpecialCharacter;
 	}
 }
