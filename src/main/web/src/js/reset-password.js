@@ -78,10 +78,10 @@
 
 		// We will treat the password as an invalid one if the score is less than 3
 		if (score < 3) {
-			return {
-				valid: false,
-				message: message
-			}
+			displayClientError(message);
+		} else {
+			$errorText.text('');
+			$error.addClass('login-valid');
 		}
 
 		return {
