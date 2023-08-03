@@ -23,6 +23,8 @@ import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-l
 import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { FilterType } from '../../shared/column-filter/column-filter.component';
+import {VariableDetails} from "../../shared/ontology/model/variable-details";
+import {GermplasmAttribute} from "../../shared/germplasm/model/germplasm.model";
 
 export enum AdvanceType {
     STUDY,
@@ -72,8 +74,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
 
-    propagateAttributesData: boolean;
-    propagatePassportDescriptorData: boolean;
+    propagateDescriptors: boolean;
+    overrideDescriptorsLocation: boolean;
+    locationOverrideId: number;
 
     // for preview data table
     isLoadingPreview = false;
@@ -83,12 +86,19 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     page = 1;
     previousPage: number;
     isPreview = false;
+    isAttributesPropagationView = false;
 
     itemsPerPage = 10;
 
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
     currentPagePreviewList: AdvancedGermplasmPreview[];
+
+    VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
+    DEFAULT_PASSPORT_DESCRIPTORS = ['PLOTCODE_AP_TEXT', 'PLOT_NUMBER_AP_TEXT', 'INSTANCE_NUMBER_AP_TEXT', 'REP_NUMBER_AP_TEXT', 'PLANT_NUMBER_AP_TEXT'];
+    variable: VariableDetails;
+    selectedDescriptors: VariableDetails[] = [];
+    selectedDescriptorIds: number[] = [];
 
     filters = this.getInitialFilters();
 
@@ -145,6 +155,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.isPreview = false;
+        this.isAttributesPropagationView = true;
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
         this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
         this.replicationNumber = Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
@@ -176,6 +188,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     toggleCheck(repCheck) {
         this.checkAllReplications = this.checkAllReplications && !repCheck;
+    }
+
+    showPropagateAttributesView() {
+        this.isAttributesPropagationView = true;
     }
 
     back(advanceType: string) {
@@ -377,6 +393,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }
     }
 
+    exitAttributesPropagationView() {
+        this.isAttributesPropagationView = false;
+    }
+
     exitPreview() {
         this.resetTable();
         this.isPreview = false;
@@ -448,6 +468,34 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     getReplicationNumber() {
         return this.replicationNumber ? this.replicationsOptions.filter((rep) => rep.selected).length : '-';
+    }
+
+    selectVariable(variable: VariableDetails) {
+        this.variable = variable;
+    }
+
+    addDescriptor() {
+        if(!this.selectedDescriptorIds.includes(parseInt(this.variable.id))) {
+            this.selectedDescriptors.push(this.variable);
+            this.selectedDescriptorIds.push(parseInt(this.variable.id));
+            this.variable = null;
+        }
+    }
+
+    removeFromSelectedDescriptors(toRemove: VariableDetails) {
+        this.selectedDescriptorIds = this.selectedDescriptorIds.filter((id) => id !== parseInt(toRemove.id));
+        this.selectedDescriptors = this.selectedDescriptors.filter((descriptor) => descriptor.id !== toRemove.id);
+    }
+
+    isPropagationInvalid() {
+        if (this.propagateDescriptors && this.selectedDescriptorIds.length === 0) {
+            return true;
+        }
+
+        if (this.overrideDescriptorsLocation && this.locationOverrideId === null) {
+            return true;
+        }
+        return false;
     }
 }
 

@@ -1,6 +1,7 @@
 {
   "advance": {
     "action": "Advance",
+    "continue": "Continue",
     "preview": "Preview",
     "success": "Advancing lines finished successfully.",
     "no-entries": "There are no entries selected for advancement. Please specify the entries to be advanced on the observations tab and try again."
@@ -26,8 +27,16 @@
     },
     "attributes": {
       "title": "Attributes",
-      "propagate.attributes.data": "Propagate attributes data to the advanced lines",
-      "propagate.passport.descriptor.data": "Propagate passport descriptor data to the advanced lines"
+      "propagate.descriptors": "Propagate Descriptors",
+      "lode.setting": "Load saved settings:",
+      "descriptors": "Descriptors:",
+      "override.locations": "Override Descriptors Location",
+      "table": {
+        "title": "Selected Descriptors",
+        "variable.name.column": "Variable Name",
+        "type.column": "Type",
+        "actions.column": "Actions"
+      }
     },
     "lines": {
       "title": "Lines",

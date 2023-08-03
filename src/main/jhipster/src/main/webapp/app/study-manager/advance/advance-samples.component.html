@@ -1,4 +1,4 @@
-<div *ngIf="!isPreview">
+<div *ngIf="!isAttributesPropagationView && !isPreview">
 	<div class="modal-body">
 		<form name="form" #f="ngForm" class="form-horizontal">
 			<!-- Breeding method selection -->
@@ -17,23 +17,6 @@
 												 [nonBulkingOnly]="true"
 												 [selectWidth]="'90%'"
 												 (onMethodChanged)="onMethodChange($event)"></jhi-breeding-methods-select>
-				</div>
-			</div>
-
-			<!-- Attibutes -->
-			<div>
-				<h4 jhiTranslate="advance-study.attributes.title"></h4>
-				<div>
-					<div class="col-sm-12 form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" [(ngModel)]="propagatePassportDescriptorData" id="propagatePassportDescriptorData" name="propagatePassportDescriptorData">
-						<label class="col-form-label font-weight-bold" for="propagatePassportDescriptorData" jhiTranslate="advance-study.attributes.propagate.passport.descriptor.data"></label>
-					</div>
-				</div>
-				<div>
-					<div class="col-sm-12 form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" [(ngModel)]="propagateAttributesData" id="propagateAttributesData" name="propagateAttributesData">
-						<label class="col-form-label font-weight-bold" for="propagateAttributesData" jhiTranslate="advance-study.attributes.propagate.attributes.data"></label>
-					</div>
 				</div>
 			</div>
 
@@ -94,7 +77,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back('samples')">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="showPropagateAttributesView()">
 			<span jhiTranslate="entity.action.back">Back</span>
 		</button>
 		<button (click)="preview(true)" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyPreviewButton">
@@ -108,7 +91,7 @@
 	</div>
 </div>
 
-<div *ngIf="isPreview" >
+<div *ngIf="!isAttributesPropagationView && isPreview" >
 	<div class="modal-body">
 		<jhi-collapsible heading="{{translateService.instant('advance-preview.summary.title')}}">
 			<div class="table-responsive p-3">
@@ -265,6 +248,94 @@
 		<button (click)="save()" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyButton">
 			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
 			<span jhiTranslate="advance.action">Advance</span>
+		</button>
+	</div>
+</div>
+<div *ngIf="isAttributesPropagationView">
+	<div>
+		<div>
+			<div class="col-sm-12 form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" [(ngModel)]="propagateDescriptors" id="propagateDescriptors" name="propagateDescriptors">
+				<label class="col-form-label font-weight-bold" for="propagateDescriptors" jhiTranslate="advance-study.attributes.propagate.descriptors"></label>
+			</div>
+			<div class="border-top mb-3"></div>
+			<div class="form-group row">
+				<label for="dropdownvariable" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="advance-study.attributes.descriptors">Descriptors</label>
+				<div class="col-sm-8">
+					<jhi-variable-select name="dropdownvariable" id="dropdownvariable"
+										 (onVariableSelectedChange)="selectVariable($event)"
+										 [value]="variable?.id"
+										 [variableTypeIds]="VARIABLE_TYPE_IDS"
+										 [excludedVariableNames]="DEFAULT_PASSPORT_DESCRIPTORS"
+										 [disabled]="!propagateDescriptors">
+					</jhi-variable-select>
+				</div>
+				<div class="col-sm-1">
+					<button class="btn btn-info mr-2" [disabled]="!propagateDescriptors" (click)="addDescriptor()">
+						<i class="fa fa-plus-square fa-md" aria-hidden="true"></i>
+					</button>
+				</div>
+			</div>
+			<div>
+				<label class="col-form-label font-weight-bold" jhiTranslate="advance-study.attributes.table.title"></label>
+			</div>
+			<div class="border-top mb-3"></div>
+			<div class="table-responsive">
+				<table class="table table-striped table-bordered table-curved table-fixed" *ngIf="selectedDescriptors.length else nodata">
+					<thead>
+					<tr>
+						<th scope="col" jhiTranslate="advance-study.attributes.table.variable.name.column">Variable</th>
+						<th scope="col" jhiTranslate="advance-study.attributes.table.type.column">Type</th>
+						<th scope="col" jhiTranslate="advance-study.attributes.table.actions.column" class="fit">Actions</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr *ngFor="let descriptor of selectedDescriptors">
+						<td>
+							<a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
+							   [queryParams]="{ variableId: descriptor.id }">{{descriptor.name}}</a>
+						</td>
+						<td>{{descriptor.variableTypes[0].name}}</td>
+						<td class="fit">
+							<button class="btn btn-info mr-2" (click)="removeFromSelectedDescriptors(descriptor)" [disabled]="!propagateDescriptors">
+								<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+							</button>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<ng-template #nodata>
+					<table class="table table-striped table-bordered table-curved">
+						<thead>
+						<tr>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td jhiTranslate="no.data"></td>
+						</tr>
+						</tbody>
+					</table>
+				</ng-template>
+			</div>
+			<div class="col-sm-12 form-check form-check-inline">
+				<input type="checkbox" class="form-check-input" [disabled]="!propagateDescriptors" [(ngModel)]="overrideDescriptorsLocation" id="overrideDescriptorsLocation" name="overrideDescriptorsLocation">
+				<label class="col-form-label font-weight-bold" for="overrideDescriptorsLocation" jhiTranslate="advance-study.attributes.override.locations"></label>
+			</div>
+			<div class="border-top mb-3"></div>
+			<div>
+				<jhi-locations-select [(value)]="locationOverrideId" [disabled]="!propagateDescriptors || !overrideDescriptorsLocation" [showFilterOptions]="true" [isBreedingAndCountryLocationsOnly]="true"></jhi-locations-select>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back('samples')">
+			<span jhiTranslate="entity.action.back">Back</span>
+		</button>
+		<button (click)="exitAttributesPropagationView()" [disabled]="isPropagationInvalid()" class="btn btn-primary">
+			<span *ngIf="isLoading" class="throbber throbber-btn"></span>
+			<span jhiTranslate="advance.continue">Continue</span>
 		</button>
 	</div>
 </div>

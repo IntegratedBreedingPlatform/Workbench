@@ -92,8 +92,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
             advanceStudyRequest.bulkingRequest = bulkingRequest;
         }
 
-        advanceStudyRequest.propagateAttributesData = this.propagateAttributesData;
-        advanceStudyRequest.propagatePassportDescriptorData = this.propagatePassportDescriptorData;
+        advanceStudyRequest.propagateDescriptors = this.propagateDescriptors;
+        advanceStudyRequest.descriptorIds = this.selectedDescriptorIds;
+        advanceStudyRequest.overrideDescriptorsLocation = this.overrideDescriptorsLocation;
+        advanceStudyRequest.locationOverrideId = this.locationOverrideId;
 
         this.advanceService.advanceStudy(this.studyId, advanceStudyRequest)
             .pipe(finalize(() => this.isLoading = false))
