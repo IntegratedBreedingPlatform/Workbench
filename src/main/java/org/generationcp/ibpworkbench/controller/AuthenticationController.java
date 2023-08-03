@@ -11,13 +11,11 @@ import org.generationcp.ibpworkbench.validator.ForgotPasswordAccountValidator;
 import org.generationcp.ibpworkbench.validator.UserAccountFields;
 import org.generationcp.ibpworkbench.validator.UserAccountValidator;
 import org.generationcp.middleware.api.role.RoleService;
-import org.generationcp.middleware.pojos.workbench.Role;
 import org.generationcp.middleware.pojos.workbench.WorkbenchUser;
 import org.generationcp.middleware.service.api.security.OneTimePasswordDto;
 import org.generationcp.middleware.service.api.security.OneTimePasswordService;
 import org.generationcp.middleware.service.api.security.UserDeviceMetaDataDto;
 import org.generationcp.middleware.service.api.security.UserDeviceMetaDataService;
-import org.generationcp.middleware.service.api.user.RoleSearchDto;
 import org.generationcp.middleware.util.UserDeviceMetaDataUtil;
 import org.owasp.html.Sanitizers;
 import org.slf4j.Logger;
@@ -46,7 +44,6 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -128,6 +125,15 @@ public class AuthenticationController {
 	@Value("${security.2fa.otp.length}")
 	private int otpCodeLength;
 
+	@Value("${security.login.password.minimum.uppercase}")
+	protected int passwordMinimumUppercase;
+
+	@Value("${security.login.password.minimum.numeric}")
+	protected int passwordMinimumNumeric;
+
+	@Value("${security.login.password.minimum.special.character}")
+	protected int passwordMinimumSpecialCharacter;
+
 	// Stores the number of times the OTP verification is called per user.
 	// The value stored will expire in a specified number of minutes (otpVerificationAttemptExpiry).
 	private LoadingCache<String, Integer> otpVerificationAttemptCache;
@@ -176,6 +182,18 @@ public class AuthenticationController {
 			final WorkbenchUser user = this.workbenchEmailSenderService.validateResetToken(token);
 
 			model.addAttribute("user", user);
+
+			String requirementMessage = "";
+			if (this.passwordMinimumUppercase > 0 || this.passwordMinimumNumeric > 0 ||
+				this.passwordMinimumSpecialCharacter > 0) {
+				requirementMessage = this.messageSource.getMessage(
+					"login.password.minimum.characters.requirements",
+					new String[] {
+						this.passwordMinimumUppercase + "", this.passwordMinimumNumeric + "",
+						this.passwordMinimumSpecialCharacter + ""}, "", LocaleContextHolder.getLocale());
+			}
+
+			model.addAttribute("passwordRequirementsMessage", requirementMessage);
 
 			this.populateCommomModelAttributes(model);
 
@@ -420,7 +438,7 @@ public class AuthenticationController {
 
 		this.userAccountValidator.validateUserActive(model, result);
 		this.userAccountValidator.validatePasswordLength(model, result);
-		this.userAccountValidator.validatePasswordStrength(model, result);
+		this.userAccountValidator.validatePasswordMinimumRequirements(model, result);
 		this.userAccountValidator.validatePasswordConfirmation(model, result);
 
 		if (result.hasErrors()) {
