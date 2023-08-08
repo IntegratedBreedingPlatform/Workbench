@@ -12,8 +12,10 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { AdvanceSamplesRequest } from '../../shared/study/model/advance-sample-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
+import { AttributesPropagationPresetService } from './attributes-propagation-preset.service';
+import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
     selector: 'jhi-advance-samples',
@@ -30,9 +32,13 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 public alertService: AlertService,
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
-                public modalService: NgbModal
+                public modalService: NgbModal,
+                public attributesPropagationPresetService: AttributesPropagationPresetService,
+                public activeModal: NgbActiveModal,
+                public variableService: VariableService
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES,
+            attributesPropagationPresetService, activeModal, variableService);
     }
 
     save(): void {

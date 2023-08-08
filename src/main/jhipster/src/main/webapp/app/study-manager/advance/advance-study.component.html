@@ -333,9 +333,24 @@
 				<label class="col-form-label font-weight-bold" for="propagateDescriptors" jhiTranslate="advance-study.attributes.propagate.descriptors"></label>
 			</div>
 			<div class="border-top mb-3"></div>
-			<div class="form-group row">
-				<label for="dropdownvariable" class="col-sm-3 col-form-label font-weight-bold" jhiTranslate="advance-study.attributes.descriptors">Descriptors</label>
+			<div class="col-sm-12 form-check form-check-inline" style="padding-bottom: 10px">
+				<input [disabled]="!propagateDescriptors" type="checkbox" class="form-check-input" id="loadSavedSettings" [(ngModel)]="loadSavedSettings" name="loadSavedSettings">
+				<label class="col-form-label font-weight-bold" for="loadSavedSettings" jhiTranslate="advance-study.attributes.preset.load.settings"></label>
 				<div class="col-sm-8">
+					<select [disabled]="!loadSavedSettings || !propagateDescriptors" class="form-control" [(ngModel)]="presetSettingId" (ngModelChange)="applySelectedSetting()">
+						<option [value]="0">Please Choose</option>
+						<option *ngFor="let presetSetting of presetSettings" [value]="presetSetting.id">{{presetSetting.name}}</option>
+					</select>
+				</div>
+				<div class="col-sm-1">
+					<button class="btn btn-default mr-2" [disabled]="!propagateDescriptors || !loadSavedSettings ||  presetSettingId===0" (click)="deleteSelectedSetting()">
+						<i class="fa fa-trash fa-md" aria-hidden="true"></i>
+					</button>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="dropdownvariable" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="advance-study.attributes.descriptors">Descriptors</label>
+				<div class="col-sm-8" style="padding-left: 30px;">
 					<jhi-variable-select name="dropdownvariable" id="dropdownvariable"
 										 (onVariableSelectedChange)="selectVariable($event)"
 										 [value]="variable?.id"

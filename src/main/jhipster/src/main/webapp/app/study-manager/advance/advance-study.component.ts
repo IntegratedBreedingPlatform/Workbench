@@ -4,7 +4,7 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../../shared/service/param.context';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { HelpService } from '../../shared/service/help.service';
@@ -15,6 +15,8 @@ import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, Li
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
+import { AttributesPropagationPresetService } from './attributes-propagation-preset.service';
+import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -45,9 +47,13 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 public alertService: AlertService,
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
-                public modalService: NgbModal
+                public modalService: NgbModal,
+                public attributesPropagationPresetService: AttributesPropagationPresetService,
+                public activeModal: NgbActiveModal,
+                public variableService: VariableService
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY,
+            attributesPropagationPresetService, activeModal, variableService);
     }
 
     save(): void {

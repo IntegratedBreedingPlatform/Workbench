@@ -13,6 +13,7 @@ import { StudySummaryComponent } from './study-summary.component';
 import { StudyManagerTreeComponent } from './study-manager-tree.component';
 import { StudySummaryDatasetComponent } from './study-summary-dataset.component';
 import { AdvanceSamplesComponent } from './advance/advance-samples.component';
+import { AttributesPropagationPresetService } from './advance/attributes-propagation-preset.service';
 
 @NgModule({
     imports: [
@@ -44,7 +45,8 @@ import { AdvanceSamplesComponent } from './advance/advance-samples.component';
     providers: [
         EntryDetailsImportContext,
         GermplasmTreeService,
-        DatasetService
+        DatasetService,
+        AttributesPropagationPresetService
     ]
 })
 export class StudyManagerModule {

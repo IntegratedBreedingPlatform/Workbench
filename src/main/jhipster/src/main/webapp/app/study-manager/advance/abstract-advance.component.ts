@@ -2,8 +2,6 @@ import { BreedingMethod } from '../../shared/breeding-method/model/breeding-meth
 import { ParamContext } from '../../shared/service/param.context';
 import { Component, OnInit } from '@angular/core';
 import { ObservationVariable } from '../../shared/model/observation-variable.model';
-import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
-import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { DatasetTypeEnum } from '../../shared/dataset/model/dataset-type.enum';
@@ -16,15 +14,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { BreedingMethodClassMethodEnum } from '../../shared/breeding-method/model/breeding-method-class.enum';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
 import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { FilterType } from '../../shared/column-filter/column-filter.component';
-import {VariableDetails} from "../../shared/ontology/model/variable-details";
-import {GermplasmAttribute} from "../../shared/germplasm/model/germplasm.model";
+import { VariableDetails } from '../../shared/ontology/model/variable-details';
+import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
+import { AttributesPropagationPresetModel } from './attributes-propagation-preset.model';
+import { AttributesPropagationPresetService } from './attributes-propagation-preset.service';
+import { VariableService } from '../../shared/ontology/service/variable.service';
 
 export enum AdvanceType {
     STUDY,
@@ -74,9 +74,13 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
 
+    loadSavedSettings: boolean;
     propagateDescriptors: boolean;
     overrideDescriptorsLocation: boolean;
     locationOverrideId: number;
+
+    presetSettingId: number;
+    presetSettings: AttributesPropagationPresetModel[];
 
     // for preview data table
     isLoadingPreview = false;
@@ -150,7 +154,10 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public translateService: TranslateService,
                           public alertService: AlertService,
                           public modalService: NgbModal,
-                          public advanceType: AdvanceType) {
+                          public advanceType: AdvanceType,
+                          public attributesPropagationPresetService: AttributesPropagationPresetService,
+                          public activeModal: NgbActiveModal,
+                          public variableService: VariableService) {
         this.paramContext.readParams();
     }
 
@@ -168,6 +175,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
         this.loadStudyVariables();
         this.initializeReplicationOptions(this.replicationNumber);
+        this.loadPresets();
 
         // Get helplink url
         if (!this.helpLink || !this.helpLink.length) {
@@ -496,6 +504,61 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             return true;
         }
         return false;
+    }
+
+    deleteSelectedSetting() {
+        const presetSetting = this.presetSettings.filter((preset) => preset.id === Number(this.presetSettingId))[0];
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.title = 'Delete preset?';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to delete ' + presetSetting.name + ' ?';
+        confirmModalRef.result.then(() => {
+            this.attributesPropagationPresetService.deletePreset(this.presetSettingId).subscribe(() => {
+                this.alertService.success('advance-study.attributes.preset.delete.success');
+                this.loadPresets();
+            }, (response) => {
+                if (response.error.errors[0].message) {
+                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                } else {
+                    this.alertService.error('error.general');
+                }
+            });
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
+        return;
+    }
+
+    applySelectedSetting() {
+        const presetId = Number(this.presetSettingId);
+        if (presetId !== 0) {
+            this.selectedDescriptors = [];
+            this.selectedDescriptorIds = [];
+            const preset = this.presetSettings.filter((preset) => preset.id === presetId)[0];
+            const variableIds = [];
+            preset.selectedDescriptorIds.forEach((id) => {
+                variableIds.push(id.toString());
+            });
+            this.variableService.filterVariables({ variableIds: variableIds,
+                variableTypeIds: [VariableTypeEnum.GERMPLASM_PASSPORT.toString(), VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString()],
+                showObsoletes: false}).subscribe((variables) => {
+                this.selectedDescriptors = variables;
+                variables.forEach((variable) => {
+                   this.selectedDescriptorIds.push(parseInt(variable.id));
+                });
+            });
+        }
+    }
+
+    private loadPresets() {
+        this.attributesPropagationPresetService.getAllAttributesPropagationPresets().subscribe((PresetSettings) => {
+            this.presetSettings = PresetSettings;
+            this.presetSettingId = 0;
+        }, (response) => {
+            if (response.error.errors[0].message) {
+                this.alertService.error('error.custom', { param: response.error.errors[0].message });
+            } else {
+                this.alertService.error('error.general');
+            }
+        });
     }
 }
 

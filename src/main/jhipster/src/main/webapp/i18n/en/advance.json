@@ -28,7 +28,6 @@
     "attributes": {
       "title": "Attributes",
       "propagate.descriptors": "Propagate Descriptors",
-      "lode.setting": "Load saved settings:",
       "descriptors": "Descriptors:",
       "override.locations": "Override Descriptors Location",
       "table": {
@@ -36,6 +35,13 @@
         "variable.name.column": "Variable Name",
         "type.column": "Type",
         "actions.column": "Actions"
+      },
+      "preset": {
+        "load.settings": "Load saved settings:",
+        "save.setting": "Save as setting",
+        "save.success": "Successfully saved preset",
+        "update.success": "Successfully updated preset",
+        "delete.success": "Successfully deleted preset"
       }
     },
     "lines": {
