@@ -31,9 +31,11 @@ export class UserRoleDialogComponent implements OnInit {
     predicate: any;
 
     roleTypes: RoleType[];
-    roles: Role[];
-    crops: Crop[];
-    programs: Program[];
+    roles: { [id: number]: any } = {};
+    programs: { [id: string]: Program } = {};
+    roleOptions: any;
+    programOptions: any;
+    cropOptions: string[];
 
     model: User;
 
@@ -64,10 +66,19 @@ export class UserRoleDialogComponent implements OnInit {
             size: null,
             sort: this.getSort()
         })).subscribe((resp) => {
-                this.roles = resp.body;
-                this.crops = this.model.crops;
+                this.roleOptions = resp.body.map((role) => {
+                    return {
+                        id: role.id,
+                        text: role.name
+                    }
+                });
+                this.cropOptions = this.model.crops.map((list) => list.cropName);
 
-                this.programs = [];
+                Object.assign(this.roles, resp.body.reduce((prev, curr) => {
+                    prev[curr.id] = curr;
+                    return prev;
+                }, {}));
+
                 this.roleSelected = '';
                 this.cropSelected = '';
                 this.programSelected = '';
@@ -86,13 +97,13 @@ export class UserRoleDialogComponent implements OnInit {
         let userRole: UserRole = undefined;
         switch (Number(this.roleTypeSelected)) {
             case 1:
-                userRole = new UserRole(null, this.roleSelected, null, null, null);
+                userRole = new UserRole(null, this.roles[this.roleSelected], null, null, null);
                 break;
             case 2:
-                userRole = new UserRole(null, this.roleSelected, this.cropSelected, null, null);
+                userRole = new UserRole(null, this.roles[this.roleSelected], {cropName: this.cropSelected}, null, null);
                 break;
             case 3:
-                userRole = new UserRole(null, this.roleSelected, this.cropSelected, this.programSelected, null);
+                userRole = new UserRole(null, this.roles[this.roleSelected], {cropName: this.cropSelected}, this.programs[this.programSelected], null);
                 break;
         }
 
@@ -153,8 +164,17 @@ export class UserRoleDialogComponent implements OnInit {
 
     changeCrop() {
         this.programSelected = '';
-        this.roleService.getPrograms(this.cropSelected.cropName).subscribe((resp) => {
-            this.programs = resp;
+        this.roleService.getPrograms(this.cropSelected).subscribe((resp) => {
+            this.programOptions = resp.map((program) => {
+                return {
+                    id: program.uuid,
+                    text: program.name
+                };
+            });
+            Object.assign(this.programs, resp.reduce((prev, curr) => {
+                prev[curr.uuid] = curr;
+                return prev;
+            }, {}));
         });
     }
 
