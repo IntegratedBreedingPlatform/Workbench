@@ -3,7 +3,7 @@ import { SERVER_API_URL } from '../app.constants';
 import { LabelPrintingContext } from './label-printing.context';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LabelType, OriginResourceMetadata, PresetSetting, Sortable } from './label-printing.model';
+import { LabelType, OriginResourceMetadata, LabelPrintingPresetSetting, Sortable } from './label-printing.model';
 import { ParamContext } from '../shared/service/param.context';
 
 @Injectable()
@@ -75,37 +75,37 @@ export class LabelPrintingService {
         );
     }
 
-    getAllPresets(toolSection): Observable<PresetSetting[]> {
+    getAllPresets(toolSection): Observable<LabelPrintingPresetSetting[]> {
         const options: HttpParams = new HttpParams()
             .append('toolId', '23')
             .append('toolSection', toolSection);
 
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets`;
-        return this.http.get<PresetSetting[]>(this.baseUrl + resourceUrl, {
+        return this.http.get<LabelPrintingPresetSetting[]>(this.baseUrl + resourceUrl, {
             params: options,
         });
     }
 
-    addPreset(preset: PresetSetting): Observable<PresetSetting> {
+    addPreset(preset: LabelPrintingPresetSetting): Observable<LabelPrintingPresetSetting> {
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets`;
-        return this.http.put<PresetSetting>(this.baseUrl + resourceUrl, preset);
+        return this.http.put<LabelPrintingPresetSetting>(this.baseUrl + resourceUrl, preset);
     }
 
-    updatePreset(preset: PresetSetting): Observable<void> {
+    updatePreset(preset: LabelPrintingPresetSetting): Observable<void> {
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets/${preset.id}`;
         return this.http.put<void>(this.baseUrl + resourceUrl, preset);
     }
 
-    deletePreset(presetId: number): Observable<PresetSetting> {
+    deletePreset(presetId: number): Observable<LabelPrintingPresetSetting> {
         const options: HttpParams = new HttpParams()
             .append('presetId', presetId.toString());
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/presets/${presetId}`;
-        return this.http.delete<PresetSetting>(this.baseUrl + resourceUrl);
+        return this.http.delete<LabelPrintingPresetSetting>(this.baseUrl + resourceUrl);
     }
 
     getDefaultSettings() {
         const resourceUrl = `crops/${this.paramContext.cropName}/programs/${this.paramContext.programUUID}/labelPrinting/${this.context.printingLabelType}/default-settings`;
-        return this.http.post<PresetSetting>(this.baseUrl + resourceUrl, {
+        return this.http.post<LabelPrintingPresetSetting>(this.baseUrl + resourceUrl, {
             datasetId: this.context.datasetId,
             studyId: this.context.studyId,
             searchRequestId: this.context.searchRequestId,

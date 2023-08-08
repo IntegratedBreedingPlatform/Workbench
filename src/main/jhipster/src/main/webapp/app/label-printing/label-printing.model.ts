@@ -69,7 +69,7 @@ export class OriginResourceMetadata {
     }
 }
 
-export class PresetSetting {
+export class LabelPrintingPresetSetting {
     constructor(
         public id?: number,
         public programUUID?: string,

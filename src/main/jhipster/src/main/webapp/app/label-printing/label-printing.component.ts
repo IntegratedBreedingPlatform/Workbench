@@ -1,7 +1,7 @@
 import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BarcodeSetting, FieldType, FileConfiguration, LabelPrintingData,
-    LabelsNeededSummary, LabelType, PresetSetting, Sortable } from './label-printing.model';
+    LabelsNeededSummary, LabelType, LabelPrintingPresetSetting, Sortable } from './label-printing.model';
 import { JhiLanguageService } from 'ng-jhipster';
 import { LabelPrintingContext } from './label-printing.context';
 import { LabelPrintingService } from './label-printing.service';
@@ -41,7 +41,7 @@ export class LabelPrintingComponent implements OnInit {
     presetSettingId: number;
     loadSavedSettings = false;
     fieldsSelected: LabelType[];
-    presetSettings: PresetSetting[];
+    presetSettings: LabelPrintingPresetSetting[];
     modalTitle: string;
     modalMessage: string;
     helpLink: string;
@@ -49,7 +49,7 @@ export class LabelPrintingComponent implements OnInit {
     sortableFields: Sortable[];
     sortBySelected: any = '';
     isLoading: boolean;
-    defaultPresetSetting: PresetSetting;
+    defaultPresetSetting: LabelPrintingPresetSetting;
     collapsedMap: { [key: string]: boolean; } = {};
     labelTypesOrigMap: { [key: string]: {id: number, name: string, fieldType: FieldType }[]; } = {};
     selectedFilterTextMap: { [key: string]: string; } = {};
@@ -190,7 +190,7 @@ export class LabelPrintingComponent implements OnInit {
         }
     }
 
-    loadPresetSetting(presetSetting: PresetSetting) {
+    loadPresetSetting(presetSetting: LabelPrintingPresetSetting) {
         this.fileType = this.getFileType(presetSetting.fileConfiguration.outputType);
         this.selectedfileType = this.fileType;
         const labelFieldsSelected = new Array();
@@ -380,7 +380,7 @@ export class LabelPrintingComponent implements OnInit {
     }
 
     savePresets() {
-        const preset: PresetSetting = new PresetSetting();
+        const preset: LabelPrintingPresetSetting = new LabelPrintingPresetSetting();
         const fileConfiguration: FileConfiguration = new FileConfiguration();
         const barcodeSetting: BarcodeSetting = new BarcodeSetting();
         const selectedFields = [];
