@@ -1,0 +1,84 @@
+<div>
+    <header>
+        <h1><span jhiTranslate="cross-plan.actions.design">Cross Plan Design</span>&nbsp;
+            <a href="{{helpLink}}" target="_blank">
+                <i class="fa fa-question-circle help-icon" aria-hidden="true"></i></a>
+        </h1>
+    </header>
+    <br>
+    <div>
+        <h5>
+            <span jhiTranslate="cross-plan.design.parent.list">Parent Lists</span>
+        </h5>
+        <br>
+        <jhi-parent-list [title]="femaleParents" [listData]="femaleListData" [tableId]="femaleParentsTable"></jhi-parent-list>
+        <br>
+        <jhi-parent-list [title]="maleParents" [listData]="maleListData" [tableId]="maleParentsTable"></jhi-parent-list>
+    </div>
+    <br>
+    <div id="cross-method">
+        <h5>
+            <span jhiTranslate="cross-plan.design.crosses.method.title">Crossing Method</span>
+        </h5>
+        <div class="form-group row">
+            <label for="crosses-methods" class="col-sm-4 control-label font-weight-bold"
+                   jhiTranslate="cross-plan.design.crosses.name">Choose how you would like to make your crosses</label>
+            <div class="col-sm-4">
+                <select class="form-control" id="crosses-methods" name="crossesMethodsDropdown"
+                        [(ngModel)]="crossesMethodSelected" #crossesMethodsDropdown="ngModel">
+                    <option [value]="" jhiTranslate="cross-plan.design.crosses.method.please.choose">Please choose
+                    </option>
+                    <option [value]="1" jhiTranslate="cross-plan.design.crosses.method.option.1">Cross each selected
+                        female with each selected male
+                    </option>
+                    <option [value]="2" jhiTranslate="cross-plan.design.crosses.method.option.2">Cross matched pairs of
+                        selected female and male lines in top to bottom order
+                    </option>
+                    <option [value]="3" jhiTranslate="cross-plan.design.crosses.method.option.3">Cross each female with
+                        an unknown male parent
+                    </option>
+                    <option [value]="4" jhiTranslate="cross-plan.design.crosses.method.option.4">Cross each female with
+                        all male parents
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" id="makeReciprocalCrosses" [(ngModel)]="makeReciprocal">
+                    <label class="form-check-label" for="makeReciprocalCrosses" jhiTranslate="cross-plan.design.crosses.make.reciprocal">
+                        Make reciprocal crosses
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" id="excludeSelfs" [(ngModel)]="excludeSelfs">
+                    <label class="form-check-label" for="excludeSelfs" jhiTranslate="cross-plan.design.crosses.exclude.selfs">
+                        Exclude selfs
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-check form-check-inline">
+                    <button type="button" class="btn btn-info" data-dismiss="modal" (click)="generateCrosses()">
+                        <span jhiTranslate="cross-plan.design.crosses.generate">Generate Crosses</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <jhi-preview-crosses>
+    </jhi-preview-crosses>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
+        <span jhiTranslate="back"></span>
+    </button>
+    <button (click)="save()" class="btn btn-primary" [disabled]="isLoading || previewCrosses && previewCrosses.length === 0 ">
+        <span *ngIf="isSaving" class="throbber throbber-btn"></span>
+        <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="save"></span>
+    </button>
+</div>
