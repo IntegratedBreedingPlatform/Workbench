@@ -35,11 +35,14 @@
 					<label for="roleSelected" class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.name"></label>
 				</div>
 				<div class="col-sm-7">
-					<select class="form-control" [(ngModel)]="roleSelected" #roleNameInput="ngModel" name="roleSelected" id="roleNameCombo" [required]="!isRoleNameComboDisable()"
-							[disabled]="isRoleNameComboDisable()">
-						<option value="">Please select a role</option>
-						<option *ngFor="let role of roles" [ngValue]="role">{{role.name}}</option>
-					</select>
+					<ng-select2 name="roleSelected" id="roleNameCombo" width="100%"
+								[data]="roleOptions"
+								[(ngModel)]="roleSelected"
+								placeholder="Select a role"
+								data-test="roleDropdown"
+								[allowClear]="true"
+								[disabled]="isRoleNameComboDisable()">
+					</ng-select2>
 				</div>
 			</div>
 			<div class="row form-group required">
@@ -47,11 +50,15 @@
 					<label class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.crop"></label>
 				</div>
 				<div class="col-md-7">
-					<select class="form-control" [(ngModel)]="cropSelected" #cropInput="ngModel" name="cropSelected" id="cropCombo" [required]="!isCropComboDisable()"
-							(ngModelChange)="changeCrop()" [disabled]="isCropComboDisable()">
-						<option value="">Please select a crop</option>
-						<option *ngFor="let crop of crops" [ngValue]="crop">{{crop.cropName}}</option>
-					</select>
+					<ng-select2 name="cropSelected" id="cropCombo" width="100%"
+								[data]="cropOptions | CropSelect2Data"
+								[(ngModel)]="cropSelected"
+								placeholder="Select a crop"
+								data-test="cropDropdown"
+								[allowClear]="true"
+								[disabled]="isCropComboDisable()"
+								(ngModelChange)="changeCrop()">
+					</ng-select2>
 				</div>
 			</div>
 			<div class="row form-group required">
@@ -59,11 +66,14 @@
 					<label class="col-form-label font-weight-bold pull-right" jhiTranslate="site-admin.user.modal.role.program"></label>
 				</div>
 				<div class="col-md-7">
-					<select class="form-control" [(ngModel)]="programSelected" #programInput="ngModel" name="programSelected" id="programCombo" [required]="!isProgramComboDisable()"
-							[disabled]="isProgramComboDisable()">
-						<option value="">Please select a program</option>
-						<option *ngFor="let program of programs" [ngValue]="program">{{program.name}}</option>
-					</select>
+					<ng-select2 name="programSelected" id="programCombo" width="100%"
+								[data]="programOptions"
+								[(ngModel)]="programSelected"
+								placeholder="Select a program"
+								data-test="programDropdown"
+								[allowClear]="true"
+								[disabled]="isProgramComboDisable()">
+					</ng-select2>
 				</div>
 			</div>
 		</form>
