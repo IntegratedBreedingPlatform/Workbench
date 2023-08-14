@@ -37,6 +37,7 @@
         "actions.column": "Actions"
       },
       "preset": {
+        "new.settings": "New Setting Name",
         "load.settings": "Load saved settings:",
         "save.setting": "Save as setting",
         "save.success": "Successfully saved preset",

@@ -22,9 +22,10 @@ import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germ
 import { FilterType } from '../../shared/column-filter/column-filter.component';
 import { VariableDetails } from '../../shared/ontology/model/variable-details';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { AttributesPropagationPresetModel } from './attributes-propagation-preset.model';
-import { AttributesPropagationPresetService } from './attributes-propagation-preset.service';
+import { TemplateModel } from './template.model';
+import { TemplateService } from './template.service';
 import { VariableService } from '../../shared/ontology/service/variable.service';
+import { SaveTemplateComponent } from './save-template.component';
 
 export enum AdvanceType {
     STUDY,
@@ -79,8 +80,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     overrideDescriptorsLocation: boolean;
     locationOverrideId: number;
 
-    presetSettingId: number;
-    presetSettings: AttributesPropagationPresetModel[];
+    templateId: number;
+    templates: TemplateModel[];
 
     // for preview data table
     isLoadingPreview = false;
@@ -155,7 +156,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public alertService: AlertService,
                           public modalService: NgbModal,
                           public advanceType: AdvanceType,
-                          public attributesPropagationPresetService: AttributesPropagationPresetService,
+                          public templateService: TemplateService,
                           public activeModal: NgbActiveModal,
                           public variableService: VariableService) {
         this.paramContext.readParams();
@@ -507,12 +508,12 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     deleteSelectedSetting() {
-        const presetSetting = this.presetSettings.filter((preset) => preset.id === Number(this.presetSettingId))[0];
+        const templateModel = this.templates.filter((template) => template.templateId === Number(this.templateId))[0];
         const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
         confirmModalRef.componentInstance.title = 'Delete preset?';
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete ' + presetSetting.name + ' ?';
+        confirmModalRef.componentInstance.message = 'Are you sure you want to delete ' + templateModel.templateName + ' ?';
         confirmModalRef.result.then(() => {
-            this.attributesPropagationPresetService.deletePreset(this.presetSettingId).subscribe(() => {
+            this.templateService.deleteTemplate(this.templateId).subscribe(() => {
                 this.alertService.success('advance-study.attributes.preset.delete.success');
                 this.loadPresets();
             }, (response) => {
@@ -528,14 +529,13 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     applySelectedSetting() {
-        const presetId = Number(this.presetSettingId);
-        if (presetId !== 0) {
+        if (Number(this.templateId) !== 0) {
             this.selectedDescriptors = [];
             this.selectedDescriptorIds = [];
-            const preset = this.presetSettings.filter((preset) => preset.id === presetId)[0];
+            const templateModel = this.templates.filter((template) => template.templateId === Number(this.templateId))[0];
             const variableIds = [];
-            preset.selectedDescriptorIds.forEach((id) => {
-                variableIds.push(id.toString());
+            templateModel.templateDetails.forEach((templateDetail) => {
+                variableIds.push(templateDetail.variableId.toString());
             });
             this.variableService.filterVariables({ variableIds: variableIds,
                 variableTypeIds: [VariableTypeEnum.GERMPLASM_PASSPORT.toString(), VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString()],
@@ -549,9 +549,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     private loadPresets() {
-        this.attributesPropagationPresetService.getAllAttributesPropagationPresets().subscribe((PresetSettings) => {
-            this.presetSettings = PresetSettings;
-            this.presetSettingId = 0;
+        this.templateService.getAllTemplates().subscribe((templates) => {
+            this.templates = templates;
+            this.templateId = 0;
         }, (response) => {
             if (response.error.errors[0].message) {
                 this.alertService.error('error.custom', { param: response.error.errors[0].message });
@@ -559,6 +559,68 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                 this.alertService.error('error.general');
             }
         });
+    }
+
+    saveTemplate() {
+        if (Number(this.templateId) !== 0 ) {
+            this.updateTemplate();
+        } else {
+            const template: TemplateModel = new TemplateModel();
+            template.templateDetails = [];
+            this.selectedDescriptors.forEach((variable) => {
+                template.templateDetails.push({
+                    variableId: parseInt(variable.id),
+                    name: variable.name,
+                    type: variable.variableTypes[0].name
+                });
+            })
+            template.programUUID = this.paramContext.programUUID;
+            template.templateType = 'DESCRIPTORS';
+            const saveTemplateModalRef = this.modalService.open(SaveTemplateComponent as Component);
+            saveTemplateModalRef.result.then((templateName) => {
+                template.templateName = templateName;
+                this.templateService.addTemplate(template).subscribe((savedTemplate ) => {
+                    this.alertService.success('advance-study.attributes.preset.update.success');
+                    this.templates.push(savedTemplate);
+                    this.templateId = savedTemplate.templateId;
+                    this.loadSavedSettings = true;
+                }, (response) => {
+                    if (response.error.errors[0].message) {
+                        this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                    } else {
+                        this.alertService.error('error.general');
+                    }
+                });
+                this.activeModal.close();
+            }, () => this.activeModal.dismiss());
+        }
+    }
+
+    updateTemplate() {
+        const templateModel = this.templates.filter((template) => template.templateId === Number(this.templateId))[0];
+        templateModel.templateDetails = [];
+        this.selectedDescriptors.forEach((variable) => {
+            templateModel.templateDetails.push({
+                variableId: parseInt(variable.id),
+                name: variable.name,
+                type: variable.variableTypes[0].name
+            });
+        })
+        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
+        confirmModalRef.componentInstance.title = 'Confirmation';
+        confirmModalRef.componentInstance.message = '"' + templateModel.templateName + '" already exists, do you wish to overwrite the setting? ';
+        confirmModalRef.result.then(() => {
+            this.templateService.updateTemplate(templateModel).subscribe((res: void) => {
+                this.alertService.success('advance-study.attributes.preset.update.success');
+            }, (response) => {
+                if (response.error.errors[0].message) {
+                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
+                } else {
+                    this.alertService.error('error.general');
+                }
+            });
+            this.activeModal.close();
+        }, () => this.activeModal.dismiss());
     }
 }
 

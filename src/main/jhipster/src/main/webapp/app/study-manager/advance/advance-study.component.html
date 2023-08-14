@@ -337,13 +337,13 @@
 				<input [disabled]="!propagateDescriptors" type="checkbox" class="form-check-input" id="loadSavedSettings" [(ngModel)]="loadSavedSettings" name="loadSavedSettings">
 				<label class="col-form-label font-weight-bold" for="loadSavedSettings" jhiTranslate="advance-study.attributes.preset.load.settings"></label>
 				<div class="col-sm-8">
-					<select [disabled]="!loadSavedSettings || !propagateDescriptors" class="form-control" [(ngModel)]="presetSettingId" (ngModelChange)="applySelectedSetting()">
+					<select [disabled]="!loadSavedSettings || !propagateDescriptors" class="form-control" [(ngModel)]="templateId" (ngModelChange)="applySelectedSetting()">
 						<option [value]="0">Please Choose</option>
-						<option *ngFor="let presetSetting of presetSettings" [value]="presetSetting.id">{{presetSetting.name}}</option>
+						<option *ngFor="let template of templates" [value]="template.templateId">{{template.templateName}}</option>
 					</select>
 				</div>
 				<div class="col-sm-1">
-					<button class="btn btn-default mr-2" [disabled]="!propagateDescriptors || !loadSavedSettings ||  presetSettingId===0" (click)="deleteSelectedSetting()">
+					<button class="btn btn-default mr-2" [disabled]="!propagateDescriptors || !loadSavedSettings ||  templateId===0" (click)="deleteSelectedSetting()">
 						<i class="fa fa-trash fa-md" aria-hidden="true"></i>
 					</button>
 				</div>
@@ -393,6 +393,11 @@
 					</tr>
 					</tbody>
 				</table>
+				<div class="pull-right">
+					<div style="padding-right: 24px">
+						<a href="javascript: void(0)" (click)="saveTemplate()" jhiTranslate="advance-study.attributes.preset.save.setting">Save as setting</a>
+					</div>
+				</div>
 				<ng-template #nodata>
 					<table class="table table-striped table-bordered table-curved">
 						<thead>

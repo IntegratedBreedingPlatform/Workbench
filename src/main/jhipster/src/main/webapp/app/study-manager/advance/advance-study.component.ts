@@ -15,7 +15,7 @@ import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, Li
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { AttributesPropagationPresetService } from './attributes-propagation-preset.service';
+import { TemplateService } from './template.service';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
@@ -48,12 +48,12 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
                 public modalService: NgbModal,
-                public attributesPropagationPresetService: AttributesPropagationPresetService,
+                public templateService: TemplateService,
                 public activeModal: NgbActiveModal,
                 public variableService: VariableService
     ) {
         super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY,
-            attributesPropagationPresetService, activeModal, variableService);
+            templateService, activeModal, variableService);
     }
 
     save(): void {

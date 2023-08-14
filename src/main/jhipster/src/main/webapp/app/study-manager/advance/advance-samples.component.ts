@@ -14,7 +14,7 @@ import { AdvanceSamplesRequest } from '../../shared/study/model/advance-sample-r
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
-import { AttributesPropagationPresetService } from './attributes-propagation-preset.service';
+import { TemplateService } from './template.service';
 import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
@@ -33,12 +33,12 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
                 public modalService: NgbModal,
-                public attributesPropagationPresetService: AttributesPropagationPresetService,
+                public templateService: TemplateService,
                 public activeModal: NgbActiveModal,
                 public variableService: VariableService
     ) {
         super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES,
-            attributesPropagationPresetService, activeModal, variableService);
+            templateService, activeModal, variableService);
     }
 
     save(): void {
