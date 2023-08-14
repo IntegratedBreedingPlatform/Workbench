@@ -484,15 +484,15 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     }
 
     addDescriptor() {
-        if(!this.selectedDescriptorIds.includes(parseInt(this.variable.id))) {
+        if (!this.selectedDescriptorIds.includes(parseInt(this.variable.id, 10))) {
             this.selectedDescriptors.push(this.variable);
-            this.selectedDescriptorIds.push(parseInt(this.variable.id));
+            this.selectedDescriptorIds.push(parseInt(this.variable.id, 10));
             this.variable = null;
         }
     }
 
     removeFromSelectedDescriptors(toRemove: VariableDetails) {
-        this.selectedDescriptorIds = this.selectedDescriptorIds.filter((id) => id !== parseInt(toRemove.id));
+        this.selectedDescriptorIds = this.selectedDescriptorIds.filter((id) => id !== parseInt(toRemove.id, 10));
         this.selectedDescriptors = this.selectedDescriptors.filter((descriptor) => descriptor.id !== toRemove.id);
     }
 
@@ -537,12 +537,12 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             templateModel.templateDetails.forEach((templateDetail) => {
                 variableIds.push(templateDetail.variableId.toString());
             });
-            this.variableService.filterVariables({ variableIds: variableIds,
+            this.variableService.filterVariables({ variableIds,
                 variableTypeIds: [VariableTypeEnum.GERMPLASM_PASSPORT.toString(), VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString()],
                 showObsoletes: false}).subscribe((variables) => {
                 this.selectedDescriptors = variables;
                 variables.forEach((variable) => {
-                   this.selectedDescriptorIds.push(parseInt(variable.id));
+                   this.selectedDescriptorIds.push(parseInt(variable.id, 10));
                 });
             });
         }
@@ -569,7 +569,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             template.templateDetails = [];
             this.selectedDescriptors.forEach((variable) => {
                 template.templateDetails.push({
-                    variableId: parseInt(variable.id),
+                    variableId: parseInt(variable.id, 10),
                     name: variable.name,
                     type: variable.variableTypes[0].name
                 });
@@ -601,7 +601,7 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         templateModel.templateDetails = [];
         this.selectedDescriptors.forEach((variable) => {
             templateModel.templateDetails.push({
-                variableId: parseInt(variable.id),
+                variableId: parseInt(variable.id, 10),
                 name: variable.name,
                 type: variable.variableTypes[0].name
             });

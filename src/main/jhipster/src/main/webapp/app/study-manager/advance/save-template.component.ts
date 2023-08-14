@@ -29,7 +29,6 @@ export class SaveTemplateComponent {
     @Input() templateName: string;
     @Output() templateNameEmitter = new EventEmitter<string>();
 
-
     constructor(private modal: NgbActiveModal,
                 private translateService: TranslateService,
                 public sanitizer: DomSanitizer) {

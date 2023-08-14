@@ -13,7 +13,7 @@ export class TemplateService {
     constructor(
         private http: HttpClient,
         private paramContext: ParamContext
-    ){
+    ) {
     }
 
     getAllTemplates(): Observable<TemplateModel[]> {
