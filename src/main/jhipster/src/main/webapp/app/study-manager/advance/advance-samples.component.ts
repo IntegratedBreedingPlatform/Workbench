@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
+import {JhiEventManager, JhiLanguageService} from 'ng-jhipster';
 import { ParamContext } from '../../shared/service/param.context';
 import { AlertService } from '../../shared/alert/alert.service';
 import { HelpService } from '../../shared/service/help.service';
@@ -12,10 +12,8 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { AdvanceSamplesRequest } from '../../shared/study/model/advance-sample-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {  NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
-import { TemplateService } from './template.service';
-import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
     selector: 'jhi-advance-samples',
@@ -33,12 +31,9 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
                 public modalService: NgbModal,
-                public templateService: TemplateService,
-                public activeModal: NgbActiveModal,
-                public variableService: VariableService
+                public eventManager: JhiEventManager
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES,
-            templateService, activeModal, variableService);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES, eventManager);
     }
 
     save(): void {

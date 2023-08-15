@@ -1,0 +1,109 @@
+<div *ngIf="isDescriptorsPropagationView">
+    <div>
+        <div>
+            <div class="col-sm-12 form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="propagateDescriptors" id="propagateDescriptors" name="propagateDescriptors">
+                <label class="col-form-label font-weight-bold" for="propagateDescriptors" jhiTranslate="advance-study.attributes.propagate.descriptors"></label>
+            </div>
+            <div class="border-top mb-3"></div>
+            <div class="col-sm-12 form-check form-check-inline" style="padding-bottom: 10px">
+                <input [disabled]="!propagateDescriptors" type="checkbox" class="form-check-input" id="loadSavedSettings" [(ngModel)]="loadSavedSettings" name="loadSavedSettings">
+                <label class="col-form-label font-weight-bold" for="loadSavedSettings" jhiTranslate="advance-study.attributes.preset.load.settings"></label>
+                <div class="col-sm-8">
+                    <select [disabled]="!loadSavedSettings || !propagateDescriptors" class="form-control" [(ngModel)]="templateId" (ngModelChange)="applySelectedSetting()">
+                        <option [value]="0">Please Choose</option>
+                        <option *ngFor="let template of templates" [value]="template.templateId">{{template.templateName}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-default mr-2" [disabled]="!propagateDescriptors || !loadSavedSettings ||  templateId===0" (click)="deleteSelectedSetting()">
+                        <i class="fa fa-trash fa-md" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="dropdownvariable" class="col-sm-2 col-form-label font-weight-bold" jhiTranslate="advance-study.attributes.descriptors">Descriptors</label>
+                <div class="col-sm-8" style="padding-left: 30px;">
+                    <jhi-variable-select name="dropdownvariable" id="dropdownvariable"
+                                         (onVariableSelectedChange)="selectVariable($event)"
+                                         [value]="variable?.id"
+                                         [variableTypeIds]="VARIABLE_TYPE_IDS"
+                                         [excludedVariableNames]="DEFAULT_PASSPORT_DESCRIPTORS"
+                                         [disabled]="!propagateDescriptors">
+                    </jhi-variable-select>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-info mr-2" [disabled]="!propagateDescriptors" (click)="addDescriptor()">
+                        <i class="fa fa-plus-square fa-md" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <label class="col-form-label font-weight-bold" jhiTranslate="advance-study.attributes.table.title"></label>
+            </div>
+            <div class="border-top mb-3"></div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-curved table-fixed" *ngIf="selectedDescriptors.length else nodata">
+                    <thead>
+                    <tr>
+                        <th scope="col" jhiTranslate="advance-study.attributes.table.variable.name.column">Variable</th>
+                        <th scope="col" jhiTranslate="advance-study.attributes.table.type.column">Type</th>
+                        <th scope="col" jhiTranslate="advance-study.attributes.table.actions.column" class="fit">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let descriptor of selectedDescriptors">
+                        <td>
+                            <a [routerLink]="['/', { outlets: { popup: 'variable-details-popup' }}]"
+                               [queryParams]="{ variableId: descriptor.id }">{{descriptor.name}}</a>
+                        </td>
+                        <td>{{descriptor.variableTypes[0].name}}</td>
+                        <td class="fit">
+                            <button class="btn btn-info mr-2" (click)="removeFromSelectedDescriptors(descriptor)" [disabled]="!propagateDescriptors">
+                                <i class="fa fa-trash fa-md" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="pull-right" *ngIf="propagateDescriptors && selectedDescriptorIds.length !== 0">
+                    <div style="padding-right: 24px">
+                        <a href="javascript: void(0)" (click)="saveTemplate()" jhiTranslate="advance-study.attributes.preset.save.setting">Save as setting</a>
+                    </div>
+                </div>
+                <ng-template #nodata>
+                    <table class="table table-striped table-bordered table-curved">
+                        <thead>
+                        <tr>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td jhiTranslate="no.data"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </ng-template>
+            </div>
+            <div class="col-sm-12 form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" [disabled]="!propagateDescriptors" [(ngModel)]="overrideDescriptorsLocation" id="overrideDescriptorsLocation" name="overrideDescriptorsLocation">
+                <label class="col-form-label font-weight-bold" for="overrideDescriptorsLocation" jhiTranslate="advance-study.attributes.override.locations"></label>
+            </div>
+            <div class="border-top mb-3"></div>
+            <div>
+                <jhi-locations-select [(value)]="locationOverrideId" [disabled]="!propagateDescriptors || !overrideDescriptorsLocation" [showFilterOptions]="true" [isBreedingAndCountryLocationsOnly]="true"></jhi-locations-select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back()">
+            <span jhiTranslate="entity.action.back">Back</span>
+        </button>
+        <button (click)="exitDescriptorsPropagationView()" [disabled]="isPropagationInvalid()" class="btn btn-primary">
+            <span *ngIf="isLoading" class="throbber throbber-btn"></span>
+            <span jhiTranslate="advance.continue">Continue</span>
+        </button>
+    </div>
+</div>
+<jhi-alert></jhi-alert>

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ParamContext } from '../../shared/service/param.context';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { HelpService } from '../../shared/service/help.service';
@@ -15,8 +15,6 @@ import { AdvanceStudyRequest, BreedingMethodSelectionRequest, BulkingRequest, Li
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { BreedingMethod } from '../../shared/breeding-method/model/breeding-method';
-import { TemplateService } from './template.service';
-import { VariableService } from '../../shared/ontology/service/variable.service';
 
 @Component({
     selector: 'jhi-advance-study',
@@ -48,12 +46,9 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
                 public modalService: NgbModal,
-                public templateService: TemplateService,
-                public activeModal: NgbActiveModal,
-                public variableService: VariableService
+                public eventManager: JhiEventManager
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY,
-            templateService, activeModal, variableService);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY, eventManager);
     }
 
     save(): void {

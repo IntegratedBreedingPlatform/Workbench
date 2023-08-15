@@ -14,18 +14,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
-import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
+import { ADVANCE_SUCCESS } from '../../app.events';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { FilterType } from '../../shared/column-filter/column-filter.component';
-import { VariableDetails } from '../../shared/ontology/model/variable-details';
-import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
-import { TemplateModel } from './template.model';
-import { TemplateService } from './template.service';
-import { VariableService } from '../../shared/ontology/service/variable.service';
-import { SaveTemplateComponent } from './save-template.component';
+import {JhiEventManager} from 'ng-jhipster';
+import {Subscription} from 'rxjs';
 
 export enum AdvanceType {
     STUDY,
@@ -34,6 +30,7 @@ export enum AdvanceType {
 
 export abstract class AbstractAdvanceComponent implements OnInit {
 
+    eventSubscriber: Subscription;
     static readonly BREEDING_METHODS_PAGE_SIZE = 300;
     static readonly BREEDING_METHOD_PROPERTY = 'Breeding method';
     static readonly SELECTION_PLANT_PROPERTY = 'Selections';
@@ -75,14 +72,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
 
-    loadSavedSettings: boolean;
-    propagateDescriptors: boolean;
-    overrideDescriptorsLocation: boolean;
-    locationOverrideId: number;
-
-    templateId: number;
-    templates: TemplateModel[];
-
     // for preview data table
     isLoadingPreview = false;
     originalTotalItems: number;
@@ -91,18 +80,16 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     page = 1;
     previousPage: number;
     isPreview = false;
-    isAttributesPropagationView = false;
-
     itemsPerPage = 10;
 
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
     currentPagePreviewList: AdvancedGermplasmPreview[];
 
-    VARIABLE_TYPE_IDS = [VariableTypeEnum.GERMPLASM_ATTRIBUTE, VariableTypeEnum.GERMPLASM_PASSPORT];
-    DEFAULT_PASSPORT_DESCRIPTORS = ['PLOTCODE_AP_TEXT', 'PLOT_NUMBER_AP_TEXT', 'INSTANCE_NUMBER_AP_TEXT', 'REP_NUMBER_AP_TEXT', 'PLANT_NUMBER_AP_TEXT'];
-    variable: VariableDetails;
-    selectedDescriptors: VariableDetails[] = [];
+    isDescriptorsPropagationView?: boolean;
+    propagateDescriptors: boolean;
+    overrideDescriptorsLocation: boolean;
+    locationOverrideId: number;
     selectedDescriptorIds: number[] = [];
 
     filters = this.getInitialFilters();
@@ -156,15 +143,13 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public alertService: AlertService,
                           public modalService: NgbModal,
                           public advanceType: AdvanceType,
-                          public templateService: TemplateService,
-                          public activeModal: NgbActiveModal,
-                          public variableService: VariableService) {
+                          public eventManager: JhiEventManager,) {
         this.paramContext.readParams();
     }
 
     ngOnInit(): void {
         this.isPreview = false;
-        this.isAttributesPropagationView = true;
+        this.isDescriptorsPropagationView = true;
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
         this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
         this.replicationNumber = Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
@@ -176,7 +161,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
         this.loadStudyVariables();
         this.initializeReplicationOptions(this.replicationNumber);
-        this.loadPresets();
 
         // Get helplink url
         if (!this.helpLink || !this.helpLink.length) {
@@ -185,6 +169,14 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             }).catch((error) => {
             });
         }
+
+        this.eventSubscriber = this.eventManager.subscribe('exitDescriptorsPropagationView', (event) => {
+            this.isDescriptorsPropagationView = event.content.isDescriptorsPropagationView;
+            this.propagateDescriptors = event.content.propagateDescriptors;
+            this.selectedDescriptorIds = event.content.selectedDescriptorIds;
+            this.overrideDescriptorsLocation = event.content.overrideDescriptorsLocation;
+            this.locationOverrideId = event.content.locationOverrideId;
+        });
     }
 
     abstract isValid(): boolean;
@@ -199,14 +191,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.checkAllReplications = this.checkAllReplications && !repCheck;
     }
 
-    showPropagateAttributesView() {
-        this.isAttributesPropagationView = true;
-    }
-
-    back(advanceType: string) {
-        if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: SELECT_INSTANCES, advanceType, selectedDatasetId: this.selectedDatasetId }, '*');
-        }
+    showPropagateDescriptorsView() {
+        this.isDescriptorsPropagationView = true;
+        this.eventManager.broadcast({ name: 'showPropagateDescriptorsView' });
     }
 
     onMethodChange(selectedBreedingMethod: BreedingMethod) {
@@ -402,10 +389,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         }
     }
 
-    exitAttributesPropagationView() {
-        this.isAttributesPropagationView = false;
-    }
-
     exitPreview() {
         this.resetTable();
         this.isPreview = false;
@@ -477,150 +460,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
 
     getReplicationNumber() {
         return this.replicationNumber ? this.replicationsOptions.filter((rep) => rep.selected).length : '-';
-    }
-
-    selectVariable(variable: VariableDetails) {
-        this.variable = variable;
-    }
-
-    addDescriptor() {
-        if (!this.selectedDescriptorIds.includes(parseInt(this.variable.id, 10))) {
-            this.selectedDescriptors.push(this.variable);
-            this.selectedDescriptorIds.push(parseInt(this.variable.id, 10));
-            this.variable = null;
-        }
-    }
-
-    removeFromSelectedDescriptors(toRemove: VariableDetails) {
-        this.selectedDescriptorIds = this.selectedDescriptorIds.filter((id) => id !== parseInt(toRemove.id, 10));
-        this.selectedDescriptors = this.selectedDescriptors.filter((descriptor) => descriptor.id !== toRemove.id);
-    }
-
-    isPropagationInvalid() {
-        if (this.propagateDescriptors && this.selectedDescriptorIds.length === 0) {
-            return true;
-        }
-
-        if (this.overrideDescriptorsLocation && this.locationOverrideId === null) {
-            return true;
-        }
-        return false;
-    }
-
-    deleteSelectedSetting() {
-        const templateModel = this.templates.filter((template) => template.templateId === Number(this.templateId))[0];
-        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = 'Delete preset?';
-        confirmModalRef.componentInstance.message = 'Are you sure you want to delete ' + templateModel.templateName + ' ?';
-        confirmModalRef.result.then(() => {
-            this.templateService.deleteTemplate(this.templateId).subscribe(() => {
-                this.alertService.success('advance-study.attributes.preset.delete.success');
-                this.loadPresets();
-            }, (response) => {
-                if (response.error.errors[0].message) {
-                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                } else {
-                    this.alertService.error('error.general');
-                }
-            });
-            this.activeModal.close();
-        }, () => this.activeModal.dismiss());
-        return;
-    }
-
-    applySelectedSetting() {
-        if (Number(this.templateId) !== 0) {
-            this.selectedDescriptors = [];
-            this.selectedDescriptorIds = [];
-            const templateModel = this.templates.filter((template) => template.templateId === Number(this.templateId))[0];
-            const variableIds = [];
-            templateModel.templateDetails.forEach((templateDetail) => {
-                variableIds.push(templateDetail.variableId.toString());
-            });
-            this.variableService.filterVariables({ variableIds,
-                variableTypeIds: [VariableTypeEnum.GERMPLASM_PASSPORT.toString(), VariableTypeEnum.GERMPLASM_ATTRIBUTE.toString()],
-                showObsoletes: false}).subscribe((variables) => {
-                this.selectedDescriptors = variables;
-                variables.forEach((variable) => {
-                   this.selectedDescriptorIds.push(parseInt(variable.id, 10));
-                });
-            });
-        }
-    }
-
-    private loadPresets() {
-        this.templateService.getAllTemplates().subscribe((templates) => {
-            this.templates = templates;
-            this.templateId = 0;
-        }, (response) => {
-            if (response.error.errors[0].message) {
-                this.alertService.error('error.custom', { param: response.error.errors[0].message });
-            } else {
-                this.alertService.error('error.general');
-            }
-        });
-    }
-
-    saveTemplate() {
-        if (Number(this.templateId) !== 0 ) {
-            this.updateTemplate();
-        } else {
-            const template: TemplateModel = new TemplateModel();
-            template.templateDetails = [];
-            this.selectedDescriptors.forEach((variable) => {
-                template.templateDetails.push({
-                    variableId: parseInt(variable.id, 10),
-                    name: variable.name,
-                    type: variable.variableTypes[0].name
-                });
-            })
-            template.programUUID = this.paramContext.programUUID;
-            template.templateType = 'DESCRIPTORS';
-            const saveTemplateModalRef = this.modalService.open(SaveTemplateComponent as Component);
-            saveTemplateModalRef.result.then((templateName) => {
-                template.templateName = templateName;
-                this.templateService.addTemplate(template).subscribe((savedTemplate ) => {
-                    this.alertService.success('advance-study.attributes.preset.update.success');
-                    this.templates.push(savedTemplate);
-                    this.templateId = savedTemplate.templateId;
-                    this.loadSavedSettings = true;
-                }, (response) => {
-                    if (response.error.errors[0].message) {
-                        this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                    } else {
-                        this.alertService.error('error.general');
-                    }
-                });
-                this.activeModal.close();
-            }, () => this.activeModal.dismiss());
-        }
-    }
-
-    updateTemplate() {
-        const templateModel = this.templates.filter((template) => template.templateId === Number(this.templateId))[0];
-        templateModel.templateDetails = [];
-        this.selectedDescriptors.forEach((variable) => {
-            templateModel.templateDetails.push({
-                variableId: parseInt(variable.id, 10),
-                name: variable.name,
-                type: variable.variableTypes[0].name
-            });
-        })
-        const confirmModalRef = this.modalService.open(ModalConfirmComponent as Component);
-        confirmModalRef.componentInstance.title = 'Confirmation';
-        confirmModalRef.componentInstance.message = '"' + templateModel.templateName + '" already exists, do you wish to overwrite the setting? ';
-        confirmModalRef.result.then(() => {
-            this.templateService.updateTemplate(templateModel).subscribe((res: void) => {
-                this.alertService.success('advance-study.attributes.preset.update.success');
-            }, (response) => {
-                if (response.error.errors[0].message) {
-                    this.alertService.error('error.custom', { param: response.error.errors[0].message });
-                } else {
-                    this.alertService.error('error.general');
-                }
-            });
-            this.activeModal.close();
-        }, () => this.activeModal.dismiss());
     }
 }
 
