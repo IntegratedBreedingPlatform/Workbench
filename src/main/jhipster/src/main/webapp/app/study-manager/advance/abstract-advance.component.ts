@@ -30,14 +30,13 @@ export enum AdvanceType {
 
 export abstract class AbstractAdvanceComponent implements OnInit {
 
-    eventSubscriber: Subscription;
     static readonly BREEDING_METHODS_PAGE_SIZE = 300;
     static readonly BREEDING_METHOD_PROPERTY = 'Breeding method';
     static readonly SELECTION_PLANT_PROPERTY = 'Selections';
     static readonly SELECTION_TRAIT_PROPERTY = 'Selection Criteria';
-
     static readonly SELECTION_TRAIT_EXPRESSION = '[SELTRAIT]';
 
+    eventSubscriber: Subscription;
     breedingMethodSelectedId: string;
 
     selectionMethodVariables: ObservationVariable[] = [];
@@ -143,7 +142,8 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public alertService: AlertService,
                           public modalService: NgbModal,
                           public advanceType: AdvanceType,
-                          public eventManager: JhiEventManager,) {
+                          public eventManager: JhiEventManager
+    ) {
         this.paramContext.readParams();
     }
 
