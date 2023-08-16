@@ -1,0 +1,76 @@
+<div ngbDropdown placement="bottom-right" #columnsDropdown="ngbDropdown">
+    <button class="btn btn-info" id="columnMenu" ngbDropdownToggle
+            jhiTranslate="cross-plan.design.columns.show-columns-button" (click)="dropdownToggle()"></button>
+    <div ngbDropdownMenu aria-labelledby="columnMenu" class="column-menu p-2">
+        <form #f='ngForm'>
+            <div class="inner-addon right-addon mb-2">
+                <i class="fa fa-search"></i>
+                <input type="text" class="form-control" placeholder="{{ 'search' | translate }}"
+                       (keyup)="onSearchColumn($event)"/>
+            </div>
+            <div class="columns-container">
+                <div *ngIf="this.checkAreColumnsVisible(this.defaultColumns)">
+                    <div class="form-check" *ngFor="let column of this.defaultColumns">
+                        <div *ngIf="column.visible">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+                                   id="check-static-{{column.name}}" name="'check-static-{{column.name}}'">
+                            <label class="form-check-label" for="check-static-{{column.name}}">
+                                {{column.name}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="this.checkAreColumnsVisible(this.nameColumns)" class="mt-3">
+                    <label class="form-check-label font-weight-bold"
+                           jhiTranslate="cross-plan.design.columns.columns.types.names">NAMES</label>
+                    <hr class="mt-1 mb-1"/>
+                    <div class="form-check" *ngFor="let column of this.nameColumns">
+                        <div *ngIf="column.visible">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+                                   id="check-name-{{column.name}}" name="'check-name-{{column.name}}'">
+                            <label class="form-check-label" for="check-name-{{column.name}}">
+                                {{column.name}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="this.checkAreColumnsVisible(this.passportColumns)" class="mt-3">
+                    <label class="form-check-label font-weight-bold"
+                           jhiTranslate="cross-plan.design.columns.columns.types.passport">PASSPORT</label>
+                    <hr class="mt-1 mb-1"/>
+                    <div class="form-check" *ngFor="let column of this.passportColumns">
+                        <div *ngIf="column.visible">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+                                   id="check-passport-{{column.name}}" name="'check-passport-{{column.name}}'">
+                            <label class="form-check-label" for="check-passport-{{column.name}}">
+                                {{column.name}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="this.checkAreColumnsVisible(this.attributesColumns)" class="mt-3">
+                    <label class="form-check-label font-weight-bold"
+                           jhiTranslate="cross-plan.design.columns.columns.types.attributes">ATTRIBUTES</label>
+                    <hr class="mt-1 mb-1"/>
+                    <div class="form-check" *ngFor="let column of this.attributesColumns">
+                        <div *ngIf="column.visible">
+                            <input class="form-check-input" type="checkbox" [(ngModel)]="column.selected"
+                                   id="check-attributes-{{column.name}}" name="'check-attributes-{{column.name}}'">
+                            <label class="form-check-label" for="check-attributes-{{column.name}}">
+                                {{column.name}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-3 mb-0"/>
+            <div class="text-center"><br>
+                <button type="submit" class="btn btn-primary btn-sm" (click)="apply()">Apply
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
