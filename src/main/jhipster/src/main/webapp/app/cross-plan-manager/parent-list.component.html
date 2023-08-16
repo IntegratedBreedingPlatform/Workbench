@@ -1,0 +1,220 @@
+<div class="card" id="{{tableId}}">
+    <div class="card-header d-flex p-2">
+        <h5 style="margin-bottom: 0px;">
+            <span class="p-1" jhiTranslate="{{title}}"></span>
+            <label (click)="isListCollapsed = !isListCollapsed"
+                   [attr.aria-expanded]="!isListCollapsed" aria-controls="collapsedTable">
+                <i [ngClass]="isListCollapsed?'fa fa-caret-right fa-2':'fa fa-caret-down fa-2'" aria-hidden="true"> </i>
+            </label>
+        </h5>
+    </div>
+    <div id="isCollapsedTable" [ngbCollapse]="isListCollapsed">
+        <div class="card-body d-flex flex-column">
+            <div class="row">
+                <div class="col">
+                    <div class="float-right" placement="bottom-right">
+                        <jhi-parent-list-columns *ngIf="listData.length" class="ml-2 float-right" [defaultColumns]="defaultColumns" [nameColumns]="nameColumns"
+                                                 [attributesColumns]="attributesColumns" [passportColumns]="passportColumns"
+                                                 (columnsSelectedEvent)="onColumnsSelected($event)">
+                        </jhi-parent-list-columns>
+                        <div class="float-right">
+                            <div ngbDropdown class="float-right" placement="bottom-right" #actionMenu="ngbDropdown">
+                                <button class="btn btn-info" id="actionMenu" ngbDropdownToggle
+                                        jhiTranslate="actions"></button>
+                                <div ngbDropdownMenu aria-labelledby="actionMenu">
+                                    <button class="dropdown-item" type="submit" jhiTranslate="cross-plan.design.parent-list.action.add.entries"
+                                            (click)="SelectEntries()">Add Entries
+                                    </button>
+                                    <button *ngIf="listData.length" class="dropdown-item" type="submit" jhiTranslate="cross-plan.design.parent-list.select.all.entries"
+                                            (click)="selectAll()">Select All Entries
+                                    </button>
+                                    <button *ngIf="listData.length" class="dropdown-item" type="submit" jhiTranslate="cross-plan.design.parent-list.remove.selected.entries"
+                                            (click)="removeSelected()">Remove Selected Entries
+                                    </button>
+                                    <button *ngIf="listData.length" class="dropdown-item" type="submit" jhiTranslate="cross-plan.design.parent-list.action.remove.all.entries"
+                                            (click)="cleanList()">Remove All Entries
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group form-inline">
+                        <span class="mr-1 font-weight-bold" jhiTranslate="global.total.entries"></span>
+                        <span>{{listData.length}}</span>
+                        <span class="ml-3 mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+                        <span>{{isSelectAllPages ? listData.length : size(selectedItems)}}</span>
+                        <div class="form-check form-check-inline ml-3">
+                            <input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages()"
+                                   id="list-builder-select-all">
+                            <label class="form-check-label ml-1" for="list-builder-select-all"
+                                   jhiTranslate="global.select.all"></label>
+                        </div>
+                        <span *ngIf="isLoading" style="margin-left: 10px;" class="throbber throbber-2x"></span>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="table-responsive" *ngIf="listData">
+                <table class="table table-striped table-bordered table-curved"
+                       *ngIf="listData.length else nodata">
+                    <thead>
+                    <tr>
+                        <th *ngIf="listData.length && !isSelectAllPages">
+                            <input type="checkbox" tooltip="select current page" [checked]="isPageSelected()"
+                                   (click)="onSelectPage()" [title]="'select current page'">
+                        </th>
+                        <th>#</th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.GID]"><span jhiTranslate="cross-plan.design.parent-list.column.gid"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.GERMPLASM_UUID]"><span jhiTranslate="cross-plan.design.parent-list.column.germplasmUUID"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]"><span jhiTranslate="cross-plan.design.parent-list.column.groupId"></span><span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.NAMES]"><span jhiTranslate="cross-plan.design.parent-list.column.names"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]"><span jhiTranslate="cross-plan.design.parent-list.column.availableBalance"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]"><span jhiTranslate="cross-plan.design.parent-list.column.unit"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.LOTS]"><span jhiTranslate="cross-plan.design.parent-list.column.lotCount"></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.CROSS]"><span jhiTranslate="cross-plan.design.parent-list.column.pedigreeString">CROSS</span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]"><span jhiTranslate="cross-plan.design.parent-list.column.germplasmPreferredId"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]"><span jhiTranslate="cross-plan.design.parent-list.column.germplasmPreferredName">PREFERRED NAME</span><span ></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]"><span jhiTranslate="cross-plan.design.parent-list.column.germplasmDate"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]"><span jhiTranslate="cross-plan.design.parent-list.column.locationName"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]"><span jhiTranslate="cross-plan.design.parent-list.column.methodName"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['METHOD ABBREV']]"><span jhiTranslate="cross-plan.design.parent-list.column.methodCode"></span><span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['METHOD NUMBER']]"><span jhiTranslate="cross-plan.design.parent-list.column.methodNumber"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['METHOD GROUP']]"><span jhiTranslate="cross-plan.design.parent-list.column.methodGroup"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['FGID']]"><span jhiTranslate="cross-plan.design.parent-list.column.femaleParentGID"></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']]"><span jhiTranslate="cross-plan.design.parent-list.column.femaleParentPreferredName"></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['MGID']]"><span jhiTranslate="cross-plan.design.parent-list.column.maleParentGID"></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']]"><span jhiTranslate="cross-plan.design.parent-list.column.maleParentPreferredName"></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]"><span jhiTranslate="cross-plan.design.parent-list.column.groupSourceGID"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]"><span jhiTranslate="cross-plan.design.parent-list.column.groupSourcePreferredName"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]"><span jhiTranslate="cross-plan.design.parent-list.column.immediateSourceGID"></span> <span></span></th>
+                        <th [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]"><span jhiTranslate="cross-plan.design.parent-list.column.immediateSourceName"></span> <span></span></th>
+                            <ng-container *ngFor="let entry of attributesColumns">
+                            <th [hidden]="hiddenColumns[entry.name]"><span>{{entry.name}}</span><span></span></th>
+                            </ng-container>
+                        <ng-container *ngFor="let entry of passportColumns">
+                            <th [hidden]="hiddenColumns[entry.name]"><span>{{entry.name}}</span><span></span></th>
+                        </ng-container>
+                        <ng-container *ngFor="let entry of nameColumns">
+                            <th [hidden]="hiddenColumns[entry.name]"><span>{{entry.name}}</span><span></span></th>
+                        </ng-container>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let row of listData | slice: pageOffset() : page * pageSize; let index = index"
+                        [class.selected]="isSelected(row.internal_id)"
+                        (click)="toggleSelect($event, index, row.internal_id)">
+                        <td *ngIf="!isSelectAllPages">
+                            <input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect($event, index, row.internal_id, true); $event.stopPropagation()">
+                        </td>
+                        <td>{{pageOffset() + index + 1}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.GID]">
+                            <a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row[ColumnLabels.GID] } }]"
+                               queryParamsHandling="merge">{{row[ColumnLabels.GID]}}</a>
+                        </td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.GERMPLASM_UUID]">
+                            <a (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row[ColumnLabels.GID] } }]"
+                               queryParamsHandling="merge">{{row[ColumnLabels.GERMPLASM_UUID]}}</a></td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['GROUP ID']]">
+                            <a *ngIf="row[ColumnLabels.GROUP_ID]" (click)="$event.stopPropagation()" [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row[ColumnLabels.GROUP_ID] } }]">{{row[ColumnLabels.GROUP_ID]}}</a><span
+                                *ngIf="!row[ColumnLabels.GROUP_ID]">-</span>
+                        </td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.NAMES]" jhiScrollableTooltip [tooltipText]="row[ColumnLabels.NAMES]" placement="right">
+                            <a (click)="$event.stopPropagation()"
+                               [routerLink]="['/', { outlets: { popup: 'germplasm-details-dialog/' + row[ColumnLabels.GID] } }]"
+                               queryParamsHandling="merge">{{row[ColumnLabels.NAMES] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</a>
+                        </td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.AVAILABLE]">{{row[ColumnLabels.AVAILABLE]}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.LOT_UNITS]">{{row['UNIT']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.LOTS]">
+                            <a *ngIf="row['LOTS']" (click)="$event.stopPropagation()"
+                               [routerLink]="['/', { outlets: { popup: 'inventory-details-dialog' } }]"
+                               [queryParams]="{gid: row[ColumnLabels.GID]}"
+                               queryParamsHandling="merge">{{row['LOTS']}}</a>
+                            <span *ngIf="row['LOTS'] === 0">-</span>
+                        </td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.CROSS]" jhiScrollableTooltip [tooltipText]="row[ColumnLabels.CROSS]" placement="right">{{row[ColumnLabels.CROSS] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['PREFERRED ID']]">{{row['PREFERRED ID']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['PREFERRED NAME']]" jhiScrollableTooltip [tooltipText]="row['PREFERRED NAME']" placement="right">
+                            {{row['PREFERRED NAME'] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['GERMPLASM DATE']]">{{row['GERMPLASM DATE']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels.LOCATIONS]">
+                            <a (click)="$event.stopPropagation()"
+                               [routerLink]="['/', { outlets: { popup: 'location/' + row['LOCATION ID'] } }]"
+                               queryParamsHandling="merge">{{row['LOCATION']}}</a>
+                        </td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['METHOD NAME']]">
+                            <a (click)="$event.stopPropagation()"
+                               [routerLink]="['/', { outlets: { popup: 'breeding-method/' + row['METHOD ID'] } }]"
+                               queryParamsHandling="merge">{{row['METHOD NAME']}}</a>
+                        </td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['METHOD ABBREV']]">{{row['METHOD ABBREV']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['METHOD NUMBER']]">{{row['METHOD NUMBER']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['METHOD GROUP']]">{{row['METHOD GROUP']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['FGID']]">{{row['METHOD ABBREV']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['CROSS-FEMALE PREFERRED NAME']]" jhiScrollableTooltip [tooltipText]="row['CROSS-FEMALE PREFERRED NAME']" placement="bottom">
+                            {{row['CROSS-FEMALE PREFERRED NAME'] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['MGID']]">{{row['MGID']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['CROSS-MALE PREFERRED NAME']]" jhiScrollableTooltip [tooltipText]="row['CROSS-MALE PREFERRED NAME']" placement="bottom">
+                            {{row['CROSS-MALE PREFERRED NAME'] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE GID']]">{{row['GROUP SOURCE GID']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['GROUP SOURCE']]" jhiScrollableTooltip [tooltipText]="row['GROUP SOURCE']" placement="bottom">
+                            {{row['GROUP SOURCE'] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE GID']]">{{row['IMMEDIATE SOURCE GID']}}</td>
+                        <td [hidden]="hiddenColumns[ColumnLabels['IMMEDIATE SOURCE']]" jhiScrollableTooltip [tooltipText]="row['IMMEDIATE SOURCE']" placement="bottom">
+                            {{row['IMMEDIATE SOURCE'] | truncateWithEllipsis:MAX_NAME_DISPLAY_SIZE}}</td>
+                        <ng-container *ngFor="let entry of attributesColumns">
+                            <td [hidden]="hiddenColumns[entry.name]">{{row[entry.name]}}</td>
+                        </ng-container>
+                        <ng-container *ngFor="let entry of passportColumns">
+                            <td [hidden]="hiddenColumns[entry.name]">{{row[entry.name]}}</td>
+                        </ng-container>
+                        <ng-container *ngFor="let entry of nameColumns">
+                            <td [hidden]="hiddenColumns[entry.name]">{{row[entry.name]}}</td>
+                        </ng-container>
+                    </tr>
+                    </tbody>
+                </table>
+                <ng-template #nodata>
+                    <table class="table table-striped table-bordered table-curved">
+                        <thead>
+                        <tr>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td jhiTranslate="cross-plan.design.no.data.added"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </ng-template>
+            </div>
+            <div *ngIf="listData && listData.length">
+                <div class="row">
+                    <div class="col">
+                        <div class="pagination-container">
+                            <div class="pagination-box pagination-box-left">
+                                <div>
+                                    <jhi-item-count [page]="page" [total]="listData.length"[itemsPerPage]="pageSize">
+                                    </jhi-item-count>
+                                </div>
+                            </div>
+                            <div class="pagination-box pagination-wrap">
+                                <ngb-pagination [collectionSize]="listData.length" [(page)]="page" [pageSize]="pageSize"
+                                                [disabled]="isLoading" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                                </ngb-pagination>
+                            </div>
+                            <div class="pagination-box pagination-box-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
