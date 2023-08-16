@@ -62,3 +62,9 @@ export const LOCATION_ID_CVTERM_ID = 8190;
 export const GENOTYPING_SERVER = 'gigwa';
 
 export const HELP_SITE_ADMINISTRATION = 'SITE_ADMINISTRATION';
+
+export const HELP_CROSS_PLAN = 'CROSS_PAN';
+
+export const HELP_CROSS_PLAN_DESIGN = 'CROSS_PAN_DESIGN';
+
+
