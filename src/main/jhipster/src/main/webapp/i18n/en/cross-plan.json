@@ -1,0 +1,78 @@
+{
+  "cross-plan": {
+    "title": "Cross Plan Lists",
+    "browse-link": "Browse",
+    "browse-text": " for lists",
+    "nav": {
+      "search": "Search"
+    },
+    "actions": {
+      "design": "Cross Plan Design"
+    },
+    "design": {
+      "description": "Search germplasm and dragging them to Parent Lists",
+      "parent.list": "Parent List",
+      "female.parent.list": "Female Parents",
+      "male.parent.list": "Male Parents",
+      "no.data.added": "No records added",
+      "columns": {
+        "show-columns-button": "Columns",
+        "columns": {
+          "types": {
+            "names": "NAMES",
+            "passport": "PASSPORT",
+            "attributes": "ATTRIBUTES"
+          }
+        }
+      },
+      "crosses": {
+        "method": {
+          "title": "Crossing Method",
+          "please.choose": "Please choose",
+          "option.1": "Cross each selected female with each selected male",
+          "option.2": "Cross matched pairs of selected female and male lines in top to bottom order",
+          "option.3": "Cross each female with an unknown male parent",
+          "option.4": "Cross each female with all male parents"
+        },
+        "name": "Choose how you would like to make your crosses",
+        "make.reciprocal": "Make reciprocal crosses",
+        "exclude.selfs": "Exclude selfs",
+        "generate": "Generate Crosses"
+      },
+      "parent-list" : {
+        "action": {
+          "add.entries": "Add Entries",
+          "select.all.entries": "Select All Entries",
+          "remove.all.entries": "Remove All Entries",
+          "remove.selected.entries": "Remove Selected Entries"
+        },
+        "column": {
+          "gid": "GID",
+          "germplasmUUID": "GERMPLASM UUID",
+          "groupId": "GROUPID",
+          "names": "NAMES",
+          "methodName": "BREEDING METHOD NAME",
+          "locationName": "LOCATION",
+          "availableBalance": "AVAILABLE",
+          "unit": "UNIT",
+          "lotCount": "LOTS",
+          "germplasmDate": "GERMPLASM DATE",
+          "methodCode": "METHOD CODE",
+          "methodNumber": "METHOD NUMBER",
+          "methodGroup": "METHOD GROUP",
+          "germplasmPreferredName": "PREFERRED NAME",
+          "germplasmPreferredId": "PREFERRED ID",
+          "groupSourceGID": "GROUP SOURCE GID",
+          "groupSourcePreferredName": "GROUP SOURCE PREFERRED NAME",
+          "immediateSourceGID": "IMMEDIATE SOURCE GID",
+          "immediateSourceName": "IMMEDIATE SOURCE NAME",
+          "femaleParentGID": "FEMALE PARENT GID",
+          "femaleParentPreferredName": "FEMALE PARENT PREFERRED NAME",
+          "maleParentGID": "MALE PARENT GID",
+          "maleParentPreferredName": "MALE PARENT PREFERRED NAME",
+          "pedigreeString": "CROSS"
+        }
+      }
+    }
+  }
+}
