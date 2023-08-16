@@ -65,7 +65,8 @@ export class GermplasmAttribute {
         public date?: string,
         public locationId?: string,
         public locationName?: string,
-        public hasFiles?: boolean
+        public hasFiles?: boolean,
+        public gid?: number
     ) {
     }
 }
