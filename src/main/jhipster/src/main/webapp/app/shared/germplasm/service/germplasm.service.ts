@@ -223,6 +223,11 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/${gid}/merges`;
         return this.http.get<GermplasmMerged[]>(url);
     }
+
+    getGermplasmAttributesByGidsAndType(gidList: number[], variableTypeId: VariableTypeEnum): Observable<GermplasmAttribute[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes`;
+        return this.http.post<GermplasmAttribute[]>(url,{gids:gidList, programUUID:this.context.programUUID,variableTypeId: variableTypeId});
+    }
 }
 
 export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };
