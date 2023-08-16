@@ -9,6 +9,7 @@ import {GermplasmManagerModule} from '../germplasm-manager/germplasm-manager.mod
 import { ListParentsContext } from './list-parents-context';
 import {ParentListComponent} from "./parent-list.component";
 import {PreviewCrossesComponent} from "./preview-crosses.component";
+import {ParentListColumnsComponent} from "./parent-list-columns.component";
 
 @NgModule({
     imports: [
@@ -21,14 +22,16 @@ import {PreviewCrossesComponent} from "./preview-crosses.component";
         CrossPlanListSearchComponent,
         CrossPlanDesignComponent,
         ParentListComponent,
-        PreviewCrossesComponent
+        PreviewCrossesComponent,
+        ParentListColumnsComponent
     ],
     entryComponents: [
         CrossPlanListComponent,
         CrossPlanListSearchComponent,
         CrossPlanDesignComponent,
         ParentListComponent,
-        PreviewCrossesComponent
+        PreviewCrossesComponent,
+        ParentListColumnsComponent
     ],
     providers: [
         ListParentsContext
