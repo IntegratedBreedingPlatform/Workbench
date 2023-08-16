@@ -33,6 +33,7 @@ import { LotAttributeModule } from './entities/lot/lot-attribute.module';
 import { StudyManagerModule } from './study-manager/study-manager.module';
 import { SiteAdminModule } from './site-admin/site-admin.module';
 import { ObservationDetailsModule } from './entities/observation/observation-details.module';
+import {CrossPlanManagerModule} from "./cross-plan-manager/cross-plan-manager.module";
 
 @NgModule({
     imports: [
@@ -56,6 +57,7 @@ import { ObservationDetailsModule } from './entities/observation/observation-det
         CropSettingsManagerModule,
         VariableDetailsModule,
         GermplasmListModule,
+        CrossPlanManagerModule,
         ProgramSettingsManagerModule,
         AboutModule,
         CreateProgramModule,
