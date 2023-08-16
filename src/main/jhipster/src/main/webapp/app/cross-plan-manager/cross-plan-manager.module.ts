@@ -1,15 +1,15 @@
 import {NgModule} from '@angular/core';
 import {BmsjHipsterSharedModule} from '../shared';
 import {RouterModule} from '@angular/router';
-import {CROSS_PLAN_MANAGER_ROUTES} from './cross-plan-list.route';
-import {CrossPlanListComponent} from './cross-plan-list.component';
+import {CROSS_PLAN_MANAGER_ROUTES} from './cross-plan-manager.route';
+import {CrossPlanManagerComponent} from './cross-plan-manager.component';
 import {CrossPlanListSearchComponent} from './cross-plan-list-search.component';
 import {CrossPlanDesignComponent} from './cross-plan-design.component';
 import {GermplasmManagerModule} from '../germplasm-manager/germplasm-manager.module';
 import { ListParentsContext } from './list-parents-context';
-import {ParentListComponent} from "./parent-list.component";
-import {PreviewCrossesComponent} from "./preview-crosses.component";
-import {ParentListColumnsComponent} from "./parent-list-columns.component";
+import {ParentListComponent} from './parent-list.component';
+import {PreviewCrossesComponent} from './preview-crosses.component';
+import {ParentListColumnsComponent} from './parent-list-columns.component';
 
 @NgModule({
     imports: [
@@ -18,7 +18,7 @@ import {ParentListColumnsComponent} from "./parent-list-columns.component";
         GermplasmManagerModule,
     ],
     declarations: [
-        CrossPlanListComponent,
+        CrossPlanManagerComponent,
         CrossPlanListSearchComponent,
         CrossPlanDesignComponent,
         ParentListComponent,
@@ -26,7 +26,7 @@ import {ParentListColumnsComponent} from "./parent-list-columns.component";
         ParentListColumnsComponent
     ],
     entryComponents: [
-        CrossPlanListComponent,
+        CrossPlanManagerComponent,
         CrossPlanListSearchComponent,
         CrossPlanDesignComponent,
         ParentListComponent,
@@ -38,6 +38,6 @@ import {ParentListColumnsComponent} from "./parent-list-columns.component";
     ]
 })
 
-export class CrossPlanModule {
+export class CrossPlanManagerModule {
 
 }

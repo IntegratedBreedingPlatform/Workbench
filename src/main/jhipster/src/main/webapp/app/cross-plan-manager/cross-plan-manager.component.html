@@ -1,0 +1,48 @@
+<section>
+    <header>
+        <h1><span jhiTranslate="cross-plan.title">Cross Plan Manager</span>&nbsp;
+            <a href="{{helpLink}}" target="_blank"><i class="fa fa-question-circle help-icon" aria-hidden="true"></i></a>
+        </h1>
+        <div class="row col mb-3">
+            <img src="/ibpworkbench/VAADIN/themes/breeding-manager/images/review-list-details.png" class="image-padding browse-action"/>
+            <div style="padding-top: 5px;">
+                <a href (click)="browseList($event)" jhiTranslate="cross-plan.browse-link"></a>&nbsp;
+                <span jhiTranslate="cross-plan.browse-text"></span>
+            </div>
+        </div>
+    </header>
+    <div class="row">
+        <section class="col">
+            <nav>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#germplasm-list" jhiTranslate="cross-plan.nav.search" (click)="setSearchTabActive()"
+                           [routerLink]="['germplasm-lists-search']" [routerLinkActive]="['active']">Search</a>
+                    </li>
+                    <li class="nav-item" *ngFor="let tab of tabs" role="presentation">
+                        <a class="nav-link" role="tab" data-toggle="tab" (click)="setActive(tab.id)"
+                           [routerLink]="['list/' + tab.id]" [routerLinkActive]="['active']" [queryParams]="{ listId: tab.id }">
+                            {{tab.name}}
+                            <i class="fa fa-times close-nav-tab" (click)="closeTab(tab)"></i>
+                        </a>
+                    </li>
+                </ul>
+                <!-- TODO router-outlet sticky state? router-outlet not possible right now because we don't want to reload tabs  -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane container-fluid row" [class.active]="!hideSearchTab">
+                        <jhi-cross-plan-list-search></jhi-cross-plan-list-search>
+                    </div>
+                    <!-- Tab panes -->
+                    <div *ngFor="let tab of tabs; trackBy: trackId" role="tabpanel" class="tab-pane container-fluid row" [class.active]="tab.active" id="list-{{tab.id}}">
+                        <div class="col-xs-12 col-md-12">
+                            <!-- jhi-list [listId]="tab.id" ></jhi-list -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <jhi-alert></jhi-alert>
+        </section>
+    </div>
+</section>
+<jhi-alert></jhi-alert>
