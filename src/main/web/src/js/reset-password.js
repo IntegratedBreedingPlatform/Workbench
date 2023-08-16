@@ -78,10 +78,10 @@
 
 		// We will treat the password as an invalid one if the score is less than 3
 		if (score < 3) {
-			return {
-				valid: false,
-				message: message
-			}
+			displayClientError(message);
+		} else {
+			$errorText.text('');
+			$error.addClass('login-valid');
 		}
 
 		return {
@@ -93,6 +93,7 @@
 	/* init on document load */
 	$(document).ready(function () {
 		$passwordField.focus();
+		$passwordField.tooltip();
 
 		$passwordField.keyup(function () {
 			return assessPasswordStrength($(this).val());

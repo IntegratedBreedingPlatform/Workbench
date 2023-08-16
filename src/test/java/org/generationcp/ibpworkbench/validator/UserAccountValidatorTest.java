@@ -238,12 +238,13 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidatePasswordStrength() {
+	public void testValidatePasswordMinimumRequirements_error() {
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.setPasswordMinimumCharsReqts( 1, 1, 1);
 
 		final UserAccountModel userAccount = new UserAccountModel();
 		userAccount.setPassword("password");
-		partialValidator.validatePasswordStrength(userAccount, this.errors);
+		partialValidator.validatePasswordMinimumRequirements(userAccount, this.errors);
 
 		Mockito.verify(this.errors)
 			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
@@ -251,16 +252,30 @@ public class UserAccountValidatorTest {
 	}
 
 	@Test
-	public void testValidatePasswordStrengthValidValue() {
+	public void testValidatePasswordMinimumRequirements_valid() {
 		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
+		partialValidator.setPasswordMinimumCharsReqts(1, 1, 1);
 
 		final UserAccountModel userAccount = new UserAccountModel();
-		userAccount.setPassword("Str0ngPW");
-		partialValidator.validatePasswordStrength(userAccount, this.errors);
+		userAccount.setPassword("Str0ngPW!");
+		partialValidator.validatePasswordMinimumRequirements(userAccount, this.errors);
 
 		Mockito.verify(this.errors, Mockito.never())
 			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
 				ArgumentMatchers.anyString());
+	}
+
+	@Test
+	public void testValidatePasswordMinimumRequirements_noReqt() {
+		final UserAccountValidator partialValidator = Mockito.spy(this.validator);
+
+		final UserAccountModel userAccount = new UserAccountModel();
+		userAccount.setPassword("password");
+		partialValidator.validatePasswordMinimumRequirements(userAccount, this.errors);
+
+		Mockito.verify(this.errors, Mockito.never())
+			.rejectValue(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.any(String[].class),
+				ArgumentMatchers.<String>isNull());
 	}
 
 	@Test
