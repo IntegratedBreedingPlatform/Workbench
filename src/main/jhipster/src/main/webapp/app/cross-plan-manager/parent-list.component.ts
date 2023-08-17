@@ -6,22 +6,18 @@ import {Overlay} from '@angular/cdk/overlay';
 import {GermplasmSearchRequest} from '../entities/germplasm/germplasm-search-request.model';
 import {SearchResult} from '../shared/search-result.model';
 import {NgbPopover} from '@ng-bootstrap/ng-bootstrap';
-import {SORT_PREDICATE_NONE} from '../germplasm-manager/germplasm-search-resolve-paging-params';
 import {finalize} from 'rxjs/internal/operators/finalize';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {formatErrorList} from '../shared/alert/format-error-list';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {JhiEventManager, JhiLanguageService} from 'ng-jhipster';
 import {GermplasmService} from '../shared/germplasm/service/germplasm.service';
 import {AlertService} from '../shared/alert/alert.service';
-import {TranslateService} from '@ngx-translate/core';
 import {ParamContext} from '../shared/service/param.context';
 import {GermplasmDetailsUrlService} from '../shared/germplasm/service/germplasm-details.url.service';
 import {ParentListColumnCategory, ParentListColumnModel} from './parent-list-columns.component';
 import {VariableTypeEnum} from '../shared/ontology/variable-type.enum';
 import {GermplasmAttribute} from '../shared/germplasm/model/germplasm.model';
-
-declare var $: any;
 
 @Component({
     selector: 'jhi-parent-list',
@@ -79,8 +75,8 @@ export class ParentListComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.listData = new Array();
-        this.gidSelected = new Array();
+        this.listData = [];
+        this.gidSelected = [];
         this.registerGermplasmSelectorSelected();
         this.request.addedColumnsPropertyIds = [];
 
@@ -143,17 +139,30 @@ export class ParentListComponent implements OnInit {
         });
     }
 
-    private onSuccess(data, headers, callback) {
+    private onSuccess(data) {
+        const listEntries = this.buildListEntry(data);
+        if (this.listData.length) {
+            this.listData = this.listData.concat(listEntries);
+        } else {
+            this.listData = listEntries;
+        }
+
         const gids = data.map((germplasm) => germplasm.gid);
         this.germplasmService.getGermplasmAttributesByGidsAndType(gids, VariableTypeEnum.GERMPLASM_PASSPORT).toPromise().then((passports) => {
-            this.setAttributes(passports, ParentListColumnCategory.PASSPORT);
+            this.setAttributesToListEntry(passports, ParentListColumnCategory.PASSPORT);
         });
 
         this.germplasmService.getGermplasmAttributesByGidsAndType(gids, VariableTypeEnum.GERMPLASM_ATTRIBUTE).toPromise().then((attributes) => {
-            this.setAttributes(attributes, ParentListColumnCategory.ATTRIBUTES);
+            this.setAttributesToListEntry(attributes, ParentListColumnCategory.ATTRIBUTES);
         });
 
-        const germplasmList = data.map((germplasm: Germplasm) => {
+        this.germplasmService.getGermplasmNamesByGids(gids).toPromise().then((germplasmNames) => {
+            this.setNamesToListEntry(germplasmNames);
+        });
+    }
+
+    private buildListEntry(data): ListEntry[] {
+        return data.map((germplasm: Germplasm) => {
             const row: ListEntry = new ListEntry();
             row[ColumnLabels.GID] = germplasm.gid;
             row[ColumnLabels.GERMPLASM_UUID] = germplasm.germplasmUUID;
@@ -183,36 +192,121 @@ export class ParentListComponent implements OnInit {
             row['IMMEDIATE SOURCE'] = germplasm.immediateSourceName;
             return row;
         });
-
-        if (this.listData.length) {
-            this.listData = this.listData.concat(germplasmList);
-        } else {
-            this.listData = germplasmList;
-        }
     }
 
-    private setAttributes(attributes: GermplasmAttribute[], columnCategory: ParentListColumnCategory) {
+    private setAttributesToListEntry(attributes: GermplasmAttribute[], columnCategory: ParentListColumnCategory) {
         const attributeMap = new Map();
         attributes.forEach((attribute) => {
-            attributeMap.set(attribute.gid, attribute);
+            if (!attributeMap.get(attribute.gid)) {
+                attributeMap.set(attribute.gid, []);
+            }
+            attributeMap.get(attribute.gid).push(attribute);
         });
 
         this.listData.forEach((entry) => {
-            const attribute = attributeMap.get(entry[ColumnLabels.GID]);
+            const attributeLists = attributeMap.get(entry[ColumnLabels.GID]);
 
-            if (attribute) {
-                entry[attribute.variableName] = attribute.value;
-                if (this.hiddenColumns[attribute.variableName] === undefined) {
-                    this.hiddenColumns[attribute.variableName] = true;
-                    if (ParentListColumnCategory.ATTRIBUTES === columnCategory) {
-                        this.attributesColumns.push(new ParentListColumnModel(attribute.variableName, columnCategory, false))
+            if (attributeLists && attributeLists.length) {
+                attributeLists.forEach((attribute) => {
+                    entry[attribute.variableName] = attribute.value;
+                    if (this.hiddenColumns[attribute.variableName] === undefined) {
+                        this.hiddenColumns[attribute.variableName] = true;
+                        if (ParentListColumnCategory.ATTRIBUTES === columnCategory) {
+                            this.attributesColumns.push(new ParentListColumnModel(attribute.variableName, columnCategory, false))
 
-                    } else if (ParentListColumnCategory.PASSPORT === columnCategory) {
-                        this.passportColumns.push(new ParentListColumnModel(attribute.variableName, columnCategory, false))
+                        } else if (ParentListColumnCategory.PASSPORT === columnCategory) {
+                            this.passportColumns.push(new ParentListColumnModel(attribute.variableName, columnCategory, false))
+                        }
                     }
+                });
+            }
+        });
+    }
+
+    private setNamesToListEntry(germplasmNames: any[]) {
+        const germplasmNameMap = new Map();
+        germplasmNames.forEach((name) => {
+            if (!germplasmNameMap.get(name.gid)) {
+                germplasmNameMap.set(name.gid, []);
+            }
+            germplasmNameMap.get(name.gid).push(name);
+        });
+
+        this.listData.forEach((entry) => {
+            const names = germplasmNameMap.get(entry[ColumnLabels.GID]);
+            if (names && names.length) {
+                names.forEach((name) => {
+                    entry[name.nameTypeCode] = name.name;
+                    if (this.hiddenColumns[name.nameTypeCode] === undefined) {
+                        this.hiddenColumns[name.nameTypeCode] = true;
+                        this.nameColumns.push(new ParentListColumnModel(name.nameTypeCode, ParentListColumnCategory.NAMES, false))
+
+                    }
+                });
+            }
+        });
+    }
+
+    registerGermplasmSelectorSelected() {
+        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
+            if (this.selectEntriesFlag) {
+                this.selectEntriesFlag = false;
+                this.request.addedColumnsPropertyIds = [
+                    'PREFERRED ID', 'PREFERRED NAME', 'GERMPLASM DATE',
+                    'METHOD ABBREV', 'METHOD NUMBER', 'METHOD GROUP',
+                    'FGID', 'CROSS-FEMALE PREFERRED NAME',
+                    'MGID', 'CROSS-MALE PREFERRED NAME',
+                    'GROUP SOURCE GID', 'GROUP SOURCE',
+                    'IMMEDIATE SOURCE GID', 'IMMEDIATE SOURCE'
+                ];
+
+                if (this.gidSelected.length) {
+                    this.gidSelected = this.request.gids.concat(event.content.split(','));
+                    this.request.gids = event.content.split(',');
+                } else {
+                    this.gidSelected = event.content.split(',');
+                    this.request.gids = this.gidSelected;
+                }
+
+                const pages = this.request.gids.length < this.itemsPerPage ? 1 :
+                    this.request.gids.length / this.itemsPerPage;
+                this.resultSearch.searchResultDbId = '';
+
+                for (let page = 1; page <= pages; page++) {
+                    this.isLoading = true;
+                    this.search(this.request).then((searchId) => {
+                        this.germplasmService.getSearchResults(
+                            this.addSortParam({
+                                searchRequestId: searchId,
+                                page: page - 1,
+                                size: this.itemsPerPage
+                            })
+                        ).pipe(finalize(() => {
+                            this.isLoading = false;
+                        })).subscribe(
+                            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body),
+                            (res: HttpErrorResponse) => this.onError(res)
+                        );
+                    }, (error) => this.onError(error));
                 }
             }
         });
+    }
+
+    onColumnsSelected(columns: any[]) {
+        columns.forEach((column) => {
+            this.hiddenColumns[column.name] = !column.selected;
+        });
+    }
+
+    resetTable() {
+        this.page = 1;
+        this.selectedItems = {};
+        this.listData = [];
+        this.nameColumns = [];
+        this.passportColumns = [];
+        this.attributesColumns = [];
+        this.gidSelected = [];
     }
 
     private onError(response: HttpErrorResponse) {
@@ -222,16 +316,6 @@ export class ParentListComponent implements OnInit {
         } else {
             this.alertService.error('error.general');
         }
-    }
-
-    resetTable() {
-        this.page = 1;
-        this.selectedItems = {};
-        this.listData = new Array();
-        this.nameColumns = new Array();
-        this.passportColumns = new Array();
-        this.attributesColumns = new Array();
-        this.gidSelected = new Array();
     }
 
     get request() {
@@ -323,7 +407,7 @@ export class ParentListComponent implements OnInit {
     }
 
     cleanList() {
-        this.listData = new Array();
+        this.listData = [];
     }
 
     SelectEntries() {
@@ -339,61 +423,6 @@ export class ParentListComponent implements OnInit {
         });
     }
 
-    registerGermplasmSelectorSelected() {
-        this.eventSubscriber = this.eventManager.subscribe('germplasmSelectorSelected', (event) => {
-            if (this.selectEntriesFlag) {
-                this.selectEntriesFlag = false;
-                this.request.addedColumnsPropertyIds = [
-                    'PREFERRED ID', 'PREFERRED NAME', 'GERMPLASM DATE',
-                    'METHOD ABBREV', 'METHOD NUMBER', 'METHOD GROUP',
-                    'FGID', 'CROSS-FEMALE PREFERRED NAME',
-                    'MGID', 'CROSS-MALE PREFERRED NAME',
-                    'GROUP SOURCE GID', 'GROUP SOURCE',
-                    'IMMEDIATE SOURCE GID', 'IMMEDIATE SOURCE'
-                ];
-
-                if (this.gidSelected.length) {
-                    this.gidSelected = this.request.gids.concat(event.content.split(','));
-                    this.request.gids = event.content.split(',');
-
-                } else {
-                    this.gidSelected = event.content.split(',');
-                    this.request.gids = this.gidSelected;
-
-                }
-
-                const pages = this.request.gids.length < this.itemsPerPage ? 1 :
-                    this.request.gids.length / this.itemsPerPage;
-                this.resultSearch.searchResultDbId = '';
-
-                for (let page = 1; page <= pages; page++) {
-                    this.isLoading = true;
-                    this.search(this.request).then((searchId) => {
-                        this.germplasmService.getSearchResults(
-                            this.addSortParam({
-                                searchRequestId: searchId,
-                                page: page - 1,
-                                size: this.itemsPerPage
-                            })
-                        ).pipe(finalize(() => {
-                            this.isLoading = false;
-                        })).subscribe(
-                            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers, () => {
-                            }),
-                            (res: HttpErrorResponse) => this.onError(res)
-                        );
-                    }, (error) => this.onError(error));
-                }
-
-            }
-        });
-    }
-
-    onColumnsSelected(columns: any[]) {
-        columns.forEach((column) => {
-            this.hiddenColumns[column.name] = !column.selected;
-        });
-    }
 }
 
 export enum ColumnLabels {
