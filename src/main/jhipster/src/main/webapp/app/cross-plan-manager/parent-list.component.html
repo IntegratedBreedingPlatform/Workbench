@@ -1,6 +1,6 @@
 <div class="card" id="{{tableId}}">
     <div class="card-header d-flex p-2">
-        <h5 style="margin-bottom: 0px;">
+        <h5 style="margin-bottom: 0;">
             <span class="p-1" jhiTranslate="{{title}}"></span>
             <label (click)="isListCollapsed = !isListCollapsed"
                    [attr.aria-expanded]="!isListCollapsed" aria-controls="collapsedTable">
@@ -12,7 +12,7 @@
         <div class="card-body d-flex flex-column">
             <div class="row">
                 <div class="col">
-                    <div class="float-right" placement="bottom-right">
+                    <div class="float-right">
                         <jhi-parent-list-columns *ngIf="listData.length" class="ml-2 float-right" [defaultColumns]="defaultColumns" [nameColumns]="nameColumns"
                                                  [attributesColumns]="attributesColumns" [passportColumns]="passportColumns"
                                                  (columnsSelectedEvent)="onColumnsSelected($event)">
@@ -200,7 +200,7 @@
                         <div class="pagination-container">
                             <div class="pagination-box pagination-box-left">
                                 <div>
-                                    <jhi-item-count [page]="page" [total]="listData.length"[itemsPerPage]="pageSize">
+                                    <jhi-item-count [page]="page" [total]="listData.length" [itemsPerPage]="pageSize">
                                     </jhi-item-count>
                                 </div>
                             </div>
