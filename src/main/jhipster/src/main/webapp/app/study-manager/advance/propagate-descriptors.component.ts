@@ -60,10 +60,14 @@ export class PropagateDescriptorsComponent implements OnInit {
 
     addDescriptor() {
         if (!this.selectedDescriptorIds.includes(parseInt(this.variable.id, 10))) {
-            this.selectedDescriptors.push(this.variable);
+            const descriptors: VariableDetails[] = this.cloneDescriptorsArray();
+            descriptors.push(this.variable);
+            this.selectedDescriptors = descriptors;
             this.selectedDescriptorIds.push(parseInt(this.variable.id, 10));
-            this.variable = null;
+        } else {
+            this.alertService.warning('advance-study.attributes.table.variable.existing.warning', { param: this.variable.name });
         }
+        this.variable = null;
     }
 
     exitDescriptorsPropagationView() {
@@ -79,7 +83,22 @@ export class PropagateDescriptorsComponent implements OnInit {
 
     removeFromSelectedDescriptors(toRemove: VariableDetails) {
         this.selectedDescriptorIds = this.selectedDescriptorIds.filter((id) => id !== parseInt(toRemove.id, 10));
+        const lastItem: VariableDetails = this.selectedDescriptors[this.selectedDescriptors.length - 1];
         this.selectedDescriptors = this.selectedDescriptors.filter((descriptor) => descriptor.id !== toRemove.id);
+
+        if (lastItem.id === toRemove.id) {
+            this.selectedDescriptors = this.cloneDescriptorsArray();
+        }
+    }
+
+    cloneDescriptorsArray(): VariableDetails[] {
+        const descriptors: VariableDetails[] = [];
+        // clone selectedDescriptors(table contents) to properly load UI styling of table
+        this.selectedDescriptors.forEach((variable) => {
+            const variableCopy: VariableDetails = { ...variable };
+            descriptors.push(variableCopy);
+        });
+        return descriptors;
     }
 
     isPropagationInvalid() {

@@ -34,7 +34,8 @@
         "title": "Selected Descriptors",
         "variable.name.column": "Variable Name",
         "type.column": "Type",
-        "actions.column": "Actions"
+        "actions.column": "Actions",
+        "variable.existing.warning": "The selected descriptor: {{param}} is already existing in the table."
       },
       "preset": {
         "new.settings": "New Setting Name",
