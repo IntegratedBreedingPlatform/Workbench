@@ -1,4 +1,4 @@
-<div *ngIf="!isPreview">
+<div *ngIf="!isDescriptorsPropagationView && !isPreview">
 	<div class="modal-body">
 		<form name="form" #f="ngForm" class="form-horizontal" >
 			<!-- Breeding method selection -->
@@ -32,24 +32,6 @@
 					</select>
 				</div>
 			</div>
-
-			<!-- Attibutes -->
-			<div>
-				<h4 jhiTranslate="advance-study.attributes.title"></h4>
-				<div>
-					<div class="col-sm-12 form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" [(ngModel)]="propagatePassportDescriptorData" id="propagatePassportDescriptorData" name="propagatePassportDescriptorData">
-						<label class="col-form-label font-weight-bold" for="propagatePassportDescriptorData" jhiTranslate="advance-study.attributes.propagate.passport.descriptor.data"></label>
-					</div>
-				</div>
-				<div>
-					<div class="col-sm-12 form-check form-check-inline">
-						<input type="checkbox" class="form-check-input" [(ngModel)]="propagateAttributesData" id="propagateAttributesData" name="propagateAttributesData">
-						<label class="col-form-label font-weight-bold" for="propagateAttributesData" jhiTranslate="advance-study.attributes.propagate.attributes.data"></label>
-					</div>
-				</div>
-			</div>
-
 
 			<!-- Selection Trait -->
 			<div *ngIf="showSelectionTraitSelection">
@@ -168,7 +150,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="back('study')">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="showPropagateDescriptorsView()">
 			<span jhiTranslate="entity.action.back">Back</span>
 		</button>
 		<button (click)="preview(true)" [disabled]="!isValid() || isLoading" class="btn btn-primary" data-test="advanceStudyPreviewButton">
@@ -181,7 +163,7 @@
 		</button>
 	</div>
 </div>
-<div *ngIf="isPreview" >
+<div *ngIf="!isDescriptorsPropagationView && isPreview" >
 	<div class="modal-body">
 		<jhi-collapsible heading="{{translateService.instant('advance-preview.summary.title')}}">
 			<div class="table-responsive p-3">
@@ -343,5 +325,6 @@
 		</button>
 	</div>
 </div>
+<jhi-propagate-descriptors [isDescriptorsPropagationView]="isDescriptorsPropagationView" [advanceType]="advanceType" [selectedDatasetId]="selectedDatasetId"></jhi-propagate-descriptors>
 <jhi-alert></jhi-alert>
 

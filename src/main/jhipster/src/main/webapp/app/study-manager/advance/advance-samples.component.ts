@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
+import {JhiEventManager, JhiLanguageService} from 'ng-jhipster';
 import { ParamContext } from '../../shared/service/param.context';
 import { AlertService } from '../../shared/alert/alert.service';
 import { HelpService } from '../../shared/service/help.service';
@@ -12,7 +12,7 @@ import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
 import { AdvanceSamplesRequest } from '../../shared/study/model/advance-sample-request.model';
 import { SelectionTraitRequest } from '../../shared/study/model/abstract-advance-request.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {  NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 
 @Component({
@@ -30,9 +30,10 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
                 public alertService: AlertService,
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
-                public modalService: NgbModal
+                public modalService: NgbModal,
+                public eventManager: JhiEventManager
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.SAMPLES, eventManager);
     }
 
     save(): void {
@@ -50,8 +51,10 @@ export class AdvanceSamplesComponent extends AbstractAdvanceComponent {
             advanceSamplesRequest.selectionTraitRequest = selectionTraitRequest;
         }
 
-        advanceSamplesRequest.propagateAttributesData = this.propagateAttributesData;
-        advanceSamplesRequest.propagatePassportDescriptorData = this.propagatePassportDescriptorData;
+        advanceSamplesRequest.propagateDescriptors = this.propagateDescriptors;
+        advanceSamplesRequest.descriptorIds = this.selectedDescriptorIds;
+        advanceSamplesRequest.overrideDescriptorsLocation = this.overrideDescriptorsLocation;
+        advanceSamplesRequest.locationOverrideId = this.locationOverrideId;
 
         this.advanceService.advanceSamples(this.studyId, advanceSamplesRequest)
             .pipe(finalize(() => this.isLoading = false))

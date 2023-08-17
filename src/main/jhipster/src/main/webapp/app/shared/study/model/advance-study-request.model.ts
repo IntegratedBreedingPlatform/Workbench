@@ -9,8 +9,10 @@ export class AdvanceStudyRequest extends AbstractAdvanceRequest {
         public selectionTraitRequest?: SelectionTraitRequest,
         public lineSelectionRequest?: LineSelectionRequest,
         public bulkingRequest?: BulkingRequest,
-        public propagateAttributesData?: boolean,
-        public propagatePassportDescriptorData?: boolean
+        public propagateDescriptors?: boolean,
+        public descriptorIds?: number[],
+        public overrideDescriptorsLocation?: boolean,
+        public locationOverrideId?: number
     ) {
         super(instanceIds, selectedReplications, selectionTraitRequest);
     }

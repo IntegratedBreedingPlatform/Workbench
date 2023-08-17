@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiEventManager, JhiLanguageService } from 'ng-jhipster';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs/internal/operators/finalize';
 import { AbstractAdvanceComponent, AdvanceType } from './abstract-advance.component';
@@ -45,9 +45,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
                 public alertService: AlertService,
                 public jhiLanguageService: JhiLanguageService,
                 public advanceService: AdvanceService,
-                public modalService: NgbModal
+                public modalService: NgbModal,
+                public eventManager: JhiEventManager
     ) {
-        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY);
+        super(paramContext, route, breedingMethodService, helpService, datasetService, translateService, alertService, modalService, AdvanceType.STUDY, eventManager);
     }
 
     save(): void {
@@ -92,8 +93,10 @@ export class AdvanceStudyComponent extends AbstractAdvanceComponent {
             advanceStudyRequest.bulkingRequest = bulkingRequest;
         }
 
-        advanceStudyRequest.propagateAttributesData = this.propagateAttributesData;
-        advanceStudyRequest.propagatePassportDescriptorData = this.propagatePassportDescriptorData;
+        advanceStudyRequest.propagateDescriptors = this.propagateDescriptors;
+        advanceStudyRequest.descriptorIds = this.selectedDescriptorIds;
+        advanceStudyRequest.overrideDescriptorsLocation = this.overrideDescriptorsLocation;
+        advanceStudyRequest.locationOverrideId = this.locationOverrideId;
 
         this.advanceService.advanceStudy(this.studyId, advanceStudyRequest)
             .pipe(finalize(() => this.isLoading = false))
