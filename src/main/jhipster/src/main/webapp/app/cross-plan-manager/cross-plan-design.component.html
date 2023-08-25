@@ -11,9 +11,9 @@
             <span jhiTranslate="cross-plan.design.parent.list">Parent Lists</span>
         </h5>
         <br>
-        <jhi-parent-list [title]="femaleParents" [listData]="femaleListData" [tableId]="femaleParentsTable"></jhi-parent-list>
+        <jhi-parent-list [title]="femaleParents" [listGids]="femaleListData" [tableId]="femaleParentsTable"></jhi-parent-list>
         <br>
-        <jhi-parent-list [title]="maleParents" [listData]="maleListData" [tableId]="maleParentsTable"></jhi-parent-list>
+        <jhi-parent-list [title]="maleParents" [listGids]="maleListData"  [tableId]="maleParentsTable"></jhi-parent-list>
     </div>
     <br>
     <div id="cross-method">
@@ -25,19 +25,19 @@
                    jhiTranslate="cross-plan.design.crosses.name">Choose how you would like to make your crosses</label>
             <div class="col-sm-4">
                 <select class="form-control" id="crosses-methods" name="crossesMethodsDropdown"
-                        [(ngModel)]="crossesMethodSelected" #crossesMethodsDropdown="ngModel">
-                    <option [value]="" jhiTranslate="cross-plan.design.crosses.method.please.choose">Please choose
+                        [(ngModel)]="crossesMethodSelected" #crossesMethodsDropdown="ngModel" (change)="onMethodChange()">
+                    <option [value]="CrossingMethod.PLEASE_CHOOSE" jhiTranslate="cross-plan.design.crosses.method.please.choose">Please choose
                     </option>
-                    <option [value]="1" jhiTranslate="cross-plan.design.crosses.method.option.1">Cross each selected
+                    <option [value]="CrossingMethod.CROSS_EACH_SELECTED_FEMALE_WITH_EACH_SELECTED_MALE" jhiTranslate="cross-plan.design.crosses.method.option.1">Cross each selected
                         female with each selected male
                     </option>
-                    <option [value]="2" jhiTranslate="cross-plan.design.crosses.method.option.2">Cross matched pairs of
+                    <option [value]="CrossingMethod.CROSS_MATCHED_PAIRS_OF_SELECTED_FEMALE_AND_MALE_LINES_IN_TOP_TO_BOTTOM_ORDER" jhiTranslate="cross-plan.design.crosses.method.option.2">Cross matched pairs of
                         selected female and male lines in top to bottom order
                     </option>
-                    <option [value]="3" jhiTranslate="cross-plan.design.crosses.method.option.3">Cross each female with
+                    <option [value]="CrossingMethod.CROSS_EACH_FEMALE_WITH_AN_UNKNOWN_MALE_PARENT" jhiTranslate="cross-plan.design.crosses.method.option.3">Cross each female with
                         an unknown male parent
                     </option>
-                    <option [value]="4" jhiTranslate="cross-plan.design.crosses.method.option.4">Cross each female with
+                    <option [value]="CrossingMethod.CROSS_EACH_FEMALE_WITH_ALL_MALE_PARENTS" jhiTranslate="cross-plan.design.crosses.method.option.4">Cross each female with
                         all male parents
                     </option>
                 </select>
@@ -46,7 +46,7 @@
         <div class="row">
             <div class="col-sm-2">
                 <div class="form-check form-check-inline">
-                    <input type="checkbox" class="form-check-input" id="makeReciprocalCrosses" [(ngModel)]="makeReciprocal">
+                    <input type="checkbox" class="form-check-input" id="makeReciprocalCrosses" [(ngModel)]="makeReciprocal" [disabled]="disableCheckboxMakeReciprocal">
                     <label class="form-check-label" for="makeReciprocalCrosses" jhiTranslate="cross-plan.design.crosses.make.reciprocal">
                         Make reciprocal crosses
                     </label>
@@ -54,7 +54,7 @@
             </div>
             <div class="col-sm-2">
                 <div class="form-check form-check-inline">
-                    <input type="checkbox" class="form-check-input" id="excludeSelfs" [(ngModel)]="excludeSelfs">
+                    <input type="checkbox" class="form-check-input" id="excludeSelfs" [(ngModel)]="excludeSelfs" [disabled]="disableCheckboxExcludeSelfs">
                     <label class="form-check-label" for="excludeSelfs" jhiTranslate="cross-plan.design.crosses.exclude.selfs">
                         Exclude selfs
                     </label>
@@ -70,7 +70,7 @@
         </div>
     </div>
     <br/>
-    <jhi-preview-crosses>
+    <jhi-preview-crosses [previewCrosses]="previewCrosses">
     </jhi-preview-crosses>
 </div>
 <div class="modal-footer">
