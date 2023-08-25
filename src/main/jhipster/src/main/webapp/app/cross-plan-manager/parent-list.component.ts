@@ -1,5 +1,4 @@
 import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {ListEntry} from '../shared/list-builder/model/list.model';
 import {Germplasm} from '../entities/germplasm/germplasm.model';
 import {Subscription} from 'rxjs';
 import {Overlay} from '@angular/cdk/overlay';
@@ -9,12 +8,11 @@ import {NgbPopover} from '@ng-bootstrap/ng-bootstrap';
 import {finalize} from 'rxjs/internal/operators/finalize';
 import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {formatErrorList} from '../shared/alert/format-error-list';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {JhiEventManager, JhiLanguageService} from 'ng-jhipster';
 import {GermplasmService} from '../shared/germplasm/service/germplasm.service';
 import {AlertService} from '../shared/alert/alert.service';
 import {ParamContext} from '../shared/service/param.context';
-import {GermplasmDetailsUrlService} from '../shared/germplasm/service/germplasm-details.url.service';
 import {ParentListColumnCategory, ParentListColumnModel} from './parent-list-columns.component';
 import {VariableTypeEnum} from '../shared/ontology/variable-type.enum';
 import {GermplasmAttribute} from '../shared/germplasm/model/germplasm.model';
@@ -28,17 +26,21 @@ export class ParentListComponent implements OnInit {
 
     @Input() title: string;
     @Input() tableId: string;
-    @Input() listData: ListEntry[];
+    @Input() listGids: Array<number>;
 
     MAX_NAME_DISPLAY_SIZE = 30;
     page = 1;
-    pageSize = 20;
-    itemsPerPage = 500;
+    currentSearch: string;
+    filteredItems: any;
+    itemsPerPage = 10;
+    previousPage: any;
+
     ColumnLabels = ColumnLabels;
 
-    selectedItems = {};
+    selectedItems: any[] = [];
     isSelectAllPages = false;
     lastClickIndex: any;
+    germplasmList: Germplasm[] = [];
 
     @ViewChild('colVisPopOver') public colVisPopOver: NgbPopover;
     eventSubscriber: Subscription;
@@ -49,7 +51,6 @@ export class ParentListComponent implements OnInit {
     isLoading: boolean;
 
     selectEntriesFlag = false;
-    gidSelected = [];
     isListCollapsed: boolean;
 
     defaultColumns: any[] = [];
@@ -57,40 +58,42 @@ export class ParentListComponent implements OnInit {
     passportColumns: any[] = [];
     attributesColumns: any[] = [];
 
-    constructor(private eventManager: JhiEventManager,
+    constructor(private activatedRoute: ActivatedRoute,
+                private eventManager: JhiEventManager,
                 private jhiLanguageService: JhiLanguageService,
                 private germplasmService: GermplasmService,
                 private router: Router,
                 private alertService: AlertService,
                 private paramContext: ParamContext,
-                public germplasmDetailsUrlService: GermplasmDetailsUrlService,
                 public overlay: Overlay,
                 public viewContainerRef: ViewContainerRef) {
 
         this.page = 1;
         this.paramContext.readParams();
         this.isListCollapsed = false;
+
+        this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
+            this.activatedRoute.snapshot.params['search'] : '';
+
         this.resultSearch = new SearchResult('');
 
     }
 
     ngOnInit(): void {
-        this.listData = [];
-        this.gidSelected = [];
         this.registerGermplasmSelectorSelected();
         this.request.addedColumnsPropertyIds = [];
 
         this.defaultColumns = [
-            new ParentListColumnModel('GID', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('NAMES', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('AVAILABLE', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('LOT UNITS', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('LOTS', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('CROSS', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('LOCATION', ParentListColumnCategory.DEFAULT, true),
-            new ParentListColumnModel('METHOD NAME', ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.GID, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.NAMES, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.AVAILABLE, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.LOT_UNITS, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.LOTS, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.CROSS, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.LOCATION, ParentListColumnCategory.DEFAULT, true),
+            new ParentListColumnModel(ColumnLabels.METHOD_NAME, ParentListColumnCategory.DEFAULT, true),
 
-            new ParentListColumnModel('GERMPLASM UUID', ParentListColumnCategory.DEFAULT, false),
+            new ParentListColumnModel(ColumnLabels.GERMPLASM_UUID, ParentListColumnCategory.DEFAULT, false),
             new ParentListColumnModel('GROUP ID', ParentListColumnCategory.DEFAULT, false),
             new ParentListColumnModel('GERMPLASM DATE', ParentListColumnCategory.DEFAULT, false),
             new ParentListColumnModel('METHOD ABBREV', ParentListColumnCategory.DEFAULT, false),
@@ -120,9 +123,28 @@ export class ParentListComponent implements OnInit {
         return Object.assign(params, sort);
     }
 
-    onSelectAllPages() {
-        this.isSelectAllPages = !this.isSelectAllPages;
-        this.selectedItems = {};
+    onSelectAllPages(isSelectAllPages) {
+        this.isSelectAllPages = !isSelectAllPages;
+        this.selectedItems = [];
+    }
+
+    loadPage(page: number) {
+        if (page !== this.previousPage) {
+            this.previousPage = page;
+            this.transition();
+        }
+    }
+
+    transition() {
+        this.router.navigate(['./'], {
+            queryParams:
+                this.addSortParam({
+                    page: this.page,
+                    size: this.itemsPerPage,
+                    search: this.currentSearch,
+                }), relativeTo: this.activatedRoute
+        });
+        this.loadAll(this.request);
     }
 
     search(request: GermplasmSearchRequest): Promise<string> {
@@ -139,112 +161,9 @@ export class ParentListComponent implements OnInit {
         });
     }
 
-    private onSuccess(data) {
-        const listEntries = this.buildListEntry(data);
-        if (this.listData.length) {
-            this.listData = this.listData.concat(listEntries);
-        } else {
-            this.listData = listEntries;
-        }
-
-        const gids = data.map((germplasm) => germplasm.gid);
-        this.germplasmService.getGermplasmAttributesByGidsAndType(gids, VariableTypeEnum.GERMPLASM_PASSPORT).toPromise().then((passports) => {
-            this.setAttributesToListEntry(passports, ParentListColumnCategory.PASSPORT);
-        });
-
-        this.germplasmService.getGermplasmAttributesByGidsAndType(gids, VariableTypeEnum.GERMPLASM_ATTRIBUTE).toPromise().then((attributes) => {
-            this.setAttributesToListEntry(attributes, ParentListColumnCategory.ATTRIBUTES);
-        });
-
-        this.germplasmService.getGermplasmNamesByGids(gids).toPromise().then((germplasmNames) => {
-            this.setNamesToListEntry(germplasmNames);
-        });
-    }
-
-    private buildListEntry(data): ListEntry[] {
-        return data.map((germplasm: Germplasm) => {
-            const row: ListEntry = new ListEntry();
-            row[ColumnLabels.GID] = germplasm.gid;
-            row[ColumnLabels.GERMPLASM_UUID] = germplasm.germplasmUUID;
-            row[ColumnLabels.GROUP_ID] = germplasm.groupId;
-            row[ColumnLabels.NAMES] = germplasm.names;
-            row[ColumnLabels.AVAILABLE] = germplasm.availableBalance;
-            row['UNIT'] = germplasm.unit;
-            row['LOTS'] = germplasm.lotCount;
-            row[ColumnLabels.CROSS] = germplasm.pedigreeString;
-            row['PREFERRED ID'] = germplasm.germplasmPreferredId
-            row['PREFERRED NAME'] = germplasm.germplasmPreferredName
-            row['GERMPLASM DATE'] = germplasm.germplasmDate
-            row['LOCATION'] = germplasm.locationName;
-            row['LOCATION ID'] = germplasm.locationId;
-            row['METHOD ID'] = germplasm.breedingMethodId;
-            row['METHOD NAME'] = germplasm.methodName;
-            row['METHOD ABBREV'] = germplasm.methodCode;
-            row['METHOD NUMBER'] = germplasm.methodNumber;
-            row['METHOD GROUP'] = germplasm.methodGroup;
-            row['FGID'] = germplasm.femaleParentGID;
-            row['CROSS-FEMALE PREFERRED NAME'] = germplasm.femaleParentPreferredName;
-            row['MGID'] = germplasm.maleParentGID;
-            row['CROSS-MALE PREFERRED NAME'] = germplasm.maleParentPreferredName;
-            row['GROUP SOURCE GID'] = germplasm.groupSourceGID;
-            row['GROUP SOURCE'] = germplasm.groupSourcePreferredName;
-            row['IMMEDIATE SOURCE GID'] = germplasm.immediateSourceGID;
-            row['IMMEDIATE SOURCE'] = germplasm.immediateSourceName;
-            return row;
-        });
-    }
-
-    private setAttributesToListEntry(attributes: GermplasmAttribute[], columnCategory: ParentListColumnCategory) {
-        const attributeMap = new Map();
-        attributes.forEach((attribute) => {
-            if (!attributeMap.get(attribute.gid)) {
-                attributeMap.set(attribute.gid, []);
-            }
-            attributeMap.get(attribute.gid).push(attribute);
-        });
-
-        this.listData.forEach((entry) => {
-            const attributeLists = attributeMap.get(entry[ColumnLabels.GID]);
-
-            if (attributeLists && attributeLists.length) {
-                attributeLists.forEach((attribute) => {
-                    entry[attribute.variableName] = attribute.value;
-                    if (this.hiddenColumns[attribute.variableName] === undefined) {
-                        this.hiddenColumns[attribute.variableName] = true;
-                        if (ParentListColumnCategory.ATTRIBUTES === columnCategory) {
-                            this.attributesColumns.push(new ParentListColumnModel(attribute.variableName, columnCategory, false))
-
-                        } else if (ParentListColumnCategory.PASSPORT === columnCategory) {
-                            this.passportColumns.push(new ParentListColumnModel(attribute.variableName, columnCategory, false))
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private setNamesToListEntry(germplasmNames: any[]) {
-        const germplasmNameMap = new Map();
-        germplasmNames.forEach((name) => {
-            if (!germplasmNameMap.get(name.gid)) {
-                germplasmNameMap.set(name.gid, []);
-            }
-            germplasmNameMap.get(name.gid).push(name);
-        });
-
-        this.listData.forEach((entry) => {
-            const names = germplasmNameMap.get(entry[ColumnLabels.GID]);
-            if (names && names.length) {
-                names.forEach((name) => {
-                    entry[name.nameTypeCode] = name.name;
-                    if (this.hiddenColumns[name.nameTypeCode] === undefined) {
-                        this.hiddenColumns[name.nameTypeCode] = true;
-                        this.nameColumns.push(new ParentListColumnModel(name.nameTypeCode, ParentListColumnCategory.NAMES, false))
-
-                    }
-                });
-            }
-        });
+    private onSuccess(data, headers) {
+        this.filteredItems = headers.get('X-Filtered-Count');
+        this.germplasmList = data;
     }
 
     registerGermplasmSelectorSelected() {
@@ -260,37 +179,102 @@ export class ParentListComponent implements OnInit {
                     'IMMEDIATE SOURCE GID', 'IMMEDIATE SOURCE'
                 ];
 
-                if (this.gidSelected.length) {
-                    this.gidSelected = this.request.gids.concat(event.content.split(','));
-                    this.request.gids = event.content.split(',');
+                if (this.listGids.length) {
+                    const gids = this.request.gids.concat(event.content.split(',')).map((item) => {
+                        return Number(item)
+                    });
+                    const filterGids = gids.filter((item, idx) => gids.indexOf(item) === idx);
+                    this.listGids.length = 0;
+                    filterGids.forEach((item) => {
+                        this.listGids.push(item);
+                    });
+                    this.request.gids = this.listGids;
                 } else {
-                    this.gidSelected = event.content.split(',');
-                    this.request.gids = this.gidSelected;
+                    event.content.split(',').forEach((item) => {
+                        this.listGids.push(Number(item));
+                    });
+                    this.request.gids = this.listGids;
                 }
 
-                const pages = this.request.gids.length < this.itemsPerPage ? 1 :
-                    this.request.gids.length / this.itemsPerPage;
-                this.resultSearch.searchResultDbId = '';
+                this.retrieveAttributes(this.request.gids, VariableTypeEnum.GERMPLASM_PASSPORT).then((passports) => {
+                    this.addAttributesToSearch(passports, ParentListColumnCategory.PASSPORT);
+                });
 
-                for (let page = 1; page <= pages; page++) {
-                    this.isLoading = true;
-                    this.search(this.request).then((searchId) => {
-                        this.germplasmService.getSearchResults(
-                            this.addSortParam({
-                                searchRequestId: searchId,
-                                page: page - 1,
-                                size: this.itemsPerPage
-                            })
-                        ).pipe(finalize(() => {
-                            this.isLoading = false;
-                        })).subscribe(
-                            (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body),
-                            (res: HttpErrorResponse) => this.onError(res)
-                        );
-                    }, (error) => this.onError(error));
+                this.retrieveAttributes(this.request.gids, VariableTypeEnum.GERMPLASM_ATTRIBUTE).then((attributes) => {
+                    this.addAttributesToSearch(attributes, ParentListColumnCategory.ATTRIBUTES);
+                });
+
+                this.retrieveNames(this.request.gids).then((germplasmNames) => {
+                    this.addNamesToSearch(germplasmNames);
+                    this.resultSearch.searchResultDbId = '';
+                    this.loadAll(this.request);
+                });
+            }
+        });
+    }
+
+    retrieveAttributes(gidList: number[], variableTypeId: VariableTypeEnum): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.germplasmService.getGermplasmAttributesByGidsAndType(gidList, variableTypeId).subscribe((response) => {
+                resolve(response);
+            }, (error) => reject(error));
+        });
+    }
+
+    retrieveNames(gidList: number[]): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.germplasmService.getGermplasmNamesByGids(gidList).subscribe((response) => {
+                resolve(response);
+            }, (error) => reject(error));
+        });
+    }
+
+    addAttributesToSearch(attributes: GermplasmAttribute[], columnCategory: ParentListColumnCategory) {
+        attributes.forEach((attribute) => {
+            if (this.request.addedColumnsPropertyIds.indexOf(attribute.variableName) === -1) {
+                this.request.addedColumnsPropertyIds.push(attribute.variableName);
+                if (this.hiddenColumns[attribute.variableName] === undefined) {
+                    this.hiddenColumns[attribute.variableName] = true;
+                    if (ParentListColumnCategory.ATTRIBUTES === columnCategory) {
+                        this.attributesColumns.push(new ParentListColumnModel(attribute.variableName.toUpperCase(), columnCategory, false))
+
+                    } else if (ParentListColumnCategory.PASSPORT === columnCategory) {
+                        this.passportColumns.push(new ParentListColumnModel(attribute.variableName.toUpperCase(), columnCategory, false))
+                    }
                 }
             }
         });
+    }
+
+    addNamesToSearch(germplasmNames: any[]) {
+        germplasmNames.forEach((name) => {
+            if (this.request.addedColumnsPropertyIds.indexOf(name.nameTypeDescription) === -1) {
+                this.request.addedColumnsPropertyIds.push(name.nameTypeDescription);
+                if (this.hiddenColumns[name.nameTypeDescription] === undefined) {
+                    this.hiddenColumns[name.nameTypeDescription] = true;
+                    this.nameColumns.push(new ParentListColumnModel(name.nameTypeDescription.toUpperCase(), ParentListColumnCategory.NAMES, false))
+
+                }
+            }
+        });
+    }
+
+    loadAll(request: GermplasmSearchRequest) {
+        this.isLoading = true;
+        this.search(request).then((searchId) => {
+            this.germplasmService.getSearchResults(
+                this.addSortParam({
+                    searchRequestId: searchId,
+                    page: this.page - 1,
+                    size: this.itemsPerPage
+                })
+            ).pipe(finalize(() => {
+                this.isLoading = false;
+            })).subscribe(
+                (res: HttpResponse<Germplasm[]>) => this.onSuccess(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res)
+            );
+        }, (error) => this.onError(error));
     }
 
     onColumnsSelected(columns: any[]) {
@@ -301,12 +285,14 @@ export class ParentListComponent implements OnInit {
 
     resetTable() {
         this.page = 1;
-        this.selectedItems = {};
-        this.listData = [];
+        this.selectedItems = [];
         this.nameColumns = [];
         this.passportColumns = [];
         this.attributesColumns = [];
-        this.gidSelected = [];
+        this.germplasmSearchRequest = new GermplasmSearchRequest();
+        this.germplasmList = [];
+        this.listGids.length = 0;
+        this.isSelectAllPages = false;
     }
 
     private onError(response: HttpErrorResponse) {
@@ -335,62 +321,47 @@ export class ParentListComponent implements OnInit {
     }
 
     onSelectPage() {
-        const pageItemIds = this.getPageItemIds();
-        if (this.isPageSelected()) {
-            // remove all items
-            pageItemIds.forEach((itemId) => delete this.selectedItems[itemId]);
+        const isPageSelected = this.isPageSelected();
+        const pageGids = this.germplasmList.map((germplasm) => germplasm.gid);
+        if (isPageSelected) {
+            this.selectedItems = this.selectedItems.filter((item) =>
+                pageGids.indexOf(item) === -1);
         } else {
-            // check remaining items
-            pageItemIds.forEach((itemId) => this.selectedItems[itemId] = true);
-        }
-    }
-
-    toggleSelect($event, index, internal_id, checkbox = false) {
-        if (!$event.ctrlKey && !checkbox) {
-            this.selectedItems = {};
-        }
-        let ids;
-        if ($event.shiftKey) {
-            const max = Math.max(this.lastClickIndex, index) + 1 + this.pageOffset(),
-                min = Math.min(this.lastClickIndex, index) + this.pageOffset();
-            ids = this.listData.slice(min, max).map((g) => g.internal_id);
-        } else {
-            ids = [internal_id];
-            this.lastClickIndex = index;
-        }
-        const isClickedItemSelected = this.selectedItems[internal_id];
-        for (const id of ids) {
-            if (isClickedItemSelected) {
-                delete this.selectedItems[id];
-            } else {
-                this.selectedItems[id] = true;
-            }
+            this.selectedItems = pageGids.filter((item) =>
+                this.selectedItems.indexOf(item) === -1
+            ).concat(this.selectedItems);
         }
     }
 
     isPageSelected() {
-        const pageItemIds = this.getPageItemIds();
-        return this.size(this.selectedItems) && pageItemIds.every((itemId) => this.selectedItems[itemId]);
+        return this.germplasmList.length > 0 && !this.germplasmList.some((germplasm) => this.selectedItems.indexOf(germplasm.gid) === -1);
     }
 
-    getPageItemIds(): any[] {
-        if (!(this.listData && this.listData.length)) {
-            return [];
+    toggleSelect(germplasm: Germplasm) {
+        if (this.isSelectAllPages) {
+            return;
         }
-        return this.listData.slice(this.pageOffset(), this.page * this.pageSize)
-            .map((row) => row.internal_id);
+        if (this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid)) {
+            this.selectedItems = this.selectedItems.filter((item) => item !== germplasm.gid);
+        } else {
+            this.selectedItems.push(germplasm.gid);
+        }
+    }
+
+    isSelected(germplasm: Germplasm) {
+        return germplasm && this.selectedItems.length > 0 && this.selectedItems.find((item) => item === germplasm.gid);
     }
 
     size(obj) {
         return Object.keys(obj).length;
     }
 
-    isSelected(index) {
-        return this.selectedItems[index];
+    trackId(index: number, item: Germplasm) {
+        return item.gid;
     }
 
     pageOffset() {
-        return (this.page - 1) * this.pageSize;
+        return (this.page - 1) * this.itemsPerPage;
     }
 
     selectAll() {
@@ -401,13 +372,24 @@ export class ParentListComponent implements OnInit {
         if (this.isSelectAllPages) {
             this.resetTable();
         } else {
-            this.listData = this.listData.filter((row) => !this.selectedItems[row.internal_id]);
+            const gids = this.listGids.filter((item) => this.selectedItems.indexOf(item) === -1);
+            this.listGids.length = 0;
+
+            gids.forEach((item) => {
+                this.listGids.push(item);
+            });
+
+            this.selectedItems = [];
+            this.request.gids = this.listGids;
+            this.germplasmList = [];
+            this.resultSearch.searchResultDbId = '';
+            this.loadAll(this.request);
         }
-        this.selectedItems = {};
+
     }
 
     cleanList() {
-        this.listData = [];
+        this.resetTable();
     }
 
     SelectEntries() {
@@ -431,14 +413,14 @@ export enum ColumnLabels {
     'GROUP_ID' = 'GROUP ID',
     'NAMES' = 'NAMES',
     'AVAILABLE' = 'AVAILABLE',
-    'LOT_UNITS' = 'LOT_UNITS',
+    'LOT_UNITS' = 'UNITS',
     'LOTS' = 'LOTS',
     'CROSS' = 'CROSS',
     'PREFERRED ID' = 'PREFERRED ID',
     'PREFERRED NAME' = 'PREFERRED NAME',
     'GERMPLASM DATE' = 'GERMPLASM DATE',
-    'LOCATIONS' = 'LOCATIONS',
-    'METHOD NAME' = 'METHOD NAME',
+    'LOCATION' = 'LOCATION',
+    'METHOD_NAME' = 'METHOD NAME',
     'METHOD ABBREV' = 'METHOD ABBREV',
     'METHOD NUMBER' = 'METHOD NUMBER',
     'METHOD GROUP' = 'METHOD GROUP',
