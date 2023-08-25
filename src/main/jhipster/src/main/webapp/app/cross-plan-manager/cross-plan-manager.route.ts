@@ -2,6 +2,7 @@ import {Routes} from '@angular/router';
 import {CrossPlanManagerComponent} from './cross-plan-manager.component';
 import {CrossPlanDesignComponent} from './cross-plan-design.component';
 import {ParentListComponent} from './parent-list.component';
+import {GermplasmSearchResolvePagingParams} from "../germplasm-manager/germplasm-search-resolve-paging-params";
 
 export const CROSS_PLAN_MANAGER_ROUTES: Routes = [
     {
@@ -21,6 +22,9 @@ export const CROSS_PLAN_MANAGER_ROUTES: Routes = [
     },
     {
         path: 'parent-list',
-        component: ParentListComponent
+        component: ParentListComponent,
+        resolve: {
+            'pagingParams': GermplasmSearchResolvePagingParams
+        },
     }
 ]
