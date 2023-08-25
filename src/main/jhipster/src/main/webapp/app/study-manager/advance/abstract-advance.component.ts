@@ -2,8 +2,6 @@ import { BreedingMethod } from '../../shared/breeding-method/model/breeding-meth
 import { ParamContext } from '../../shared/service/param.context';
 import { Component, OnInit } from '@angular/core';
 import { ObservationVariable } from '../../shared/model/observation-variable.model';
-import { BreedingMethodSearchRequest } from '../../shared/breeding-method/model/breeding-method-search-request.model';
-import { MatchType } from '../../shared/column-filter/column-filter-text-with-match-options-component';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { VariableTypeEnum } from '../../shared/ontology/variable-type.enum';
 import { DatasetTypeEnum } from '../../shared/dataset/model/dataset-type.enum';
@@ -16,13 +14,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { BreedingMethodService } from '../../shared/breeding-method/service/breeding-method.service';
 import { formatErrorList } from '../../shared/alert/format-error-list';
 import { AlertService } from '../../shared/alert/alert.service';
-import { BreedingMethodClassMethodEnum } from '../../shared/breeding-method/model/breeding-method-class.enum';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GermplasmListCreationComponent } from '../../shared/list-creation/germplasm-list-creation.component';
 import { GermplasmListEntry } from '../../shared/list-creation/model/germplasm-list';
-import { ADVANCE_SUCCESS, SELECT_INSTANCES } from '../../app.events';
+import { ADVANCE_SUCCESS } from '../../app.events';
 import { AdvancedGermplasmPreview } from '../../shared/study/model/advanced-germplasm-preview';
 import { FilterType } from '../../shared/column-filter/column-filter.component';
+import {JhiEventManager} from 'ng-jhipster';
+import {Subscription} from 'rxjs';
 
 export enum AdvanceType {
     STUDY,
@@ -35,9 +34,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     static readonly BREEDING_METHOD_PROPERTY = 'Breeding method';
     static readonly SELECTION_PLANT_PROPERTY = 'Selections';
     static readonly SELECTION_TRAIT_PROPERTY = 'Selection Criteria';
-
     static readonly SELECTION_TRAIT_EXPRESSION = '[SELTRAIT]';
 
+    eventSubscriber: Subscription;
     breedingMethodSelectedId: string;
 
     selectionMethodVariables: ObservationVariable[] = [];
@@ -72,9 +71,6 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     selectedSelectionTraitDatasetId: number;
     selectedSelectionTraitVariableId: number;
 
-    propagateAttributesData: boolean;
-    propagatePassportDescriptorData: boolean;
-
     // for preview data table
     isLoadingPreview = false;
     originalTotalItems: number;
@@ -83,12 +79,17 @@ export abstract class AbstractAdvanceComponent implements OnInit {
     page = 1;
     previousPage: number;
     isPreview = false;
-
     itemsPerPage = 10;
 
     completePreviewList: AdvancedGermplasmPreview[];
     listPerPage: AdvancedGermplasmPreview[][];
     currentPagePreviewList: AdvancedGermplasmPreview[];
+
+    isDescriptorsPropagationView?: boolean;
+    propagateDescriptors: boolean;
+    overrideDescriptorsLocation: boolean;
+    locationOverrideId: number;
+    selectedDescriptorIds: number[] = [];
 
     filters = this.getInitialFilters();
 
@@ -140,11 +141,15 @@ export abstract class AbstractAdvanceComponent implements OnInit {
                           public translateService: TranslateService,
                           public alertService: AlertService,
                           public modalService: NgbModal,
-                          public advanceType: AdvanceType) {
+                          public advanceType: AdvanceType,
+                          public eventManager: JhiEventManager
+    ) {
         this.paramContext.readParams();
     }
 
     ngOnInit(): void {
+        this.isPreview = false;
+        this.isDescriptorsPropagationView = true;
         this.studyId = Number(this.route.snapshot.queryParamMap.get('studyId'));
         this.selectedInstances = this.route.snapshot.queryParamMap.get('trialInstances').split(',');
         this.replicationNumber = Number(this.route.snapshot.queryParamMap.get('noOfReplications'));
@@ -164,6 +169,14 @@ export abstract class AbstractAdvanceComponent implements OnInit {
             }).catch((error) => {
             });
         }
+
+        this.eventSubscriber = this.eventManager.subscribe('exitDescriptorsPropagationView', (event) => {
+            this.isDescriptorsPropagationView = event.content.isDescriptorsPropagationView;
+            this.propagateDescriptors = event.content.propagateDescriptors;
+            this.selectedDescriptorIds = event.content.selectedDescriptorIds;
+            this.overrideDescriptorsLocation = event.content.overrideDescriptorsLocation;
+            this.locationOverrideId = event.content.locationOverrideId;
+        });
     }
 
     abstract isValid(): boolean;
@@ -178,10 +191,9 @@ export abstract class AbstractAdvanceComponent implements OnInit {
         this.checkAllReplications = this.checkAllReplications && !repCheck;
     }
 
-    back(advanceType: string) {
-        if ((<any>window.parent)) {
-            (<any>window.parent).postMessage({ name: SELECT_INSTANCES, advanceType, selectedDatasetId: this.selectedDatasetId }, '*');
-        }
+    showPropagateDescriptorsView() {
+        this.isDescriptorsPropagationView = true;
+        this.eventManager.broadcast({ name: 'showPropagateDescriptorsView' });
     }
 
     onMethodChange(selectedBreedingMethod: BreedingMethod) {

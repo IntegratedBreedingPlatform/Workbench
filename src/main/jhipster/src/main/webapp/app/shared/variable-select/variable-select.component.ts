@@ -31,6 +31,7 @@ export class VariableSelectComponent implements OnInit {
     @Input() datasetId: number;
     @Input() germplasmUUID: string;
     @Input() excludedVariableIds: number[];
+    @Input() excludedVariableNames: string[];
     @Input() lotId: number;
 
     @Output() onVariableSelectedChange: EventEmitter<{ [key: string]: VariableDetails }> = new EventEmitter<{ [key: string]: VariableDetails }>()
@@ -107,7 +108,8 @@ export class VariableSelectComponent implements OnInit {
     }
 
     transform(variables: VariableDetails[]): any[] {
-        const filteredVariables = variables.filter((variable) => !this.excludedVariableIds || !this.excludedVariableIds.includes(parseInt(variable.id, 10)));
+        const filteredVariables = variables.filter((variable) => ((!this.excludedVariableIds || !this.excludedVariableIds.includes(parseInt(variable.id, 10)))
+            && (!this.excludedVariableNames || !this.excludedVariableNames.includes(variable.name.toUpperCase()))));
         return filteredVariables.map((variable) => {
             this.variableById[variable.id] = variable;
 

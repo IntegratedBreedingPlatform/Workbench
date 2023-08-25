@@ -13,6 +13,9 @@ import { StudySummaryComponent } from './study-summary.component';
 import { StudyManagerTreeComponent } from './study-manager-tree.component';
 import { StudySummaryDatasetComponent } from './study-summary-dataset.component';
 import { AdvanceSamplesComponent } from './advance/advance-samples.component';
+import { TemplateService } from './advance/template.service';
+import { SaveTemplateComponent } from './advance/save-template.component'
+import { PropagateDescriptorsComponent } from './advance/propagate-descriptors.component';
 
 @NgModule({
     imports: [
@@ -28,7 +31,9 @@ import { AdvanceSamplesComponent } from './advance/advance-samples.component';
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
         AdvanceStudyComponent,
-        AdvanceSamplesComponent
+        AdvanceSamplesComponent,
+        SaveTemplateComponent,
+        PropagateDescriptorsComponent
     ],
     entryComponents: [
         StudyManagerComponent,
@@ -39,12 +44,15 @@ import { AdvanceSamplesComponent } from './advance/advance-samples.component';
         ImportEntryDetailsComponent,
         ImportEntryDetailsPopupComponent,
         AdvanceStudyComponent,
-        AdvanceSamplesComponent
+        AdvanceSamplesComponent,
+        SaveTemplateComponent,
+        PropagateDescriptorsComponent
     ],
     providers: [
         EntryDetailsImportContext,
         GermplasmTreeService,
-        DatasetService
+        DatasetService,
+        TemplateService
     ]
 })
 export class StudyManagerModule {

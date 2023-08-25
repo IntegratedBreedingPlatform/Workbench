@@ -7,8 +7,10 @@ export class AdvanceSamplesRequest extends AbstractAdvanceRequest {
         public selectedReplications: number[],
         public breedingMethodId: number,
         public selectionTraitRequest?: SelectionTraitRequest,
-        public propagateAttributesData?: boolean,
-        public propagatePassportDescriptorData?: boolean
+        public propagateDescriptors?: boolean,
+        public descriptorIds?: number[],
+        public overrideDescriptorsLocation?: boolean,
+        public locationOverrideId?: number
     ) {
         super(instanceIds, selectedReplications, selectionTraitRequest);
     }
