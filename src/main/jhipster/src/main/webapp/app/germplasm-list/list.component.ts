@@ -359,6 +359,8 @@ export class ListComponent implements OnInit {
     resetTable() {
         this.page = 1;
         this.previousPage = 1;
+        this.isSelectAll = false;
+        this.selectedItems.clear();
         this.loadAll();
     }
 
@@ -444,7 +446,7 @@ export class ListComponent implements OnInit {
 
     // TODO parameterize
     size() {
-        return this.selectedItems.size;
+        return this.isSelectAll ? this.totalItems : this.selectedItems.size;
     }
 
     onSelectPage() {
@@ -455,6 +457,11 @@ export class ListComponent implements OnInit {
             // check remaining items
             this.entries.forEach((entry: GermplasmListDataSearchResponse) => this.selectedItems.set(entry.listDataId, entry));
         }
+    }
+
+    onSelectAll(isSelectAll) {
+        this.isSelectAll = !isSelectAll;
+        this.selectedItems.clear();
     }
 
     isSelected(entry: GermplasmListDataSearchResponse) {
@@ -578,13 +585,24 @@ export class ListComponent implements OnInit {
         if (!this.validateSelection()) {
             return;
         }
+
         const searchRequest = new GermplasmListDataSearchRequest();
         searchRequest.entryNumbers = [];
-        this.getSelectedItemIds().forEach((selectedItemId) => {
-            searchRequest.entryNumbers.push(this.selectedItems.get(selectedItemId).data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
-        });
+
+        if (this.isSelectAll) { //TODO instead of doing below, filters should be handled in the API
+            this.loadAll();
+            this.entries.forEach((entryData) => {
+                searchRequest.entryNumbers.push(entryData.data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
+            });
+        } else {
+            this.getSelectedItemIds().forEach((selectedItemId) => {
+                searchRequest.entryNumbers.push(this.selectedItems.get(selectedItemId).data[ListComponent.SORT_ENTRY_NO_VARIABLE]);
+            });
+        }
+
         const searchComposite = new SearchComposite<GermplasmListDataSearchRequest, number>();
         searchComposite.searchRequest = searchRequest;
+
         this.germplasmListManagerContext.searchComposite = searchComposite;
         this.germplasmListManagerContext.activeGermplasmListId = this.listId;
         this.router.navigate(['/', { outlets: { popup: 'germplasm-list-add-dialog' }, }], {
