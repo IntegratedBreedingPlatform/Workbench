@@ -5,6 +5,7 @@ import { GermplasmDetailsContext } from './germplasm-details.context';
 import { DomSanitizer } from '@angular/platform-browser';
 import { GermplasmDetailsUrlService } from '../shared/germplasm/service/germplasm-details.url.service';
 import { FileService } from '../shared/file/service/file.service';
+import { VIEW_PEDIGREE_INFORMATION_PERMISSION } from '../shared/auth/permissions';
 
 @Component({
     selector: 'jhi-germplasm-details',
@@ -14,6 +15,7 @@ export class GermplasmDetailsComponent implements OnInit {
 
     safeUrl: any;
     isFileStorageConfigured: boolean;
+    VIEW_PEDIGREE_INFORMATION_PERMISSION = VIEW_PEDIGREE_INFORMATION_PERMISSION;
 
     constructor(private paramContext: ParamContext, public germplasmDetailsContext: GermplasmDetailsContext,
                 private route: ActivatedRoute,

@@ -11,7 +11,7 @@
 			<a class="nav-link" [routerLink]="['attributes']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.descriptors">Descriptors</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link" [routerLink]="['pedigree']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.pedigree">Pedigree</a>
+			<a class="nav-link" *jhiHasAnyAuthority="VIEW_PEDIGREE_INFORMATION_PERMISSION" [routerLink]="['pedigree']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.pedigree">Pedigree</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link" [routerLink]="['observations']" [routerLinkActive]="['active']" jhiTranslate="germplasm-details.observations">Observations</a>
