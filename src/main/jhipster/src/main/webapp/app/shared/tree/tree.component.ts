@@ -49,7 +49,8 @@ export class TreeComponent implements OnInit {
                 public activeModal: NgbActiveModal,
                 public alertService: AlertService,
                 public translateService: TranslateService,
-                public modalService: NgbModal) {
+                public modalService: NgbModal,
+                public rootFolderLabels?: string[]) {
         this.disabledAddActionMessage = '';
         this.disabledRenameActionMessage = '';
         this.disabledDeleteActionMessage = '';
@@ -401,6 +402,10 @@ export class TreeComponent implements OnInit {
     }
 
     private isRootFolder(folder: PrimeNgTreeNode) {
+        if (this.rootFolderLabels != null && this.rootFolderLabels.length > 0) {
+            return this.rootFolderLabels.includes(folder.label);
+        }
+
         return folder.data.id === this.CROP_LIST_FOLDER || folder.data.id === this.PROGRAM_LIST_FOLDER;
     }
 

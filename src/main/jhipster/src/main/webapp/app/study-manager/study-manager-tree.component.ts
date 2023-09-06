@@ -40,7 +40,8 @@ export class StudyManagerTreeComponent extends TreeComponent implements OnInit {
                 public modalService: NgbModal,
                 public router: Router,
                 private principal: Principal) {
-        super(false, 'single', treeService, activeModal, alertService, translateService, modalService);
+        super(false, 'single', treeService, activeModal, alertService, translateService, modalService,
+            ["Studies", "Templates"]);
     }
 
     async ngOnInit() {
