@@ -22,6 +22,7 @@ import { AlertService } from '../../shared/alert/alert.service';
 import { ColumnLabels } from '../germplasm-search.component';
 import { GermplasmDetailsUrlService } from '../../shared/germplasm/service/germplasm-details.url.service';
 import { SearchResult } from '../../shared/search-result.model';
+import { VIEW_PEDIGREE_INFORMATION_PERMISSION } from '../../shared/auth/permissions';
 
 declare var $: any;
 
@@ -30,6 +31,8 @@ declare var $: any;
     templateUrl: './germplasm-selector.component.html'
 })
 export class GermplasmSelectorComponent implements OnInit {
+
+    VIEW_PEDIGREE_INFORMATION_PERMISSION = VIEW_PEDIGREE_INFORMATION_PERMISSION;
 
     ColumnLabels = ColumnLabels;
 
