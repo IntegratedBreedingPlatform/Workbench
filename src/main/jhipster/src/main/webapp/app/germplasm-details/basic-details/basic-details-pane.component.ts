@@ -11,7 +11,11 @@ import { GermplasmNameContext } from '../../entities/germplasm/name/germplasm-na
 import { Subscription } from 'rxjs';
 import { ModalConfirmComponent } from '../../shared/modal/modal-confirm.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EDIT_GERMPLASM_PERMISSION, GERMPLASM_AUDIT_PERMISSION } from '../../shared/auth/permissions';
+import {
+    EDIT_GERMPLASM_PERMISSION,
+    GERMPLASM_AUDIT_PERMISSION,
+    VIEW_NAMES_PERMISSION
+} from '../../shared/auth/permissions';
 import { UrlService } from '../../shared/service/url.service';
 import { ParamContext } from '../../shared/service/param.context';
 import { ScrollableTooltipDirective } from '../../shared/tooltip/scrollable-tooltip.directive';
@@ -24,6 +28,8 @@ import { TruncateWithEllipsisPipe } from '../../shared/util/truncate-with-ellips
 export class BasicDetailsPaneComponent implements OnInit {
 
     GERMPLASM_AUDIT_PERMISSION = GERMPLASM_AUDIT_PERMISSION;
+
+    VIEW_NAMES_PERMISSION = VIEW_NAMES_PERMISSION;
 
     EDIT_BASIC_DETAILS_PERMISSIONS = [...EDIT_GERMPLASM_PERMISSION, 'MODIFY_BASIC_DETAILS'];
     EDIT_BASIC_DETAILS_ACTIONS_PERMISSIONS = [...this.EDIT_BASIC_DETAILS_PERMISSIONS, ...GERMPLASM_AUDIT_PERMISSION];

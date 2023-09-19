@@ -60,7 +60,7 @@
 			</div>
 		</div>
 	</jhi-collapsible>
-	<jhi-collapsible heading="{{translateService.instant('basic-details.names.title')}}">
+	<jhi-collapsible *jhiHasAnyAuthority="VIEW_NAMES_PERMISSION" heading="{{translateService.instant('basic-details.names.title')}}">
 		<div class="container-fluid">
 			<div class="pull-right pb-3">
 			<button class="btn btn-outline-info" *jhiHasAnyAuthority="MODIFY_NAMES_PERMISSIONS" (click)="createGermplasmName()"><i class="fa fa-asterisk fa-md" aria-hidden="true"></i> New</button>
