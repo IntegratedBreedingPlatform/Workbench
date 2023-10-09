@@ -1,0 +1,88 @@
+<div class="card" id="preview-crosses">
+    <div class="card-header d-flex p-2">
+        <h5 style="margin-bottom: 0;">
+            <span class="p-1" jhiTranslate="cross-plan.design.preview.crosses.list"></span>
+        </h5>
+    </div>
+    <div class="card-body d-flex flex-column">
+        <div class="row">
+            <div class="col">
+                <div class="form-group form-inline">
+                    <span class="mr-1 font-weight-bold" jhiTranslate="global.total.entries"></span>
+                    <span>{{previewCrosses.length}}</span>
+                    <span class="ml-3 mr-1 font-weight-bold" jhiTranslate="global.selected"></span>
+                    <span>{{isSelectAllPages ? previewCrosses.length : size(selectedItems)}}</span>
+                    <div class="form-check form-check-inline ml-3">
+                        <input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages()"
+                               id="list-parent-select-all">
+                        <label class="form-check-label ml-1" for="list-parent-select-all"
+                               jhiTranslate="global.select.all"></label>
+                    </div>
+                    <span *ngIf="isLoading" style="margin-left: 10px;" class="throbber throbber-2x"></span>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive flex-grow-1" id="preview-crosses-table">
+            <table class="table table-striped table-bordered table-curved">
+                <thead>
+                <th *ngIf="previewCrosses.length && !isPreviewCrossesSelectAll">
+                    <input type="checkbox" tooltip="select current page" [checked]="isPageSelected()"
+                           (click)="onSelectPage()" [title]="'select current page'"/>
+                </th>
+                <th *ngIf="previewCrosses.length">#</th>
+                <th>
+                    <span>{{ColumnLabels.FEMALE_PARENT}}</span>
+                </th>
+                <th>
+                    <span>{{ColumnLabels.MALE_PARENT}}</span>
+                </th>
+                <th>
+                    <span>{{ColumnLabels.FEMALE_CROSS}}</span>
+                </th>
+                <th>
+                    <span>{{ColumnLabels.MALE_CROSS}}</span>
+                </th>
+                <th>
+                    <span>{{ColumnLabels.GERMPLASM_ORIGIN}}</span>
+                </th>
+                </thead>
+                <tbody>
+                <tr *ngFor="let row of previewCrosses | slice: pageOffset() : page * itemsPerPage; let index = index"
+                    [class.selected]="isSelected(row.internal_id)"
+                    (click)="toggleSelect($event, index, row.internal_id)">
+                    <td *ngIf="!isSelectAll">
+                        <input type="checkbox" [checked]="isSelected(row.internal_id)" (click)="toggleSelect($event, index, row.internal_id, true); $event.stopPropagation()">
+                    </td>
+                    <td>{{pageOffset() + index + 1}}</td>
+                    <td>{{row[ColumnLabels.FEMALE_PARENT]}}</td>
+                    <td>{{row[ColumnLabels.MALE_PARENT]}}</td>
+                    <td>{{row[ColumnLabels.FEMALE_CROSS]}}</td>
+                    <td>{{row[ColumnLabels.MALE_CROSS]}}</td>
+                    <td>{{row[ColumnLabels.GERMPLASM_ORIGIN]}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="previewCrosses && previewCrosses.length">
+            <div class="row">
+                <div class="col">
+                    <div class="pagination-container">
+                        <div class="pagination-box pagination-box-left">
+                            <div>
+                                <jhi-item-count [page]="page" [total]="previewCrosses.length" [itemsPerPage]="itemsPerPage" >
+                                </jhi-item-count>
+                            </div>
+                        </div>
+                        <div class="pagination-box pagination-wrap">
+                            <ngb-pagination [collectionSize]="previewCrosses.length" [(page)]="page" [pageSize]="itemsPerPage"
+                                            [disabled]="isLoading" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                            </ngb-pagination>
+                        </div>
+                        <div class="pagination-box pagination-box-right">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,9 +2,18 @@
   "cross-plan": {
     "title": "Cross Plan Manger",
     "browse-link": "Browse",
-    "browse-text": " for lists",
+    "browse-text": " for Cross Plan",
     "nav": {
       "search": "Search"
+    },
+    "search.columns": {
+    "cross-plan.name": "Cross Plan Name",
+      "parent-folder": "Parent Folder",
+      "description": "Description",
+      "created-by": "Created By",
+      "notes": "Notes",
+      "creation-date": "Date",
+      "Actions": ""
     },
     "actions": {
       "design": "Cross Plan Design"
@@ -14,6 +23,7 @@
       "parent.list": "Parent List",
       "female.parent.list": "Female Parents",
       "male.parent.list": "Male Parents",
+      "preview.crosses.list": "Preview Crosses",
       "no.data.added": "No records added",
       "columns": {
         "show-columns-button": "Columns",

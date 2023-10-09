@@ -16,6 +16,7 @@ import {ParamContext} from '../shared/service/param.context';
 import {ParentListColumnCategory, ParentListColumnModel} from './parent-list-columns.component';
 import {VariableTypeEnum} from '../shared/ontology/variable-type.enum';
 import {GermplasmAttribute} from '../shared/germplasm/model/germplasm.model';
+import {GermplasmDetailsUrlService} from '../shared/germplasm/service/germplasm-details.url.service';
 
 @Component({
     selector: 'jhi-parent-list',
@@ -66,7 +67,8 @@ export class ParentListComponent implements OnInit {
                 private alertService: AlertService,
                 private paramContext: ParamContext,
                 public overlay: Overlay,
-                public viewContainerRef: ViewContainerRef) {
+                public viewContainerRef: ViewContainerRef,
+                public germplasmDetailsUrlService: GermplasmDetailsUrlService) {
 
         this.page = 1;
         this.paramContext.readParams();

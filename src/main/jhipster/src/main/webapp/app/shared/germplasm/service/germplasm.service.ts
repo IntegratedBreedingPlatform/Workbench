@@ -228,6 +228,11 @@ export class GermplasmService {
         const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/attributes`;
         return this.http.post<GermplasmAttribute[]>(url,{gids:gidList, programUUID:this.context.programUUID,variableTypeId: variableTypeId});
     }
+
+    getGermplasmNamesByGids(gidList: number[]): Observable<any[]> {
+        const url = SERVER_API_URL + `crops/${this.context.cropName}/germplasm/names`;
+        return this.http.post<GermplasmAttribute[]>(url,{gids:gidList});
+    }
 }
 
 export type ImportGermplasmResultType = { [key: string]: { status: string, gids: number[] } };

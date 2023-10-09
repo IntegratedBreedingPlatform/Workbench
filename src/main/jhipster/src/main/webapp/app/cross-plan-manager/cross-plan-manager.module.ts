@@ -3,13 +3,14 @@ import {BmsjHipsterSharedModule} from '../shared';
 import {RouterModule} from '@angular/router';
 import {CROSS_PLAN_MANAGER_ROUTES} from './cross-plan-manager.route';
 import {CrossPlanManagerComponent} from './cross-plan-manager.component';
-import {CrossPlanListSearchComponent} from './cross-plan-list-search.component';
+import {CrossPlanSearchComponent} from './cross-plan-search.component';
 import {CrossPlanDesignComponent} from './cross-plan-design.component';
 import {GermplasmManagerModule} from '../germplasm-manager/germplasm-manager.module';
 import {ParentListComponent} from './parent-list.component';
 import {PreviewCrossesComponent} from './preview-crosses.component';
 import {ParentListColumnsComponent} from './parent-list-columns.component';
 import {CrossPlanDesignService} from '../shared/cross-plan-design/service/cross-plan-design.service';
+import {CrossPlanService} from "../shared/cross-plan-design/service/cross-plan.service";
 
 @NgModule({
     imports: [
@@ -19,7 +20,7 @@ import {CrossPlanDesignService} from '../shared/cross-plan-design/service/cross-
     ],
     declarations: [
         CrossPlanManagerComponent,
-        CrossPlanListSearchComponent,
+        CrossPlanSearchComponent,
         CrossPlanDesignComponent,
         ParentListComponent,
         PreviewCrossesComponent,
@@ -27,14 +28,15 @@ import {CrossPlanDesignService} from '../shared/cross-plan-design/service/cross-
     ],
     entryComponents: [
         CrossPlanManagerComponent,
-        CrossPlanListSearchComponent,
+        CrossPlanSearchComponent,
         CrossPlanDesignComponent,
         ParentListComponent,
         PreviewCrossesComponent,
         ParentListColumnsComponent
     ],
     providers: [
-        CrossPlanDesignService
+        CrossPlanDesignService,
+        CrossPlanService
     ]
 })
 

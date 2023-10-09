@@ -50,8 +50,8 @@
                         <span>{{isSelectAllPages ? filteredItems : size(selectedItems)}}</span>
                         <div class="form-check form-check-inline ml-3">
                             <input type="checkbox" [checked]="isSelectAllPages" (click)="onSelectAllPages(isSelectAllPages)"
-                                   id="list-builder-select-all">
-                            <label class="form-check-label ml-1" for="list-builder-select-all"
+                                   id="list-parent-select-all">
+                            <label class="form-check-label ml-1" for="list-parent-select-all"
                                    jhiTranslate="global.select.all"></label>
                         </div>
                         <span *ngIf="isLoading" style="margin-left: 10px;" class="throbber throbber-2x"></span>

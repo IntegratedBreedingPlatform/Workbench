@@ -11,7 +11,7 @@ export const CROSS_PLAN_MANAGER_ROUTES: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'cross-plan-lists-search',
+                redirectTo: 'cross-plan-search',
                 pathMatch: 'full'
             }
         ]
