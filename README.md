@@ -79,4 +79,4 @@ For information on front end development in Workbench, see the `README.md` in `s
 [middleware_git_link]: https://github.com/IntegratedBreedingPlatform/Middleware
 [workbench_git_link]: https://github.com/IntegratedBreedingPlatform/Workbench
 [dbscripts_git_link]: https://github.com/IntegratedBreedingPlatform/DBScripts
-[bmsconfig_git_link]: https://github.com/IntegratedBreedingPlatform/BMSConfig
+[bmsconfig_git_link]: https://github.com/IntegratedBreedingPlatform/BMSConfig-v25
